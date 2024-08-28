@@ -2,21 +2,41 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\Clients\Database\Seeders\ClientsTableSeeder;
+use Modules\Core\Database\Seeders\EmailTemplatesTableSeeder;
+use Modules\Core\Database\Seeders\TaxRatesTableSeeder;
+use Modules\Core\Database\Seeders\UsersTableSeeder;
+use Modules\Invoices\Database\Seeders\InvoiceGroupsTableSeeder;
+use Modules\Invoices\Database\Seeders\InvoicesTableSeeder;
+use Modules\Payments\Database\Seeders\PaymentMethodsTableSeeder;
+use Modules\Payments\Database\Seeders\PaymentsTableSeeder;
+use Modules\Products\Database\Seeders\FamiliesTableSeeder;
+use Modules\Products\Database\Seeders\ProductsTableSeeder;
+use Modules\Products\Database\Seeders\ProductUnitsTableSeeder;
+use Modules\Projects\Database\Seeders\ProjectsTableSeeder;
+use Modules\Projects\Database\Seeders\TasksTableSeeder;
+use Modules\Quotes\Database\Seeders\QuotesTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call(EmailTemplatesTableSeeder::class);
+        $this->call(FamiliesTableSeeder::class);
+        $this->call(ProductUnitsTableSeeder::class);
+        $this->call(InvoiceGroupsTableSeeder::class);
+        $this->call(PaymentMethodsTableSeeder::class);
+        $this->call(TaxRatesTableSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call(UsersTableSeeder::class);
+        $this->call(ClientsTableSeeder::class);
+
+        $this->call(ProductsTableSeeder::class);
+        $this->call(ProjectsTableSeeder::class);
+        $this->call(TasksTableSeeder::class);
+        $this->call(InvoicesTableSeeder::class);
+        $this->call(PaymentsTableSeeder::class);
+        $this->call(QuotesTableSeeder::class);
     }
 }
