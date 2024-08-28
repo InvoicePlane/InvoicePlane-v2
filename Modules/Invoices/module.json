@@ -1,0 +1,11 @@
+{
+    "name": "Invoices",
+    "alias": "invoices",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Invoices\\Providers\\InvoicesServiceProvider"
+    ],
+    "files": []
+}
