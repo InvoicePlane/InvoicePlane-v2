@@ -9,6 +9,6 @@ class PaymentsTableSeeder extends Seeder
 {
     public function run(): void
     {
-        Payment::factory()->count(50)->create();
+        Payment::factory()->count(100)->create();
     }
 }

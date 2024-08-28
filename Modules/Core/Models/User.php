@@ -4,6 +4,7 @@ namespace Modules\Core\Models;
 
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ use Modules\Core\Database\Factories\UserFactory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
     use HasApiTokens;
     use HasFactory;
@@ -40,11 +41,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public $table = 'users';
 
     public $timestamps = true;
-
-    public $filterable = [
-        'user_name',
-        'user_email',
-    ];
 
     public $orderable = [
         'user_name',
@@ -104,9 +100,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'password'          => 'hashed',
     ];
 
-    public function getAuthPassword()
+    private ?string $user_email = null;
+
+    private ?string $user_password = null;
+
+    public function getFilamentName(): string
     {
-        return $this->user_password;
+        return $this->getAttributeValue('user_name');
     }
 
     public function invoices(): HasMany
@@ -126,7 +126,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $user_type = self::ADMIN;
     }
 
     protected static function newFactory(): Factory

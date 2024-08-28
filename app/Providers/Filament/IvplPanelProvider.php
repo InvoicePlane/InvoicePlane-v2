@@ -9,7 +9,6 @@ use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -39,7 +38,45 @@ class IvplPanelProvider extends PanelProvider
             ->emailVerification()
             //->profile()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50  => '242, 247, 253',
+                    100 => '227, 239, 251',
+                    200 => '193, 223, 246',
+                    300 => '143, 192, 238',
+                    400 => '66, 154, 225',
+                    500 => '38, 132, 209',
+                    600 => '24, 104, 177',
+                    700 => '20, 83, 144',
+                    800 => '21, 71, 119',
+                    900 => '23, 60, 99',
+                    950 => '15, 39, 66)',
+                ],
+                'curious' => [
+                    50  => '242, 247, 253',
+                    100 => '227, 239, 251',
+                    200 => '193, 223, 246',
+                    300 => '143, 192, 238',
+                    400 => '66, 154, 225',
+                    500 => '38, 132, 209',
+                    600 => '24, 104, 177',
+                    700 => '20, 83, 144',
+                    800 => '21, 71, 119',
+                    900 => '17, 49, 83',
+                    950 => '15, 39, 66)',
+                ],
+                'darkious' => [
+                    50  => '204, 224, 255',
+                    100 => '153, 179, 235',
+                    200 => '102, 150, 214',
+                    300 => '45, 107, 184',
+                    400 => '0, 77, 184',
+                    500 => '0, 63, 153',
+                    600 => '0, 47, 122',
+                    700 => '0, 38, 95',
+                    800 => '0, 32, 79',
+                    900 => '0, 27, 62',
+                    950 => '0, 16, 43)',
+                ],
             ])
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()

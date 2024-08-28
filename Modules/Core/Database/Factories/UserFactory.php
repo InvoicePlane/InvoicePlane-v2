@@ -53,7 +53,7 @@ class UserFactory extends Factory
             'user_phone'               => $this->faker->phoneNumber,
             'user_fax'                 => $this->faker->phoneNumber,
             'user_mobile'              => $this->faker->phoneNumber,
-            'user_email'               => $this->faker->unique()->safeEmail,
+            'email'                    => $this->faker->unique()->safeEmail,
             'user_password'            => Hash::make(Str::random(16)),
             'user_web'                 => $this->faker->url,
             'user_vat_id'              => $this->faker->numerify('##########'),

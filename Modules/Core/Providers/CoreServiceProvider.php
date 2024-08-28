@@ -16,12 +16,12 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
+        //$this->registerCommands();
+        //$this->registerCommandSchedules();
+        //$this->registerTranslations();
         //$this->registerConfig();
         //$this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
     }
 
     /**
