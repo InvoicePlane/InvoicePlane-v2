@@ -19,8 +19,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\ClientsPlugin;
 use Modules\Core\Filament\CorePlugin;
-use Modules\Expenses\Filament\ExpensesPlugin;
 use Modules\Invoices\Filament\InvoicesPlugin;
+use Modules\Payments\Filament\PaymentsPlugin;
 use Modules\Products\Filament\ProductsPlugin;
 use Modules\Projects\Filament\ProjectsPlugin;
 use Modules\Quotes\Filament\QuotesPlugin;
@@ -108,6 +108,7 @@ class IvplPanelProvider extends PanelProvider
                 ClientsPlugin::make(),
                 CorePlugin::make(),
                 InvoicesPlugin::make(),
+                PaymentsPlugin::make(),
                 ProductsPlugin::make(),
                 ProjectsPlugin::make(),
                 QuotesPlugin::make(),
