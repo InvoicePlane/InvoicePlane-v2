@@ -4,7 +4,9 @@ namespace Modules\Tasks\Listeners;
 
 class TaskWasCreatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle($event): void
     {

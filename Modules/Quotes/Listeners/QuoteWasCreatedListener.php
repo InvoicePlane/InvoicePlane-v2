@@ -6,7 +6,9 @@ use Modules\Quotes\Events\QuoteWasCreated;
 
 class QuoteWasCreatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(QuoteWasCreated $event): void
     {

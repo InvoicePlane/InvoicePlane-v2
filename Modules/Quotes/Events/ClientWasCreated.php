@@ -13,5 +13,7 @@ class ClientWasCreated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(Client $client) {}
+    public function __construct(Client $client)
+    {
+    }
 }

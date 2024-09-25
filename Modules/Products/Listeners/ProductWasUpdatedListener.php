@@ -6,7 +6,9 @@ use Modules\Products\Events\ProductWasUpdated;
 
 class ProductWasUpdatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(ProductWasUpdated $event): void
     {

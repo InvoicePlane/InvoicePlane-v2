@@ -13,5 +13,7 @@ class ProjectWasCreated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(Project $project) {}
+    public function __construct(Project $project)
+    {
+    }
 }

@@ -6,7 +6,9 @@ use Modules\Core\Events\UserWasCreated;
 
 class UserWasCreatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(UserWasCreated $event): void
     {

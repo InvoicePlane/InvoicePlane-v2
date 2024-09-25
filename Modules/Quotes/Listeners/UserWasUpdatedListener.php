@@ -6,7 +6,9 @@ use Modules\Core\Events\UserWasUpdated;
 
 class UserWasUpdatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(UserWasUpdated $event): void
     {

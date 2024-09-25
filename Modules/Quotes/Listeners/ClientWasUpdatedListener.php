@@ -6,7 +6,9 @@ use Modules\Clients\Models\Client;
 
 class ClientWasUpdatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(Client $event): void
     {

@@ -6,7 +6,9 @@ use Modules\Products\Events\ProductWasCreated;
 
 class ProductWasCreatedListener
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(ProductWasCreated $event): void
     {
