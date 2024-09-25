@@ -18,7 +18,7 @@ class InvoiceGroupResource extends Resource
 {
     protected static ?string $model = InvoiceGroup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectanglegroup';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Resources';
 

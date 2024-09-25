@@ -13,7 +13,7 @@ class ProductUnitResource extends Resource
 {
     protected static ?string $model = ProductUnit::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academiccap';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Resources';
 

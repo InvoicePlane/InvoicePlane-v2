@@ -16,7 +16,7 @@ class ProductFamilyResource extends Resource
 {
     protected static ?string $model = ProductFamily::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectanglegroup';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Resources';
 
