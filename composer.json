@@ -21,21 +21,21 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "coolsam/modules": "^4.0",
-        "filament/filament": "^3.2",
-        "guzzlehttp/guzzle": "*",
-        "laravel/framework": "^11.21",
-        "laravel/sanctum": "^4.0",
+        "coolsam/modules": "^4.0.6",
+        "filament/filament": "^3.2.114",
+        "guzzlehttp/guzzle": ">=7.9.2",
+        "laravel/framework": "^11.23.5",
+        "laravel/sanctum": "^4.0.2",
         "livewire/livewire": "^3.5.6"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
+        "fakerphp/faker": "^1.23.1",
         "laravel/pint": "dev-feat/blade",
         "laravel/tinker": "^2.9",
-        "mockery/mockery": "^1.6",
+        "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.4",
-        "phpunit/phpunit": "^11.3",
-        "spatie/laravel-ignition": "*"
+        "phpunit/phpunit": "^11.3.6",
+        "spatie/laravel-ignition": ">=2.8"
     },
     "autoload": {
         "psr-4": {
