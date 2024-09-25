@@ -21,7 +21,7 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?int $navigationSort = 10;
 
@@ -176,7 +176,6 @@ class ClientResource extends Resource
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
                 ]),
             ])
             ->bulkActions([

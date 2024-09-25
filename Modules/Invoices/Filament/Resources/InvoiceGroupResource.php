@@ -18,25 +18,25 @@ class InvoiceGroupResource extends Resource
 {
     protected static ?string $model = InvoiceGroup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-rectanglegroup';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 30;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.invoiceGroups.itemTitle');
+        return trans('ip.invoice_groups');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.invoiceGroups.collectionTitle');
+        return trans('ip.invoice_groups');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.invoiceGroups.collectionTitle');
+        return trans('ip.invoice_groups');
     }
 
     public static function form(Form $form): Form

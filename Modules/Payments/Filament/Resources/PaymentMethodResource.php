@@ -16,25 +16,25 @@ class PaymentMethodResource extends Resource
 {
     protected static ?string $model = PaymentMethod::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wallet';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 40;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.payment_methods.itemTitle');
+        return trans('ip.payment_method');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.payment_methods.collectionTitle');
+        return trans('ip.payment_methods');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.payment_methods.collectionTitle');
+        return trans('ip.payment_methods');
     }
 
     public static function form(Form $form): Form

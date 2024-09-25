@@ -5,6 +5,8 @@ namespace Modules\Payments\Filament;
 use Coolsam\Modules\Concerns\ModuleFilamentPlugin;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Modules\Payments\Filament\Resources\PaymentMethodResource;
+use Modules\Payments\Filament\Resources\PaymentResource;
 
 class PaymentsPlugin implements Plugin
 {

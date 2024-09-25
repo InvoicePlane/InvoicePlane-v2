@@ -13,23 +13,23 @@ class ClientCustomResource extends Resource
 {
     protected static ?string $model = ClientCustom::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-listbullet';
 
     protected static bool $shouldRegisterNavigation = false;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.client_custom.itemTitle');
+        return trans('ip.client_custom');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.client_custom.collectionTitle');
+        return trans('ip.client_custom');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.client_custom.collectionTitle');
+        return trans('ip.client_custom');
     }
 
     public static function form(Form $form): Form

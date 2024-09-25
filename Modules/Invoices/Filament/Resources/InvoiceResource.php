@@ -25,23 +25,23 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-inboxstack';
 
     protected static ?int $navigationSort = 30;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.invoices.itemTitle');
+        return trans('ip.invoices');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.invoices.collectionTitle');
+        return trans('ip.invoices');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.invoices.collectionTitle');
+        return trans('ip.invoices');
     }
 
     public static function form(Form $form): Form
@@ -168,7 +168,6 @@ class InvoiceResource extends Resource
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
                 ]),
             ])
             ->bulkActions([

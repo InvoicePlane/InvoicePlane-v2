@@ -14,7 +14,7 @@ class ImportResource extends Resource
 {
     protected static ?string $model = Import::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-bookmarksquare';
 
     protected static ?string $navigationGroup = 'Resources';
 
@@ -22,12 +22,12 @@ class ImportResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return trans('crud.imports.itemTitle');
+        return trans('ip.import');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.imports.collectionTitle');
+        return trans('ip.import');
     }
 
     public static function getNavigationLabel(): string

@@ -15,25 +15,25 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-viewcolumns';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 60;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.tasks.itemTitle');
+        return trans('ip.task');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.tasks.collectionTitle');
+        return trans('ip.tasks');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.tasks.collectionTitle');
+        return trans('ip.tasks');
     }
 
     public static function form(Form $form): Form

@@ -13,7 +13,26 @@ class ProductUnitResource extends Resource
 {
     protected static ?string $model = ProductUnit::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academiccap';
+
+    protected static ?string $navigationGroup = 'Resources';
+
+    protected static ?int $navigationSort = 50;
+
+    public static function getModelLabel(): string
+    {
+        return trans('ip.unit');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.product_units');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.product_units');
+    }
 
     public static function form(Form $form): Form
     {

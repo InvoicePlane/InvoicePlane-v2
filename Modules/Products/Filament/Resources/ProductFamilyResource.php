@@ -16,25 +16,25 @@ class ProductFamilyResource extends Resource
 {
     protected static ?string $model = ProductFamily::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-rectanglegroup';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 50;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.product_families.itemTitle');
+        return trans('ip.family');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.product_families.collectionTitle');
+        return trans('ip.product_families');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.product_families.collectionTitle');
+        return trans('ip.product_families');
     }
 
     public static function form(Form $form): Form

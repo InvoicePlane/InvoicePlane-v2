@@ -21,25 +21,25 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 10;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.users.itemTitle');
+        return trans('ip.users');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.users.collectionTitle');
+        return trans('ip.users');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.users.collectionTitle');
+        return trans('ip.users');
     }
 
     public static function form(Form $form): Form

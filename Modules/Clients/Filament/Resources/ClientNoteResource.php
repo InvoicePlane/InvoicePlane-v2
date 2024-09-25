@@ -13,23 +13,23 @@ class ClientNoteResource extends Resource
 {
     protected static ?string $model = ClientNote::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-paper';
 
     protected static bool $shouldRegisterNavigation = false;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.client_notes.itemTitle');
+        return trans('ip.client_notes');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.client_notes.collectionTitle');
+        return trans('ip.client_notes');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.client_notes.collectionTitle');
+        return trans('ip.client_notes');
     }
 
     public static function form(Form $form): Form

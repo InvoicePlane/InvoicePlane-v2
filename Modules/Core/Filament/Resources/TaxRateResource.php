@@ -18,25 +18,25 @@ class TaxRateResource extends Resource
 {
     protected static ?string $model = TaxRate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-receiptpercent';
 
     protected static ?string $navigationGroup = 'Resources';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 30;
 
     public static function getModelLabel(): string
     {
-        return trans('crud.taxRates.itemTitle');
+        return trans('ip.tax_rates');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.taxRates.collectionTitle');
+        return trans('ip.tax_rates');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.taxRates.collectionTitle');
+        return trans('ip.tax_rates');
     }
 
     public static function form(Form $form): Form
