@@ -3,8 +3,10 @@
 namespace Modules\Products\Filament\Resources;
 
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,49 +43,77 @@ class ProductResource extends Resource
 
     public static function form(Form $form): Form
     {
+        return $form
+            ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema([
+                                TextInput::make('product_sku')
+                                    ->nullable()
+                                    ->string(),
+                                TextInput::make('product_name')
+                                    ->nullable()
+                                    ->string(),
+                                TextInput::make('product_price')
+                                    ->nullable()
+                                    ->numeric()
+                                    ->step(1),
+                            ])->columns(1),
+                        Section::make(heading:null)
+                            ->schema([
+                                MarkdownEditor::make('product_description')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                    ])
+                                    ->columnSpan('full'),
+                            ])->columns(1),
+                    ]),
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema(components: [
+                                Select::make('productFamily.family_name')
+                                    ->required()
+                                    ->relationship('productFamily', 'family_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                                Select::make('productUnit.unit_name')
+                                    ->required()
+                                    ->relationship('productUnit', 'unit_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                                Select::make('tax_rate_id')
+                                    ->required()
+                                    ->relationship('taxRate', 'tax_rate_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                            ]),
+                        Section::make(heading:null)
+                            ->schema(components: [
+                                TextInput::make('provider_name')
+                                    ->nullable()
+                                    ->string(),
+                                TextInput::make('purchase_price')
+                                    ->nullable()
+                                    ->numeric()
+                                    ->step(1),
+                            ]),
+                        Section::make(heading:'Sumex')
+                            ->schema(components: []),
+                    ]),
+            ]);
+    }
+
+    public static function oldForm(Form $form): Form
+    {
         return $form->schema([
-            Section::make()->schema([
+            Section::make(heading:null)->schema([
                 Grid::make(['default' => 2])->schema([
-                    TextInput::make('family_id')
-                        ->required()
-                        ->numeric()
-                        ->step(1)
-                        ->autofocus(),
-
-                    TextInput::make('product_sku')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('product_name')
-                        ->nullable()
-                        ->string(),
-
-                    MarkdownEditor::make('product_description')
-                        ->toolbarButtons([
-                            'bold',
-                            'italic',
-                        ])
-                        ->columnSpan(2),
-
-                    TextInput::make('product_price')
-                        ->nullable()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('purchase_price')
-                        ->nullable()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('provider_name')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('tax_rate_id')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-
                     TextInput::make('unit_id')
                         ->required()
                         ->numeric()
