@@ -13,6 +13,7 @@ use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
 use Modules\Quotes\Database\Factories\QuoteFactory;
+use Modules\Quotes\Enums\QuoteStatus;
 
 class Quote extends Model
 {
@@ -21,18 +22,6 @@ class Quote extends Model
     public const CREATED_AT = 'quote_date_created';
 
     public const UPDATED_AT = 'quote_date_modified';
-
-    public const DRAFT = 1;
-
-    public const SENT = 2;
-
-    public const VIEWED = 3;
-
-    public const APPROVED = 4;
-
-    public const REJECTED = 5;
-
-    public const CANCELED = 6;
 
     public $table = 'quotes';
 
@@ -110,29 +99,14 @@ class Quote extends Model
         return $this->hasMany(QuoteAmount::class, 'quote_id');
     }
 
-    public function scopeStatus(Builder $query, $status): Builder
+    public function scopeStatus(Builder $query, QuoteStatus $status): Builder
     {
-        switch ($status) {
-            case 'draft':
-                return $query->where('quote_status_id', self::DRAFT);
-            case 'sent':
-                return $query->where('quote_status_id', self::SENT);
-            case 'viewed':
-                return $query->where('quote_status_id', self::VIEWED);
-            case 'approved':
-                return $query->where('quote_status_id', self::APPROVED);
-            case 'rejected':
-                return $query->where('quote_status_id', self::REJECTED);
-            case 'canceled':
-                return $query->where('quote_status_id', self::CANCELED);
-            default:
-                return $query;
-        }
+        return $query->where('quote_status_id', $status->value);
     }
 
     public function scopeGuest(Builder $query): Builder
     {
-        return $query->whereIn('quote_status_id', [self::SENT, self::VIEWED, self::APPROVED, self::REJECTED]);
+        return $query->whereIn('quote_status_id', [QuoteStatus::SENT, QuoteStatus::VIEWED, QuoteStatus::APPROVED, QuoteStatus::REJECTED]);
     }
 
     public function scopeUrlKey(Builder $query, $url_key): Builder
@@ -142,7 +116,7 @@ class Quote extends Model
 
     public function scopeIsOpen(Builder $query)
     {
-        return $query->whereIn('quote_status_id', [self::SENT, self::VIEWED]);
+        return $query->whereIn('quote_status_id', [QuoteStatus::SENT, QuoteStatus::VIEWED]);
     }
 
     /**

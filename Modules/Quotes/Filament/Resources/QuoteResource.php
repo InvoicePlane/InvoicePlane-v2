@@ -15,6 +15,8 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
+use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Resources\QuoteResource\Pages;
 use Modules\Quotes\Filament\Resources\QuoteResource\RelationManagers;
 use Modules\Quotes\Models\Quote;
@@ -45,7 +47,7 @@ class QuoteResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make()->schema([
+            Section::make(heading:null)->schema([
                 Grid::make(['default' => 2])->schema([
                     Select::make('invoice_id')
                         ->required()
@@ -118,12 +120,15 @@ class QuoteResource extends Resource
         return $table
             ->poll('60s')
             ->columns([
-                TextColumn::make('quote_status_id'),
-
+                TextColumn::make('quote_status_id')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (Quote $record) => QuoteStatus::from($record->quote_status_id)->getLabel())
+                    ->color(fn (Quote $record) => QuoteStatus::from($record->quote_status_id)->getColor()),
                 TextColumn::make('invoiceGroup.invoice_group_name'),
-
-                TextColumn::make('quote_date_expires')->since(),
-
+                TextColumn::make('quote_date_expires')
+                    ->color(fn (Quote $record) => Carbon::parse($record->quote_date_expires)->isPast() ? 'text-red-500' : null)
+                    ->since(),
                 TextColumn::make('quote_number'),
             ])
             ->filters([])
