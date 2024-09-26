@@ -5,6 +5,7 @@ namespace Modules\Quotes\Filament\Resources;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -45,6 +46,48 @@ class QuoteResource extends Resource
     }
 
     public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema([
+                                Select::make('invoice_id')
+                                    ->relationship('invoice', 'invoice_number')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                                Select::make('invoice_group_id')
+                                    ->required()
+                                    ->relationship('invoiceGroup', 'invoice_group_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                                Select::make('quote_status_id')
+                                    ->label(trans('ip.quote_status'))
+                                    ->required()
+                                    ->options(QuoteStatus::class)
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+                            ])->columns(1),
+                        Section::make(heading:null)
+                            ->schema([])->columns(1),
+                    ]),
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema(components: []),
+                        Section::make(heading:null)
+                            ->schema(components: []),
+                        Section::make(heading:'Sumex')
+                            ->schema(components: []),
+                    ]),
+            ]);
+    }
+
+    public static function oldForm(Form $form): Form
     {
         return $form->schema([
             Section::make(heading:null)->schema([
