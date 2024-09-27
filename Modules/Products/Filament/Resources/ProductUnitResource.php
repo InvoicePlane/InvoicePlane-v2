@@ -2,9 +2,14 @@
 
 namespace Modules\Products\Filament\Resources;
 
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Filament\Resources\ProductUnitResource\Pages;
 use Modules\Products\Models\ProductUnit;
@@ -38,6 +43,21 @@ class ProductUnitResource extends Resource
     {
         return $form
             ->schema([
+                Group::make()->schema([
+                    TextInput::make('unit_name')
+                        ->inlineLabel()
+                        ->label(trans('ip.unit'))
+                        ->required()
+                        ->autofocus(),
+                    TextInput::make('unit_name_plrl')
+                        ->inlineLabel()
+                        ->label(trans('ip.unit_name_plrl'))
+                        ->required(),
+                ])->columns(1),
+                Group::make()->schema([
+                    Placeholder::make('explanation Product Unit')
+                        ->label('just some text'),
+                ])->columns(1),
             ]);
     }
 
@@ -45,12 +65,15 @@ class ProductUnitResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('unit_name')->label(trans('ip.unit_name')),
+                TextColumn::make('unit_name_plrl')->label(trans('ip.unit_name_plrl')),
             ])
             ->filters([
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
