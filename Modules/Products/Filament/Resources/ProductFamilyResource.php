@@ -2,6 +2,8 @@
 
 namespace Modules\Products\Filament\Resources;
 
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,9 +43,17 @@ class ProductFamilyResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('family_name')
-                    ->required()
-                    ->autofocus(),
+                Group::make()->schema([
+                    TextInput::make('family_name')
+                        ->inlineLabel()
+                        ->label(trans('ip.family'))
+                        ->required()
+                        ->autofocus(),
+                ]),
+                Group::make()->schema([
+                    Placeholder::make('explanation Product Family')
+                        ->label('just some text'),
+                ]),
             ]);
     }
 
@@ -51,7 +61,7 @@ class ProductFamilyResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('family_name'),
+                TextColumn::make('family_name')->label(trans('ip.family')),
             ])
             ->filters([])
             ->actions([
