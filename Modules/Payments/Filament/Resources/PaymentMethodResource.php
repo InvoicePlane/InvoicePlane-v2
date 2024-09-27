@@ -2,6 +2,8 @@
 
 namespace Modules\Payments\Filament\Resources;
 
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,9 +43,17 @@ class PaymentMethodResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('payment_method_name')
-                    ->required()
-                    ->autofocus(),
+                Group::make()->schema([
+                    TextInput::make('payment_method_name')
+                        ->inlineLabel()
+                        ->label(trans('ip.payment_method'))
+                        ->required()
+                        ->autofocus(),
+                ]),
+                Group::make()->schema([
+                    Placeholder::make('explanation payment method')
+                        ->label('just some text'),
+                ]),
             ]);
     }
 
@@ -51,7 +61,7 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('payment_method_name'),
+                TextColumn::make('payment_method_name')->label(trans('ip.payment_method')),
             ])
             ->filters([
             ])
