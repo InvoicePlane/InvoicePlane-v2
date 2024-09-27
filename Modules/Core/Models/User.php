@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Core\Database\Factories\UserFactory;
+use Modules\Core\Enums\UserType;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
 
@@ -126,7 +127,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $user_type = self::ADMIN;
+        return $this->user_type === UserType::ADMIN->value;
     }
 
     protected static function newFactory(): Factory

@@ -42,7 +42,7 @@ class TaxRateResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make()->schema([
+            Section::make(heading:null)->schema([
                 Grid::make(['default' => 2])->schema([
                     TextInput::make('tax_rate_name')
                         ->nullable()

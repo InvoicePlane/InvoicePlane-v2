@@ -11,6 +11,7 @@ use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserType;
 use Modules\Core\Models\User;
 
 class UserFactory extends Factory
@@ -35,8 +36,8 @@ class UserFactory extends Factory
 
         return [
             'user_type' => $this->faker->randomElement([
-                User::ADMIN,
-                User::CLIENT,
+                UserType::ADMIN->value,
+                UserType::CLIENT->value,
             ]),
             'user_active'              => $this->faker->boolean,
             'user_date_created'        => $createdAt,
@@ -72,7 +73,7 @@ class UserFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'user_type' => User::ADMIN,   // administrator
+                'user_type' => UserType::ADMIN->value,
             ];
         });
     }
@@ -81,7 +82,7 @@ class UserFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'user_type' => User::CLIENT,   // guest_read_only
+                'user_type' => UserType::CLIENT->value,
             ];
         });
     }
