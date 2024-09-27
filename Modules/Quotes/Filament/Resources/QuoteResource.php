@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -58,31 +59,39 @@ class QuoteResource extends Resource
                                     ->searchable()
                                     ->preload()
                                     ->native(false),
-                                Select::make('invoice_group_id')
-                                    ->required()
-                                    ->relationship('invoiceGroup', 'invoice_group_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
-                                Select::make('quote_status_id')
-                                    ->label(trans('ip.quote_status'))
-                                    ->required()
-                                    ->options(QuoteStatus::class)
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
                             ])->columns(1),
                         Section::make(heading:null)
-                            ->schema([])->columns(1),
+                            ->schema([
+                                MarkdownEditor::make('notes')
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                    ]),
+                            ])->columns(1),
                     ]),
                 Group::make()
                     ->schema([
                         Section::make(heading:null)
-                            ->schema(components: []),
-                        Section::make(heading:null)
-                            ->schema(components: []),
-                        Section::make(heading:'Sumex')
-                            ->schema(components: []),
+                            ->schema(components: [
+                                Grid::make()->schema([
+                                    TextInput::make('quote_number'),
+                                    Select::make('quote_status_id')
+                                        ->label(trans('hello world!'))
+                                        ->required()
+                                        ->options(array_map(fn (QuoteStatus $status) => trans($status->getLabel()), QuoteStatus::cases()))
+                                        ->searchable()
+                                        ->preload()
+                                        ->native(false)
+                                        ->getOptionLabelUsing(fn (string $value) => QuoteStatus::from($value)->getLabel()),
+                                    DatePicker::make('quote_date_expires'),
+                                    Select::make('invoice_group_id')
+                                        ->required()
+                                        ->relationship('invoiceGroup', 'invoice_group_name')
+                                        ->searchable()
+                                        ->preload()
+                                        ->native(false),
+                                ]),
+                            ])->columns(2),
                     ]),
             ]);
     }
@@ -164,20 +173,34 @@ class QuoteResource extends Resource
             ->poll('60s')
             ->columns([
                 TextColumn::make('quote_status_id')
-                    ->label('Status')
+                    ->label(trans('ip.status'))
                     ->badge()
-                    ->formatStateUsing(fn (Quote $record) => QuoteStatus::from($record->quote_status_id)->getLabel())
+                    ->formatStateUsing(fn (Quote $record) => trans(QuoteStatus::from($record->quote_status_id)->getLabel()))
                     ->color(fn (Quote $record) => QuoteStatus::from($record->quote_status_id)->getColor()),
-                TextColumn::make('invoiceGroup.invoice_group_name'),
+                TextColumn::make('quote_number')->label(trans('ip.quote')),
+                TextColumn::make('invoiceGroup.invoice_group_name')->label(trans('ip.invoice_group')),
+                TextColumn::make('client.client_name')->label(trans('ip.client_name')),
                 TextColumn::make('quote_date_expires')
+                    ->label(trans('ip.expires'))
                     ->color(fn (Quote $record) => Carbon::parse($record->quote_date_expires)->isPast() ? 'text-red-500' : null)
                     ->since(),
-                TextColumn::make('quote_number'),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
+                    Action::make('download pdf')
+                        ->label(trans('ip.download_pdf'))
+                        ->modalDescription(
+                            'todo: make sure we can download the PDF of the Quote through an action,
+                            so need for modal anymore'
+                        )
+                        ->action(function (Quote $record): void {}),
+                    Action::make('send email')
+                        ->label(trans('ip.send_email'))
+                        ->modalDescription('todo: make sure we can email the Quote through an action,
+                            so need for modal anymore')
+                        ->action(function (Quote $record): void {}),
                 ]),
             ])
             ->bulkActions([
