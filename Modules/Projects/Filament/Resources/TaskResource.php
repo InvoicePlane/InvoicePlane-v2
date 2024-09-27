@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Filament\Resources\TaskResource\Pages;
 use Modules\Projects\Models\Task;
@@ -116,7 +117,15 @@ class TaskResource extends Resource
                     ->label(trans('ip.task_finish_date'))
                     ->since()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color(
+                        fn (Task $record) => $record->task_finish_date
+                    && Carbon::parse($record->task_finish_date)->isPast()
+                    && $record->task_status !== TaskStatus::COMPLETE->value
+                        ? 'danger'
+                        : null
+                    ),
                 TextColumn::make('task_price')
                     ->label(trans('ip.task_price'))
                     ->searchable()
