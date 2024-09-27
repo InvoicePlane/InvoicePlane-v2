@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Filament\Resources;
 
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,9 +43,50 @@ class EmailTemplateResource extends Resource
     {
         return $form
             ->schema([
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema([
+                                TextInput::make('email_template_title')
+                                    ->label(trans('ip.title'))
+                                    ->required()
+                                    ->autofocus(),
+                                TextInput::make('email_template_from_name')
+                                    ->label(trans('ip.from_name')),
+                                TextInput::make('email_template_from_email')
+                                    ->label(trans('ip.from_email')),
+                            ])->columns(1),
+                        Section::make(heading:trans('ip.cc_and_bcc'))
+                            ->collapsed()
+                            ->schema([
+                                TextInput::make('email_template_cc')->label(trans('ip.cc')),
+                                TextInput::make('email_template_bcc')->label(trans('ip.bcc')),
+                            ])->columns(1),
+                    ]),
+                Group::make()
+                    ->schema([
+                        Section::make(heading:null)
+                            ->schema(components: [
+                                TextInput::make('email_template_type')->label(trans('ip.type')),
+                                TextInput::make('email_template_subject')->label(trans('ip.subject')),
+                            ])->columns(1),
+                    ]),
+            ]);
+    }
+
+    public static function oldForm(Form $form): Form
+    {
+        return $form
+            ->schema([
                 TextInput::make('email_template_title')
                     ->required()
                     ->autofocus(),
+                TextInput::make('email_template_type')->label(trans('ip.type')),
+                TextInput::make('email_template_from_name')->label(trans('ip.from_name')),
+                TextInput::make('email_template_from_email')->label(trans('ip.from_email')),
+                TextInput::make('email_template_cc')->label(trans('ip.cc')),
+                TextInput::make('email_template_bcc')->label(trans('ip.bcc')),
+                TextInput::make('email_template_subject')->label(trans('ip.subject')),
             ]);
     }
 
@@ -51,12 +94,11 @@ class EmailTemplateResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('email_template_type'),
-                TextColumn::make('email_template_title'),
-                TextColumn::make('email_template_subject')->hiddenFrom('sm'),
-                TextColumn::make('email_template_from_name'),
-                TextColumn::make('email_template_from_email'),
-                TextColumn::make('email_template_pdf_template'),
+                TextColumn::make('email_template_title')->label(trans('ip.title')),
+                TextColumn::make('email_template_type')->label(trans('ip.type')),
+                TextColumn::make('email_template_subject')->label(trans('ip.subject'))->hiddenFrom('sm'),
+                TextColumn::make('email_template_from_name')->label(trans('ip.from_name')),
+                TextColumn::make('email_template_from_email')->label(trans('ip.from_email')),
             ])
             ->filters([
             ])
