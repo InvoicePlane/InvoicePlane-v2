@@ -74,22 +74,6 @@ class EmailTemplateResource extends Resource
             ]);
     }
 
-    public static function oldForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                TextInput::make('email_template_title')
-                    ->required()
-                    ->autofocus(),
-                TextInput::make('email_template_type')->label(trans('ip.type')),
-                TextInput::make('email_template_from_name')->label(trans('ip.from_name')),
-                TextInput::make('email_template_from_email')->label(trans('ip.from_email')),
-                TextInput::make('email_template_cc')->label(trans('ip.cc')),
-                TextInput::make('email_template_bcc')->label(trans('ip.bcc')),
-                TextInput::make('email_template_subject')->label(trans('ip.subject')),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
