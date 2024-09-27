@@ -2,7 +2,9 @@
 
 namespace Modules\Projects\Filament\Resources;
 
-use Filament\Forms;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -40,19 +42,21 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('project_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('client_id')
-                    ->relationship('client', 'client_name')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('client_name')
-                            ->required()
-                            ->maxLength(255),
-                    ])
-                    ->required(),
+                Group::make()->schema([
+                    TextInput::make('project_name')
+                        ->required()
+                        ->maxLength(255),
+                    Select::make('client_id')
+                        ->relationship('client', 'client_name')
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('client_name')
+                                ->required()
+                                ->maxLength(255),
+                        ])
+                        ->required(),
+                ]),
             ]);
     }
 
@@ -60,10 +64,10 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project_name')
+                TextColumn::make('project_name')->label(trans('ip.project_name'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('client.client_name')
+                TextColumn::make('client.client_name')->label(trans('ip.client_name'))
                     ->searchable()
                     ->sortable(),
             ])
