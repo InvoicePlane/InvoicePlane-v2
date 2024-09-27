@@ -2,8 +2,7 @@
 
 namespace Modules\Invoices\Filament\Resources;
 
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -42,27 +41,28 @@ class InvoiceGroupResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make()->schema([
-                Grid::make(['default' => 2])->schema([
-                    TextInput::make('invoice_group_name')
-                        ->required()
-                        ->string()
-                        ->autofocus(),
-
-                    TextInput::make('invoice_group_identifier_format')
-                        ->required()
-                        ->string(),
-
-                    TextInput::make('invoice_group_next_id')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('invoice_group_left_pad')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-                ]),
+            Group::make()->schema([
+                TextInput::make('invoice_group_name')
+                    ->label(trans('ip.name'))
+                    ->required()
+                    ->string()
+                    ->autofocus(),
+                TextInput::make('invoice_group_next_id')
+                    ->label(trans('ip.next_id'))
+                    ->required()
+                    ->numeric()
+                    ->step(1),
+                TextInput::make('invoice_group_left_pad')
+                    ->label(trans('ip.left_pad'))
+                    ->required()
+                    ->numeric()
+                    ->step(1),
+            ]),
+            Group::make()->schema([
+                TextInput::make('invoice_group_identifier_format')
+                    ->label(trans('ip.identifier_format'))
+                    ->required()
+                    ->string(),
             ]),
         ]);
     }
@@ -72,13 +72,10 @@ class InvoiceGroupResource extends Resource
         return $table
             ->poll('60s')
             ->columns([
-                TextColumn::make('invoice_group_name'),
-
-                TextColumn::make('invoice_group_identifier_format'),
-
-                TextColumn::make('invoice_group_next_id'),
-
-                TextColumn::make('invoice_group_left_pad'),
+                TextColumn::make('invoice_group_name')->label(trans('ip.name')),
+                TextColumn::make('invoice_group_identifier_format')->label(trans('ip.identifier_format')),
+                TextColumn::make('invoice_group_next_id')->label(trans('ip.next_id')),
+                TextColumn::make('invoice_group_left_pad')->label(trans('ip.left_pad')),
             ])
             ->filters([])
             ->actions([
