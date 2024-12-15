@@ -14,6 +14,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -47,7 +48,7 @@ class InvoiceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make()->schema([
+            Section::make(heading:null)->schema([
                 Grid::make(['default' => 2])->schema([
                     Select::make('user_id')
                         ->required()
@@ -55,75 +56,61 @@ class InvoiceResource extends Resource
                         ->searchable()
                         ->preload()
                         ->native(false),
-
                     Select::make('client_id')
                         ->required()
                         ->relationship('client', 'client_name')
                         ->searchable()
                         ->preload()
                         ->native(false),
-
                     Select::make('invoice_group_id')
                         ->required()
                         ->relationship('invoiceGroup', 'invoice_group_name')
                         ->searchable()
                         ->preload()
                         ->native(false),
-
                     TextInput::make('invoice_status_id')
                         ->required()
                         ->numeric()
                         ->step(1),
-
                     Checkbox::make('is_read_only')
                         ->rules(['boolean'])
                         ->nullable()
                         ->inline(),
-
                     TextInput::make('invoice_password')
                         ->nullable()
                         ->string(),
-
                     DatePicker::make('invoice_date_created')
                         ->rules(['date'])
                         ->required()
                         ->native(false),
-
                     TimePicker::make('invoice_time_created')
                         ->required()
                         ->native(false),
-
                     DateTimePicker::make('invoice_date_modified')
                         ->rules(['date'])
                         ->required()
                         ->native(false),
-
                     DatePicker::make('invoice_date_due')
                         ->rules(['date'])
                         ->required()
                         ->native(false),
-
                     TextInput::make('invoice_number')
                         ->nullable()
                         ->string(),
-
                     TextInput::make('invoice_discount_amount')
                         ->nullable()
                         ->numeric()
                         ->step(1),
-
                     TextInput::make('invoice_discount_percent')
                         ->nullable()
                         ->numeric()
                         ->step(1),
-
                     MarkdownEditor::make('invoice_terms')
                         ->toolbarButtons([
                             'bold',
                             'italic',
                         ])
                         ->columnSpan(2),
-
                     TextInput::make('invoice_url_key')
                         ->required()
                         ->string()
@@ -132,12 +119,10 @@ class InvoiceResource extends Resource
                             'invoice_url_key',
                             ignoreRecord: true
                         ),
-
                     TextInput::make('payment_method')
                         ->required()
                         ->numeric()
                         ->step(1),
-
                     TextInput::make('creditinvoice_parent_id')
                         ->nullable()
                         ->numeric()
@@ -153,21 +138,28 @@ class InvoiceResource extends Resource
             ->poll('60s')
             ->columns([
                 TextColumn::make('invoice_status_id'),
-
                 TextColumn::make('invoiceGroup.invoice_group_name')->hiddenFrom('md'),
-
                 TextColumn::make('invoice_number'),
-
                 TextColumn::make('invoice_date_due')->since(),
-
                 TextColumn::make('client.client_name'),
-
                 TextColumn::make('invoice.invoiceAmount.invoice_total'),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
+                    Action::make('download pdf')
+                        ->label(trans('ip.download_pdf'))
+                        ->modalDescription(
+                            'todo: make sure we can download the PDF of the Invoice through an action,
+                            so need for modal anymore'
+                        )
+                        ->action(function (Invoice $record): void {}),
+                    Action::make('send email')
+                        ->label(trans('ip.send_email'))
+                        ->modalDescription('todo: make sure we can email the Invoice through an action,
+                            so need for modal anymore')
+                        ->action(function (Invoice $record): void {}),
                 ]),
             ])
             ->bulkActions([

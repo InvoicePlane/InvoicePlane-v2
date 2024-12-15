@@ -3,7 +3,6 @@
 namespace Modules\Quotes\Filament\Resources;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
@@ -94,77 +93,6 @@ class QuoteResource extends Resource
                             ])->columns(2),
                     ]),
             ]);
-    }
-
-    public static function oldForm(Form $form): Form
-    {
-        return $form->schema([
-            Section::make(heading:null)->schema([
-                Grid::make(['default' => 2])->schema([
-                    Select::make('invoice_id')
-                        ->required()
-                        ->relationship('invoice', 'invoice_number')
-                        ->searchable()
-                        ->preload()
-                        ->native(false),
-
-                    /*Select::make('user_id')
-                        ->required()
-                        ->relationship('user', 'user_language')
-                        ->searchable()
-                        ->preload()
-                        ->native(false),*/
-
-                    Select::make('invoice_group_id')
-                        ->required()
-                        ->relationship('invoiceGroup', 'invoice_group_name')
-                        ->searchable()
-                        ->preload()
-                        ->native(false),
-
-                    TextInput::make('quote_status_id')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-
-                    DatePicker::make('quote_date_created')
-                        ->rules(['date'])
-                        ->required()
-                        ->native(false),
-
-                    DateTimePicker::make('quote_date_modified')
-                        ->rules(['date'])
-                        ->required()
-                        ->native(false),
-
-                    DatePicker::make('quote_date_expires')
-                        ->rules(['date'])
-                        ->required()
-                        ->native(false),
-
-                    TextInput::make('quote_number')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('quote_discount_amount')
-                        ->nullable()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('quote_discount_percent')
-                        ->nullable()
-                        ->numeric()
-                        ->step(1),
-
-                    MarkdownEditor::make('notes')
-                        ->toolbarButtons([
-                            'bold',
-                            'italic',
-                        ])
-                        ->columnSpan(2),
-                ]),
-            ]),
-        ]);
     }
 
     public static function table(Table $table): Table

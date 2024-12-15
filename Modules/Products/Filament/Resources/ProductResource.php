@@ -2,7 +2,6 @@
 
 namespace Modules\Products\Filament\Resources;
 
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
@@ -22,7 +21,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?int $navigationSort = 50;
 
@@ -107,25 +106,6 @@ class ProductResource extends Resource
                             ->schema(components: []),
                     ]),
             ]);
-    }
-
-    public static function oldForm(Form $form): Form
-    {
-        return $form->schema([
-            Section::make(heading:null)->schema([
-                Grid::make(['default' => 2])->schema([
-                    TextInput::make('unit_id')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('product_tariff')
-                        ->nullable()
-                        ->numeric()
-                        ->step(1),
-                ]),
-            ]),
-        ]);
     }
 
     public static function table(Table $table): Table

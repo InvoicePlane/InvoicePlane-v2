@@ -5,12 +5,15 @@ namespace Modules\Clients\Filament\Resources;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Filament\Resources\ClientResource\Pages;
@@ -43,109 +46,122 @@ class ClientResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Section::make()->schema([
-                Grid::make(['default' => 2])->schema([
-                    DateTimePicker::make('client_date_created')
-                        ->rules(['date'])
-                        ->required()
-                        ->native(false),
-
-                    DateTimePicker::make('client_date_modified')
-                        ->rules(['date'])
-                        ->required()
-                        ->native(false),
-
-                    TextInput::make('client_name')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_address_1')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_address_2')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_city')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_state')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_zip')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_country')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_phone')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_fax')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_mobile')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_email')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_web')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_vat_id')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_tax_code')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_language')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_active')
-                        ->required()
-                        ->numeric()
-                        ->step(1),
-
-                    TextInput::make('client_surname')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_avs')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_insurednumber')
-                        ->nullable()
-                        ->string(),
-
-                    TextInput::make('client_veka')
-                        ->nullable()
-                        ->string(),
-
+            Group::make()->schema([
+                Section::make()
+                    ->label(trans('ip.personal_information'))
+                    ->schema([
+                        TextInput::make('client_name')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_surname')
+                            ->nullable()
+                            ->label(trans('ip.client_surname_optional'))
+                            ->string(),
+                        TextInput::make('language')
+                            ->nullable()
+                            ->string(),
+                    ]),
+                Section::make()
+                    ->label(trans('ip.address'))
+                    ->schema([
+                        Grid::make(['default' => 1])->schema([
+                            TextInput::make('client_address_1')
+                                ->nullable()
+                                ->label(trans('ip.street_address'))
+                                ->string(),
+                            TextInput::make('client_address_2')
+                                ->nullable()
+                                ->label(trans('ip.street_address_2'))
+                                ->string(),
+                            TextInput::make('client_city')
+                                ->nullable()
+                                ->label(trans('ip.city'))
+                                ->string(),
+                            TextInput::make('client_state')
+                                ->nullable()
+                                ->label(trans('ip.state'))
+                                ->string(),
+                            TextInput::make('client_zip')
+                                ->nullable()
+                                ->label(trans('ip.zip_code'))
+                                ->string(),
+                            TextInput::make('client_country')
+                                ->nullable()
+                                ->label(trans('ip.country'))
+                                ->string(),
+                        ]),
+                    ]),
+                Section::make('personal_information')->label(trans('ip.personal_information'))->schema([
                     DatePicker::make('client_birthdate')
                         ->rules(['date'])
+                        ->label(trans('ip.client_name'))
                         ->nullable()
                         ->native(false),
-
                     TextInput::make('client_gender')
                         ->nullable()
+                        ->label(trans('ip.client_name'))
                         ->numeric()
                         ->step(1),
                 ]),
+                Section::make()->schema([
+                    Grid::make(['default' => 1])->schema([
+                        TextInput::make('client_phone')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_fax')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_mobile')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_email')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_web')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_vat_id')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_tax_code')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_avs')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_insurednumber')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                        TextInput::make('client_veka')
+                            ->nullable()
+                            ->label(trans('ip.client_name'))
+                            ->string(),
+                    ]),
+                ]),
+            ]),
+            Group::make()->schema([
+                Toggle::make('client_active')
+                    ->required(),
+                DateTimePicker::make('client_date_created')
+                    ->disabled()
+                    ->rules(['date'])
+                    ->required()
+                    ->native(false),
+                DateTimePicker::make('client_date_modified')
+                    ->disabled()
+                    ->rules(['date'])
+                    ->required()
+                    ->native(false),
             ]),
         ]);
     }
@@ -155,22 +171,23 @@ class ClientResource extends Resource
         return $table
             ->poll('60s')
             ->columns([
-                Tables\Columns\IconColumn::make('client_active')
+                IconColumn::make('client_active')
+                    ->label(trans('ip.active'))
                     ->boolean(),
-
-                TextColumn::make('client_name'),
-
-                TextColumn::make('client_phone'),
-
-                TextColumn::make('client_mobile'),
-
-                TextColumn::make('client_email'),
-
-                TextColumn::make('client_vat_id')->hiddenFrom('md'),
-
-                TextColumn::make('client_tax_code')->hiddenFrom('md'),
-
-                TextColumn::make('client_language')->hiddenFrom('md'),
+                TextColumn::make('client_name')
+                    ->label(trans('ip.client_name')),
+                TextColumn::make('client_email')
+                    ->label(trans('ip.email')),
+                TextColumn::make('client_phone')
+                    ->label(trans('ip.phone')),
+                TextColumn::make('client_mobile')
+                    ->label(trans('ip.mobile')),
+                TextColumn::make('client_vat_id')->hiddenFrom('md')
+                    ->label(trans('ip.vat_id')),
+                TextColumn::make('client_tax_code')->hiddenFrom('md')
+                    ->label(trans('ip.tax_code')),
+                TextColumn::make('client_language')->hiddenFrom('md')
+                    ->label(trans('ip.language')),
             ])
             ->filters([])
             ->actions([

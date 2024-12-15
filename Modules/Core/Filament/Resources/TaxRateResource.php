@@ -18,7 +18,7 @@ class TaxRateResource extends Resource
 {
     protected static ?string $model = TaxRate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
     protected static ?string $navigationGroup = 'Resources';
 
@@ -43,13 +43,16 @@ class TaxRateResource extends Resource
     {
         return $form->schema([
             Section::make(heading:null)->schema([
-                Grid::make(['default' => 2])->schema([
+                Grid::make(['default' => 1])->schema([
                     TextInput::make('tax_rate_name')
+                        ->label(trans('ip.name'))
+                        ->inlineLabel(true)
                         ->nullable()
                         ->string()
                         ->autofocus(),
-
                     TextInput::make('tax_rate_percent')
+                        ->label(trans('ip.percentage'))
+                        ->inlineLabel(true)
                         ->required()
                         ->numeric()
                         ->step(1),
@@ -63,9 +66,10 @@ class TaxRateResource extends Resource
         return $table
             ->poll('60s')
             ->columns([
-                TextColumn::make('tax_rate_name'),
-
-                TextColumn::make('tax_rate_percent'),
+                TextColumn::make('tax_rate_name')
+                    ->label(trans('ip.name')),
+                TextColumn::make('tax_rate_percent')
+                    ->label(trans('ip.percentage')),
             ])
             ->filters([])
             ->actions([

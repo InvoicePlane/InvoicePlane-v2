@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\UserType;
@@ -156,9 +157,8 @@ class UserResource extends Resource
                     ->formatStateUsing(fn (User $record): string => trans(UserType::from($record->user_type)->getLabel()))
                     ->badge()
                     ->color(fn (User $record) => UserType::from($record->user_type)->getColor()),
-                TextColumn::make('user_active')
-                    ->badge()
-                    ->formatStateUsing(fn (User $record) => $record->user_active ? trans('ip.active') : trans('ip.inactive'))
+                IconColumn::make('user_active')
+                    ->boolean()
                     ->color(fn (User $record) => $record->user_active ? 'success' : 'danger')
                     ->icon(fn (User $record) => $record->user_active ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
                 TextColumn::make('email'),

@@ -1,0 +1,7 @@
+.disabled-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none; /* Remove the default arrow */
+    /* Add any other styling you want for disabled selects */
+}
