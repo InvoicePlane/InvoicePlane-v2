@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\CreateClient;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\EditClient;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
@@ -15,6 +16,7 @@ class ClientsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;
+
     // endregion
 
     public function setUp(): void
@@ -29,6 +31,7 @@ class ClientsTest extends AbstractTestCase
     }
 
     // region CRUD Tests
+
     /**
      * @test
      */
@@ -186,19 +189,37 @@ class ClientsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     *
-     * No payload required for deleting a client.
-     */
-    public function it_deletes_a_client(): void
+    /** @test */
+    public function it_deletes_a_client_from_manage_clients(): void
     {
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $this->markTestIncomplete('Needs delete action');
+        $client = Client::factory()->create([
+            'client_name'  => 'Test Client',
+            'client_email' => 'client@example.com',
+        ]);
 
-        $response = $this->deleteJson(route('filament.ivpl.resources.clients.delete', ['record' => 1]));
-        $response->assertStatus(200);
+        Livewire::test(ManageClients::class)
+            ->callTableAction('delete', $client)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('clients', [
+            'client_id' => $client->client_id,
+        ]);
+    }
+
+    /** @test */
+    public function it_bulk_deletes_clients(): void
+    {
+        $clients = Client::factory()->count(3)->create();
+
+        Livewire::test(ManageClients::class)
+            ->callTableBulkAction('delete', $clients)
+            ->assertHasNoErrors();
+
+        foreach ($clients as $client) {
+            $this->assertDatabaseMissing('clients', [
+                'client_id' => $client->client_id,
+            ]);
+        }
     }
 }
