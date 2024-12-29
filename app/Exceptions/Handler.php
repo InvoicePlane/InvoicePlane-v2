@@ -10,7 +10,7 @@ class Handler extends ExceptionHandler
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
-     * @var array<int, string>
+     * <int, string>
      */
     protected $dontFlash = [
         'current_password',
@@ -23,7 +23,6 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e): void {
-        });
+        $this->reportable(function (Throwable $e): void {});
     }
 }

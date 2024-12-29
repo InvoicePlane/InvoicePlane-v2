@@ -2,7 +2,7 @@
 
 namespace Modules\Payments\Providers;
 
-use Config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class PaymentsServiceProvider extends ServiceProvider

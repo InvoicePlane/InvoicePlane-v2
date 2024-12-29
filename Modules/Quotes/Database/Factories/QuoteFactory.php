@@ -7,6 +7,7 @@ use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 
 class QuoteFactory extends Factory
@@ -22,12 +23,12 @@ class QuoteFactory extends Factory
             'invoice_group_id' => InvoiceGroup::all()->random()->invoice_group_id,
             'quote_status_id'  => $this->faker->randomElement(
                 [
-                    Quote::DRAFT,
-                    Quote::SENT,
-                    Quote::VIEWED,
-                    Quote::APPROVED,
-                    Quote::REJECTED,
-                    Quote::CANCELED,
+                    QuoteStatus::DRAFT,
+                    QuoteStatus::SENT,
+                    QuoteStatus::VIEWED,
+                    QuoteStatus::APPROVED,
+                    QuoteStatus::REJECTED,
+                    QuoteStatus::CANCELED,
                 ]
             ),
             'quote_date_created'     => $this->faker->date('Y-m-d H:i:s'),
@@ -46,7 +47,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::DRAFT,
+                'quote_status_id' => QuoteStatus::DRAFT,
             ];
         });
     }
@@ -55,7 +56,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::SENT,
+                'quote_status_id' => QuoteStatus::SENT,
             ];
         });
     }
@@ -64,7 +65,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::VIEWED,
+                'quote_status_id' => QuoteStatus::VIEWED,
             ];
         });
     }
@@ -73,7 +74,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::APPROVED,
+                'quote_status_id' => QuoteStatus::APPROVED,
             ];
         });
     }
@@ -82,7 +83,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::REJECTED,
+                'quote_status_id' => QuoteStatus::REJECTED,
             ];
         });
     }
@@ -91,7 +92,7 @@ class QuoteFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'quote_status_id' => Quote::CANCELED,
+                'quote_status_id' => QuoteStatus::CANCELED,
             ];
         });
     }

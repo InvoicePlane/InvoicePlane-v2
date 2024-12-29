@@ -13,7 +13,5 @@ class QuoteWasUpdated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public Quote $quote)
-    {
-    }
+    public function __construct(public Quote $quote) {}
 }

@@ -1,12 +1,10 @@
 <?php
 
-namespace Modules\Tasks\Listeners;
+namespace Modules\Projects\Listeners;
 
 class ProjectWasUpdatedListener
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function handle($event): void
     {

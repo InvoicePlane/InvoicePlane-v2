@@ -11,7 +11,6 @@
         "laravel": {
             "providers": [],
             "aliases": {
-
             }
         }
     },
@@ -21,6 +20,8 @@
         }
     },
     "autoload-dev": {
-        "psr-4": {}
+        "psr-4": {
+            "Modules\\Clients\\Tests\\": "tests/"
+        }
     }
 }

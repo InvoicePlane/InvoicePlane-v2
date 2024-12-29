@@ -2,15 +2,13 @@
 
 namespace Modules\Quotes\Listeners;
 
-use Modules\Quotes\Events\QuoteWasCreated;
+use Modules\Quotes\Events\QuoteWasUpdated;
 
 class QuoteWasCreatedListener
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
-    public function handle(QuoteWasCreated $event): void
+    public function handle(QuoteWasUpdated $event): void
     {
         /**
          * #40: Just a placeholder.

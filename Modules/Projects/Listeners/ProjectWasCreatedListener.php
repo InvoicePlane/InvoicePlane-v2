@@ -4,9 +4,7 @@ namespace Modules\Projects\Listeners;
 
 class ProjectWasCreatedListener
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function handle($event): void
     {

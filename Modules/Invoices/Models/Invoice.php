@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -167,13 +166,7 @@ class Invoice extends Model
         return $query->whereIn('invoice_status_id', [self::SENT, self::VIEWED]);
     }
 
-    /**
-     * Filter the invoices by the given client ids.
-     *
-     * @param Query $query
-     * @param array $clients
-     */
-    public function scopeClients(Builder $query, $clients = ''): Builder
+    public function scopeClients(Builder $query, array|string $clients = ''): Builder
     {
         //TODO: if clients is null retrieve all the clients assigned to a client user.
 

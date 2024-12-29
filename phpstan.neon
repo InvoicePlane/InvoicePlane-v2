@@ -1,0 +1,12 @@
+parameters:
+    tmpDir: null
+    paths:
+        - Modules/
+
+    ignoreErrors:
+        - '#Access to an undefined property .*::\$[a-zA-Z_]+#'
+        - '#Method [A-Za-z0-9_\\\\]+::[A-Za-z0-9_]+\\(\\) has an unused parameter \$[a-zA-Z_]+#'
+        - '#Call to an undefined method .*#'
+        - '#Call to an undefined static method .*::.*#'
+
+    level: 2

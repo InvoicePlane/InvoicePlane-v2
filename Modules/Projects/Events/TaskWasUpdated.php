@@ -12,7 +12,5 @@ class TaskWasUpdated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 }

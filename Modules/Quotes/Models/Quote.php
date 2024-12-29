@@ -12,6 +12,7 @@ use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
 
@@ -63,7 +64,7 @@ class Quote extends Model
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * <int, string>
      */
     protected $hidden = [
         'quote_password',
@@ -99,7 +100,7 @@ class Quote extends Model
         return $this->hasMany(QuoteAmount::class, 'quote_id');
     }
 
-    public function scopeStatus(Builder $query, QuoteStatus $status): Builder
+    public function scopeStatus(Builder $query, PaymentStatus $status): Builder
     {
         return $query->where('quote_status_id', $status->value);
     }
@@ -114,17 +115,11 @@ class Quote extends Model
         return $query->where('quote_url_key', $url_key);
     }
 
-    public function scopeIsOpen(Builder $query)
+    public function scopeIsOpen(Builder $query): Builder
     {
         return $query->whereIn('quote_status_id', [QuoteStatus::SENT, QuoteStatus::VIEWED]);
     }
 
-    /**
-     * Filter the invoices by the given client id's.
-     *
-     * @param Query $query
-     * @param array $clients an array of client ids TODO: ideally to be changed with objects
-     */
     public function scopeClients(Builder $query, $clients = ''): Builder
     {
         //TODO: if clients is null retrieve all the clients assigned to a client user.

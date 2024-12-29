@@ -1,21 +1,27 @@
 {
     "name": "nwidart/payments",
     "description": "",
-    "authors": [{
-        "name": "Nicolas Widart",
-        "email": "n.widart@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
     "extra": {
         "laravel": {
             "providers": [],
             "aliases": {
-
             }
         }
     },
     "autoload": {
         "psr-4": {
             "Modules\\Payments\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Payments\\Tests\\": "tests/"
         }
     }
 }
