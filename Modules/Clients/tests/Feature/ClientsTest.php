@@ -34,7 +34,7 @@ class ClientsTest extends AbstractTestCase
         Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.clients.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.clients.index'));
         $response->assertStatus(200);
         $response->assertSee('::client_name::');
     }

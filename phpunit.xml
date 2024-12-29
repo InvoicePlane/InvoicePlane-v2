@@ -9,12 +9,13 @@
             <directory suffix="Test.php">./Modules/*/Tests/Units</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./Modules/*/Tests/Features</directory>
+            <directory suffix="Test.php">./Modules/*/tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
+            <directory>Modules</directory>
         </include>
     </source>
     <php>
