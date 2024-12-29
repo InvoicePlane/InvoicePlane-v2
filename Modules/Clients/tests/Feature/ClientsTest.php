@@ -6,11 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\CreateClient;
-use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\EditClient;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
-use Throwable;
 
 class ClientsTest extends AbstractTestCase
 {
@@ -21,6 +20,7 @@ class ClientsTest extends AbstractTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
     }
 
     public function tearDown(): void
@@ -113,36 +113,48 @@ class ClientsTest extends AbstractTestCase
     }
 
     /** @test */
+    public function it_mutates_form_data_before_creating(): void
+    {
+        $data = [
+            'client_name'  => 'Test Client',
+            'client_email' => 'client@example.com',
+        ];
+
+        Livewire::test(CreateClient::class)
+            ->set('data.client_name', $data['client_name'])
+            ->set('data.client_email', $data['client_email'])
+            ->call('create');
+
+        $this->assertDatabaseHas(Client::class, [
+            'client_name'          => 'Test Client',
+            'client_email'         => 'client@example.com',
+            'client_date_created'  => now()->toDateTimeString(),
+            'client_date_modified' => now()->toDateTimeString(),
+        ]);
+    }
+
+    /** @test */
     public function it_creates_a_client(): void
     {
         $data = [
-            'client_name'          => 'Test Client',
-            'client_email'         => 'client@example.com',
-            'client_phone'         => '123456789',
-            'client_date_created'  => now()->toDateTimeString(),
-            'client_date_modified' => now()->toDateTimeString(),
-            'client_active'        => true,
+            'client_name'   => 'Test Client',
+            'client_email'  => 'client@example.com',
+            'client_phone'  => '123456789',
+            'client_active' => true,
         ];
 
-        try {
-            Livewire::test(CreateClient::class)
-                ->set('data.client_name', $data['client_name'])
-                ->set('data.client_email', $data['client_email'])
-                ->set('data.client_phone', $data['client_phone'])
-                ->set('data.client_date_created', $data['client_date_created'])
-                ->set('data.client_date_modified', $data['client_date_modified'])
-                ->set('data.client_active', $data['client_active'])
-                ->call('create')
-                ->assertHasNoErrors();
+        Livewire::test(CreateClient::class)
+            ->set('data.client_name', $data['client_name'])
+            ->set('data.client_email', $data['client_email'])
+            ->set('data.client_phone', $data['client_phone'])
+            ->set('data.client_active', $data['client_active'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-            $this->assertDatabaseHas(Client::class, $data);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            dump($e->validator->errors()->toArray()); // Dump validation errors if any
-            $this->fail('Validation failed: ' . json_encode($e->validator->errors()->toArray()));
-        } catch (Throwable $e) {
-            dump($e->getMessage()); // Dump any other unexpected errors
-            throw $e;
-        }
+        $this->assertDatabaseHas('clients', array_merge($data, [
+            'client_date_created'  => now()->toDateTimeString(),
+            'client_date_modified' => now()->toDateTimeString(),
+        ]));
     }
 
     /** @test */
@@ -154,79 +166,24 @@ class ClientsTest extends AbstractTestCase
         ]);
 
         $updatedData = [
-            'client_name'  => 'Updated Name',
-            'client_email' => 'updated@example.com',
+            'client_name'   => 'Updated Name',
+            'client_email'  => 'updated@example.com',
+            'client_phone'  => '987654321',
+            'client_active' => true,
         ];
 
-        Livewire::test(ManageClients::class)
-            ->callTableAction('edit', $client, $updatedData)
+        Livewire::test(EditClient::class, ['record' => $client->client_id])
+            ->set('data.client_name', $updatedData['client_name'])
+            ->set('data.client_email', $updatedData['client_email'])
+            ->set('data.client_phone', $updatedData['client_phone'])
+            ->set('data.client_active', $updatedData['client_active'])
+            ->call('save')
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('clients', $updatedData);
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     *
-     * Payload for creating a client:
-     * {
-     *     "name": "Test Client",
-     *     "email": "testclient@example.com",
-     *     "phone": "1234567890",
-     *     "address": "123 Test Street",
-     *     "city": "Test City",
-     *     "state": "Test State",
-     *     "zip": "12345",
-     *     "country": "Test Country"
-     * }
-     */
-    public function it_possibly_creates_a_client(): void
-    {
-        $payload = [
-            'name'    => 'Test Client',
-            'email'   => 'testclient@example.com',
-            'phone'   => '1234567890',
-            'address' => '123 Test Street',
-            'city'    => 'Test City',
-            'state'   => 'Test State',
-            'zip'     => '12345',
-            'country' => 'Test Country',
-        ];
-
-        // $this->authenticated();
-
-        $response = $this->postJson(route('filament.ivpl.resources.clients.store'), $payload);
-        $response->assertStatus(201);
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     *
-     * Payload for updating a client:
-     * {
-     *     "name": "Updated Client",
-     *     "email": "updatedclient@example.com",
-     *     "phone": "0987654321"
-     * }
-     */
-    public function it_possibly_updates_a_client(): void
-    {
-        // Payload for updating client
-        $payload = [
-            'name'  => 'Updated Client',
-            'email' => 'updatedclient@example.com',
-            'phone' => '0987654321',
-        ];
-
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
-
-        $response = $this->putJson(route('filament.ivpl.resources.clients.update', ['record' => 1]), $payload);
-        $response->assertStatus(200);
+        $this->assertDatabaseHas('clients', array_merge($updatedData, [
+            'client_id'            => $client->client_id,
+            'client_date_modified' => now()->toDateTimeString(),
+        ]));
     }
 
     /**

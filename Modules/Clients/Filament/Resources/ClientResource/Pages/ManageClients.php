@@ -15,23 +15,17 @@ class ManageClients extends ManageRecords
         return [
             Actions\CreateAction::make()
                 ->using(function (array $data): void {
-                    $data['client_date_created'] ??= now()->toDateTimeString();
-                    $data['client_date_modified'] ??= now()->toDateTimeString();
-
+                    $data = $this->mutateFormDataBeforeCreate($data);
                     $this->getModel()::create($data);
                 }),
         ];
     }
 
-    protected function getTableActions(): array
+    protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return [
-            Actions\EditAction::make()
-                ->using(function ($record, array $data): void {
-                    $data['client_date_modified'] = now()->toDateTimeString();
+        $data['client_date_created'] ??= now()->toDateTimeString();
+        $data['client_date_modified'] ??= now()->toDateTimeString();
 
-                    $record->update($data);
-                }),
-        ];
+        return $data;
     }
 }

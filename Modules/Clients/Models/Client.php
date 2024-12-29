@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Clients\Database\Factories\ClientFactory;
+use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
 use Modules\Projects\Models\Project;
 use Modules\Quotes\Models\Quote;
@@ -89,6 +90,11 @@ class Client extends Model
         'client_date_created',
         'client_date_modified',
     ];
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'client_id');
+    }
 
     public function invoices(): HasMany
     {
