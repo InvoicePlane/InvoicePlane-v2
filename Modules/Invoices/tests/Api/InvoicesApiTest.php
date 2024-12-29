@@ -49,7 +49,7 @@ class InvoicesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.invoices.create'), $payload);
+        $response = $this->postJson(route('api.invoices.store'), $payload);
         $response->assertStatus(201);
     }
 

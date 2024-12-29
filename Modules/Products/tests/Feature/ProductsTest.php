@@ -45,7 +45,7 @@ class ProductsTest extends AbstractTestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->post(route('filament.resources.products.create'), [
+        $response = $this->post(route('filament.ivpl.resources.products.store'), [
             'product_name'  => $product->product_name,
             'product_price' => 50.00,
             'category_id'   => $product->category_id,
@@ -82,7 +82,7 @@ class ProductsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('products.create'), $payload);
+        $response = $this->postJson(route('filament.ivpl.resources.products.store'), $payload);
         $response->assertStatus(201);
     }
 

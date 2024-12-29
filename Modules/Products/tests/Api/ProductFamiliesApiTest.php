@@ -108,7 +108,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.productfamilies.create'), $payload);
+        $response = $this->postJson(route('api.productfamilies.store'), $payload);
         $response->assertStatus(201);
     }
 

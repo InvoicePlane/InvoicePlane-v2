@@ -218,7 +218,7 @@ class TasksTest extends AbstractTestCase
         // $this->authenticate();
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.create_recurring_task', [
+        $response = $this->post(route('filament.resources.projects.store_recurring_task', [
             'project_id'       => $project->project_id,
             'recur_start_date' => now()->format('Y-m-d'),
             'recur_end_date'   => now()->addWeek()->format('Y-m-d'),
@@ -239,7 +239,7 @@ class TasksTest extends AbstractTestCase
         // $this->authenticate();
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.create_recurring_task', [
+        $response = $this->post(route('filament.ivpl.resources.projects.create_recurring_task', [
             'project_id'       => $project->project_id,
             'recur_start_date' => now()->format('Y-m-d'),
         ]));

@@ -14,7 +14,7 @@ class ImportResource extends Resource
 {
     protected static ?string $model = Import::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bookmarksquare';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Resources';
 

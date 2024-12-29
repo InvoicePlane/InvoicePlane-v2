@@ -4,6 +4,8 @@ namespace Modules\Clients\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
@@ -44,7 +46,8 @@ class ClientsTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_active_clients_index(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('active/inactive clients not filtered yet, make tab for active clients?');
+
         $user = User::factory()->create();
         Client::factory()->create([
             'client_name'   => '::active_client_name::',
@@ -55,7 +58,7 @@ class ClientsTest extends AbstractTestCase
             'client_name' => '::inactive_client_name::',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.clients.index', ['status' => 'active']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.clients.index', ['status' => 'active']));
         $response->assertStatus(200);
         $response->assertSee('::active_client_name::');
         $response->assertDontSee('::inactive_client_name::');
@@ -66,7 +69,7 @@ class ClientsTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_inactive_clients_index(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('active/inactive clients not filtered yet, make tab for active clients?');
         $user = User::factory()->create();
         Client::factory()->create([
             'client_name'   => '::active_client_name::',
@@ -77,7 +80,7 @@ class ClientsTest extends AbstractTestCase
             'client_name' => '::inactive_client_name::',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.clients.index', ['status' => 'inactive']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.clients.index', ['status' => 'inactive']));
         $response->assertStatus(200);
         $response->assertSee('::inactive_client_name::');
         $response->assertDontSee('::active_client_name::');
@@ -98,7 +101,8 @@ class ClientsTest extends AbstractTestCase
             'client_name' => '::inactive_client_name::',
         ]);
 
-        $response = $this->actingAs($user, 'web')->get(route('filament.resources.clients.index', ['status' => 'all']));
+        $response = $this->actingAs($user, 'web')->get(route('filament.ivpl.resources.clients.index'));
+
         $response->assertStatus(200);
         $response->assertSee('::active_client_name::');
         $response->assertSee('::inactive_client_name::');
@@ -123,7 +127,6 @@ class ClientsTest extends AbstractTestCase
      */
     public function it_creates_a_client(): void
     {
-        // Payload for the create client request
         $payload = [
             'name'    => 'Test Client',
             'email'   => 'testclient@example.com',
@@ -135,11 +138,34 @@ class ClientsTest extends AbstractTestCase
             'country' => 'Test Country',
         ];
 
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('filament.resources.clients.create'), $payload);
+        $response = $this->postJson(route('filament.ivpl.resources.clients.store'), $payload);
         $response->assertStatus(201);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_create_a_client_via_modal(): void
+    {
+        $user = User::factory()->create();
+
+        $payload = [
+            'client_name'  => 'John Doe',
+            'client_email' => 'johndoe@example.com',
+            'client_phone' => '123456789',
+        ];
+
+        $this->actingAs($user);
+
+        Livewire::test(ManageClients::class)
+            ->call('openModal', 'create')
+            ->set('data', $payload)
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('clients', $payload);
     }
 
     /**
@@ -166,7 +192,7 @@ class ClientsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->putJson(route('filament.resources.clients.update', ['record' => 1]), $payload);
+        $response = $this->putJson(route('filament.ivpl.resources.clients.update', ['record' => 1]), $payload);
         $response->assertStatus(200);
     }
 
@@ -182,7 +208,7 @@ class ClientsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->deleteJson(route('filament.resources.clients.delete', ['record' => 1]));
+        $response = $this->deleteJson(route('filament.ivpl.resources.clients.delete', ['record' => 1]));
         $response->assertStatus(200);
     }
 }

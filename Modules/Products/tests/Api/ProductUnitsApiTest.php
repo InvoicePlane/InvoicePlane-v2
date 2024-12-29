@@ -108,7 +108,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.productunits.create'), $payload);
+        $response = $this->postJson(route('api.filament.ivpl.resources.productunits.store'), $payload);
         $response->assertStatus(201);
     }
 

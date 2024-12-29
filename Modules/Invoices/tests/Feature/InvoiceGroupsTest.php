@@ -37,7 +37,7 @@ class InvoiceGroupsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->post(route('filament.resources.invoice-groups.create'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.invoice-groups.store'), $payload);
         $response->assertStatus(201);
     }
 

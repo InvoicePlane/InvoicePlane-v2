@@ -13,7 +13,7 @@ class ClientNoteResource extends Resource
 {
     protected static ?string $model = ClientNote::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static bool $shouldRegisterNavigation = false;
 

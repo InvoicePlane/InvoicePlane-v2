@@ -250,7 +250,7 @@ class ClientsApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.clients.create'), $payload);
+        $response = $this->postJson(route('api.clients.store'), $payload);
         $response->assertStatus(201);
     }
 

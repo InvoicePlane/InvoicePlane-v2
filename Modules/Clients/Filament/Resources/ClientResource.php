@@ -218,4 +218,13 @@ class ClientResource extends Resource
             'index' => Pages\ManageClients::route('/'),
         ];
     }
+
+    public static function getRoutes(): array
+    {
+        return [
+            'index'  => Pages\ManageClients::route('/'),
+            'create' => fn () => route('clients.store'),
+            'edit'   => fn ($record) => route('clients.update', $record),
+        ];
+    }
 }
