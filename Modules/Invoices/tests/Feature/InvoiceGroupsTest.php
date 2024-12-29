@@ -17,7 +17,7 @@ class InvoiceGroupsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->get(route('filament.resources.invoice-groups.index'));
+        $response = $this->get(route('filament.ivpl.resources.filament.resources.invoice-groups.index'));
         $response->assertStatus(200);
     }
 
@@ -59,7 +59,7 @@ class InvoiceGroupsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->put(route('filament.resources.invoice-groups.update', $invoiceGroup->invoice_group_id), $payload);
+        $response = $this->put(route('filament.ivpl.resources.filament.resources.invoice-groups.update', $invoiceGroup->invoice_group_id), $payload);
         $response->assertStatus(200);
     }
 
@@ -75,7 +75,7 @@ class InvoiceGroupsTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->delete(route('filament.resources.invoice-groups.delete', $invoiceGroup->invoice_group_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.invoice-groups.delete', $invoiceGroup->invoice_group_id));
         $response->assertStatus(200);
     }
 }

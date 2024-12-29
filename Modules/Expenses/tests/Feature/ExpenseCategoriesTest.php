@@ -38,7 +38,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
             'category_name' => '::category_name::',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.expense_categories.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.expense_categories.index'));
         $response->assertStatus(200);
         $response->assertSee('::category_name::');
     }
@@ -54,7 +54,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
             'category_name' => '::new_category_name::',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.resources.expense_categories.store'), $payload);
+        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.ivpl.resources.filament.resources.expense_categories.store'), $payload);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('expense_categories', ['category_name' => '::new_category_name::']);
@@ -75,7 +75,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
             'category_name' => '::updated_category_name::',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.resources.expense_categories.update', ['expense_category' => $category->id]), $payload);
+        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.ivpl.resources.filament.resources.expense_categories.update', ['expense_category' => $category->id]), $payload);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('expense_categories', ['category_name' => '::updated_category_name::']);
@@ -90,7 +90,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
 
         $category = ExpenseCategory::factory()->create();
 
-        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.resources.expense_categories.destroy', ['expense_category' => $category->id]));
+        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.ivpl.resources.filament.resources.expense_categories.destroy', ['expense_category' => $category->id]));
 
         $response->assertStatus(200);
         $this->assertDatabaseMissing('expense_categories', ['id' => $category->id]);

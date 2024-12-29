@@ -40,7 +40,7 @@ class ProjectsTest extends AbstractTestCase
             'project_name' => '::project_name::',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.projects.store'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.projects.store'));
         $response->assertStatus(200);
         $response->assertSee('::client_name::');
         $response->assertSee('::project_name::');
@@ -65,7 +65,7 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.projects.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -91,7 +91,7 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.projects.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.store'), $payload);
 
         // Assert
         $response->assertStatus(422); // Validation error
@@ -116,7 +116,7 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->put(route('filament.resources.projects.update', $project->project_id), $payload);
+        $response = $this->put(route('filament.ivpl.resources.filament.resources.projects.update', $project->project_id), $payload);
 
         // Assert
         $response->assertStatus(200);
@@ -138,7 +138,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create();
 
         // Act
-        $response = $this->delete(route('filament.resources.projects.destroy', $project->project_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.projects.destroy', $project->project_id));
 
         // Assert
         $response->assertStatus(200);
@@ -154,7 +154,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create();
         $client = Client::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.assign_client'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.assign_client'), [
             'project_id' => $project->project_id,
             'client_id'  => $client->client_id,
         ]);
@@ -173,7 +173,7 @@ class ProjectsTest extends AbstractTestCase
         // $this->authenticate();
         $client = Client::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.assign_client'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.assign_client'), [
             'client_id' => $client->client_id,
         ]);
 
@@ -186,7 +186,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create();
         $client = Client::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.change_client'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.change_client'), [
             'project_id' => $project->project_id,
             'client_id'  => $client->client_id,
         ]);
@@ -203,7 +203,7 @@ class ProjectsTest extends AbstractTestCase
     {
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.change_client'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.change_client'), [
             'project_id' => $project->project_id,
         ]);
 

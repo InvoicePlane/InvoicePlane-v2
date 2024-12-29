@@ -466,7 +466,7 @@ class QuotesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.quotes.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.quotes.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -494,7 +494,7 @@ class QuotesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.quotes.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.quotes.store'), $payload);
 
         // Assert
         $response->assertStatus(422); // Validation error
@@ -519,7 +519,7 @@ class QuotesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->patch(route('filament.resources.quotes.update', $quote->quote_id), $payload);
+        $response = $this->patch(route('filament.ivpl.resources.filament.resources.quotes.update', $quote->quote_id), $payload);
 
         // Assert
         $response->assertStatus(200);
@@ -543,7 +543,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('filament.resources.quotes.change_client', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('filament.ivpl.resources.filament.resources.quotes.change_client', ['record' => $quote->id]), $payload);
         $response->assertStatus(200);
     }
     // endregion
@@ -568,7 +568,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('filament.ivpl.resources.filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
         $response->assertStatus(201);
     }
 
@@ -591,7 +591,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('filament.resources.quotes.add_task', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('filament.ivpl.resources.filament.resources.quotes.add_task', ['record' => $quote->id]), $payload);
         $response->assertStatus(201);
     }
 
@@ -607,7 +607,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('filament.resources.quotes.generate_pdf', ['record' => $quote->id]));
+        $response = $this->postJson(route('filament.ivpl.resources.filament.resources.quotes.generate_pdf', ['record' => $quote->id]));
         $response->assertStatus(200);
     }
 
@@ -623,7 +623,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->getJson(route('filament.resources.quotes.calculate_totals', ['record' => $quote->id]));
+        $response = $this->getJson(route('filament.ivpl.resources.filament.resources.quotes.calculate_totals', ['record' => $quote->id]));
         $response->assertStatus(200);
     }
 }

@@ -32,7 +32,7 @@ class ImportTest extends AbstractTestCase
         Import::factory()->create([
             'import_date' => '2022-04-01',
         ]);
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.imports.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.imports.index'));
         $response->assertStatus(200);
         $response->assertSee('2022-04-01');
     }

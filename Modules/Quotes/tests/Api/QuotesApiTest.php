@@ -374,7 +374,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.quotes.change_client', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.change_client', ['record' => $quote->id]), $payload);
         $response->assertStatus(200);
     }
 
@@ -396,7 +396,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
         $response->assertStatus(201);
     }
 
@@ -418,7 +418,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.quotes.add_task', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.add_task', ['record' => $quote->id]), $payload);
         $response->assertStatus(201);
     }
     // endregion
@@ -436,7 +436,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.quotes.generate_pdf', ['record' => $quote->id]));
+        $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.generate_pdf', ['record' => $quote->id]));
         $response->assertStatus(200);
     }
 
@@ -457,7 +457,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->postJson(route('api.filament.resources.quotes.copy_to_invoice', ['record' => $quote->id]), $payload);
+        $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.copy_to_invoice', ['record' => $quote->id]), $payload);
         $response->assertStatus(201);
     }
 

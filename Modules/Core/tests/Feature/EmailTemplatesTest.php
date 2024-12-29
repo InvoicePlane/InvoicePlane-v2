@@ -43,7 +43,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.email-templates.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.email-templates.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -70,7 +70,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.email-templates.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.email-templates.store'), $payload);
 
         // Assert
         $response->assertStatus(422);
@@ -96,7 +96,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->put(route('filament.resources.email-templates.update', $template->email_template_id), $payload);
+        $response = $this->put(route('filament.ivpl.resources.filament.resources.email-templates.update', $template->email_template_id), $payload);
 
         // Assert
         $response->assertStatus(200);
@@ -113,7 +113,7 @@ class EmailTemplatesTest extends AbstractTestCase
         $template = EmailTemplate::factory()->create();
 
         // Act
-        $response = $this->delete(route('filament.resources.email-templates.destroy', $template->email_template_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.email-templates.destroy', $template->email_template_id));
 
         // Assert
         $response->assertStatus(200);

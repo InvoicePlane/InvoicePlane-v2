@@ -18,7 +18,7 @@ class ProductFamiliesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->getJson(route('filament.resources.productfamilies.index'));
+        $response = $this->getJson(route('filament.ivpl.resources.filament.resources.productfamilies.index'));
         $response->assertStatus(200);
     }
 
@@ -35,7 +35,7 @@ class ProductFamiliesTest extends AbstractTestCase
             'family_name' => 'example_family',
         ];
 
-        $response = $this->post(route('filament.resources.product-families.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-families.store'), $payload);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('product_families', $payload);
@@ -52,7 +52,7 @@ class ProductFamiliesTest extends AbstractTestCase
             'family_name' => null,
         ];
 
-        $response = $this->post(route('filament.resources.product-families.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-families.store'), $payload);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['family_name']);
@@ -79,7 +79,7 @@ class ProductFamiliesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->putJson(route('filament.resources.productfamilies.update', ['record' => 1]), $payload);
+        $response = $this->putJson(route('filament.ivpl.resources.filament.resources.productfamilies.update', ['record' => 1]), $payload);
         $response->assertStatus(200);
     }
 
@@ -93,7 +93,7 @@ class ProductFamiliesTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->deleteJson(route('filament.resources.productfamilies.delete', ['record' => 1]));
+        $response = $this->deleteJson(route('filament.ivpl.resources.filament.resources.productfamilies.delete', ['record' => 1]));
         $response->assertStatus(200);
     }
 

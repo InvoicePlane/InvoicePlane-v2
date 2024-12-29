@@ -55,7 +55,7 @@ class TasksTest extends AbstractTestCase
             'tax_rate_id' => $taxRate->tax_rate_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.tasks.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.tasks.index'));
         $response->assertStatus(200);
         $response->assertSee('::task_name::');
         $response->assertSee('::project_name::');
@@ -90,7 +90,7 @@ class TasksTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.tasks.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -117,7 +117,7 @@ class TasksTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.tasks.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.store'), $payload);
 
         // Assert
         $response->assertStatus(422); // Validation error
@@ -143,7 +143,7 @@ class TasksTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->put(route('filament.resources.tasks.update', $task->task_id), $payload);
+        $response = $this->put(route('filament.ivpl.resources.filament.resources.tasks.update', $task->task_id), $payload);
 
         // Assert
         $response->assertStatus(200);
@@ -165,7 +165,7 @@ class TasksTest extends AbstractTestCase
         $task = Task::factory()->create();
 
         // Act
-        $response = $this->delete(route('filament.resources.tasks.destroy', $task->task_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.tasks.destroy', $task->task_id));
 
         // Assert
         $response->assertStatus(200);
@@ -183,7 +183,7 @@ class TasksTest extends AbstractTestCase
         $task = Task::factory()->create();
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.resources.tasks.assign_project'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.assign_project'), [
             'task_id'    => $task->task_id,
             'project_id' => $project->project_id,
         ]);
@@ -202,7 +202,7 @@ class TasksTest extends AbstractTestCase
         // $this->authenticate();
         $task = Task::factory()->create();
 
-        $response = $this->post(route('filament.resources.tasks.assign_project'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.assign_project'), [
             'task_id' => $task->task_id,
         ]);
 
@@ -218,7 +218,7 @@ class TasksTest extends AbstractTestCase
         // $this->authenticate();
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.resources.projects.store_recurring_task', [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.store_recurring_task', [
             'project_id'       => $project->project_id,
             'recur_start_date' => now()->format('Y-m-d'),
             'recur_end_date'   => now()->addWeek()->format('Y-m-d'),

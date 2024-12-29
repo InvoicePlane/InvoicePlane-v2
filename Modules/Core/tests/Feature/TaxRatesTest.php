@@ -38,7 +38,7 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '15',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.tax-rates.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
         $response->assertStatus(200);
         $response->assertSee('::tax_rate_name::');
     }
@@ -55,8 +55,8 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '15',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.resources.tax-rates.store'), $payload);
-        $response->assertRedirect(route('filament.resources.tax-rates.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.ivpl.resources.filament.resources.tax-rates.store'), $payload);
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
 
         $this->assertDatabaseHas('tax_rates', ['tax_rate_name' => '::tax_rate_name::']);
     }
@@ -78,8 +78,8 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '20',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.resources.tax-rates.update', ['record' => $taxRate->tax_rate_id]), $payload);
-        $response->assertRedirect(route('filament.resources.tax-rates.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.ivpl.resources.filament.resources.tax-rates.update', ['record' => $taxRate->tax_rate_id]), $payload);
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
 
         $taxRate->refresh();
         $this->assertEquals('::updated_tax_rate_name::', $taxRate->tax_rate_name);
@@ -94,8 +94,8 @@ class TaxRatesTest extends AbstractTestCase
 
         $taxRate = TaxRate::factory()->create();
 
-        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.resources.tax-rates.destroy', ['record' => $taxRate->tax_rate_id]));
-        $response->assertRedirect(route('filament.resources.tax-rates.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.ivpl.resources.filament.resources.tax-rates.destroy', ['record' => $taxRate->tax_rate_id]));
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
 
         $this->assertDatabaseMissing('tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }

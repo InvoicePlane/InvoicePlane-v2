@@ -5,10 +5,12 @@ namespace Modules\Clients\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\CreateClient;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Throwable;
 
 class ClientsTest extends AbstractTestCase
 {
@@ -36,7 +38,9 @@ class ClientsTest extends AbstractTestCase
         Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.clients.index'));
+
+        $response = $this->actingAs($user, 'web')->get(route('filament.ivpl.resources.clients.index'));
+
         $response->assertStatus(200);
         $response->assertSee('::client_name::');
     }
@@ -108,6 +112,59 @@ class ClientsTest extends AbstractTestCase
         $response->assertSee('::inactive_client_name::');
     }
 
+    /** @test */
+    public function it_creates_a_client(): void
+    {
+        $data = [
+            'client_name'          => 'Test Client',
+            'client_email'         => 'client@example.com',
+            'client_phone'         => '123456789',
+            'client_date_created'  => now()->toDateTimeString(),
+            'client_date_modified' => now()->toDateTimeString(),
+            'client_active'        => true,
+        ];
+
+        try {
+            Livewire::test(CreateClient::class)
+                ->set('data.client_name', $data['client_name'])
+                ->set('data.client_email', $data['client_email'])
+                ->set('data.client_phone', $data['client_phone'])
+                ->set('data.client_date_created', $data['client_date_created'])
+                ->set('data.client_date_modified', $data['client_date_modified'])
+                ->set('data.client_active', $data['client_active'])
+                ->call('create')
+                ->assertHasNoErrors();
+
+            $this->assertDatabaseHas(Client::class, $data);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            dump($e->validator->errors()->toArray()); // Dump validation errors if any
+            $this->fail('Validation failed: ' . json_encode($e->validator->errors()->toArray()));
+        } catch (Throwable $e) {
+            dump($e->getMessage()); // Dump any other unexpected errors
+            throw $e;
+        }
+    }
+
+    /** @test */
+    public function it_edits_a_client(): void
+    {
+        $client = Client::factory()->create([
+            'client_name'  => 'Original Name',
+            'client_email' => 'original@example.com',
+        ]);
+
+        $updatedData = [
+            'client_name'  => 'Updated Name',
+            'client_email' => 'updated@example.com',
+        ];
+
+        Livewire::test(ManageClients::class)
+            ->callTableAction('edit', $client, $updatedData)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('clients', $updatedData);
+    }
+
     /**
      * @test
      *
@@ -125,7 +182,7 @@ class ClientsTest extends AbstractTestCase
      *     "country": "Test Country"
      * }
      */
-    public function it_creates_a_client(): void
+    public function it_possibly_creates_a_client(): void
     {
         $payload = [
             'name'    => 'Test Client',
@@ -146,30 +203,6 @@ class ClientsTest extends AbstractTestCase
 
     /**
      * @test
-     */
-    public function it_can_create_a_client_via_modal(): void
-    {
-        $user = User::factory()->create();
-
-        $payload = [
-            'client_name'  => 'John Doe',
-            'client_email' => 'johndoe@example.com',
-            'client_phone' => '123456789',
-        ];
-
-        $this->actingAs($user);
-
-        Livewire::test(ManageClients::class)
-            ->call('openModal', 'create')
-            ->set('data', $payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
-
-        $this->assertDatabaseHas('clients', $payload);
-    }
-
-    /**
-     * @test
      *
      * @skip Not implemented yet
      *
@@ -180,7 +213,7 @@ class ClientsTest extends AbstractTestCase
      *     "phone": "0987654321"
      * }
      */
-    public function it_updates_a_client(): void
+    public function it_possibly_updates_a_client(): void
     {
         // Payload for updating client
         $payload = [

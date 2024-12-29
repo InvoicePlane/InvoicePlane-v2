@@ -52,7 +52,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index'));
         $response->assertStatus(200);
         $response->assertSee('::invoice_number::');
     }
@@ -86,7 +86,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'draft']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'draft']));
         $response->assertStatus(200);
         $response->assertSee('::draft_invoice_number::');
         $response->assertDontSee('::sent_invoice_number::');
@@ -120,7 +120,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'sent']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'sent']));
         $response->assertStatus(200);
         $response->assertSee('::sent_invoice_number::');
         $response->assertDontSee('::draft_invoice_number::');
@@ -155,7 +155,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'viewed']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'viewed']));
         $response->assertStatus(200);
         $response->assertSee('::viewed_invoice_number::');
         $response->assertDontSee('::draft_invoice_number::');
@@ -190,7 +190,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'paid']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'paid']));
         $response->assertStatus(200);
         $response->assertSee('::paid_invoice_number::');
         $response->assertDontSee('::draft_invoice_number::');
@@ -225,7 +225,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'inactive']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'inactive']));
         $response->assertStatus(200);
         $response->assertSee('::inactive_invoice_number::');
         $response->assertDontSee('::active_invoice_number::');
@@ -259,7 +259,7 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.invoices.index', ['status' => 'all']));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'all']));
         $response->assertStatus(200);
         $response->assertSee('::draft_invoice_number::');
         $response->assertSee('::sent_invoice_number::');
@@ -307,7 +307,7 @@ class InvoicesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.invoices.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.invoices.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -340,7 +340,7 @@ class InvoicesTest extends AbstractTestCase
         $invoice = Invoice::factory()->create();
 
         // Act
-        $response = $this->delete(route('filament.resources.invoices.destroy', $invoice->invoice_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.invoices.destroy', $invoice->invoice_id));
 
         // Assert
         $response->assertStatus(204);
@@ -372,7 +372,7 @@ class InvoicesTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.invoices.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.invoices.store'), $payload);
 
         // Assert
         $response->assertStatus(422);
@@ -389,7 +389,7 @@ class InvoicesTest extends AbstractTestCase
         // $this->authenticate();
         $tasks = Task::factory()->count(3)->create();
 
-        $response = $this->post(route('filament.resources.tasks.process_task_selections'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.process_task_selections'), [
             'task_ids' => $tasks->pluck('task_id')->toArray(),
         ]);
 
@@ -418,7 +418,7 @@ class InvoicesTest extends AbstractTestCase
         $invoice = Invoice::factory()->create();
 
         // Act
-        $response = $this->get(route('filament.resources.invoices.generate-pdf', $invoice->invoice_id));
+        $response = $this->get(route('filament.ivpl.resources.filament.resources.invoices.generate-pdf', $invoice->invoice_id));
 
         // Assert
         $response->assertStatus(200);
@@ -431,7 +431,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestSkipped();
 
         // Act
-        $response = $this->get(route('filament.resources.invoices.generate-pdf', 9999));
+        $response = $this->get(route('filament.ivpl.resources.filament.resources.invoices.generate-pdf', 9999));
 
         // Assert
         $response->assertStatus(404);

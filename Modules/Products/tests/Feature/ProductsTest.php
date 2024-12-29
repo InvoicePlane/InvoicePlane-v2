@@ -134,7 +134,7 @@ class ProductsTest extends AbstractTestCase
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
 
-        $response = $this->post(route('filament.resources.products.process_selections'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.products.process_selections'), [
             'product_ids' => [$product1->product_id, $product2->product_id],
         ]);
 
@@ -146,7 +146,7 @@ class ProductsTest extends AbstractTestCase
     {
         // $this->authenticate();
 
-        $response = $this->post(route('filament.resources.products.process_selections'));
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.products.process_selections'));
 
         $response->assertStatus(422);
     }

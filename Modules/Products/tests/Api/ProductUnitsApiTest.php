@@ -62,7 +62,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->getJson(route('api.filament.resources.productunits.index'));
+        $response = $this->getJson(route('api.filament.ivpl.resources.filament.resources.productunits.index'));
         $response->assertStatus(200);
     }
 
@@ -178,7 +178,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->putJson(route('api.filament.resources.productunits.update', ['record' => 1]), $payload);
+        $response = $this->putJson(route('api.filament.ivpl.resources.filament.resources.productunits.update', ['record' => 1]), $payload);
         $response->assertStatus(200);
     }
 
@@ -217,7 +217,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->deleteJson(route('api.filament.resources.productunits.delete', ['record' => 1]));
+        $response = $this->deleteJson(route('api.filament.ivpl.resources.filament.resources.productunits.delete', ['record' => 1]));
         $response->assertStatus(200);
     }
 }

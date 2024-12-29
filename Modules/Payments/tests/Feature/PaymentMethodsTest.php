@@ -34,7 +34,7 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => '::payment_method_name::',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.payment-methods.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.payment-methods.index'));
         $response->assertStatus(200);
         $response->assertSee('::payment_method_name::');
     }
@@ -61,8 +61,8 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => '::payment_method_name::',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.resources.payment-methods.store'), $payload);
-        $response->assertRedirect(route('filament.resources.payment-methods.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.ivpl.resources.filament.resources.payment-methods.store'), $payload);
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.payment-methods.index'));
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('payment_methods', ['payment_method_name' => '::payment_method_name::']);
@@ -73,7 +73,7 @@ class PaymentMethodsTest extends AbstractTestCase
     {
         $payload = ['description' => '::description::'];
 
-        $response = $this->post(route('filament.resources.payment-methods.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payment-methods.store'), $payload);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['name']);
@@ -97,8 +97,8 @@ class PaymentMethodsTest extends AbstractTestCase
         // @var array $payload
         $payload = ['payment_method_name' => '::updated_payment_method_name::'];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.resources.payment-methods.update', ['record' => $paymentMethod->payment_method_id]), $payload);
-        $response->assertRedirect(route('filament.resources.payment-methods.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.ivpl.resources.filament.resources.payment-methods.update', ['record' => $paymentMethod->payment_method_id]), $payload);
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.payment-methods.index'));
 
         $paymentMethod->refresh();
         $this->assertEquals('::updated_payment_method_name::', $paymentMethod->payment_method_name);
@@ -116,8 +116,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
         $paymentMethod = PaymentMethod::factory()->create();
 
-        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.resources.payment-methods.destroy', ['record' => $paymentMethod->payment_method_id]));
-        $response->assertRedirect(route('filament.resources.payment-methods.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.ivpl.resources.filament.resources.payment-methods.destroy', ['record' => $paymentMethod->payment_method_id]));
+        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.payment-methods.index'));
 
         $this->assertDatabaseMissing('payment_methods', ['payment_method_id' => $paymentMethod->payment_method_id]);
     }

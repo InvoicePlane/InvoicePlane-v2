@@ -74,7 +74,7 @@ class PaymentsTest extends AbstractTestCase
         $invoice = Invoice::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.store'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.store'), [
             'invoice_id'        => $invoice->invoice_id,
             'payment_method_id' => $paymentMethod->payment_method_id,
             'payment_amount'    => 100,
@@ -95,7 +95,7 @@ class PaymentsTest extends AbstractTestCase
     {
         // $this->authenticate();
 
-        $response = $this->post(route('filament.resources.payments.store'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.store'), [
             'payment_method_id' => PaymentMethod::factory()->create()->payment_method_id,
             'payment_amount'    => 100,
         ]);
@@ -110,7 +110,7 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.assign_method'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.assign_method'), [
             'payment_id'        => $payment->payment_id,
             'payment_method_id' => $paymentMethod->payment_method_id,
         ]);
@@ -129,7 +129,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $payment = Payment::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.assign_method'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.assign_method'), [
             'payment_id' => $payment->payment_id,
         ]);
 
@@ -142,7 +142,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $payment = Payment::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.process_refund', [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process_refund', [
             'payment_id'    => $payment->payment_id,
             'refund_reason' => 'Duplicate payment',
         ]));
@@ -161,7 +161,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $payment = Payment::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.process_refund', [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process_refund', [
             'payment_id' => $payment->payment_id,
         ]));
 
@@ -175,7 +175,7 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->create();
         $refundAmount = 50.00;
 
-        $response = $this->post(route('filament.resources.payments.process_partial_refund'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process_partial_refund'), [
             'payment_id'    => $payment->payment_id,
             'refund_amount' => $refundAmount,
         ]);
@@ -195,7 +195,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $refundAmount = 50.00;
 
-        $response = $this->post(route('filament.resources.payments.process_partial_refund'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process_partial_refund'), [
             'refund_amount' => $refundAmount,
         ]);
 
@@ -208,7 +208,7 @@ class PaymentsTest extends AbstractTestCase
         $invoice = Invoice::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.process'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process'), [
             'invoice_id'        => $invoice->invoice_id,
             'payment_amount'    => 50.00,
             'payment_method_id' => $paymentMethod->payment_method_id,
@@ -223,7 +223,7 @@ class PaymentsTest extends AbstractTestCase
     /** @test */
     public function it_fails_to_process_partial_payment_without_invoice_id(): void
     {
-        $response = $this->post(route('filament.resources.payments.process'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.process'), [
             'payment_amount' => 50.00,
         ]);
 
@@ -235,7 +235,7 @@ class PaymentsTest extends AbstractTestCase
     {
         $invoice = Invoice::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.apply_method'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.apply_method'), [
             'invoice_id'        => $invoice->invoice_id,
             'payment_method_id' => 9999, // Invalid payment method ID
         ]);
@@ -249,7 +249,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $payment = Payment::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.mark_as_failed', [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.mark_as_failed', [
             'payment_id' => $payment->payment_id,
         ]));
 
@@ -266,7 +266,7 @@ class PaymentsTest extends AbstractTestCase
     {
         // $this->authenticate();
 
-        $response = $this->post(route('filament.resources.payments.mark_as_failed'));
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.mark_as_failed'));
 
         $response->assertStatus(422);
     }
@@ -279,7 +279,7 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->create();
         $taxRate = TaxRate::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.assign_tax'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.assign_tax'), [
             'payment_id'  => $payment->payment_id,
             'tax_rate_id' => $taxRate->tax_rate_id,
         ]);
@@ -298,7 +298,7 @@ class PaymentsTest extends AbstractTestCase
         // $this->authenticate();
         $payment = Payment::factory()->create();
 
-        $response = $this->post(route('filament.resources.payments.assign_tax'), [
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.payments.assign_tax'), [
             'payment_id' => $payment->payment_id,
         ]);
 

@@ -24,7 +24,7 @@ class ProductUnitsTest extends AbstractTestCase
             'unit_name_plrl' => 'example_units',
         ];
 
-        $response = $this->post(route('filament.resources.product-units.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-units.store'), $payload);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('product_units', $payload);
@@ -42,7 +42,7 @@ class ProductUnitsTest extends AbstractTestCase
             'unit_name_plrl' => 'example_units',
         ];
 
-        $response = $this->post(route('filament.resources.product-units.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-units.store'), $payload);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['unit_name']);
@@ -57,7 +57,7 @@ class ProductUnitsTest extends AbstractTestCase
             'unit_name' => 'Meter',
         ];
 
-        $response = $this->put(route('filament.resources.product-units.update', $productUnit->product_unit_id), $payload);
+        $response = $this->put(route('filament.ivpl.resources.filament.resources.product-units.update', $productUnit->product_unit_id), $payload);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('product_units', $payload);
@@ -68,7 +68,7 @@ class ProductUnitsTest extends AbstractTestCase
     {
         $productUnit = ProductUnit::factory()->create();
 
-        $response = $this->delete(route('filament.resources.product-units.destroy', $productUnit->product_unit_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.product-units.destroy', $productUnit->product_unit_id));
 
         $response->assertStatus(200);
         $this->assertDatabaseMissing('product_units', ['product_unit_id' => $productUnit->product_unit_id]);

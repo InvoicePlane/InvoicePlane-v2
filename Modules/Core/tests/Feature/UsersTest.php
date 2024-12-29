@@ -62,7 +62,7 @@ class UsersTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.users.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.users.store'), $payload);
 
         // Assert
         $response->assertStatus(201);
@@ -90,7 +90,7 @@ class UsersTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->post(route('filament.resources.users.store'), $payload);
+        $response = $this->post(route('filament.ivpl.resources.filament.resources.users.store'), $payload);
 
         // Assert
         $response->assertStatus(422); // Validation error
@@ -117,7 +117,7 @@ class UsersTest extends AbstractTestCase
         ];
 
         // Act
-        $response = $this->patch(route('filament.resources.users.update', $user->user_id), $payload);
+        $response = $this->patch(route('filament.ivpl.resources.filament.resources.users.update', $user->user_id), $payload);
 
         // Assert
         $response->assertStatus(200);
@@ -139,7 +139,7 @@ class UsersTest extends AbstractTestCase
         $user = User::factory()->create();
 
         // Act
-        $response = $this->delete(route('filament.resources.users.destroy', $user->user_id));
+        $response = $this->delete(route('filament.ivpl.resources.filament.resources.users.destroy', $user->user_id));
 
         // Assert
         $response->assertStatus(200);

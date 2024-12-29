@@ -28,7 +28,7 @@ class SettingsTest extends AbstractTestCase
     public function it_shows_settings_index(): void
     {
         $user = User::factory()->create();
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.resources.settings.index'));
+        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.settings.index'));
         $response->assertStatus(200);
         $response->assertSee('general');
         $response->assertSee('invoices');
