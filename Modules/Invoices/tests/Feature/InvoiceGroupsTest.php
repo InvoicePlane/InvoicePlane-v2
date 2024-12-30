@@ -2,23 +2,22 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Livewire\Livewire;
+use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\ManageInvoiceGroups;
 use Modules\Invoices\Models\InvoiceGroup;
 
 class InvoiceGroupsTest extends AbstractTestCase
 {
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
-    public function it_lists_invoice_groups(): void
+    /** @test */
+    public function it_displays_invoice_groups_index(): void
     {
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $user = User::factory()->create();
+        InvoiceGroup::factory()->create(['invoice_group_name' => 'Test Invoice Group']);
 
-        $response = $this->get(route('filament.ivpl.resources.filament.resources.invoice-groups.index'));
-        $response->assertStatus(200);
+        Livewire::test(ManageInvoiceGroups::class)
+            ->assertCanSeeTableRecords(InvoiceGroup::all());
     }
 
     /**
@@ -28,17 +27,24 @@ class InvoiceGroupsTest extends AbstractTestCase
      */
     public function it_creates_an_invoice_group(): void
     {
-        // @var array $payload
-        $payload = [
-            'name'        => 'Test Invoice Group',
-            'description' => 'This is a test invoice group.',
+        $data = [
+            'invoice_group_name' => 'Test Group',
+            'group_prefix'       => 'TG-',
+            'group_next_id'      => 1,
         ];
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        Livewire::test(CreateInvoiceGroup::class)
+            ->set('data.invoice_group_name', $data['invoice_group_name'])
+            ->set('data.group_prefix', $data['group_prefix'])
+            ->set('data.group_next_id', $data['group_next_id'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        $response = $this->post(route('filament.ivpl.resources.invoice-groups.store'), $payload);
-        $response->assertStatus(201);
+        $this->assertDatabaseHas(InvoiceGroup::class, array_merge($data, [
+            'invoice_group_id' => InvoiceGroup::latest('invoice_group_id')->first()->invoice_group_id,
+            'created_at'       => now()->toDateTimeString(),
+            'updated_at'       => now()->toDateTimeString(),
+        ]));
     }
 
     /**
@@ -48,19 +54,29 @@ class InvoiceGroupsTest extends AbstractTestCase
      */
     public function it_updates_an_invoice_group(): void
     {
-        $invoiceGroup = InvoiceGroup::factory()->create();
+        $group = InvoiceGroup::factory()->create([
+            'group_name'    => 'Original Group',
+            'group_prefix'  => 'OG-',
+            'group_next_id' => 1,
+        ]);
 
-        // @var array $payload
-        $payload = [
-            'name'        => 'Updated Invoice Group',
-            'description' => 'Updated description.',
+        $updatedData = [
+            'group_name'    => 'Updated Group',
+            'group_prefix'  => 'UG-',
+            'group_next_id' => 2,
         ];
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        Livewire::test(EditInvoiceGroup::class, ['record' => $group->invoice_group_id])
+            ->set('data.group_name', $updatedData['group_name'])
+            ->set('data.group_prefix', $updatedData['group_prefix'])
+            ->set('data.group_next_id', $updatedData['group_next_id'])
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response = $this->put(route('filament.ivpl.resources.filament.resources.invoice-groups.update', $invoiceGroup->invoice_group_id), $payload);
-        $response->assertStatus(200);
+        $this->assertDatabaseHas(InvoiceGroup::class, array_merge($updatedData, [
+            'invoice_group_id' => $group->invoice_group_id,
+            'updated_at'       => now()->toDateTimeString(),
+        ]));
     }
 
     /**
@@ -70,12 +86,13 @@ class InvoiceGroupsTest extends AbstractTestCase
      */
     public function it_deletes_an_invoice_group(): void
     {
-        $invoiceGroup = InvoiceGroup::factory()->create();
+        $group = InvoiceGroup::factory()->create();
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        Livewire::test(ManageInvoiceGroups::class)
+            ->callTableAction('delete', $group);
 
-        $response = $this->delete(route('filament.ivpl.resources.filament.resources.invoice-groups.delete', $invoiceGroup->invoice_group_id));
-        $response->assertStatus(200);
+        $this->assertDatabaseMissing(InvoiceGroup::class, [
+            'invoice_group_id' => $group->invoice_group_id,
+        ]);
     }
 }

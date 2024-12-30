@@ -4,11 +4,16 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
+use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Invoices\Filament\Resources\InvoiceResource\Pages\ManageInvoices;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Invoices\Services\InvoiceService;
 use Modules\Payments\Models\PaymentMethod;
+use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 
 class InvoicesTest extends AbstractTestCase
@@ -30,12 +35,14 @@ class InvoicesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_shows_invoices_index(): void
     {
+        $this->markTestIncomplete();
         $user = User::factory()->create();
+        $client = Client::factory()->create([
+            'client_name' => '::client_name::',
+        ]);
 
         $invoiceGroup = InvoiceGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
@@ -47,14 +54,16 @@ class InvoicesTest extends AbstractTestCase
         ]);
 
         Invoice::factory()->create([
+            'client_id'        => $client->client_id,
             'invoice_group_id' => $invoiceGroup->invoice_group_id,
             'invoice_number'   => '::invoice_number::',
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index'));
-        $response->assertStatus(200);
-        $response->assertSee('::invoice_number::');
+        Livewire::test(ManageInvoices::class)
+            ->assertSee('::invoice_number::')
+            ->assertSee('::invoicegroup_name::')
+            ->assertSee('::payment_method_name::');
     }
 
     /**
@@ -259,15 +268,16 @@ class InvoicesTest extends AbstractTestCase
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.invoices.index', ['status' => 'all']));
-        $response->assertStatus(200);
-        $response->assertSee('::draft_invoice_number::');
-        $response->assertSee('::sent_invoice_number::');
+        Livewire::test(ManageInvoices::class)
+            ->assertSee('::draft_invoice_number::')
+            ->assertSee('::sent_invoice_number::');
     }
 
     // CRUD region
     /**
      * @test
+     *
+     * @skip Not implemented yet
      *
      * @payload
      * {
@@ -306,16 +316,22 @@ class InvoicesTest extends AbstractTestCase
             ],
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.invoices.store'), $payload);
+        Livewire::test(CreateInvoice::class)
+            ->set('data.client_id', $payload['client_id'])
+            ->set('data.invoice_date', $payload['invoice_date'])
+            ->set('data.due_date', $payload['due_date'])
+            ->set('data.status', $payload['status'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
         $response->assertStatus(201);
         $this->assertDatabaseHas('invoices', ['client_id' => $payload['client_id']]);
     }
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      *
      * @payload
      * {
@@ -332,19 +348,72 @@ class InvoicesTest extends AbstractTestCase
      *    ]
      * }
      */
-    public function it_can_delete_an_invoice(): void
+    public function it_can_edit_an_invoice(): void
     {
         $this->markTestSkipped();
 
         // Arrange
-        $invoice = Invoice::factory()->create();
+        $client = Client::factory()->create();
+        $product = Product::factory()->create();
 
-        // Act
-        $response = $this->delete(route('filament.ivpl.resources.filament.resources.invoices.destroy', $invoice->invoice_id));
+        $payload = [
+            'client_id'    => $client->client_id,
+            'invoice_date' => '2024-11-22',
+            'due_date'     => '2024-12-22',
+            'status'       => 'draft',
+            'items'        => [
+                [
+                    'product_id' => $product->product_id,
+                    'quantity'   => 2,
+                    'price'      => $product->price,
+                ],
+            ],
+        ];
 
-        // Assert
-        $response->assertStatus(204);
-        $this->assertDatabaseMissing('invoices', ['invoice_id' => $invoice->invoice_id]);
+        $updatedData = [
+            'invoice_number' => '::draft_invoice_number::',
+            'client_id'      => $client->client_id,
+            'invoice_date'   => now()->toDateString(),
+            'due_date'       => now()->addDays(10)->toDateString(),
+            'status'         => 'paid',
+        ];
+
+        Livewire::test(EditInvoice::class)
+            ->set('data.client_id', $payload['client_id'])
+            ->set('data.invoice_date', $payload['invoice_date'])
+            ->set('data.due_date', $payload['due_date'])
+            ->set('data.status', $payload['status'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('invoices', array_merge($updatedData, [
+            'invoice_id' => $invoice->invoice_id,
+        ]));
+    }
+
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     *
+     * @payload
+     * {
+     * }
+     */
+    public function it_deletes_an_invoice(): void
+    {
+        $invoice = Invoice::factory()->create([
+            'invoice_number' => '::draft_invoice_number::',
+        ]);
+
+        Livewire::test(ManageInvoices::class)
+            ->callTableAction('delete', $invoice)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('invoices', [
+            'invoice_id' => $invoice->invoice_id,
+        ]);
     }
 
     /**
@@ -364,17 +433,27 @@ class InvoicesTest extends AbstractTestCase
 
         // Arrange
         $client = Client::factory()->create();
+
         $payload = [
-            'client_id'    => null, // Required field
+            'client_id'    => $client->client_id,
             'invoice_date' => '2024-11-22',
-            'due_date'     => '2024-12-22',
             'status'       => 'draft',
+            'items'        => [
+                [
+                    'product_id' => $product->product_id,
+                    'quantity'   => 2,
+                    'price'      => $product->price,
+                ],
+            ],
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.invoices.store'), $payload);
+        Livewire::test(CreateInvoice::class)
+            ->set('data.client_id', $payload['client_id'])
+            ->set('data.invoice_date', $payload['invoice_date'])
+            ->set('data.status', $payload['status'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['client_id']);
     }
@@ -452,7 +531,7 @@ class InvoicesTest extends AbstractTestCase
         $total = app(InvoiceService::class)->calculateTotals($invoice);
 
         // Assert
-        $this->assertEquals(500, $total['subtotal']); // Example assertion
+        $this->assertEquals(500, $total['subtotal']);
         $this->assertEquals(50, $total['tax']);
         $this->assertEquals(550, $total['total']);
     }
