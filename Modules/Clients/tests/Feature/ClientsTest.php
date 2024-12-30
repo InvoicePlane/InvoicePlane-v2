@@ -161,7 +161,7 @@ class ClientsTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_edits_a_client(): void
+    public function it_updates_a_client(): void
     {
         $client = Client::factory()->create([
             'client_name'  => 'Original Name',

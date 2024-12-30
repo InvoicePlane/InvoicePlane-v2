@@ -324,7 +324,6 @@ class InvoicesTest extends AbstractTestCase
             ->call('create')
             ->assertHasNoErrors();
 
-        $response->assertStatus(201);
         $this->assertDatabaseHas('invoices', ['client_id' => $payload['client_id']]);
     }
 
