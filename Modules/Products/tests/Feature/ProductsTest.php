@@ -4,7 +4,9 @@ namespace Modules\Products\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Products\Filament\Resources\ProductResource\Pages\ManageProducts;
 use Modules\Products\Models\Product;
 
 class ProductsTest extends AbstractTestCase
@@ -31,30 +33,27 @@ class ProductsTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_lists_products(): void
+    public function it_shows_products_index(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->getJson(route('products.index'));
-        $response->assertStatus(200);
-    }
+        $payload = [
+            'family_id'           => 1,
+            'product_sku'         => 'TESTSKU',
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => 1,
+            'unit_id'             => 1,
+            'product_tariff'      => 12345,
+        ];
+        $product = Product::factory()->create($payload);
 
-    /** @test */
-    public function it_products_create(): void
-    {
-        $product = Product::factory()->create();
-
-        $response = $this->post(route('filament.ivpl.resources.products.store'), [
-            'product_name'  => $product->product_name,
-            'product_price' => 50.00,
-            'category_id'   => $product->category_id,
-        ]);
-
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('products', [
-            'product_name' => $product->product_name,
-        ]);
+        Livewire::test(ManageProducts::class)
+            ->assertStatus(200)
+            ->assertSee('::product_name::');
     }
 
     /**
@@ -64,26 +63,37 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_creates_a_product(): void
     {
-        // Payload for creating a product
-        // @var array $payload
+        // $this->authenticated();
+
         $payload = [
-            'family_id'           => 1, // Replace with a valid ProductFamily ID
+            'family_id'           => 1,
             'product_sku'         => 'TESTSKU',
-            'product_name'        => 'Test Product',
+            'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
             'product_price'       => 25.50,
             'purchase_price'      => 15.00,
             'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => 1, // Replace with a valid TaxRate ID
-            'unit_id'             => 1, // Replace with a valid ProductUnit ID
+            'tax_rate_id'         => 1,
+            'unit_id'             => 1,
             'product_tariff'      => 12345,
         ];
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $product = Product::factory()->create($payload);
 
-        $response = $this->postJson(route('filament.ivpl.resources.products.store'), $payload);
-        $response->assertStatus(201);
+        Livewire::test(CreateProduct::class)
+            ->set('data.family_id', $payload['family_id'])
+            ->set('data.product_sku', $payload['product_sku'])
+            ->set('data.product_name', $payload['product_name'])
+            ->set('data.product_description', $payload['product_description'])
+            ->set('data.product_price', $payload['product_price'])
+            ->set('data.provider_name', $payload['provider_name'])
+            ->set('data.tax_rate_id', $payload['tax_rate_id'])
+            ->set('data.unit_id', $payload['unit_id'])
+            ->set('data.product_tariff', $payload['product_tariff'])
+            ->call('create')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('products', $payload);
     }
 
     /**
@@ -93,21 +103,34 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_updates_a_product(): void
     {
-        // Payload for updating a product
-        // @var array $payload
         $payload = [
-            'product_name'        => 'Updated Product Name',
-            'product_description' => 'Updated product description.',
+            'family_id'           => 1,
+            'product_sku'         => 'TESTSKU',
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
             'product_price'       => 30.00,
             'purchase_price'      => 20.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => 1,
+            'unit_id'             => 1,
             'product_tariff'      => 67890,
         ];
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $product = Product::factory()->create($payload);
+        $updatedData = [
+            'product_name'  => 'Updated Product',
+            'product_price' => 70.00,
+        ];
 
-        $response = $this->putJson(route('products.update', ['product' => 1]), $payload);
-        $response->assertStatus(200);
+        Livewire::test(EditProduct::class, ['record' => $product->product_id])
+            ->set('data.product_name', $updatedData['product_name'])
+            ->set('data.product_price', $updatedData['product_price'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('products', array_merge($updatedData, [
+            'product_id' => $product->product_id,
+        ]));
     }
 
     /**
@@ -115,39 +138,91 @@ class ProductsTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_deletes_a_product(): void
+    public function it_deletes_a_client(): void
     {
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $this->markTestIncomplete('Needs delete action');
 
-        $response = $this->deleteJson(route('products.delete', ['product' => 1]));
-        $response->assertStatus(200);
+        $payload = [
+            'family_id'           => 1,
+            'product_sku'         => 'TESTSKU',
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
+            'product_price'       => 30.00,
+            'purchase_price'      => 20.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => 1,
+            'unit_id'             => 1,
+            'product_tariff'      => 67890,
+        ];
+        $product = Product::factory()->create($payload);
+
+        Livewire::test(ManageProducts::class)
+            ->callTableAction('delete', $product)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('products', [
+            'product_id' => $product->product_id,
+        ]);
+    }
+
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
+    public function it_bulk_deletes_products(): void
+    {
+        // $this->authenticated();
+        $products = Product::factory()->count(3)->create();
+
+        Livewire::test(ManageProducts::class)
+            ->callTableBulkAction('delete', $products)
+            ->assertHasNoErrors();
+
+        foreach ($products as $product) {
+            $this->assertDatabaseMissing('products', [
+                'product_id' => $product->product_id,
+            ]);
+        }
     }
     // endregion
 
     // region Spicy Tests
 
-    /** @test */
+    /**
+     * @test
+     *
+     * route('filament.ivpl.resources.filament.resources.products.process_selections')
+     *
+     * @skip Not implemented yet
+     **/
     public function it_products_process_selections(): void
     {
         // $this->authenticate();
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.products.process_selections'), [
-            'product_ids' => [$product1->product_id, $product2->product_id],
-        ]);
-
-        $response->assertStatus(200);
+        Livewire::test(ManageProducts::class)
+            ->callTableAction('process_selections', $product1)
+            ->assertHasNoErrors();
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * route('filament.ivpl.resources.filament.resources.products.process_selections')
+     *
+     * @skip Not implemented yet
+     **/
     public function it_fails_to_process_selections_without_product_ids(): void
     {
         // $this->authenticate();
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create();
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.products.process_selections'));
-
-        $response->assertStatus(422);
+        Livewire::test(ManageProducts::class)
+            ->callTableAction('process_selections', $product1)
+            ->assertHasNoErrors();
     }
+    // endregion
 }

@@ -2,7 +2,11 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Livewire\Livewire;
+use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Products\Filament\Resources\ProductFamilyResource\Pages\ManageProductFamilies;
+use Modules\Products\Models\ProductFamily;
 
 class ProductFamiliesTest extends AbstractTestCase
 {
@@ -13,35 +17,57 @@ class ProductFamiliesTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_lists_product_families(): void
+    public function it_shows_product_families_index(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->getJson(route('filament.ivpl.resources.filament.resources.productfamilies.index'));
-        $response->assertStatus(200);
+        $user = User::factory()->create();
+        ProductFamily::factory()->create([
+            'family_name'        => '::product_family_name::',
+            'family_description' => '::product_family_description::',
+        ]);
+
+        Livewire::test(ManageProductFamilies::class)
+            ->assertSee('::product_family_name::')
+            ->assertSee('::product_family_description::');
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_can_create_a_product_family(): void
     {
         /**
          * Payload:
          * {
-         *     "family_name": "example_family"
+         *     "family_name": "::product_family_name::"
          * }
          */
         $payload = [
-            'family_name' => 'example_family',
+            'family_name'        => '::product_family_name::',
+            'family_description' => '::product_family_description::',
         ];
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-families.store'), $payload);
+        Livewire::test(CreateProductFamily::class)
+            ->set('data.family_name', $payload['family_name'])
+            ->set('data.family_description', $payload['family_description'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('product_families', $payload);
+        $this->assertDatabaseHas('product_families', array_merge($payload, [
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_a_product_family_without_family_name(): void
     {
         /**
@@ -49,13 +75,20 @@ class ProductFamiliesTest extends AbstractTestCase
          * - family_name
          */
         $payload = [
-            'family_name' => null,
+            'family_description' => '::product_family_description::',
         ];
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.product-families.store'), $payload);
+        Livewire::test(CreateProductFamily::class)
+            ->assertStatus(422)
+            ->set('data.family_name', $payload['family_name'])
+            ->set('data.family_description', $payload['family_description'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['family_name']);
+        $this->assertDatabaseHas('product_families', array_merge($payload, [
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]));
     }
 
     /**
@@ -72,15 +105,25 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_updates_a_product_family(): void
     {
-        $payload = [
-            'family_name' => 'Updated Family',
+        $productFamily = ProductFamily::factory()->create([
+            'family_name'        => '::original_product_family_name::',
+            'family_description' => '::original_product_family_description::',
+        ]);
+
+        $updatedData = [
+            'family_name'        => '::updated_product_family_name::',
+            'family_description' => '::updated_product_family_description::',
         ];
 
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        Livewire::test(EditProductFamily::class, ['record' => $productFamily->family_id])
+            ->set('data.family_name', $updatedData['family_name'])
+            ->set('data.family_description', $updatedData['family_description'])
+            ->call('save')
+            ->assertHasNoErrors();
 
-        $response = $this->putJson(route('filament.ivpl.resources.filament.resources.productfamilies.update', ['record' => 1]), $payload);
-        $response->assertStatus(200);
+        $this->assertDatabaseHas('product_families', array_merge($updatedData, [
+            'family_id' => $productFamily->family_id,
+        ]));
     }
 
     /**
@@ -90,12 +133,17 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_deletes_a_product_family(): void
     {
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::product_family_name::',
+        ]);
 
-        $response = $this->deleteJson(route('filament.ivpl.resources.filament.resources.productfamilies.delete', ['record' => 1]));
-        $response->assertStatus(200);
+        Livewire::test(ManageProductFamilies::class)
+            ->callTableAction('delete', $productFamily)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('product_families', [
+            'family_id' => $productFamily->family_id,
+        ]);
     }
-
     // endregion
 }

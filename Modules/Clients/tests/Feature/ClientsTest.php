@@ -190,7 +190,7 @@ class ClientsTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_deletes_a_client_from_manage_clients(): void
+    public function it_deletes_a_client(): void
     {
         $this->markTestIncomplete('Needs delete action');
         $client = Client::factory()->create([
