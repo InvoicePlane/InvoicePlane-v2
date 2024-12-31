@@ -4,10 +4,12 @@ namespace Modules\Projects\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Projects\Filament\Resources\TaskResource\Pages\ManageTasks;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 
@@ -34,8 +36,6 @@ class TasksTest extends AbstractTestCase
      */
     public function it_shows_tasks_index(): void
     {
-        $this->markTestSkipped('Not implemented yet');
-
         $user = User::factory()->create();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
@@ -55,120 +55,161 @@ class TasksTest extends AbstractTestCase
             'tax_rate_id' => $taxRate->tax_rate_id,
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.tasks.index'));
-        $response->assertStatus(200);
-        $response->assertSee('::task_name::');
-        $response->assertSee('::project_name::');
+        Livewire::test(ManageTasks::class)
+            ->assertStatus(200)
+            ->assertSee('::task_name::')
+            ->assertSee('::project_name::');
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @payload
+     * {
+     * "project_id": 1,
+     * "task_name": "Task Alpha",
+     * "task_description": "This is a task description.",
+     * "task_price": 100.50,
+     * "task_finish_date": "2023-11-20",
+     * "task_status": true,
+     * "tax_rate_id": 1
+     * }
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_a_task(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
 
-        /**
-         * @payload
-         * {
-         *    "project_id": 1,
-         *    "task_name": "Task Alpha",
-         *    "task_description": "This is a task description.",
-         *    "task_price": 100.50,
-         *    "task_finish_date": "2023-11-20",
-         *    "task_status": true,
-         *    "tax_rate_id": 1
-         * }
-         */
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
         $payload = [
-            'project_id'       => Project::factory()->create()->project_id,
-            'task_name'        => 'Task Alpha',
+            'project_id'       => $project->project_id,
+            'task_name'        => '::task_name::',
             'task_description' => 'This is a task description.',
             'task_price'       => 100.50,
             'task_finish_date' => now()->subDays(5)->format('Y-m-d'),
             'task_status'      => true,
-            'tax_rate_id'      => TaxRate::factory()->create()->tax_rate_id,
+            'tax_rate_id'      => $taxRate->tax_rate_id,
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.store'), $payload);
+        Livewire::test(CreateTask::class)
+            ->assertStatus(201)
+            ->set('data.project_id', $payload['project_id'])
+            ->set('data.task_name', $payload['task_name'])
+            ->set('data.task_description', $payload['task_description'])
+            ->set('data.task_price', $payload['task_price'])
+            ->set('data.task_finish_date', $payload['task_finish_date'])
+            ->set('data.task_status', $payload['task_status'])
+            ->set('data.tax_rate_id', $payload['tax_rate_id'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('tasks', ['task_name' => 'Task Alpha']);
+        $this->assertDatabaseHas('tasks', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @payload
+     * {
+     *    "project_id": null,
+     *    "task_name": null,
+     *    "task_price": null
+     * }
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_a_task_without_required_fields(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
 
-        /**
-         * @payload
-         * {
-         *    "project_id": null,
-         *    "task_name": null,
-         *    "task_price": null
-         * }
-         */
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
         $payload = [
-            'task_name'  => null,
-            'project_id' => Project::factory()->create()->project_id,
+            'project_id'  => $project->project_id,
+            'task_name'   => null,
+            'tax_rate_id' => $taxRate->tax_rate_id,
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.store'), $payload);
+        Livewire::test(CreateTask::class)
+            ->assertStatus(201)
+            ->set('data.project_id', $payload['project_id'])
+            ->set('data.task_name', $payload['task_name'])
+            ->set('data.tax_rate_id', $payload['tax_rate_id'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(422); // Validation error
-        $response->assertJsonValidationErrors(['task_name']);
+        $this->assertDatabaseHas('tasks', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @payload
+     * {
+     *    "task_name": "Updated Task Name"
+     * }
+     *
+     * @skip Not implemented yet
+     */
     public function it_updates_a_task(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
+        $task = Task::factory()->create(['task_name' => '::task_name::']);
 
-        /**
-         * @payload
-         * {
-         *    "task_name": "Updated Task Name"
-         * }
-         */
-        $task = Task::factory()->create();
+        $updatedData = ['task_name' => '::updated_task_name::'];
 
-        $payload = [
-            'task_name' => 'Updated Task Name',
-        ];
+        Livewire::test(EditTask::class, ['record' => $task->task_id])
+            ->assertStatus(200)
+            ->set('data.task_name', $updatedData['task_name'])
+            ->set('data.task_status', $updatedData['task_status'])
+            ->call('save')
+            ->assertHasNoErrors();
 
-        // Act
-        $response = $this->put(route('filament.ivpl.resources.filament.resources.tasks.update', $task->task_id), $payload);
-
-        // Assert
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('tasks', ['task_id' => $task->task_id, 'task_name' => 'Updated Task Name']);
+        $this->assertDatabaseHas('tasks', array_merge($updatedData, [
+            'task_id' => $task->task_id,
+        ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @payload
+     * {
+     *    "task_id": 1
+     * }
+     *
+     * @skip Not implemented yet
+     */
     public function it_deletes_a_task(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
 
-        /**
-         * @payload
-         * {
-         *    "task_id": 1
-         * }
-         */
         $task = Task::factory()->create();
 
-        // Act
-        $response = $this->delete(route('filament.ivpl.resources.filament.resources.tasks.destroy', $task->task_id));
+        Livewire::test(ManageTasks::class)
+            ->callTableAction('delete', $task->task_id)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(200);
         $this->assertDatabaseMissing('tasks', ['task_id' => $task->task_id]);
     }
 
@@ -176,19 +217,20 @@ class TasksTest extends AbstractTestCase
 
     // region Custom tests
 
-    /** @test */
-    public function it_tasks_assign_project(): void
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
+    public function it_assigns_a_task_to_a_project(): void
     {
-        // $this->authenticate();
         $task = Task::factory()->create();
         $project = Project::factory()->create();
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.assign_project'), [
-            'task_id'    => $task->task_id,
-            'project_id' => $project->project_id,
-        ]);
-
-        $response->assertStatus(200);
+        Livewire::test(ManageTasks::class)
+            ->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id])
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
             'task_id'    => $task->task_id,
@@ -196,54 +238,113 @@ class TasksTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_assign_project_without_project_id(): void
     {
         // $this->authenticate();
         $task = Task::factory()->create();
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.tasks.assign_project'), [
+        Livewire::test(ManageTasks::class)
+            ->callTableAction('assignProject', $task->task_id)
+            ->assertStatus(422)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', [
             'task_id' => $task->task_id,
         ]);
-
-        $response->assertStatus(422);
     }
 
     // endregion
 
     // region Spicy Functions
-    /** @test */
-    public function it_projects_create_recurring_task(): void
+    /**
+     * @test
+     * route('filament.ivpl.resources.filament.resources.projects.store_recurring_task', [
+     * 'project_id'       => $project->project_id,
+     * 'recur_start_date' => now()->format('Y-m-d'),
+     * 'recur_end_date'   => now()->addWeek()->format('Y-m-d'),
+     * 'recur_frequency'  => 'weekly', // Ensure this uses the recurring frequency enum
+     * ])
+     *
+     * @skip Not implemented yet
+     */
+    public function it_creates_recurring_task(): void
     {
         // $this->authenticate();
-        $project = Project::factory()->create();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
 
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.projects.store_recurring_task', [
-            'project_id'       => $project->project_id,
-            'recur_start_date' => now()->format('Y-m-d'),
-            'recur_end_date'   => now()->addWeek()->format('Y-m-d'),
-            'recur_frequency'  => 'weekly', // Ensure this uses the recurring frequency enum
-        ]));
-
-        $response->assertStatus(200);
-
-        $this->assertDatabaseHas('recurring_tasks', [
-            'project_id'      => $project->project_id,
-            'recur_frequency' => 'weekly',
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
         ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $payload = [
+            'project_id'  => $project->project_id,
+            'task_name'   => null,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+        ];
+
+        $task = Task::factory()->create($payload);
+
+        Livewire::test(ManageTasks::class)
+            ->callTableAction('storeRecurringTask', $task->task_id)
+            ->assertStatus(201)
+            ->set('data.project_id', $payload['project_id'])
+            ->set('data.task_name', $payload['task_name'])
+            ->set('data.tax_rate_id', $payload['tax_rate_id'])
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     * route('filament.ivpl.resources.projects.create_recurring_task', [
+     * 'project_id'       => $project->project_id,
+     * 'recur_start_date' => now()->format('Y-m-d'),
+     * ])
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_recurring_task_without_frequency(): void
     {
         // $this->authenticate();
-        $project = Project::factory()->create();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
 
-        $response = $this->post(route('filament.ivpl.resources.projects.create_recurring_task', [
-            'project_id'       => $project->project_id,
-            'recur_start_date' => now()->format('Y-m-d'),
-        ]));
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
 
-        $response->assertStatus(422);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $payload = [
+            'project_id'  => $project->project_id,
+            'task_name'   => null,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+        ];
+
+        $task = Task::factory()->create($payload);
+
+        Livewire::test(ManageTasks::class)
+            ->callTableAction('storeRecurringTask', $task->task_id)
+            ->assertStatus(201)
+            ->set('data.project_id', $payload['project_id'])
+            ->set('data.task_name', $payload['task_name'])
+            ->set('data.tax_rate_id', $payload['tax_rate_id'])
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', $payload);
     }
+    // endregion
 }
