@@ -10,7 +10,7 @@ class ProductUnitsTest extends AbstractTestCase
     // region CRUD Tests
 
     /** @test */
-    public function it_can_create_a_product_unit(): void
+    public function it_creates_a_product_unit(): void
     {
         /**
          * Payload:
@@ -49,7 +49,7 @@ class ProductUnitsTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_update_a_product_unit(): void
+    public function it_updates_a_product_unit(): void
     {
         $productUnit = ProductUnit::factory()->create();
 
@@ -64,7 +64,7 @@ class ProductUnitsTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_delete_a_product_unit(): void
+    public function it_deletes_a_product_unit(): void
     {
         $productUnit = ProductUnit::factory()->create();
 

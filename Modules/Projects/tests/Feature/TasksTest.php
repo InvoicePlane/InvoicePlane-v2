@@ -62,7 +62,7 @@ class TasksTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_create_a_task(): void
+    public function it_creates_a_task(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
@@ -125,7 +125,7 @@ class TasksTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_update_a_task(): void
+    public function it_updates_a_task(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
@@ -151,7 +151,7 @@ class TasksTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_delete_a_task(): void
+    public function it_deletes_a_task(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();

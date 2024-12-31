@@ -28,7 +28,7 @@ class UsersTest extends AbstractTestCase
     // region CRUD Tests
 
     /** @test */
-    public function it_can_create_a_user(): void
+    public function it_creates_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
@@ -97,7 +97,7 @@ class UsersTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_update_a_user(): void
+    public function it_updates_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
@@ -125,7 +125,7 @@ class UsersTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_delete_a_user(): void
+    public function it_deletes_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();

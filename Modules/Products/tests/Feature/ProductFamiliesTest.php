@@ -38,7 +38,7 @@ class ProductFamiliesTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_can_create_a_product_family(): void
+    public function it_creates_a_product_family(): void
     {
         /**
          * Payload:

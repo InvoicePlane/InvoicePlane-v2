@@ -139,7 +139,7 @@ class ProductApiTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_can_create_a_product(): void
+    public function it_creates_a_product(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
@@ -260,7 +260,7 @@ class ProductApiTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_can_update_a_product(): void
+    public function it_updates_a_product(): void
     {
         // Payload for updating a product
         // @var array $payload

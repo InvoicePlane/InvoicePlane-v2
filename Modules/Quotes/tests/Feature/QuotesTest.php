@@ -437,7 +437,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_create_a_quote(): void
+    public function it_creates_a_quote(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
@@ -501,7 +501,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     /** @test */
-    public function it_can_update_a_quote_status(): void
+    public function it_updates_a_quote_status(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
