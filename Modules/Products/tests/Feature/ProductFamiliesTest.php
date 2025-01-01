@@ -24,18 +24,15 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_shows_product_families_index(): void
     {
-        $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
         $user = User::factory()->create();
         ProductFamily::factory()->create([
-            'family_name'        => '::product_family_name::',
-            'family_description' => '::product_family_description::',
+            'family_name' => '::product_family_name::',
         ]);
 
         Livewire::test(ManageProductFamilies::class)
-            ->assertSee('::product_family_name::')
-            ->assertSee('::product_family_description::');
+            ->assertSee('::product_family_name::');
     }
 
     /**

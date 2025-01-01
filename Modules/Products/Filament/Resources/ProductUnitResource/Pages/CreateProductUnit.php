@@ -3,7 +3,7 @@
 namespace Modules\Products\Filament\Resources\ProductUnitResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Products\Transformers\ProductUnitResource;
+use Modules\Products\Filament\Resources\ProductUnitResource;
 
 class CreateProductUnit extends CreateRecord
 {
