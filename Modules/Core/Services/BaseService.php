@@ -5,7 +5,6 @@ namespace Modules\Core\Services;
 use Exception;
 use Illuminate\Container\Container as Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,21 +31,9 @@ abstract class BaseService
         $this->makeModel();
     }
 
-    /**
-     * Configure the Model.
-     *
-     * @return string
-     */
-    abstract public function model();
+    abstract public function model(): string;
 
-    /**
-     * Make Model instance.
-     *
-     * @return Model
-     *
-     * @throws Exception
-     */
-    public function makeModel()
+    public function makeModel(): Model
     {
         $model = $this->app->make($this->model());
 
@@ -57,31 +44,12 @@ abstract class BaseService
         return $this->model = $model;
     }
 
-    /**
-     * Paginate records for scaffold.
-     *
-     * @param int   $perPage
-     * @param array $columns
-     *
-     * @return LengthAwarePaginator
-     */
-    public function paginate($perPage, $columns = ['*'])
+    public function paginate($perPage, $columns = ['*']): LengthAwarePaginator
     {
-        $query = $this->allQuery();
-
-        return $query->paginate($perPage, $columns);
+        return $this->allQuery()->paginate($perPage, $columns);
     }
 
-    /**
-     * Build a query for retrieving all records.
-     *
-     * @param array    $search
-     * @param int|null $skip
-     * @param int|null $limit
-     *
-     * @return Builder
-     */
-    public function allQuery($search = [], $skip = null, $limit = null)
+    public function allQuery($search = [], $skip = null, $limit = null): Collection
     {
         $query = $this->model->newQuery();
 
@@ -104,31 +72,12 @@ abstract class BaseService
         return $query->get();
     }
 
-    /**
-     * Retrieve all records with given filter criteria.
-     *
-     * @param array    $search
-     * @param int|null $skip
-     * @param int|null $limit
-     * @param array    $columns
-     *
-     * @return LengthAwarePaginator|Builder[]|Collection
-     */
     public function all($search = [], $skip = null, $limit = null, $columns = ['*'])
     {
-        $query = $this->allQuery($search, $skip, $limit);
-
-        return $query->get($columns);
+        return $this->allQuery($search, $skip, $limit)->get($columns);
     }
 
-    /**
-     * Create model record.
-     *
-     * @param array $validatedInput
-     *
-     * @return Model
-     */
-    public function create(array $validatedInput)
+    public function create(array $validatedInput): Model
     {
         $model = $this->model->newInstance($validatedInput);
 
@@ -137,29 +86,11 @@ abstract class BaseService
         return $model;
     }
 
-    /**
-     * Find model record for given id.
-     *
-     * @param int   $id
-     * @param array $columns
-     *
-     * @return Builder|Builder[]|Collection|Model|null
-     */
     public function find($id, $columns = ['*'])
     {
-        $query = $this->model->newQuery();
-
-        return $query->find($id, $columns);
+        return $this->model->newQuery()->find($id, $columns);
     }
 
-    /**
-     * Update model record for given id.
-     *
-     * @param array $input
-     * @param Model $model
-     *
-     * @return Builder|Builder[]|Collection|Model
-     */
     public function update(array $input, $model)
     {
         $query = $this->model->newQuery();
@@ -173,20 +104,11 @@ abstract class BaseService
         return $model;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return bool|mixed|null
-     *
-     * @throws Exception
-     */
     public function delete($id)
     {
         $query = $this->model->newQuery();
 
-        $model = $query->findOrFail($id);
-
-        return $model->delete();
+        return $query->findOrFail($id)->delete();
     }
 
     private function getFieldsSearchable(): void {}
