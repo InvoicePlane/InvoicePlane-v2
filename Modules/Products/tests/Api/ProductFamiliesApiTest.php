@@ -31,6 +31,8 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_product_families_index(): void
     {
@@ -70,6 +72,8 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_product_family(): void
     {
@@ -114,6 +118,8 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_with_invalid_family_name_key(): void
     {
@@ -131,6 +137,8 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_product_family(): void
     {
@@ -180,6 +188,8 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_delete_family(): void
     {

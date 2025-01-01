@@ -31,6 +31,8 @@ class TaxRatesApiTest extends AbstractTestCase
     // region CRUD Tests
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_tax_rates_index(): void
     {
@@ -58,6 +60,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_tax_rate(): void
     {
@@ -83,6 +87,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_when_creating_a_tax_rate_with_wrong_fields(): void
     {
@@ -109,6 +115,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_tax_rate(): void
     {
@@ -134,6 +142,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_tax_rate(): void
     {

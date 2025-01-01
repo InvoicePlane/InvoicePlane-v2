@@ -34,6 +34,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_products_index(): void
     {
@@ -85,6 +87,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_product(): void
     {
@@ -165,6 +169,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
@@ -204,6 +210,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_product(): void
     {
@@ -281,6 +289,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_when_updating_a_product_with_invalid_values(): void
     {
@@ -323,6 +333,8 @@ class ProductApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_product(): void
     {

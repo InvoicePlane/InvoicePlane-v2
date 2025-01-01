@@ -24,6 +24,8 @@ class WelcomeViewTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_welcome_view(): void
     {

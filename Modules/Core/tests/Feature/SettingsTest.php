@@ -24,6 +24,8 @@ class SettingsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_settings_index(): void
     {

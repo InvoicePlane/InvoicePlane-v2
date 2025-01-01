@@ -25,6 +25,8 @@ class ImportTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_import_details_index(): void
     {

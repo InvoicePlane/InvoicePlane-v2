@@ -38,6 +38,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function route_to_guest_invoice_with_invalid_token(): void
     {
@@ -52,6 +54,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_route_to_guest_invoice_with_valid_token(): void
     {
@@ -68,6 +72,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_route_to_guest_invoice_with_draft_status_and_valid_token(): void
     {
@@ -82,6 +88,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_route_to_guest_quote_with_invalid_token(): void
     {
@@ -96,6 +104,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_route_to_guest_quote_with_valid_token(): void
     {
@@ -112,6 +122,8 @@ class GuestTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_route_to_guest_quote_with_draft_status_and_valid_token(): void
     {

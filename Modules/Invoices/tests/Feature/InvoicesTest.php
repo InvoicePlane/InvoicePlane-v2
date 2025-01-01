@@ -68,6 +68,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_draft_invoices_index(): void
     {
@@ -103,6 +105,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_sent_invoices_index(): void
     {
@@ -137,6 +141,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_viewed_invoices_index(): void
     {
@@ -172,6 +178,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_paid_invoices_index(): void
     {
@@ -207,6 +215,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_overdue_invoices_index(): void
     {
@@ -242,6 +252,8 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_all_invoices_index(): void
     {

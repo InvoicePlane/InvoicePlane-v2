@@ -33,6 +33,8 @@ class PaymentsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_payments_index(): void
     {

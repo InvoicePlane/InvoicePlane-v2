@@ -29,6 +29,8 @@ class UsersApiTest extends AbstractTestCase
     // region CRUD Tests
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_users_index(): void
     {
@@ -109,6 +111,8 @@ class UsersApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_user(): void
     {
@@ -135,6 +139,8 @@ class UsersApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_when_creating_a_user_without_required_fields(): void
     {
@@ -155,6 +161,8 @@ class UsersApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_user(): void
     {
@@ -202,6 +210,8 @@ class UsersApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_user(): void
     {

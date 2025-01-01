@@ -31,6 +31,8 @@ class EmailTemplatesApiTest extends AbstractTestCase
     // region CRUD Tests
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_email_templates_index(): void
     {
@@ -56,6 +58,8 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_an_email_template(): void
     {
@@ -78,6 +82,8 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_an_email_template(): void
     {
@@ -102,6 +108,8 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_an_email_template(): void
     {

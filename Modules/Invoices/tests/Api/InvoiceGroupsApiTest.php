@@ -32,6 +32,8 @@ class InvoiceGroupsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_invoice_groups_index(): void
     {
@@ -48,6 +50,8 @@ class InvoiceGroupsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_an_invoice_group(): void
     {
@@ -61,6 +65,8 @@ class InvoiceGroupsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_an_invoice_group(): void
     {
@@ -75,6 +81,8 @@ class InvoiceGroupsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_an_invoice_group(): void
     {

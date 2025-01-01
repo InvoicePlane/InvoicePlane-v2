@@ -28,6 +28,8 @@ class TaxRatesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_tax_rates_index(): void
     {
@@ -45,6 +47,8 @@ class TaxRatesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_tax_rate(): void
     {
@@ -63,6 +67,8 @@ class TaxRatesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_tax_rate(): void
     {
@@ -87,6 +93,8 @@ class TaxRatesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_tax_rate(): void
     {

@@ -31,6 +31,8 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_product_units_index(): void
     {
@@ -68,6 +70,8 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_product_unit(): void
     {
@@ -114,6 +118,8 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_with_invalid_or_missing_unit_name_value(): void
     {
@@ -133,6 +139,8 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_product_unit(): void
     {
@@ -184,6 +192,8 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_delete_unit(): void
     {

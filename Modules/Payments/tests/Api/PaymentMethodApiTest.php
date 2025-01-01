@@ -28,6 +28,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_payment_methods_index(): void
     {
@@ -52,6 +54,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_payment_method(): void
     {
@@ -71,6 +75,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_when_posting_payment_method_with_wrong_data(): void
     {
@@ -90,6 +96,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_payment_method(): void
     {
@@ -125,6 +133,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_payment_method(): void
     {

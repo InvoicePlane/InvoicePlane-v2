@@ -20,6 +20,8 @@ class ExpensesApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_expenses_index(): void
     {

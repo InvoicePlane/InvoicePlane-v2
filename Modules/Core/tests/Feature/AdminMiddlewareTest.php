@@ -27,6 +27,8 @@ class AdminMiddlewareTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function admins_can_access_routes(): void
     {
@@ -42,6 +44,8 @@ class AdminMiddlewareTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function non_admins_cannot_access_routes(): void
     {

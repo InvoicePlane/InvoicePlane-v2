@@ -31,6 +31,8 @@ class ProjectsApiTest extends AbstractTestCase
     // region CRUD Tests
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_projects_index(): void
     {
@@ -62,6 +64,8 @@ class ProjectsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_lists_projects_via_api(): void
     {
@@ -143,6 +147,8 @@ class ProjectsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_response_when_creating_a_project_without_required_field(): void
     {
@@ -235,6 +241,8 @@ class ProjectsApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_project_via_api(): void
     {

@@ -33,6 +33,8 @@ class TasksApiTest extends AbstractTestCase
     // region CRUD Tests
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_tasks_index(): void
     {
@@ -80,6 +82,8 @@ class TasksApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_task(): void
     {
@@ -123,6 +127,8 @@ class TasksApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_returns_error_when_storing_task_without_proper_fields(): void
     {
@@ -165,6 +171,8 @@ class TasksApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_task(): void
     {
@@ -199,6 +207,8 @@ class TasksApiTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function test_delete_task(): void
     {

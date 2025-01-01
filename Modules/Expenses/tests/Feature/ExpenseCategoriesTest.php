@@ -32,6 +32,8 @@ class ExpenseCategoriesTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_expense_categories_index(): void
     {

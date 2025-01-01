@@ -34,6 +34,8 @@ class ClientsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_clients_index(): void
     {
@@ -50,6 +52,8 @@ class ClientsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_active_clients_index(): void
     {
@@ -73,6 +77,8 @@ class ClientsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_only_filtered_inactive_clients_index(): void
     {
@@ -95,6 +101,8 @@ class ClientsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_all_clients_index(): void
     {

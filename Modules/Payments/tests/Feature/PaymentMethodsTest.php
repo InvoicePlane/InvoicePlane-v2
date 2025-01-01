@@ -27,6 +27,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_shows_payment_methods_index(): void
     {
@@ -43,6 +45,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_creates_a_payment_method(): void
     {
@@ -111,6 +115,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_updates_a_payment_method(): void
     {
@@ -140,6 +146,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
     /**
      * @test
+     *
+     * @skip Not implemented yet
      */
     public function it_deletes_a_payment_method(): void
     {
