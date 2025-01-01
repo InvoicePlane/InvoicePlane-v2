@@ -123,7 +123,7 @@ class PaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayments::route('/'),
+            'index' => Pages\ManagePayments::route('/'),
         ];
     }
 }

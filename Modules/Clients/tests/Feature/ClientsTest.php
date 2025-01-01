@@ -5,8 +5,8 @@ namespace Modules\Clients\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Clients\Filament\Resources\ClientResource\Pages\CreateClient;
-use Modules\Clients\Filament\Resources\ClientResource\Pages\EditClient;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\CreateClientCustom;
+use Modules\Clients\Filament\Resources\ClientResource\Pages\EditClientCustom;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
@@ -135,7 +135,7 @@ class ClientsTest extends AbstractTestCase
             'client_email' => 'client@example.com',
         ];
 
-        Livewire::test(CreateClient::class)
+        Livewire::test(CreateClientCustom::class)
             ->set('data.client_name', $data['client_name'])
             ->set('data.client_email', $data['client_email'])
             ->call('create');
@@ -162,7 +162,7 @@ class ClientsTest extends AbstractTestCase
             'client_active' => true,
         ];
 
-        Livewire::test(CreateClient::class)
+        Livewire::test(CreateClientCustom::class)
             ->set('data.client_name', $data['client_name'])
             ->set('data.client_email', $data['client_email'])
             ->set('data.client_phone', $data['client_phone'])
@@ -195,7 +195,7 @@ class ClientsTest extends AbstractTestCase
             'client_active' => true,
         ];
 
-        Livewire::test(EditClient::class, ['record' => $client->client_id])
+        Livewire::test(EditClientCustom::class, ['record' => $client->client_id])
             ->set('data.client_name', $updatedData['client_name'])
             ->set('data.client_email', $updatedData['client_email'])
             ->set('data.client_phone', $updatedData['client_phone'])

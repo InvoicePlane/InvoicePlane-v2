@@ -2,18 +2,17 @@
 
 namespace Modules\Payments\Filament\Resources\PaymentResource\Pages;
 
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\Page;
 use Modules\Payments\Filament\Resources\PaymentResource;
 
-class EditPayment extends EditRecord
+class EditPayment extends Page
 {
     protected static string $resource = PaymentResource::class;
 
-    protected function getHeaderActions(): array
+    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        $this->form->fill();
+
+        parent::save();
     }
 }

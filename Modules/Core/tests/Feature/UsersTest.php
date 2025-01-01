@@ -7,11 +7,11 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
-use Modules\Core\Filament\Resources\UserResource\Pages\ManageUsers;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Core\tests\ApiTestTrait;
 use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Filament\Resources\InvoiceResource\Pages\ManageUsers;
 
 /** @group features */
 class UsersTest extends AbstractTestCase

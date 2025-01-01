@@ -15,9 +15,9 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\UserType;
-use Modules\Core\Filament\Resources\UserResource\Pages;
 use Modules\Core\Filament\Resources\UserResource\RelationManagers;
 use Modules\Core\Models\User;
+use Modules\Invoices\Filament\Resources\InvoiceResource\Pages;
 
 class UserResource extends Resource
 {

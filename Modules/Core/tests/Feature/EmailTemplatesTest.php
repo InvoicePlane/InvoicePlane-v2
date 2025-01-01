@@ -5,9 +5,9 @@ namespace Modules\Core\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\EmailTemplateResource\Pages\ManageEmailTemplates;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\tests\AbstractTestCase;
-use Modules\Projects\Filament\Resources\TaskResource\Pages\ManageTasks;
 
 class EmailTemplatesTest extends AbstractTestCase
 {
@@ -38,7 +38,7 @@ class EmailTemplatesTest extends AbstractTestCase
             'email_template_title' => '::email_template_title::',
         ]);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ManageEmailTemplates::class)
             ->assertStatus(200)
             ->assertSee('::email_template_title::');
     }
