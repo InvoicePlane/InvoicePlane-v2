@@ -143,35 +143,6 @@ class ProductApiTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_creates_a_product(): void
-    {
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
-
-        // Payload for creating a product
-        // @var array $payload
-        $payload = [
-            'family_id'           => 1, // Replace with a valid ProductFamily ID
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => 'Test Product',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => 1, // Replace with a valid TaxRate ID
-            'unit_id'             => 1, // Replace with a valid ProductUnit ID
-            'product_tariff'      => 12345,
-        ];
-
-        $response = $this->postJson(route('api.products.store'), $payload);
-        $response->assertStatus(201);
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
         $productFamily = ProductFamily::factory()->create([
@@ -261,30 +232,6 @@ class ProductApiTest extends AbstractTestCase
 
         $this->assertEquals($updatedData['product_name'], $initialProduct->product_name);
         $this->assertEquals($updatedData['product_price'], $initialProduct->product_price);
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
-    public function it_updates_a_product(): void
-    {
-        // Payload for updating a product
-        // @var array $payload
-        $payload = [
-            'product_name'        => 'Updated Product Name',
-            'product_description' => 'Updated product description.',
-            'product_price'       => 30.00,
-            'purchase_price'      => 20.00,
-            'product_tariff'      => 67890,
-        ];
-
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticated();
-
-        $response = $this->putJson(route('api.products.update', ['record' => 1]), $payload);
-        $response->assertStatus(200);
     }
 
     /**
