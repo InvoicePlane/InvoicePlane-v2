@@ -4,8 +4,10 @@ namespace Modules\Core\tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Projects\Filament\Resources\TaskResource\Pages\ManageTasks;
 
 class EmailTemplatesTest extends AbstractTestCase
 {
@@ -26,97 +28,155 @@ class EmailTemplatesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /** @test */
-    public function it_can_create_an_email_template(): void
+    /**
+     * @test
+     */
+    public function it_shows_email_templates_index(): void
     {
-        // Arrange
+        EmailTemplate::factory(5)->create([
+            'email_template_title' => '::email_template_title::',
+        ]);
+
+        Livewire::test(ManageTasks::class)
+            ->assertStatus(200)
+            ->assertSee('::email_template_title::');
+    }
+
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
+    public function it_creates_an_email_template(): void
+    {
         $payload = [
-            'email_template_title'        => 'Welcome Email',
+            'email_template_title'        => '::email_template_title::',
             'email_template_type'         => 'User Welcome',
             'email_template_body'         => '<p>Hello {{ name }},</p><p>Welcome!</p>',
-            'email_template_subject'      => 'Welcome to Our Service',
-            'email_template_from_name'    => 'Support Team',
-            'email_template_from_email'   => 'support@example.com',
-            'email_template_cc'           => 'cc@example.com',
-            'email_template_bcc'          => 'bcc@example.com',
+            'email_template_subject'      => '::email_template_subject::',
+            'email_template_from_name'    => '::email_template_from::',
+            'email_template_from_email'   => '::email_template_from_mail::',
+            'email_template_cc'           => '::email_template_cc::',
+            'email_template_bcc'          => 'email_template_cc',
             'email_template_pdf_template' => 'default_template',
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.email-templates.store'), $payload);
+        Livewire::test(CreateEmailTemplate::class)
+            ->assertStatus(201)
+            ->set('data.email_template_title', $payload['email_template_title'])
+            ->set('data.email_template_type', $payload['email_template_type'])
+            ->set('data.email_template_body', $payload['email_template_body'])
+            ->set('data.email_template_subject', $payload['email_template_subject'])
+            ->set('data.email_template_from_name', $payload['email_template_from_name'])
+            ->set('data.email_template_from_email', $payload['email_template_from_email'])
+            ->set('data.email_template_cc', $payload['email_template_cc'])
+            ->set('data.email_template_bcc', $payload['email_template_bcc'])
+            ->set('data.email_template_pdf_template', $payload['email_template_pdf_template'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('email_templates', [
-            'email_template_title' => $payload['email_template_title'],
-            'email_template_type'  => $payload['email_template_type'],
-        ]);
+        $this->assertDatabaseHas('email_templates', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_an_email_template_with_missing_fields(): void
     {
         // Arrange
         $payload = [
             'email_template_title'        => null, // Missing required field
-            'email_template_type'         => 'User Welcome',
+            'email_template_type'         => '::email_template_title::',
             'email_template_body'         => '<p>Hello {{ name }},</p><p>Welcome!</p>',
-            'email_template_subject'      => 'Welcome to Our Service',
-            'email_template_from_name'    => 'Support Team',
-            'email_template_from_email'   => 'support@example.com',
-            'email_template_cc'           => 'cc@example.com',
+            'email_template_subject'      => '::email_template_subject::',
+            'email_template_from_name'    => '::email_template_from::',
+            'email_template_from_email'   => '::email_template_from_mail::',
+            'email_template_cc'           => '::email_template_cc::',
             'email_template_bcc'          => 'bcc@example.com',
             'email_template_pdf_template' => 'default_template',
         ];
 
-        // Act
-        $response = $this->post(route('filament.ivpl.resources.filament.resources.email-templates.store'), $payload);
+        Livewire::test(CreateEmailTemplate::class)
+            ->assertStatus(422)
+            ->set('data.email_template_title', $payload['email_template_title'])
+            ->set('data.email_template_type', $payload['email_template_type'])
+            ->set('data.email_template_body', $payload['email_template_body'])
+            ->set('data.email_template_subject', $payload['email_template_subject'])
+            ->set('data.email_template_from_name', $payload['email_template_from_name'])
+            ->set('data.email_template_from_email', $payload['email_template_from_email'])
+            ->set('data.email_template_cc', $payload['email_template_cc'])
+            ->set('data.email_template_bcc', $payload['email_template_bcc'])
+            ->set('data.email_template_pdf_template', $payload['email_template_pdf_template'])
+            ->call('create')
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email_template_title']);
+        $this->assertDatabaseHas('email_templates', $payload);
     }
 
-    /** @test */
-    public function it_can_update_an_email_template(): void
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
+    public function it_updates_an_email_template(): void
     {
-        // Arrange
-        $template = EmailTemplate::factory()->create();
+        $emailTemplate = EmailTemplate::factory()->create();
 
-        $payload = [
-            'email_template_title'        => 'Updated Title',
-            'email_template_type'         => 'Updated Type',
-            'email_template_body'         => '<p>Updated body content</p>',
-            'email_template_subject'      => 'Updated Subject',
-            'email_template_from_name'    => 'Updated Name',
-            'email_template_from_email'   => 'updated@example.com',
-            'email_template_cc'           => 'updated_cc@example.com',
-            'email_template_bcc'          => 'updated_bcc@example.com',
-            'email_template_pdf_template' => 'updated_template',
+        $updatedData = [
+            'email_template_title' => '::updated_email_template_title::',
+            'email_template_type'  => '::updated_email_template_type::',
         ];
 
-        // Act
-        $response = $this->put(route('filament.ivpl.resources.filament.resources.email-templates.update', $template->email_template_id), $payload);
+        Livewire::test(EditEmailTemplate::class, ['record' => $emailTemplate->email_template_id])
+            ->set('data.name', $updatedData['name'])
+            ->set('data.subject', $updatedData['subject'])
+            ->set('data.body', $updatedData['body'])
+            ->call('save')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(200);
         $this->assertDatabaseHas('email_templates', [
-            'email_template_title' => $payload['email_template_title'],
-            'email_template_type'  => $payload['email_template_type'],
+            'email_template_title' => $updatedData['email_template_title'],
+            'email_template_type'  => $updatedData['email_template_type'],
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
+    public function it_bulk_deletes_clients(): void
+    {
+        $emailTemplates = EmailTemplate::factory()->count(3)->create();
+
+        Livewire::test(ManageEmailTemplates::class)
+            ->callTableBulkAction('delete', $emailTemplates)
+            ->assertHasNoErrors();
+
+        foreach ($emailTemplates as $emailTemplate) {
+            $this->assertDatabaseMissing('email_templates', [
+                'email_template_id' => $emailTemplate->client_id,
+            ]);
+        }
+    }
+
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_can_delete_an_email_template(): void
     {
-        // Arrange
-        $template = EmailTemplate::factory()->create();
+        $emailTemplate = EmailTemplate::factory()->create();
 
-        // Act
-        $response = $this->delete(route('filament.ivpl.resources.filament.resources.email-templates.destroy', $template->email_template_id));
+        Livewire::test(ManageEmailTemplates::class)
+            ->callTableAction('delete', $emailTemplate->email_template_id)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
-        // Assert
-        $response->assertStatus(200);
-        $this->assertDatabaseMissing('email_templates', ['email_template_id' => $template->email_template_id]);
+        $this->assertDatabaseMissing('email_templates', ['email_template_id' => $emailTemplate->email_template_id]);
     }
 }

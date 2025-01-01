@@ -21,7 +21,11 @@ class InvoicesTest extends AbstractTestCase
      *   ]
      * }
      */
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_generates_correct_invoice_numbers_based_on_settings(): void
     {
         $this->markTestSkipped('Not implemented yet.');

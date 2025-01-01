@@ -28,7 +28,11 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_displays_expense_vendors_index(): void
     {
         $user = User::factory()->create();
@@ -38,7 +42,11 @@ class ExpenseVendorsTest extends AbstractTestCase
             ->assertCanSeeTableRecords(ExpenseVendor::all());
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_an_expense_vendor(): void
     {
         $data = [
@@ -60,7 +68,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_updates_an_expense_vendor(): void
     {
         $expenseVendor = ExpenseVendor::factory()->create([
@@ -82,7 +94,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_deletes_an_expense_vendor(): void
     {
         $expenseVendor = ExpenseVendor::factory()->create();

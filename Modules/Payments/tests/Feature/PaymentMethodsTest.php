@@ -80,7 +80,11 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
     {
         $this->markTestSkipped('Not implemented yet');

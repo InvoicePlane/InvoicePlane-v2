@@ -108,7 +108,11 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['quote_number' => '::quote_number::']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_retrieve_quotes_without_authentication(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -285,7 +289,11 @@ class QuotesApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['quote_number'], $initialQuote->quote_number);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_can_update_quote_line_items(): void
     {
         $this->markTestSkipped('Not implemented yet');

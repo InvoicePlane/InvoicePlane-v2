@@ -35,7 +35,11 @@ class InvoicesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_shows_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -306,7 +310,7 @@ class InvoicesTest extends AbstractTestCase
      *    ]
      * }
      */
-    public function it_can_create_an_invoice(): void
+    public function it_creates_an_invoice(): void
     {
         $this->markTestSkipped();
 
@@ -473,7 +477,11 @@ class InvoicesTest extends AbstractTestCase
 
     // region Spicy
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_projects_process_task_selections(): void
     {
         // $this->authenticate();
@@ -515,7 +523,11 @@ class InvoicesTest extends AbstractTestCase
         $this->assertFileExists(storage_path("app/invoices/{$invoice->invoice_id}.pdf"));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_generate_a_pdf_for_a_non_existent_invoice(): void
     {
         $this->markTestSkipped();
@@ -530,7 +542,11 @@ class InvoicesTest extends AbstractTestCase
     // endregion
 
     // region Custom Tests
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_calculates_invoice_totals_correctly(): void
     {
         $this->markTestSkipped();

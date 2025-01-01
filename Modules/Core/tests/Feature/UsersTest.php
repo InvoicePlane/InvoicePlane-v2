@@ -27,7 +27,11 @@ class UsersTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -69,7 +73,11 @@ class UsersTest extends AbstractTestCase
         $this->assertDatabaseHas('users', ['email' => 'jdoe@example.com']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_a_user_without_required_fields(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -96,7 +104,11 @@ class UsersTest extends AbstractTestCase
         $response->assertStatus(422); // Validation error
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_updates_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -124,7 +136,11 @@ class UsersTest extends AbstractTestCase
         $this->assertDatabaseHas('users', ['user_id' => $user->user_id, 'user_name' => 'updated_user']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_deletes_a_user(): void
     {
         $this->markTestSkipped('Not implemented yet');

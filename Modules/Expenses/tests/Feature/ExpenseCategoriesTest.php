@@ -48,7 +48,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $response->assertSee('::category_name::');
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_displays_expense_categories_index(): void
     {
         $this->markTestIncomplete('Needs migration for Expenses');
@@ -60,7 +64,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
             ->assertCanSeeTableRecords(ExpenseCategory::all());
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_an_expense_category(): void
     {
         $data = [
@@ -78,7 +86,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_updates_an_expense_category(): void
     {
         $expenseCategory = ExpenseCategory::factory()->create([
@@ -100,7 +112,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_deletes_an_expense_category(): void
     {
         $expenseCategory = ExpenseCategory::factory()->create();

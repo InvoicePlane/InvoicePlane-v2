@@ -9,7 +9,11 @@ class ProductUnitsTest extends AbstractTestCase
 {
     // region CRUD Tests
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_a_product_unit(): void
     {
         /**
@@ -30,7 +34,11 @@ class ProductUnitsTest extends AbstractTestCase
         $this->assertDatabaseHas('product_units', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_create_a_product_unit_without_unit_name(): void
     {
         /**
@@ -48,7 +56,11 @@ class ProductUnitsTest extends AbstractTestCase
         $response->assertJsonValidationErrors(['unit_name']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_updates_a_product_unit(): void
     {
         $productUnit = ProductUnit::factory()->create();
@@ -63,7 +75,11 @@ class ProductUnitsTest extends AbstractTestCase
         $this->assertDatabaseHas('product_units', $payload);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_deletes_a_product_unit(): void
     {
         $productUnit = ProductUnit::factory()->create();

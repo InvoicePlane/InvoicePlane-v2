@@ -6,7 +6,11 @@ use Modules\Core\tests\AbstractTestCase;
 
 class PaymentsApiTest extends AbstractTestCase
 {
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function test_api_returns_all_payments(): void
     {
         $this->markTestSkipped('Test not implemented yet');
@@ -20,7 +24,11 @@ class PaymentsApiTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function test_api_can_create_payment(): void
     {
         $this->markTestSkipped('Test not implemented yet');
@@ -37,7 +45,11 @@ class PaymentsApiTest extends AbstractTestCase
         $this->assertDatabaseHas('payments', $data);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function test_api_can_update_payment(): void
     {
         $this->markTestSkipped('Test not implemented yet');
@@ -50,7 +62,11 @@ class PaymentsApiTest extends AbstractTestCase
         $this->assertDatabaseHas('payments', $data);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function test_api_can_delete_payment(): void
     {
         $this->markTestSkipped('Test not implemented yet');

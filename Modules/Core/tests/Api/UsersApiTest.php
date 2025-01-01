@@ -64,7 +64,11 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonFragment(['company' => '::localhost corporation::']);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_can_retrieve_a_list_of_users(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -97,7 +101,11 @@ class UsersApiTest extends AbstractTestCase
             ->assertJsonStructure([['user_id', 'user_name', 'user_company', 'email']]);
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_retrieve_users_without_authentication(): void
     {
         $this->markTestSkipped('Not implemented yet');

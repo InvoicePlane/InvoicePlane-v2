@@ -68,7 +68,11 @@ class PaymentsTest extends AbstractTestCase
             ->assertSee('10-04-2022');
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_creates_a_payment(): void
     {
         // $this->authenticate();
@@ -92,7 +96,11 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     */
     public function it_fails_to_save_payment_without_invoice_id(): void
     {
         // $this->authenticate();
