@@ -36,9 +36,9 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            if (app()->environment('testing')) {
+            /*if (app()->environment('testing')) {
                 require base_path('routes/test.php');
-            }
+            }*/
         });
     }
 }

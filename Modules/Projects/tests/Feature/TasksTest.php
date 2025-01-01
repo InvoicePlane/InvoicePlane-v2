@@ -9,6 +9,8 @@ use Modules\Clients\Models\Client;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Projects\Filament\Resources\TaskResource\Pages\CreateTask;
+use Modules\Projects\Filament\Resources\TaskResource\Pages\EditTask;
 use Modules\Projects\Filament\Resources\TaskResource\Pages\ManageTasks;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;

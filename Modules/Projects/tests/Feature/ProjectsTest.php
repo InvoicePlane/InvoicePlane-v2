@@ -8,6 +8,8 @@ use Livewire\Livewire;
 use Modules\Clients\Models\Client;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Projects\Filament\Resources\ProjectResource\Pages\CreateProject;
+use Modules\Projects\Filament\Resources\ProjectResource\Pages\EditProject;
 use Modules\Projects\Filament\Resources\ProjectResource\Pages\ManageProjects;
 use Modules\Projects\Models\Project;
 

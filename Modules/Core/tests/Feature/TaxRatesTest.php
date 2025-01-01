@@ -5,6 +5,8 @@ namespace Modules\Core\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\TaxRateResource\Pages\CreateTaxRate;
+use Modules\Core\Filament\Resources\TaxRateResource\Pages\EditTaxRate;
 use Modules\Core\Filament\Resources\TaxRateResource\Pages\ManageTaxRates;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\tests\AbstractTestCase;

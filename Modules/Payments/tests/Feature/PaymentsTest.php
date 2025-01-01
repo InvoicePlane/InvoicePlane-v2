@@ -9,9 +9,11 @@ use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Payments\Filament\Resources\PaymentResource\Pages\CreatePayment;
+use Modules\Payments\Filament\Resources\PaymentResource\Pages\EditPayment;
+use Modules\Payments\Filament\Resources\PaymentResource\Pages\ManagePayments;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Models\PaymentMethod;
-use Modules\Products\Filament\Resources\ProductUnitResource\Pages\ManagePayments;
 
 class PaymentsTest extends AbstractTestCase
 {

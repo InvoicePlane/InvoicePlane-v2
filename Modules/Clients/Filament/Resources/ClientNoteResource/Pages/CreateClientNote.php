@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Clients\Filament\Resources\ClientResource\Pages;
+namespace Modules\Clients\Filament\Resources\ClientNoteResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use Modules\Clients\Filament\Resources\ClientResource;

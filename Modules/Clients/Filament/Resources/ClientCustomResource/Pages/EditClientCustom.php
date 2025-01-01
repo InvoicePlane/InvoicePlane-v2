@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Clients\Filament\Resources\ClientResource\Pages;
+namespace Modules\Clients\Filament\Resources\ClientCustomResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
 use Modules\Clients\Filament\Resources\ClientResource;

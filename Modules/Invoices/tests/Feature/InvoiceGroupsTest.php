@@ -5,6 +5,8 @@ namespace Modules\Invoices\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\CreateInvoiceGroup;
+use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\EditInvoiceGroup;
 use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\ManageInvoiceGroups;
 use Modules\Invoices\Models\InvoiceGroup;
 

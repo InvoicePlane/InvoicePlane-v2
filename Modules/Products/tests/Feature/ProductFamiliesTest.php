@@ -5,6 +5,8 @@ namespace Modules\Products\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Products\Filament\Resources\ProductFamilyResource\Pages\CreateProductFamily;
+use Modules\Products\Filament\Resources\ProductFamilyResource\Pages\EditProductFamily;
 use Modules\Products\Filament\Resources\ProductFamilyResource\Pages\ManageProductFamilies;
 use Modules\Products\Models\ProductFamily;
 

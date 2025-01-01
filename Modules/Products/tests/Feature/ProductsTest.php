@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Products\Filament\Resources\ProductResource\Pages\CreateProduct;
+use Modules\Products\Filament\Resources\ProductResource\Pages\EditProduct;
 use Modules\Products\Filament\Resources\ProductResource\Pages\ManageProducts;
 use Modules\Products\Models\Product;
 

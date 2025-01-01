@@ -15,6 +15,8 @@ use Modules\Payments\Models\PaymentMethod;
 use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Filament\Resources\QuoteResource\Pages\CreateQuote;
+use Modules\Quotes\Filament\Resources\QuoteResource\Pages\EditQuote;
 use Modules\Quotes\Filament\Resources\QuoteResource\Pages\ManageQuotes;
 use Modules\Quotes\Models\Quote;
 
