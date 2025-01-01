@@ -7,12 +7,12 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
-use Modules\Core\Filament\Resources\UserResource\Pages\CreateUser;
-use Modules\Core\Filament\Resources\UserResource\Pages\EditUser;
-use Modules\Core\Filament\Resources\UserResource\Pages\ManageUsers;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Core\tests\ApiTestTrait;
+use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\CreateUser;
+use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\EditUser;
+use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\ManageUsers;
 use Modules\Expenses\Models\Expense;
 
 /** @group features */

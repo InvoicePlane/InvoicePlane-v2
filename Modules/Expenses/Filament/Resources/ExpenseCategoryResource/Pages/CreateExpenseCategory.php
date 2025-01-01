@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Filament\Resources\UserResource\Pages;
+namespace Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages;
 
 use Filament\Resources\Pages\ManageRecords;
 use Modules\Core\Filament\Resources\UserResource;

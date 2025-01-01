@@ -5,10 +5,10 @@ namespace Modules\Expenses\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\UserResource\Pages\CreateExpenseVendor;
-use Modules\Core\Filament\Resources\UserResource\Pages\EditExpenseVendor;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
+use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\CreateExpenseVendor;
+use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\EditExpenseVendor;
 use Modules\Expenses\Filament\Resources\ExpenseVendorResource\Pages\ManageExpenseVendors;
 use Modules\Expenses\Models\ExpenseVendor;
 
