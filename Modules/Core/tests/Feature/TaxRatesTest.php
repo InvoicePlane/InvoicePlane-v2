@@ -4,8 +4,9 @@ namespace Modules\Core\tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Livewire\Livewire;
+use Modules\Core\Filament\Resources\TaxRateResource\Pages\ManageTaxRates;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 
 class TaxRatesTest extends AbstractTestCase
@@ -33,16 +34,16 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_shows_tax_rates_index(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         TaxRate::factory()->create([
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => '15',
         ]);
 
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
-        $response->assertStatus(200);
-        $response->assertSee('::tax_rate_name::');
+        Livewire::test(ManageTaxRates::class)
+            ->assertStatus(200)
+            ->assertSee('::tax_rate_name::');
     }
 
     /**
@@ -52,17 +53,21 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_creates_a_tax_rate(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $payload = [
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => '15',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->post(route('filament.ivpl.resources.filament.resources.tax-rates.store'), $payload);
-        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
+        Livewire::test(CreateTaxRate::class)
+            ->set('data.tax_rate_name', $payload['tax_rate_name'])
+            ->set('data.tax_rate_percent', $payload['tax_rate_percent'])
+            ->call('create')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('tax_rates', ['tax_rate_name' => '::tax_rate_name::']);
+        $this->assertDatabaseHas('tax_rates', $payload);
     }
 
     /**
@@ -72,23 +77,28 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_updates_a_tax_rate(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $taxRate = TaxRate::factory()->create([
             'tax_rate_name'    => '::original_tax_rate_name::',
             'tax_rate_percent' => '15',
         ]);
 
-        $payload = [
+        $updatedData = [
             'tax_rate_name'    => '::updated_tax_rate_name::',
             'tax_rate_percent' => '20',
         ];
 
-        $response = $this->actingAs(user: $user, guard: 'web')->put(route('filament.ivpl.resources.filament.resources.tax-rates.update', ['record' => $taxRate->tax_rate_id]), $payload);
-        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
+        Livewire::test(EditTaxRate::class, ['record' => $taxRate->tax_rate_id])
+            ->set('data.tax_rate_name', $updatedData['tax_rate_name'])
+            ->set('data.tax_rate_percent', $updatedData['tax_rate_percent'])
+            ->call('save')
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
-        $taxRate->refresh();
-        $this->assertEquals('::updated_tax_rate_name::', $taxRate->tax_rate_name);
+        $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
+            'tax_rate_id' => $taxRate->tax_rate_id,
+        ]));
     }
 
     /**
@@ -98,13 +108,15 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_deletes_a_tax_rate(): void
     {
-        $user = User::factory()->create();
-
+        // $this->authenticate();
         $taxRate = TaxRate::factory()->create();
 
-        $response = $this->actingAs(user: $user, guard: 'web')->delete(route('filament.ivpl.resources.filament.resources.tax-rates.destroy', ['record' => $taxRate->tax_rate_id]));
-        $response->assertRedirect(route('filament.ivpl.resources.filament.resources.tax-rates.index'));
+        Livewire::test(ManageTaxRates::class)
+            ->callTableAction('delete', $taxRate->tax_rate_id)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
+    //endregion
 }

@@ -33,6 +33,7 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_shows_email_templates_index(): void
     {
+        // $this->authenticate();
         EmailTemplate::factory(5)->create([
             'email_template_title' => '::email_template_title::',
         ]);
@@ -49,6 +50,7 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_creates_an_email_template(): void
     {
+        // $this->authenticate();
         $payload = [
             'email_template_title'        => '::email_template_title::',
             'email_template_type'         => 'User Welcome',
@@ -85,17 +87,17 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_fails_to_create_an_email_template_with_missing_fields(): void
     {
-        // Arrange
+        // $this->authenticate();
         $payload = [
-            'email_template_title'        => null, // Missing required field
+            'email_template_title'        => null,
             'email_template_type'         => '::email_template_title::',
-            'email_template_body'         => '<p>Hello {{ name }},</p><p>Welcome!</p>',
+            'email_template_body'         => '::email_template_body::',
             'email_template_subject'      => '::email_template_subject::',
             'email_template_from_name'    => '::email_template_from::',
             'email_template_from_email'   => '::email_template_from_mail::',
             'email_template_cc'           => '::email_template_cc::',
-            'email_template_bcc'          => 'bcc@example.com',
-            'email_template_pdf_template' => 'default_template',
+            'email_template_bcc'          => '::email_template_bcc::',
+            'email_template_pdf_template' => '::email_template_pdf::',
         ];
 
         Livewire::test(CreateEmailTemplate::class)
@@ -122,6 +124,7 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_updates_an_email_template(): void
     {
+        // $this->authenticate();
         $emailTemplate = EmailTemplate::factory()->create();
 
         $updatedData = [
@@ -150,6 +153,7 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_bulk_deletes_clients(): void
     {
+        // $this->authenticate();
         $emailTemplates = EmailTemplate::factory()->count(3)->create();
 
         Livewire::test(ManageEmailTemplates::class)

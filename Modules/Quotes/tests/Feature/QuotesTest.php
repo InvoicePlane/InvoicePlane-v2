@@ -43,7 +43,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_quotes_index(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -83,7 +83,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_draft_quotes_index(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -131,8 +131,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_sent_quotes_index(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -180,8 +179,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_viewed_quotes_index(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -229,8 +227,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_approved_quotes_index(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -278,8 +275,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_rejected_quotes_index(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -327,8 +323,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_only_filtered_canceled_quotes_index(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -376,7 +371,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_shows_all_quotes_index(): void
     {
-        $user = User::factory()->create();
+        // $this->authenticate();
 
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
@@ -542,6 +537,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_deletes_a_quote(): void
     {
+        // $this->authenticate();
         $quote = Quote::factory()->create();
 
         Livewire::test(ManageQuotes::class)
@@ -561,6 +557,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_changes_client_of_a_quote(): void
     {
+        // $this->authenticate();
         $quote = Quote::factory()->create();
         $client = Client::factory()->create();
 
@@ -613,6 +610,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_adds_a_task_to_a_quote(): void
     {
+        // $this->authenticate();
         // Payload for adding a task
         $task = Task::factory()->create();
         $payload = [
@@ -641,6 +639,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_generates_a_quote_pdf(): void
     {
+        // $this->authenticate();
         $quote = Quote::factory()->create();
 
         Livewire::test(ManageQuotes::class)
@@ -658,6 +657,7 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_calculates_totals_for_a_quote(): void
     {
+        // $this->authenticate();
         $client = Client::factory()->create();
         $payload = [
             'client_id'              => $client->client_id,
