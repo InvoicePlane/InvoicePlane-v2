@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Filament\Resources\EmailTemplateResource\Pages;
+namespace Modules\Core\Filament\Resources\ImportResource\Pages;
 
 use Filament\Resources\Pages\Page;
 use Modules\Core\Filament\Resources\EmailTemplateResource;
