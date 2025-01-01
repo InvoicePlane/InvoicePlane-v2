@@ -48,13 +48,11 @@ class ProductFamiliesTest extends AbstractTestCase
     {
         $this->markTestSkipped('something about a view');
         $payload = [
-            'family_name'        => '::product_family_name::',
-            'family_description' => '::product_family_description::',
+            'family_name' => '::product_family_name::',
         ];
 
         Livewire::test(CreateProductFamily::class)
             ->set('data.family_name', $payload['family_name'])
-            ->set('data.family_description', $payload['family_description'])
             ->call('create')
             ->assertHasNoErrors();
 
@@ -77,13 +75,12 @@ class ProductFamiliesTest extends AbstractTestCase
          * - family_name
          */
         $payload = [
-            'family_description' => '::product_family_description::',
+            'family_description' => '::dummydummy::',
         ];
 
         Livewire::test(CreateProductFamily::class)
             ->assertStatus(422)
             ->set('data.family_name', $payload['family_name'])
-            ->set('data.family_description', $payload['family_description'])
             ->call('create')
             ->assertHasNoErrors();
 
@@ -109,18 +106,15 @@ class ProductFamiliesTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
         $productFamily = ProductFamily::factory()->create([
-            'family_name'        => '::original_product_family_name::',
-            'family_description' => '::original_product_family_description::',
+            'family_name' => '::original_product_family_name::',
         ]);
 
         $updatedData = [
-            'family_name'        => '::updated_product_family_name::',
-            'family_description' => '::updated_product_family_description::',
+            'family_name' => '::updated_product_family_name::',
         ];
 
         Livewire::test(EditProductFamily::class, ['record' => $productFamily->family_id])
             ->set('data.family_name', $updatedData['family_name'])
-            ->set('data.family_description', $updatedData['family_description'])
             ->call('save')
             ->assertHasNoErrors();
 

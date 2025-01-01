@@ -527,7 +527,7 @@ class PaymentsTest extends AbstractTestCase
         Livewire::test(ManagePayments::class)
             ->assertStatus(422)
             ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
+            ->set('data.payment_amount', $payload['payment_amount'])
             ->call('processRefund')
             ->assertHasNoErrors();
 

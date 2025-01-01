@@ -450,10 +450,8 @@ class QuotesTest extends AbstractTestCase
             ->assertStatus(200)
             ->set('data.quote_number', $payload['quote_number'])
             ->set('data.client_id', $payload['client_id'])
-            ->set('data.quote_date', $payload['quote_date'])
-            ->set('data.quote_due_date', $payload['quote_due_date'])
-            ->set('data.quote_status', $payload['quote_status'])
-            ->set('data.quote_total', $payload['quote_total'])
+            ->set('data.quote_date_expires', $payload['quote_date_expires'])
+            ->set('data.quote_status_id', $payload['quote_status_id'])
             ->call('create')
             ->assertHasNoErrors();
 
@@ -517,19 +515,17 @@ class QuotesTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_updates_a_quote_status(): void
+    public function it_updates_a_quote_status_id(): void
     {
         // $this->authenticate();
         $client = Client::factory()->create(['client_name' => '::client_name::']);
         $quote = Quote::factory()->create(['quote_status_id' => QuoteStatus::DRAFT]);
 
         $payload = [
-            'quote_number'   => 'Q12345',
-            'client_id'      => $client->client_id,
-            'quote_date'     => now()->toDateString(),
-            'quote_due_date' => now()->addDays(7)->toDateString(),
-            'quote_status'   => QuoteStatus::DRAFT,
-            'quote_total'    => 50.00,
+            'quote_number'       => 'Q12345',
+            'client_id'          => $client->client_id,
+            'quote_date_expires' => now()->addDays(7)->toDateString(),
+            'quote_status_id'    => QuoteStatus::DRAFT,
         ];
 
         Quote::factory()->create($payload);
@@ -542,10 +538,8 @@ class QuotesTest extends AbstractTestCase
             ->assertStatus(200)
             ->set('data.quote_number', $payload['quote_number'])
             ->set('data.client_id', $payload['client_id'])
-            ->set('data.quote_date', $payload['quote_date'])
-            ->set('data.quote_due_date', $payload['quote_due_date'])
-            ->set('data.quote_status', $payload['quote_status'])
-            ->set('data.quote_total', $payload['quote_total'])
+            ->set('data.quote_date_expires', $payload['quote_date_expires'])
+            ->set('data.quote_status_id', $payload['quote_status_id'])
             ->call('save')
             ->assertHasNoErrors();
 
@@ -767,10 +761,8 @@ class QuotesTest extends AbstractTestCase
             ->assertStatus(200)
             ->set('data.quote_number', $payload['quote_number'])
             ->set('data.client_id', $payload['client_id'])
-            ->set('data.quote_date', $payload['quote_date'])
-            ->set('data.quote_due_date', $payload['quote_due_date'])
-            ->set('data.quote_status', $payload['quote_status'])
-            ->set('data.quote_total', $payload['quote_total'])
+            ->set('data.quote_date_expires', $payload['quote_date_expires'])
+            ->set('data.quote_status_id', $payload['quote_status_id'])
             ->call('create')
             ->assertHasNoErrors();
 
