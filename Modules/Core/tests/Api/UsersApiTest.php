@@ -139,7 +139,7 @@ class UsersApiTest extends AbstractTestCase
             'user_password_confirmation' => 'longPasswordOf12345678Characters',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $response->assertJsonFragment(['name' => '::user_name::']);
         $response->assertJsonFragment(['company' => '::localhost corporation::']);

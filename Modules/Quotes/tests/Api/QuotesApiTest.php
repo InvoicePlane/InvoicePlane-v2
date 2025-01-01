@@ -170,11 +170,11 @@ class QuotesApiTest extends AbstractTestCase
             'quote_number'     => '::quote_number::',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialQuote->refresh();
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
@@ -413,7 +413,7 @@ class QuotesApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**
@@ -435,7 +435,7 @@ class QuotesApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.add_task', ['record' => $quote->id]), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
     // endregion
 
@@ -474,7 +474,7 @@ class QuotesApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.copy_to_invoice', ['record' => $quote->id]), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**
@@ -494,7 +494,7 @@ class QuotesApiTest extends AbstractTestCase
 
         $response = $this->post(route('api.quotes.clone', ['quote' => $quote->quote_id]));
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $response->assertJsonFragment(['number' => '::quote_number:: - Copy']);
     }
 

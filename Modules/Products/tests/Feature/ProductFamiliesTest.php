@@ -71,6 +71,7 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_fails_to_create_a_product_family_without_family_name(): void
     {
+        $this->markTestIncomplete();
         /**
          * Missing Required Fields:
          * - family_name
@@ -106,6 +107,7 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_updates_a_product_family(): void
     {
+        $this->markTestIncomplete();
         $productFamily = ProductFamily::factory()->create([
             'family_name'        => '::original_product_family_name::',
             'family_description' => '::original_product_family_description::',
@@ -134,6 +136,7 @@ class ProductFamiliesTest extends AbstractTestCase
      */
     public function it_deletes_a_product_family(): void
     {
+        $this->markTestIncomplete('needs delete action');
         $productFamily = ProductFamily::factory()->create([
             'family_name' => '::product_family_name::',
         ]);

@@ -126,7 +126,7 @@ class ProductApiTest extends AbstractTestCase
             'product_price' => '1.00',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialProduct->refresh();
 

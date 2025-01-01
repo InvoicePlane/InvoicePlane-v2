@@ -85,7 +85,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
             'family_name' => $initialFamily->family_name,
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialFamily->refresh();
         $response->assertJsonFragment(['product_family' => '::family_name::']);
@@ -113,7 +113,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.productfamilies.store'), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**

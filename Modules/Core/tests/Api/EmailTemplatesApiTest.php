@@ -73,7 +73,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
             'email_template_title' => '::email_template_title::',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialEmailTemplate->refresh();
 

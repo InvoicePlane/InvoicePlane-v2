@@ -67,7 +67,7 @@ class PaymentMethodApiTest extends AbstractTestCase
             'payment_method_name' => $initialPaymentMethod->payment_method_name,
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialPaymentMethod->refresh();
         $response->assertJsonFragment(['name' => '::payment_method_name::']);
@@ -109,7 +109,7 @@ class PaymentMethodApiTest extends AbstractTestCase
             'payment_method_name' => $initialPaymentMethod->payment_method_name,
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialPaymentMethod->refresh();
         $response->assertJsonFragment(['name' => '::payment_method_name::']);

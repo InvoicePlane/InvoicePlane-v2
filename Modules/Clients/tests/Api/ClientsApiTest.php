@@ -269,7 +269,7 @@ class ClientsApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.clients.store'), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**

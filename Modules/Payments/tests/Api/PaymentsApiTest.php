@@ -41,7 +41,7 @@ class PaymentsApiTest extends AbstractTestCase
 
         $response = $this->postJson(route('api.payments.store'), $data);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         $this->assertDatabaseHas('payments', $data);
     }
 

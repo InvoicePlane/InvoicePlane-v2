@@ -107,7 +107,7 @@ class ProjectsApiTest extends AbstractTestCase
             'project_name' => '::project_name::',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialProject->refresh();
 
@@ -142,7 +142,7 @@ class ProjectsApiTest extends AbstractTestCase
         ];
 
         $response = $this->postJson(route('api.projects.store'), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**

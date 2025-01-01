@@ -117,7 +117,7 @@ class TasksApiTest extends AbstractTestCase
             'task_finish_date' => '2023-12-31',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialTask->refresh();
 

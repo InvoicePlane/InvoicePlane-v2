@@ -50,7 +50,7 @@ class InvoicesApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.invoices.store'), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**

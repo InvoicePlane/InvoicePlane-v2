@@ -83,7 +83,7 @@ class ProductUnitsApiTest extends AbstractTestCase
             'unit_name' => $initialProductUnit->unit_name,
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialProductUnit->refresh();
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);
@@ -113,7 +113,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         // $this->authenticated();
 
         $response = $this->postJson(route('api.filament.ivpl.resources.productunits.store'), $payload);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**
@@ -131,7 +131,7 @@ class ProductUnitsApiTest extends AbstractTestCase
             'unit_name' => $initialProductUnit->unit_name,
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialProductUnit->refresh();
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);

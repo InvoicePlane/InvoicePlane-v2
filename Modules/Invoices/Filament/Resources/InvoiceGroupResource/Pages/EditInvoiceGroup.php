@@ -2,10 +2,10 @@
 
 namespace Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages;
 
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\EditRecord;
 use Modules\Core\Filament\Resources\UserResource;
 
-class EditInvoiceGroup extends ManageRecords
+class EditInvoiceGroup extends EditRecord
 {
     protected static string $resource = UserResource::class;
 

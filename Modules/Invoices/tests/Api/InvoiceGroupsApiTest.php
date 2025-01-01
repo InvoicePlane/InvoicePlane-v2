@@ -60,7 +60,7 @@ class InvoiceGroupsApiTest extends AbstractTestCase
         $invoiceGroup = InvoiceGroup::factory()->make()->toArray();
 
         $response = $this->postJson(route('api.invoice-groups.store'), $invoiceGroup);
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     /**

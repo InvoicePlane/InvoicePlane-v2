@@ -70,7 +70,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ];
 
         Livewire::test(CreatePaymentMethod::class)
-            ->assertStatus(201)
+            ->assertStatus(200)
             ->set('data.payment_method_name', $payload['payment_method_name'])
             ->call('create')
             ->assertHasNoErrors();
@@ -107,7 +107,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ];
 
         Livewire::test(CreatePaymentMethod::class)
-            ->assertStatus(201)
+            ->assertStatus(200)
             ->set('data.description', $payload['description'])
             ->call('create')
             ->assertHasNoErrors();

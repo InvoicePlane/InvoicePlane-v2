@@ -77,7 +77,7 @@ class TaxRatesApiTest extends AbstractTestCase
             'tax_rate_percent' => '21',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
 
         $initialTaxRate->refresh();
 

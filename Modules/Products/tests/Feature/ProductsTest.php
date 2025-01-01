@@ -79,17 +79,27 @@ class ProductsTest extends AbstractTestCase
     public function it_creates_a_product(): void
     {
         // $this->authenticated();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
 
         $payload = [
-            'family_id'           => 1,
+            'family_id'           => $productFamily->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
             'product_price'       => 25.50,
             'purchase_price'      => 15.00,
             'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => 1,
-            'unit_id'             => 1,
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
             'product_tariff'      => 12345,
         ];
 
@@ -118,17 +128,28 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_updates_a_product(): void
     {
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
         $payload = [
-            'family_id'           => 1,
+            'family_id'           => $productFamily->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
-            'product_price'       => 30.00,
-            'purchase_price'      => 20.00,
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
             'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => 1,
-            'unit_id'             => 1,
-            'product_tariff'      => 67890,
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
         ];
 
         $product = Product::factory()->create($payload);
@@ -157,18 +178,30 @@ class ProductsTest extends AbstractTestCase
     {
         $this->markTestIncomplete('Needs delete action');
 
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
         $payload = [
-            'family_id'           => 1,
+            'family_id'           => $productFamily->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
-            'product_price'       => 30.00,
-            'purchase_price'      => 20.00,
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
             'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => 1,
-            'unit_id'             => 1,
-            'product_tariff'      => 67890,
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
         ];
+
         $product = Product::factory()->create($payload);
 
         Livewire::test(ManageProducts::class)
@@ -188,7 +221,24 @@ class ProductsTest extends AbstractTestCase
     public function it_bulk_deletes_products(): void
     {
         // $this->authenticated();
-        $products = Product::factory()->count(3)->create();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
+        $payload = [
+            'family_id'   => $productFamily->family_id,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+            'unit_id'     => $productUnit->unit_id,
+        ];
+
+        $products = Product::factory(3)->create($payload);
 
         Livewire::test(ManageProducts::class)
             ->callTableBulkAction('delete', $products)

@@ -9,4 +9,4 @@ parameters:
         - '#Call to an undefined method .*#'
         - '#Call to an undefined static method .*::.*#'
 
-    level: 2
+    level: 3
