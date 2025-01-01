@@ -7,13 +7,12 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Filament\Resources\ClientResource\Pages\ManageClients;
 use Modules\Clients\Models\Client;
+use Modules\Core\Filament\Resources\UserResource\Pages\CreateUser;
+use Modules\Core\Filament\Resources\UserResource\Pages\EditUser;
+use Modules\Core\Filament\Resources\UserResource\Pages\ManageUsers;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Core\tests\ApiTestTrait;
-use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\CreateUser;
-use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\EditUser;
-use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\ManageUsers;
-use Modules\Expenses\Models\Expense;
 
 /** @group features */
 class UsersTest extends AbstractTestCase
@@ -39,17 +38,17 @@ class UsersTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
-    public function it_shows_expenses_index(): void
+    public function it_shows_users_index(): void
     {
         $user = User::factory()->create();
 
-        Expense::factory()->create([
-            'expense_name' => '::expense_name::',
+        User::factory()->create([
+            'user_name' => '::user_name::',
         ]);
 
         Livewire::test(ManageUsers::class)
             ->assertStatus(200)
-            ->assertSee('::expense_name::');
+            ->assertSee('::user_name::');
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace Modules\Products\Filament\Resources\ProductFamilyResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\EditRecord;
 use Modules\Products\Filament\Resources\ProductFamilyResource;
 
-class EditProductFamily extends Page
+class EditProductFamily extends EditRecord
 {
     protected static string $resource = ProductFamilyResource::class;
 

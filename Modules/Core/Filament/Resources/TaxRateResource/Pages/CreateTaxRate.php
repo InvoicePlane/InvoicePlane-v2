@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Filament\Resources\TaxRateResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Core\Filament\Resources\TaxRateResource;
 
-class CreateTaxRate extends Page
+class CreateTaxRate extends CreateRecord
 {
     protected static string $resource = TaxRateResource::class;
 

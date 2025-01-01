@@ -2,10 +2,10 @@
 
 namespace Modules\Projects\Filament\Resources\TaskResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\EditRecord;
 use Modules\Projects\Filament\Resources\TaskResource;
 
-class EditTask extends Page
+class EditTask extends EditRecord
 {
     protected static string $resource = TaskResource::class;
 

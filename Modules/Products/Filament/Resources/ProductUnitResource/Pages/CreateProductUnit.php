@@ -2,10 +2,10 @@
 
 namespace Modules\Products\Filament\Resources\ProductUnitResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Products\Transformers\ProductUnitResource;
 
-class CreateProductUnit extends Page
+class CreateProductUnit extends CreateRecord
 {
     protected static string $resource = ProductUnitResource::class;
 

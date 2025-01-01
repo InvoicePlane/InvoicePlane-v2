@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Filament\Resources\ImportResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Core\Filament\Resources\EmailTemplateResource;
 
-class CreateImport extends Page
+class CreateImport extends CreateRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 

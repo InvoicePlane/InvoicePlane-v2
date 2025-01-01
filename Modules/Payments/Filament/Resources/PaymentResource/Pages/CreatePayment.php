@@ -2,10 +2,10 @@
 
 namespace Modules\Payments\Filament\Resources\PaymentResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Payments\Filament\Resources\PaymentResource;
 
-class CreatePayment extends Page
+class CreatePayment extends CreateRecord
 {
     protected static string $resource = PaymentResource::class;
 

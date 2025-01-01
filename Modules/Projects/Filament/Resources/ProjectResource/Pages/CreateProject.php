@@ -2,10 +2,10 @@
 
 namespace Modules\Projects\Filament\Resources\ProjectResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Projects\Filament\Resources\ProjectResource;
 
-class CreateProject extends Page
+class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
 

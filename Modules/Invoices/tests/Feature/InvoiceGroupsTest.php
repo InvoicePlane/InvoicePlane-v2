@@ -2,8 +2,8 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\CreateInvoiceGroup;
 use Modules\Invoices\Filament\Resources\InvoiceGroupResource\Pages\EditInvoiceGroup;
@@ -12,6 +12,8 @@ use Modules\Invoices\Models\InvoiceGroup;
 
 class InvoiceGroupsTest extends AbstractTestCase
 {
+    use RefreshDatabase;
+
     /**
      * @test
      *
@@ -19,7 +21,6 @@ class InvoiceGroupsTest extends AbstractTestCase
      */
     public function it_displays_invoice_groups_index(): void
     {
-        $user = User::factory()->create();
         InvoiceGroup::factory()->create(['invoice_group_name' => 'Test Invoice Group']);
 
         Livewire::test(ManageInvoiceGroups::class)

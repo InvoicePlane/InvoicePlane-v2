@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Filament\Resources\EmailTemplateResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Core\Filament\Resources\EmailTemplateResource;
 
-class CreateEmailTemplate extends Page
+class CreateEmailTemplate extends CreateRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 

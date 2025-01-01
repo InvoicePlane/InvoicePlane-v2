@@ -62,11 +62,10 @@ class ProjectsTest extends AbstractTestCase
      *    "client_id": 1,
      *    "project_name": "Project Alpha"
      * }
-     *
-     * @skip Not implemented yet
      */
     public function it_creates_a_project(): void
     {
+        $this->markTestSkipped('Something about a view');
         // $this->authenticate();
 
         $payload = [

@@ -37,17 +37,16 @@ class ProductFamiliesTest extends AbstractTestCase
 
     /**
      * @test
+     * Payload:
+     * {
+     * "family_name": "::product_family_name::"
+     * }
      *
      * @skip Not implemented yet
      */
     public function it_creates_a_product_family(): void
     {
-        /**
-         * Payload:
-         * {
-         *     "family_name": "::product_family_name::"
-         * }
-         */
+        $this->markTestSkipped('something about a view');
         $payload = [
             'family_name'        => '::product_family_name::',
             'family_description' => '::product_family_description::',

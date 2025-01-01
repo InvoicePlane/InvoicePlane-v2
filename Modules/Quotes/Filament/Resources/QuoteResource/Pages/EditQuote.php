@@ -2,10 +2,10 @@
 
 namespace Modules\Quotes\Filament\Resources\QuoteResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\EditRecord;
 use Modules\Quotes\Transformers\QuoteResource;
 
-class EditQuote extends Page
+class EditQuote extends EditRecord
 {
     protected static string $resource = QuoteResource::class;
 

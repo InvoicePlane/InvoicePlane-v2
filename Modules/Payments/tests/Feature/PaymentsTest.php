@@ -106,9 +106,6 @@ class PaymentsTest extends AbstractTestCase
     public function it_fails_to_save_payment_without_invoice_id(): void
     {
         // $this->authenticate();
-        $invoice = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
         $payload = [
             'payment_date' => '2024-11-22',
             'amount'       => 100,
@@ -134,9 +131,6 @@ class PaymentsTest extends AbstractTestCase
      **/
     public function it_payments_assign_method(): void
     {
-        $invoice = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
         $payload = [
             'payment_date' => '2024-11-22',
             'amount'       => 100,

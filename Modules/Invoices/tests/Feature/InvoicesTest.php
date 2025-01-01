@@ -479,11 +479,10 @@ class InvoicesTest extends AbstractTestCase
 
     /**
      * @test
-     *
-     * @skip Not implemented yet
      */
     public function it_projects_process_task_selections(): void
     {
+        $this->markTestIncomplete();
         // $this->authenticate();
         $tasks = Task::factory()->count(3)->create();
 

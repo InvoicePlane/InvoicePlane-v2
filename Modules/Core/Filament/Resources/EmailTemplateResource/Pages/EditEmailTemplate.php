@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Filament\Resources\EmailTemplateResource\Pages;
 
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\EditRecord;
 use Modules\Core\Filament\Resources\EmailTemplateResource;
 
-class EditEmailTemplate extends Page
+class EditEmailTemplate extends EditRecord
 {
     protected static string $resource = EmailTemplateResource::class;
 

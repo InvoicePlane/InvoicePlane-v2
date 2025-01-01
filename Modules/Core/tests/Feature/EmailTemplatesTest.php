@@ -5,9 +5,9 @@ namespace Modules\Core\tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\ImportResource\Pages\CreateEmailTemplate;
-use Modules\Core\Filament\Resources\ImportResource\Pages\EditEmailTemplate;
-use Modules\Core\Filament\Resources\ImportResource\Pages\ManageEmailTemplates;
+use Modules\Core\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
+use Modules\Core\Filament\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
+use Modules\Core\Filament\Resources\EmailTemplateResource\Pages\ManageEmailTemplates;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\tests\AbstractTestCase;
 

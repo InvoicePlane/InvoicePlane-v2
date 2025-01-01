@@ -135,17 +135,14 @@ class TasksTest extends AbstractTestCase
      */
     public function it_fails_to_create_a_task_without_required_fields(): void
     {
-        // $this->authenticate();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        //$this->authenticate();
 
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
             'project_name' => '::project_name::',
         ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
-        ]);
+        $taxRate = TaxRate::factory()->create(['tax_rate_name' => '::taxrate_name::']);
 
         $payload = [
             'project_id'  => $project->project_id,
@@ -154,14 +151,13 @@ class TasksTest extends AbstractTestCase
         ];
 
         Livewire::test(CreateTask::class)
-            ->assertStatus(201)
             ->set('data.project_id', $payload['project_id'])
             ->set('data.task_name', $payload['task_name'])
             ->set('data.tax_rate_id', $payload['tax_rate_id'])
             ->call('create')
-            ->assertHasNoErrors();
+            ->assertHasErrors(['data.task_name' => 'required']);
 
-        $this->assertDatabaseHas('tasks', $payload);
+        $this->assertDatabaseMissing('tasks', $payload);
     }
 
     /**

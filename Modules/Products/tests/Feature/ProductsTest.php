@@ -202,10 +202,9 @@ class ProductsTest extends AbstractTestCase
     {
         // $this->authenticate();
         $product1 = Product::factory()->create();
-        $product2 = Product::factory()->create();
 
         Livewire::test(ManageProducts::class)
-            ->callTableAction('process_selections', $product1)
+            ->callTableAction('processSelections', $product1)
             ->assertHasNoErrors();
     }
 
@@ -220,8 +219,6 @@ class ProductsTest extends AbstractTestCase
     {
         // $this->authenticate();
         $product1 = Product::factory()->create();
-        $product2 = Product::factory()->create();
-
         Livewire::test(ManageProducts::class)
             ->callTableAction('process_selections', $product1)
             ->assertHasNoErrors();
