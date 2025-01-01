@@ -118,5 +118,5 @@ class TaxRatesTest extends AbstractTestCase
 
         $this->assertDatabaseMissing('tax_rates', ['tax_rate_id' => $taxRate->tax_rate_id]);
     }
-    //endregion
+    // endregion
 }

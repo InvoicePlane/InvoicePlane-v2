@@ -42,4 +42,5 @@ class ExpensesTest extends AbstractTestCase
         $response->assertStatus(200);
         $response->assertSee('::expense_name::');
     }
+    // endregion
 }
