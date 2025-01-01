@@ -7,8 +7,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
-use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\CreateExpenseVendor;
-use Modules\Expenses\Filament\Resources\ExpenseCategoryResource\Pages\EditExpenseVendor;
+use Modules\Expenses\Filament\Resources\ExpenseVendorResource\Pages\CreateExpenseVendor;
+use Modules\Expenses\Filament\Resources\ExpenseVendorResource\Pages\EditExpenseVendor;
 use Modules\Expenses\Filament\Resources\ExpenseVendorResource\Pages\ManageExpenseVendors;
 use Modules\Expenses\Models\ExpenseVendor;
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
@@ -12,6 +13,8 @@ use Modules\Products\Models\ProductFamily;
 
 class ProductFamiliesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
+
     // region CRUD Tests
 
     /**

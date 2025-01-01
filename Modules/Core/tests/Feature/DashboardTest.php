@@ -15,6 +15,7 @@ class DashboardTest extends AbstractTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
     }
 
     public function tearDown(): void

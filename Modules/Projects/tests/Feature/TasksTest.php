@@ -24,6 +24,7 @@ class TasksTest extends AbstractTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
     }
 
     public function tearDown(): void
@@ -173,6 +174,19 @@ class TasksTest extends AbstractTestCase
     public function it_updates_a_task(): void
     {
         // $this->authenticate();
+        $client = Client::factory()->create([
+            'client_name' => '::client_name::',
+        ]);
+
+        $tax_rate = TaxRate::factory()->create([
+            'tax_rate_name'    => '::tax_rate_name::',
+            'tax_rate_percent' => '9',
+        ]);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
         $task = Task::factory()->create(['task_name' => '::task_name::']);
 
         $updatedData = ['task_name' => '::updated_task_name::'];
@@ -180,7 +194,6 @@ class TasksTest extends AbstractTestCase
         Livewire::test(EditTask::class, ['record' => $task->task_id])
             ->assertStatus(200)
             ->set('data.task_name', $updatedData['task_name'])
-            ->set('data.task_status', $updatedData['task_status'])
             ->call('save')
             ->assertHasNoErrors();
 

@@ -21,6 +21,7 @@ class EmailTemplatesTest extends AbstractTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
     }
 
     public function tearDown(): void
@@ -56,7 +57,7 @@ class EmailTemplatesTest extends AbstractTestCase
         $payload = [
             'email_template_title'        => '::email_template_title::',
             'email_template_type'         => 'User Welcome',
-            'email_template_body'         => '<p>Hello {{ name }},</p><p>Welcome!</p>',
+            'email_template_body'         => '::email_template_body::',
             'email_template_subject'      => '::email_template_subject::',
             'email_template_from_name'    => '::email_template_from::',
             'email_template_from_email'   => '::email_template_from_mail::',
@@ -66,7 +67,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         Livewire::test(CreateEmailTemplate::class)
-            ->assertStatus(201)
+            ->assertStatus(200)
             ->set('data.email_template_title', $payload['email_template_title'])
             ->set('data.email_template_type', $payload['email_template_type'])
             ->set('data.email_template_body', $payload['email_template_body'])
@@ -135,9 +136,8 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         Livewire::test(EditEmailTemplate::class, ['record' => $emailTemplate->email_template_id])
-            ->set('data.name', $updatedData['name'])
-            ->set('data.subject', $updatedData['subject'])
-            ->set('data.body', $updatedData['body'])
+            ->set('data.email_template_title', $updatedData['name'])
+            ->set('data.email_template_type', $updatedData['subject'])
             ->call('save')
             ->assertStatus(200)
             ->assertHasNoErrors();

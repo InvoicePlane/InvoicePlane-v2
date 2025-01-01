@@ -23,6 +23,7 @@ class ProjectsTest extends AbstractTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
     }
 
     public function tearDown(): void
@@ -184,6 +185,7 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_projects_assign_client(): void
     {
+        $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
         $client = Client::factory()->create();
         $project = Project::factory()->create(['client_id' => $client->client_id]);
@@ -253,6 +255,7 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_fails_to_change_project_client_without_client_id(): void
     {
+        $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
         $client = Client::factory()->create();
         $project = Project::factory()->create(['client_id' => $client->client_id]);

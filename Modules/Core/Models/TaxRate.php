@@ -18,6 +18,8 @@ class TaxRate extends Model
 
     public $timestamps = false;
 
+    public $guarded = [];
+
     public $filterable = [
         'tax_rate_name',
         'tax_rate_percent',
