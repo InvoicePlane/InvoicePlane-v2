@@ -29,7 +29,7 @@ class InvoiceItemFactory extends Factory
             'item_quantity'        => $this->faker->randomFloat(2, 0, 100),
             'item_price'           => $this->faker->randomFloat(2, 0, 100),
             'item_discount_amount' => $this->faker->randomFloat(2, 0, 100),
-            'item_order'           => $this->faker->randomNumber(1, 100),
+            'item_order'           => $this->faker->randomNumber(4, true),
             'item_is_recurring'    => $this->faker->boolean(35),
             'item_product_unit'    => $productUnit->unit_name,
             'item_unit_id'         => $productUnit->unit_id,
