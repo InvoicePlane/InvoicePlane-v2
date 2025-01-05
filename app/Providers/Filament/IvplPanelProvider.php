@@ -77,6 +77,19 @@ class IvplPanelProvider extends PanelProvider
                     900 => '#001B3E',
                     950 => '#00102B',
                 ],
+                'emerald' => [
+                    50  => '#ECFDF5',
+                    100 => '#D1F8E4',
+                    200 => '#A8ECCD',
+                    300 => '#6FD9AE',
+                    400 => '#3CBF8A',
+                    500 => '#30A46B',
+                    600 => '#258651',
+                    700 => '#1D6840',
+                    800 => '#165231',
+                    900 => '#0F3E25',
+                    950 => '#0A2917',
+                ],
             ])
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()
