@@ -111,5 +111,8 @@ abstract class BaseService
         return $query->findOrFail($id)->delete();
     }
 
-    private function getFieldsSearchable(): void {}
+    private function getFieldsSearchable(): array
+    {
+        return [];
+    }
 }
