@@ -5,11 +5,16 @@ parameters:
 
     ignoreErrors:
         - '#Access to an undefined property .*::\$[a-zA-Z_]+#'
-        - '#Method [A-Za-z0-9_\\\\]+::[A-Za-z0-9_]+\\(\\) has an unused parameter \$[a-zA-Z_]+#'
-        - '#Result of method .+::getFieldsSearchable\\(\\) \\(void\\) is used#'
-        - '#Method .*::scope[A-Za-z0-9_]+\\(\\) should return Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\Builder but returns Illuminate\\\\Database\\\\Query\\\\Builder#'
         - '#Call to an undefined method .*#'
         - '#Call to an undefined static method .*::.*#'
+        - '#Match arm is unreachable because previous comparison is always true.#'
+        - '#Method [A-Za-z0-9_\\\\]+::[A-Za-z0-9_]+\\(\\) has an unused parameter \$[a-zA-Z_]+#'
+        - '#Method .*::scope[A-Za-z0-9_]+\\(\\) should return Illuminate\\\\Contracts\\\\Database\\\\Eloquent\\\\Builder but returns Illuminate\\\\Database\\\\Query\\\\Builder#'
+        - '#Method .*::scope[A-Za-z0-9_]+\(\) should return Illuminate\\Contracts\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder#'
+        - '#Property Modules\\Core\\Models\\User::\$[a-zA-Z_]+ is never read, only written.#'
+        - '#Result of method .*::getFieldsSearchable\(\) \(void\) is used#'
+        - '#Result of method .+::getFieldsSearchable\\(\\) \\(void\\) is used#'
+        - '#Unreachable statement - code above always terminates.#'
 
     reportUnmatchedIgnoredErrors: false
-    level: 3
+    level: 4
