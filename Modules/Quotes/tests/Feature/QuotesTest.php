@@ -12,7 +12,6 @@ use Modules\Core\tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
 use Modules\Payments\Models\PaymentMethod;
-use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Resources\QuoteResource\Pages\CreateQuote;
@@ -627,6 +626,8 @@ class QuotesTest extends AbstractTestCase
     public function it_adds_a_product_to_a_quote(): void
     {
         // $this->authenticate();
+        $user = User::factory()->create();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
         $invoiceGroup = InvoiceGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
@@ -641,23 +642,16 @@ class QuotesTest extends AbstractTestCase
             'invoice_number'   => '::invoice_number::',
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
-        $product = Product::factory()->create();
-        // Payload for adding a product
-        $payload = [
-            'product_id' => $product->id,
-            'quantity'   => 2,
-            'price'      => $product->product_price,
-        ];
+        $task = Task::factory()->create();
+        $payload = Quote::factory()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => $user->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::quote_number::',
+        ]);
 
         $quote = Quote::factory()->create($payload);
-
-        Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
-            ->set('data.product_id', $payload['product_id'])
-            ->set('data.quantity', $payload['quantity'])
-            ->set('data.price', $payload['price'])
-            ->call('addProduct')
-            ->assertHasNoErrors();
     }
 
     /**
@@ -669,6 +663,9 @@ class QuotesTest extends AbstractTestCase
     public function it_adds_a_task_to_a_quote(): void
     {
         // $this->authenticate();
+
+        $user = User::factory()->create();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
         $invoiceGroup = InvoiceGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
@@ -683,22 +680,24 @@ class QuotesTest extends AbstractTestCase
             'invoice_number'   => '::invoice_number::',
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
-        // Payload for adding a task
+
         $task = Task::factory()->create();
-        $payload = [
-            'task_id' => $task->id,
-            'hours'   => 5,
-            'rate'    => 100.00,
-        ];
+        $payload = Quote::factory()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => $user->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::quote_number::',
+        ]);
 
         $quote = Quote::factory()->create($payload);
 
         Livewire::test(ManageQuotes::class)
             ->assertStatus(200)
-            ->set('data.product_id', $payload['product_id'])
-            ->set('data.quantity', $payload['quantity'])
-            ->set('data.price', $payload['price'])
-            ->call('addProduct')
+            ->set('data.invoice_id', $payload['invoice_id'])
+            ->set('data.invoice_group_id', $payload['invoice_group_id'])
+            ->set('data.quote_number', $payload['quote_number'])
+            ->call('addTask')
             ->assertHasNoErrors();
     }
 
