@@ -300,7 +300,27 @@ class TasksTest extends AbstractTestCase
     public function it_fails_to_assign_project_without_project_id(): void
     {
         // $this->authenticate();
-        $task = Task::factory()->create();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+        $payload = [
+            'project_id'       => $project->project_id,
+            'task_name'        => '::task_name::',
+            'task_description' => 'This is a task description.',
+            'task_price'       => 100.50,
+            'task_finish_date' => now()->subDays(5)->format('Y-m-d'),
+            'task_status'      => true,
+            'tax_rate_id'      => $taxRate->tax_rate_id,
+        ];
+
+        $task = Task::factory()->create($payload);
 
         Livewire::test(ManageTasks::class)
             ->callTableAction('assignProject', $task->task_id)

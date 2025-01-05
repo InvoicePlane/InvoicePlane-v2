@@ -7,11 +7,13 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Clients\Models\Client;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
 use Modules\Payments\Models\PaymentMethod;
+use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Resources\QuoteResource\Pages\CreateQuote;
@@ -518,7 +520,23 @@ class QuotesTest extends AbstractTestCase
     {
         // $this->authenticate();
         $client = Client::factory()->create(['client_name' => '::client_name::']);
-        $quote = Quote::factory()->create(['quote_status_id' => QuoteStatus::DRAFT]);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        $quote = Quote::factory()->create(['invoice_id' => null, 'quote_status_id' => QuoteStatus::DRAFT, ]);
 
         $payload = [
             'quote_number'       => 'Q12345',
@@ -642,7 +660,19 @@ class QuotesTest extends AbstractTestCase
             'invoice_number'   => '::invoice_number::',
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
-        $task = Task::factory()->create();
+
+        $tax_rate = TaxRate::factory()->create([
+            'tax_rate_name'    => '::tax_rate_name::',
+            'tax_rate_percent' => '9',
+        ]);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $task = Task::factory()->create(['project_id' => $project->project_id]);
+
         $payload = Quote::factory()->create([
             'invoice_id'       => $invoice->invoice_id,
             'user_id'          => $user->user_id,
@@ -652,6 +682,16 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         $quote = Quote::factory()->create($payload);
+
+        Livewire::test(ManageQuotes::class)
+            ->callTableAction('addProduct', $quote->quote_id, ['client_id' => $client->client_id])
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', [
+            'quote_id'  => $quote->quote_id,
+            'client_id' => $client->client_id,
+        ]);
     }
 
     /**

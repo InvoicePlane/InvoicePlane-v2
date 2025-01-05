@@ -198,8 +198,12 @@ class PaymentsTest extends AbstractTestCase
     public function it_fails_to_assign_payment_method_without_id(): void
     {
         // $this->authenticate();
-        $invoice = Invoice::factory()->create();
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
         $paymentMethod = PaymentMethod::factory()->create();
+        $invoice = Invoice::factory()->create(['invoice_group_id' => $invoiceGroup->invoice_group_id]);
 
         $payload = [
             'payment_date' => '2024-11-22',

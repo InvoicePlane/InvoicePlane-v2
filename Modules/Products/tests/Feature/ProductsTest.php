@@ -159,7 +159,7 @@ class ProductsTest extends AbstractTestCase
         ];
 
         Livewire::test(EditProduct::class, ['record' => $product->product_id])
-            ->set('data.product_name', $updatedData['product_name'])
+            ->set('data.`product_name`', $updatedData['product_name'])
             ->set('data.product_price', $updatedData['product_price'])
             ->call('save')
             ->assertHasNoErrors();
@@ -264,7 +264,23 @@ class ProductsTest extends AbstractTestCase
     public function it_products_process_selections(): void
     {
         // $this->authenticate();
-        $product1 = Product::factory()->create();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+        $payload = [
+            'family_id'   => $productFamily->family_id,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+            'unit_id'     => $productUnit->unit_id,
+        ];
+
+        $product1 = Product::factory()->create($payload);
 
         Livewire::test(ManageProducts::class)
             ->callTableAction('processSelections', $product1)
