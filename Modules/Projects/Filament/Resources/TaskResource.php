@@ -107,8 +107,8 @@ class TaskResource extends Resource
                 TextColumn::make('task_status')
                     ->label(trans('ip.status'))
                     ->badge()
-                    ->formatStateUsing(fn (Task $record) => trans(TaskStatus::from($record->task_status)->getLabel()))
-                    ->color(fn (Task $record) => TaskStatus::from($record->task_status)->getColor()),
+                    ->formatStateUsing(fn (Task $record) => trans(TaskStatus::tryFrom($record->task_status)?->getLabel() ?? trans('ip.tasks.unknown')))
+                    ->color(fn (Task $record) => TaskStatus::tryFrom($record->task_status)?->getColor() ?? 'secondary'),
                 TextColumn::make('task_name')
                     ->label(trans('ip.task_name'))
                     ->searchable()

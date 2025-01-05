@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->longText('task_description');
             $table->decimal('task_price', 20)->nullable();
             $table->date('task_finish_date');
-            $table->boolean('task_status');
+            $table->unsignedTinyInteger('task_status');
             $table->unsignedInteger('tax_rate_id');
         });
     }
