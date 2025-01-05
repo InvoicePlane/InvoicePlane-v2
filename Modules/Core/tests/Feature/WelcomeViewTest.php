@@ -23,11 +23,7 @@ class WelcomeViewTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_welcome_view(): void
     {
         $this->markTestIncomplete('core web routes not loaded yet?');

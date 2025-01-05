@@ -29,11 +29,7 @@ class TaxRatesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_tax_rates_index(): void
     {
         // $this->authenticate();
@@ -48,11 +44,7 @@ class TaxRatesTest extends AbstractTestCase
             ->assertSee('::tax_rate_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_tax_rate(): void
     {
         $this->markTestSkipped('Some error with a view');
@@ -73,11 +65,7 @@ class TaxRatesTest extends AbstractTestCase
         $this->assertDatabaseHas('tax_rates', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_tax_rate(): void
     {
         $this->markTestSkipped();

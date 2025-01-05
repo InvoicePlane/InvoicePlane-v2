@@ -18,11 +18,7 @@ class ExpensesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_expenses_index(): void
     {
         Expense::factory(5)->create([

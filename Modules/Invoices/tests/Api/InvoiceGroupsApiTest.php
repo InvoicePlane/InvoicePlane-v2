@@ -30,11 +30,7 @@ class InvoiceGroupsApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_invoice_groups_index(): void
     {
         $this->markTestIncomplete('This test has not been implemented yet.');
@@ -48,11 +44,7 @@ class InvoiceGroupsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_invoice_group(): void
     {
         $this->markTestIncomplete('This test has not been implemented yet.');
@@ -63,11 +55,7 @@ class InvoiceGroupsApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_an_invoice_group(): void
     {
         $this->markTestIncomplete('This test has not been implemented yet.');
@@ -79,11 +67,7 @@ class InvoiceGroupsApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_an_invoice_group(): void
     {
         $this->markTestIncomplete('This test has not been implemented yet.');

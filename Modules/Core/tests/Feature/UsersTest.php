@@ -34,11 +34,7 @@ class UsersTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_users_index(): void
     {
         $user = User::factory()->create();
@@ -167,11 +163,7 @@ class UsersTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_bulk_deletes_users(): void
     {
         $users = User::factory()->count(3)->create();

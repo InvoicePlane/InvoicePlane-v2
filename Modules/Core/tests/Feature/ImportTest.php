@@ -26,11 +26,7 @@ class ImportTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_import_details_index(): void
     {
         $this->markTestSkipped();
@@ -43,11 +39,7 @@ class ImportTest extends AbstractTestCase
             ->assertSee('2022-04-01');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_import(): void
     {
         $this->markTestSkipped();

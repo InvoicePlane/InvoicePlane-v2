@@ -3,7 +3,7 @@
 namespace Modules\Quotes\Filament\Resources\QuoteResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Quotes\Transformers\QuoteResource;
+use Modules\Quotes\Filament\Resources\QuoteResource;
 
 class EditQuote extends EditRecord
 {

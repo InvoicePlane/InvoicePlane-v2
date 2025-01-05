@@ -25,11 +25,7 @@ class AdminMiddlewareTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function admins_can_access_routes(): void
     {
         $this->markTestIncomplete(
@@ -42,11 +38,7 @@ class AdminMiddlewareTest extends AbstractTestCase
             ->assertOk();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function non_admins_cannot_access_routes(): void
     {
         $this->markTestIncomplete(

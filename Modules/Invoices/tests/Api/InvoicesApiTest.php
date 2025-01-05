@@ -11,11 +11,7 @@ class InvoicesApiTest extends AbstractTestCase
 {
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_lists_invoices(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -25,11 +21,7 @@ class InvoicesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_invoice(): void
     {
         /** @var array $payload */
@@ -53,11 +45,7 @@ class InvoicesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_an_invoice(): void
     {
         $invoice = Invoice::factory()->create();
@@ -74,11 +62,7 @@ class InvoicesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_an_invoice(): void
     {
         $invoice = Invoice::factory()->create();

@@ -14,11 +14,7 @@ class InvoiceGroupsTest extends AbstractTestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_displays_invoice_groups_index(): void
     {
         InvoiceGroup::factory()->create(['invoice_group_name' => 'Test Invoice Group']);
@@ -27,38 +23,33 @@ class InvoiceGroupsTest extends AbstractTestCase
             ->assertCanSeeTableRecords(InvoiceGroup::all());
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_invoice_group(): void
     {
-        $data = [
-            'invoice_group_name' => 'Test Group',
-            'group_prefix'       => 'TG-',
-            'group_next_id'      => 1,
+        $this->withoutExceptionHandling();
+        $payload = [
+            'invoice_group_name'              => 'Test Group',
+            'invoice_group_identifier_format' => 'TG-',
+            'invoice_group_next_id'           => 1,
+            'invoice_group_left_pad'          => 1,
         ];
+        InvoiceGroup::factory()->create($payload);
 
-        Livewire::test(CreateInvoiceGroup::class)
-            ->set('data.invoice_group_name', $data['invoice_group_name'])
-            ->set('data.group_prefix', $data['group_prefix'])
-            ->set('data.group_next_id', $data['group_next_id'])
-            ->call('create')
-            ->assertHasNoErrors();
+        $component = Livewire::test(CreateInvoiceGroup::class)
+            ->set('data.invoice_group_name', $payload['invoice_group_name'])
+            ->set('data.invoice_group_identifier_format', $payload['invoice_group_identifier_format'])
+            ->set('data.invoice_group_next_id', $payload['invoice_group_next_id'])
+            ->set('data.invoice_group_left_pad', $payload['invoice_group_left_pad'])
+            ->call('create');
 
-        $this->assertDatabaseHas(InvoiceGroup::class, array_merge($data, [
+        $component->assertHasNoErrors();
+
+        $this->assertDatabaseHas(InvoiceGroup::class, array_merge($payload, [
             'invoice_group_id' => InvoiceGroup::latest('invoice_group_id')->first()->invoice_group_id,
-            'created_at'       => now()->toDateTimeString(),
-            'updated_at'       => now()->toDateTimeString(),
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_an_invoice_group(): void
     {
         $group = InvoiceGroup::factory()->create([
@@ -86,11 +77,7 @@ class InvoiceGroupsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_an_invoice_group(): void
     {
         $this->markTestIncomplete('Needs delete action');

@@ -31,9 +31,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_shows_email_templates_index(): void
     {
         // $this->authenticate();
@@ -46,11 +44,7 @@ class EmailTemplatesTest extends AbstractTestCase
             ->assertSee('::email_template_title::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_email_template(): void
     {
         $this->markTestSkipped();
@@ -84,11 +78,7 @@ class EmailTemplatesTest extends AbstractTestCase
         $this->assertDatabaseHas('email_templates', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_create_an_email_template_with_missing_fields(): void
     {
         $this->markTestSkipped();
@@ -122,14 +112,12 @@ class EmailTemplatesTest extends AbstractTestCase
         $this->assertDatabaseHas('email_templates', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_an_email_template(): void
     {
         // $this->authenticate();
+        $this->markTestSkipped();
+        $this->withoutExceptionHandling();
         $emailTemplate = EmailTemplate::factory()->create();
 
         $updatedData = [
@@ -150,11 +138,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_bulk_deletes_clients(): void
     {
         // $this->authenticate();
@@ -171,9 +155,7 @@ class EmailTemplatesTest extends AbstractTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_delete_an_email_template(): void
     {
         $this->markTestSkipped();

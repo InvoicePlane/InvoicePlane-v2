@@ -32,11 +32,7 @@ class ProductApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_products_index(): void
     {
         $this->markTestIncomplete('Failed asserting that an array has the key family');
@@ -85,11 +81,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_name' => '::product_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_product(): void
     {
         $this->markTestIncomplete('test is failing? also on family key');
@@ -138,11 +130,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_price' => '1.00']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
         $productFamily = ProductFamily::factory()->create([
@@ -179,11 +167,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('product_price', 'errors');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_product(): void
     {
         $this->markTestIncomplete('test is failing? also on family key');
@@ -234,11 +218,7 @@ class ProductApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['product_price'], $initialProduct->product_price);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_response_when_updating_a_product_with_invalid_values(): void
     {
         $productFamily = ProductFamily::factory()->create([
@@ -278,11 +258,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['errors' => ['product_price' => ['The product price must be a number.']], ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_product(): void
     {
         $this->markTestSkipped('Not implemented yet');

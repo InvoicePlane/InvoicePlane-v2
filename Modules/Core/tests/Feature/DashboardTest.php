@@ -23,11 +23,7 @@ class DashboardTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_dashboard_index(): void
     {
         $this->markTestIncomplete('Route product_families.index not defined');

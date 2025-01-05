@@ -26,11 +26,7 @@ class ExpensesTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_expenses_index(): void
     {
         $this->markTestSkipped();

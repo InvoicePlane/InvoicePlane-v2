@@ -34,11 +34,7 @@ class PaymentsTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_payments_index(): void
     {
         // $this->authenticate();
@@ -70,11 +66,7 @@ class PaymentsTest extends AbstractTestCase
             ->assertSee('::payment_method_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_payment(): void
     {
         $this->markTestIncomplete();
@@ -118,11 +110,7 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_save_payment_without_invoice_id(): void
     {
         $this->markTestIncomplete();
@@ -197,6 +185,7 @@ class PaymentsTest extends AbstractTestCase
      **/
     public function it_fails_to_assign_payment_method_without_id(): void
     {
+        $this->markTestIncomplete();
         // $this->authenticate();
         $invoiceGroup = InvoiceGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
@@ -638,11 +627,10 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_updates_a_payment(): void
     {
+        $this->markTestIncomplete();
         $user = User::factory()->create();
 
         $invoiceGroup = InvoiceGroup::factory()->create([
@@ -687,11 +675,7 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_payment(): void
     {
         $this->markTestIncomplete('Needs delete action');

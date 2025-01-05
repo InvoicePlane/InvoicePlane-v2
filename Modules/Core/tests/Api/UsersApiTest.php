@@ -27,11 +27,7 @@ class UsersApiTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_users_index(): void
     {
         $user = User::factory()->create();
@@ -64,11 +60,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonFragment(['company' => '::localhost corporation::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_can_retrieve_a_list_of_users(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -101,11 +93,7 @@ class UsersApiTest extends AbstractTestCase
             ->assertJsonStructure([['user_id', 'user_name', 'user_company', 'email']]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_retrieve_users_without_authentication(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -117,11 +105,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertStatus(401); // Unauthorized
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_user(): void
     {
         $adminUser = User::factory()->create([
@@ -145,11 +129,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonFragment(['company' => '::localhost corporation::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_response_when_creating_a_user_without_required_fields(): void
     {
         Sanctum::actingAs(User::factory()->create());
@@ -167,11 +147,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('user_password_confirmation', 'errors');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_user(): void
     {
         $initialUser = User::factory()->create([
@@ -216,11 +192,7 @@ class UsersApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['user_company'], $initialUser->user_company);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_user(): void
     {
         $initialUser = User::factory()->create([

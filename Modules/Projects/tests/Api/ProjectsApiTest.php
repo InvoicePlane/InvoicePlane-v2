@@ -29,11 +29,7 @@ class ProjectsApiTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_projects_index(): void
     {
         $client = Client::factory()->create([
@@ -62,11 +58,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::project_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_lists_projects_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -145,11 +137,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_response_when_creating_a_project_without_required_field(): void
     {
         $client = Client::factory()->create([
@@ -239,11 +227,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_project_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');

@@ -33,11 +33,7 @@ class ProjectsTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_projects_index(): void
     {
         $user = User::factory()->create();
@@ -201,11 +197,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_assign_client_without_project_id(): void
     {
         $this->markTestSkipped('needs assignClient action');
@@ -225,11 +217,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_projects_change_client(): void
     {
         $this->markTestSkipped('needs assignClient action');        // $this->authenticate();
@@ -248,11 +236,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_change_project_client_without_client_id(): void
     {
         $this->markTestIncomplete('needs assignClient action');

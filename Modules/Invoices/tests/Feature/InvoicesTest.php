@@ -36,11 +36,7 @@ class InvoicesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -71,11 +67,7 @@ class InvoicesTest extends AbstractTestCase
             ->assertSee('::payment_method_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_draft_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -108,11 +100,7 @@ class InvoicesTest extends AbstractTestCase
         $response->assertDontSee('::sent_invoice_number::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_sent_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -144,11 +132,7 @@ class InvoicesTest extends AbstractTestCase
         $response->assertDontSee('::draft_invoice_number::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_viewed_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -181,11 +165,7 @@ class InvoicesTest extends AbstractTestCase
         $response->assertDontSee('::draft_invoice_number::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_paid_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -218,11 +198,7 @@ class InvoicesTest extends AbstractTestCase
         $response->assertDontSee('::draft_invoice_number::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_overdue_invoices_index(): void
     {
         $this->markTestIncomplete();
@@ -255,11 +231,7 @@ class InvoicesTest extends AbstractTestCase
         $response->assertDontSee('::active_invoice_number::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_all_invoices_index(): void
     {
         $user = User::factory()->create();
@@ -496,9 +468,7 @@ class InvoicesTest extends AbstractTestCase
 
     // region Spicy
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_projects_process_task_selections(): void
     {
         $this->markTestIncomplete();
@@ -541,11 +511,7 @@ class InvoicesTest extends AbstractTestCase
         $this->assertFileExists(storage_path("app/invoices/{$invoice->invoice_id}.pdf"));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_generate_a_pdf_for_a_non_existent_invoice(): void
     {
         $this->markTestSkipped();
@@ -560,11 +526,7 @@ class InvoicesTest extends AbstractTestCase
     // endregion
 
     // region Custom Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_calculates_invoice_totals_correctly(): void
     {
         $this->markTestSkipped();

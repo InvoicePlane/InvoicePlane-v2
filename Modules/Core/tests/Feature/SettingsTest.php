@@ -23,11 +23,7 @@ class SettingsTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_settings_index(): void
     {
         $this->markTestSkipped();

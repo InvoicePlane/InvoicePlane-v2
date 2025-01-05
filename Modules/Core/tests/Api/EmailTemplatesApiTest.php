@@ -29,11 +29,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_email_templates_index(): void
     {
         EmailTemplate::factory(5)->create([
@@ -56,11 +52,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_an_email_template(): void
     {
         $initialEmailTemplate = EmailTemplate::factory()->create([
@@ -80,11 +72,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_an_email_template(): void
     {
         $initialEmailTemplate = EmailTemplate::factory()->create([
@@ -106,11 +94,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => $updatedData['email_template_title']]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_an_email_template(): void
     {
         $initialEmailTemplate = EmailTemplate::factory()->create([

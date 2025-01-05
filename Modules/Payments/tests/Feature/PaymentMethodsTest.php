@@ -26,11 +26,7 @@ class PaymentMethodsTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_payment_methods_index(): void
     {
         $user = User::factory()->create();
@@ -44,11 +40,7 @@ class PaymentMethodsTest extends AbstractTestCase
             ->assertSee('::payment_method_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_payment_method(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -81,11 +73,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -118,11 +106,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_payment_method(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -149,11 +133,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_payment_method(): void
     {
         $this->markTestSkipped('Not implemented yet');

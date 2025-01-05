@@ -32,11 +32,7 @@ class ClientsTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_clients_index(): void
     {
         $user = User::factory()->create();
@@ -50,11 +46,7 @@ class ClientsTest extends AbstractTestCase
         $response->assertSee('::client_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_active_clients_index(): void
     {
         $this->markTestIncomplete('active/inactive clients not filtered yet, make tab for active clients?');
@@ -75,11 +67,7 @@ class ClientsTest extends AbstractTestCase
         $response->assertDontSee('::inactive_client_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_only_filtered_inactive_clients_index(): void
     {
         $this->markTestIncomplete('active/inactive clients not filtered yet, make tab for active clients?');
@@ -99,11 +87,7 @@ class ClientsTest extends AbstractTestCase
         $response->assertDontSee('::active_client_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_all_clients_index(): void
     {
         $user = User::factory()->create();
@@ -123,11 +107,7 @@ class ClientsTest extends AbstractTestCase
         $response->assertSee('::inactive_client_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_mutates_form_data_before_creating(): void
     {
         $data = [
@@ -148,11 +128,7 @@ class ClientsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_client(): void
     {
         $data = [
@@ -176,11 +152,7 @@ class ClientsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_client(): void
     {
         $client = Client::factory()->create([
@@ -209,11 +181,7 @@ class ClientsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_client(): void
     {
         $this->markTestIncomplete('Needs delete action');
@@ -231,11 +199,7 @@ class ClientsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_bulk_deletes_clients(): void
     {
         $clients = Client::factory()->count(3)->create();

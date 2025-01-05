@@ -29,11 +29,7 @@ class ProductUnitsTest extends AbstractTestCase
             ->assertSee('::example_units::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_product_unit(): void
     {
         $this->markTestSkipped('Not implemented.');
@@ -57,11 +53,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->assertDatabaseHas('units', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_create_a_product_unit_without_unit_name(): void
     {
         $this->markTestIncomplete();
@@ -80,11 +72,7 @@ class ProductUnitsTest extends AbstractTestCase
         $response->assertJsonValidationErrors(['unit_name']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -100,11 +88,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->assertDatabaseHas('product_units', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_product_unit(): void
     {
         $this->markTestIncomplete('needs delete action');

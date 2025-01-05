@@ -29,11 +29,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_product_families_index(): void
     {
         Sanctum::actingAs(User::factory()->create());
@@ -56,11 +52,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_family' => '::family_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_lists_product_families_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -70,11 +62,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_product_family(): void
     {
         $initialFamily = ProductFamily::factory()->create([
@@ -116,11 +104,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_response_with_invalid_family_name_key(): void
     {
         $initialFamily = ProductFamily::factory()->create([
@@ -135,11 +119,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('family_name', 'errors');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_product_family(): void
     {
         $initialProductFamily = ProductFamily::factory()->create([
@@ -186,11 +166,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_delete_family(): void
     {
         $this->markTestIncomplete(
@@ -213,11 +189,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $this->response->assertStatus(404);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_product_family_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');

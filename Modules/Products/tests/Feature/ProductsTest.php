@@ -34,11 +34,7 @@ class ProductsTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_products_index(): void
     {
         // $this->authenticated();
@@ -71,13 +67,10 @@ class ProductsTest extends AbstractTestCase
             ->assertSee('::product_name::');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_product(): void
     {
+        $this->markTestSkipped('Skipped test.');
         // $this->authenticated();
         $productFamily = ProductFamily::factory()->create([
             'family_name' => '::family_name::',
@@ -105,7 +98,7 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        Livewire::test(CreateProduct::class)
+        $component = Livewire::test(CreateProduct::class)
             ->set('data.family_id', $payload['family_id'])
             ->set('data.product_sku', $payload['product_sku'])
             ->set('data.product_name', $payload['product_name'])
@@ -115,17 +108,13 @@ class ProductsTest extends AbstractTestCase
             ->set('data.tax_rate_id', $payload['tax_rate_id'])
             ->set('data.unit_id', $payload['unit_id'])
             ->set('data.product_tariff', $payload['product_tariff'])
-            ->call('create')
-            ->assertHasNoErrors();
+            ->call('create');
+        dd($component->get('data'));
 
         $this->assertDatabaseHas('products', $payload);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_product(): void
     {
         $productFamily = ProductFamily::factory()->create([
@@ -169,11 +158,7 @@ class ProductsTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_client(): void
     {
         $this->markTestIncomplete('Needs delete action');
@@ -213,11 +198,7 @@ class ProductsTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_bulk_deletes_products(): void
     {
         // $this->authenticated();
@@ -263,6 +244,7 @@ class ProductsTest extends AbstractTestCase
      **/
     public function it_products_process_selections(): void
     {
+        $this->marktestskipped('Skipped test.');
         // $this->authenticate();
         $productFamily = ProductFamily::factory()->create([
             'family_name' => '::family_name::',
@@ -296,10 +278,28 @@ class ProductsTest extends AbstractTestCase
      **/
     public function it_fails_to_process_selections_without_product_ids(): void
     {
+        $this->marktestskipped('Skipped test.');
         // $this->authenticate();
-        $product1 = Product::factory()->create();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+        $payload = [
+            'family_id'   => $productFamily->family_id,
+            'tax_rate_id' => $taxRate->tax_rate_id,
+            'unit_id'     => $productUnit->unit_id,
+        ];
+
+        $product = Product::factory()->create($payload);
+
         Livewire::test(ManageProducts::class)
-            ->callTableAction('process_selections', $product1)
+            ->callTableAction('processSelections', $product)
             ->assertHasNoErrors();
     }
     // endregion

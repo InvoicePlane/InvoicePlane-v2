@@ -3,7 +3,7 @@
 namespace Modules\Quotes\Filament\Resources\QuoteResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Quotes\Transformers\QuoteResource;
+use Modules\Quotes\Filament\Resources\QuoteResource;
 
 class CreateQuote extends CreateRecord
 {

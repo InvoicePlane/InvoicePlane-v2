@@ -17,11 +17,7 @@ class ProductFamiliesTest extends AbstractTestCase
 
     // region CRUD Tests
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_shows_product_families_index(): void
     {
         // $this->authenticated();
@@ -62,11 +58,7 @@ class ProductFamiliesTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_fails_to_create_a_product_family_without_family_name(): void
     {
         $this->markTestIncomplete();
@@ -123,11 +115,7 @@ class ProductFamiliesTest extends AbstractTestCase
         ]));
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_product_family(): void
     {
         $this->markTestIncomplete('needs delete action');

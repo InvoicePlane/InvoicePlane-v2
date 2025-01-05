@@ -29,11 +29,7 @@ class ClientsApiTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function route_is_403_for_not_authenticated(): void
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
@@ -41,11 +37,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function route_is_401_for_guest_user(): void
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
@@ -57,11 +49,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertUnauthorized();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_clients_index(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -91,11 +79,7 @@ class ClientsApiTest extends AbstractTestCase
             ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_read_client(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -116,11 +100,7 @@ class ClientsApiTest extends AbstractTestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_create_client(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -138,11 +118,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertJsonFragment($client);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_create_client_missing_required_field(): void
     {
         $user = User::factory()->create(['user_type' => 1]);
@@ -158,11 +134,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertUnprocessable();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_put_update_client(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -181,11 +153,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertJsonFragment($editedClient);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_patch_update_client(): void
     {
         $this->markTestIncomplete();
@@ -205,11 +173,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertJsonFragment($editedClient);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_delete_client(): void
     {
         $this->markTestIncomplete();

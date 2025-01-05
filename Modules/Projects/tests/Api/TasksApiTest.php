@@ -31,11 +31,7 @@ class TasksApiTest extends AbstractTestCase
     }
 
     // region CRUD Tests
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_tasks_index(): void
     {
         $client = Client::factory()->create([
@@ -80,11 +76,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::task_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_task(): void
     {
         $client = Client::factory()->create([
@@ -125,11 +117,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::task_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_when_storing_task_without_proper_fields(): void
     {
         $client = Client::factory()->create([
@@ -169,11 +157,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('task_finish_date', 'errors');
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_task(): void
     {
         $client = Client::factory()->create([
@@ -205,11 +189,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => $updatedData['task_name']]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function test_delete_task(): void
     {
         $this->markTestIncomplete(

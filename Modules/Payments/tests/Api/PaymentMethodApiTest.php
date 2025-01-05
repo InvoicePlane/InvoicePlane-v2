@@ -26,11 +26,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_payment_methods_index(): void
     {
         Sanctum::actingAs(User::factory()->create());
@@ -52,11 +48,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::payment_method_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_creates_a_payment_method(): void
     {
         $initialPaymentMethod = PaymentMethod::factory()->create([
@@ -73,11 +65,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::payment_method_name::']);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_returns_error_when_posting_payment_method_with_wrong_data(): void
     {
         $initialPaymentMethod = PaymentMethod::factory()->create([
@@ -94,11 +82,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['errors' => ['payment_method_name' => ['The payment method name field is required.']], ]);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_updates_a_payment_method(): void
     {
         $initialPaymentMethod = PaymentMethod::factory()->create([
@@ -131,11 +115,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['payment_method_name'], $initialPaymentMethod->payment_method_name);
     }
 
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     */
+    /** @test */
     public function it_deletes_a_payment_method(): void
     {
         $initialPaymentMethod = PaymentMethod::factory()->create([
