@@ -56,7 +56,7 @@ class ProductUnitResource extends Resource
                 ])->columns(1),
                 Group::make()->schema([
                     Placeholder::make('explanation Product Unit')
-                        ->label('just some text'),
+                        ->label('Color'),
                 ])->columns(1),
             ]);
     }
