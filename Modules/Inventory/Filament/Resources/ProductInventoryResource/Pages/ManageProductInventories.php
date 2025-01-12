@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Products\Filament\Resources\ProductResource\Pages;
+namespace Modules\Inventory\Filament\Resources\ProductResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
-use Modules\Products\Filament\Resources\ProductResource;
+use Modules\Inventory\Filament\Resources\ProductInventoryResource;
 
 class ManageProductInventories extends ManageRecords
 {
