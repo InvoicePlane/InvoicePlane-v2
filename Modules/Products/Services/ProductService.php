@@ -5,8 +5,8 @@ namespace Modules\Products\Services;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\BaseService;
-use Modules\Products\Events\ProductWasCreated;
-use Modules\Products\Events\ProductWasUpdated;
+use Modules\Inventory\Events\ProductInventoryWasCreated;
+use Modules\Inventory\Events\ProductInventoryWasUpdated;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductFamily;
 use Modules\Products\Models\ProductUnit;
@@ -33,7 +33,7 @@ class ProductService extends BaseService
 
         $product->save();
 
-        event(new ProductWasCreated($product));
+        event(new ProductInventoryWasCreated($product));
 
         return $product;
     }
@@ -44,7 +44,7 @@ class ProductService extends BaseService
 
         $productToUpdate->save();
 
-        event(new ProductWasUpdated($productToUpdate));
+        event(new ProductInventoryWasUpdated($productToUpdate));
 
         return $productToUpdate;
     }

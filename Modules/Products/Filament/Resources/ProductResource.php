@@ -13,8 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Products\Filament\Resources\ProductResource\Pages;
-use Modules\Products\Filament\Resources\ProductResource\RelationManagers;
+use Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
+use Modules\Inventory\Filament\Resources\ProductInventoryResource\RelationManagers;
 use Modules\Products\Models\Product;
 
 class ProductResource extends Resource

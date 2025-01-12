@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Models\TaxRate;
-use Modules\Products\Database\Factories\ProductFactory;
+use Modules\Inventory\Database\Factories\ProductInventoryFactory;
 
 class Product extends Model
 {
@@ -64,6 +64,6 @@ class Product extends Model
 
     protected static function newFactory(): Factory
     {
-        return ProductFactory::new();
+        return ProductInventoryFactory::new();
     }
 }

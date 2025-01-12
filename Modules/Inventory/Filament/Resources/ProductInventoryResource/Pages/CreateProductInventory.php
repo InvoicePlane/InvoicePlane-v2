@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Products\Filament\Resources\ProductResource\Pages;
+namespace Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Products\Filament\Resources\ProductResource;
+use Modules\Inventory\Filament\Resources\ProductInventoryResource;
 
 class CreateProductInventory extends CreateRecord
 {

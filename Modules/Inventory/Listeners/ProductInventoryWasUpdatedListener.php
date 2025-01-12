@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Products\Listeners;
+namespace Modules\Inventory\Listeners;
 
 use Modules\Inventory\Events\ProductInventoryWasUpdated;
 
-class ProductWasUpdatedListener
+class ProductInventoryWasUpdatedListener
 {
     public function __construct() {}
 
@@ -13,6 +13,6 @@ class ProductWasUpdatedListener
         /**
          * #24: Just a placeholder.
          */
-        $product = $event->product;
+        $product = $event->productInventory;
     }
 }

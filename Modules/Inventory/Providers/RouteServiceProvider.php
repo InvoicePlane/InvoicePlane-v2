@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Providers;
+namespace Modules\Inventory\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +34,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        Route::middleware('web')->group(module_path('Products', '/routes/web.php'));
+        Route::middleware('web')->group(module_path('Inventory', '/routes/web.php'));
     }
 
     /**

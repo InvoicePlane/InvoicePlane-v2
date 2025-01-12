@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Products\Providers;
+namespace Modules\Inventory\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
-class ProductsServiceProvider extends ServiceProvider
+class ProductInventoriesServiceProvider extends ServiceProvider
 {
-    protected string $moduleName = 'Products';
+    protected string $moduleName = 'Inventory';
 
-    protected string $moduleNameLower = 'products';
+    protected string $moduleNameLower = 'inventory';
 
     /**
      * Boot the application events.
