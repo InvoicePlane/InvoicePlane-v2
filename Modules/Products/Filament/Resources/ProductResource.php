@@ -46,20 +46,30 @@ class ProductResource extends Resource
             ->schema([
                 Group::make()
                     ->schema([
-                        Section::make(heading: null)
+                        Section::make(heading:null)
                             ->schema([
-                                TextInput::make('product_sku')
-                                    ->nullable()
-                                    ->string(),
                                 TextInput::make('product_name')
                                     ->nullable()
                                     ->string(),
+                                    Select::make('productFamily.family_name')
+                                    ->required()
+                                    ->relationship('productFamily', 'family_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
                                 TextInput::make('product_price')
                                     ->nullable()
                                     ->numeric()
                                     ->step(1),
+                                    Select::make('productUnit.unit_name')
+                                    ->required()
+                                    ->relationship('productUnit', 'unit_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+
                             ])->columns(1),
-                        Section::make(heading: null)
+                        Section::make(heading:null)
                             ->schema([
                                 MarkdownEditor::make('product_description')
                                     ->toolbarButtons([
@@ -71,20 +81,11 @@ class ProductResource extends Resource
                     ]),
                 Group::make()
                     ->schema([
-                        Section::make(heading: null)
+                        Section::make(heading:null)
                             ->schema(components: [
-                                Select::make('productFamily.family_name')
-                                    ->required()
-                                    ->relationship('productFamily', 'family_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
-                                Select::make('productUnit.unit_name')
-                                    ->required()
-                                    ->relationship('productUnit', 'unit_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
+                                TextInput::make('product_sku')
+                                    ->nullable()
+                                    ->string(),
                                 Select::make('tax_rate_id')
                                     ->required()
                                     ->relationship('taxRate', 'tax_rate_name')
@@ -92,7 +93,7 @@ class ProductResource extends Resource
                                     ->preload()
                                     ->native(false),
                             ]),
-                        Section::make(heading: null)
+                        Section::make(heading:null)
                             ->schema(components: [
                                 TextInput::make('provider_name')
                                     ->nullable()
@@ -102,7 +103,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->step(1),
                             ]),
-                        Section::make(heading: 'Sumex')
+                        Section::make(heading:'Sumex')
                             ->schema(components: []),
                     ]),
             ]);
