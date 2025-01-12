@@ -46,15 +46,6 @@ class ProductInventoryResource extends Resource
             ->schema([
                 Group::make()
                     ->schema([
-                        Section::make(heading:null)
-                            ->schema([
-                            ])->columns(1),
-                        Section::make(heading:null)
-                            ->schema([
-                                    ])
-                                    ->columnSpan('full'),
-                            ])->columns(1),
-                        ]),
                     ]),
                 ]),
                 Group::make()
