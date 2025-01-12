@@ -54,6 +54,7 @@ class ProductInventoryResource extends Resource
                                     ])
                                     ->columnSpan('full'),
                             ])->columns(1),
+                        ]),
                     ]),
                 ]),
                 Group::make()
