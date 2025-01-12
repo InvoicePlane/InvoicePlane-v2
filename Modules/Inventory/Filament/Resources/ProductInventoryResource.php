@@ -44,21 +44,6 @@ class ProductInventoryResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()
-                    ->schema([
-                    ]),
-                ]),
-                Group::make()
-                    ->schema([
-                        Section::make(heading:null)
-                            ->schema(components: [
-                            ]),
-                        Section::make(heading:null)
-                            ->schema(components: [
-                            ]),
-                        Section::make(heading:'Sumex')
-                            ->schema(components: []),
-                    ]),
             ]);
     }
 
