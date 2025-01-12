@@ -13,7 +13,5 @@ class ProductInventoryWasUpdated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public ProductInventory $productInventory)
-    {
-    }
+    public function __construct(public ProductInventory $productInventory) {}
 }
