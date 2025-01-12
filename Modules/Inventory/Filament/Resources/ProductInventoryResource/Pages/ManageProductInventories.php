@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Inventory\Filament\Resources\ProductResource\Pages;
+namespace Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
