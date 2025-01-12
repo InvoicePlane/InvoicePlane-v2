@@ -52,7 +52,7 @@ class ProductFamilyResource extends Resource
                 ]),
                 Group::make()->schema([
                     Placeholder::make('explanation Product Family')
-                        ->label('just some text'),
+                        ->label('Material Type'),
                 ]),
             ]);
     }

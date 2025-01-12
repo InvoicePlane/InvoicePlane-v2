@@ -48,16 +48,26 @@ class ProductResource extends Resource
                     ->schema([
                         Section::make(heading:null)
                             ->schema([
-                                TextInput::make('product_sku')
-                                    ->nullable()
-                                    ->string(),
                                 TextInput::make('product_name')
                                     ->nullable()
                                     ->string(),
+                                    Select::make('productFamily.family_name')
+                                    ->required()
+                                    ->relationship('productFamily', 'family_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
                                 TextInput::make('product_price')
                                     ->nullable()
                                     ->numeric()
                                     ->step(1),
+                                    Select::make('productUnit.unit_name')
+                                    ->required()
+                                    ->relationship('productUnit', 'unit_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
+
                             ])->columns(1),
                         Section::make(heading:null)
                             ->schema([
@@ -73,18 +83,9 @@ class ProductResource extends Resource
                     ->schema([
                         Section::make(heading:null)
                             ->schema(components: [
-                                Select::make('productFamily.family_name')
-                                    ->required()
-                                    ->relationship('productFamily', 'family_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
-                                Select::make('productUnit.unit_name')
-                                    ->required()
-                                    ->relationship('productUnit', 'unit_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->native(false),
+                                TextInput::make('product_sku')
+                                    ->nullable()
+                                    ->string(),
                                 Select::make('tax_rate_id')
                                     ->required()
                                     ->relationship('taxRate', 'tax_rate_name')
