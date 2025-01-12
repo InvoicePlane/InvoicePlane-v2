@@ -9,7 +9,7 @@ use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\ProductFamily;
 use Modules\Products\Models\ProductUnit;
 
-class ProductAPIRequest extends APIRequest
+class ProductInventoryAPIRequest extends APIRequest
 {
     protected $stopOnFirstFailure = true;
 

@@ -8,7 +8,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
-use Modules\Inventory\Filament\Resources\ProductInventoryResource\RelationManagers;
 use Modules\Inventory\Models\ProductInventory;
 
 class ProductInventoryResource extends Resource
