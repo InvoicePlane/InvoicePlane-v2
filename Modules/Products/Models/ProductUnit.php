@@ -5,7 +5,7 @@ namespace Modules\Products\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Inventory\Database\Factories\ProductUnitFactory;
+use Modules\Products\Database\Factories\ProductUnitFactory;
 
 class ProductUnit extends Model
 {
