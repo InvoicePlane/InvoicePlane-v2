@@ -30,7 +30,7 @@ class UserRequest extends FormRequest
                 $this->isMethod('post') ? 'required' : 'sometimes',
                 'string',
             ],
-            'user_password' => [
+            'password' => [
                 $this->isMethod('post') ? 'required' : 'sometimes',
                 'string',
                 'min:8',
