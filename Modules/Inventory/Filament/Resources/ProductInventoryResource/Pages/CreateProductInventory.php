@@ -5,9 +5,9 @@ namespace Modules\Products\Filament\Resources\ProductResource\Pages;
 use Filament\Resources\Pages\CreateRecord;
 use Modules\Products\Filament\Resources\ProductResource;
 
-class CreateProduct extends CreateRecord
+class CreateProductInventory extends CreateRecord
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = ProductInventoryResource::class;
 
     public function create(bool $another = false): void
     {

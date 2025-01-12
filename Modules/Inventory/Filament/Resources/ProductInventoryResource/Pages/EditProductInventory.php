@@ -5,9 +5,9 @@ namespace Modules\Products\Filament\Resources\ProductResource\Pages;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Products\Filament\Resources\ProductResource;
 
-class EditProduct extends EditRecord
+class EditProductInventory extends EditRecord
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = ProductInventoryResource::class;
 
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
