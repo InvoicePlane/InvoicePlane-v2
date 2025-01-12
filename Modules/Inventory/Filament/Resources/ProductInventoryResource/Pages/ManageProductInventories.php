@@ -8,7 +8,7 @@ use Modules\Products\Filament\Resources\ProductResource;
 
 class ManageProductInventories extends ManageRecords
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = ProductInventoryResource::class;
 
     protected function getHeaderActions(): array
     {
