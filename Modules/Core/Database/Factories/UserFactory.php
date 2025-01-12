@@ -55,7 +55,7 @@ class UserFactory extends Factory
             'user_fax'                 => $this->faker->phoneNumber,
             'user_mobile'              => $this->faker->phoneNumber,
             'email'                    => $this->faker->unique()->safeEmail,
-            'user_password'            => Hash::make(Str::random(16)),
+            'password'                 => Hash::make('password'),
             'user_web'                 => $this->faker->url,
             'user_vat_id'              => $this->faker->numerify('##########'),
             'user_tax_code'            => $this->faker->numerify('###-###-####'),
