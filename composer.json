@@ -24,21 +24,21 @@
         "blade-ui-kit/blade-heroicons": "^2.5",
         "coolsam/modules": "v3.0.1",
         "filament/filament": "^3.2.124",
-        "guzzlehttp/guzzle": ">=7.9.2",
+        "guzzlehttp/guzzle": "^7.9.2",
         "laravel/framework": "^v10.48.20",
-        "laravel/sanctum": "*",
+        "laravel/sanctum": "^v3.3",
         "livewire/livewire": "^3.5.12",
         "maatwebsite/excel": "^3.1.60"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "*",
+        "larastan/larastan": "^2.9",
         "laravel/pint": "dev-feat/blade",
         "laravel/tinker": "^2.10",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "*",
+        "nunomaduro/collision": "^7.11",
         "phpunit/phpunit": "^10.5",
-        "spatie/laravel-ignition": ">=2.8"
+        "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
         "psr-4": {
