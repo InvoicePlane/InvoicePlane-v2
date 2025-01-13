@@ -26,7 +26,7 @@ return new class () extends Migration {
             $table->string('user_fax')->nullable();
             $table->string('user_mobile')->nullable();
             $table->string('email')->nullable();
-            $table->string('password', 60);
+            $table->string('user_password', 60);
             $table->string('user_web')->nullable();
             $table->string('user_vat_id')->nullable();
             $table->string('user_tax_code')->nullable();

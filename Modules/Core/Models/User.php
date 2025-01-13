@@ -68,7 +68,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         'user_fax',
         'user_mobile',
         'user_email',
-        'password',
+        'user_password',
         'user_password_confirmation',
         'user_web',
         'user_vat_id',
@@ -89,7 +89,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     ];
 
     protected $hidden = [
-        'password',
+        'user_password',
         'user_password_confirmation',
         'remember_token',
         'user_psalt',

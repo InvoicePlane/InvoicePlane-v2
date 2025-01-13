@@ -107,7 +107,7 @@ class UserResource extends Resource
                     TextInput::make('user_email')
                         ->nullable()
                         ->string(),
-                    TextInput::make('password')
+                    TextInput::make('user_password')
                         ->required()
                         ->string(),
                     TextInput::make('user_web')

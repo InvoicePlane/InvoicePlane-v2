@@ -19,7 +19,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\ClientsPlugin;
 use Modules\Core\Filament\CorePlugin;
-use Modules\Inventory\Filament\InventoryPlugin;
 use Modules\Invoices\Filament\InvoicesPlugin;
 use Modules\Inventory\Filament\InventoryPlugin;
 use Modules\Payments\Filament\PaymentsPlugin;

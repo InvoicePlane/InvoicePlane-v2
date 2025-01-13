@@ -38,7 +38,7 @@ class UserAPIRequest extends APIRequest
                 $this->isMethod('post') ? 'required' : 'sometimes',
                 'string',
             ],
-            'password' => [
+            'user_password' => [
                 $this->isMethod('post') ? 'required' : 'sometimes',
                 'string',
                 'min:8',

@@ -2,13 +2,13 @@
 
 namespace Modules\Products\Listeners;
 
-use Modules\Inventory\Events\ProductInventoryWasCreated;
+use Modules\Products\Events\ProductWasCreated;
 
 class ProductWasCreatedListener
 {
     public function __construct() {}
 
-    public function handle(ProductInventoryWasCreated $event): void
+    public function handle(ProductWasCreated $event): void
     {
         /**
          * #24: Just a placeholder.

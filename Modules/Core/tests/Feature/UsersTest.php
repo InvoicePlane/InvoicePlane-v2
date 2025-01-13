@@ -77,7 +77,7 @@ class UsersTest extends AbstractTestCase
             'user_language' => '::maybe_english::',
             'user_name'     => '::user_name::',
             'user_company'  => '::localhost corporation::',
-            'password'      => '::password::',
+            'user_password' => '::password::',
             'user_email'    => 'email@email.com',
         ];
 
@@ -111,16 +111,16 @@ class UsersTest extends AbstractTestCase
         $this->markTestSkipped();
         // $this->authenticate();
         $payload = [
-            'user_type'  => null,
-            'user_email' => null,
-            'password'   => null,
+            'user_type'     => null,
+            'user_email'    => null,
+            'user_password' => null,
         ];
 
         Livewire::test(CreateUser::class)
             ->assertStatus(200)
             ->set('data.user_type', $payload['user_type'])
             ->set('data.user_email', $payload['user_email'])
-            ->set('data.user_password', $payload['password'])
+            ->set('data.user_password', $payload['user_password'])
             ->call('create')
             ->assertHasErrors(['data.user_type'])
             ->assertHasErrors(['data.user_email'])

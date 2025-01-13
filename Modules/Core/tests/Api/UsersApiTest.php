@@ -119,7 +119,7 @@ class UsersApiTest extends AbstractTestCase
             'user_name'                  => '::user_name::',
             'user_company'               => '::localhost corporation::',
             'user_email'                 => 'email@email.com',
-            'password'                   => 'longPasswordOf12345678Characters',
+            'user_password'              => 'longPasswordOf12345678Characters',
             'user_password_confirmation' => 'longPasswordOf12345678Characters',
         ]);
 
@@ -143,7 +143,7 @@ class UsersApiTest extends AbstractTestCase
 
         $response->assertJsonValidationErrorFor('user_type', 'errors');
         $response->assertJsonValidationErrorFor('user_email', 'errors');
-        $response->assertJsonValidationErrorFor('password', 'errors');
+        $response->assertJsonValidationErrorFor('user_password', 'errors');
         $response->assertJsonValidationErrorFor('user_password_confirmation', 'errors');
     }
 

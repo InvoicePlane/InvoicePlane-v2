@@ -6,4 +6,4 @@ Required files to download.
     NVM
     Composer
     MariaDB or your choice of db
-    Commit and Push Working From LocalHost
+Still not pushing to branch
