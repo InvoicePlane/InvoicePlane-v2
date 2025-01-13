@@ -2,19 +2,12 @@
 
 namespace Modules\Inventory\Filament\Resources;
 
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
-use Modules\Inventory\Filament\Resources\ProductInventoryResource\RelationManagers;
 use Modules\Inventory\Models\ProductInventory;
 
 class ProductInventoryResource extends Resource

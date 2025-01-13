@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Products\Filament\Resources\ProductResource\Pages;
+namespace Modules\Inventory\Filament\Resources\ProductInventoryResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Products\Filament\Resources\ProductResource;
+use Modules\Inventory\Filament\Resources\ProductInventoryResource;
 
 class EditProductInventory extends EditRecord
 {

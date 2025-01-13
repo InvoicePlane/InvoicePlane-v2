@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Http\Requests\API;
+namespace Modules\Inventory\Http\Requests\API;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
