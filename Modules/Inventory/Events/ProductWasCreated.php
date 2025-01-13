@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Events;
+namespace Modules\Inventory\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -13,5 +13,5 @@ class ProductWasCreated
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public Product $product) {}
+    public function __construct(public Inventory $product) {}
 }

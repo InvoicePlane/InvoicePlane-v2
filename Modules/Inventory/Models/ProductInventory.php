@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Models\TaxRate;
 use Modules\ProductInventory\Database\Factories\ProductFactory;
 
-class Product extends Model
+class ProductInventory extends Model
 {
     use HasFactory;
 
