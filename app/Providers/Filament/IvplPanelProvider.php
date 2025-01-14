@@ -121,7 +121,6 @@ class IvplPanelProvider extends PanelProvider
             ->plugins([
                 ClientsPlugin::make(),
                 CorePlugin::make(),
-                \TomatoPHP\FilamentDocs\FilamentDocsPlugin::make(),
                 InventoryPlugin::make(),
                 InvoicesPlugin::make(),
                 PaymentsPlugin::make(),
@@ -135,7 +134,7 @@ class IvplPanelProvider extends PanelProvider
                     ->label('Settings')
                     //->url(fn (): string => Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label('Translate Sign Out'),
+                'logout' => MenuItem::make()->label('Sign Out'),
             ]);
     }
 }
