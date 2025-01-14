@@ -121,6 +121,7 @@ class IvplPanelProvider extends PanelProvider
             ->plugins([
                 ClientsPlugin::make(),
                 CorePlugin::make(),
+                \TomatoPHP\FilamentDocs\FilamentDocsPlugin::make(),
                 InventoryPlugin::make(),
                 InvoicesPlugin::make(),
                 PaymentsPlugin::make(),
