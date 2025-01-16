@@ -37,10 +37,9 @@ class IvplPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->emailVerification()
-            //->profile()
             ->colors([
                 'primary' => [
-                    50  => '#F2F7FD',
+                    50 => '#F2F7FD',
                     100 => '#E3EFFB',
                     200 => '#C1DFF6',
                     300 => '#8FC0EE',
@@ -53,7 +52,7 @@ class IvplPanelProvider extends PanelProvider
                     950 => '#0F2742',
                 ],
                 'curious' => [
-                    50  => '#F2F7FD',
+                    50 => '#F2F7FD',
                     100 => '#E3EFFB',
                     200 => '#C1DFF6',
                     300 => '#8FC0EE',
@@ -66,7 +65,7 @@ class IvplPanelProvider extends PanelProvider
                     950 => '#0F2742',
                 ],
                 'darkious' => [
-                    50  => '#CCE0FF',
+                    50 => '#CCE0FF',
                     100 => '#99B3EB',
                     200 => '#6696D6',
                     300 => '#2D6BB8',
@@ -79,7 +78,7 @@ class IvplPanelProvider extends PanelProvider
                     950 => '#00102B',
                 ],
                 'emerald' => [
-                    50  => '#ECFDF5',
+                    50 => '#ECFDF5',
                     100 => '#D1F8E4',
                     200 => '#A8ECCD',
                     300 => '#6FD9AE',
@@ -129,12 +128,22 @@ class IvplPanelProvider extends PanelProvider
                 QuotesPlugin::make(),
             ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label('Edit profile'),
+                MenuItem::make()
+                    ->label('Edit Profile')
+                    //  ->url(route('profile.edit'))
+                    ->icon('heroicon-o-user'),
+
                 MenuItem::make()
                     ->label('Settings')
-                    //->url(fn (): string => Settings::getUrl())
+                    //   ->url(route('settings'))
                     ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label('Sign Out'),
+
+                MenuItem::make()
+                    ->label('Website')
+                    ->url('https://StaffordConstruction.org')
+                    ->icon('heroicon-o-question-mark-circle'),
+
+
             ]);
     }
 }
