@@ -98,7 +98,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'user_password'          => 'hashed',
     ];
 
     private ?string $user_email = null;
@@ -108,6 +108,21 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     public function getFilamentName(): string
     {
         return $this->getAttributeValue('user_name');
+    }
+
+    public function getAuthIdentifierName(): string
+    {
+        return 'user_email';
+    }
+
+    public function getAuthPassword(): ?string
+    {
+        return $this->user_password;
+    }
+
+    public function username(): string
+    {
+        return 'user_email';
     }
 
     public function invoices(): HasMany

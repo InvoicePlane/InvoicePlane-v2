@@ -20,7 +20,7 @@ class CoreServiceProvider extends ServiceProvider
         //$this->registerCommandSchedules();
         //$this->registerTranslations();
         //$this->registerConfig();
-        //$this->registerViews();
+        $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
     }
 
@@ -49,12 +49,9 @@ class CoreServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register views.
-     */
     public function registerViews(): void
     {
-        $viewPath = resource_path('views/modules/' . $this->moduleNameLower);
+        $viewPath = resource_path('views/' . $this->moduleNameLower);
         $sourcePath = module_path($this->moduleName, 'resources/views');
 
         $this->publishes([$sourcePath => $viewPath], ['views', $this->moduleNameLower . '-module-views']);

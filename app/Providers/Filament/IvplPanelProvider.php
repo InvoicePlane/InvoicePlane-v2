@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
+use Filament\Facades\Filament;
 use Filament\PanelProvider;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -18,6 +19,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\ClientsPlugin;
+use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Filament\CorePlugin;
 use Modules\Invoices\Filament\InvoicesPlugin;
 use Modules\Inventory\Filament\InventoryPlugin;
@@ -34,7 +36,7 @@ class IvplPanelProvider extends PanelProvider
             ->default()
             ->id('ivpl')
             ->path('ivpl')
-            ->login()
+            ->login(Login::class)
             ->passwordReset()
             ->emailVerification()
             ->colors([
@@ -142,8 +144,6 @@ class IvplPanelProvider extends PanelProvider
                     ->label('Website')
                     ->url('https://StaffordConstruction.org')
                     ->icon('heroicon-o-question-mark-circle'),
-
-
             ]);
     }
 }

@@ -1,0 +1,32 @@
+ivplv1_db
+ip_clients
+ip_users
+
+etcetera
+
+
+ivplv2_db
+ip_clients
+ip_users
+
+
+When i use Google, I actually use ChatGPT
+Act as a Senior Laravel developer.
+I'm building an application with Laravel 10 and Filament
+
+I need to log in with the field user_email instead of email
+
+1.6.1 => 1.6.2 => we needed a database update
+
+
+Settings => Keymap
+vscode keys
+
+ctrl + , => settings
+did i loose you?
+
+
+I'm still here, but i don't think i can hear you
+
+
+

@@ -46,7 +46,7 @@ class ProductResource extends Resource
             ->schema([
                 Group::make()
                     ->schema([
-                        Section::make(heading:null)
+                        Section::make(heading: null)
                             ->schema([
                                 TextInput::make('product_sku')
                                     ->nullable()
@@ -59,7 +59,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->step(1),
                             ])->columns(1),
-                        Section::make(heading:null)
+                        Section::make(heading: null)
                             ->schema([
                                 MarkdownEditor::make('product_description')
                                     ->toolbarButtons([
@@ -71,7 +71,7 @@ class ProductResource extends Resource
                     ]),
                 Group::make()
                     ->schema([
-                        Section::make(heading:null)
+                        Section::make(heading: null)
                             ->schema(components: [
                                 Select::make('productFamily.family_name')
                                     ->required()
@@ -92,7 +92,7 @@ class ProductResource extends Resource
                                     ->preload()
                                     ->native(false),
                             ]),
-                        Section::make(heading:null)
+                        Section::make(heading: null)
                             ->schema(components: [
                                 TextInput::make('provider_name')
                                     ->nullable()
@@ -102,7 +102,7 @@ class ProductResource extends Resource
                                     ->numeric()
                                     ->step(1),
                             ]),
-                        Section::make(heading:'Sumex')
+                        Section::make(heading: 'Sumex')
                             ->schema(components: []),
                     ]),
             ]);
