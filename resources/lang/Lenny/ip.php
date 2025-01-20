@@ -415,7 +415,7 @@ return [
     'product_price'                                => 'Price',
     'product_sku'                                  => 'SKU',
     'product_tariff'                               => 'Tariff',
-    'product_units'                                => 'Product Units',
+    'product_units'                                => 'Colors',
     'product_unit'                                 => 'Color',
     'products'                                     => 'Products',
     'products_form'                                => 'Product Form',

@@ -64,6 +64,7 @@ class PaymentResource extends Resource
                         Section::make(heading:null)
                             ->schema([
                                 MarkdownEditor::make('payment_note')
+                                    ->nullable()
                                     ->toolbarButtons([
                                         'bold',
                                         'italic',
