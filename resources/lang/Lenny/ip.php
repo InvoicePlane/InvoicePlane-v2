@@ -410,7 +410,7 @@ return [
     'price'                                        => 'Price',
     'product'                                      => 'Product',
     'product_description'                          => 'Product description',
-    'product_families'                             => 'Product Families',
+    'product_families'                             => 'Material Type',
     'product_name'                                 => 'Product name',
     'product_price'                                => 'Price',
     'product_sku'                                  => 'SKU',

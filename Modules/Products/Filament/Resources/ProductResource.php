@@ -48,15 +48,14 @@ class ProductResource extends Resource
                     ->schema([
                         Section::make(heading: null)
                             ->schema([
-                                TextInput::make('product_sku')
-                                    ->nullable()
-                                    ->string(),
                                 TextInput::make('product_name')
                                     ->nullable()
-                                    ->string(),
+                                    ->string()
+                                    ->label(trans('ip.product_name')),
                                 TextInput::make('product_price')
                                     ->nullable()
                                     ->numeric()
+                                    ->label(trans('ip.product_price'))
                                     ->step(1),
                             ])->columns(1),
                         Section::make(heading: null)
@@ -78,31 +77,40 @@ class ProductResource extends Resource
                                     ->relationship('productFamily', 'family_name')
                                     ->searchable()
                                     ->preload()
+                                    ->label(trans('ip.product_families'))
                                     ->native(false),
                                 Select::make('productUnit.unit_name')
                                     ->required()
                                     ->relationship('productUnit', 'unit_name')
                                     ->searchable()
                                     ->preload()
+                                    ->label(trans('ip.product_unit'))
                                     ->native(false),
                                 Select::make('tax_rate_id')
                                     ->required()
                                     ->relationship('taxRate', 'tax_rate_name')
                                     ->searchable()
                                     ->preload()
+                                    ->label(trans('ip.tax_rate'))
                                     ->native(false),
                             ]),
                         Section::make(heading: null)
                             ->schema(components: [
+                                TextInput::make('product_sku')
+                                    ->nullable()
+                                    ->string()
+                                    ->label(trans('ip.product_sku')),
                                 TextInput::make('provider_name')
                                     ->nullable()
-                                    ->string(),
+                                    ->string()
+                                    ->label(trans('ip.provider_name')),
                                 TextInput::make('purchase_price')
                                     ->nullable()
                                     ->numeric()
+                                    ->label(trans('ip.purchase_price'))
                                     ->step(1),
                             ]),
-                        Section::make(heading: 'Sumex')
+                        Section::make(heading: 'Stafford Construction')
                             ->schema(components: []),
                     ]),
             ]);

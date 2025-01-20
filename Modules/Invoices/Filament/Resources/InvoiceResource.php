@@ -50,12 +50,6 @@ class InvoiceResource extends Resource
         return $form->schema([
             Section::make(heading:null)->schema([
                 Grid::make(['default' => 2])->schema([
-                    Select::make('user_id')
-                        ->required()
-                        ->relationship('user', 'user_language')
-                        ->searchable()
-                        ->preload()
-                        ->native(false),
                     Select::make('client_id')
                         ->required()
                         ->relationship('client', 'client_name')
@@ -81,13 +75,18 @@ class InvoiceResource extends Resource
                         ->string(),
                     DatePicker::make('invoice_date_created')
                         ->rules(['date'])
+                        ->default(now()->toDateTimeString())
                         ->required()
                         ->native(false),
                     TimePicker::make('invoice_time_created')
                         ->required()
+                        ->disabled()
+                        ->default(now()->toDateTimeString())
                         ->native(false),
                     DateTimePicker::make('invoice_date_modified')
+                        ->disabled()
                         ->rules(['date'])
+                        ->default(now()->toDateTimeString())
                         ->required()
                         ->native(false),
                     DatePicker::make('invoice_date_due')

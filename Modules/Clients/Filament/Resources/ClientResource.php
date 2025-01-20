@@ -52,6 +52,7 @@ class ClientResource extends Resource
                     ->schema([
                         TextInput::make('client_name')
                             ->nullable()
+                            ->required()
                             ->label(trans('ip.client_name'))
                             ->string(),
                         TextInput::make('client_surname')
@@ -155,11 +156,13 @@ class ClientResource extends Resource
                 DateTimePicker::make('client_date_created')
                     ->disabled()
                     ->rules(['date'])
+                    ->default(now()->toDateTimeString())
                     ->required()
                     ->native(false),
                 DateTimePicker::make('client_date_modified')
                     ->disabled()
                     ->rules(['date'])
+                    ->default(now()->toDateTimeString())
                     ->required()
                     ->native(false),
             ]),
