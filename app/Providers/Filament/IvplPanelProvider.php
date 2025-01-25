@@ -124,6 +124,7 @@ class IvplPanelProvider extends PanelProvider
                 CorePlugin::make(),
                 InventoryPlugin::make(),
                 InvoicesPlugin::make(),
+                \TomatoPHP\FilamentDocs\FilamentDocsPlugin::make(),
                 PaymentsPlugin::make(),
                 ProductsPlugin::make(),
                 ProjectsPlugin::make(),
@@ -132,12 +133,12 @@ class IvplPanelProvider extends PanelProvider
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Edit Profile')
-                    //  ->url(route('profile.edit'))
+                    //->url(route('profile.edit'))
                     ->icon('heroicon-o-user'),
 
                 MenuItem::make()
                     ->label('Settings')
-                    //   ->url(route('settings'))
+                   // ->url(route('settings'))
                     ->icon('heroicon-o-cog-6-tooth'),
 
                 MenuItem::make()

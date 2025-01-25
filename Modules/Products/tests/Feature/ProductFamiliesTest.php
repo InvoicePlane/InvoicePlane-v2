@@ -67,7 +67,7 @@ class ProductFamiliesTest extends AbstractTestCase
          * - family_name
          */
         $payload = [
-            'family_description' => '::dummydummy::',
+            'family_description' => '::dummy dummy::',
         ];
 
         Livewire::test(CreateProductFamily::class)
