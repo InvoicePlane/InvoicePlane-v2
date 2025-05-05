@@ -1,0 +1,33 @@
+# Build artifacts
+/public/assets/
+/public/build/
+/public/css/
+/public/hot/
+/public/js/
+/public/vendor/filament/
+
+# Laravel
+/public/storage
+/storage/*.key
+/vendor/
+/.env*
+
+# Node/Vite
+/node_modules/
+
+# PHPUnit / Test tools
+/.phpunit.cache
+/phpunit.result.cache
+/puf.txt
+
+# IDEs / Editors
+/.fleet/
+/.idea/
+/.nova/
+/.vscode/
+/.zed/
+/.phpactor.json
+
+# Misc
+npm-debug.log
+yarn-error.log
