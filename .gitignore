@@ -1,7 +1,8 @@
 # Laravel: Exclude compiled and storage files
-/Modules/*/Controllers/**
-/Modules/*Http/**
-/Modules/*Requests/**
+Modules/**/Controllers/
+Modules/**/Http/Controllers/
+Modules/**/Http/Requests/
+Modules/**/Resources/
 /Modules/*/resources/views/**
 /node_modules/
 /storage/*.key
