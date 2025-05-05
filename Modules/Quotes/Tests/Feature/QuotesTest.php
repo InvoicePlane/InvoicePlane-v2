@@ -56,8 +56,6 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * {
      *   "company_id": 1,
@@ -116,8 +114,6 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * {
      *   "company_id": 1,

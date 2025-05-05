@@ -93,8 +93,6 @@ class PaymentsTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * {
      *   "payment_status": "completed"

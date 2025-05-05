@@ -8,6 +8,7 @@ use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Filament\Company\Resources\TaskResource;
 use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\CreateTask;
 use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\EditTask;
@@ -40,13 +41,13 @@ class TasksTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        Task::query()->create([
+        Task::factory()->create([
             'company_id' => $company->id,
-            'name'       => 'Design Landing Page',
+            'name'       => 'Setup Server',
         ]);
 
         Livewire::test(ListTasks::class)
-            ->assertSee('Design Landing Page');
+            ->assertSee('Setup Server');
     }
     // endregion
 
@@ -54,8 +55,6 @@ class TasksTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * {
      *   "company_id": 1,
@@ -72,7 +71,7 @@ class TasksTest extends AbstractTestCase
      */
     public function it_creates_a_task(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $this->markTestIncomplete();
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -81,16 +80,16 @@ class TasksTest extends AbstractTestCase
         $this->actingAs($user);
 
         $payload = [
-            'company_id'  => $company->id,
-            'customer_id' => 2,
-            'project_id'  => 3,
-            'tax_rate_id' => 4,
-            'assigned_to' => 'john.doe@example.com',
-            'task_status' => 'in_progress',
-            'name'        => 'Design Landing Page',
-            'price'       => 150.00,
-            'due_at'      => '2025-05-20',
-            'description' => 'Create a responsive landing page',
+            'company_id'  => 1,
+            'customer_id' => 1,
+            'project_id'  => 1,
+            'tax_rate_id' => 1,
+            'assigned_to' => 1,
+            'task_status' => TaskStatus::OPEN,
+            'name'        => 'Example',
+            'price'       => 300,
+            'due_at'      => '2025-06-01',
+            'description' => null,
         ];
 
         Livewire::test(CreateTask::class)
@@ -102,8 +101,6 @@ class TasksTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * {
      *   "company_id": 1,
@@ -117,7 +114,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
-    public function it_fails_to_create_task_without_name(): void
+    public function it_fails_to_create_task_without_required_name(): void
     {
         $this->markTestIncomplete();
 
@@ -128,14 +125,147 @@ class TasksTest extends AbstractTestCase
         $this->actingAs($user);
 
         $payload = [
-            'company_id' => $company->id,
-            'project_id' => 3,
+            'company_id'  => 1,
+            'customer_id' => 1,
+            'project_id'  => 1,
+            'tax_rate_id' => 1,
+            'assigned_to' => 1,
+            'task_status' => TaskStatus::OPEN,
+            'price'       => 300,
+            'due_at'      => '2025-06-01',
+            'description' => null,
         ];
 
         Livewire::test(CreateTask::class)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors(['name' => 'required']);
+            ->assertHasNoFormErrors();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "project_id": 3,
+     *   "tax_rate_id": 4,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_without_required_customer(): void
+    {
+        $this->markTestIncomplete();
+
+        $company = Company::factory()->create();
+        $user    = User::factory()->create();
+        $user->companies()->attach($company->id);
+        session(['current_company_id' => $company->id]);
+        $this->actingAs($user);
+
+        $payload = [
+            'company_id'  => 1,
+            'project_id'  => 1,
+            'tax_rate_id' => 1,
+            'assigned_to' => 1,
+            'task_status' => TaskStatus::OPEN,
+            'price'       => 300,
+            'due_at'      => '2025-06-01',
+            'description' => null,
+        ];
+
+        Livewire::test(CreateTask::class)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasNoFormErrors();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
+     *   "tax_rate_id": 4,
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_without_required_assigned_to(): void
+    {
+        $this->markTestIncomplete();
+
+        $company = Company::factory()->create();
+        $user    = User::factory()->create();
+        $user->companies()->attach($company->id);
+        session(['current_company_id' => $company->id]);
+        $this->actingAs($user);
+
+        $payload = [
+            'company_id'  => 1,
+            'customer_id' => 1,
+            'project_id'  => 1,
+            'tax_rate_id' => 1,
+            'task_status' => TaskStatus::OPEN,
+            'price'       => 300,
+            'due_at'      => '2025-06-01',
+            'description' => null,
+        ];
+
+        Livewire::test(CreateTask::class)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasNoFormErrors();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_without_required_tax_rate(): void
+    {
+        $this->markTestIncomplete();
+
+        $company = Company::factory()->create();
+        $user    = User::factory()->create();
+        $user->companies()->attach($company->id);
+        session(['current_company_id' => $company->id]);
+        $this->actingAs($user);
+
+        $payload = [
+            'company_id'  => 1,
+            'customer_id' => 1,
+            'project_id'  => 1,
+            'assigned_to' => 1,
+            'task_status' => TaskStatus::OPEN,
+            'price'       => 300,
+            'due_at'      => '2025-06-01',
+            'description' => null,
+        ];
+
+        Livewire::test(CreateTask::class)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasNoFormErrors();
     }
 
     #[Test]

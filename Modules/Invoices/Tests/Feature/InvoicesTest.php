@@ -109,8 +109,6 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
      * @payload
      * @payload {
      *   "company_id": 1,
