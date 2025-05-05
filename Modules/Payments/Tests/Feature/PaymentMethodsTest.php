@@ -20,6 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class PaymentMethodsTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -27,6 +28,11 @@ class PaymentMethodsTest extends AbstractTestCase
     {
         parent::setUp();
         $this->withoutExceptionHandling();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 
     // region smoke
@@ -71,6 +77,14 @@ class PaymentMethodsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
+        /**
+         * Payload from `all_posts.json`:
+         * {
+         *     "payment_method_name": "Credit Card",
+         * }
+         */
+        // Payload for creating a payment method
+        // @var array $payload
         $payload = [
             'company_id'          => $company->id,
             'payment_method_name' => 'Credit Card',
@@ -81,6 +95,11 @@ class PaymentMethodsTest extends AbstractTestCase
             ->call('create')
             ->assertHasNoFormErrors()
             ->assertSee('Credit Card');
+
+        $this->assertDatabaseHas('payment_methods', array_merge($data, [
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]));
     }
 
     #[Test]
@@ -92,7 +111,7 @@ class PaymentMethodsTest extends AbstractTestCase
      *   "payment_method_name": "Credit Card"
      * }
      */
-    public function it_fails_to_create_payment_method_without_name(): void
+    public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
     {
         $this->markTestIncomplete();
 
@@ -102,8 +121,15 @@ class PaymentMethodsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
+        /**
+         * Payload from `all_posts.json`:
+         * {
+         *     "payment_method_name": "Credit Card",
+         * }
+         */
         $payload = [
             'company_id' => $company->id,
+            'description' => '::description::',
         ];
 
         Livewire::test(CreatePaymentMethod::class)
@@ -114,6 +140,56 @@ class PaymentMethodsTest extends AbstractTestCase
         if (app()->isLocal()) {
             dump($payload);
         }
+
+        $this->assertDatabaseHas('payment_methods', array_merge($data, [
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]));
+    }
+
+    public function it_updates_a_payment_method(): void
+    {
+        $this->markTestSkipped('Not implemented yet');
+        // $this->authenticated();
+
+        $user = User::factory()->create();
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::original_payment_method_name::',
+        ]);
+
+        $updatedData = [
+            'payment_method_name' => 'updated_payment_method_name',
+        ];
+
+        Livewire::test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])
+            ->set('data.payment_method_name', $updatedData['payment_method_name'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payment_methods', array_merge($updatedData, [
+            'payment_method_id'   => $paymentMethod->payment_method_id,
+            'payment_method_name' => $paymentMethod->payment_method_name,
+        ]));
+    }
+
+    /** @test */
+    public function it_deletes_a_payment_method(): void
+    {
+        $this->markTestSkipped('Not implemented yet');
+        // $this->authenticated();
+
+        $user = User::factory()->create();
+
+        $paymentMethod = PaymentMethod::factory()->create();
+
+        Livewire::test(ManagePaymentMethods::class)
+            ->callTableAction('delete', $paymentMethod)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('payment_methods', [
+            'payment_method_id' => $paymentMethod->payment_method_id,
+        ]);
     }
     // endregion
 }

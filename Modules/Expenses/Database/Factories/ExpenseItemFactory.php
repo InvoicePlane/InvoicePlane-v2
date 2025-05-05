@@ -7,7 +7,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 
 class ExpenseItemFactory extends Factory
@@ -17,7 +17,7 @@ class ExpenseItemFactory extends Factory
     public function definition(): array
     {
         $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Item::query()->inRandomOrder()->first() ?? Item::factory()->create();
+        $item    = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 

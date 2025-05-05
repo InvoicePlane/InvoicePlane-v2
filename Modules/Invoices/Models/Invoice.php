@@ -109,14 +109,44 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
+    /*public function getInvoiceDateDueAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : null;
+    }*/
+
     //
     // Scopes (alphabetical)
     //
 
+    public function scopeStatus(Builder $query, string $status): Builder
+    {
+        switch ($status) {
+            case 'draft':
+                return $query->where('invoice_status_id', self::DRAFT);
+            case 'sent':
+                return $query->where('invoice_status_id', self::SENT);
+            case 'viewed':
+                return $query->where('invoice_status_id', self::VIEWED);
+            case 'paid':
+                return $query->where('invoice_status_id', self::PAID);
+            default:
+                return $query;
+        }
+    }
+
+
+    public function scopeCustomers(Builder $query, array|string $clients = ''): Builder
+    {
+        //TODO: if clients is null retrieve all the clients assigned to a client user.
+
+        return $query->whereIn('client_id', $clients);
+    }
+
+    /*    
     public function scopeClients(Builder $query, array|string $clients = []): Builder
     {
         return $query->whereIn('customer_id', (array) $clients);
-    }
+    }*/
 
     public function scopeGuest(Builder $query): Builder
     {

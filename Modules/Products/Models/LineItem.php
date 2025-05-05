@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $description
  * @property mixed  $created_at
  * @property mixed  $updated_at
- * @property Item   $item
+ * @property Product   $item
  */
 class LineItem extends Model
 {
@@ -38,6 +38,6 @@ class LineItem extends Model
 
     public function item(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Products\Models\Item::class);
+        return $this->belongsTo(\Modules\Products\Models\Product::class);
     }
 }

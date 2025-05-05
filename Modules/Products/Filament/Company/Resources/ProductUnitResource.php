@@ -56,7 +56,11 @@ class ProductUnitResource extends Resource
                                 ->label(trans('ip.unit_name_plrl'))
                                 ->required(),
                         ]),
-                ])->columnSpanFull(),
+                ])->columns(1),
+                Group::make()->schema([
+                    Placeholder::make('explanation Product Unit')
+                        ->label('just some text'),
+                ])->columns(1),
             ]);
     }
 

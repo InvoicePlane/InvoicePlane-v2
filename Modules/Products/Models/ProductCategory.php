@@ -17,7 +17,7 @@ use Modules\Products\Database\Factories\ProductCategoryFactory;
  * @property string      $category_name
  * @property string|null $description
  * @property Company     $company
- * @property Item[]      $items
+ * @property Product[]      $items
  */
 class ProductCategory extends Model
 {
@@ -26,7 +26,7 @@ class ProductCategory extends Model
 
     public $timestamps = false;
 
-    protected $table = 'item_categories';
+    protected $table = 'product_categories';
 
     protected $guarded = [];
 
@@ -41,7 +41,7 @@ class ProductCategory extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(Item::class, 'category_id');
+        return $this->hasMany(Product::class, 'category_id');
     }
 
     //

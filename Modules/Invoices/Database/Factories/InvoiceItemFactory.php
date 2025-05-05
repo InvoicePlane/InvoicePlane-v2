@@ -7,7 +7,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 
 class InvoiceItemFactory extends Factory
@@ -17,7 +17,7 @@ class InvoiceItemFactory extends Factory
     public function definition(): array
     {
         $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Item::query()->inRandomOrder()->first() ?? Item::factory()->create();
+        $item    = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 
@@ -31,7 +31,7 @@ class InvoiceItemFactory extends Factory
             'invoice_id'   => Invoice::query()->inRandomOrder()->first()?->id,
             'item_id'      => $item->id,
             'unit_id'      => $unit->id,
-            'added_at'     => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
+            'added_at'     => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
             'item_name'    => $item->item_name,
             'is_recurring' => false,
             'quantity'     => $quantity,

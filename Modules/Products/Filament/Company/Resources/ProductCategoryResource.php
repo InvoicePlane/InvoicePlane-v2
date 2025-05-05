@@ -18,7 +18,7 @@ class ProductCategoryResource extends Resource
 {
     protected static ?string $model = ProductCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cube';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Resources';
 
@@ -43,7 +43,7 @@ class ProductCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(1)
+                Grid::make(2)
                     ->schema([
                         Group::make()
                             ->schema([
@@ -53,6 +53,9 @@ class ProductCategoryResource extends Resource
                                     ->autofocus()
                                     ->required(),
                             ]),
+                Group::make()->schema([
+                    Placeholder::make('explanation Product Family')
+                        ->label('just some text'),
                     ]),
             ]);
     }

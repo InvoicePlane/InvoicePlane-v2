@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Database\Factories\InvoiceItemFactory;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Projects\Models\Task;
@@ -25,7 +25,7 @@ use Modules\Projects\Models\Task;
  * @property string $description
  * @property mixed  $created_at
  * @property mixed  $updated_at
- * @property Item   $item
+ * @property Product   $item
  */
 class InvoiceItem extends Model
 {
@@ -44,7 +44,7 @@ class InvoiceItem extends Model
 
     public function item(): BelongsTo
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function invoice(): BelongsTo

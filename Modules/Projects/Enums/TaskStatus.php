@@ -8,6 +8,18 @@ enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
     case IN_PROGRESS = 'in_progress';
     case COMPLETED   = 'completed';
     case CANCELLED   = 'cancelled';
+    case PAID        = 'paid';
+
+/**
+    case NOT_STARTED = 1;
+
+    case IN_PROGRESS = 2;
+
+    case COMPLETE = 3;
+
+    case PAID = 4;
+*/
+
 
     public static function values(): array
     {
@@ -17,10 +29,11 @@ enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::IN_PROGRESS => 'In Progress',
-            self::COMPLETED   => 'Completed',
-            self::OPEN        => 'Open',
-            self::CANCELLED   => 'Cancelled',
+            self::NOT_STARTED => 'ip.not_started',
+            self::IN_PROGRESS => 'ip.in_progress',
+            self::COMPLETE    => 'ip.complete',
+            self::PAID        => 'ip.paid',
+            self::CANCELLED   => 'ip.cancelled',
         };
     }
 
@@ -29,7 +42,8 @@ enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
         return match ($this) {
             self::IN_PROGRESS => 'info',
             self::COMPLETED   => 'success',
-            self::OPEN        => 'gray',
+            self::NOT_STARTED => 'gray',
+            self::PAID        => 'emerald',
             self::CANCELLED   => 'warning',
         };
     }

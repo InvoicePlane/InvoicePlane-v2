@@ -120,14 +120,31 @@ class Quote extends Model
         ]);
     }
 
-    public function scopeStatus(Builder $query, QuoteStatus $status): Builder
+    public function scopeStatus(Builder $query, PaymentStatus $status): Builder
     {
         return $query->where('quote_status', $status->value);
     }
 
-    public function scopeUrlKey(Builder $query, string $urlKey): Builder
+    public function scopeGuest(Builder $query): Builder
     {
-        return $query->where('quote_url_key', $urlKey);
+        return $query->whereIn('quote_status', [QuoteStatus::SENT, QuoteStatus::VIEWED, QuoteStatus::APPROVED, QuoteStatus::REJECTED]);
+    }
+
+    public function scopeUrlKey(Builder $query, $url_key): Builder
+    {
+        return $query->where('quote_url_key', $url_key);
+    }
+
+    public function scopeIsOpen(Builder $query): Builder
+    {
+        return $query->whereIn('quote_status_id', [QuoteStatus::SENT, QuoteStatus::VIEWED]);
+    }
+
+    public function scopeClients(Builder $query, $clients = ''): Builder
+    {
+        //TODO: if clients is null retrieve all the clients assigned to a client user.
+
+        return $query->whereIn('client_id', $clients);
     }
 
     //

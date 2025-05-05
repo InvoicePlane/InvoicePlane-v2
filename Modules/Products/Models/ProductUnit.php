@@ -41,7 +41,7 @@ class ProductUnit extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(Item::class, 'unit_id');
+        return $this->hasMany(Product::class, 'unit_id');
     }
 
     //

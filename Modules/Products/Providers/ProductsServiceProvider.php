@@ -4,7 +4,7 @@ namespace Modules\Products\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use Modules\Products\Observers\ItemObserver;
@@ -31,7 +31,7 @@ class ProductsServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
 
-        Item::observe(ItemObserver::class);
+        Product::observe(ItemObserver::class);
         ProductCategory::observe(ProductCategoryObserver::class);
         ProductUnit::observe(ProductUnitObserver::class);
     }

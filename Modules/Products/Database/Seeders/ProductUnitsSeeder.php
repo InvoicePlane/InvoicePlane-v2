@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductUnit;
 
-class Product_UnitsSeeder extends Seeder
+class ProductUnitsSeeder extends Seeder
 {
     public function run(): void
     {

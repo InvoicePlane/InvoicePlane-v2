@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class ProductCategoriesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -28,12 +29,20 @@ class ProductCategoriesTest extends AbstractTestCase
         $this->withoutExceptionHandling();
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     // region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_product_categories(): void
     {
-        $productCategory = ProductCategory::factory()->create();
+        ProductCategory::factory()->create([
+            'family_name' => '::product_family_name::',
+        ]);
+
         //$this->actingAs(User::factory()->create());
 
         Livewire::test(ListProductCategories::class)
@@ -44,19 +53,44 @@ class ProductCategoriesTest extends AbstractTestCase
     // endregion
 
     // region crud
+    /**
+     * @test
+     * Payload:
+     * {
+     * "family_name": "::product_family_name::"
+     * }
+     *
+     * @skip Not implemented yet
+     */
+    public function it_creates_a_product_category(): void
+    {
+        $this->markTestSkipped('something about a view');
+        $payload = [
+            'family_name' => '::product_family_name::',
+        ];
+
+        Livewire::test(CreateProductFamily::class)
+            ->set('data.family_name', $payload['family_name'])
+            ->call('create')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('product_families', array_merge($payload, [
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]));
+    }
+
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Products\Filament\Company\Resources\ProductCategoryResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
-     * "category_name": "Example",
+     * "category_name": null,
      * "description": "Example"
      * }
      */
-    public function it_fails_to_create_productcategory_when_required_fields_are_missing(): void
+    public function it_fails_to_create_a_product_family_without_category_name(): void
     {
         $this->markTestIncomplete();
 
@@ -78,11 +112,42 @@ class ProductCategoriesTest extends AbstractTestCase
         }
     }
 
+    /**
+     * @test
+     *
+     * @skip Not implemented yet
+     *
+     * Payload for updating a product family:
+     *
+     *
+     *            [
+     *            'family_name' => 'Updated Family',
+     *            ]
+     */
+    public function it_updates_a_product_family(): void
+    {
+        $this->markTestIncomplete();
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::original_product_family_name::',
+        ]);
+
+        $updatedData = [
+            'family_name' => '::updated_product_family_name::',
+        ];
+
+        Livewire::test(EditProductFamily::class, ['record' => $productFamily->family_id])
+            ->set('data.family_name', $updatedData['family_name'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('product_families', array_merge($updatedData, [
+            'family_id' => $productFamily->family_id,
+        ]));
+    }
+
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Products\Filament\Company\Resources\ProductCategoryResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -113,4 +178,21 @@ class ProductCategoriesTest extends AbstractTestCase
             dump($payload);
         }
     }
+
+    public function it_deletes_a_product_family(): void
+    {
+        $this->markTestIncomplete('needs delete action');
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::product_family_name::',
+        ]);
+
+        Livewire::test(ManageProductFamilies::class)
+            ->callTableAction('delete', $productFamily)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('product_families', [
+            'family_id' => $productFamily->family_id,
+        ]);
+    }
+    // endregion
 }

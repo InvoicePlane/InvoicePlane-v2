@@ -26,7 +26,7 @@ return new class () extends Migration {
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('set null');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('set null');
+            $table->foreign('item_id')->references('id')->on('products')->onDelete('set null');
             $table->foreign('unit_id')->references('id')->on('product_units')->onDelete('set null');
             $table->foreign('tax_rate_id')->references('id')->on('tax_rates')->onDelete('set null');
         });

@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class TaxRatesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -28,9 +29,38 @@ class TaxRatesTest extends AbstractTestCase
         $this->withoutExceptionHandling();
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     // region smoke
+    public function it_lists_tax_rates(): void
+    {
+        $this->markTestSkipped('Some error with a livewire view');
+
+        //$this->actingAs(User::factory()->create());
+
+        $payload = [
+            'company_id'    => 'Value',
+            'tax_rate_type' => 'Value',
+            'is_active'     => true,
+            'name'          => 'Example',
+            'code'          => 'Example',
+            'rate'          => 'Example',
+        ];
+
+        Livewire::test(ListTaxRates::class)
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('tax_rates', $payload);
+    }
+    // endregion
+
+
+    // region crud
     #[Test]
-    #[Group('smoke')]
+    #[Group('crud')]
     /**
      * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
      *
@@ -46,7 +76,7 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_creates_a_taxrate(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped('Some error with a livewire view');
 
         //$this->actingAs(User::factory()->create());
 
@@ -63,6 +93,8 @@ class TaxRatesTest extends AbstractTestCase
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('tax_rates', $payload);
     }
 
     #[Test]
@@ -97,17 +129,29 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name'    => '::original_tax_rate_name::',
+            'tax_rate_percent' => '15',
+        ]);
+
+        $updatedData = [
+            'tax_rate_name'    => '::updated_tax_rate_name::',
+            'tax_rate_percent' => '20',
+        ];
+
         Livewire::test(EditTaxRate::class, ['record' => $record->getKey()])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
+            'tax_rate_id' => $taxRate->tax_rate_id,
+        ]));
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -120,7 +164,7 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_deletes_a_taxrate(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
 
         //$this->actingAs(User::factory()->create());
 
@@ -135,6 +179,5 @@ class TaxRatesTest extends AbstractTestCase
     // endregion
 
     // region usp
-
     // endregion
 }

@@ -31,6 +31,7 @@ use Modules\Quotes\Models\Quote;
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
+    use HasApiTokens;
     use HasFactory;
     use Notifiable;
 
@@ -40,7 +41,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 
     protected $hidden = [
         'password',
+        'user_password_confirmation',
         'remember_token',
+        'user_psalt',
+        'user_passwordreset_token',
     ];
 
     protected $casts = [
@@ -93,7 +97,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 
     public function getFilamentName(): string
     {
-        return $this->name;
+        return $this->getAttributeValue('name');
     }
 
     public function getFilamentAvatarUrl(): ?string

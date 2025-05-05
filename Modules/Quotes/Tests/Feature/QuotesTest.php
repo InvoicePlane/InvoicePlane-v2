@@ -2,12 +2,25 @@
 
 namespace Modules\Quotes\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
+use Modules\Clients\Models\Client;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Models\Company;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Payments\Models\PaymentMethod;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductFamily;
+use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\CreateQuote;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
@@ -20,13 +33,18 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(QuoteResource::class)]
 class QuotesTest extends AbstractTestCase
 {
-    use WithFaker;
+    use RefreshDatabase;
     use WithoutMiddleware;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->withoutExceptionHandling();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 
     // region smoke
@@ -36,6 +54,21 @@ class QuotesTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
 
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -43,12 +76,327 @@ class QuotesTest extends AbstractTestCase
         $this->actingAs($user);
 
         Quote::factory()->create([
-            'company_id'   => $company->id,
-            'quote_number' => 'QUO-001',
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::quote_number::',
         ]);
 
         Livewire::test(ListQuotes::class)
-            ->assertSee('QUO-001');
+            ->assertSee('::client_name::')
+            ->assertSee('::quote_number::');
+    }
+
+    #[Test]
+    #[Group('smoke')]
+    public function it_shows_only_filtered_draft_quotes_index(): void
+    {
+        $this->markTestSkipped('Not implemented');
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Quote::factory()->sent()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::sent_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::draft_quote_number::')
+            ->assertDontSee('::sent_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_only_filtered_sent_quotes_index(): void
+    {
+        $this->markTestSkipped();
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->sent()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::sent_quote_number::',
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::sent_quote_number::')
+            ->assertDontSee('::draft_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_only_filtered_viewed_quotes_index(): void
+    {
+        $this->markTestSkipped();
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->viewed()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::viewed_quote_number::',
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::viewed_quote_number::')
+            ->assertDontSee('::draft_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_only_filtered_approved_quotes_index(): void
+    {
+        $this->markTestSkipped();
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->approved()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::approved_quote_number::',
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::approved_quote_number::')
+            ->assertDontSee('::draft_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_only_filtered_rejected_quotes_index(): void
+    {
+        $this->markTestSkipped();
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->rejected()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::rejected_quote_number::',
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::rejected_quote_number::')
+            ->assertDontSee('::draft_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_only_filtered_canceled_quotes_index(): void
+    {
+        $this->markTestSkipped();
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Quote::factory()->canceled()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::canceled_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::canceled_quote_number::')
+            ->assertDontSee('::draft_quote_number::');
+    }
+
+    /** @test */
+    public function it_shows_all_quotes_index(): void
+    {
+        // $this->authenticate();
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        Quote::factory()->draft()->create([
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => User::all()->random()->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::draft_quote_number::',
+        ]);
+
+        Quote::factory()->sent()->create([
+            'quote_number' => '::sent_quote_number::',
+        ]);
+
+        Livewire::test(ManageQuotes::class)
+            ->assertStatus(200)
+            ->assertSee('::draft_quote_number::')
+            ->assertSee('::sent_quote_number::');
     }
     // endregion
 
@@ -92,9 +440,9 @@ class QuotesTest extends AbstractTestCase
             'document_group_id'      => 3,
             'user_id'                => 4,
             'quote_number'           => 'QUO-001',
-            'quote_status'           => 'draft',
-            'quoted_at'              => '2025-04-30',
-            'quote_expires_at'       => '2025-05-30',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quoted_at'              => Carbon::now()->subMonths(2)->format('Y-m-d'),
+            'quote_date_expires'     => Carbon::now()->addMonth()->format('Y-m-d'),
             'quote_discount_amount'  => 10.00,
             'quote_discount_percent' => 5.00,
             'quote_item_tax_total'   => 2.50,
@@ -133,7 +481,7 @@ class QuotesTest extends AbstractTestCase
      *   "quote_url_key": "abc123"
      * }
      */
-    public function it_fails_to_create_quote_without_status(): void
+    public function it_fails_to_create_quote_without_required_quote_status(): void
     {
         $this->markTestIncomplete();
 
@@ -142,6 +490,21 @@ class QuotesTest extends AbstractTestCase
         $user->companies()->attach($company->id);
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
 
         $payload = [
             'company_id'   => $company->id,
@@ -183,6 +546,25 @@ class QuotesTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        $quote = Quote::factory()->create(['invoice_id' => null, 'quote_status_id' => QuoteStatus::DRAFT, ]);
+
         $record = Quote::factory()->create();
 
         $payload = [
@@ -204,10 +586,16 @@ class QuotesTest extends AbstractTestCase
             'quote_url_key'          => 'Example',
         ];
 
+        $updatedData = [
+            'quote_status_id' => QuoteStatus::APPROVED,
+        ];
+
         Livewire::test(EditQuote::class, ['record' => $record->getKey()])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('quotes', ['quote_id' => $quote->quote_id, 'quote_status_id' => $updatedData['quote_status_id']]);
     }
 
     #[Test]
@@ -237,9 +625,21 @@ class QuotesTest extends AbstractTestCase
     {
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
-        //$this->actingAs(User::factory()->create());
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
 
-        $record = Quote::factory()->create();
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+        $quote = Quote::factory()->create();
 
         Livewire::test(ListQuotes::class)
             ->callTableAction('delete', $record);
@@ -287,5 +687,260 @@ class QuotesTest extends AbstractTestCase
             'status' => 'converted',
         ]);
     }
+
+
+    public function it_changes_client_of_a_quote(): void
+    {
+        $this->markTestIncomplete('changeClient action not implemented');
+        // $this->authenticate();
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+        $quote  = Quote::factory()->create();
+        $client = Client::factory()->create();
+
+        Livewire::test(ManageQuotes::class)
+            ->callTableAction('changeClient', $quote->quote_id, ['client_id' => $client->client_id])
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', [
+            'quote_id'  => $quote->quote_id,
+            'client_id' => $client->client_id,
+        ]);
+    }
+    // endregion
+
+    // region Spicy Tests
+    /**
+     * @test
+     * route('filament.ivpl.resources.filament.resources.quotes.add_product')
+     *
+     * @skip Not implemented yet
+     */
+    public function it_adds_a_product_to_a_quote(): void
+    {
+        $this->markTestIncomplete('addProduct action not implemented');
+        // $this->authenticate();
+        $user         = User::factory()->create();
+        $client       = Client::factory()->create(['client_name' => '::client_name::']);
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        $tax_rate = TaxRate::factory()->create([
+            'tax_rate_name'    => '::tax_rate_name::',
+            'tax_rate_percent' => '9',
+        ]);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $productFamily = ProductFamily::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
+        $product = Product::factory()->create([
+            'family_id'    => $productFamily,
+            'product_sku'  => '::product_sku::',
+            'product_name' => '::product_name::',
+            'tax_rate_id'  => $taxRate,
+            'unit_id'      => $productUnit,
+        ]);
+
+        $payload = [
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => $user->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::quote_number::',
+        ];
+
+        $quote = Quote::factory()->create($payload);
+
+        Livewire::test(ManageQuotes::class)
+            ->callTableAction('addProduct', $quote->quote_id, ['client_id' => $client->client_id])
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', [
+            'quote_id'  => $quote->quote_id,
+            'client_id' => $client->client_id,
+        ]);
+    }
+
+    /**
+     * @test
+     * route('filament.ivpl.resources.filament.resources.quotes.add_task')
+     *
+     * @skip Not implemented yet
+     */
+    public function it_adds_a_task_to_a_quote(): void
+    {
+        $this->markTestIncomplete('addTask action needs to be implemented');
+        // $this->authenticate();
+
+        $user         = User::factory()->create();
+        $client       = Client::factory()->create(['client_name' => '::client_name::']);
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+
+        $tax_rate = TaxRate::factory()->create([
+            'tax_rate_name'    => '::tax_rate_name::',
+            'tax_rate_percent' => '9',
+        ]);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $task = Task::factory()->create(['project_id' => $project->project_id]);
+
+        $payload = [
+            'invoice_id'       => $invoice->invoice_id,
+            'user_id'          => $user->user_id,
+            'client_id'        => $client->client_id,
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'quote_number'     => '::quote_number::',
+        ];
+
+        $quote = Quote::factory()->create($payload);
+
+        Livewire::test(CreateQuote::class)
+            ->assertStatus(200)
+            ->set('data.invoice_id', $payload['invoice_id'])
+            ->set('data.invoice_group_id', $payload['invoice_group_id'])
+            ->set('data.quote_number', $payload['quote_number'])
+            ->call('addTask');
+    }
+
+    /**
+     * @test
+     *
+     * route('filament.ivpl.resources.filament.resources.quotes.generate_pdf', ['record' => $quote->id])
+     *
+     * @skip Not implemented yet
+     */
+    public function it_generates_a_quote_pdf(): void
+    {
+        $this->markTestIncomplete('generatePdf action Not implemented');
+        // $this->authenticate();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+        $quote = Quote::factory()->create();
+
+        Livewire::test(ManageQuotes::class)
+            ->callTableAction('generatePdf', $quote->quote_id)
+            ->assertStatus(200)
+            ->assertHasNoErrors();
+    }
+
+    /**
+     * @test
+     *
+     * route('filament.ivpl.resources.filament.resources.quotes.calculate_totals', ['record' => $quote->id])
+     *
+     * @skip Not implemented yet
+     */
+    public function it_calculates_totals_for_a_quote(): void
+    {
+        // $this->authenticate();
+        $client       = Client::factory()->create();
+        $invoiceGroup = InvoiceGroup::factory()->create([
+            'invoice_group_name'              => '::invoicegroup_name::',
+            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
+        ]);
+
+        $paymentMethod = PaymentMethod::factory()->create([
+            'payment_method_name' => '::payment_method_name::',
+        ]);
+
+        $invoice = Invoice::factory()->create([
+            'invoice_group_id' => $invoiceGroup->invoice_group_id,
+            'invoice_number'   => '::invoice_number::',
+            'payment_method'   => $paymentMethod->payment_method_id,
+        ]);
+        $payload = [
+            'client_id'              => $client->client_id,
+            'invoice_id'             => $invoice->invoice_id,
+            'quote_number'           => '123-456-789',
+            'quote_date_created'     => Carbon::now()->subMonths(2)->format('Y-m-d'),
+            'quote_date_expires'     => Carbon::now()->addMonth()->format('Y-m-d'),
+            'quote_status_id'        => QuoteStatus::DRAFT,
+            'quote_discount_amount'  => 10.5,
+            'quote_discount_percent' => 5,
+        ];
+        Quote::factory()->create($payload);
+
+        Livewire::test(CreateQuote::class)
+            ->assertStatus(200)
+            ->set('data.quote_number', $payload['quote_number'])
+            ->set('data.client_id', $payload['client_id'])
+            ->set('data.quote_date_expires', $payload['quote_date_expires'])
+            ->set('data.quote_status_id', $payload['quote_status_id'])
+            ->call('create');
+
+        $this->assertDatabaseHas('quotes', $payload);
+    }
+
     // endregion
 }

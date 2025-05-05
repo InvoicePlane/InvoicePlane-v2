@@ -10,7 +10,7 @@ use Modules\Core\Database\Seeders\EmailTemplatesSeeder;
 use Modules\Core\Database\Seeders\TaxRatesSeeder;
 use Modules\Expenses\Database\Seeders\ExpenseCategoriesSeeder;
 use Modules\Payments\Database\Seeders\PaymentMethodsSeeder;
-use Modules\Products\Database\Seeders\ItemCategoriesSeeder;
+use Modules\Products\Database\Seeders\ProductCategoriesSeeder;
 use Modules\Products\Database\Seeders\ProductUnitsSeeder;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             TaxRatesSeeder::class,
             ExpenseCategoriesSeeder::class,
             ProductUnitsSeeder::class,
-            ItemCategoriesSeeder::class,
+            ProductCategoriesSeeder::class,
             PaymentMethodsSeeder::class,
             DocumentGroupsSeeder::class,
             EmailTemplatesSeeder::class,
@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         //]);
         //
         //$this->call([
-        //    ItemsSeeder::class,
+        //    ProductsSeeder::class,
         //    ProjectsSeeder::class,
         //]);
         //

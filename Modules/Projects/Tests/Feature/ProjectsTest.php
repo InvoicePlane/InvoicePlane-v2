@@ -22,6 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProjectResource::class)]
 class ProjectsTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -29,6 +30,11 @@ class ProjectsTest extends AbstractTestCase
     {
         parent::setUp();
         $this->withoutExceptionHandling();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 
     // region smoke
@@ -47,6 +53,8 @@ class ProjectsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
 
         $this->actingAs($user);
+
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
 
         $payload = [
             'company_id'     => $company->id,
@@ -106,6 +114,8 @@ class ProjectsTest extends AbstractTestCase
             ->call('create')
             ->assertHasNoFormErrors()
             ->assertSee('Website Redesign');
+
+        $this->assertDatabaseHas('projects', $payload);
     }
 
     #[Test]
@@ -142,16 +152,49 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         Livewire::test(CreateProject::class)
+            ->assertStatus(422)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors(['project_name' => 'required']);
     }
 
+    /**
+     * @test
+     *
+     * @payload
+     * * {
+     * *    "project_name": "Updated Project Name"
+     * * }
+     */
+    public function it_updates_a_project(): void
+    {
+        $this->markTestSkipped('Not implemented yet');
+        // $this->authenticate();
+        $client = Client::factory()->create(['client_name' => '::client_name::']);
+
+        $project = Project::factory()->create([
+            'client_id'    => $client->client_id,
+            'project_name' => '::project_name::',
+        ]);
+
+        $updatedData = [
+            'project_name' => '::updated_project_name::',
+        ];
+
+        Livewire::test(EditProject::class, ['record' => $project->project_id])
+            ->assertStatus(200)
+            ->set('data.project_name', $updatedData['project_name'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', array_merge($updatedData, [
+            'project_id' => $project->project_id,
+        ]));
+    }
+
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Projects\Filament\Company\Resources\ProjectResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -189,6 +232,109 @@ class ProjectsTest extends AbstractTestCase
         if (app()->isLocal()) {
             dump($payload);
         }
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_deletes_a_project(): void
+    {
+        $this->markTestSkipped('Not implemented yet');
+        // $this->authenticate();
+
+        $project = Project::factory()->create();
+
+        Livewire::test(ManageProjects::class)
+            ->callTableAction('delete', $project->project_id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseMissing('projects', ['project_id' => $project->project_id]);
+    }
+    // endregion
+
+    // region Custom Tests
+    /**
+     * @test
+     *
+     * route('filament.ivpl.resources.filament.resources.projects.assign_client')
+     *
+     * @skip Not implemented yet
+     */
+    public function it_projects_assign_client(): void
+    {
+        $this->markTestIncomplete('needs assignClient action');
+        // $this->authenticate();
+        $client  = Client::factory()->create();
+        $project = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2 = Client::factory()->create();
+
+        Livewire::test(ManageProjects::class)
+            ->assertStatus(200)
+            ->callTableAction('assignClient', $client2->client_id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', [
+            'project_id' => $project->project_id,
+            'client_id'  => $client2->client_id,
+        ]);
+    }
+
+    /** @test */
+    public function it_fails_to_assign_client_without_project_id(): void
+    {
+        $this->markTestSkipped('needs assignClient action');
+        // $this->authenticate();
+        $client  = Client::factory()->create();
+        $project = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2 = Client::factory()->create();
+
+        Livewire::test(ManageProjects::class)
+            ->assertStatus(422)
+            ->callTableAction('assignClient', $client2->client_id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', [
+            'project_id' => $project->project_id,
+            'client_id'  => $client2->client_id,
+        ]);
+    }
+
+    /** @test */
+    public function it_projects_change_client(): void
+    {
+        $this->markTestSkipped('needs assignClient action');        // $this->authenticate();
+        $client  = Client::factory()->create();
+        $project = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2 = Client::factory()->create();
+
+        Livewire::test(ManageProjects::class)
+            ->assertStatus(200)
+            ->callTableAction('assignClient', $client2->client_id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', [
+            'project_id' => $project->project_id,
+            'client_id'  => $client2->client_id,
+        ]);
+    }
+
+    /** @test */
+    public function it_fails_to_change_project_client_without_client_id(): void
+    {
+        $this->markTestIncomplete('needs assignClient action');
+        // $this->authenticate();
+        $client  = Client::factory()->create();
+        $project = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2 = Client::factory()->create();
+
+        Livewire::test(ManageProjects::class)
+            ->assertStatus(422)
+            ->callTableAction('assignClient')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', [
+            'project_id' => $project->project_id,
+            'client_id'  => $client2->client_id,
+        ]);
     }
     // endregion
 }

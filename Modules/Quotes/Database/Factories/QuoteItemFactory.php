@@ -5,7 +5,7 @@ namespace Modules\Quotes\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Models\QuoteItem;
 
@@ -16,13 +16,13 @@ class QuoteItemFactory extends Factory
     public function definition(): array
     {
         $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Item::query()->inRandomOrder()->first() ?? Item::factory()->create();
+        $item    = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 
-        $quantity = $this->faker->randomFloat(2, 1, 20);
-        $price    = $this->faker->randomFloat(2, 10, 500);
-        $discount = $this->faker->randomFloat(2, 0, 50);
+        $quantity = $this->faker->randomFloat(2, 0, 100),
+        $price    = $this->faker->randomFloat(2, 0, 100),
+        $discount = $this->faker->randomFloat(2, 0, 50),
         $subtotal = ($quantity * $price) - $discount;
 
         return [
@@ -37,7 +37,7 @@ class QuoteItemFactory extends Factory
             'discount'     => $discount,
             'subtotal'     => $subtotal,
             'tax_rate_id'  => $taxRate->id,
-            'order'        => $this->faker->numberBetween(1, 9999),
+            'order'        => $this->faker->randomNumber(4, true),
             'description'  => null,
         ];
     }

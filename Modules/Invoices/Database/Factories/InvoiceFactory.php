@@ -40,7 +40,7 @@ class InvoiceFactory extends Factory
             'customer_id'              => $customer->id,
             'document_group_id'        => $documentGroup->id,
             'creditinvoice_parent_id'  => null,
-            'invoice_number'           => $this->faker->unique()->numerify('INV-#####'),
+            'invoice_number'           => $this->faker->unique()->numerify('INV-###-####
             'invoice_status'           => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'invoiced_at'              => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),
             'invoice_due_at'           => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),
@@ -51,7 +51,7 @@ class InvoiceFactory extends Factory
             'invoice_tax_total'        => $taxTotal,
             'invoice_total'            => $total,
             'invoice_password'         => null,
-            'invoice_url_key'          => Str::random(30),
+            'invoice_url_key'          => $this->faker->regexify('[A-Za-z0-9]{32}'),
             'is_read_only'             => $this->faker->boolean(10),
             'invoice_terms'            => $this->faker->optional()->sentence(),
         ];

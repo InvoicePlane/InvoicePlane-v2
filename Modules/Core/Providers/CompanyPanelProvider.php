@@ -30,8 +30,8 @@ use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 use Modules\Payments\Filament\Company\Resources\PaymentResource;
-use Modules\Products\Filament\Company\Resources\ItemResource;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
+use Modules\Products\Filament\Company\Resources\ProductResource;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource;
 use Modules\Projects\Filament\Company\Resources\ProjectResource;
 use Modules\Projects\Filament\Company\Resources\TaskResource;
@@ -151,7 +151,7 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Resources')
                             ->icon('heroicon-o-archive-box')
                             ->items([
-                                ...ItemResource::getNavigationItems(),
+                                ...ProductResource::getNavigationItems(),
                                 ...ProductCategoryResource::getNavigationItems(),
                                 ...ProductUnitResource::getNavigationItems(),
 

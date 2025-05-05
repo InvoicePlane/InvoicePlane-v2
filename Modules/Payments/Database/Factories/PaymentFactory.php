@@ -31,8 +31,8 @@ class PaymentFactory extends Factory
             'payable_id'        => $payableId,
             'payment_method_id' => $paymentMethod->id,
             'payment_status'    => $this->faker->randomElement(PaymentStatus::cases())->value,
-            'paid_at'           => $this->faker->optional()->dateTimeBetween('-3 years', 'now'),
-            'payment_amount'    => $this->faker->randomFloat(2, 10, 500),
+            'paid_at'           => $this->faker->dateTimeBetween('-3 years', '-2 days'),
+            'payment_amount'    => $this->faker->randomFloat(2, 0, 100),
         ];
     }
 
