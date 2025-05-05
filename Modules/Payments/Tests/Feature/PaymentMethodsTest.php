@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -128,7 +129,7 @@ class PaymentMethodsTest extends AbstractTestCase
          * }
          */
         $payload = [
-            'company_id' => $company->id,
+            'company_id'  => $company->id,
             'description' => '::description::',
         ];
 
@@ -173,7 +174,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-    /** @test */
+
     public function it_deletes_a_payment_method(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -191,5 +192,8 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_id' => $paymentMethod->payment_method_id,
         ]);
     }
+    // endregion
+
+    // region usp
     // endregion
 }

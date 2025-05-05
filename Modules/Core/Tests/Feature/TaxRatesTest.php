@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -56,7 +57,6 @@ class TaxRatesTest extends AbstractTestCase
         $this->assertDatabaseHas('tax_rates', $payload);
     }
     // endregion
-
 
     // region crud
     #[Test]

@@ -95,7 +95,7 @@ class EmailTemplatesTest extends AbstractTestCase
         ];
 
         Livewire::test(CreateEmailTemplate::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.email_template_title', $payload['email_template_title'])
             ->set('data.email_template_type', $payload['email_template_type'])
             ->set('data.email_template_body', $payload['email_template_body'])
@@ -175,7 +175,7 @@ class EmailTemplatesTest extends AbstractTestCase
             ->set('data.email_template_title', $updatedData['email_template_title'])
             ->set('data.email_template_type', $updatedData['email_template_type'])
             ->call('save')
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('email_templates', [
@@ -223,7 +223,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         Livewire::test(ManageEmailTemplates::class)
             ->callTableAction('delete', $emailTemplate->email_template_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('email_templates', ['email_template_id' => $emailTemplate->email_template_id]);

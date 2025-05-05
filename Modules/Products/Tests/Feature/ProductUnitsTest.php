@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -16,7 +17,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ProductUnitResource::class)]
-
 class ProductUnitsTest extends AbstractTestCase
 {
     use RefreshDatabase;
@@ -81,6 +81,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * Missing Required Fields:
      * - unit_name
+     *
      * @payload
      * {
      * "company_id": "Value",
@@ -126,10 +127,9 @@ class ProductUnitsTest extends AbstractTestCase
             ->call('save')
             ->assertHasFormErrors();
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
         $this->assertDatabaseHas('product_units', $payload);
     }
-
 
     #[Test]
     #[Group('crud')]
@@ -172,7 +172,7 @@ class ProductUnitsTest extends AbstractTestCase
 
         $response = $this->delete(route('filament.ivpl.resources.filament.resources.product-units.destroy', $productUnit->product_unit_id));
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
         $this->assertDatabaseMissing('product_units', ['product_unit_id' => $productUnit->product_unit_id]);
     }
     // endregion

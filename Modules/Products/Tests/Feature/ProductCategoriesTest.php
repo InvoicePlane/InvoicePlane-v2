@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -16,7 +17,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ProductCategoryResource::class)]
-
 class ProductCategoriesTest extends AbstractTestCase
 {
     use RefreshDatabase;

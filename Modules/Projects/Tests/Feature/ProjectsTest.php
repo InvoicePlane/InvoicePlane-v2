@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -182,7 +183,7 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         Livewire::test(EditProject::class, ['record' => $project->project_id])
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.project_name', $updatedData['project_name'])
             ->call('save')
             ->assertHasNoErrors();
@@ -268,7 +269,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Client::factory()->create();
 
         Livewire::test(ManageProjects::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->callTableAction('assignClient', $client2->client_id)
             ->assertHasNoErrors();
 
@@ -278,7 +279,6 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
     public function it_fails_to_assign_client_without_project_id(): void
     {
         $this->markTestSkipped('needs assignClient action');
@@ -298,7 +298,6 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
     public function it_projects_change_client(): void
     {
         $this->markTestSkipped('needs assignClient action');        // $this->authenticate();
@@ -307,7 +306,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Client::factory()->create();
 
         Livewire::test(ManageProjects::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->callTableAction('assignClient', $client2->client_id)
             ->assertHasNoErrors();
 
@@ -317,7 +316,6 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
     public function it_fails_to_change_project_client_without_client_id(): void
     {
         $this->markTestIncomplete('needs assignClient action');

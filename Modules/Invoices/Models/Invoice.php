@@ -2,12 +2,13 @@
 
 namespace Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Query\Builder;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\DocumentGroup;
@@ -16,28 +17,45 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Payments\Models\PaymentMethod;
+use stdClass;
 
 /**
+ * Class Invoice.
+ *
  * @property int                             $id
  * @property int                             $company_id
  * @property int                             $customer_id
- * @property int                             $document_group_id
- * @property int                             $creditinvoice_parent_id
+ * @property int                             $group_id
  * @property int                             $user_id
- * @property string                          $invoice_number
- * @property string                          $invoice_status
- * @property \Illuminate\Support\Carbon|null $invoiced_at
- * @property \Illuminate\Support\Carbon|null $invoice_due_at
- * @property float                           $invoice_discount_amount
- * @property float                           $invoice_discount_percent
- * @property float                           $invoice_item_tax_total
- * @property float                           $invoice_item_subtotal
- * @property float                           $invoice_tax_total
- * @property float                           $invoice_total
- * @property bool                            $is_read_only
- * @property string|null                     $invoice_password
- * @property string|null                     $invoice_url_key
- * @property string|null                     $invoice_terms
+ * @property string|null                     $number
+ * @property Carbon                          $invoiced_at
+ * @property int                             $invoice_status_id
+ * @property Carbon                          $due_at
+ * @property string                          $url_key
+ * @property string|null                     $currency_code
+ * @property float                           $exchange_rate
+ * @property bool                            $is_viewed
+ * @property string                          $sign
+ * @property float                           $subtotal
+ * @property float|null                      $item_tax_total
+ * @property float                           $tax
+ * @property float                           $total
+ * @property float                           $paid
+ * @property float                           $balance
+ * @property float                           $discount
+ * @property string|null                     $template
+ * @property string|null                     $summary
+ * @property string|null                     $terms
+ * @property string|null                     $footer
+ * @property Company                         $company
+ * @property Customer                        $customer
+ * @property Group                           $group
+ * @property User                            $user
+ * @property Collection|Expense[]            $expenses
+ * @property Collection|InvoiceItem[]        $invoice_items
+ * @property Collection|TaxRate[]            $tax_rates
+ * @property Collection|InvoiceTransaction[] $invoice_transactions
+ * @property Collection|Payment[]            $payments
  */
 class Invoice extends Model
 {
@@ -45,8 +63,6 @@ class Invoice extends Model
     use HasFactory;
 
     public $timestamps = false;
-
-    protected $guarded = [];
 
     protected $casts = [
         'invoice_discount_amount'  => 'decimal:2',
@@ -61,13 +77,62 @@ class Invoice extends Model
         'is_read_only'             => 'boolean',
     ];
 
+    protected $guarded = [];
+
     protected $hidden = [
         'invoice_password',
     ];
 
-    //
-    // Relationships (alphabetical)
-    //
+
+/**
+	Observer
+*/
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($invoice) {
+            event(new InvoiceCreating($invoice));
+        });
+
+        static::created(function ($invoice) {
+            event(new InvoiceCreated($invoice));
+        });
+
+        static::deleted(function ($invoice) {
+            event(new InvoiceDeleted($invoice));
+        });
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function activities(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Activity::class, 'audit');
+    }
+
+    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        // return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function clientAttachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        $relationship = $this->morphMany('Attachment', 'attachable');
+
+        if ($this->status_text == 'paid') {
+            $relationship->whereIn('client_visibility', [1, 2]);
+        } else {
+            $relationship->where('client_visibility', 1);
+        }
+
+        return $relationship;
+    }
 
     public function company(): BelongsTo
     {
@@ -89,9 +154,31 @@ class Invoice extends Model
         return $this->belongsTo(DocumentGroup::class, 'document_group_id');
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    // This and items() are the exact same. This is added to appease the IDE gods
+    // and the fact that Laravel has a protected items property.
     public function invoiceItems(): HasMany
     {
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
+    }
+
+    public function mailQueue(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(MailQueue::class, 'mailable');
+    }
+
+    public function notes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Note::class, 'notable');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 
     public function paymentMethod(): BelongsTo
@@ -99,9 +186,20 @@ class Invoice extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method');
     }
 
-    public function payable(): MorphTo
+    public function quote(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->morphTo();
+        return $this->hasOne(Quote::class);
+    }
+
+    public function taxRates(): BelongsToMany
+    {
+        return $this->belongsToMany(TaxRate::class, 'invoice_tax_rates')
+            ->withPivot('id', 'include_item_tax', 'tax_total');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(InvoiceTransaction::class);
     }
 
     public function user(): BelongsTo
@@ -109,32 +207,158 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getAttachmentPathAttribute(): string
+    {
+        return attachment_path('invoices/' . $this->id);
+    }
+
+    public function getAttachmentPermissionOptionsAttribute(): array
+    {
+        return [
+            '0' => trans('ip.not_visible'),
+            '1' => trans('ip.visible'),
+            '2' => trans('ip.visible_after_payment'),
+        ];
+    }
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->formatted_invoice_date;
+    }
+
+    public function getFormattedInvoiceDateAttribute(): string
+    {
+        return DateFormatter::format($this->attributes['invoiced_at']);
+    }
+
+    public function getFormattedUpdatedAtAttribute(): string
+    {
+        return DateFormatter::format($this->attributes['updated_at']);
+    }
+
     /*public function getInvoiceDateDueAttribute($value)
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : null;
     }*/
 
-    //
-    // Scopes (alphabetical)
-    //
-
-    public function scopeStatus(Builder $query, string $status): Builder
+    public function getFormattedDueAtAttribute(): string
     {
-        switch ($status) {
-            case 'draft':
-                return $query->where('invoice_status_id', self::DRAFT);
-            case 'sent':
-                return $query->where('invoice_status_id', self::SENT);
-            case 'viewed':
-                return $query->where('invoice_status_id', self::VIEWED);
-            case 'paid':
-                return $query->where('invoice_status_id', self::PAID);
-            default:
-                return $query;
-        }
+        return DateFormatter::format($this->attributes['due_at']);
     }
 
+    public function getFormattedTermsAttribute(): string
+    {
+        return nl2br($this->attributes['terms']);
+    }
 
+    public function getFormattedFooterAttribute(): string
+    {
+        return nl2br($this->attributes['footer']);
+    }
+
+    public function getStatusTextAttribute()
+    {
+        $statuses = InvoiceStatuses::statuses();
+
+        return $statuses[$this->attributes['invoice_status_id']];
+    }
+
+    public function getIsOverdueAttribute(): int
+    {
+        // Only invoices in Sent status qualify to be overdue
+        if ($this->attributes['due_at'] < date('Y-m-d') && $this->attributes['invoice_status_id'] == InvoiceStatuses::getStatusId('is_sent')) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public function getPublicUrlAttribute(): string
+    {
+        return route('customerPortal.public.invoice.show', [$this->url_key]);
+    }
+
+    public function getIsForeignCurrencyAttribute(): bool
+    {
+        return ! ($this->attributes['currency_code'] == config('ip.baseCurrency'));
+    }
+
+    public function getHtmlAttribute(): string
+    {
+        return HTML::invoice($this);
+    }
+
+    public function getPdfFilenameAttribute(): string
+    {
+        return FileNames::invoice($this);
+    }
+
+    public function getFormattedNumericDiscountAttribute(): float
+    {
+        return NumberFormatter::format($this->attributes['discount']);
+    }
+
+    public function getIsPayableAttribute(): bool
+    {
+        return $this->status_text != 'canceled' && $this->amount->balance > 0;
+    }
+
+    /**
+     * Gathers a summary of both invoice and item taxes to be displayed on invoice.
+     *
+     * @return array
+     */
+    public function getSummarizedTaxesAttribute(): array
+    {
+        $taxes = [];
+
+        foreach ($this->items as $item) {
+            if ($item->taxRate) {
+                $key = $item->taxRate->name;
+
+                if ( ! isset($taxes[$key])) {
+                    $taxes[$key]              = new stdClass();
+                    $taxes[$key]->name        = $item->taxRate->name;
+                    $taxes[$key]->percent     = $item->taxRate->formatted_percent;
+                    $taxes[$key]->total       = $item->amount->tax_1;
+                    $taxes[$key]->raw_percent = $item->taxRate->percent;
+                } else {
+                    $taxes[$key]->total += $item->amount->tax_1;
+                }
+            }
+
+            if ($item->taxRate2) {
+                $key = $item->taxRate2->name;
+
+                if ( ! isset($taxes[$key])) {
+                    $taxes[$key]              = new stdClass();
+                    $taxes[$key]->name        = $item->taxRate2->name;
+                    $taxes[$key]->percent     = $item->taxRate2->formatted_percent;
+                    $taxes[$key]->total       = $item->amount->tax_2;
+                    $taxes[$key]->raw_percent = $item->taxRate2->percent;
+                } else {
+                    $taxes[$key]->total += $item->amount->tax_2;
+                }
+            }
+        }
+
+        foreach ($taxes as $key => $tax) {
+            $taxes[$key]->total = CurrencyFormatter::format($tax->total, $this->currency);
+        }
+
+        return $taxes;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
     public function scopeCustomers(Builder $query, array|string $clients = ''): Builder
     {
         //TODO: if clients is null retrieve all the clients assigned to a client user.
@@ -142,11 +366,20 @@ class Invoice extends Model
         return $query->whereIn('client_id', $clients);
     }
 
-    /*    
+    /*
     public function scopeClients(Builder $query, array|string $clients = []): Builder
     {
         return $query->whereIn('customer_id', (array) $clients);
     }*/
+
+    public function scopeClientId($query, $clientId = null)
+    {
+        if ($clientId) {
+            $query->where('customer_id', $clientId);
+        }
+
+        return $query;
+    }
 
     public function scopeGuest(Builder $query): Builder
     {
@@ -157,12 +390,32 @@ class Invoice extends Model
         ]);
     }
 
+    public function scopeDraft($query)
+    {
+        return $query->where('invoice_status_id', '=', InvoiceStatuses::getStatusId('draft'));
+    }
+
     public function scopeIsOpen(Builder $query): Builder
     {
         return $query->whereIn('invoice_status', [
             InvoiceStatus::SENT->value,
             InvoiceStatus::VIEWED->value,
         ]);
+    }
+
+    public function scopeSent($query)
+    {
+        return $query->where('invoice_status_id', '=', InvoiceStatuses::getStatusId('is_sent'));
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('invoice_status_id', '=', InvoiceStatuses::getStatusId('paid'));
+    }
+
+    public function scopeCanceled($query)
+    {
+        return $query->where('invoice_status_id', '=', InvoiceStatuses::getStatusId('canceled'));
     }
 
     public function scopeIsOverdue(Builder $query): Builder
@@ -173,6 +426,11 @@ class Invoice extends Model
                 InvoiceStatus::PAID->value,
             ])
             ->where('invoice_due_at', '<', now());
+    }
+
+    public function scopeNotCanceled($query)
+    {
+        return $query->where('invoice_status_id', '<>', InvoiceStatuses::getStatusId('canceled'));
     }
 
     public function scopeStatus(Builder $query, string $status): Builder
@@ -191,10 +449,57 @@ class Invoice extends Model
         return $query->where('invoice_url_key', $urlKey);
     }
 
-    //
-    // Factory
-    //
+    public function scopeStatusIn($query, $statuses)
+    {
+        $statusCodes = [];
 
+        foreach ($statuses as $status) {
+            $statusCodes[] = InvoiceStatuses::getStatusId($status);
+        }
+
+        return $query->whereIn('invoice_status_id', $statusCodes);
+    }
+
+    public function scopeYearToDate($query)
+    {
+        return $query->where('invoiced_at', '>=', date('Y') . '-01-01')
+            ->where('invoiced_at', '<=', date('Y') . '-12-31');
+    }
+
+    public function scopeThisQuarter($query)
+    {
+        return $query->where('invoiced_at', '>=', Carbon::now()->firstOfQuarter())
+            ->where('invoiced_at', '<=', Carbon::now()->lastOfQuarter());
+    }
+
+    public function scopeDateRange($query, $fromDate, $toDate)
+    {
+        return $query->where('invoiced_at', '>=', $fromDate)
+            ->where('invoiced_at', '<=', $toDate);
+    }
+
+    public function scopeKeywords($query, $keywords = null)
+    {
+        if ($keywords) {
+            $keywords = mb_strtolower($keywords);
+
+            $query->where(DB::raw('lower(number)'), 'like', '%' . $keywords . '%')
+                ->orWhere('invoices.invoiced_at', 'like', '%' . $keywords . '%')
+                ->orWhere('due_at', 'like', '%' . $keywords . '%')
+                ->orWhere('summary', 'like', '%' . $keywords . '%')
+                ->orWhereIn('customer_id', function ($query) use ($keywords) {
+                    $query->select('id')->from('customers')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
+                });
+        }
+
+        return $query;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return InvoiceFactory::new();

@@ -8,9 +8,11 @@ use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
@@ -26,7 +28,12 @@ use Modules\Quotes\Models\Quote;
  * @property mixed     $updated_at
  * @property Invoice[] $invoices
  * @property Note[]    $notes
- * @property Quote[]   $quotes
+ * @property Collection|Attachment[]       $attachments
+ * @property Collection|Expense[]          $expenses
+ * @property Collection|Invoice[]          $invoices
+ * @property Collection|Note[]             $notes
+ * @property Collection|Quote[]            $quotes
+ * @property Collection|RecurringInvoice[] $recurringInvoices
  * @property Upload[]  $uploads
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
@@ -36,8 +43,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     use Notifiable;
 
     public $timestamps = false;
-
-    protected $guarded = [];
 
     protected $hidden = [
         'password',
@@ -52,9 +57,35 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         'password'          => 'hashed',
     ];
 
-    // ——————————————————————————————————————————————————————————————
-    // |                                  RELATIONSHIPS                                  |
-    // ——————————————————————————————————————————————————————————————
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Observer
+    |--------------------------------------------------------------------------
+    */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            event(new UserCreated($user));
+        });
+
+        static::deleted(function ($user) {
+            event(new UserDeleted($user));
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function attachments(): HasMany
+    {
+        // return $this->hasMany(Attachment::class);
+    }
 
     public function companies(): BelongsToMany
     {
@@ -69,6 +100,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     public function getCurrentCompanyId(): ?int
     {
         return session('current_company_id');
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
     }
 
     public function invoices(): HasMany
@@ -86,9 +122,53 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         return $this->hasMany(Quote::class, 'user_id');
     }
 
+    public function recurringInvoices(): HasMany
+    {
+        return $this->hasMany(RecurringInvoice::class);
+    }
+
     public function uploads(): HasMany
     {
         return $this->hasMany(Upload::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getUserTypeAttribute(): string
+    {
+        return ($this->customer_id) ? 'customer' : 'admin';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mutators
+    |--------------------------------------------------------------------------
+    */
+
+    public function setPasswordAttribute($password): void
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeUserType($query, $userType)
+    {
+        if ($userType == 'customer') {
+            $query->where('customer_id', '<>', 0);
+        } elseif ($userType == 'admin') {
+            $query->where('customer_id', 0);
+        }
+
+        return $query;
     }
 
     // ——————————————————————————————————————————————————————————————
@@ -110,9 +190,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         return true;
     }
 
-    // ——————————————————————————————————————————————————————————————
-    // |                             FACTORY                           |
-    // ——————————————————————————————————————————————————————————————
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return UserFactory::new();

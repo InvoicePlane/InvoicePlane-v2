@@ -2,6 +2,8 @@
 
 namespace Modules\Projects\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
@@ -46,7 +48,6 @@ class TasksTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-
         $client = Client::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
@@ -58,15 +59,14 @@ class TasksTest extends AbstractTestCase
             'tax_rate_name' => '::taxrate_name::',
         ]);
 
-
         $taxRate = TaxRate::factory()->for($company)->create();
 
         $task = Task::factory()
             ->for($company)
             ->for($taxRate, 'taxRate')
             ->create([
-            'project_id'  => $project->project_id,
-            'task_name'   => '::task_name::',
+                'project_id' => $project->project_id,
+                'task_name'  => '::task_name::',
             ]);
 
         Livewire::test(ListTasks::class)
@@ -216,7 +216,6 @@ class TasksTest extends AbstractTestCase
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
-
 
         $task = Task::factory()->create($payload);
 
@@ -431,9 +430,9 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ListTasks::class)
             ->callTableAction('delete', $task->task_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('tasks', ['task_id' => $task->task_id]);
@@ -442,7 +441,6 @@ class TasksTest extends AbstractTestCase
     // endregion
 
     // region Custom tests
-    /** @test */
     public function it_assigns_a_task_to_a_project(): void
     {
         $this->markTestIncomplete('assignProject action not implemented');
@@ -469,9 +467,9 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ListTasks::class)
             ->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id])
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
@@ -480,7 +478,6 @@ class TasksTest extends AbstractTestCase
         ]);
     }
 
-    /** @test */
     public function it_fails_to_assign_project_without_project_id(): void
     {
         $this->markTestIncomplete('assignProject action not implemented');
@@ -507,7 +504,7 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ListTasks::class)
             ->callTableAction('assignProject', $task->task_id)
             ->assertStatus(422)
             ->assertHasNoErrors();
@@ -554,9 +551,9 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ListTasks::class)
             ->callTableAction('storeRecurringTask', $task->task_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.project_id', $payload['project_id'])
             ->set('data.task_name', $payload['task_name'])
             ->set('data.tax_rate_id', $payload['tax_rate_id'])
@@ -597,9 +594,9 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ManageTasks::class)
+        Livewire::test(ListTasks::class)
             ->callTableAction('storeRecurringTask', $task->task_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.project_id', $payload['project_id'])
             ->set('data.task_name', $payload['task_name'])
             ->set('data.tax_rate_id', $payload['tax_rate_id'])

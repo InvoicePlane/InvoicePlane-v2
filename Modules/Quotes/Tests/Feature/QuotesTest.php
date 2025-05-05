@@ -3,15 +3,14 @@
 namespace Modules\Quotes\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Clients\Models\Client;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
-use Modules\Core\Models\Company;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
 use Modules\Payments\Models\PaymentMethod;
@@ -129,12 +128,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::draft_quote_number::')
             ->assertDontSee('::sent_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_only_filtered_sent_quotes_index(): void
     {
         $this->markTestSkipped();
@@ -174,12 +173,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::sent_quote_number::')
             ->assertDontSee('::draft_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_only_filtered_viewed_quotes_index(): void
     {
         $this->markTestSkipped();
@@ -219,12 +218,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::viewed_quote_number::')
             ->assertDontSee('::draft_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_only_filtered_approved_quotes_index(): void
     {
         $this->markTestSkipped();
@@ -264,12 +263,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::approved_quote_number::')
             ->assertDontSee('::draft_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_only_filtered_rejected_quotes_index(): void
     {
         $this->markTestSkipped();
@@ -309,12 +308,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::rejected_quote_number::')
             ->assertDontSee('::draft_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_only_filtered_canceled_quotes_index(): void
     {
         $this->markTestSkipped();
@@ -354,12 +353,12 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::canceled_quote_number::')
             ->assertDontSee('::draft_quote_number::');
     }
 
-    /** @test */
+
     public function it_shows_all_quotes_index(): void
     {
         // $this->authenticate();
@@ -394,7 +393,7 @@ class QuotesTest extends AbstractTestCase
         ]);
 
         Livewire::test(ManageQuotes::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::draft_quote_number::')
             ->assertSee('::sent_quote_number::');
     }
@@ -688,7 +687,6 @@ class QuotesTest extends AbstractTestCase
         ]);
     }
 
-
     public function it_changes_client_of_a_quote(): void
     {
         $this->markTestIncomplete('changeClient action not implemented');
@@ -712,7 +710,7 @@ class QuotesTest extends AbstractTestCase
 
         Livewire::test(ManageQuotes::class)
             ->callTableAction('changeClient', $quote->quote_id, ['client_id' => $client->client_id])
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('quotes', [
@@ -792,7 +790,7 @@ class QuotesTest extends AbstractTestCase
 
         Livewire::test(ManageQuotes::class)
             ->callTableAction('addProduct', $quote->quote_id, ['client_id' => $client->client_id])
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('quotes', [
@@ -852,7 +850,7 @@ class QuotesTest extends AbstractTestCase
         $quote = Quote::factory()->create($payload);
 
         Livewire::test(CreateQuote::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.invoice_id', $payload['invoice_id'])
             ->set('data.invoice_group_id', $payload['invoice_group_id'])
             ->set('data.quote_number', $payload['quote_number'])
@@ -890,7 +888,7 @@ class QuotesTest extends AbstractTestCase
 
         Livewire::test(ManageQuotes::class)
             ->callTableAction('generatePdf', $quote->quote_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
     }
 
@@ -932,7 +930,7 @@ class QuotesTest extends AbstractTestCase
         Quote::factory()->create($payload);
 
         Livewire::test(CreateQuote::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.quote_number', $payload['quote_number'])
             ->set('data.client_id', $payload['client_id'])
             ->set('data.quote_date_expires', $payload['quote_date_expires'])

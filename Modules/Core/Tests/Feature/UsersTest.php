@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -16,7 +17,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(UserResource::class)]
-
 class UsersTest extends AbstractTestCase
 {
     use RefreshDatabase;
@@ -35,7 +35,7 @@ class UsersTest extends AbstractTestCase
     }
 
     // region smoke
-    /** @test */
+
     public function it_lists_users(): void
     {
         $user = User::factory()->create();
@@ -45,7 +45,7 @@ class UsersTest extends AbstractTestCase
         ]);
 
         Livewire::test(ListUsers::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('::user_name::');
     }
     // endregion
@@ -106,7 +106,7 @@ class UsersTest extends AbstractTestCase
         ];
 
         Livewire::test(CreateUser::class)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->set('data.user_type', $payload['user_type'])
             ->set('data.user_email', $payload['user_email'])
             ->set('data.user_password', $payload['password'])
@@ -152,7 +152,7 @@ class UsersTest extends AbstractTestCase
             ->set('data.user_name', $updatedData['user_name'])
             ->set('data.user_company', $updatedData['user_company'])
             ->call('save')
-            ->assertStatus(200);
+            ->assertSuccessful();
 
         $this->assertDatabaseHas('users', array_merge($updatedData, [
             'user_id' => $user->user_id,
@@ -179,7 +179,7 @@ class UsersTest extends AbstractTestCase
 
         Livewire::test(ManageUsers::class)
             ->callTableAction('delete', $user->user_id)
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('users', ['user_id' => $user->user_id]);
@@ -211,7 +211,7 @@ class UsersTest extends AbstractTestCase
         $clients = Client::factory()->count(3)->create();
 
         Livewire::test(ManageClients::class, ['userId' => $guestUser->user_id])
-            ->assertStatus(200)
+            ->assertSuccessful()
             ->assertSee('Assigned Clients')
             ->call('addClient', $clients[0]->client_id)
             ->assertHasNoErrors();

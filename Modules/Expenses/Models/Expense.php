@@ -16,15 +16,21 @@ use Modules\Expenses\Enums\ExpenseType;
 
 /**
  * @property int             $id
+ * @property int             $company_id
+ * @property int|null        $invoice_id
+ * @property int             $customer_id
  * @property int             $vendor_id
  * @property int             $category_id
- * @property string          $expense_number
- * @property mixed           $expense_is_fixed
- * @property string          $expense_type
- * @property float           $expense_amount
- * @property string          $description
- * @property ExpenseCategory $expenseCategory
- * @property Relation        $vendor
+ * @property int             $user_id
+ * @property Carbon          $expensed_at
+ * @property string          $amount
+ * @property string|null     $description
+ * @property ExpenseCategory $expense_category
+ * @property Company         $company
+ * @property Customer        $customer
+ * @property Invoice|null    $invoice
+ * @property User            $user
+ * @property ExpenseVendor   $expense_vendor
  */
 class Expense extends Model
 {
@@ -33,12 +39,65 @@ class Expense extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
-
     protected $casts = [
         'expense_status' => ExpenseStatus::class,
         'expense_type'   => ExpenseType::class,
     ];
+
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Observer
+    |--------------------------------------------------------------------------
+    */
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function ($expense) {
+            event(new ExpenseCreated($expense));
+        });
+
+        static::saved(function ($expense) {
+            event(new CheckAttachment($expense));
+        });
+
+        static::saving(function ($expense) {
+            event(new ExpenseSaving($expense));
+        });
+
+        static::deleting(function ($expense) {
+            event(new ExpenseDeleting($expense));
+        });
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ENUM! ENUM! ENUM!
+    |--------------------------------------------------------------------------
+    */
+    public static function getTimeFrames(): array
+    {
+        return [
+            0 => trans('ip.all_time'),
+            1 => trans('ip.month_to_date'),
+            2 => trans('ip.year_to_date'),
+            3 => trans('ip.last_month'),
+            4 => trans('ip.last_year'),
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        // return $this->morphMany(Attachment::class, 'attachable');
+    }
 
     public function customer(): BelongsTo
     {
@@ -57,6 +116,16 @@ class Expense extends Model
         return $this->hasMany(ExpenseItem::class, 'expense_id');
     }
 
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function vendor(): BelongsTo
     {
         return $this
@@ -64,6 +133,197 @@ class Expense extends Model
             ->where('relation_type', RelationType::VENDOR->value);
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getAttachmentPathAttribute(): string
+    {
+        return attachment_path('expenses/' . $this->id);
+    }
+
+    public function getAttachmentPermissionOptionsAttribute(): array
+    {
+        return [
+            '0' => trans('ip.not_visible'),
+            '1' => trans('ip.visible'),
+        ];
+    }
+
+    public function getFormattedAmountAttribute(): string
+    {
+        return CurrencyFormatter::format($this->amount);
+    }
+
+    public function getFormattedTaxAttribute(): string
+    {
+        return CurrencyFormatter::format($this->tax);
+    }
+
+    public function getFormattedDescriptionAttribute(): string
+    {
+        return nl2br($this->description);
+    }
+
+    public function getFormattedExpenseDateAttribute(): string
+    {
+        return DateFormatter::format($this->expensed_at);
+    }
+
+    public function getFormattedNumericAmountAttribute(): float
+    {
+        return NumberFormatter::format($this->amount);
+    }
+
+    public function getFormattedNumericTaxAttribute(): float
+    {
+        return NumberFormatter::format($this->tax);
+    }
+
+    public function getHasBeenBilledAttribute(): bool
+    {
+        return (bool) ($this->invoice_id);
+    }
+
+    public function getIsBillableAttribute(): bool
+    {
+        return (bool) ($this->customer_id);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeCategoryId($query, $categoryId = null)
+    {
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        return $query;
+    }
+
+    public function scopeCompanyProfileId($query, $companyId = null)
+    {
+        if ($companyId) {
+            $query->where('company_id', $companyId);
+        }
+
+        return $query;
+    }
+
+    public function scopeDefaultQuery($query)
+    {
+        return $query->select(
+            'expenses.*',
+            'expense_categories.name AS category_name',
+            'expense_vendors.name AS vendor_name',
+            'customers.unique_name AS client_name'
+        )
+            ->join('expense_categories', 'expense_categories.id', '=', 'expenses.category_id')
+            ->leftJoin('expense_vendors', 'expense_vendors.id', '=', 'expenses.vendor_id')
+            ->leftJoin('customers', 'customers.id', '=', 'expenses.customer_id');
+    }
+
+    public function scopeKeywords($query, $keywords = null)
+    {
+        if ($keywords) {
+            $keywords = mb_strtolower($keywords);
+
+            $query->where('expenses.expensed_at', 'like', '%' . $keywords . '%')
+                ->orWhere('expenses.description', 'like', '%' . $keywords . '%')
+                ->orWhere('expense_vendors.name', 'like', '%' . $keywords . '%')
+                ->orWhere('customers.name', 'like', '%' . $keywords . '%')
+                ->orWhere('expense_categories.name', 'like', '%' . $keywords . '%');
+        }
+
+        return $query;
+    }
+
+    public function scopeStatus($query, $status = null)
+    {
+        if ($status) {
+            switch ($status) {
+                case 'billed':
+                    $query->where('invoice_id', '<>', 0);
+                    break;
+                case 'not_billed':
+                    $query->where('customer_id', '<>', 0)->where('invoice_id', '=', 0);
+                    break;
+                case 'not_billable':
+                    $query->where('customer_id', 0);
+                    break;
+            }
+        }
+
+        return $query;
+    }
+
+    public function scopeTimeFrame($query, $timeFrame = null)
+    {
+        if ($timeFrame) {
+            switch ($timeFrame) {
+                /*case 0:
+                    $query->where('invoice_id', '<>', 0);
+                    break;
+                */
+                //Month to Date
+                case 1:
+                    $startOfMonth = Carbon::now()->firstOfMonth();
+                    $today        = Carbon::now()->today();
+                    $query->where(function ($query) use ($startOfMonth, $today) {
+                        $query->whereBetween('expensed_at', [$startOfMonth, $today]);
+                    });
+                    break;
+                    //Year to Date
+                case 2:
+                    $startOfYear = Carbon::now()->startOfYear();
+                    $today       = Carbon::now()->today();
+                    $query->where(function ($query) use ($startOfYear, $today) {
+                        $query->whereBetween('expensed_at', [$startOfYear, $today]);
+                    });
+                    break;
+                    //Last Month
+                case 3:
+                    $startOfLastMonth = Carbon::now()->subMonthNoOverflow()->startOfMonth();
+                    $endOfLastMonth   = Carbon::now()->subMonthNoOverflow()->endOfMonth();
+                    $query->where(function ($query) use ($startOfLastMonth, $endOfLastMonth) {
+                        $query->whereBetween('expensed_at', [$startOfLastMonth, $endOfLastMonth]);
+                    });
+                    break;
+                    //Last Year
+                case 4:
+                    $startOfLastYear = Carbon::now()->subYear()->startOfYear();
+                    $endOfLastYear   = Carbon::now()->subYear()->endOfYear();
+                    $query->where(function ($query) use ($startOfLastYear, $endOfLastYear) {
+                        $query->whereBetween('expensed_at', [$startOfLastYear, $endOfLastYear]);
+                    });
+                    break;
+            }
+        }
+
+        return $query;
+    }
+
+    public function scopeVendorId($query, $vendorId = null)
+    {
+        if ($vendorId) {
+            $query->where('vendor_id', $vendorId);
+        }
+
+        return $query;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ExpenseFactory::new();

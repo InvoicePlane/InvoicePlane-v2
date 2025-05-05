@@ -14,18 +14,28 @@ use Modules\Products\Models\ProductUnit;
 use Modules\Projects\Models\Task;
 
 /**
- * @property int    $id
- * @property string $line_itemable_type
- * @property int    $line_itemable_id
- * @property int    $item_id
- * @property float  $item_quantity
- * @property float  $item_price
- * @property float  $item_discount
- * @property float  $item_subtotal
- * @property string $description
- * @property mixed  $created_at
- * @property mixed  $updated_at
- * @property Product   $item
+ * Class InvoiceItem.
+ *
+ * @property int         $id
+ * @property int         $invoice_id
+ * @property int         $item_id
+ * @property int         $tax_rate_id
+ * @property int         $tax_rate_2_id
+ * @property string      $name
+ * @property Carbon|null $item_date
+ * @property float       $quantity
+ * @property float       $price
+ * @property float|null  $subtotal
+ * @property float|null  $tax_1
+ * @property float|null  $tax_2
+ * @property float|null  $tax
+ * @property float|null  $discount
+ * @property float|null  $total
+ * @property int         $display_order
+ * @property string      $description
+ * @property Invoice     $invoice
+ * @property ItemLookup  $item_lookup
+ * @property TaxRate     $tax_rate
  */
 class InvoiceItem extends Model
 {
@@ -33,15 +43,21 @@ class InvoiceItem extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['line_itemable_type', 'line_itemable_id', 'item_id', 'item_quantity', 'item_price', 'item_discount', 'item_subtotal', 'description', 'created_at', 'updated_at'];
-
     protected $casts = [
         'quantity' => 'decimal:2',
         'price'    => 'decimal:2',
         'discount' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'display_order' => 'int',
     ];
 
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function item(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -72,6 +88,61 @@ class InvoiceItem extends Model
         return $this->belongsTo(ProductUnit::class, 'item_unit_id');
     }
 
+    public function taxRate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(TaxRate::class);
+    }
+
+    public function taxRate2(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(TaxRate::class, 'tax_rate_2_id');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getFormattedQuantityAttribute(): float
+    {
+        return NumberFormatter::format($this->attributes['quantity']);
+    }
+
+    public function getFormattedNumericPriceAttribute(): float
+    {
+        return NumberFormatter::format($this->attributes['price']);
+    }
+
+    public function getFormattedPriceAttribute(): string
+    {
+        return CurrencyFormatter::format($this->attributes['price'], $this->invoice->currency);
+    }
+
+    public function getFormattedDescriptionAttribute(): string
+    {
+        return nl2br($this->attributes['description']);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeByDateRange($query, $from, $to)
+    {
+        return $query->whereIn('invoice_id', function ($query) use ($from, $to) {
+            $query->select('id')
+                ->from('invoices')
+                ->where('invoiced_at', '>=', $from)
+                ->where('invoiced_at', '<=', $to);
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return InvoiceItemFactory::new();

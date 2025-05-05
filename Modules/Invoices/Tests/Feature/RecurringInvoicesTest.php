@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class RecurringInvoicesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -125,4 +127,29 @@ class RecurringInvoicesTest extends AbstractTestCase
             dump($payload);
         }
     }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * []
+     */
+    public function it_deletes_a_recurringinvoice(): void
+    {
+        $this->markTestIncomplete('Delete test needs confirmation logic.');
+
+        //$this->actingAs(User::factory()->create());
+
+        $record = RecurringInvoice::factory()->create();
+
+        Livewire::test(ListRecurringInvoices::class)
+            ->callTableAction('delete', $record);
+
+        $this->assertDatabaseMissing('recurringinvoices', ['id' => $record->id]);
+    }
+
+    // endregion
+
+    // region usp
+    // endregion
 }

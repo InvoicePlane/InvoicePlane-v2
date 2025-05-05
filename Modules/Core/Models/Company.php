@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use App\Events\CompanyProfileCreated;
+use App\Events\CompanyProfileCreating;
+use App\Events\CompanyProfileDeleted;
+use App\Events\CompanyProfileSaving;
+use App\Modules\Expenses\Models\Expense;
+use App\Modules\Invoices\Models\Invoice;
+use App\Modules\Quotes\Models\Quote;
+use App\Models\RecurringInvoice;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\CompanyFactory;
@@ -15,13 +24,15 @@ use Modules\Projects\Models\Project;
 /**
  * @property int             $id
  * @property string          $search_code
+ * @property string|null                   $company_name
  * @property string          $slug
- * @property string          $name
  * @property string          $vat_number
  * @property string          $id_number
  * @property string          $coc_number
- * @property mixed           $created_at
- * @property mixed           $updated_at
+ * @property string|null                   $web
+ * @property string|null                   $logo
+ * @property string                        $quote_template
+ * @property string                        $invoice_template
  * @property CompanyUser[]   $companyUsers
  * @property DocumentGroup[] $documentGroups
  * @property Project[]       $projects
@@ -33,8 +44,69 @@ class Company extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['search_code', 'slug', 'name', 'vat_number', 'id_number', 'coc_number', 'created_at', 'updated_at'];
+    protected $guarded = [];
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Observer
+    |--------------------------------------------------------------------------
+    */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($companyProfile) {
+            event(new CompanyProfileSaving($companyProfile));
+        });
+
+        static::creating(function ($companyProfile) {
+            event(new CompanyProfileCreating($companyProfile));
+        });
+
+        static::created(function ($companyProfile) {
+            event(new CompanyProfileCreated($companyProfile));
+        });
+
+        static::deleted(function ($companyProfile) {
+            event(new CompanyProfileDeleted($companyProfile));
+        });
+    }
+
+/*
+|--------------------------------------------------------------------------
+| Static Methods
+|--------------------------------------------------------------------------
+*/
+    public static function getList()
+    {
+        return self::orderBy('company_name')->pluck('company_name', 'id')->all();
+    }
+
+    public static function inUse($id)
+    {
+        if (Invoice::where('company_id', $id)->count()) {
+            return true;
+        }
+
+        if (Quote::where('company_id', $id)->count()) {
+            return true;
+        }
+
+        if (Expense::where('company_id', $id)->count()) {
+            return true;
+        }
+
+        return (bool) (config('ip.defaultCompanyProfile') == $id);
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function addressables(): MorphMany
     {
         return $this->morphMany(Addressable::class, 'addressable');
@@ -55,6 +127,29 @@ class Company extends Model
         return $this->hasMany(DocumentGroup::class);
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(\App\Models\Invoice::class);
+    }
+
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(\App\Models\Quote::class);
+    }
+
+    public function recurringInvoices(): HasMany
+    {
+        return $this->hasMany(RecurringInvoice::class);
+    }
+
+/**
+Customers, Prospects, Relations
+*/
     public function relations(): HasMany
     {
         return $this->hasMany(Relation::class);
@@ -70,6 +165,45 @@ class Company extends Model
         return $this->hasMany(TaxRate::class);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getFormattedAddressAttribute()
+    {
+        return nl2br(formatAddress($this));
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        if ($this->logo) {
+            return route('companyProfiles.logo', [$this->id]);
+        }
+    }
+
+    public function logo($width = null, $height = null)
+    {
+        if ($this->logo && file_exists(storage_path($this->logo))) {
+            $logo = base64_encode(file_get_contents(storage_path($this->logo)));
+
+            $style = '';
+
+            if ($width && ! $height) {
+                $style = 'width: ' . $width . 'px;';
+            } elseif ($width && $height) {
+                $style = 'width: ' . $width . 'px; height: ' . $height . 'px;';
+            }
+
+            return '<img id="cp-logo" src="data:image/png;base64,' . $logo . '" style="' . $style . '">';
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return CompanyFactory::new();

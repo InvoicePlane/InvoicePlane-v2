@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
@@ -20,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class ExpenseCategoriesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -102,5 +104,95 @@ class ExpenseCategoriesTest extends AbstractTestCase
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors(['category_name' => 'required']);
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    /**
+     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
+     *
+     * @payload
+     * []
+     */
+    public function it_updates_a_expensecategory(): void
+    {
+        $this->markTestIncomplete('Needs full payload and assertions.');
+
+        //$this->actingAs(User::factory()->create());
+
+        $record = ExpenseCategory::factory()->create();
+
+        $payload = [
+        ];
+
+        Livewire::test(EditExpenseCategory::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasNoFormErrors();
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    /**
+     * @test
+     *
+     * @group crud
+     *
+     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
+     *
+     * @payload
+     * []
+     */
+    public function it_fails_to_update_expensecategory_when_required_fields_are_missing(): void
+    {
+        $this->markTestIncomplete();
+
+        //$this->actingAs(User::factory()->create());
+
+        $record = ExpenseCategory::factory()->create();
+
+        $payload = [
+        ];
+
+        Livewire::test(EditExpenseCategory::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasFormErrors();
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    /**
+     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
+     *
+     * @payload
+     * []
+     */
+    public function it_deletes_a_expensecategory(): void
+    {
+        $this->markTestIncomplete('Delete test needs confirmation logic.');
+
+        //$this->actingAs(User::factory()->create());
+
+        $record = ExpenseCategory::factory()->create();
+
+        Livewire::test(ListExpenseCategories::class)
+            ->callTableAction('delete', $record);
+
+        $this->assertDatabaseMissing('expensecategories', ['id' => $record->id]);
+    }
+
+    // endregion
+
+    // region usp
+
+    // endregion
 }

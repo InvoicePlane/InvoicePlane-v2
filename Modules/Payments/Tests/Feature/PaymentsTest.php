@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -18,7 +19,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(PaymentResource::class)]
-
 class PaymentsTest extends AbstractTestCase
 {
     use RefreshDatabase;
@@ -105,7 +105,6 @@ class PaymentsTest extends AbstractTestCase
             'invoice_number'   => '::paid_invoice_number::',
             'payment_method'   => $paymentMethod->payment_method_id,
         ]);
-
 
         $payload = [
             'company_id'        => $company->id,
@@ -548,7 +547,6 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-
     /**
      * @test
      *
@@ -598,7 +596,6 @@ class PaymentsTest extends AbstractTestCase
         ]));
     }
 
-
     /**
      * @test
      *
@@ -646,7 +643,6 @@ class PaymentsTest extends AbstractTestCase
             'updated_at' => now()->toDateTimeString(),
         ]));
     }
-
 
     #[Test]
     #[Group('crud')]

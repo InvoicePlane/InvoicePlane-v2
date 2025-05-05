@@ -4,6 +4,7 @@ namespace Modules\Products\Filament\Company\Resources;
 
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -53,9 +54,10 @@ class ProductCategoryResource extends Resource
                                     ->autofocus()
                                     ->required(),
                             ]),
-                Group::make()->schema([
-                    Placeholder::make('explanation Product Family')
-                        ->label('just some text'),
+                        Group::make()->schema([
+                            Placeholder::make('explanation Product Family')
+                                ->label('just some text'),
+                        ]),
                     ]),
             ]);
     }

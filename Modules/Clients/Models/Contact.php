@@ -21,8 +21,9 @@ use Modules\Core\Traits\BelongsToCompany;
  * @property int        $id
  * @property string     $contact_first_name
  * @property string     $contact_last_name
- * @property string     $contact_id_number
- * @property string     $contact_passport_number
+ * @property bool     $default_to
+ * @property bool     $default_cc
+ * @property bool     $default_bcc
  * @property mixed      $gender
  * @property Relation[] $relations
  */
@@ -33,12 +34,17 @@ class Contact extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
-
     protected $casts = [
         'gender' => Gender::class,
     ];
 
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function relation(): BelongsTo
     {
         return $this->belongsTo(Relation::class, 'relation_id');
@@ -64,6 +70,31 @@ class Contact extends Model
             'id',
             'address_id'
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getFormattedContactAttribute()
+    {
+        return $this->name . ' <' . $this->email . '>';
+    }
+
+    public function getFormattedDefaultBccAttribute()
+    {
+        return ($this->default_bcc) ? trans('ip.yes') : trans('ip.no');
+    }
+
+    public function getFormattedDefaultCcAttribute()
+    {
+        return ($this->default_cc) ? trans('ip.yes') : trans('ip.no');
+    }
+
+    public function getFormattedDefaultToAttribute()
+    {
+        return ($this->default_to) ? trans('ip.yes') : trans('ip.no');
     }
 
     public function getFullNameAttribute(): string
@@ -92,6 +123,11 @@ class Contact extends Model
         return $this->company_id ? Company::find($this->company_id)->company_name : null;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ContactFactory::new();

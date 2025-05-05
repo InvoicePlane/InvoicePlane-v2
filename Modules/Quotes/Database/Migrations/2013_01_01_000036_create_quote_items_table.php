@@ -20,8 +20,10 @@ return new class () extends Migration {
             $table->decimal('price', 20, 2);
             $table->decimal('discount', 20, 2)->default(0);
             $table->decimal('subtotal', 20, 2);
+            $table->decimal('total', 20)->default(0.00);
             $table->unsignedBigInteger('tax_rate_id')->nullable();
-            $table->unsignedMediumInteger('order')->nullable();
+            $table->unsignedBigInteger('tax_rate_2_id')->nullable();
+            $table->unsignedMediumInteger('display_order')->nullable();
             $table->string('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
@@ -29,6 +31,7 @@ return new class () extends Migration {
             $table->foreign('item_id')->references('id')->on('products')->onDelete('set null');
             $table->foreign('unit_id')->references('id')->on('product_units')->onDelete('set null');
             $table->foreign('tax_rate_id')->references('id')->on('tax_rates')->onDelete('set null');
+            $table->foreign('tax_rate_2_id', 'fk_quote_items_tax_rate_2_id')->references('id')->on('tax_rates')->onDelete('cascade');
         });
     }
 

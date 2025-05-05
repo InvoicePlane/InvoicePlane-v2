@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
 use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\CreateInvoice;
@@ -20,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(InvoiceResource::class)]
 class InvoicesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
