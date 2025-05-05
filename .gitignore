@@ -1,3 +1,13 @@
+# Laravel: Exclude compiled and storage files
+/vendor/
+/node_modules/
+/storage/*.key
+/storage/framework/
+/storage/generated-json/
+/storage/logs/
+/public/storage
+/.env*
+
 # Build artifacts
 /public/assets/
 /public/build/
@@ -6,28 +16,31 @@
 /public/js/
 /public/vendor/filament/
 
-# Laravel
-/public/storage
-/storage/*.key
-/vendor/
-/.env*
-
-# Node/Vite
-/node_modules/
-
-# PHPUnit / Test tools
-/.phpunit.cache
-/phpunit.result.cache
-/puf.txt
-
-# IDEs / Editors
+# IDE/Editor folders
 /.fleet/
 /.idea/
 /.nova/
+/.phpactor.json
 /.vscode/
 /.zed/
-/.phpactor.json
 
-# Misc
+# PHPUnit
+/.phpunit.cache
+/.phpunit.result.cache
+/depr.txt
+/htmloutput.txt
+/phpunit.txt
+/pif.txt
+/puf.txt
+/test.txt
+/todo.txt
+/unit_depr.txt
+
+# Misc / Dev
+.docker/
+/.php-cs-fixer.cache
+*.sqlite
+/stan.txt
+/yarn-upgr.txt
 npm-debug.log
 yarn-error.log
