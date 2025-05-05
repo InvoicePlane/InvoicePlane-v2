@@ -1,11 +1,13 @@
 # Laravel: Exclude compiled and storage files
-/vendor/
+/Modules/*/Controllers/**
+/Modules/*/resources/views/**
 /node_modules/
 /storage/*.key
 /storage/framework/
 /storage/generated-json/
 /storage/logs/
 /public/storage
+/vendor/
 /.env*
 
 # Build artifacts

@@ -10,19 +10,24 @@ return new class () extends Migration {
         Schema::create('expenses', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('vendor_id')->nullable()->index('expenses_vendor_id_foreign');
-            $table->unsignedBigInteger('customer_id')->nullable()->index('expenses_customer_id_foreign');
-            $table->unsignedBigInteger('category_id')->nullable()->index('expenses_category_id_foreign');
+            $table->unsignedBigInteger('invoice_id')->index()->nullable();
+            $table->unsignedBigInteger('customer_id')->nullable()->index('fk_expenses_customer_id');
+            $table->unsignedBigInteger('vendor_id')->nullable()->index('fk_expenses_vendor_id');
+            $table->unsignedBigInteger('category_id')->nullable()->index('fk_expenses_category_id');
+            $table->unsignedBigInteger('user_id')->nullable()->index('fk_expenses_user_id');
             $table->string('expense_number');
             $table->string('expense_status');
+            $table->date('expensed_at');
             $table->string('expense_type');
-            $table->decimal('expense_amount', 20);
+            $table->decimal('expense_amount', 20, 2);
             $table->string('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->foreign('vendor_id', 'expenses_vendor_id_foreign')->references('id')->on('relations')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('customer_id', 'expenses_customer_id_foreign')->references('id')->on('relations')->onUpdate('cascade')->onDelete('set null');
-            $table->foreign('category_id', 'expenses_category_id_foreign')->references('id')->on('expense_categories')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('invoice_id', 'fk_expenses_invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('customer_id', 'fk_expenses_customer_id')->references('id')->on('relations')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('vendor_id', 'fk_expenses_vendor_id')->references('id')->on('relations')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('category_id', 'fk_expenses_category_id')->references('id')->on('expense_categories')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('user_id', 'fk_expenses_user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

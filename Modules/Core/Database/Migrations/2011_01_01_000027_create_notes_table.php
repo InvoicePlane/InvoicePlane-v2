@@ -10,10 +10,11 @@ return new class () extends Migration {
         Schema::create('notes', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('user_id')->nullable()->index('notes_user_id_foreign');
+            $table->unsignedBigInteger('user_id')->nullable()->index('fk_notes_user_id');
             $table->morphs('notable');
+            $table->boolean('is_private');
             $table->string('title');
-            $table->text('content');
+            $table->longText('content');
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('user_id', 'notes_user_id_foreign')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');

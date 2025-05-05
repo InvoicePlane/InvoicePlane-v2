@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Filament\Admin\Resources\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;
 use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\EditCompany;
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class CompaniesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -31,6 +33,26 @@ class CompaniesTest extends AbstractTestCase
     // region smoke
     #[Test]
     #[Group('smoke')]
+    /**
+     * @group smoke
+     *
+     * @covers \Modules\.\Filament\./app/Filament\Resources\CompanyResource
+     */
+    public function it_lists_companies(): void
+    {
+        $this->markTestIncomplete();
+
+        //$this->actingAs(User::factory()->create());
+
+        Livewire::test(ListCompanies::class)
+            ->assertSuccessful();
+    }
+
+    // endregion
+
+    // region crud
+    #[Test]
+    #[Group('crud')]
     /**
      * \Modules\Core\Filament\Admin\Resources\CompanyResource.
      *
@@ -68,8 +90,6 @@ class CompaniesTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\CompanyResource.
-     *
      * @payload
      * {
      * "search_code": "Example",
@@ -101,6 +121,39 @@ class CompaniesTest extends AbstractTestCase
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @test
+     *
+     * @group crud
+     *
+     * @covers \Modules\.\Filament\./app/Filament\Resources\CompanyResource
+     *
+     * @payload
+     * []
+     */
+    public function it_fails_to_update_company_when_required_fields_are_missing(): void
+    {
+        $this->markTestIncomplete();
+
+        //$this->actingAs(User::factory()->create());
+
+        $record = Company::factory()->create();
+
+        $payload = [
+        ];
+
+        Livewire::test(EditCompany::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasFormErrors();
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
     }
 
     #[Test]

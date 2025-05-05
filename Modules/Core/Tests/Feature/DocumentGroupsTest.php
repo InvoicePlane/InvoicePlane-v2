@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
@@ -19,6 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 
 class DocumentGroupsTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 

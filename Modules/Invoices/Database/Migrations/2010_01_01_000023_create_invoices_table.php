@@ -17,18 +17,23 @@ return new class () extends Migration {
 
             $table->string('invoice_number');
             $table->string('invoice_status');
+            $table->enum('sign', ['1', '-1'])->default('1');
             $table->date('invoiced_at')->nullable();
             $table->date('invoice_due_at')->nullable();
             $table->decimal('invoice_discount_amount', 20, 2)->default(0);
             $table->decimal('invoice_discount_percent', 20);
-            $table->decimal('invoice_item_tax_total', 20, 2);
+            $table->decimal('item_tax_total', 20, 2)->nullable();
             $table->decimal('invoice_item_subtotal', 20);
             $table->decimal('invoice_tax_total', 20);
             $table->decimal('invoice_total', 20);
             $table->string('invoice_password')->nullable();
-            $table->string('invoice_url_key', 30)->nullable();
+            $table->string('url_key', 30)->nullable();
             $table->boolean('is_read_only')->nullable()->default(false);
-            $table->string('invoice_terms')->nullable();
+
+            $table->string('template')->nullable();
+            $table->string('summary')->nullable();
+            $table->text('terms')->nullable();
+            $table->text('footer')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('customer_id', 'invoices_relation_id_foreign')

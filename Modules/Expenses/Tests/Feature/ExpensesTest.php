@@ -13,12 +13,13 @@ use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages\ListExpens
 use Modules\Expenses\Models\Expense;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ExpenseResource::class)]
-
 class ExpensesTest extends AbstractTestCase
 {
+    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -133,7 +134,7 @@ class ExpensesTest extends AbstractTestCase
      * "description": "Example"
      * }
      */
-    public function it_deletes_a_expense(): void
+    public function it_deletes_an_expense(): void
     {
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
@@ -150,6 +151,5 @@ class ExpensesTest extends AbstractTestCase
     // endregion
 
     // region usp
-
     // endregion
 }

@@ -25,7 +25,6 @@ class CustomersTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use WithFaker;
     use WithoutMiddleware;
 
     protected function setUp(): void

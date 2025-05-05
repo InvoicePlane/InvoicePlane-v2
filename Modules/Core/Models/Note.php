@@ -4,18 +4,18 @@ namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int    $id
- * @property string $notable_type
  * @property int    $notable_id
+ * @property string $notable_type
  * @property int    $user_id
  * @property string $title
  * @property string $content
- * @property mixed  $created_at
- * @property mixed  $updated_at
+ * @property bool   $is_private
  * @property User   $user
  */
 class Note extends Model
@@ -24,8 +24,17 @@ class Note extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'is_private' => 'bool',
+    ];
+
     protected $guarded = [];
 
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function notable(): MorphTo
     {
         return $this->morphTo();
@@ -35,4 +44,26 @@ class Note extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getFormattedCreatedAtAttribute(): string
+    {
+        return DateFormatter::format($this->created_at, true);
+    }
+
+    public function getFormattedNoteAttribute(): string
+    {
+        return nl2br($this->note);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
 }
