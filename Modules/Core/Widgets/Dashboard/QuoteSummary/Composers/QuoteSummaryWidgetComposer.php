@@ -2,7 +2,7 @@
 
 namespace App\Widgets\Dashboard\QuoteSummary\Composers;
 
-use App\IpModules\Quotes\Models\QuoteAmount;
+use Modules\Quotes\Models\QuoteAmount;
 use App\Support\CurrencyFormatter;
 use Illuminate\Support\Facades\DB;
 

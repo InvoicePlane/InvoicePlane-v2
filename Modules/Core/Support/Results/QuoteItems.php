@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Quotes\Models\QuoteItem;
+use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItems implements SourceInterface
 {

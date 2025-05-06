@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Invoices\Support;
+namespace Modules\Invoices\Support;
 
 use App\Support\Calculators\Calculator;
 use App\Support\Calculators\Interfaces\PayableInterface;

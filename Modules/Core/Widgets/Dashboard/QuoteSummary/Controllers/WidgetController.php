@@ -3,7 +3,7 @@
 namespace App\Widgets\Dashboard\QuoteSummary\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\IpModules\Settings\Models\Setting;
+use Modules\Settings\Models\Setting;
 
 class WidgetController extends Controller
 {

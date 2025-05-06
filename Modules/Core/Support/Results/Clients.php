@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Customers\Models\Customer;
+use Modules\Clients\Models\Relation;
 
 class Clients implements SourceInterface
 {

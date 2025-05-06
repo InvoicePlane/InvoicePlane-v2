@@ -2,7 +2,7 @@
 
 namespace App\Widgets\Dashboard\ClientActivity\Composers;
 
-use App\IpModules\Activity\Models\Activity;
+use Modules\Activity\Models\Activity;
 
 class ClientActivityWidgetComposer
 {

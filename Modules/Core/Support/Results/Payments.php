@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Payments\Models\Payment;
+use Modules\Payments\Models\Payment;
 
 class Payments implements SourceInterface
 {

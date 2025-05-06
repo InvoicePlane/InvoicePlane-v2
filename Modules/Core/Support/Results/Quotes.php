@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Quotes\Models\Quote;
+use Modules\Quotes\Models\Quote;
 
 class Quotes implements SourceInterface
 {

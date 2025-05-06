@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Expenses\Models\Expense;
+use Modules\Expenses\Models\Expense;
 
 class Expenses implements SourceInterface
 {

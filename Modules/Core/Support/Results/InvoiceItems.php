@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Invoices\Models\InvoiceItem;
+use Modules\Invoices\Models\InvoiceItem;
 
 class InvoiceItems implements SourceInterface
 {

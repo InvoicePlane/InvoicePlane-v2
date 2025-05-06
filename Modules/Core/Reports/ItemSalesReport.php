@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Reports\Reports;
+namespace Modules\Reports\Reports;
 
-use App\IpModules\Invoices\Models\InvoiceItem;
+use Modules\Invoices\Models\InvoiceItem;
 use App\Support\CurrencyFormatter;
 use App\Support\DateFormatter;
 use App\Support\NumberFormatter;

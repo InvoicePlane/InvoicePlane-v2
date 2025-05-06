@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Quotes\Support;
+namespace Modules\Quotes\Support;
 
 use App\Support\Calculators\Calculator;
 

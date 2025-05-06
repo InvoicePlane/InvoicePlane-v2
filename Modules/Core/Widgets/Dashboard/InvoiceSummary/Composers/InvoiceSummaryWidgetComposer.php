@@ -2,8 +2,8 @@
 
 namespace App\Widgets\Dashboard\InvoiceSummary\Composers;
 
-use App\IpModules\Invoices\Models\InvoiceAmount;
-use App\IpModules\Payments\Models\Payment;
+use Modules\Invoices\Models\InvoiceAmount;
+use Modules\Payments\Models\Payment;
 use App\Support\CurrencyFormatter;
 use Illuminate\Support\Facades\DB;
 

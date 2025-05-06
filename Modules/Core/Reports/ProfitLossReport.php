@@ -1,9 +1,9 @@
 <?php
 
-namespace App\IpModules\Reports\Reports;
+namespace Modules\Reports\Reports;
 
-use App\IpModules\Expenses\Models\Expense;
-use App\IpModules\Payments\Models\Payment;
+use Modules\Expenses\Models\Expense;
+use Modules\Payments\Models\Payment;
 use App\Support\CurrencyFormatter;
 use App\Support\DateFormatter;
 

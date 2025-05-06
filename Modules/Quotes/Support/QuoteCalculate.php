@@ -1,11 +1,11 @@
 <?php
 
-namespace App\IpModules\Quotes\Support;
+namespace Modules\Quotes\Support;
 
-use App\IpModules\Quotes\Models\Quote;
-use App\IpModules\Quotes\Models\QuoteAmount;
-use App\IpModules\Quotes\Models\QuoteItem;
-use App\IpModules\Quotes\Models\QuoteItemAmount;
+use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteAmount;
+use Modules\Quotes\Models\QuoteItem;
+use Modules\Quotes\Models\QuoteItemAmount;
 
 class QuoteCalculate
 {

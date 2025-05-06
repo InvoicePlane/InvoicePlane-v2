@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Reports\Reports;
+namespace Modules\Reports\Reports;
 
-use App\IpModules\Expenses\Models\Expense;
+use Modules\Expenses\Models\Expense;
 use App\Support\CurrencyFormatter;
 use App\Support\DateFormatter;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Reports\Reports;
+namespace Modules\Reports\Reports;
 
-use App\IpModules\Payments\Models\Payment;
+use Modules\Payments\Models\Payment;
 use App\Support\CurrencyFormatter;
 
 class RevenueByClientReport

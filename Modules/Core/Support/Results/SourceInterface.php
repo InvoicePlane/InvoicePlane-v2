@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
 interface SourceInterface
 {

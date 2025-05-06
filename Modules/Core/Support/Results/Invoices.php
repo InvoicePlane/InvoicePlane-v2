@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Exports\Support\Results;
+namespace Modules\Core\Support\Results;
 
-use App\IpModules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\Invoice;
 
 class Invoices implements SourceInterface
 {

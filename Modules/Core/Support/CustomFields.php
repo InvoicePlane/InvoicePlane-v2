@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\CustomFields\Support;
+namespace Modules\Core\Support;
 
 class CustomFields
 {

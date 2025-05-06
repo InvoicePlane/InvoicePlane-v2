@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Settings\Models;
+namespace Modules\Settings\Models;
 
 use App\Events\SettingSaving;
 use Illuminate\Database\Eloquent\Model;

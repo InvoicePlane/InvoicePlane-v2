@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Groups;
+namespace Modules\Groups;
 
 class GroupOptions
 {

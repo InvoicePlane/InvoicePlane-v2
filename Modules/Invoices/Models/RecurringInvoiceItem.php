@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\RecurringInvoices\Models;
+namespace Modules\RecurringInvoices\Models;
 
 use App\Events\RecurringInvoiceItemSaving;
 use App\Events\RecurringInvoiceModified;
