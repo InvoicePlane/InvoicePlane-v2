@@ -5,9 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
-    public function up()
+    public function up(): void
     {
-        Schema::create('mail_queue', function (Blueprint $table) {
+        Schema::create('mail_queue', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBiginteger('mailable_id');
             $table->string('mailable_type');
@@ -23,7 +23,7 @@ return new class () extends Migration {
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('mail_queue');
     }

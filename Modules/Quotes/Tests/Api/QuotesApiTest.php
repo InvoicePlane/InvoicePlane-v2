@@ -108,7 +108,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['quote_number' => '::quote_number::']);
     }
 
-
     public function it_fails_to_retrieve_quotes_without_authentication(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -119,7 +118,6 @@ class QuotesApiTest extends AbstractTestCase
         // Assert
         $response->assertStatus(401); // Unauthorized
     }
-
 
     public function it_creates_a_quote(): void
     {
@@ -182,7 +180,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['quote_number' => '::quote_number::']);
     }
 
-
     public function it_returns_an_error_when_posting_quote_without_status_id(): void
     {
         $user   = User::factory()->create();
@@ -224,7 +221,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrorFor('quote_status_id', 'errors');
     }
-
 
     public function it_updates_a_quote(): void
     {
@@ -273,7 +269,6 @@ class QuotesApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['quote_number'], $initialQuote->quote_number);
     }
 
-
     public function it_can_update_quote_line_items(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -303,7 +298,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
         $this->assertDatabaseHas('quote_items', ['quote_id' => $quote->quote_id]);
     }
-
 
     public function it_deletes_a_quote(): void
     {
@@ -366,7 +360,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_adds_a_product_to_a_quote(): void
     {
         $quote   = Quote::factory()->create();
@@ -383,7 +376,6 @@ class QuotesApiTest extends AbstractTestCase
         $response = $this->postJson(route('api.filament.ivpl.resources.filament.resources.quotes.add_product', ['record' => $quote->id]), $payload);
         $response->assertSuccessful();
     }
-
 
     public function it_adds_a_task_to_a_quote(): void
     {
@@ -416,7 +408,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_copies_a_quote_to_an_invoice(): void
     {
         // Payload for copying a quote to an invoice
@@ -433,7 +424,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_clones_a_quote(): void
     {
         // Payload for cloning a quote
@@ -449,7 +439,6 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
         $response->assertJsonFragment(['number' => '::quote_number:: - Copy']);
     }
-
 
     public function it_calculates_totals(): void
     {

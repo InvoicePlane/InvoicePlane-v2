@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Widgets\Dashboard\QuoteSummary\Controllers;
+namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers;
 
-use App\Http\Controllers\Controller;
+use Modules\Core\Http\Controllers\Controller;
 use Modules\Settings\Models\Setting;
 
 class WidgetController extends Controller

@@ -2,12 +2,12 @@
 
 namespace Modules\Attachments\Models;
 
-use App\Events\AttachmentCreating;
-use App\Events\AttachmentDeleted;
-use Modules\Users\Models\User;
-use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Events\AttachmentCreating;
+use Modules\Core\Events\AttachmentDeleted;
+use Modules\Core\Support\DateFormatter;
+use Modules\Users\Models\User;
 
 /**
  * Class Attachment.
@@ -48,11 +48,11 @@ class Attachment extends Model
     {
         parent::boot();
 
-        static::creating(function ($attachment) {
+        static::creating(function ($attachment): void {
             event(new AttachmentCreating($attachment));
         });
 
-        static::deleted(function ($attachment) {
+        static::deleted(function ($attachment): void {
             event(new AttachmentDeleted($attachment));
         });
     }

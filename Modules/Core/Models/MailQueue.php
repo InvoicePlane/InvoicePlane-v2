@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Models;
 
-use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Support\DateFormatter;
 
 /**
  * Class MailQueue.

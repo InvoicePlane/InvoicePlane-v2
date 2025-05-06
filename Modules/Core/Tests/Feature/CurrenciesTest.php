@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
-use App\Filament\Resources\CurrencyResource\Pages\EditCurrency;
-use App\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
-use App\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
+use Modules\Core\Filament\Resources\CurrencyResource\Pages\EditCurrency;
+use Modules\Core\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
+use Modules\Core\Models\Currency;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

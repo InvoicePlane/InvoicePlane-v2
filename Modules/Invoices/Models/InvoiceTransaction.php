@@ -2,9 +2,9 @@
 
 namespace Modules\Invoices\Models;
 
-use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Models\Invoice;
 
 /**
  * Class InvoiceTransaction.

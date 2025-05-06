@@ -10,17 +10,15 @@ enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
     case CANCELLED   = 'cancelled';
     case PAID        = 'paid';
 
-/**
-    case NOT_STARTED = 1;
-
-    case IN_PROGRESS = 2;
-
-    case COMPLETE = 3;
-
-    case PAID = 4;
-*/
-
-
+    /**
+     * case NOT_STARTED = 1;.
+     *
+     * case IN_PROGRESS = 2;
+     *
+     * case COMPLETE = 3;
+     *
+     * case PAID = 4;
+     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

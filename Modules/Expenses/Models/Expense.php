@@ -55,23 +55,22 @@ class Expense extends Model
     {
         parent::boot();
 
-        static::created(function ($expense) {
+        static::created(function ($expense): void {
             event(new ExpenseCreated($expense));
         });
 
-        static::saved(function ($expense) {
+        static::saved(function ($expense): void {
             event(new CheckAttachment($expense));
         });
 
-        static::saving(function ($expense) {
+        static::saving(function ($expense): void {
             event(new ExpenseSaving($expense));
         });
 
-        static::deleting(function ($expense) {
+        static::deleting(function ($expense): void {
             event(new ExpenseDeleting($expense));
         });
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -132,7 +131,6 @@ class Expense extends Model
             ->belongsTo(Relation::class, 'relation_id')
             ->where('relation_type', RelationType::VENDOR->value);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -276,7 +274,7 @@ class Expense extends Model
                 case 1:
                     $startOfMonth = Carbon::now()->firstOfMonth();
                     $today        = Carbon::now()->today();
-                    $query->where(function ($query) use ($startOfMonth, $today) {
+                    $query->where(function ($query) use ($startOfMonth, $today): void {
                         $query->whereBetween('expensed_at', [$startOfMonth, $today]);
                     });
                     break;
@@ -284,7 +282,7 @@ class Expense extends Model
                 case 2:
                     $startOfYear = Carbon::now()->startOfYear();
                     $today       = Carbon::now()->today();
-                    $query->where(function ($query) use ($startOfYear, $today) {
+                    $query->where(function ($query) use ($startOfYear, $today): void {
                         $query->whereBetween('expensed_at', [$startOfYear, $today]);
                     });
                     break;
@@ -292,7 +290,7 @@ class Expense extends Model
                 case 3:
                     $startOfLastMonth = Carbon::now()->subMonthNoOverflow()->startOfMonth();
                     $endOfLastMonth   = Carbon::now()->subMonthNoOverflow()->endOfMonth();
-                    $query->where(function ($query) use ($startOfLastMonth, $endOfLastMonth) {
+                    $query->where(function ($query) use ($startOfLastMonth, $endOfLastMonth): void {
                         $query->whereBetween('expensed_at', [$startOfLastMonth, $endOfLastMonth]);
                     });
                     break;
@@ -300,7 +298,7 @@ class Expense extends Model
                 case 4:
                     $startOfLastYear = Carbon::now()->subYear()->startOfYear();
                     $endOfLastYear   = Carbon::now()->subYear()->endOfYear();
-                    $query->where(function ($query) use ($startOfLastYear, $endOfLastYear) {
+                    $query->where(function ($query) use ($startOfLastYear, $endOfLastYear): void {
                         $query->whereBetween('expensed_at', [$startOfLastYear, $endOfLastYear]);
                     });
                     break;

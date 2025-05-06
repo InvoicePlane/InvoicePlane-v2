@@ -8,7 +8,6 @@ use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,23 +17,23 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int       $id
- * @property string    $name
- * @property string    $email
- * @property mixed     $email_verified_at
- * @property string    $password
- * @property string    $remember_token
- * @property mixed     $created_at
- * @property mixed     $updated_at
- * @property Invoice[] $invoices
- * @property Note[]    $notes
+ * @property int                           $id
+ * @property string                        $name
+ * @property string                        $email
+ * @property mixed                         $email_verified_at
+ * @property string                        $password
+ * @property string                        $remember_token
+ * @property mixed                         $created_at
+ * @property mixed                         $updated_at
+ * @property Invoice[]                     $invoices
+ * @property Note[]                        $notes
  * @property Collection|Attachment[]       $attachments
  * @property Collection|Expense[]          $expenses
  * @property Collection|Invoice[]          $invoices
  * @property Collection|Note[]             $notes
  * @property Collection|Quote[]            $quotes
  * @property Collection|RecurringInvoice[] $recurringInvoices
- * @property Upload[]  $uploads
+ * @property Upload[]                      $uploads
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
@@ -64,15 +63,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     | Observer
     |--------------------------------------------------------------------------
     */
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
-        static::created(function ($user) {
+        static::created(function ($user): void {
             event(new UserCreated($user));
         });
 
-        static::deleted(function ($user) {
+        static::deleted(function ($user): void {
             event(new UserDeleted($user));
         });
     }

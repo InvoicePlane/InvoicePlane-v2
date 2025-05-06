@@ -2,23 +2,23 @@
 
 namespace Modules\Invoices\Support;
 
+use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceAmount;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Models\InvoiceItemAmount;
 use Modules\Payments\Models\Payment;
-use App\Support\Statuses\InvoiceStatuses;
 
 class InvoiceCalculate
 {
-    public function calculateAll()
+    public function calculateAll(): void
     {
         foreach (Invoice::get() as $invoice) {
             $this->calculate($invoice);
         }
     }
 
-    public function calculate($invoice)
+    public function calculate($invoice): void
     {
         $invoiceItems = InvoiceItem::select(
             'invoice_items.*',

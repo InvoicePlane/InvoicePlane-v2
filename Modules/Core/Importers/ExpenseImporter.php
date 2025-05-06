@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Importers;
 
-use Modules\Expenses\Models\Expense;
 use Illuminate\Support\Facades\Validator;
+use Modules\Expenses\Models\Expense;
 
 class ExpenseImporter extends AbstractImporter
 {

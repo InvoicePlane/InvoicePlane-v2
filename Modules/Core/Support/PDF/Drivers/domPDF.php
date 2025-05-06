@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Support\PDF\Drivers;
+namespace Modules\Core\Support\PDF\Drivers;
 
-use App\Support\PDF\PDFAbstract;
 use Dompdf\Dompdf as PDF;
 use Dompdf\Options;
+use Modules\Core\Support\PDF\PDFAbstract;
 
 class domPDF extends PDFAbstract
 {
-    public function save($html, $filename)
+    public function save($html, $filename): void
     {
         file_put_contents($filename, $this->getOutput($html));
     }

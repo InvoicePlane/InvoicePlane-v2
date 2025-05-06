@@ -2,11 +2,11 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\DocumentGroupFactory;
 use Modules\Core\Enums\DocumentGroupType;
@@ -128,8 +128,6 @@ class DocumentGroup extends Model
         $group->next_id = $group->next_id + 1;
         $group->save();
     }
-
-
 
     /*
     |--------------------------------------------------------------------------

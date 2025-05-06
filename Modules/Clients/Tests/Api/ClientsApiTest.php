@@ -37,7 +37,6 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertStatus(403);
     }
 
-
     public function route_is_401_for_guest_user(): void
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
@@ -48,7 +47,6 @@ class ClientsApiTest extends AbstractTestCase
         $response = $this->getJson(route('api.clients.index'));
         $response->assertUnauthorized();
     }
-
 
     public function it_returns_clients_index(): void
     {
@@ -79,7 +77,6 @@ class ClientsApiTest extends AbstractTestCase
             ]);
     }
 
-
     public function test_read_client(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -100,7 +97,6 @@ class ClientsApiTest extends AbstractTestCase
         ]);
     }
 
-
     public function test_create_client(): void
     {
         $user = User::factory(['user_type' => 1])->create();
@@ -118,7 +114,6 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertJsonFragment($client);
     }
 
-
     public function test_create_client_missing_required_field(): void
     {
         $user = User::factory()->create(['user_type' => 1]);
@@ -133,7 +128,6 @@ class ClientsApiTest extends AbstractTestCase
 
         $response->assertUnprocessable();
     }
-
 
     public function test_put_update_client(): void
     {
@@ -153,7 +147,6 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertJsonFragment($editedClient);
     }
 
-
     public function test_patch_update_client(): void
     {
         $this->markTestIncomplete();
@@ -172,7 +165,6 @@ class ClientsApiTest extends AbstractTestCase
 
         $response->assertJsonFragment($editedClient);
     }
-
 
     public function test_delete_client(): void
     {

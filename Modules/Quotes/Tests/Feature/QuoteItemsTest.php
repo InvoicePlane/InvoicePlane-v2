@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
-use App\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
-use App\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
-use App\Models\QuoteItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
+use Modules\Core\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
+use Modules\Core\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
+use Modules\Core\Models\QuoteItem;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

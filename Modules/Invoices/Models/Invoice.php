@@ -83,27 +83,25 @@ class Invoice extends Model
         'invoice_password',
     ];
 
-
-/**
-	Observer
-*/
+    /**
+     * Observer.
+     */
     public static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($invoice) {
+        static::creating(function ($invoice): void {
             event(new InvoiceCreating($invoice));
         });
 
-        static::created(function ($invoice) {
+        static::created(function ($invoice): void {
             event(new InvoiceCreated($invoice));
         });
 
-        static::deleted(function ($invoice) {
+        static::deleted(function ($invoice): void {
             event(new InvoiceDeleted($invoice));
         });
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -487,7 +485,7 @@ class Invoice extends Model
                 ->orWhere('invoices.invoiced_at', 'like', '%' . $keywords . '%')
                 ->orWhere('due_at', 'like', '%' . $keywords . '%')
                 ->orWhere('summary', 'like', '%' . $keywords . '%')
-                ->orWhereIn('customer_id', function ($query) use ($keywords) {
+                ->orWhereIn('customer_id', function ($query) use ($keywords): void {
                     $query->select('id')->from('customers')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
                 });
         }

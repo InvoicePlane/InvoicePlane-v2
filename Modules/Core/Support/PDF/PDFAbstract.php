@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\PDF;
+namespace Modules\Core\Support\PDF;
 
 abstract class PDFAbstract implements PDFInterface
 {
@@ -14,12 +14,12 @@ abstract class PDFAbstract implements PDFInterface
         $this->paperOrientation = config('ip.paperOrientation') ?: 'portrait';
     }
 
-    public function setPaperSize($paperSize)
+    public function setPaperSize($paperSize): void
     {
         $this->paperSize = $paperSize;
     }
 
-    public function setPaperOrientation($paperOrientation)
+    public function setPaperOrientation($paperOrientation): void
     {
         $this->paperOrientation = $paperOrientation;
     }

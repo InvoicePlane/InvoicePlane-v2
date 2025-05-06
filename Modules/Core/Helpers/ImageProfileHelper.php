@@ -1,6 +1,6 @@
 <?php
 
-use App\Support\ProfileImage\ProfileImageFactory;
+use Modules\Core\Support\ProfileImage\ProfileImageFactory;
 
 class ImageProfileHelper
 {

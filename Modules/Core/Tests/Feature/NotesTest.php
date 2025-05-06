@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\NoteResource\Pages\CreateNote;
-use App\Filament\Resources\NoteResource\Pages\EditNote;
-use App\Filament\Resources\NoteResource\Pages\ListNotes;
-use App\Models\Note;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\NoteResource\Pages\CreateNote;
+use Modules\Core\Filament\Resources\NoteResource\Pages\EditNote;
+use Modules\Core\Filament\Resources\NoteResource\Pages\ListNotes;
+use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

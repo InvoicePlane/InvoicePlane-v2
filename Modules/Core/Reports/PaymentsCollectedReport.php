@@ -2,9 +2,9 @@
 
 namespace Modules\Reports\Reports;
 
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
 use Modules\Payments\Models\Payment;
-use App\Support\CurrencyFormatter;
-use App\Support\DateFormatter;
 
 class PaymentsCollectedReport
 {

@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Importers;
 
-use App\Events\InvoiceModified;
+use Illuminate\Support\Facades\Validator;
+use Modules\Core\Events\InvoiceModified;
 use Modules\Invoices\Models\Invoice;
 use Modules\TaxRates\Models\TaxRate;
-use Illuminate\Support\Facades\Validator;
 
 class InvoiceItemImporter extends AbstractImporter
 {

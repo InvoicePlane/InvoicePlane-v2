@@ -7,32 +7,30 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use App\Events\CompanyProfileCreated;
-use App\Events\CompanyProfileCreating;
-use App\Events\CompanyProfileDeleted;
-use App\Events\CompanyProfileSaving;
-use App\Modules\Expenses\Models\Expense;
-use App\Modules\Invoices\Models\Invoice;
-use App\Modules\Quotes\Models\Quote;
-use App\Models\RecurringInvoice;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\CompanyFactory;
+use Modules\Core\Events\CompanyProfileCreated;
+use Modules\Core\Events\CompanyProfileCreating;
+use Modules\Core\Events\CompanyProfileDeleted;
+use Modules\Core\Events\CompanyProfileSaving;
+use Modules\Core\Modules\Expenses\Models\Expense;
+use Modules\Core\Modules\Invoices\Models\Invoice;
+use Modules\Core\Modules\Quotes\Models\Quote;
 use Modules\Projects\Models\Project;
 
 /**
  * @property int             $id
  * @property string          $search_code
- * @property string|null                   $company_name
+ * @property string|null     $company_name
  * @property string          $slug
  * @property string          $vat_number
  * @property string          $id_number
  * @property string          $coc_number
- * @property string|null                   $web
- * @property string|null                   $logo
- * @property string                        $quote_template
- * @property string                        $invoice_template
+ * @property string|null     $web
+ * @property string|null     $logo
+ * @property string          $quote_template
+ * @property string          $invoice_template
  * @property CompanyUser[]   $companyUsers
  * @property DocumentGroup[] $documentGroups
  * @property Project[]       $projects
@@ -46,38 +44,37 @@ class Company extends Model
 
     protected $guarded = [];
 
-
     /*
     |--------------------------------------------------------------------------
     | Observer
     |--------------------------------------------------------------------------
     */
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
-        static::saving(function ($companyProfile) {
+        static::saving(function ($companyProfile): void {
             event(new CompanyProfileSaving($companyProfile));
         });
 
-        static::creating(function ($companyProfile) {
+        static::creating(function ($companyProfile): void {
             event(new CompanyProfileCreating($companyProfile));
         });
 
-        static::created(function ($companyProfile) {
+        static::created(function ($companyProfile): void {
             event(new CompanyProfileCreated($companyProfile));
         });
 
-        static::deleted(function ($companyProfile) {
+        static::deleted(function ($companyProfile): void {
             event(new CompanyProfileDeleted($companyProfile));
         });
     }
 
-/*
-|--------------------------------------------------------------------------
-| Static Methods
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Static Methods
+    |--------------------------------------------------------------------------
+    */
     public static function getList()
     {
         return self::orderBy('company_name')->pluck('company_name', 'id')->all();
@@ -99,8 +96,6 @@ class Company extends Model
 
         return (bool) (config('ip.defaultCompanyProfile') == $id);
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -134,12 +129,12 @@ class Company extends Model
 
     public function invoices(): HasMany
     {
-        return $this->hasMany(\App\Models\Invoice::class);
+        return $this->hasMany(\Modules\Core\Models\Invoice::class);
     }
 
     public function quotes(): HasMany
     {
-        return $this->hasMany(\App\Models\Quote::class);
+        return $this->hasMany(\Modules\Core\Models\Quote::class);
     }
 
     public function recurringInvoices(): HasMany
@@ -147,9 +142,9 @@ class Company extends Model
         return $this->hasMany(RecurringInvoice::class);
     }
 
-/**
-Customers, Prospects, Relations
-*/
+    /**
+     * Customers, Prospects, Relations.
+     */
     public function relations(): HasMany
     {
         return $this->hasMany(Relation::class);

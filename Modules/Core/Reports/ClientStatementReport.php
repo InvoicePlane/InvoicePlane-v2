@@ -2,9 +2,8 @@
 
 namespace Modules\Reports\Reports;
 
-use App\Support\CurrencyFormatter;
-use App\Support\DateFormatter;
-use Modules\Clients\Models\Relation;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
 
 class ClientStatementReport
 {

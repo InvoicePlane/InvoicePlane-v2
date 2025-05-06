@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support;
+namespace Modules\Core\Support;
 
 class CurrencyFormatter extends NumberFormatter
 {

@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Importers;
 
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\PaymentMethod;
-use Modules\Payments\Models\Payment;
 use Illuminate\Support\Facades\Validator;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
+use Modules\Payments\Models\PaymentMethod;
 
 class PaymentImporter extends AbstractImporter
 {

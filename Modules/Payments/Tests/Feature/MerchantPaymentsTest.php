@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\MerchantPaymentResource\Pages\CreateMerchantPayment;
-use App\Filament\Resources\MerchantPaymentResource\Pages\EditMerchantPayment;
-use App\Filament\Resources\MerchantPaymentResource\Pages\ListMerchantPayments;
-use App\Models\MerchantPayment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\CreateMerchantPayment;
+use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\EditMerchantPayment;
+use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\ListMerchantPayments;
+use Modules\Core\Models\MerchantPayment;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

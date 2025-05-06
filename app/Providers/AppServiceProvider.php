@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Modules\Core\Providers;
 
 use Filament\Tables\Actions\CreateAction as TableCreateAction;
 use Illuminate\Database\Eloquent\Relations\Relation;

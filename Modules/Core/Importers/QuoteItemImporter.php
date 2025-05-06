@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Importers;
 
-use App\Events\QuoteModified;
+use Illuminate\Support\Facades\Validator;
+use Modules\Core\Events\QuoteModified;
 use Modules\Quotes\Models\Quote;
 use Modules\TaxRates\Models\TaxRate;
-use Illuminate\Support\Facades\Validator;
 
 class QuoteItemImporter extends AbstractImporter
 {

@@ -20,9 +20,9 @@ class QuoteItemFactory extends Factory
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 
-        $quantity = $this->faker->randomFloat(2, 0, 100),
-        $price    = $this->faker->randomFloat(2, 0, 100),
-        $discount = $this->faker->randomFloat(2, 0, 50),
+        $quantity = $this->faker->randomFloat(2, 0, 100);
+        $price    = $this->faker->randomFloat(2, 0, 100);
+        $discount = $this->faker->randomFloat(2, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
         return [

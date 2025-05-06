@@ -54,7 +54,6 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::tax_rate_name::']);
     }
 
-
     public function it_creates_a_tax_rate(): void
     {
         $initialTaxRate = TaxRate::factory()->create([
@@ -76,7 +75,6 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::tax_rate_name::']);
         $response->assertJsonFragment(['percentage' => '21.00']);
     }
-
 
     public function it_returns_error_response_when_creating_a_tax_rate_with_wrong_fields(): void
     {
@@ -101,7 +99,6 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('tax_rate_name', 'errors');
     }
 
-
     public function it_updates_a_tax_rate(): void
     {
         $initialTaxRate = TaxRate::factory()->create([
@@ -123,7 +120,6 @@ class TaxRatesApiTest extends AbstractTestCase
 
         $response->assertJsonFragment(['name' => $updatedData['tax_rate_name']]);
     }
-
 
     public function it_deletes_a_tax_rate(): void
     {

@@ -17,7 +17,7 @@ use Modules\Products\Database\Factories\ProductCategoryFactory;
  * @property string      $category_name
  * @property string|null $description
  * @property Company     $company
- * @property Product[]      $items
+ * @property Product[]   $items
  */
 class ProductCategory extends Model
 {

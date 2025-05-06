@@ -2,11 +2,10 @@
 
 namespace Modules\Core\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use Modules\Companies\Models\Company;
 use Modules\Groups\Models\Group;
 use Modules\Invoices\Models\Invoice;
-use Illuminate\Support\Facades\Validator;
-use Modules\Clients\Models\Relation;
 
 class InvoiceImporter extends AbstractImporter
 {

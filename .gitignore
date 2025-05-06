@@ -12,6 +12,7 @@ Modules/**/Resources/
 /public/storage
 /vendor/
 /.env*
+/pint.txt
 
 # Build artifacts
 /public/assets/

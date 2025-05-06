@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('currencies', function (Blueprint $table) {
+        Schema::create('currencies', function (Blueprint $table): void {
             $table->id();
             $table->string('code');
             $table->string('name')->index();

@@ -29,7 +29,6 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     // region CRUD tests
 
-
     public function it_returns_product_units_index(): void
     {
         Sanctum::actingAs(User::factory()->create());
@@ -50,7 +49,6 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);
     }
 
-
     public function it_lists_product_units_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -59,7 +57,6 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response = $this->getJson(route('api.filament.ivpl.resources.filament.resources.productunits.index'));
         $response->assertSuccessful();
     }
-
 
     public function it_creates_a_product_unit(): void
     {
@@ -104,7 +101,6 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_returns_error_response_with_invalid_or_missing_unit_name_value(): void
     {
         $initialProductUnit = ProductUnit::factory()->create([
@@ -120,7 +116,6 @@ class ProductUnitsApiTest extends AbstractTestCase
         $initialProductUnit->refresh();
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);
     }
-
 
     public function it_updates_a_product_unit(): void
     {
@@ -170,7 +165,6 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_delete_unit(): void
     {
         $this->markTestIncomplete(
@@ -192,7 +186,6 @@ class ProductUnitsApiTest extends AbstractTestCase
 
         $this->response->assertStatus(404);
     }
-
 
     public function it_deletes_a_product_unit_via_api(): void
     {

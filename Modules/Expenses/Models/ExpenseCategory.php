@@ -2,9 +2,9 @@
 
 namespace Modules\Expenses\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Traits\BelongsToCompany;
@@ -47,7 +47,7 @@ class ExpenseCategory extends Model
 
     public static function getList()
     {
-        return self::whereIn('id', function ($query) {
+        return self::whereIn('id', function ($query): void {
             $query->select('category_id')->distinct()->from('expenses');
         })->orderBy('name')
             ->pluck('name', 'id')

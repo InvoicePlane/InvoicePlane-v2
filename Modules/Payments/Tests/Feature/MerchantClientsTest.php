@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\MerchantClientResource\Pages\CreateMerchantClient;
-use App\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
-use App\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
-use App\Models\MerchantClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantClient;
+use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
+use Modules\Core\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
+use Modules\Core\Models\MerchantClient;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

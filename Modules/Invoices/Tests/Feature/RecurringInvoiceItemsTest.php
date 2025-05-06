@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRecurringInvoiceItem;
-use App\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
-use App\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
-use App\Models\RecurringInvoiceItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRecurringInvoiceItem;
+use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
+use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
+use Modules\Core\Models\RecurringInvoiceItem;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

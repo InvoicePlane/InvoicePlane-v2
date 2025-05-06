@@ -2,9 +2,9 @@
 
 namespace Modules\Reports\Reports;
 
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
 use Modules\Expenses\Models\Expense;
-use App\Support\CurrencyFormatter;
-use App\Support\DateFormatter;
 
 class ExpenseListReport
 {

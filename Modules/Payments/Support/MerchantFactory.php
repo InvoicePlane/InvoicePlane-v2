@@ -28,7 +28,7 @@ class MerchantFactory
      */
     public static function create($driver)
     {
-        $driver = 'App\\IpModules\\Merchant\\Support\\MerchantDrivers\\' . $driver;
+        $driver = 'Modules\Core\\IpModules\\Merchant\\Support\\MerchantDrivers\\' . $driver;
 
         return new $driver();
     }

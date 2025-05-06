@@ -2,10 +2,10 @@
 
 namespace Modules\Settings\Models;
 
-use App\Events\SettingSaving;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
+use Modules\Core\Events\SettingSaving;
 use PDOException;
 
 /**
@@ -31,11 +31,11 @@ class Setting extends Model
         'setting_value',
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
-        static::saving(function ($setting) {
+        static::saving(function ($setting): void {
             event(new SettingSaving($setting));
         });
     }
@@ -46,12 +46,12 @@ class Setting extends Model
     |--------------------------------------------------------------------------
     */
 
-    public static function deleteByKey($key)
+    public static function deleteByKey($key): void
     {
         self::where('setting_key', $key)->delete();
     }
 
-    public static function saveByKey($key, $value)
+    public static function saveByKey($key, $value): void
     {
         $setting = self::firstOrNew(['setting_key' => $key]);
 
@@ -79,7 +79,7 @@ class Setting extends Model
         }
     }
 
-    public static function writeEmailTemplates()
+    public static function writeEmailTemplates(): void
     {
         $emailTemplates = [
             'invoiceEmailBody',

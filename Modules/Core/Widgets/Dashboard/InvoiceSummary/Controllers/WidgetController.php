@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Widgets\Dashboard\InvoiceSummary\Controllers;
+namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Controllers;
 
-use App\Http\Controllers\Controller;
+use Modules\Core\Http\Controllers\Controller;
 use Modules\Settings\Models\Setting;
 
 class WidgetController extends Controller

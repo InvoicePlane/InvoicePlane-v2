@@ -44,10 +44,10 @@ class InvoiceItem extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'quantity' => 'decimal:2',
-        'price'    => 'decimal:2',
-        'discount' => 'decimal:2',
-        'subtotal' => 'decimal:2',
+        'quantity'      => 'decimal:2',
+        'price'         => 'decimal:2',
+        'discount'      => 'decimal:2',
+        'subtotal'      => 'decimal:2',
         'display_order' => 'int',
     ];
 
@@ -130,7 +130,7 @@ class InvoiceItem extends Model
     */
     public function scopeByDateRange($query, $from, $to)
     {
-        return $query->whereIn('invoice_id', function ($query) use ($from, $to) {
+        return $query->whereIn('invoice_id', function ($query) use ($from, $to): void {
             $query->select('id')
                 ->from('invoices')
                 ->where('invoiced_at', '>=', $from)

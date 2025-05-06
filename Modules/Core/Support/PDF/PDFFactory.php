@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Support\PDF;
+namespace Modules\Core\Support\PDF;
 
-use App\Support\Directory;
+use Modules\Core\Support\Directory;
 
 class PDFFactory
 {
     public static function create()
     {
-        $class = 'App\Support\PDF\Drivers\\' . config('ip.pdfDriver');
+        $class = 'Modules\Core\Support\PDF\Drivers\\' . config('ip.pdfDriver');
 
         return new $class();
     }

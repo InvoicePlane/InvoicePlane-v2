@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Support\ProfileImage\Drivers;
+namespace Modules\Core\Support\ProfileImage\Drivers;
 
+use Modules\Core\Support\ProfileImage\ProfileImageInterface;
 use Modules\Users\Models\User;
-use App\Support\ProfileImage\ProfileImageInterface;
 
 class Gravatar implements ProfileImageInterface
 {

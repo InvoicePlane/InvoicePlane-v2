@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Widgets\Dashboard\QuoteSummary\Composers;
+namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Composers;
 
 class QuoteSummarySettingComposer
 {
-    public function compose($view)
+    public function compose($view): void
     {
         $view->with('dashboardTotalOptions', periods());
     }

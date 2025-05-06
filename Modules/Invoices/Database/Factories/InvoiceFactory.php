@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -40,7 +39,7 @@ class InvoiceFactory extends Factory
             'customer_id'              => $customer->id,
             'document_group_id'        => $documentGroup->id,
             'creditinvoice_parent_id'  => null,
-            'invoice_number'           => $this->faker->unique()->numerify('INV-###-####
+            'invoice_number'           => $this->faker->unique()->numerify('INV-###-####'),
             'invoice_status'           => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'invoiced_at'              => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),
             'invoice_due_at'           => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),

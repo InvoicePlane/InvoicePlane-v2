@@ -52,7 +52,6 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
 
-
     public function it_creates_an_email_template(): void
     {
         $initialEmailTemplate = EmailTemplate::factory()->create([
@@ -71,7 +70,6 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
-
 
     public function it_updates_an_email_template(): void
     {
@@ -93,7 +91,6 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
         $response->assertJsonFragment(['title' => $updatedData['email_template_title']]);
     }
-
 
     public function it_deletes_an_email_template(): void
     {

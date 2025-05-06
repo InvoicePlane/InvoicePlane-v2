@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\ProfileImage;
+namespace Modules\Core\Support\ProfileImage;
 
 use Modules\Users\Models\User;
 

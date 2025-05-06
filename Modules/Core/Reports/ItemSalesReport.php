@@ -2,11 +2,11 @@
 
 namespace Modules\Reports\Reports;
 
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Invoices\Models\InvoiceItem;
-use App\Support\CurrencyFormatter;
-use App\Support\DateFormatter;
-use App\Support\NumberFormatter;
-use App\Support\Statuses\InvoiceStatuses;
 
 class ItemSalesReport
 {

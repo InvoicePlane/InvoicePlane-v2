@@ -2,6 +2,6 @@
 
 namespace Modules\Quotes\Support;
 
-use App\Support\Calculators\Calculator;
+use Modules\Core\Support\Calculators\Calculator;
 
 class QuoteCalculator extends Calculator {}

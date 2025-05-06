@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Widgets\Dashboard\InvoiceSummary\Composers;
+namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers;
 
 class InvoiceSummarySettingComposer
 {
-    public function compose($view)
+    public function compose($view): void
     {
         $view->with('dashboardTotalOptions', periods());
     }

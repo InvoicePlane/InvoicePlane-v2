@@ -2,9 +2,9 @@
 
 namespace Modules\Core\Importers;
 
+use Illuminate\Support\Facades\Validator;
 use Modules\Products\Models\ItemLookup;
 use Modules\TaxRates\Models\TaxRate;
-use Illuminate\Support\Facades\Validator;
 
 class ItemLookupImporter extends AbstractImporter
 {

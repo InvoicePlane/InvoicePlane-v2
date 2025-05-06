@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Support;
+namespace Modules\Core\Support;
 
-use App\Events\InvoiceHTMLCreating;
-use App\Events\QuoteHTMLCreating;
+use Modules\Core\Events\InvoiceHTMLCreating;
+use Modules\Core\Events\QuoteHTMLCreating;
 
 class HTML
 {

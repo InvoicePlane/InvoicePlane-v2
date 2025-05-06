@@ -51,7 +51,7 @@ class CustomField extends Model
             $tableName = $tableName . '_custom';
         }
 
-        Schema::table($tableName, function ($table) use ($columnName, $fieldType) {
+        Schema::table($tableName, function ($table) use ($columnName, $fieldType): void {
             if ($fieldType == 'textarea') {
                 $table->text($columnName)->nullable();
             } else {
@@ -67,7 +67,7 @@ class CustomField extends Model
         }
 
         if (Schema::hasColumn($tableName, $columnName)) {
-            Schema::table($tableName, function ($table) use ($columnName) {
+            Schema::table($tableName, function ($table) use ($columnName): void {
                 $table->dropColumn($columnName);
             });
         }
@@ -91,7 +91,6 @@ class CustomField extends Model
             //$toModel->custom->update($commonFields);
         }
     }
-
 
     /*
     |--------------------------------------------------------------------------

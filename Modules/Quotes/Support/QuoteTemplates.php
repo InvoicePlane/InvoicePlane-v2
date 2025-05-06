@@ -2,7 +2,7 @@
 
 namespace Modules\Quotes\Support;
 
-use App\Support\Directory;
+use Modules\Core\Support\Directory;
 
 class QuoteTemplates
 {

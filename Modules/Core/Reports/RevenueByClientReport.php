@@ -2,8 +2,8 @@
 
 namespace Modules\Reports\Reports;
 
+use Modules\Core\Support\CurrencyFormatter;
 use Modules\Payments\Models\Payment;
-use App\Support\CurrencyFormatter;
 
 class RevenueByClientReport
 {

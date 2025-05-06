@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Support;
+namespace Modules\Core\Support;
 
 use Collective\Html\FormFacade;
-use Modules\Clients\Models\Relation;
 
 class Contacts
 {

@@ -9,7 +9,7 @@ use Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
 
 class RecurringInvoiceCalculate
 {
-    public function calculateAll()
+    public function calculateAll(): void
     {
         $recurringInvoiceIds = RecurringInvoice::select('id')->get();
 
@@ -18,7 +18,7 @@ class RecurringInvoiceCalculate
         }
     }
 
-    public function calculate($recurringInvoiceId)
+    public function calculate($recurringInvoiceId): void
     {
         $recurringInvoice = RecurringInvoice::find($recurringInvoiceId);
 

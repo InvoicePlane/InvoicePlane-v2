@@ -2,8 +2,8 @@
 
 namespace Modules\Addons\Models;
 
-use App\Support\Migrations;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Support\Migrations;
 
 /**
  * Class Addon.

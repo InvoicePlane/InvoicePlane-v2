@@ -2,7 +2,7 @@
 
 namespace Modules\Invoices\Support;
 
-use App\Support\Directory;
+use Modules\Core\Support\Directory;
 
 class InvoiceTemplates
 {

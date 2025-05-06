@@ -58,7 +58,6 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::project_name::']);
     }
 
-
     public function it_lists_projects_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -136,7 +135,6 @@ class ProjectsApiTest extends AbstractTestCase
         $response = $this->postJson(route('api.projects.store'), $payload);
         $response->assertSuccessful();
     }
-
 
     public function it_returns_error_response_when_creating_a_project_without_required_field(): void
     {
@@ -226,7 +224,6 @@ class ProjectsApiTest extends AbstractTestCase
         $response = $this->putJson(route('api.projects.update', ['record' => 1]), $payload);
         $response->assertSuccessful();
     }
-
 
     public function it_deletes_a_project_via_api(): void
     {

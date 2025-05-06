@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Calculators\Interfaces;
+namespace Modules\Core\Support\Calculators\Interfaces;
 
 interface PayableInterface
 {
@@ -16,5 +16,5 @@ interface PayableInterface
      *
      * @return void
      */
-    public function calculatePayments();
+    public function calculatePayments(): void;
 }

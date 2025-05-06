@@ -164,15 +164,15 @@ class CompanyPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(
                 in: app_path('Filament/Resources'),
-                for: 'App\\Filament\\Resources'
+                for: 'Modules\Core\\Filament\\Resources'
             )
             ->discoverPages(
                 in: app_path('Filament/Pages'),
-                for: 'App\\Filament\\Pages'
+                for: 'Modules\Core\\Filament\\Pages'
             )
             ->discoverWidgets(
                 in: app_path('Filament/Widgets'),
-                for: 'App\\Filament\\Widgets'
+                for: 'Modules\Core\\Filament\\Widgets'
             )
             ->pages([
                 Dashboard::class,

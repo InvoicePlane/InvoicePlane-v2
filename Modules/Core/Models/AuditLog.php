@@ -2,10 +2,10 @@
 
 namespace Modules\Activity\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Support\DateFormatter;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
-use App\Support\DateFormatter;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AuditLog.

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\PDF;
+namespace Modules\Core\Support\PDF;
 
 interface PDFInterface
 {

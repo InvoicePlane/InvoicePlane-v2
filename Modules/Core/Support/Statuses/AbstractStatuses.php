@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Statuses;
+namespace Modules\Core\Support\Statuses;
 
 abstract class AbstractStatuses
 {

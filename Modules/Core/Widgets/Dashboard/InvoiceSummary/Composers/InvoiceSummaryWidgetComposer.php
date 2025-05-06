@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Widgets\Dashboard\InvoiceSummary\Composers;
+namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers;
 
+use Illuminate\Support\Facades\DB;
+use Modules\Core\Support\CurrencyFormatter;
 use Modules\Invoices\Models\InvoiceAmount;
 use Modules\Payments\Models\Payment;
-use App\Support\CurrencyFormatter;
-use Illuminate\Support\Facades\DB;
 
 class InvoiceSummaryWidgetComposer
 {
-    public function compose($view)
+    public function compose($view): void
     {
         $view->with('invoicesTotalDraft', $this->getInvoicesTotalDraft())
             ->with('invoicesTotalSent', $this->getInvoicesTotalSent())
@@ -21,7 +21,7 @@ class InvoiceSummaryWidgetComposer
     private function getInvoicesTotalDraft()
     {
         return CurrencyFormatter::format(InvoiceAmount::join('invoices', 'invoices.id', '=', 'invoice_amounts.invoice_id')
-            ->whereHas('invoice', function ($q) {
+            ->whereHas('invoice', function ($q): void {
                 $q->draft();
                 switch (config('ip.widgetInvoiceSummaryDashboardTotals')) {
                     case 'year_to_date':
@@ -40,7 +40,7 @@ class InvoiceSummaryWidgetComposer
     private function getInvoicesTotalSent()
     {
         return CurrencyFormatter::format(InvoiceAmount::join('invoices', 'invoices.id', '=', 'invoice_amounts.invoice_id')
-            ->whereHas('invoice', function ($q) {
+            ->whereHas('invoice', function ($q): void {
                 $q->sent();
                 switch (config('ip.widgetInvoiceSummaryDashboardTotals')) {
                     case 'year_to_date':
@@ -78,7 +78,7 @@ class InvoiceSummaryWidgetComposer
     private function getInvoicesTotalOverdue()
     {
         return CurrencyFormatter::format(InvoiceAmount::join('invoices', 'invoices.id', '=', 'invoice_amounts.invoice_id')
-            ->whereHas('invoice', function ($q) {
+            ->whereHas('invoice', function ($q): void {
                 $q->overdue();
                 switch (config('ip.widgetInvoiceSummaryDashboardTotals')) {
                     case 'year_to_date':

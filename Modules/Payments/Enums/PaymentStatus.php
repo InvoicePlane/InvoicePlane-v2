@@ -11,12 +11,10 @@ enum PaymentStatus: string implements LabeledEnum
     case FAILED    = 'failed';
     case REFUNDED  = 'refunded';
 
-/**
-    case REFUNDED_PARTIALLY = 'ip.partially_refunded';
-    case FAILED = 'ip.failed';
-*/
-
-
+    /**
+     * case REFUNDED_PARTIALLY = 'ip.partially_refunded';
+     * case FAILED = 'ip.failed';.
+     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -26,21 +24,21 @@ enum PaymentStatus: string implements LabeledEnum
     {
         return match ($this) {
             self::REFUNDED_PARTIALLY => 'ip.partially_refunded',
-            self::PENDING   => 'Pending',
-            self::COMPLETED => 'Completed',
-            self::FAILED    => 'ip.failed',
-            self::REFUNDED  => 'Refunded',
+            self::PENDING            => 'Pending',
+            self::COMPLETED          => 'Completed',
+            self::FAILED             => 'ip.failed',
+            self::REFUNDED           => 'Refunded',
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::PENDING   => 'warning',
-            self::COMPLETED => 'success',
-            self::FAILED    => 'danger',
-            self::REFUNDED  => 'gray',
-            self::REFUNDED_PARTIALLY  => 'silver',
+            self::PENDING            => 'warning',
+            self::COMPLETED          => 'success',
+            self::FAILED             => 'danger',
+            self::REFUNDED           => 'gray',
+            self::REFUNDED_PARTIALLY => 'silver',
         };
     }
 }

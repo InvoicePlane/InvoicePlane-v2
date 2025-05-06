@@ -2,12 +2,12 @@
 
 namespace Modules\RecurringInvoices\Models;
 
-use App\Events\RecurringInvoiceItemSaving;
-use App\Events\RecurringInvoiceModified;
-use App\Support\CurrencyFormatter;
-use App\Support\NumberFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Events\RecurringInvoiceItemSaving;
+use Modules\Core\Events\RecurringInvoiceModified;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\NumberFormatter;
 
 /**
  * Class RecurringInvoiceItem.
@@ -73,19 +73,19 @@ class RecurringInvoiceItem extends Model
     {
         parent::boot();
 
-        static::saving(function ($recurringInvoiceItem) {
+        static::saving(function ($recurringInvoiceItem): void {
             event(new RecurringInvoiceItemSaving($recurringInvoiceItem));
         });
 
-        static::saved(function ($recurringInvoiceItem) {
+        static::saved(function ($recurringInvoiceItem): void {
             event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
         });
 
-        static::deleting(function ($recurringInvoiceItem) {
+        static::deleting(function ($recurringInvoiceItem): void {
             $recurringInvoiceItem->amount()->delete();
         });
 
-        static::deleted(function ($recurringInvoiceItem) {
+        static::deleted(function ($recurringInvoiceItem): void {
             if ($recurringInvoiceItem->recurringInvoice) {
                 event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
             }

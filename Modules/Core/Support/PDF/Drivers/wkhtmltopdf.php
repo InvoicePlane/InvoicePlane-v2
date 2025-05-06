@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Support\PDF\Drivers;
+namespace Modules\Core\Support\PDF\Drivers;
 
-use App\Support\PDF\PDFAbstract;
 use Knp\Snappy\Pdf;
+use Modules\Core\Support\PDF\PDFAbstract;
 
 class wkhtmltopdf extends PDFAbstract
 {
@@ -11,7 +11,7 @@ class wkhtmltopdf extends PDFAbstract
 
     protected $paperOrientation;
 
-    public function download($html, $filename)
+    public function download($html, $filename): void
     {
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -26,7 +26,7 @@ class wkhtmltopdf extends PDFAbstract
         return $pdf->getOutputFromHtml($html);
     }
 
-    public function save($html, $filename)
+    public function save($html, $filename): void
     {
         $pdf = $this->getPdf();
         $pdf->generateFromHtml($html, $filename);

@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoiceTransaction;
-use App\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
-use App\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
-use App\Models\InvoiceTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoiceTransaction;
+use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
+use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
+use Modules\Core\Models\InvoiceTransaction;
 use Modules\Core\Models\User;
 use Tests\TestCase;
 

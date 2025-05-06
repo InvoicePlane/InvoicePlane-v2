@@ -9,14 +9,14 @@ use Modules\Quotes\Models\QuoteItemAmount;
 
 class QuoteCalculate
 {
-    public function calculateAll()
+    public function calculateAll(): void
     {
         foreach (Quote::get() as $quote) {
             $this->calculate($quote);
         }
     }
 
-    public function calculate($quote)
+    public function calculate($quote): void
     {
         $quoteItems = QuoteItem::select(
             'quote_items.*',

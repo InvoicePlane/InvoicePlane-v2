@@ -2,16 +2,16 @@
 
 namespace Modules\Quotes\Models;
 
-use App\Events\QuoteItemSaving;
-use App\Events\QuoteModified;
-use App\Models\TaxRate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Support\CurrencyFormatter;
-use App\Support\NumberFormatter;
+use Modules\Core\Events\QuoteItemSaving;
+use Modules\Core\Events\QuoteModified;
 use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\NumberFormatter;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Database\Factories\QuoteItemFactory;
@@ -64,31 +64,30 @@ class QuoteItem extends Model
     protected $guarded = [];
 
     /**
-	Observer
-    */
+     * Observer.
+     */
     public static function boot(): void
     {
         parent::boot();
 
-        static::deleting(function ($quoteItem) {
+        static::deleting(function ($quoteItem): void {
             $quoteItem->amount()->delete();
         });
 
-        static::deleted(function ($quoteItem) {
+        static::deleted(function ($quoteItem): void {
             if ($quoteItem->quote) {
                 event(new QuoteModified($quoteItem->quote));
             }
         });
 
-        static::saving(function ($quoteItem) {
+        static::saving(function ($quoteItem): void {
             event(new QuoteItemSaving($quoteItem));
         });
 
-        static::saved(function ($quoteItem) {
+        static::saved(function ($quoteItem): void {
             event(new QuoteModified($quoteItem->quote));
         });
     }
-
 
     /*
     |--------------------------------------------------------------------------

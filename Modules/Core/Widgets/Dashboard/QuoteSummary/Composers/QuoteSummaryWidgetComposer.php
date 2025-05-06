@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Widgets\Dashboard\QuoteSummary\Composers;
+namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Composers;
 
-use Modules\Quotes\Models\QuoteAmount;
-use App\Support\CurrencyFormatter;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Quotes\Models\QuoteAmount;
 
 class QuoteSummaryWidgetComposer
 {
-    public function compose($view)
+    public function compose($view): void
     {
         $view->with('quotesTotalDraft', $this->getQuoteTotalDraft())
             ->with('quotesTotalSent', $this->getQuoteTotalSent())
@@ -20,7 +20,7 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalDraft()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q) {
+            ->whereHas('quote', function ($q): void {
                 $q->draft();
                 $q->where('invoice_id', 0);
                 switch (config('ip.widgetQuoteSummaryDashboardTotals')) {
@@ -40,7 +40,7 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalSent()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q) {
+            ->whereHas('quote', function ($q): void {
                 $q->sent();
                 $q->where('invoice_id', 0);
                 switch (config('ip.widgetQuoteSummaryDashboardTotals')) {
@@ -60,7 +60,7 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalApproved()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q) {
+            ->whereHas('quote', function ($q): void {
                 $q->approved();
                 $q->where('invoice_id', 0);
                 switch (config('ip.widgetQuoteSummaryDashboardTotals')) {
@@ -80,7 +80,7 @@ class QuoteSummaryWidgetComposer
     private function getQuoteTotalRejected()
     {
         return CurrencyFormatter::format(QuoteAmount::join('quotes', 'quotes.id', '=', 'quote_amounts.quote_id')
-            ->whereHas('quote', function ($q) {
+            ->whereHas('quote', function ($q): void {
                 $q->rejected();
                 $q->where('invoice_id', 0);
                 switch (config('ip.widgetQuoteSummaryDashboardTotals')) {

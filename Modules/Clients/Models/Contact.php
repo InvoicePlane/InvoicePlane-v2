@@ -21,9 +21,9 @@ use Modules\Core\Traits\BelongsToCompany;
  * @property int        $id
  * @property string     $contact_first_name
  * @property string     $contact_last_name
- * @property bool     $default_to
- * @property bool     $default_cc
- * @property bool     $default_bcc
+ * @property bool       $default_to
+ * @property bool       $default_cc
+ * @property bool       $default_bcc
  * @property mixed      $gender
  * @property Relation[] $relations
  */

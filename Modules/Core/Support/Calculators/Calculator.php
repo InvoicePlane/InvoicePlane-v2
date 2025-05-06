@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Calculators;
+namespace Modules\Core\Support\Calculators;
 
 abstract class Calculator
 {
@@ -59,17 +59,17 @@ abstract class Calculator
      *
      * @param int $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    public function setDiscount($discount)
+    public function setDiscount($discount): void
     {
         $this->discount = $discount;
     }
 
-    public function setIsCanceled($isCanceled)
+    public function setIsCanceled($isCanceled): void
     {
         $this->isCanceled = $isCanceled;
     }
@@ -85,7 +85,7 @@ abstract class Calculator
      * @param int   $taxRate2IsCompound
      * @param int   $calculateVat
      */
-    public function addItem($itemId, $quantity, $price, $taxRatePercent = 0.00, $taxRate2Percent = 0.00, $taxRate2IsCompound = 0, $calculateVat = 0)
+    public function addItem($itemId, $quantity, $price, $taxRatePercent = 0.00, $taxRate2Percent = 0.00, $taxRate2IsCompound = 0, $calculateVat = 0): void
     {
         $this->items[] = [
             'itemId'             => $itemId,
@@ -101,7 +101,7 @@ abstract class Calculator
     /**
      * Call the calculation methods.
      */
-    public function calculate()
+    public function calculate(): void
     {
         $this->calculateItems();
     }
@@ -129,7 +129,7 @@ abstract class Calculator
     /**
      * Calculates the items.
      */
-    protected function calculateItems()
+    protected function calculateItems(): void
     {
         foreach ($this->items as $item) {
             $subtotal = round($item['quantity'] * $item['price'], 2);

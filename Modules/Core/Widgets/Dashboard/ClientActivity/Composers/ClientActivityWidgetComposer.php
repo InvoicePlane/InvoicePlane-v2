@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Widgets\Dashboard\ClientActivity\Composers;
+namespace Modules\Core\Widgets\Dashboard\ClientActivity\Composers;
 
 use Modules\Activity\Models\Activity;
 
 class ClientActivityWidgetComposer
 {
-    public function compose($view)
+    public function compose($view): void
     {
         $recentClientActivity = Activity::where('activity', 'like', 'public%')
             ->orderBy('created_at', 'DESC')
