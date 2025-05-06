@@ -2,8 +2,8 @@
 
 namespace App\Support;
 
-use App\IpModules\Customers\Models\Customer;
 use Collective\Html\FormFacade;
+use Modules\Clients\Models\Relation;
 
 class Contacts
 {

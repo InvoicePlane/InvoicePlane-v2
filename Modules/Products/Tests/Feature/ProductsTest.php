@@ -49,7 +49,7 @@ class ProductsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -61,7 +61,7 @@ class ProductsTest extends AbstractTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productFamily->family_id,
+            'family_id'           => $productCategory->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
@@ -102,7 +102,7 @@ class ProductsTest extends AbstractTestCase
     {
         $this->markTestSkipped('Skipped test.');
         // $this->authenticated();
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -114,7 +114,7 @@ class ProductsTest extends AbstractTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productFamily->family_id,
+            'family_id'           => $productCategory->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
@@ -182,7 +182,7 @@ class ProductsTest extends AbstractTestCase
     public function it_updates_a_product(): void
     {
         $this->markTestSkipped('Skipped test.');
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -194,7 +194,7 @@ class ProductsTest extends AbstractTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productFamily->family_id,
+            'family_id'           => $productCategory->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
@@ -276,7 +276,7 @@ class ProductsTest extends AbstractTestCase
     {
         $this->markTestIncomplete('Needs delete action');
 
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -288,7 +288,7 @@ class ProductsTest extends AbstractTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productFamily->family_id,
+            'family_id'           => $productCategory->family_id,
             'product_sku'         => 'TESTSKU',
             'product_name'        => '::product_name::',
             'product_description' => 'A test description for the product.',
@@ -314,7 +314,7 @@ class ProductsTest extends AbstractTestCase
     public function it_bulk_deletes_products(): void
     {
         // $this->authenticated();
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -326,7 +326,7 @@ class ProductsTest extends AbstractTestCase
         ]);
 
         $payload = [
-            'family_id'   => $productFamily->family_id,
+            'family_id'   => $productCategory->family_id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];
@@ -358,7 +358,7 @@ class ProductsTest extends AbstractTestCase
     {
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -369,7 +369,7 @@ class ProductsTest extends AbstractTestCase
             'unit_name' => '::unit_name::',
         ]);
         $payload = [
-            'family_id'   => $productFamily->family_id,
+            'family_id'   => $productCategory->family_id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];
@@ -392,7 +392,7 @@ class ProductsTest extends AbstractTestCase
     {
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
-        $productFamily = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -403,7 +403,7 @@ class ProductsTest extends AbstractTestCase
             'unit_name' => '::unit_name::',
         ]);
         $payload = [
-            'family_id'   => $productFamily->family_id,
+            'family_id'   => $productCategory->family_id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];

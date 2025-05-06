@@ -1,10 +1,10 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
 use App\Events\QuoteModified;
-use App\IpModules\Quotes\Models\Quote;
-use App\IpModules\TaxRates\Models\TaxRate;
+use Modules\Quotes\Models\Quote;
+use Modules\TaxRates\Models\TaxRate;
 use Illuminate\Support\Facades\Validator;
 
 class QuoteItemImporter extends AbstractImporter

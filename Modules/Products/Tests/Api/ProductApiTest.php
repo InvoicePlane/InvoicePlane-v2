@@ -10,7 +10,6 @@ use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
 use Modules\Products\Models\Product;
-use Modules\Products\Models\ProductFamily;
 use Modules\Products\Models\ProductUnit;
 
 class ProductApiTest extends AbstractTestCase
@@ -32,13 +31,12 @@ class ProductApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-
     public function it_returns_products_index(): void
     {
         $this->markTestIncomplete('Failed asserting that an array has the key family');
         $user = User::factory()->create();
 
-        $productFamily = ProductFamily::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -53,7 +51,7 @@ class ProductApiTest extends AbstractTestCase
         Sanctum::actingAs($user);
 
         Product::factory(5)->create([
-            'family_id'    => $productFamily,
+            'family_id'    => $productCategory,
             'product_sku'  => '::product_sku::',
             'product_name' => '::product_name::',
             'tax_rate_id'  => $taxRate,
@@ -81,11 +79,10 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_name' => '::product_name::']);
     }
 
-
     public function it_creates_a_product(): void
     {
         $this->markTestIncomplete('test is failing? also on family key');
-        $productFamily = ProductFamily::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -99,7 +96,7 @@ class ProductApiTest extends AbstractTestCase
         ]);
 
         $initialProduct = Product::factory()->create([
-            'family_id'     => $productFamily->family_id,
+            'family_id'     => $productCategory->family_id,
             'unit_id'       => $productUnit->unit_id,
             'tax_rate_id'   => $taxRate->tax_rate_id,
             'product_sku'   => '::product_sku::',
@@ -110,7 +107,7 @@ class ProductApiTest extends AbstractTestCase
         Sanctum::actingAs(User::factory()->create());
 
         $response = $this->post(route('api.products.store'), [
-            'family_id'     => $productFamily->family_id,
+            'family_id'     => $productCategory->family_id,
             'unit_id'       => $productUnit->unit_id,
             'tax_rate_id'   => $taxRate->tax_rate_id,
             'product_sku'   => '::product_sku::',
@@ -130,10 +127,9 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_price' => '1.00']);
     }
 
-
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
-        $productFamily = ProductFamily::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -146,7 +142,7 @@ class ProductApiTest extends AbstractTestCase
         ]);
 
         Product::factory()->make([
-            'family_id'    => $productFamily->family_id,
+            'family_id'    => $productCategory->family_id,
             'product_sku'  => '::product_sku::',
             'product_name' => '::product_name::',
             'tax_rate_id'  => $taxRate->tax_rate_id,
@@ -156,7 +152,7 @@ class ProductApiTest extends AbstractTestCase
         Sanctum::actingAs(User::factory()->create());
 
         $response = $this->post(route('api.products.store'), [
-            'family_id'    => $productFamily->family_id,
+            'family_id'    => $productCategory->family_id,
             'product_sku'  => '::product_sku::',
             'product_name' => '::product_name::',
             'tax_rate_id'  => $taxRate->tax_rate_id,
@@ -167,11 +163,10 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('product_price', 'errors');
     }
 
-
     public function it_updates_a_product(): void
     {
         $this->markTestIncomplete('test is failing? also on family key');
-        $productFamily = ProductFamily::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -185,7 +180,7 @@ class ProductApiTest extends AbstractTestCase
         ]);
 
         $initialProduct = Product::factory()->create([
-            'family_id'     => $productFamily->family_id,
+            'family_id'     => $productCategory->family_id,
             'unit_id'       => $productUnit->unit_id,
             'tax_rate_id'   => $taxRate->tax_rate_id,
             'product_sku'   => '::product_sku::',
@@ -218,10 +213,9 @@ class ProductApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['product_price'], $initialProduct->product_price);
     }
 
-
     public function it_returns_error_response_when_updating_a_product_with_invalid_values(): void
     {
-        $productFamily = ProductFamily::factory()->create([
+        $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -235,7 +229,7 @@ class ProductApiTest extends AbstractTestCase
         ]);
 
         $initialProduct = Product::factory()->create([
-            'family_id'     => $productFamily->family_id,
+            'family_id'     => $productCategory->family_id,
             'unit_id'       => $productUnit->unit_id,
             'tax_rate_id'   => $taxRate->tax_rate_id,
             'product_sku'   => '::product_sku::',
@@ -257,7 +251,6 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['message' => 'The given data was invalid']);
         $response->assertJsonFragment(['errors' => ['product_price' => ['The product price must be a number.']], ]);
     }
-
 
     public function it_deletes_a_product(): void
     {

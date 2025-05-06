@@ -2,12 +2,7 @@
 
 namespace Modules\Expenses\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\CreateExpenseCategory;
@@ -18,181 +13,141 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ExpenseCategoryResource::class)]
-
 class ExpenseCategoriesTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
     #[Test]
     #[Group('smoke')]
+    /**
+     * @payload ['name' => 'Travel']
+     */
     public function it_lists_expense_categories(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        // arrange
+        $record = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'Travel']);
 
-        ExpenseCategory::factory()->create([
-            'company_id'    => $company->id,
-            'category_name' => 'Example',
-        ]);
-
+        // act + assert
         Livewire::test(ListExpenseCategories::class)
-            ->assertSee('Example');
+            ->actingAs($this->user)
+            ->assertSuccessful()
+            ->assertSeeDatabaseRecords($record);
     }
-    // endregion
 
-    // region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload ['name' => 'Meals']
+     */
     public function it_creates_an_expense_category(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        // arrange
+        $payload = ['name' => 'Meals'];
 
-        $payload = [
-            'company_id'    => $company->id,
-            'category_name' => 'Example',
-        ];
-
+        // act
         Livewire::test(CreateExpenseCategory::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('expense_categories', [
-            'company_id'    => $company->id,
-            'category_name' => 'Example',
-        ]);
+        // assert
+        $this->assertDatabaseHas('expense_categories', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "category_name": "Example"
-     * }
+     * @payload []
      */
-    public function it_fails_to_create_expense_category_without_category_name(): void
+    public function it_fails_to_create_category_without_name(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        // arrange
+        $payload = [];
 
-        $payload = [
-            'company_id' => $company->id,
-        ];
-
+        // act
         Livewire::test(CreateExpenseCategory::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors(['category_name' => 'required']);
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
-     *
-     * @payload
-     * []
+     * @payload ['name' => 'Updated Name']
      */
-    public function it_updates_a_expensecategory(): void
+    public function it_updates_an_expense_category(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        // arrange
+        $record  = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'Original']);
+        $payload = ['name' => 'Updated Name'];
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = ExpenseCategory::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditExpenseCategory::class, ['record' => $record->getKey()])
+        // act
+        Livewire::test(EditExpenseCategory::class, ['record' => $record->id])
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        // assert
+        $this->assertDatabaseHas('expense_categories', $payload);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
-     *
-     * @payload
-     * []
+     * @payload ['name' => null]
      */
-    public function it_fails_to_update_expensecategory_when_required_fields_are_missing(): void
+    public function it_fails_to_update_category_with_empty_name(): void
     {
-        $this->markTestIncomplete();
+        // arrange
+        $record  = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'X']);
+        $payload = ['name' => null];
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = ExpenseCategory::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditExpenseCategory::class, ['record' => $record->getKey()])
+        // act
+        Livewire::test(EditExpenseCategory::class, ['record' => $record->id])
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('save')
-            ->assertHasFormErrors();
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseCategoryResource
-     *
-     * @payload
-     * []
+     * @payload []
      */
-    public function it_deletes_a_expensecategory(): void
+    public function it_deletes_an_expense_category(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        // arrange
+        $record = ExpenseCategory::factory()->for($this->user->company)->create();
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = ExpenseCategory::factory()->create();
-
+        // act
         Livewire::test(ListExpenseCategories::class)
+            ->actingAs($this->user)
             ->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('expensecategories', ['id' => $record->id]);
+        // assert
+        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
     }
 
-    // endregion
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_fails_to_delete_already_deleted_category(): void
+    {
+        // arrange
+        $record = ExpenseCategory::factory()->for($this->user->company)->create();
+        $record->delete();
 
-    // region usp
+        // act + assert
+        Livewire::test(ListExpenseCategories::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $record)
+            ->assertHasErrors();
 
-    // endregion
+        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
+    }
 }

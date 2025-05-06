@@ -2,191 +2,160 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\ExpenseVendorResource\Pages\CreateExpenseVendor;
-use App\Filament\Resources\ExpenseVendorResource\Pages\EditExpenseVendor;
-use App\Filament\Resources\ExpenseVendorResource\Pages\ListExpenseVendors;
-use App\Models\ExpenseVendor;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-class ExpenseVendorsTest extends TestCase
+class ExpenseVendorsTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
-     * @group smoke
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
+     * @payload ['name' => 'Staples Inc.']
      */
-    public function it_lists_expensevendors(): void
+    public function it_lists_expense_vendors(): void
     {
         $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $record = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Staples Inc.']);
 
+        // act + assert
         Livewire::test(ListExpenseVendors::class)
-            ->assertSuccessful();
+            ->actingAs($this->user)
+            ->assertSuccessful()
+            ->assertSeeDatabaseRecords($record);
     }
 
-    // endregion
-
-    // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
-     *
-     * @payload
-     * []
+     * @payload ['name' => 'Paper Supplies Ltd.']
      */
-    public function it_creates_a_expensevendor(): void
+    public function it_creates_an_expense_vendor(): void
     {
         $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $payload = ['name' => 'Paper Supplies Ltd.'];
 
-        $payload = [
-        ];
-
+        // act
         Livewire::test(CreateExpenseVendor::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        // assert
+        $this->assertDatabaseHas('expense_vendors', $payload);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
-     *
-     * @payload
-     * []
+     * @payload []
      */
-    public function it_fails_to_create_expensevendor_when_required_fields_are_missing(): void
+    public function it_fails_to_create_vendor_without_name(): void
     {
         $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $payload = [];
 
-        $payload = [
-        ];
-
+        // act
         Livewire::test(CreateExpenseVendor::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors();
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
-     *
-     * @payload
-     * []
+     * @payload ['name' => 'Vendor Updated']
      */
-    public function it_updates_a_expensevendor(): void
+    public function it_updates_an_expense_vendor(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Initial']);
+        $payload = ['name' => 'Vendor Updated'];
 
-        $record = ExpenseVendor::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditExpenseVendor::class, ['record' => $record->getKey()])
+        // act
+        Livewire::test(EditExpenseVendor::class, ['record' => $record->id])
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        // assert
+        $this->assertDatabaseHas('expense_vendors', $payload);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
-     *
-     * @payload
-     * []
+     * @payload ['name' => null]
      */
-    public function it_fails_to_update_expensevendor_when_required_fields_are_missing(): void
+    public function it_fails_to_update_vendor_with_empty_name(): void
     {
         $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'X']);
+        $payload = ['name' => null];
 
-        $record = ExpenseVendor::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditExpenseVendor::class, ['record' => $record->getKey()])
+        // act
+        Livewire::test(EditExpenseVendor::class, ['record' => $record->id])
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('save')
-            ->assertHasFormErrors();
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\ExpenseVendorResource
-     *
-     * @payload
-     * []
+     * @payload []
      */
-    public function it_deletes_a_expensevendor(): void
+    public function it_deletes_an_expense_vendor(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        // arrange
+        $record = ExpenseVendor::factory()->for($this->user->company)->create();
 
-        $record = ExpenseVendor::factory()->create();
-
+        // act
         Livewire::test(ListExpenseVendors::class)
+            ->actingAs($this->user)
             ->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('expensevendors', ['id' => $record->id]);
+        // assert
+        $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
     }
 
-    // endregion
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_fails_to_delete_already_deleted_vendor(): void
+    {
+        $this->markTestIncomplete();
 
-    // region usp
+        // arrange
+        $record = ExpenseVendor::factory()->for($this->user->company)->create();
+        $record->delete();
 
-    // endregion
+        // act + assert
+        Livewire::test(ListExpenseVendors::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $record)
+            ->assertHasErrors();
+
+        $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
+    }
 }

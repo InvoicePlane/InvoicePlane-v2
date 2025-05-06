@@ -2,9 +2,6 @@
 
 namespace Modules\Products\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
@@ -19,180 +16,139 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProductCategoryResource::class)]
 class ProductCategoriesTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-    // region smoke
     #[Test]
     #[Group('smoke')]
+    /**
+     * @payload ['name' => 'Hardware']
+     */
     public function it_lists_product_categories(): void
     {
-        ProductCategory::factory()->create([
-            'family_name' => '::product_family_name::',
-        ]);
+        // arrange
+        $record = ProductCategory::factory()->for($this->user->company)->create(['name' => 'Hardware']);
 
-        //$this->actingAs(User::factory()->create());
-
+        // act + assert
         Livewire::test(ListProductCategories::class)
+            ->actingAs($this->user)
             ->assertSuccessful()
-            ->assertSee($productCategory->category_name);
+            ->assertSeeDatabaseRecords($record);
     }
 
-    // endregion
-
-    // region crud
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     * Payload:
-     * {
-     * "family_name": "::product_family_name::"
-     * }
-     *
-     * @skip Not implemented yet
+     * @payload ['name' => 'Office Supplies']
      */
     public function it_creates_a_product_category(): void
     {
-        $this->markTestSkipped('something about a view');
-        $payload = [
-            'family_name' => '::product_family_name::',
-        ];
+        // arrange
+        $payload = ['name' => 'Office Supplies'];
 
-        Livewire::test(CreateProductFamily::class)
-            ->set('data.family_name', $payload['family_name'])
-            ->call('create')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('product_families', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "category_name": null,
-     * "description": "Example"
-     * }
-     */
-    public function it_fails_to_create_a_product_family_without_category_name(): void
-    {
-        $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
-
-        $payload = [
-            'company_id'    => 'Value',
-            'category_name' => 'Example',
-            'description'   => 'Example',
-        ];
-
+        // act
         Livewire::test(CreateProductCategory::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors();
+            ->assertHasNoFormErrors();
 
-        if (app()->isLocal()) {
-            dump($payload);
-        }
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     *
-     * Payload for updating a product family:
-     *
-     *
-     *            [
-     *            'family_name' => 'Updated Family',
-     *            ]
-     */
-    public function it_updates_a_product_family(): void
-    {
-        $this->markTestIncomplete();
-        $productFamily = ProductFamily::factory()->create([
-            'family_name' => '::original_product_family_name::',
-        ]);
-
-        $updatedData = [
-            'family_name' => '::updated_product_family_name::',
-        ];
-
-        Livewire::test(EditProductFamily::class, ['record' => $productFamily->family_id])
-            ->set('data.family_name', $updatedData['family_name'])
-            ->call('save')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('product_families', array_merge($updatedData, [
-            'family_id' => $productFamily->family_id,
-        ]));
+        // assert
+        $this->assertDatabaseHas('product_categories', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "category_name": "Example",
-     * "description": "Example"
-     * }
+     * @payload []
      */
-    public function it_fails_to_update_productcategory_when_required_fields_are_missing(): void
+    public function it_fails_to_create_product_category_without_name(): void
     {
-        $this->markTestIncomplete();
+        // arrange
+        $payload = [];
 
-        //$this->actingAs(User::factory()->create());
+        // act
+        Livewire::test(CreateProductCategory::class)
+            ->actingAs($this->user)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasFormErrors(['name']);
+    }
 
-        $record = ProductCategory::factory()->create();
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['name' => 'Updated Category']
+     */
+    public function it_updates_a_product_category(): void
+    {
+        // arrange
+        $record  = ProductCategory::factory()->for($this->user->company)->create(['name' => 'Old Cat']);
+        $payload = ['name' => 'Updated Category'];
 
-        $payload = [
-            'company_id'    => 'Value',
-            'category_name' => 'Example',
-            'description'   => 'Example',
-        ];
-
-        Livewire::test(EditProductCategory::class, ['record' => $record->getKey()])
+        // act
+        Livewire::test(EditProductCategory::class, ['record' => $record->id])
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('save')
-            ->assertHasFormErrors();
+            ->assertHasNoFormErrors();
 
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+        // assert
+        $this->assertDatabaseHas('product_categories', $payload);
     }
 
-    public function it_deletes_a_product_family(): void
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['name' => null]
+     */
+    public function it_fails_to_update_category_with_null_name(): void
     {
-        $this->markTestIncomplete('needs delete action');
-        $productFamily = ProductFamily::factory()->create([
-            'family_name' => '::product_family_name::',
-        ]);
+        // arrange
+        $record  = ProductCategory::factory()->for($this->user->company)->create(['name' => 'Valid']);
+        $payload = ['name' => null];
 
-        Livewire::test(ManageProductFamilies::class)
-            ->callTableAction('delete', $productFamily)
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseMissing('product_families', [
-            'family_id' => $productFamily->family_id,
-        ]);
+        // act
+        Livewire::test(EditProductCategory::class, ['record' => $record->id])
+            ->actingAs($this->user)
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasFormErrors(['name']);
     }
-    // endregion
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_deletes_a_product_category(): void
+    {
+        // arrange
+        $record = ProductCategory::factory()->for($this->user->company)->create();
+
+        // act
+        Livewire::test(ListProductCategories::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $record);
+
+        // assert
+        $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_fails_to_delete_already_deleted_category(): void
+    {
+        // arrange
+        $record = ProductCategory::factory()->for($this->user->company)->create();
+        $record->delete();
+
+        // act + assert
+        Livewire::test(ListProductCategories::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $record)
+            ->assertHasErrors();
+
+        $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
+    }
 }

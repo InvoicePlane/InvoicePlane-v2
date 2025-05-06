@@ -63,22 +63,22 @@ class Quote extends Model
         'quote_password',
     ];
 
-/**
-	Observer
-*/
+    /**
+     * Observer.
+     */
     public static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($quote) {
+        static::creating(function ($quote): void {
             event(new QuoteCreating($quote));
         });
 
-        static::created(function ($quote) {
+        static::created(function ($quote): void {
             event(new QuoteCreated($quote));
         });
 
-        static::deleted(function ($quote) {
+        static::deleted(function ($quote): void {
             event(new QuoteDeleted($quote));
         });
     }
@@ -124,7 +124,7 @@ class Quote extends Model
 
     public function mailQueue(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphMany('App\IpModules\MailQueue\Models\MailQueue', 'mailable');
+        return $this->morphMany('Modules\Core\Models\MailQueue', 'mailable');
     }
 
     public function notes(): \Illuminate\Database\Eloquent\Relations\MorphMany
@@ -143,12 +143,11 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
-    public function taxRate()
+    public function taxRate(): void
     {
         /*return $this->belongsToMany(TaxRate::class, 'quote_tax_rates')
             ->withPivot('id', 'include_item_tax', 'tax_total');*/
     }
-
 
     public function user(): BelongsTo
     {
@@ -358,7 +357,6 @@ class Quote extends Model
         return $query;
     }
 
-
     public function scopeGuest(Builder $query): Builder
     {
         return $query->whereIn('quote_status', [QuoteStatus::SENT, QuoteStatus::VIEWED, QuoteStatus::APPROVED, QuoteStatus::REJECTED]);
@@ -408,14 +406,13 @@ class Quote extends Model
                 ->orWhere('quotes.quoted_at', 'like', '%' . $keywords . '%')
                 ->orWhere('expires_at', 'like', '%' . $keywords . '%')
                 ->orWhere('summary', 'like', '%' . $keywords . '%')
-                ->orWhereIn('customer_id', function ($query) use ($keywords) {
+                ->orWhereIn('customer_id', function ($query) use ($keywords): void {
                     $query->select('id')->from('customers')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
                 });
         }
 
         return $query;
     }
-
 
     /*
     |--------------------------------------------------------------------------

@@ -2,9 +2,12 @@
 
 use App\Support\ProfileImage\ProfileImageFactory;
 
-function profileImageUrl($user)
+class ImageProfileHelper
 {
-    $profileImage = ProfileImageFactory::create();
+    public function profileImageUrl($user)
+    {
+        $profileImage = ProfileImageFactory::create();
 
-    return $profileImage->getProfileImageUrl($user);
+        return $profileImage->getProfileImageUrl($user);
+    }
 }

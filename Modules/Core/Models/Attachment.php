@@ -1,10 +1,10 @@
 <?php
 
-namespace App\IpModules\Attachments\Models;
+namespace Modules\Attachments\Models;
 
 use App\Events\AttachmentCreating;
 use App\Events\AttachmentDeleted;
-use App\IpModules\Users\Models\User;
+use Modules\Users\Models\User;
 use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

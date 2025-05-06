@@ -1,10 +1,10 @@
 <?php
 
-namespace App\IpModules\Reports\Reports;
+namespace Modules\Reports\Reports;
 
-use App\IpModules\Customers\Models\Customer;
 use App\Support\CurrencyFormatter;
 use App\Support\DateFormatter;
+use Modules\Clients\Models\Relation;
 
 class ClientStatementReport
 {

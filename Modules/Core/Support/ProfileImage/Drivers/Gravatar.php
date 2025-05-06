@@ -2,7 +2,7 @@
 
 namespace App\Support\ProfileImage\Drivers;
 
-use App\IpModules\Users\Models\User;
+use Modules\Users\Models\User;
 use App\Support\ProfileImage\ProfileImageInterface;
 
 class Gravatar implements ProfileImageInterface

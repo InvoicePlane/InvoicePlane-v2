@@ -1,10 +1,10 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
 use App\Events\InvoiceModified;
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\TaxRates\Models\TaxRate;
+use Modules\Invoices\Models\Invoice;
+use Modules\TaxRates\Models\TaxRate;
 use Illuminate\Support\Facades\Validator;
 
 class InvoiceItemImporter extends AbstractImporter

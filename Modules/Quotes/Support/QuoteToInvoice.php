@@ -1,14 +1,14 @@
 <?php
 
-namespace App\IpModules\Quotes\Support;
+namespace Modules\Quotes\Support;
 
 use App\Events\InvoiceModified;
-use App\IpModules\CustomFields\Models\CustomField;
-use App\IpModules\Groups\Models\Group;
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Invoices\Models\InvoiceItem;
+use Modules\Groups\Models\Group;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceItem;
 use App\Support\Statuses\InvoiceStatuses;
 use App\Support\Statuses\QuoteStatuses;
+use Modules\Core\Models\CustomField;
 
 class QuoteToInvoice
 {

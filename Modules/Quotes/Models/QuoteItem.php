@@ -122,7 +122,7 @@ class QuoteItem extends Model
 
     public function taxRate2(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo('App\IpModules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo('Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
     }
 
     /*

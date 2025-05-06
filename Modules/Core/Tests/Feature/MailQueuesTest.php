@@ -2,191 +2,139 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\MailQueueResource\Pages\CreateMailQueue;
-use App\Filament\Resources\MailQueueResource\Pages\EditMailQueue;
-use App\Filament\Resources\MailQueueResource\Pages\ListMailQueues;
-use App\Models\MailQueue;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
-use Tests\TestCase;
+use Modules\Core\Models\MailQueue;
+use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-class MailQueuesTest extends TestCase
+class MailQueuesTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
-     * @group smoke
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
+     * @payload ['subject' => 'Queued Message']
      */
-    public function it_lists_mailqueues(): void
+    public function it_lists_mail_queues(): void
     {
         $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
+        $record = MailQueue::factory()->create(['subject' => 'Queued Message']);
 
         Livewire::test(ListMailQueues::class)
-            ->assertSuccessful();
+            ->actingAs($this->superAdmin())
+            ->assertSuccessful()
+            ->assertSeeDatabaseRecords($record);
     }
 
-    // endregion
-
-    // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
-     *
-     * @payload
-     * []
+     * @payload ['subject' => 'Queued Subject', 'to' => 'user@example.com']
      */
-    public function it_creates_a_mailqueue(): void
+    public function it_creates_mail_queue(): void
     {
         $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
-
-        $payload = [
-        ];
+        $payload = ['subject' => 'Queued Subject', 'to' => 'user@example.com'];
 
         Livewire::test(CreateMailQueue::class)
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('mail_queues', $payload);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
-     *
-     * @payload
-     * []
+     * @payload ['subject' => null]
      */
-    public function it_fails_to_create_mailqueue_when_required_fields_are_missing(): void
+    public function it_fails_to_create_mail_queue_without_subject(): void
     {
         $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
-
-        $payload = [
-        ];
+        $payload = ['to' => 'fail@example.com'];
 
         Livewire::test(CreateMailQueue::class)
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors();
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['subject']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
-     *
-     * @payload
-     * []
+     * @payload ['subject' => 'Updated Subject']
      */
-    public function it_updates_a_mailqueue(): void
+    public function it_updates_mail_queue(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $this->markTestIncomplete();
+        $queue = MailQueue::factory()->create(['subject' => 'Initial Subject']);
 
-        //$this->actingAs(User::factory()->create());
+        $payload = ['subject' => 'Updated Subject'];
 
-        $record = MailQueue::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditMailQueue::class, ['record' => $record->getKey()])
+        Livewire::test(EditMailQueue::class, ['record' => $queue->id])
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('mail_queues', $payload);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
-     *
-     * @payload
-     * []
+     * @payload ['subject' => null]
      */
-    public function it_fails_to_update_mailqueue_when_required_fields_are_missing(): void
+    public function it_fails_to_update_mail_queue_with_empty_subject(): void
     {
         $this->markTestIncomplete();
+        $queue = MailQueue::factory()->create(['subject' => 'Valid Subject']);
 
-        //$this->actingAs(User::factory()->create());
+        $payload = ['subject' => null];
 
-        $record = MailQueue::factory()->create();
-
-        $payload = [
-        ];
-
-        Livewire::test(EditMailQueue::class, ['record' => $record->getKey()])
+        Livewire::test(EditMailQueue::class, ['record' => $queue->id])
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('save')
-            ->assertHasFormErrors();
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+            ->assertHasFormErrors(['subject']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MailQueueResource
-     *
-     * @payload
-     * []
+     * @payload []
      */
-    public function it_deletes_a_mailqueue(): void
+    public function it_deletes_mail_queue(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = MailQueue::factory()->create();
+        $this->markTestIncomplete();
+        $queue = MailQueue::factory()->create();
 
         Livewire::test(ListMailQueues::class)
-            ->callTableAction('delete', $record);
+            ->actingAs($this->superAdmin())
+            ->callTableAction('delete', $queue);
 
-        $this->assertDatabaseMissing('mailqueues', ['id' => $record->id]);
+        $this->assertDatabaseMissing('mail_queues', ['id' => $queue->id]);
     }
 
-    // endregion
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_fails_to_delete_mail_queue_that_does_not_exist(): void
+    {
+        $this->markTestIncomplete();
+        $queue = MailQueue::factory()->create();
+        $queue->delete();
 
-    // region usp
+        Livewire::test(ListMailQueues::class)
+            ->actingAs($this->superAdmin())
+            ->callTableAction('delete', $queue)
+            ->assertHasErrors();
 
-    // endregion
+        $this->assertDatabaseMissing('mail_queues', ['id' => $queue->id]);
+    }
 }

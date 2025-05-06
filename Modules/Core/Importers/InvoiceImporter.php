@@ -1,12 +1,12 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
-use App\IpModules\Companies\Models\Company;
-use App\IpModules\Customers\Models\Customer;
-use App\IpModules\Groups\Models\Group;
-use App\IpModules\Invoices\Models\Invoice;
+use Modules\Companies\Models\Company;
+use Modules\Groups\Models\Group;
+use Modules\Invoices\Models\Invoice;
 use Illuminate\Support\Facades\Validator;
+use Modules\Clients\Models\Relation;
 
 class InvoiceImporter extends AbstractImporter
 {

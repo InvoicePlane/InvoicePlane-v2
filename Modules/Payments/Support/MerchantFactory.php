@@ -1,14 +1,12 @@
 <?php
 
-namespace App\IpModules\Merchant\Support;
-
-use App\Support\Directory;
+namespace Modules\Core\Support;
 
 class MerchantFactory
 {
     public static function getDrivers($enabledOnly = false)
     {
-        $files = Directory::listContents(app_path('IpModules/Merchant/Support/Drivers'));
+        $files = Directory::listContents(app_path('IpModules/Merchant/Support/MerchantDrivers'));
 
         $drivers = [];
 
@@ -30,7 +28,7 @@ class MerchantFactory
      */
     public static function create($driver)
     {
-        $driver = 'App\\IpModules\\Merchant\\Support\\Drivers\\' . $driver;
+        $driver = 'App\\IpModules\\Merchant\\Support\\MerchantDrivers\\' . $driver;
 
         return new $driver();
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\MailQueue\Models;
+namespace Modules\Core\Models;
 
 use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;

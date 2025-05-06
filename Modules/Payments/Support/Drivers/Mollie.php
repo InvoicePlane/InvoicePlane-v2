@@ -1,11 +1,11 @@
 <?php
 
-namespace App\IpModules\Merchant\Support\Drivers;
+namespace Modules\Core\Support\Drivers;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Merchant\Models\PaymentTypePayment;
-use App\IpModules\Merchant\Support\MerchantDriverPayable;
-use App\IpModules\Payments\Models\Payment;
+use Modules\Core\Models\MerchantPayment;
+use Modules\Core\Support\MerchantDriverPayable;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
 use Mollie_API_Client;
 
 class Mollie extends MerchantDriverPayable
@@ -33,7 +33,7 @@ class Mollie extends MerchantDriverPayable
         return $payment->links->paymentUrl;
     }
 
-    public function verify(Invoice $invoice)
+    public function verify(Invoice $invoice): void
     {
         $mollie = new Mollie_API_Client();
 
@@ -48,7 +48,7 @@ class Mollie extends MerchantDriverPayable
                 'payment_method_id' => config('ip.onlinePaymentMethod'),
             ]);
 
-            PaymentTypePayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->id);
+            MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->id);
         }
     }
 }

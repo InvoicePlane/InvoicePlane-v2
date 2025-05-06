@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\ProfileImage;
+namespace Modules\Core\Support;
 
 class ProfileImageFactory
 {
@@ -13,7 +13,7 @@ class ProfileImageFactory
 
     public static function getDrivers()
     {
-        $driverFiles = Directory::listContents(app_path('Support/ProfileImage/Drivers'));
+        $driverFiles = Directory::listContents(app_path('Support/ProfileImage/MerchantDrivers'));
         $drivers     = [];
 
         foreach ($driverFiles as $driverFile) {

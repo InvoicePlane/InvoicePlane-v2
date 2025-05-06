@@ -2,37 +2,30 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Modules\Core\Models\User;
+use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class WelcomeViewTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithoutMiddleware;
-
-    public function setUp(): void
+    #[Test]
+    #[Group('smoke')]
+    /**
+     * @payload []
+     *
+     * @arrange logged-in superadmin
+     *
+     * @act view welcome page
+     *
+     * @assert page renders with 200
+     */
+    public function it_shows_welcome_page(): void
     {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
+        $this->markTestIncomplete();
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-
-    public function it_shows_welcome_view(): void
-    {
-        $this->markTestIncomplete('core web routes not loaded yet?');
-        $user     = User::factory()->create();
-        $response = $this->actingAs(user: $user, guard: 'web')->get(route('welcome.index'));
-        $response->assertSuccessful();
-        $response->assertSee('InvoicePlane');
-        $response->assertSee('Please install InvoicePlane');
-        $response->assertSee('Setup');
-        $response->assertSee('Get Help');
+        Livewire::test(Welcome::class)
+            ->actingAs($this->superAdmin())
+            ->assertSuccessful();
     }
 }

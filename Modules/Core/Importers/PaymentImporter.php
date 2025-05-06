@@ -1,10 +1,10 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\PaymentMethods\Models\PaymentMethod;
-use App\IpModules\Payments\Models\Payment;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\PaymentMethod;
+use Modules\Payments\Models\Payment;
 use Illuminate\Support\Facades\Validator;
 
 class PaymentImporter extends AbstractImporter

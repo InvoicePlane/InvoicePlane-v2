@@ -2,10 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
@@ -17,120 +14,90 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(DocumentGroupResource::class)]
-
 class DocumentGroupsTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "type": "Value",
-     * "document_group_name": "Example",
-     * "left_pad": "Example",
-     * "format": "Example",
-     * "next_id": "Value"
-     * }
+     * @payload ['name' => 'Policies']
      */
-    public function it_creates_a_documentgroup(): void
+    public function it_lists_document_groups(): void
     {
-        $this->markTestIncomplete();
+        $group = DocumentGroup::factory()->create(['name' => 'Policies']);
 
-        //$this->actingAs(User::factory()->create());
+        Livewire::test(ListDocumentGroups::class)
+            ->actingAs($this->superAdmin())
+            ->assertSuccessful()
+            ->assertSeeDatabaseRecords($group);
+    }
 
-        $payload = [
-            'company_id'          => 'Value',
-            'type'                => 'Value',
-            'document_group_name' => 'Example',
-            'left_pad'            => 'Example',
-            'format'              => 'Example',
-            'next_id'             => 'Value',
-        ];
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['name' => 'Forms']
+     */
+    public function it_creates_a_document_group(): void
+    {
+        $payload = ['name' => 'Forms'];
 
         Livewire::test(CreateDocumentGroup::class)
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('document_groups', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "type": "Value",
-     * "document_group_name": "Example",
-     * "left_pad": "Example",
-     * "format": "Example",
-     * "next_id": "Value"
-     * }
+     * @payload []
      */
-    public function it_updates_a_documentgroup(): void
+    public function it_fails_to_create_document_group_when_name_missing(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $payload = [];
 
-        //$this->actingAs(User::factory()->create());
+        Livewire::test(CreateDocumentGroup::class)
+            ->actingAs($this->superAdmin())
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasFormErrors(['name']);
+    }
 
-        $record = DocumentGroup::factory()->create();
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['name' => 'Updated Group']
+     */
+    public function it_updates_a_document_group(): void
+    {
+        $group = DocumentGroup::factory()->create(['name' => 'Old Group']);
 
-        $payload = [
-            'company_id'          => 'Value',
-            'type'                => 'Value',
-            'document_group_name' => 'Example',
-            'left_pad'            => 'Example',
-            'format'              => 'Example',
-            'next_id'             => 'Value',
-        ];
+        $payload = ['name' => 'Updated Group'];
 
-        Livewire::test(EditDocumentGroup::class, ['record' => $record->getKey()])
+        Livewire::test(EditDocumentGroup::class, ['record' => $group->id])
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('document_groups', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "type": "Value",
-     * "document_group_name": "Example",
-     * "left_pad": "Example",
-     * "format": "Example",
-     * "next_id": "Value"
-     * }
+     * @payload []
      */
-    public function it_deletes_a_documentgroup(): void
+    public function it_deletes_a_document_group(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = DocumentGroup::factory()->create();
+        $group = DocumentGroup::factory()->create();
 
         Livewire::test(ListDocumentGroups::class)
-            ->callTableAction('delete', $record);
+            ->actingAs($this->superAdmin())
+            ->callTableAction('delete', $group);
 
-        $this->assertDatabaseMissing('document_groups', ['id' => $record->id]);
+        $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
     }
-
-    // endregion
-
-    // region usp
-
-    // endregion
 }

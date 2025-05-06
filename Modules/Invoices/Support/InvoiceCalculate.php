@@ -1,12 +1,12 @@
 <?php
 
-namespace App\IpModules\Invoices\Support;
+namespace Modules\Invoices\Support;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Invoices\Models\InvoiceAmount;
-use App\IpModules\Invoices\Models\InvoiceItem;
-use App\IpModules\Invoices\Models\InvoiceItemAmount;
-use App\IpModules\Payments\Models\Payment;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceAmount;
+use Modules\Invoices\Models\InvoiceItem;
+use Modules\Invoices\Models\InvoiceItemAmount;
+use Modules\Payments\Models\Payment;
 use App\Support\Statuses\InvoiceStatuses;
 
 class InvoiceCalculate

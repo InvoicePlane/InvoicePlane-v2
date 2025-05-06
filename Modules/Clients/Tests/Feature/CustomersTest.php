@@ -3,17 +3,12 @@
 namespace Modules\Clients\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\CustomerResource;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCustomer;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
 use Modules\Clients\Models\Relation;
-use Modules\Clients\Services\CustomerAssignmentService;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -24,299 +19,196 @@ use PHPUnit\Framework\Attributes\Test;
 class CustomersTest extends AbstractTestCase
 {
     use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
+
+    protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutExceptionHandling();
+
+        $this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);
     }
 
-    // region smoke
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
+    #region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * @payload
-     * {
-     * "relation_id": 51,
-     * "first_name": "John",
-     * "last_name": "Doe",
-     * "gender": "male"
-     * }
+     * @payload ['company_name' => 'Acme Inc.', 'relation_type' => 'customer']
      */
     public function it_lists_customers(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
         $payload = [
-            'company_id'         => $company->id,
-            'primary_contact_id' => null,
-            'relation_type'      => RelationType::CUSTOMER,
-            'relation_status'    => 'active',
-            'relation_number'    => '::relation_number::',
-            'company_name'       => 'Acme Corp',
-            'trading_name'       => '::trading_name::',
-            'id_number'          => 'ID123456',
-            'coc_number'         => 'COC789',
-            'vat_number'         => 'VAT999',
-            'registered_at'      => now()->format('Y-m-d'),
+            'company_name'  => 'Acme Inc.',
+            'relation_type' => RelationType::CUSTOMER,
         ];
 
-        Relation::query()->create($payload);
+        $customer = Relation::factory()->for($this->user->company)->create($payload);
 
         Livewire::test(ListCustomers::class)
+            ->actingAs($this->user)
             ->assertSuccessful()
-            ->assertSee('Acme Corp');
+            ->assertSeeDatabaseRecords($customer);
     }
-    // endregion
+    #endregion
 
-    // region crud
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "primary_contact_id": null,
-     *   "relation_type": "customer",
-     *   "relation_status": "active",
-     *   "relation_number": "CUST-ABC123",
-     *   "company_name": "::company_name::",
-     *   "trading_name": "::trading_name::",
-     *   "id_number": "ID123456",
-     *   "coc_number": "COC789",
-     *   "vat_number": "VAT999",
-     *   "registered_at": "2025-05-04"
-     * }
+     * @payload ['company_name' => 'Beta LLC', 'relation_type' => 'customer', 'relation_number' => 'C123']
      */
     public function it_creates_a_customer(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
         $payload = [
-            'company_id'         => $company->id,
-            'primary_contact_id' => null,
-            'relation_type'      => RelationType::CUSTOMER,
-            'relation_status'    => 'active',
-            'relation_number'    => '::relation_number::',
-            'company_name'       => '::company_name::',
-            'trading_name'       => '::trading_name::',
-            'id_number'          => 'ID123456',
-            'coc_number'         => 'COC789',
-            'vat_number'         => 'VAT999',
-            'registered_at'      => now()->format('Y-m-d'),
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_number' => 'C123',
         ];
 
         Livewire::test(CreateCustomer::class)
+            ->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('relations', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "primary_contact_id": 2,
-     *   "relation_type": "customer",
-     *   "relation_status": "active",
-     *   "company_name": "::company_name::",
-     *   "trading_name": "::trading_name::",
-     *   "id_number": "ID123456",
-     *   "coc_number": "COC789",
-     *   "vat_number": "VAT999",
-     *   "registered_at": "2025-05-04"
-     * }
+     * @payload ['relation_type' => 'customer']
      */
-    public function it_fails_to_create_customer_when_relation_number_missing(): void
+    public function it_fails_when_company_name_is_missing(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
         $payload = [
-            'company_id'         => $company->id,
-            'primary_contact_id' => null,
-            'relation_type'      => RelationType::CUSTOMER,
-            'relation_status'    => 'active',
-            'company_name'       => '::company_name::',
-            'trading_name'       => '::trading_name::',
-            'id_number'          => 'ID123456',
-            'coc_number'         => 'COC789',
-            'vat_number'         => 'VAT999',
-            'registered_at'      => now()->format('Y-m-d'),
+            // 'company_name' => 'Missing Inc.',
+            'relation_type' => RelationType::CUSTOMER,
         ];
 
         Livewire::test(CreateCustomer::class)
-            ->fillForm(['data' => $payload])
+            ->actingAs($this->user)
+            ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors(['relation_number' => 'required']);
-
-        $this->assertDatabaseCount('relations', 0);
+            ->assertHasFormErrors(['company_name']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "primary_contact_id": 2,
-     *   "relation_type": "customer",
-     *   "relation_status": "active",
-     *   "relation_number": "CUST-ABC123",
-     *   "trading_name": "::trading_name::",
-     *   "id_number": "ID123456",
-     *   "coc_number": "COC789",
-     *   "vat_number": "VAT999",
-     *   "registered_at": "2025-05-04"
-     * }
+     * @payload ['company_name' => 'Zeta Ltd.']
      */
-    public function it_fails_to_create_customer_when_company_name_missing(): void
+    public function it_fails_when_relation_type_is_missing(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
         $payload = [
-            'company_id'         => $company->id,
-            'primary_contact_id' => null,
-            'relation_type'      => RelationType::CUSTOMER,
-            'relation_status'    => 'active',
-            'relation_number'    => 'CUST-' . Str::random(6),
-            'trading_name'       => '::trading_name::',
-            'id_number'          => 'ID123456',
-            'coc_number'         => 'COC789',
-            'vat_number'         => 'VAT999',
-            'registered_at'      => now()->format('Y-m-d'),
+            'company_name' => 'Zeta Ltd.',
+            // 'relation_type' => RelationType::CUSTOMER,
         ];
 
         Livewire::test(CreateCustomer::class)
-            ->fillForm(['data' => $payload])
+            ->actingAs($this->user)
+            ->fillForm($payload)
             ->call('create')
-            ->assertHasFormErrors(['company_name' => 'required']);
-
-        $this->assertDatabaseCount('relations', 0);
+            ->assertHasFormErrors(['relation_type']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Clients\Filament\Company\Resources\CustomerResource.
-     *
-     * @payload
-     * []
+     * @payload ['company_name' => 'Updated Name']
      */
     public function it_updates_a_customer(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = Relation::factory()->create();
-
-        $payload = [
+        $original = [
+            'company_name'  => 'Old Name',
+            'relation_type' => RelationType::CUSTOMER,
         ];
 
-        Livewire::test(EditRelation::class, ['record' => $record->getKey()])
-            ->fillForm($payload)
+        $customer = Relation::factory()->for($this->user->company)->create($original);
+
+        $update = [
+            'company_name' => 'Updated Name',
+        ];
+
+        Livewire::test(EditCustomer::class, ['record' => $customer->getKey()])
+            ->actingAs($this->user)
+            ->fillForm($update)
             ->call('save')
             ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('relations', $update);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Clients\Filament\Company\Resources\CustomerResource.
-     *
-     * @payload
-     * []
+     * @payload ['company_name' => null]
+     */
+    public function it_fails_to_update_if_company_name_missing(): void
+    {
+        $customer = Relation::factory()->for($this->user->company)->create([
+            'company_name'  => 'Will Not Update',
+            'relation_type' => RelationType::CUSTOMER,
+        ]);
+
+        $payload = [
+            // 'company_name' => 'Blank',
+        ];
+
+        Livewire::test(EditCustomer::class, ['record' => $customer->getKey()])
+            ->actingAs($this->user)
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasFormErrors(['company_name']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
      */
     public function it_deletes_a_customer(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = Relation::factory()->create();
+        $customer = Relation::factory()->for($this->user->company)->create([
+            'company_name'  => 'Delete Me',
+            'relation_type' => RelationType::CUSTOMER,
+        ]);
 
         Livewire::test(ListCustomers::class)
-            ->callTableAction('delete', $record);
+            ->actingAs($this->user)
+            ->callTableAction('delete', $customer);
 
-        $this->assertDatabaseMissing('customers', ['id' => $record->id]);
+        $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
     }
-    // endregion
 
-    // region usp
-    /**
-     * @payload ["userId" => $user->id, "customerId" => $customer->id]
-     */
     #[Test]
-    #[Group('spicy')]
-    public function it_assigns_user_to_customer_successfully(): void
-    {
-        $this->markTestIncomplete();
-
-        $user     = User::factory()->create();
-        $customer = Relation::factory()->create();
-        $service  = new CustomerAssignmentService();
-        $result   = $service->assign($user->id, $customer->id);
-        if (app()->isLocal()) {
-            dump($result);
-        }
-        $this->assertTrue($result);
-        $this->assertDatabaseHas('customer_user', [
-            'user_id'     => $user->id,
-            'customer_id' => $customer->id,
-        ]);
-    }
-
+    #[Group('crud')]
     /**
-     * @payload ["customerId" => $customer->id, "note" => "Test note"]
+     * @payload []
      */
-    #[Test]
-    #[Group('spicy')]
-    public function it_adds_note_to_customer_successfully(): void
+    public function it_fails_to_delete_customer_when_not_owner(): void
     {
-        $this->markTestIncomplete();
-
-        $customer = Relation::factory()->create();
-        $service  = new NoteService();
-        $note     = $service->addNote($customer->id, 'Test note');
-        if (app()->isLocal()) {
-            dump($note);
-        }
-        $this->assertDatabaseHas('customer_notes', [
-            'customer_id' => $customer->id,
-            'note'        => 'Test note',
+        $otherUser = User::factory()->withCompany()->create();
+        $customer  = Relation::factory()->for($otherUser->company)->create([
+            'company_name'  => 'Other Corp',
+            'relation_type' => RelationType::CUSTOMER,
         ]);
+
+        Livewire::test(ListCustomers::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $customer)
+            ->assertHasErrors();
+
+        $this->assertDatabaseHas('relations', ['id' => $customer->id]);
     }
-    // endregion
+    # endregion
+
+    # region spicy
+    # endregion
 }

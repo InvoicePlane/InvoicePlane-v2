@@ -8,7 +8,7 @@ use Modules\Core\Services\BaseService;
 use Modules\Products\Events\ProductWasCreated;
 use Modules\Products\Events\ProductWasUpdated;
 use Modules\Products\Models\Product;
-use Modules\Products\Models\ProductFamily;
+use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 
 class ProductService extends BaseService
@@ -20,14 +20,14 @@ class ProductService extends BaseService
 
     public function create(array $validatedInput): Product
     {
-        $productFamily = ProductFamily::findOrFail($validatedInput['family_id']);
-        $productUnit = ProductUnit::findOrFail($validatedInput['unit_id']);
-        $taxRate = TaxRate::findOrFail($validatedInput['tax_rate_id']);
+        $productCategory = ProductCategory::findOrFail($validatedInput['family_id']);
+        $productUnit     = ProductUnit::findOrFail($validatedInput['unit_id']);
+        $taxRate         = TaxRate::findOrFail($validatedInput['tax_rate_id']);
 
         $product = new Product(
             $validatedInput
         );
-        $product->productFamily()->associate($productFamily);
+        $product->productCategory()->associate($productCategory);
         $product->productUnit()->associate($productUnit);
         $product->taxRate()->associate($taxRate);
 

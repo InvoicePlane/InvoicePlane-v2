@@ -24,23 +24,23 @@ use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int       $id
- * @property int       $primary_contact_id
- * @property string    $relation_type
- * @property string    $relation_status
- * @property string    $relation_number
- * @property string    $company_name
- * @property string    $trading_name
- * @property string    $id_number
- * @property string    $coc_number
- * @property string    $vat_number
- * @property Carbon    $registered_at
- * @property mixed     $created_at
- * @property mixed     $updated_at
- * @property Invoice[] $invoices
- * @property Quote[]   $quotes
- * @property Project[] $projects
- * @property Contact   $contact
+ * @property int                           $id
+ * @property int                           $primary_contact_id
+ * @property string                        $relation_type
+ * @property string                        $relation_status
+ * @property string                        $relation_number
+ * @property string                        $company_name
+ * @property string                        $trading_name
+ * @property string                        $id_number
+ * @property string                        $coc_number
+ * @property string                        $vat_number
+ * @property Carbon                        $registered_at
+ * @property mixed                         $created_at
+ * @property mixed                         $updated_at
+ * @property Invoice[]                     $invoices
+ * @property Quote[]                       $quotes
+ * @property Project[]                     $projects
+ * @property Contact                       $contact
  * @property string|null                   $currency_code
  * @property string|null                   $language
  * @property Collection|Contact[]          $contacts
@@ -49,7 +49,7 @@ use Modules\Quotes\Models\Quote;
  * @property Collection|Quote[]            $quotes
  * @property Collection|RecurringInvoice[] $recurring_invoices
  * @property Collection|User[]             $users
- * @property Task[]    $tasks
+ * @property Task[]                        $tasks
  */
 class Relation extends Model
 {
@@ -67,27 +67,26 @@ class Relation extends Model
 
     protected $guarded = [];
 
-
     /**
-    Observer
-    */
-    public static function boot()
+     * Observer.
+     */
+    public static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($client) {
+        static::creating(function ($client): void {
             event(new ClientCreating($client));
         });
 
-        static::created(function ($client) {
+        static::created(function ($client): void {
             event(new ClientCreated($client));
         });
 
-        static::saving(function ($client) {
+        static::saving(function ($client): void {
             event(new ClientSaving($client));
         });
 
-        static::deleted(function ($client) {
+        static::deleted(function ($client): void {
             event(new ClientDeleted($client));
         });
     }
@@ -118,7 +117,7 @@ class Relation extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function attachments()
+    public function attachments(): void
     {
         // return $this->morphMany(Attachment, 'attachable');
     }
@@ -167,7 +166,7 @@ class Relation extends Model
 
     public function merchant()
     {
-        return $this->hasOne('App\IpModules\Merchant\Models\PaymentTypeClient');
+        return $this->hasOne('Modules\Core\Models\PaymentTypeClient');
     }
 
     public function notes()
@@ -257,7 +256,6 @@ class Relation extends Model
         }
     }
 
-
     public function scopeGetSelect()
     {
         return self::select(
@@ -296,9 +294,19 @@ class Relation extends Model
         return $query;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
+    protected static function newFactory(): Factory
+    {
+        return RelationFactory::new();
+    }
+
     private function getBalanceSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(balance)'))->whereIn('invoice_id', function ($q) {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(balance)'))->whereIn('invoice_id', function ($q): void {
             $q->select('id')
                 ->from('invoices')
                 ->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'))
@@ -308,7 +316,7 @@ class Relation extends Model
 
     private function getPaidSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q) {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q): void {
             $q->select('id')->from('invoices')->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'));
         })->toSql();
     }
@@ -320,18 +328,8 @@ class Relation extends Model
     */
     private function getTotalSql()
     {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q) {
+        return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q): void {
             $q->select('id')->from('invoices')->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'));
         })->toSql();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Factory
-    |--------------------------------------------------------------------------
-    */
-   protected static function newFactory(): Factory
-    {
-        return RelationFactory::new();
     }
 }

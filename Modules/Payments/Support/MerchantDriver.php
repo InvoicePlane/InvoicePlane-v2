@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Merchant\Support;
+namespace Modules\Core\Support;
 
-use App\IpModules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\Invoice;
 
 abstract class MerchantDriver
 {

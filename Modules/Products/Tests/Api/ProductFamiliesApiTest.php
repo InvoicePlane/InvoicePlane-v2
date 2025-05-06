@@ -8,7 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
-use Modules\Products\Models\ProductFamily;
+use Modules\Products\Models\ProductCategory;
 
 class ProductFamiliesApiTest extends AbstractTestCase
 {
@@ -29,12 +29,11 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
-
     public function it_returns_product_families_index(): void
     {
         Sanctum::actingAs(User::factory()->create());
 
-        ProductFamily::factory(5)->create([
+        ProductCategory::factory(5)->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -52,7 +51,6 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_family' => '::family_name::']);
     }
 
-
     public function it_lists_product_families_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -62,10 +60,9 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_creates_a_product_family(): void
     {
-        $initialFamily = ProductFamily::factory()->create([
+        $initialFamily = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -104,10 +101,9 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
-
     public function it_returns_error_response_with_invalid_family_name_key(): void
     {
-        $initialFamily = ProductFamily::factory()->create([
+        $initialFamily = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
 
@@ -119,10 +115,9 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('family_name', 'errors');
     }
 
-
     public function it_updates_a_product_family(): void
     {
-        $initialProductFamily = ProductFamily::factory()->create([
+        $initialProductCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
         $updatedData = [
@@ -131,14 +126,14 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->put(route('api.product_families.update', ['productFamily' => $initialProductFamily->family_id]), $updatedData);
+        $response = $this->put(route('api.product_families.update', ['productCategory' => $initialProductCategory->family_id]), $updatedData);
 
         $response->assertSuccessful();
-        $initialProductFamily->refresh();
+        $initialProductCategory->refresh();
 
         $response->assertJsonFragment(['product_family' => $updatedData['family_name']]);
 
-        $this->assertEquals($updatedData['family_name'], $initialProductFamily->family_name);
+        $this->assertEquals($updatedData['family_name'], $initialProductCategory->family_name);
     }
 
     /**
@@ -162,10 +157,9 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->putJson(route('api.productfamilies.update', ['productfamily' => 1]), $payload);
+        $response = $this->putJson(route('api.productfamilies.update', ['productCategory' => 1]), $payload);
         $response->assertSuccessful();
     }
-
 
     public function test_delete_family(): void
     {
@@ -173,7 +167,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
             'This test has not been implemented yet.'
         );
 
-        $family = ProductFamily::factory()->create();
+        $family = ProductCategory::factory()->create();
 
         $this->response = $this->json(
             'DELETE',
@@ -189,13 +183,12 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $this->response->assertStatus(404);
     }
 
-
     public function it_deletes_a_product_family_via_api(): void
     {
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
-        $response = $this->deleteJson(route('api.productfamilies.delete', ['productfamily' => 1]));
+        $response = $this->deleteJson(route('api.productfamilies.delete', ['productCategory' => 1]));
         $response->assertSuccessful();
     }
 }

@@ -3,12 +3,13 @@
 namespace Modules\Payments\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Filament\Company\Resources\PaymentResource;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
@@ -22,738 +23,205 @@ use PHPUnit\Framework\Attributes\Test;
 class PaymentsTest extends AbstractTestCase
 {
     use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
+
+    protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutExceptionHandling();
+        $this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);
     }
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-    // region smoke
     #[Test]
-    #[Group('module')]
+    #[Group('smoke')]
+    /**
+     * @payload ['amount' => 500.00]
+     */
     public function it_lists_payments(): void
     {
-        $this->markTestIncomplete('payable_type');
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
+        // arrange
+        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $payment  = Payment::factory()->for($this->user->company)->create([
+            'customer_id' => $customer->id,
+            'amount'      => 500.00,
         ]);
 
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        Payment::factory()->create([
-            'company_id'     => $company->id,
-            'payment_amount' => 99.99,
-        ]);
-
+        // act + assert
         Livewire::test(ListPayments::class)
-            ->assertSee('99.99');
+            ->actingAs($this->user)
+            ->assertSuccessful()
+            ->assertSeeDatabaseRecords($payment);
     }
-    // endregion
 
-    // region crud
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "invoice_id": 2,
-     *   "payment_method_id": 3,
-     *   "payment_status": "completed",
-     *   "paid_at": "2025-05-01",
-     *   "payment_amount": "99.99"
-     * }
+     * @payload ['amount' => 250.00, 'payment_method' => 'bank_transfer', 'paid_at' => '2024-11-01']
      */
     public function it_creates_a_payment(): void
     {
-        $this->markTestIncomplete();
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
+        // arrange
+        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $invoice  = Invoice::factory()->for($this->user->company)->create();
 
         $payload = [
-            'company_id'        => $company->id,
-            'invoice_id'        => 2,
-            'payment_method_id' => 3,
-            'payment_status'    => 'completed',
-            'paid_at'           => '2025-05-01',
-            'payment_amount'    => 99.99,
+            'amount'         => 250.00,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'paid_at'        => '2024-11-01',
+            'customer_id'    => $customer->id,
+            'invoice_id'     => $invoice->id,
         ];
 
-        Livewire::test(CreatePayment::class)
+        // act
+        Livewire::actingAs($this->user)
+            ->test(CreatePayment::class)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasNoFormErrors();
+            ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
+        // assert
+        $this->assertDatabaseHas('payments', [
+            'amount'         => 250.00,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'customer_id'    => $customer->id,
+            'invoice_id'     => $invoice->id,
+        ]);
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_save_payment_without_invoice_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(CreatePayment::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('create')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
     /**
-     * @test
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_assign_method(): void
-    {
-        $this->markTestIncomplete();
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Payment::factory()->create($payload);
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('assign')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.assign_method')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_assign_payment_method_without_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-        $paymentMethod = PaymentMethod::factory()->create();
-        $invoice       = Invoice::factory()->create(['invoice_group_id' => $invoiceGroup->invoice_group_id]);
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('assign')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.process_refund')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_process_refund(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_process_refund_without_reason(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.process_partial_refund')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_process_partial_refund(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.process_partial_refund')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_process_partial_refund_without_payment_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.process')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_process_partial_payment(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('create')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.process')
-     *
-     * @skip Not implemented yet
+     * @payload ['amount' => null]
      */
-    public function it_fails_to_process_partial_payment_without_invoice_id(): void
+    public function it_fails_to_create_payment_without_amount(): void
     {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
+        // arrange
+        $payload = ['amount' => null];
 
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
+        // act
+        Livewire::test(CreatePayment::class)
+            ->actingAs($this->user)
+            ->fillForm($payload)
             ->call('create')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.apply_method')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_apply_payment_method_without_valid_method_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $invoice       = Invoice::factory()->create();
-        $paymentMethod = PaymentMethod::factory()->create();
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.mark_as_failed'
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_mark_as_failed(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $user = User::factory()->create();
-
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        $payment = Payment::factory()->create($payload);
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.mark_as_failed')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_mark_payment_as_failed_without_payment_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $user = User::factory()->create();
-
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        $payment = Payment::factory()->create($payload);
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['payment_amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.assign_tax')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_payments_assign_tax(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $user = User::factory()->create();
-
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payload = [
-            'invoice_id'        => $paidInvoice->invoice_id,
-            'payment_method_id' => $paymentMethod->payment_method_id,
-            'payment_date'      => '2022-04-10',
-            'payment_amount'    => 121,
-        ];
-        $payment = Payment::factory()->create($payload);
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
-    }
-
-    /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.payments.assign_tax')
-     *
-     * @skip Not implemented yet
-     **/
-    public function it_fails_to_assign_tax_without_tax_id(): void
-    {
-        $this->markTestIncomplete();
-        // $this->authenticate();
-        $user = User::factory()->create();
-
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payload = [
-            'payment_date' => '2024-11-22',
-            'amount'       => 100,
-        ];
-
-        $payment = Payment::factory()->create($payload);
-
-        Livewire::test(ManagePayments::class)
-            ->assertStatus(422)
-            ->set('data.payment_date', $payload['payment_date'])
-            ->set('data.payment_amount', $payload['amount'])
-            ->call('processRefund')
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('payments', array_merge($payload, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
+            ->assertHasFormErrors(['amount']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "invoice_id": "Value",
-     * "payment_method_id": "Value",
-     * "payment_status": "Value",
-     * "paid_at": "2025-04-30",
-     * "payment_amount": "9.99"
-     * }
+     * @payload ['payment_method' => null]
+     */
+    public function it_fails_to_create_payment_without_method(): void
+    {
+        // arrange
+        $payload = ['payment_method' => null];
+
+        // act
+        Livewire::test(CreatePayment::class)
+            ->actingAs($this->user)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasFormErrors(['payment_method']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['amount' => 888.00]
      */
     public function it_updates_a_payment(): void
     {
-        $this->markTestIncomplete();
-        $user = User::factory()->create();
+        // arrange
+        $payment = Payment::factory()->for($this->user->company)->create(['amount' => 123.00]);
+        $payload = ['amount' => 888.00];
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payment = Payment::factory()->create([
-            'invoice_id'        => $paidInvoice->invoice_id,
-            'payment_method_id' => $paymentMethod->payment_method_id,
-            'payment_date'      => '2022-04-10',
-            'payment_amount'    => 121,
-        ]);
-
-        $updatedData = [
-            'payment_date' => now()->toDateString(),
-            'amount'       => 2000,
-            'payment_type' => 'Credit Card',
-            'note'         => 'Final payment',
-        ];
-
-        Livewire::test(EditPayment::class, ['record' => $payment->payment_id])
-            ->set('data.payment_date', $updatedData['payment_date'])
-            ->set('data.payment_amount', $updatedData['amount'])
-            ->set('data.payment_type', $updatedData['payment_type'])
-            ->set('data.note', $updatedData['note'])
+        // act
+        Livewire::test(EditPayment::class, ['record' => $payment->id])
+            ->actingAs($this->user)
+            ->fillForm($payload)
             ->call('save')
-            ->assertHasNoErrors();
+            ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('payments', array_merge($updatedData, [
-            'payment_id' => $payment->payment_id,
-        ]));
+        // assert
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'amount' => 888.00]);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "invoice_id": "Value",
-     * "payment_method_id": "Value",
-     * "payment_status": "Value",
-     * "paid_at": "2025-04-30",
-     * "payment_amount": "9.99"
-     * }
+     * @payload ['amount' => null]
+     */
+    public function it_fails_to_update_payment_with_null_amount(): void
+    {
+        // arrange
+        $payment = Payment::factory()->for($this->user->company)->create();
+
+        // act
+        Livewire::test(EditPayment::class, ['record' => $payment->id])
+            ->actingAs($this->user)
+            ->fillForm(['amount' => null])
+            ->call('save')
+            ->assertHasFormErrors(['amount']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
      */
     public function it_deletes_a_payment(): void
     {
-        $this->markTestIncomplete('Needs delete action');
+        // arrange
+        $payment = Payment::factory()->for($this->user->company)->create();
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
-            'invoice_group_name'              => '::invoicegroup_name::',
-            'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
-        ]);
-
-        $paymentMethod = PaymentMethod::factory()->create([
-            'payment_method_name' => '::payment_method_name::',
-        ]);
-
-        $paidInvoice = Invoice::factory()->paid()->create([
-            'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'invoice_number'   => '::paid_invoice_number::',
-            'payment_method'   => $paymentMethod->payment_method_id,
-        ]);
-
-        $payment = Payment::factory()->create([
-            'invoice_id'        => $paidInvoice->invoice_id,
-            'payment_method_id' => $paymentMethod->payment_method_id,
-            'payment_date'      => '2022-04-10',
-            'payment_amount'    => 121,
-        ]);
-
-        Livewire::test(ManagePayments::class)
-            ->callTableAction('delete', $payment)
+        // act
+        Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->call('delete', $payment->id)
             ->assertHasNoErrors();
 
-        $this->assertDatabaseMissing('payments', [
-            'payment_id' => $payment->payment_id,
-        ]);
+        // assert
+        $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
     }
 
-    // endregion
+    #[Test]
+    public function it_fails_to_delete_if_invoice_is_paid(): void
+    {
+        $invoice = Invoice::factory()
+            ->for($this->user->company)
+            ->create(['status' => InvoiceStatus::PAID]);
 
-    // region usp
-    // endregion
+        $payment = Payment::factory()
+            ->for($this->user->company)
+            ->for($invoice)
+            ->create();
+
+        Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->call('delete', $payment->id)
+            ->assertHasErrors(['delete']);
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     */
+    public function it_fails_to_delete_already_deleted_payment(): void
+    {
+        // arrange
+        $payment = Payment::factory()->for($this->user->company)->create();
+        $payment->delete();
+
+        // act + assert
+        Livewire::test(ListPayments::class)
+            ->actingAs($this->user)
+            ->callTableAction('delete', $payment)
+            ->assertHasErrors();
+
+        $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
+    }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\IpModules\Activity\Models;
+namespace Modules\Activity\Models;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Quotes\Models\Quote;
+use Modules\Invoices\Models\Invoice;
+use Modules\Quotes\Models\Quote;
 use App\Support\DateFormatter;
 use Illuminate\Database\Eloquent\Model;
 

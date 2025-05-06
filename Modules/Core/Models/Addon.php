@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Addons\Models;
+namespace Modules\Addons\Models;
 
 use App\Support\Migrations;
 use Illuminate\Database\Eloquent\Model;

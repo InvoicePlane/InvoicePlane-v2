@@ -1,11 +1,11 @@
 <?php
 
-namespace App\IpModules\RecurringInvoices\Support;
+namespace Modules\RecurringInvoices\Support;
 
-use App\IpModules\RecurringInvoices\Models\RecurringInvoice;
-use App\IpModules\RecurringInvoices\Models\RecurringInvoiceAmount;
-use App\IpModules\RecurringInvoices\Models\RecurringInvoiceItem;
-use App\IpModules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
+use Modules\RecurringInvoices\Models\RecurringInvoice;
+use Modules\RecurringInvoices\Models\RecurringInvoiceAmount;
+use Modules\RecurringInvoices\Models\RecurringInvoiceItem;
+use Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
 
 class RecurringInvoiceCalculate
 {

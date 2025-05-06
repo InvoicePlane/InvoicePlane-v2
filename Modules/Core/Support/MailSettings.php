@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\MailQueue\Support;
+namespace Modules\Core\Support;
 
 class MailSettings
 {

@@ -1,15 +1,9 @@
 <?php
 
-namespace App\IpModules\Merchant\Support\Drivers;
+namespace Modules\Core\Support\Drivers;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Merchant\Models\PaymentTypeClient;
-use App\IpModules\Merchant\Models\PaymentTypePayment;
-use App\IpModules\Merchant\Support\MerchantDriver;
-use App\IpModules\Payments\Models\Payment;
 use Exception;
-use Stripe\Charge;
-use Stripe\Customer;
+use Modules\Core\Support\MerchantDriver;
 
 class Stripe extends MerchantDriver
 {
@@ -55,7 +49,7 @@ class Stripe extends MerchantDriver
                 'payment_method_id' => config('ip.onlinePaymentMethod'),
             ]);
 
-            PaymentTypePayment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
+            MerchantPayment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
 
             return true;
         } catch (Exception $e) {

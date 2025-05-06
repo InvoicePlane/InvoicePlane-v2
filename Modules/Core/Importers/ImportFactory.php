@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
 class ImportFactory
 {
@@ -8,21 +8,21 @@ class ImportFactory
     {
         switch ($importType) {
             case 'customers':
-                return app()->make(\App\IpModules\Import\Importers\ClientImporter::class);
+                return app()->make(\Modules\Clients\Importers\CustomerImporter::class);
             case 'quotes':
-                return app()->make(\App\IpModules\Import\Importers\QuoteImporter::class);
+                return app()->make(\Modules\Core\Importers\QuoteImporter::class);
             case 'invoices':
-                return app()->make(\App\IpModules\Import\Importers\InvoiceImporter::class);
+                return app()->make(\Modules\Core\Importers\InvoiceImporter::class);
             case 'payments':
-                return app()->make(\App\IpModules\Import\Importers\PaymentImporter::class);
+                return app()->make(\Modules\Core\Importers\PaymentImporter::class);
             case 'invoiceItems':
-                return app()->make(\App\IpModules\Import\Importers\InvoiceItemImporter::class);
+                return app()->make(\Modules\Core\Importers\InvoiceItemImporter::class);
             case 'quoteItems':
-                return app()->make(\App\IpModules\Import\Importers\QuoteItemImporter::class);
+                return app()->make(\Modules\Core\Importers\QuoteItemImporter::class);
             case 'itemLookups':
-                return app()->make(\App\IpModules\Import\Importers\ItemLookupImporter::class);
+                return app()->make(\Modules\Core\Importers\ItemLookupImporter::class);
             case 'expenses':
-                return app(\App\IpModules\Import\Importers\ExpenseImporter::class);
+                return app(\Modules\Core\Importers\ExpenseImporter::class);
         }
     }
 }

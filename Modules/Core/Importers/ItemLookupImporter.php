@@ -1,9 +1,9 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
-use App\IpModules\Products\Models\ItemLookup;
-use App\IpModules\TaxRates\Models\TaxRate;
+use Modules\Products\Models\ItemLookup;
+use Modules\TaxRates\Models\TaxRate;
 use Illuminate\Support\Facades\Validator;
 
 class ItemLookupImporter extends AbstractImporter

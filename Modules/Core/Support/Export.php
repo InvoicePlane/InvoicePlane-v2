@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Exports\Support;
+namespace Modules\Core\Support;
 
 use Exporter\Handler;
 use Exporter\Source\ArraySourceIterator;
@@ -22,9 +22,9 @@ class Export
         $this->writerType  = $writerType;
     }
 
-    public function writeFile()
+    public function writeFile(): void
     {
-        $resultsClass = 'App\IpModules\Exports\Support\Results\\' . $this->exportType;
+        $resultsClass = 'Modules\Core\Support\Results\\' . $this->exportType;
         $writerClass  = 'Exporter\Writer\\' . $this->writerType;
 
         $fileExtension  = mb_strtolower(str_replace('Writer', '', $this->writerType));

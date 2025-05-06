@@ -1,12 +1,10 @@
 <?php
 
-namespace App\IpModules\Merchant\Support\Drivers;
+namespace Modules\Core\Support\Drivers;
 
-use App\IpModules\Invoices\Models\Invoice;
-use App\IpModules\Merchant\Models\PaymentTypePayment;
-use App\IpModules\Merchant\Support\MerchantDriverPayable;
-use App\IpModules\Payments\Models\Payment as FIPayment;
-use Log;
+use Modules\Core\Models\MerchantPayment;
+use Modules\Core\Support\MerchantDriverPayable;
+use Modules\Invoices\Models\Invoice;
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
@@ -105,7 +103,7 @@ class PayPal extends MerchantDriverPayable
                     'payment_method_id' => config('ip.onlinePaymentMethod'),
                 ]);
 
-                PaymentTypePayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
+                MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
             }
 
             return true;

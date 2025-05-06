@@ -2,9 +2,6 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\UserResource;
 use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;
@@ -19,218 +16,161 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(UserResource::class)]
 class UsersTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-    // region smoke
-
+    #[Test]
+    #[Group('smoke')]
+    /**
+     * @payload ['email' => 'admin@example.com']
+     *
+     * @arrange create a user with email 'admin@example.com'
+     *
+     * @act visit user listing
+     *
+     * @assert email is visible
+     */
     public function it_lists_users(): void
     {
-        $user = User::factory()->create();
-
-        User::factory()->create([
-            'user_name' => '::user_name::',
-        ]);
+        $record = User::factory()->create(['email' => 'admin@example.com']);
 
         Livewire::test(ListUsers::class)
+            ->actingAs($this->superAdmin())
             ->assertSuccessful()
-            ->assertSee('::user_name::');
+            ->assertSeeDatabaseRecords($record);
     }
-    // endregion
 
-    // region crud
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
+     * @payload ['email' => 'new@example.com', 'password' => 'password123']
+     *
+     * @arrange none
+     *
+     * @act create user
+     *
+     * @assert inserted in database
      */
     public function it_creates_a_user(): void
     {
-        $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
-
-        $payload = [
-            'name'              => 'Example',
-            'email'             => 'Example',
-            'email_verified_at' => '2025-04-30',
-            'password'          => 'Example',
-            'remember_token'    => 'Example',
-        ];
+        $payload = ['email' => 'new@example.com', 'password' => 'password123'];
 
         Livewire::test(CreateUser::class)
+            ->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
-    }
 
-    /**
-     * @test
-     *
-     * @payload
-     * {
-     *    "user_type": null,
-     *    "email": null,
-     *    "user_password": null
-     * }
-     *
-     * @skip Not implemented yet
-     */
-    public function it_fails_to_create_a_user_without_required_fields(): void
-    {
-        $this->markTestSkipped();
-        // $this->authenticate();
-        $payload = [
-            'user_type'  => null,
-            'user_email' => null,
-            'password'   => null,
-        ];
-
-        Livewire::test(CreateUser::class)
-            ->assertSuccessful()
-            ->set('data.user_type', $payload['user_type'])
-            ->set('data.user_email', $payload['user_email'])
-            ->set('data.user_password', $payload['password'])
-            ->call('create')
-            ->assertHasErrors(['data.user_type'])
-            ->assertHasErrors(['data.user_email'])
-            ->assertHasErrors(['data.user_password']);
-
-        $this->assertDatabaseHas('users', $payload);
+        $this->assertDatabaseHas('users', ['email' => 'new@example.com']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
+     * @payload ['email' => null]
+     *
+     * @arrange none
+     *
+     * @act try to create without email
+     *
+     * @assert form error triggered
+     */
+    public function it_fails_to_create_user_without_email(): void
+    {
+        $payload = ['password' => 'abc'];
+
+        Livewire::test(CreateUser::class)
+            ->actingAs($this->superAdmin())
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasFormErrors(['email']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload ['email' => 'updated@example.com']
+     *
+     * @arrange user exists
+     *
+     * @act update email
+     *
+     * @assert email updated in database
      */
     public function it_updates_a_user(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $user    = User::factory()->create(['email' => 'before@example.com']);
+        $payload = ['email' => 'updated@example.com'];
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = User::factory()->create();
-
-        $this->markTestSkipped();
-        // $this->authenticate();
-
-        $user = User::factory()->create();
-
-        $updatedData = [
-            'user_name'    => 'updated_user',
-            'user_company' => 'Updated Inc',
-        ];
-
-        Livewire::test(EditUser::class, ['record' => $user->user_id])
-            ->set('data.user_name', $updatedData['user_name'])
-            ->set('data.user_company', $updatedData['user_company'])
+        Livewire::test(EditUser::class, ['record' => $user->id])
+            ->actingAs($this->superAdmin())
+            ->fillForm($payload)
             ->call('save')
-            ->assertSuccessful();
+            ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('users', array_merge($updatedData, [
-            'user_id' => $user->user_id,
-        ]));
+        $this->assertDatabaseHas('users', ['email' => 'updated@example.com']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
+     * @payload ['email' => null]
+     *
+     * @arrange user exists
+     *
+     * @act try to update with null email
+     *
+     * @assert form error triggered
+     */
+    public function it_fails_to_update_user_without_email(): void
+    {
+        $user    = User::factory()->create(['email' => 'valid@example.com']);
+        $payload = ['email' => null];
+
+        Livewire::test(EditUser::class, ['record' => $user->id])
+            ->actingAs($this->superAdmin())
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasFormErrors(['email']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload []
+     *
+     * @arrange user exists
+     *
+     * @act delete user
+     *
+     * @assert record removed
      */
     public function it_deletes_a_user(): void
     {
-        $this->markTestIncomplete('Needs delete action');
-        // $this->authenticate();
         $user = User::factory()->create();
 
-        Livewire::test(ManageUsers::class)
-            ->callTableAction('delete', $user->user_id)
-            ->assertSuccessful()
-            ->assertHasNoErrors();
+        Livewire::test(ListUsers::class)
+            ->actingAs($this->superAdmin())
+            ->callTableAction('delete', $user);
 
-        $this->assertDatabaseMissing('users', ['user_id' => $user->user_id]);
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
-    // endregion
-
-    // region usp
+    #[Test]
+    #[Group('crud')]
     /**
-     * @test
-     *
-     * @payload
-     * {
-     * "user_id": 1
-     * }
-     *
-     * @skip Not implemented yet
+     * @payload []
      */
-    public function it_assigns_clients_to_a_guest_user(): void
+    public function it_fails_to_delete_user_twice(): void
     {
-        $this->markTestSkipped();
-        $guestUser = User::factory()->create([
-            'user_type'   => User::CLIENT,
-            'user_name'   => '::user_name::',
-            'user_email'  => '::user_email::',
-            'user_active' => true,
-        ]);
+        /* @arrange deleted user */
+        $user = User::factory()->create();
+        $user->delete();
 
-        $clients = Client::factory()->count(3)->create();
+        /* @act try to delete again */
+        Livewire::test(ListUsers::class)
+            ->actingAs($this->superAdmin())
+            ->callTableAction('delete', $user)
+            ->assertHasErrors();
 
-        Livewire::test(ManageClients::class, ['userId' => $guestUser->user_id])
-            ->assertSuccessful()
-            ->assertSee('Assigned Clients')
-            ->call('addClient', $clients[0]->client_id)
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('user_clients', [
-            'user_id'   => $guestUser->user_id,
-            'client_id' => $clients[0]->client_id,
-        ]);
-
-        Livewire::test(ManageClients::class, ['userId' => $guestUser->user_id])
-            ->call('assignAllClients')
-            ->assertHasNoErrors();
-
-        foreach ($clients as $client) {
-            $this->assertDatabaseHas('user_clients', [
-                'user_id'   => $guestUser->user_id,
-                'client_id' => $client->client_id,
-            ]);
-        }
+        /* @assert form error triggered */
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
-    // endregion
 }

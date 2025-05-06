@@ -12,6 +12,7 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\CreatePaymentMethod;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
+use Modules\Payments\Models\Payment;
 use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -25,9 +26,13 @@ class PaymentMethodsTest extends AbstractTestCase
     use WithFaker;
     use WithoutMiddleware;
 
+    protected User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);
         $this->withoutExceptionHandling();
     }
 
@@ -98,8 +103,7 @@ class PaymentMethodsTest extends AbstractTestCase
             ->assertSee('Credit Card');
 
         $this->assertDatabaseHas('payment_methods', array_merge($data, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
+            'payment_method_name' => 'Credit Card',
         ]));
     }
 
@@ -174,7 +178,6 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
-
     public function it_deletes_a_payment_method(): void
     {
         $this->markTestSkipped('Not implemented yet');
@@ -184,13 +187,27 @@ class PaymentMethodsTest extends AbstractTestCase
 
         $paymentMethod = PaymentMethod::factory()->create();
 
-        Livewire::test(ManagePaymentMethods::class)
+        Livewire::test(ListPaymentMethods::class)
             ->callTableAction('delete', $paymentMethod)
             ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('payment_methods', [
             'payment_method_id' => $paymentMethod->payment_method_id,
         ]);
+    }
+
+    #[Test]
+    public function it_fails_to_delete_method_with_attached_payment(): void
+    {
+        $method = PaymentMethod::factory()->for($this->user->company)->create();
+        Payment::factory()->for($this->user->company)->for($method)->create();
+
+        Livewire::actingAs($this->user)
+            ->test(ListPaymentMethods::class)
+            ->call('delete', $method->id)
+            ->assertHasErrors(['delete']);
+
+        $this->assertDatabaseHas('payment_methods', ['id' => $method->id]);
     }
     // endregion
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;

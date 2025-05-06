@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IpModules\MailQueue\Support;
+namespace Modules\Core\Support;
 
 use App\Support\PDF\PDFFactory;
 use Exception;
@@ -25,7 +25,7 @@ class MailQueue
 
     public function send($id)
     {
-        $mail = \App\IpModules\MailQueue\Models\MailQueue::find($id);
+        $mail = \Modules\Core\Models\MailQueue::find($id);
 
         if ($this->sendMail(
             $mail->from,
@@ -56,7 +56,7 @@ class MailQueue
         try {
             $htmlTemplate = (view()->exists('email_templates.html')) ? 'email_templates.html' : 'templates.emails.html';
 
-            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body], function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath) {
+            Mail::send([$htmlTemplate, 'templates.emails.text'], ['body' => $body], function ($message) use ($from, $to, $cc, $bcc, $subject, $attachmentPath): void {
                 $from = json_decode($from, true);
                 $to   = json_decode($to, true);
                 $cc   = json_decode($cc, true);

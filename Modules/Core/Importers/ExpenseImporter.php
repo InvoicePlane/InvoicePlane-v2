@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IpModules\Import\Importers;
+namespace Modules\Core\Importers;
 
-use App\IpModules\Expenses\Models\Expense;
+use Modules\Expenses\Models\Expense;
 use Illuminate\Support\Facades\Validator;
 
 class ExpenseImporter extends AbstractImporter

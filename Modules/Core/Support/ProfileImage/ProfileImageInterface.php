@@ -2,7 +2,7 @@
 
 namespace App\Support\ProfileImage;
 
-use App\IpModules\Users\Models\User;
+use Modules\Users\Models\User;
 
 interface ProfileImageInterface
 {

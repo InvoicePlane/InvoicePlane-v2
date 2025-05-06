@@ -15,7 +15,7 @@ class PDFFactory
 
     public static function getDrivers()
     {
-        $driverFiles = Directory::listContents(app_path('Support/PDF/Drivers'));
+        $driverFiles = Directory::listContents(app_path('Support/PDF/MerchantDrivers'));
         $drivers     = [];
 
         foreach ($driverFiles as $driverFile) {
