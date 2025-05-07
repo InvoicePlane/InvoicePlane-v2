@@ -20,21 +20,21 @@ use Modules\Core\Modules\Quotes\Models\Quote;
 use Modules\Projects\Models\Project;
 
 /**
- * @property int             $id
- * @property string          $search_code
- * @property string|null     $company_name
- * @property string          $slug
- * @property string          $vat_number
- * @property string          $id_number
- * @property string          $coc_number
- * @property string|null     $web
- * @property string|null     $logo
- * @property string          $quote_template
- * @property string          $invoice_template
- * @property CompanyUser[]   $companyUsers
- * @property DocumentGroup[] $documentGroups
- * @property Project[]       $projects
- * @property TaxRate[]       $taxRates
+ * @property int              $id
+ * @property string           $search_code
+ * @property string|null      $company_name
+ * @property string           $slug
+ * @property string           $vat_number
+ * @property string           $id_number
+ * @property string           $coc_number
+ * @property string|null      $web
+ * @property string|null      $logo
+ * @property string           $quote_template
+ * @property string           $invoice_template
+ * @property CompanyUser[]    $companyUsers
+ * @property DocumentGroup[]  $documentGroups
+ * @property Project[]        $projects
+ * @property TaxRate[] $taxRates
  */
 class Company extends Model
 {

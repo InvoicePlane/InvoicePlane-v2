@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Controllers;
 
-use Modules\Core\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Modules\Settings\Models\Setting;
 
 class WidgetController extends Controller

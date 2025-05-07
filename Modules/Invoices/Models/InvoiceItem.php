@@ -16,26 +16,26 @@ use Modules\Projects\Models\Task;
 /**
  * Class InvoiceItem.
  *
- * @property int         $id
- * @property int         $invoice_id
- * @property int         $item_id
- * @property int         $tax_rate_id
- * @property int         $tax_rate_2_id
- * @property string      $name
- * @property Carbon|null $item_date
- * @property float       $quantity
- * @property float       $price
- * @property float|null  $subtotal
- * @property float|null  $tax_1
- * @property float|null  $tax_2
- * @property float|null  $tax
- * @property float|null  $discount
- * @property float|null  $total
- * @property int         $display_order
- * @property string      $description
- * @property Invoice     $invoice
- * @property ItemLookup  $item_lookup
- * @property TaxRate     $tax_rate
+ * @property int            $id
+ * @property int            $invoice_id
+ * @property int            $item_id
+ * @property int            $tax_rate_id
+ * @property int            $tax_rate_2_id
+ * @property string         $name
+ * @property Carbon|null    $item_date
+ * @property float          $quantity
+ * @property float          $price
+ * @property float|null     $subtotal
+ * @property float|null     $tax_1
+ * @property float|null     $tax_2
+ * @property float|null     $tax
+ * @property float|null     $discount
+ * @property float|null     $total
+ * @property int            $display_order
+ * @property string         $description
+ * @property Invoice        $invoice
+ * @property ItemLookup     $item_lookup
+ * @property TaxRate $tax_rate
  */
 class InvoiceItem extends Model
 {

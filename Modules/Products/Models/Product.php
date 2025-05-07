@@ -16,24 +16,24 @@ use Modules\Products\Database\Factories\ProductFactory;
 use Modules\Products\Enums\ProductType;
 
 /**
- * @property int              $id
- * @property int              $company_id
- * @property int              $category_id
- * @property int|null         $unit_id
- * @property int|null         $tax_rate_id
- * @property ProductType      $type
- * @property string           $code
- * @property string           $item_name
- * @property float            $price
- * @property float|null       $cost_price
- * @property int|null         $tariff
- * @property string|null      $description
- * @property Carbon|null      $created_at
- * @property Carbon|null      $updated_at
- * @property Company          $company
- * @property ProductCategory  $category
- * @property ProductUnit|null $productUnit
- * @property TaxRate|null     $taxRate
+ * @property int                 $id
+ * @property int                 $company_id
+ * @property int                 $category_id
+ * @property int|null            $unit_id
+ * @property int|null            $tax_rate_id
+ * @property ProductType         $type
+ * @property string              $code
+ * @property string              $item_name
+ * @property float               $price
+ * @property float|null          $cost_price
+ * @property int|null            $tariff
+ * @property string|null         $description
+ * @property Carbon|null         $created_at
+ * @property Carbon|null         $updated_at
+ * @property Company             $company
+ * @property ProductCategory     $category
+ * @property ProductUnit|null    $productUnit
+ * @property TaxRate|null $taxRate
  */
 class Product extends Model
 {

@@ -37,7 +37,6 @@ use Modules\Quotes\Models\Quote;
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
-    use HasApiTokens;
     use HasFactory;
     use Notifiable;
 

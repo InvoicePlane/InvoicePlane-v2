@@ -2,9 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Exporter\Handler;
-use Exporter\Source\ArraySourceIterator;
-
 class Export
 {
     protected $exportType;
