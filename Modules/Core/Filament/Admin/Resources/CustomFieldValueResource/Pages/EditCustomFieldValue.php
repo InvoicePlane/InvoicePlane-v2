@@ -2,12 +2,9 @@
 
 namespace Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages;
 
-use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\EditCustomFieldValue;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource;
-
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource;
 
 class EditCustomFieldValue extends EditRecord
 {

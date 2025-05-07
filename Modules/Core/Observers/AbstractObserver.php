@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Observers;
 
-use Modules\Core\Observers\AbstractObserver;
-
 use Illuminate\Support\Facades\Log;
 
 class AbstractObserver

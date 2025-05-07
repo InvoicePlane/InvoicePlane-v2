@@ -2,50 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Modules\Products\Filament\Company\Resources\ProductUnitResource;
-
-use Modules\Core\Providers\CompanyPanelProvider;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Products\Filament\Company\Resources\ProductResource;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-
-use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-
-use Modules\Clients\Filament\Company\Resources\ContactResource;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -65,6 +21,21 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\File;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\Clients\Filament\Company\Resources\ContactResource;
+use Modules\Clients\Filament\Company\Resources\CustomerResource;
+use Modules\Core\Filament\Company\Pages\Dashboard;
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
+use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
+use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
+use Modules\Payments\Filament\Company\Resources\PaymentResource;
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
+use Modules\Products\Filament\Company\Resources\ProductResource;
+use Modules\Products\Filament\Company\Resources\ProductUnitResource;
+use Modules\Projects\Filament\Company\Resources\ProjectResource;
+use Modules\Projects\Filament\Company\Resources\TaskResource;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 use Nwidart\Modules\Facades\Module;
 
 class CompanyPanelProvider extends PanelProvider

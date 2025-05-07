@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\UpdateChecker;
-
 class UpdateChecker
 {
     protected $currentVersion;

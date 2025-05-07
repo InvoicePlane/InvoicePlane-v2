@@ -2,12 +2,7 @@
 
 namespace Modules\Clients\Listeners;
 
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Clients\Listeners\CustomerWasCreatedListener;
-
 use Modules\Clients\Models\Relation;
-
 
 class CustomerWasCreatedListener
 {

@@ -2,19 +2,11 @@
 
 namespace Modules\Clients\Services;
 
-use Modules\Clients\Services\CustomerService;
-
-use Modules\Clients\Events\CustomerWasCreated;
-
-use Modules\Clients\Events\CustomerWasUpdated;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Services\BaseService;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Model;
+use Modules\Clients\Events\CustomerWasCreated;
+use Modules\Clients\Events\CustomerWasUpdated;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Services\BaseService;
 
 class CustomerService extends BaseService
 {

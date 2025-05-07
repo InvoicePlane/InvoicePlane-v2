@@ -2,16 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Modules\Core\Helpers\EnumHelper;
-
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
-
-use Modules\Core\Enums\DocumentGroupType;
-
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-
-use Modules\Core\Models\DocumentGroup;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
@@ -23,6 +13,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Modules\Core\Enums\DocumentGroupType;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\DocumentGroup;
 
 class DocumentGroupResource extends Resource
 {

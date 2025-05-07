@@ -2,28 +2,14 @@
 
 namespace Modules\Expenses\Providers;
 
-use Modules\Expenses\Providers\ExpensesServiceProvider;
-
-use Modules\Expenses\Models\ExpenseCategory;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Expenses\Observers\ExpenseCategoryObserver;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Quotes\Providers\EventServiceProvider;
-
-use Modules\Core\Support\Migrations;
-
-use Modules\Expenses\Observers\ExpenseObserver;
-
-use Modules\Quotes\Providers\RouteServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Expenses\Models\Expense;
+use Modules\Expenses\Models\ExpenseCategory;
+use Modules\Expenses\Observers\ExpenseCategoryObserver;
+use Modules\Expenses\Observers\ExpenseObserver;
+use Modules\Quotes\Providers\EventServiceProvider;
+use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

@@ -2,10 +2,7 @@
 
 namespace Modules\Core\Listeners;
 
-use Modules\Core\Listeners\UserWasUpdatedListener;
-
 use Modules\Core\Events\UserWasUpdated;
-
 
 class UserWasUpdatedListener
 {

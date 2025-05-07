@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Directory;
-
 class MerchantFactory
 {
     public static function getDrivers($enabledOnly = false)

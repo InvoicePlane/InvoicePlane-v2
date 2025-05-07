@@ -2,20 +2,10 @@
 
 namespace Modules\Invoices\Providers;
 
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Providers\EventServiceProvider;
-
-use Modules\Invoices\Providers\InvoicesServiceProvider;
-
-use Modules\Core\Support\Migrations;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Quotes\Providers\RouteServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Quotes\Providers\EventServiceProvider;
+use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

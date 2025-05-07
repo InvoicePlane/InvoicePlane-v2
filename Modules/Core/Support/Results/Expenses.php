@@ -4,11 +4,6 @@ namespace Modules\Core\Support\Results;
 
 use Modules\Expenses\Models\Expense;
 
-use Modules\Core\Support\Results\SourceInterface;
-
-use Modules\Core\Support\Results\Expenses;
-
-
 class Expenses implements SourceInterface
 {
     public function getResults($params = [])

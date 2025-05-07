@@ -3,7 +3,6 @@
 namespace Modules\RecurringInvoices\Support;
 
 use Modules\Invoices\Models\RecurringInvoice;
-
 use Modules\RecurringInvoices\Models\RecurringInvoice;
 use Modules\RecurringInvoices\Models\RecurringInvoiceAmount;
 use Modules\RecurringInvoices\Models\RecurringInvoiceItem;

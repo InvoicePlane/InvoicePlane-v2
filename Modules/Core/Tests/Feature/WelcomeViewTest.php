@@ -2,11 +2,8 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Tests\Feature\WelcomeViewTest;
-
 use Livewire\Livewire;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

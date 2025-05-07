@@ -2,13 +2,8 @@
 
 namespace Modules\Core\Importers;
 
-use Modules\Core\Importers\AbstractImporter;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Importers\ProductImporter;
-
 use Illuminate\Support\Facades\Validator;
+use Modules\Core\Models\TaxRate;
 
 class ProductImporter extends AbstractImporter
 {

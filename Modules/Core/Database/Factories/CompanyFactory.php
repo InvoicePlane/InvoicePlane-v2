@@ -2,14 +2,6 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Modules\Core\Enums\UserRole;
-
-use Modules\Core\Database\Factories\CompanyFactory;
-
-use Modules\Core\Models\Address;
-
-use Modules\Core\Models\Company;
-
 use Faker\Provider\en_US\Address;
 use Faker\Provider\en_US\Company;
 use Faker\Provider\en_US\Person;
@@ -18,6 +10,9 @@ use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserRole;
+use Modules\Core\Models\Address;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Company as CompanyModel;
 
 class CompanyFactory extends Factory

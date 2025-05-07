@@ -2,12 +2,8 @@
 
 namespace Modules\Core\Tests\Unit\Events;
 
-use Modules\Core\Models\User;
-
-use Modules\Core\Tests\Unit\Events\UserWasUpdatedTest;
-
 use Modules\Core\Events\UserWasUpdated;
-
+use Modules\Core\Models\User;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

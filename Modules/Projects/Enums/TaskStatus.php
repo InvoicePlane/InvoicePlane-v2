@@ -2,10 +2,6 @@
 
 namespace Modules\Projects\Enums;
 
-use Modules\Projects\Enums\TaskStatus;
-
-use Modules\Core\Contracts\LabeledEnum;
-
 enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case OPEN        = 'open';

@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Enums;
 
-use Modules\Core\Enums\UserRole;
-
-use Modules\Core\Contracts\LabeledEnum;
-
 enum UserRole: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case SUPER_ADMIN    = 'super_admin';

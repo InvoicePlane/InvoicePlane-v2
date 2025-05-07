@@ -2,12 +2,7 @@
 
 namespace Modules\Quotes\Enums;
 
-use Modules\Quotes\Enums\QuoteStatus;
-
-use Modules\Core\Support\Results\Quotes;
-
 use Modules\Core\Contracts\LabeledEnum;
-
 
 enum QuoteStatus: string implements LabeledEnum
 {

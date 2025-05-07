@@ -2,13 +2,8 @@
 
 namespace Modules\Clients\Observers;
 
-use Modules\Clients\Observers\ContactObserver;
-
-use Modules\Clients\Models\Contact;
-
-use Modules\Core\Support\Results\Clients;
-
 use Illuminate\Support\Facades\Log;
+use Modules\Clients\Models\Contact;
 
 class ContactObserver
 {

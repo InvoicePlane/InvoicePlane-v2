@@ -2,12 +2,9 @@
 
 namespace Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages;
 
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
-
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 class EditDocumentGroup extends EditRecord
 {

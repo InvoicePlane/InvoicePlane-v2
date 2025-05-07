@@ -2,16 +2,6 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Models\Company;
-
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
@@ -23,6 +13,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages;
+use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryResource extends Resource
 {

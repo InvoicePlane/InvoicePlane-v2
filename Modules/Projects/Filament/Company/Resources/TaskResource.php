@@ -2,18 +2,6 @@
 
 namespace Modules\Projects\Filament\Company\Resources;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Projects\Enums\TaskStatus;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -30,7 +18,10 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
+use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Filament\Company\Resources\TaskResource\Pages;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
 
 class TaskResource extends Resource
 {

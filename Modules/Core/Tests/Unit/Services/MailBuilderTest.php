@@ -3,7 +3,6 @@
 use Modules\Core\Services\MailBuilder;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\AbstractTestCase;
 
 class MailBuilderTest extends TestCase
 {

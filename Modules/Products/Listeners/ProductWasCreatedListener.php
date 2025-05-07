@@ -4,9 +4,6 @@ namespace Modules\Products\Listeners;
 
 use Modules\Products\Events\ProductWasCreated;
 
-use Modules\Products\Listeners\ProductWasCreatedListener;
-
-
 class ProductWasCreatedListener
 {
     public function __construct() {}

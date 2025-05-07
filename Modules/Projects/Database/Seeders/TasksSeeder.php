@@ -2,13 +2,9 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Projects\Database\Seeders\TasksSeeder;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Seeder;
+use Modules\Core\Models\Company;
+use Modules\Projects\Models\Task;
 
 class TasksSeeder extends Seeder
 {

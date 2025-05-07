@@ -2,41 +2,21 @@
 
 namespace Modules\Quotes\Tests\Api;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Projects\Models\Task;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Quotes\Tests\Api\QuotesApiTest;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Payments\Enums\PaymentStatus;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Tests\ApiTestTrait;
-
-use Modules\Quotes\Models\QuoteItem;
-
-use Modules\Core\Support\Results\Invoices;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
 use Modules\Clients\Models\Client;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\ApiTestTrait;
+use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Payments\Enums\PaymentStatus;
+use Modules\Payments\Models\PaymentMethod;
+use Modules\Products\Models\Product;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteItem;
 
 class QuotesApiTest extends AbstractTestCase
 {

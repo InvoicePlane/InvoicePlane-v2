@@ -2,10 +2,6 @@
 
 namespace Modules\Products\Models;
 
-use Modules\Products\Models\LineItem;
-
-use Modules\Products\Models\Product;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;

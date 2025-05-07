@@ -2,13 +2,9 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Projects\Database\Seeders\ProjectsSeeder;
-
 use Illuminate\Database\Seeder;
+use Modules\Core\Models\Company;
+use Modules\Projects\Models\Project;
 
 class ProjectsSeeder extends Seeder
 {

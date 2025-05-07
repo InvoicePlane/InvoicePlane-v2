@@ -3,11 +3,7 @@
 namespace Modules\Core\Tests\Unit\Services;
 
 use Modules\Core\Services\EmailTemplatePreviewService;
-
 use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Tests\Unit\Services\EmailTemplatePreviewServiceTest;
-
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

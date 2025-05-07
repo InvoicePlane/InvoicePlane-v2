@@ -2,34 +2,20 @@
 
 namespace Modules\Clients\Models;
 
-use Modules\Clients\Database\Factories\ContactFactory;
-
-use Modules\Core\Enums\CommunicationType;
-
-use Modules\Clients\Models\Contact;
-
-use Modules\Core\Models\Address;
-
-use Modules\Core\Models\Communication;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Models\Addressable;
-
-use Modules\Core\Enums\Gender;
-
-use Modules\Clients\Models\Relation;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Modules\Clients\Database\Factories\ContactFactory;
+use Modules\Core\Enums\CommunicationType;
+use Modules\Core\Enums\Gender;
+use Modules\Core\Models\Address;
+use Modules\Core\Models\Addressable;
+use Modules\Core\Models\Communication;
+use Modules\Core\Models\Company;
+use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int        $id

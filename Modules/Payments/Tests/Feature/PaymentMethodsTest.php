@@ -2,32 +2,19 @@
 
 namespace Modules\Payments\Tests\Feature;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Tests\Feature\PaymentMethodsTest;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\EditPaymentMethod;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Models\Company;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\CreatePaymentMethod;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\CreatePaymentMethod;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\EditPaymentMethod;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
+use Modules\Payments\Models\Payment;
+use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

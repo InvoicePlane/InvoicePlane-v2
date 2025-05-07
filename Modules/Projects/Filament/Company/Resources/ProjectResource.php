@@ -2,20 +2,6 @@
 
 namespace Modules\Projects\Filament\Company\Resources;
 
-use Modules\Projects\Enums\ProjectStatus;
-
-use Modules\Core\Helpers\EnumHelper;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\TasksRelationManager;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -30,8 +16,12 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\Company;
+use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages;
 use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers;
+use Modules\Projects\Models\Project;
 
 class ProjectResource extends Resource
 {

@@ -2,15 +2,9 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
-use Modules\Core\Services\MailQueueService;
-
-use Modules\Core\Support\MailQueue;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Tests\Unit\Services\MailQueueServiceTest;
-
 use Modules\Core\Models\MailQueue;
+use Modules\Core\Services\MailQueueService;
+use Modules\Core\Support\MailQueue;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

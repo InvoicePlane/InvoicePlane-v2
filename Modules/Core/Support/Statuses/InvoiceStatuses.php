@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Support\Statuses;
 
-use Modules\Core\Support\Statuses\InvoiceStatuses;
-
-use Modules\Core\Support\Statuses\AbstractStatuses;
-
 class InvoiceStatuses extends AbstractStatuses
 {
     protected static $statuses = [

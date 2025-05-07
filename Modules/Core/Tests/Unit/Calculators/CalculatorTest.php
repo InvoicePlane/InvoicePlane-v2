@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support\Calculators;
 
-use Modules\Core\Support\Calculators\Calculator;
-
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

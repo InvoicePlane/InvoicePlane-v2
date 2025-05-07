@@ -2,15 +2,11 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
-use Modules\Core\Services\MailerService;
-
-use Modules\Core\Tests\Unit\Services\MailerServiceTest;
-
-use Modules\Core\Tests\AbstractTestCase;
-
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use InvalidArgumentException;
+use Modules\Core\Services\MailerService;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\Unit\TestMailable;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

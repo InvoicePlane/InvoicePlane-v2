@@ -2,16 +2,9 @@
 
 namespace Modules\Clients\Filament\Company\Resources\CustomerResource\Pages;
 
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
-
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Modules\Clients\Filament\Company\Resources\CustomerResource;
 
 class ListCustomers extends ListRecords
 {

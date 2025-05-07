@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Services;
 
-use Modules\Core\Services\BaseService;
-
 use Exception;
 use Illuminate\Container\Container as Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

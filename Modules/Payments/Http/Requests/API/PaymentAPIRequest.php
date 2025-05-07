@@ -2,20 +2,11 @@
 
 namespace Modules\Payments\Http\Requests\API;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Http\Requests\API\APIRequest;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Payments\Http\Requests\API\PaymentAPIRequest;
-
-use Modules\Core\Support\Results\Invoices;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Core\Http\Requests\API\APIRequest;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\PaymentMethod;
 
 class PaymentAPIRequest extends APIRequest
 {

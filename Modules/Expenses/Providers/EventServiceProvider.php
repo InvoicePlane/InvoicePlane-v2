@@ -2,13 +2,8 @@
 
 namespace Modules\Expenses\Providers;
 
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Quotes\Providers\EventServiceProvider;
-
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Quotes\Providers\EventServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {

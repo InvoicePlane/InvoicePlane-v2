@@ -2,15 +2,9 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Modules\Products\Database\Factories\ProductCategoryFactory;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Models\Company;
+use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryFactory extends Factory
 {

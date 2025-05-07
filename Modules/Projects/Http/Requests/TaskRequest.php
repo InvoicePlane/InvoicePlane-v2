@@ -2,13 +2,9 @@
 
 namespace Modules\Projects\Http\Requests;
 
-use Modules\Core\Models\TaxRate;
-
-use Modules\Projects\Http\Requests\TaskRequest;
-
-use Modules\Projects\Models\Project;
-
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Core\Models\TaxRate;
+use Modules\Projects\Models\Project;
 
 class TaskRequest extends FormRequest
 {

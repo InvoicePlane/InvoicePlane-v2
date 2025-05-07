@@ -4,11 +4,6 @@ namespace Modules\Core\Support\Results;
 
 use Modules\Invoices\Models\Invoice;
 
-use Modules\Core\Support\Results\SourceInterface;
-
-use Modules\Core\Support\Results\Invoices;
-
-
 class Invoices implements SourceInterface
 {
     public function getResults($params = [])

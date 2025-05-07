@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Enums;
 
-use Modules\Core\Enums\UserType;
-
 enum UserType: int
 {
     /**

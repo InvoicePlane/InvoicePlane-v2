@@ -2,24 +2,14 @@
 
 namespace Modules\Products\Services;
 
-use Modules\Products\Events\ProductWasUpdated;
-
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Services\ProductService;
-
-use Modules\Products\Events\ProductWasCreated;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Services\BaseService;
-
 use Illuminate\Database\Eloquent\Model;
-
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Services\BaseService;
+use Modules\Products\Events\ProductWasCreated;
+use Modules\Products\Events\ProductWasUpdated;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 
 class ProductService extends BaseService
 {

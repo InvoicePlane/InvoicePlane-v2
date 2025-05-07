@@ -2,13 +2,9 @@
 
 namespace Modules\Products\Services;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Services\ProductUnitService;
-
-use Modules\Core\Services\BaseService;
-
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Services\BaseService;
+use Modules\Products\Models\ProductUnit;
 
 class ProductUnitService extends BaseService
 {

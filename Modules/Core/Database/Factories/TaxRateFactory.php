@@ -2,13 +2,9 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Modules\Core\Enums\TaxRateType;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Database\Factories\TaxRateFactory;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Models\TaxRate;
 
 class TaxRateFactory extends Factory
 {

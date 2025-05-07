@@ -2,19 +2,13 @@
 
 namespace Modules\Products\Tests\Api;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Products\Tests\Api\ProductFamiliesApiTest;
-
-use Modules\Core\Models\User;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Core\Tests\ApiTestTrait;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\ApiTestTrait;
+use Modules\Products\Models\ProductCategory;
 
 class ProductFamiliesApiTest extends AbstractTestCase
 {

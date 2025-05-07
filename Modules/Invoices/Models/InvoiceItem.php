@@ -2,52 +2,39 @@
 
 namespace Modules\Invoices\Models;
 
-use Modules\Invoices\Database\Factories\InvoiceItemFactory;
-
-use Modules\Projects\Models\Task;
-
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Products\Models\Product;
-
-use Modules\Invoices\Models\InvoiceItem;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Core\Support\NumberFormatter;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Invoices\Database\Factories\InvoiceItemFactory;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Task;
 
 /**
- * @property int            $id
- * @property int            $invoice_id
- * @property int            $item_id
- * @property int            $tax_rate_id
- * @property int            $tax_rate_2_id
- * @property string         $name
- * @property Carbon|null    $item_date
- * @property float          $quantity
- * @property float          $price
- * @property float|null     $subtotal
- * @property float|null     $tax_1
- * @property float|null     $tax_2
- * @property float|null     $tax
- * @property float|null     $discount
- * @property float|null     $total
- * @property int            $display_order
- * @property string         $description
- * @property Invoice        $invoice
- * @property ItemLookup     $item_lookup
- * @property TaxRate $tax_rate
+ * @property int         $id
+ * @property int         $invoice_id
+ * @property int         $item_id
+ * @property int         $tax_rate_id
+ * @property int         $tax_rate_2_id
+ * @property string      $name
+ * @property Carbon|null $item_date
+ * @property float       $quantity
+ * @property float       $price
+ * @property float|null  $subtotal
+ * @property float|null  $tax_1
+ * @property float|null  $tax_2
+ * @property float|null  $tax
+ * @property float|null  $discount
+ * @property float|null  $total
+ * @property int         $display_order
+ * @property string      $description
+ * @property Invoice     $invoice
+ * @property ItemLookup  $item_lookup
+ * @property TaxRate     $tax_rate
  */
 class InvoiceItem extends Model
 {

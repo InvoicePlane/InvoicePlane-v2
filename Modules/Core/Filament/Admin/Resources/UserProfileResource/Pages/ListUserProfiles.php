@@ -2,12 +2,9 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages;
 
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
-
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
-
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 class ListUserProfiles extends ListRecords
 {

@@ -2,10 +2,8 @@
 
 namespace Modules\Reports\Reports;
 
-use Modules\Core\Support\DateFormatter;
-
 use Modules\Core\Support\CurrencyFormatter;
-
+use Modules\Core\Support\DateFormatter;
 
 class ClientStatementReport
 {

@@ -2,40 +2,19 @@
 
 namespace Modules\Quotes\Tests\Feature;
 
-use Modules\Quotes\Tests\Feature\QuotesTest;
-
-use Modules\Quotes\Enums\QuoteStatus;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Invoices\Enums\InvoiceStatus;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\CreateQuote;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
+use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\CreateQuote;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
+use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

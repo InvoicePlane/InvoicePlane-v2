@@ -2,34 +2,16 @@
 
 namespace Modules\Clients\Database\Seeders;
 
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Projects\Models\Task;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Clients\Database\Seeders\CustomersSeeder;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Models\Invoice;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Models\Quote;
 
 class CustomersSeeder extends Seeder
 {

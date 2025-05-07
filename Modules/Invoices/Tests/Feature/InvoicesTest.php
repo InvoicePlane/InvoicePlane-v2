@@ -2,34 +2,17 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
-
-use Modules\Invoices\Enums\InvoiceStatus;
-
-use Modules\Invoices\Tests\Feature\InvoicesTest;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\EditInvoice;
-
-use Modules\Core\Models\Company;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\CreateInvoice;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\CreateInvoice;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\EditInvoice;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
+use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

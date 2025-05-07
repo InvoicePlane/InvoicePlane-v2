@@ -2,10 +2,6 @@
 
 namespace Modules\Clients\Observers;
 
-use Modules\Clients\Observers\CustomerObserver;
-
-use Modules\Core\Support\Results\Clients;
-
 use Illuminate\Support\Facades\Log;
 
 class CustomerObserver

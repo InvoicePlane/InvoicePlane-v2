@@ -2,12 +2,7 @@
 
 namespace Modules\Core\Support\Results;
 
-use Modules\Core\Support\Results\Payments;
-
 use Modules\Payments\Models\Payment;
-
-use Modules\Core\Support\Results\SourceInterface;
-
 
 class Payments implements SourceInterface
 {

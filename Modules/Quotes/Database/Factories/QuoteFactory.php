@@ -2,27 +2,14 @@
 
 namespace Modules\Quotes\Database\Factories;
 
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Quotes\Enums\QuoteStatus;
-
-use Modules\Quotes\Database\Factories\QuoteFactory;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
+use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Models\Quote;
 
 class QuoteFactory extends Factory
 {

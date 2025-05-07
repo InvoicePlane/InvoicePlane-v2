@@ -2,14 +2,10 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Tests\Feature\DashboardTest;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 
 class DashboardTest extends AbstractTestCase
 {

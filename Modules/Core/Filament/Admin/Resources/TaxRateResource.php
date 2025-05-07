@@ -2,16 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Modules\Core\Filament\Admin\Resources\TaxRateResource;
-
-use Modules\Core\Enums\TaxRateType;
-
-use Modules\Core\Helpers\EnumHelper;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -22,6 +12,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\TaxRate;
 
 class TaxRateResource extends Resource
 {

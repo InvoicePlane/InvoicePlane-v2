@@ -2,10 +2,6 @@
 
 namespace Modules\Invoices\Observers;
 
-use Modules\Invoices\Observers\InvoiceObserver;
-
-use Modules\Core\Support\Results\Invoices;
-
 use Illuminate\Support\Facades\Log;
 
 class InvoiceObserver

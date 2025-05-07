@@ -2,25 +2,16 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\EditCustomField;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\CustomField;
-
-use Modules\Core\Tests\Feature\CustomFieldsTest;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\ListCustomFields;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\CreateCustomField;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource;
-
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Filament\Admin\Resources\CustomFieldResource;
+use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\CreateCustomField;
+use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\EditCustomField;
+use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\ListCustomFields;
+use Modules\Core\Models\CustomField;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 

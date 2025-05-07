@@ -2,15 +2,8 @@
 
 namespace Modules\Clients\Tests\Unit\Importers;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Clients\Importers\ContactImporter;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Clients\Tests\Unit\Importers\ContactImporterTest;
-
 use InvalidArgumentException;
+use Modules\Clients\Importers\ContactImporter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

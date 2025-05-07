@@ -2,10 +2,6 @@
 
 namespace Modules\Payments\Http\Requests;
 
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Http\Requests\PaymentMethodRequest;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaymentMethodRequest extends FormRequest

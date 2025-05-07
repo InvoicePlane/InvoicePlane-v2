@@ -2,15 +2,10 @@
 
 namespace Modules\Quotes\Events;
 
-use Modules\Quotes\Events\QuoteWasCreated;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Modules\Quotes\Models\Quote;
 
 class QuoteWasCreated
 {

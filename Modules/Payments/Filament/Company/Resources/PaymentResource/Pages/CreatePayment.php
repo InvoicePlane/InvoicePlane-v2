@@ -2,15 +2,8 @@
 
 namespace Modules\Payments\Filament\Company\Resources\PaymentResource\Pages;
 
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Models\Company;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Payments\Filament\Company\Resources\PaymentResource;
 
 class CreatePayment extends CreateRecord
 {

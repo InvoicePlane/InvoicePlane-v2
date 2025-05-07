@@ -2,16 +2,10 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Core\Models\Address;
-
-use Modules\Core\Enums\AddressType;
-
-use Modules\Core\Models\Addressable;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Enums\AddressType;
+use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int    $id

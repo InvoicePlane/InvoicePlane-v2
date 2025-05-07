@@ -2,17 +2,11 @@
 
 namespace Modules\Projects\Services;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Projects\Events\TaskWasUpdated;
-
-use Modules\Projects\Events\TaskWasCreated;
-
-use Modules\Projects\Services\TaskService;
-
-use Modules\Core\Services\BaseService;
-
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Services\BaseService;
+use Modules\Projects\Events\TaskWasCreated;
+use Modules\Projects\Events\TaskWasUpdated;
+use Modules\Projects\Models\Task;
 
 class TaskService extends BaseService
 {

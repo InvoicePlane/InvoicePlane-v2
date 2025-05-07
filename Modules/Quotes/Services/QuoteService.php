@@ -2,19 +2,11 @@
 
 namespace Modules\Quotes\Services;
 
-use Modules\Quotes\Services\QuoteService;
-
-use Modules\Quotes\Events\QuoteWasCreated;
-
-use Modules\Quotes\Events\QuoteWasUpdated;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Core\Services\BaseService;
-
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Services\BaseService;
+use Modules\Quotes\Events\QuoteWasCreated;
+use Modules\Quotes\Events\QuoteWasUpdated;
+use Modules\Quotes\Models\Quote;
 
 class QuoteService extends BaseService
 {

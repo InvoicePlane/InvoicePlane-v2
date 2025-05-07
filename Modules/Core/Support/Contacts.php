@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Contacts;
-
 use Collective\Html\FormFacade;
 
 class Contacts

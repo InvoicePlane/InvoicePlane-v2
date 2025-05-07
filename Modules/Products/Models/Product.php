@@ -2,56 +2,40 @@
 
 namespace Modules\Products\Models;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Enums\ProductType;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Models\Company;
-
-use Modules\Products\Database\Factories\ProductFactory;
-
-use Modules\Invoices\Models\InvoiceItem;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Core\Support\NumberFormatter;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Invoices\Models\InvoiceItem;
+use Modules\Products\Database\Factories\ProductFactory;
+use Modules\Products\Enums\ProductType;
 
 /**
- * @property int                 $id
- * @property int                 $company_id
- * @property int                 $category_id
- * @property int|null            $unit_id
- * @property int|null            $tax_rate_id
- * @property ProductType         $type
- * @property string              $code
- * @property string              $item_name
- * @property float               $price
- * @property float|null          $cost_price
- * @property int|null            $tariff
- * @property string|null         $description
- * @property Carbon|null         $created_at
- * @property Carbon|null         $updated_at
- * @property Company             $company
- * @property ProductCategory     $category
- * @property ProductUnit|null    $productUnit
- * @property TaxRate|null $taxRate
+ * @property int              $id
+ * @property int              $company_id
+ * @property int              $category_id
+ * @property int|null         $unit_id
+ * @property int|null         $tax_rate_id
+ * @property ProductType      $type
+ * @property string           $code
+ * @property string           $item_name
+ * @property float            $price
+ * @property float|null       $cost_price
+ * @property int|null         $tariff
+ * @property string|null      $description
+ * @property Carbon|null      $created_at
+ * @property Carbon|null      $updated_at
+ * @property Company          $company
+ * @property ProductCategory  $category
+ * @property ProductUnit|null $productUnit
+ * @property TaxRate|null     $taxRate
  */
 class Product extends Model
 {

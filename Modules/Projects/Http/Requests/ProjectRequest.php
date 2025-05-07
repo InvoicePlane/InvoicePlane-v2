@@ -2,13 +2,8 @@
 
 namespace Modules\Projects\Http\Requests;
 
-use Modules\Projects\Http\Requests\ProjectRequest;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Clients\Models\Relation;
 
 class ProjectRequest extends FormRequest
 {

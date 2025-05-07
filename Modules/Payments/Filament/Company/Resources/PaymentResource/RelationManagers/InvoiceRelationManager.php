@@ -2,14 +2,6 @@
 
 namespace Modules\Payments\Filament\Company\Resources\PaymentResource\RelationManagers;
 
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\InvoiceRelationManager;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Models\Company;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

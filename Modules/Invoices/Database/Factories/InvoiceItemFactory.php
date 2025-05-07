@@ -2,24 +2,13 @@
 
 namespace Modules\Invoices\Database\Factories;
 
-use Modules\Invoices\Database\Factories\InvoiceItemFactory;
-
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Models\Company;
-
-use Modules\Invoices\Models\InvoiceItem;
-
-use Modules\Core\Support\Results\Invoices;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceItem;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
 
 class InvoiceItemFactory extends Factory
 {

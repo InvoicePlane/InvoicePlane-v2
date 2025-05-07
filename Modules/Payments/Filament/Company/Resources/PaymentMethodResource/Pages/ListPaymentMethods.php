@@ -2,16 +2,9 @@
 
 namespace Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages;
 
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-
-use Modules\Core\Models\Company;
-
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 
 class ListPaymentMethods extends ListRecords
 {

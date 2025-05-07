@@ -2,16 +2,6 @@
 
 namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Providers;
 
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Providers\WidgetServiceProvider;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Composers\QuoteSummaryWidgetComposer;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers\WidgetController;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Composers\QuoteSummarySettingComposer;
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 

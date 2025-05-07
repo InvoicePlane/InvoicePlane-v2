@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -14,6 +10,7 @@ use Modules\Core\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
 use Modules\Core\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Modules\Core\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Modules\Core\Models\Currency;
+use Modules\Core\Models\User;
 
 class CurrenciesTest extends TestCase
 {

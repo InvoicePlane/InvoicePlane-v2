@@ -2,30 +2,16 @@
 
 namespace Modules\Products\Providers;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Observers\ItemObserver;
-
-use Modules\Products\Providers\ProductsServiceProvider;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Products\Observers\ProductCategoryObserver;
-
-use Modules\Quotes\Providers\EventServiceProvider;
-
-use Modules\Core\Support\Migrations;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Models\Product;
-
-use Modules\Products\Observers\ProductUnitObserver;
-
-use Modules\Quotes\Providers\RouteServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+use Modules\Products\Observers\ItemObserver;
+use Modules\Products\Observers\ProductCategoryObserver;
+use Modules\Products\Observers\ProductUnitObserver;
+use Modules\Quotes\Providers\EventServiceProvider;
+use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

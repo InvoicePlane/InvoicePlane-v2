@@ -4,11 +4,6 @@ namespace Modules\Invoices\Support;
 
 use Modules\Core\Support\Directory;
 
-use Modules\Invoices\Support\InvoiceTemplates;
-
-use Modules\Core\Support\Results\Invoices;
-
-
 class InvoiceTemplates
 {
     /**

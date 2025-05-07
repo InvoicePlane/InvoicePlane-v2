@@ -2,53 +2,41 @@
 
 namespace Modules\Quotes\Models;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Quotes\Database\Factories\QuoteItemFactory;
-
-use Modules\Products\Models\Product;
-
-use Modules\Quotes\Models\QuoteItem;
-
-use Modules\Core\Support\NumberFormatter;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\QuoteItemSaving;
 use Modules\Core\Events\QuoteModified;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
+use Modules\Quotes\Database\Factories\QuoteItemFactory;
 
 /**
  * Class QuoteItem.
  *
- * @property int            $id
- * @property int            $quote_id
- * @property int            $item_id
- * @property int            $tax_rate_id
- * @property int            $tax_rate_2_id
- * @property Carbon         $item_date_added
- * @property string         $name
- * @property float|null     $quantity
- * @property float|null     $price
- * @property float          $subtotal
- * @property float          $tax_1
- * @property float          $tax_2
- * @property float          $tax
- * @property float|null     $item_discount
- * @property float          $total
- * @property float|null     $discount_amount
- * @property int            $display_order
- * @property string         $description
- * @property TaxRate $tax_rate
+ * @property int        $id
+ * @property int        $quote_id
+ * @property int        $item_id
+ * @property int        $tax_rate_id
+ * @property int        $tax_rate_2_id
+ * @property Carbon     $item_date_added
+ * @property string     $name
+ * @property float|null $quantity
+ * @property float|null $price
+ * @property float      $subtotal
+ * @property float      $tax_1
+ * @property float      $tax_2
+ * @property float      $tax
+ * @property float|null $item_discount
+ * @property float      $total
+ * @property float|null $discount_amount
+ * @property int        $display_order
+ * @property string     $description
+ * @property TaxRate    $tax_rate
  */
 class QuoteItem extends Model
 {

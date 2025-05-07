@@ -2,16 +2,6 @@
 
 namespace Modules\Payments\Filament\Company\Resources;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-
-use Modules\Core\Models\Company;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
@@ -21,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages;
+use Modules\Payments\Models\PaymentMethod;
 
 class PaymentMethodResource extends Resource
 {

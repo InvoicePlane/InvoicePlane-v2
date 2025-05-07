@@ -2,16 +2,6 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
-use Modules\Products\Filament\Company\Resources\ProductUnitResource;
-
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Models\Product;
-
-use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\ListProductUnits;
-
-use Modules\Core\Models\Company;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
@@ -22,6 +12,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages;
+use Modules\Products\Models\ProductUnit;
 
 class ProductUnitResource extends Resource
 {

@@ -2,14 +2,10 @@
 
 namespace Modules\Products\Events;
 
-use Modules\Products\Events\ProductWasUpdated;
-
-use Modules\Products\Models\Product;
-
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-
+use Modules\Products\Models\Product;
 
 class ProductWasUpdated
 {

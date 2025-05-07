@@ -2,23 +2,13 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Clients\Database\Factories\RelationFactory;
-
-use Modules\Projects\Enums\ProjectStatus;
-
-use Modules\Projects\Database\Factories\ProjectFactory;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Database\Factories\RelationFactory;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Projects\Enums\ProjectStatus;
+use Modules\Projects\Models\Project;
 
 class ProjectFactory extends Factory
 {

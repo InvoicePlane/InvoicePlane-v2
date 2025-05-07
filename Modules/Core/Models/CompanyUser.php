@@ -2,12 +2,6 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Core\Models\CompanyUser;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 

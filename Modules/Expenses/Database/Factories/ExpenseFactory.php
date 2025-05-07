@@ -2,27 +2,14 @@
 
 namespace Modules\Expenses\Database\Factories;
 
-use Modules\Expenses\Enums\ExpenseType;
-
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Expenses\Models\ExpenseCategory;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Expenses\Database\Factories\ExpenseFactory;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Expenses\Enums\ExpenseStatus;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Expenses\Enums\ExpenseStatus;
+use Modules\Expenses\Enums\ExpenseType;
+use Modules\Expenses\Models\Expense;
+use Modules\Expenses\Models\ExpenseCategory;
 
 class ExpenseFactory extends Factory
 {

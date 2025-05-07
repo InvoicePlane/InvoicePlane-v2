@@ -2,19 +2,10 @@
 
 namespace Modules\Invoices\Services;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Invoices\Services\InvoiceCustomerSwitchService;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
 use Exception;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

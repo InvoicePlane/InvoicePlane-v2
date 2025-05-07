@@ -2,40 +2,20 @@
 
 namespace Modules\Payments\Models;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Support\DateFormatter;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Support\MailQueue;
-
-use Modules\Core\Support\FileNames;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Core\Support\HTML;
-
-use Modules\Payments\Database\Factories\PaymentFactory;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Core\Models\Note;
-
-use Modules\Payments\Enums\PaymentStatus;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Core\Support\NumberFormatter;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Models\Note;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
+use Modules\Core\Support\FileNames;
+use Modules\Core\Support\HTML;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Database\Factories\PaymentFactory;
+use Modules\Payments\Enums\PaymentStatus;
 
 /**
  * @property int                             $id

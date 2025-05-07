@@ -2,13 +2,8 @@
 
 namespace Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages;
 
-use Modules\Products\Filament\Company\Resources\ProductUnitResource;
-
-use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\EditProductUnit;
-
-use Modules\Core\Models\Company;
-
 use Filament\Resources\Pages\EditRecord;
+use Modules\Products\Filament\Company\Resources\ProductUnitResource;
 
 class EditProductUnit extends EditRecord
 {

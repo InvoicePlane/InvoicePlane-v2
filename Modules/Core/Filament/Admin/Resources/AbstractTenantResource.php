@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
-
 use Filament\Resources\Resource;
 
 abstract class AbstractTenantResource extends Resource

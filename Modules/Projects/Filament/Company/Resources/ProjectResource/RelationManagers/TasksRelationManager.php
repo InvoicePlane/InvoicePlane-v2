@@ -2,12 +2,6 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers;
 
-use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\TasksRelationManager;
-
-use Modules\Core\Models\Company;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

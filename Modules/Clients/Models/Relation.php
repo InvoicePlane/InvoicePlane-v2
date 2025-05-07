@@ -2,50 +2,6 @@
 
 namespace Modules\Clients\Models;
 
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Projects\Models\Task;
-
-use Modules\Clients\Database\Factories\RelationFactory;
-
-use Modules\Invoices\Models\RecurringInvoice;
-
-use Modules\Core\Support\Statuses\InvoiceStatuses;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Core\Models\Note;
-
-use Modules\Clients\Models\Contact;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Core\Models\Address;
-
-use Modules\Core\Models\Communication;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Clients\Enums\RelationStatus;
-
-use Modules\Core\Models\Addressable;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -54,6 +10,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Modules\Clients\Database\Factories\RelationFactory;
+use Modules\Clients\Enums\RelationStatus;
+use Modules\Clients\Enums\RelationType;
+use Modules\Core\Models\Address;
+use Modules\Core\Models\Addressable;
+use Modules\Core\Models\Communication;
+use Modules\Core\Models\Note;
+use Modules\Core\Models\User;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\Results\Invoices;
+use Modules\Core\Support\Statuses\InvoiceStatuses;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Models\Quote;
 
 /**
  * @property int                           $id

@@ -2,26 +2,16 @@
 
 namespace Modules\Products\Tests\Api;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Models\User;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Tests\Api\ProductApiTest;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Tests\ApiTestTrait;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
-
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\ApiTestTrait;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 
 class ProductApiTest extends AbstractTestCase
 {

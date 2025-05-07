@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Importers;
 
-use Modules\Core\Importers\AbstractImporter;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 

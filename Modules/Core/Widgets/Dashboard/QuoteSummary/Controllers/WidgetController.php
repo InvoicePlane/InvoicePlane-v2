@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers;
 
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers\WidgetController;
-
 use App\Http\Controllers\Controller;
 use Modules\Settings\Models\Setting;
 

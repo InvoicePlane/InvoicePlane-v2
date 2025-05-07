@@ -2,15 +2,8 @@
 
 namespace Modules\Core\Widgets\Dashboard\QuoteSummary\Composers;
 
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Composers\QuoteSummaryWidgetComposer;
-
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Support\CurrencyFormatter;
 use Modules\Quotes\Models\QuoteAmount;
 
 class QuoteSummaryWidgetComposer

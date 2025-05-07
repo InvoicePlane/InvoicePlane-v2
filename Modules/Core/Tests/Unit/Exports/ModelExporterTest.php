@@ -2,10 +2,8 @@
 
 namespace Modules\Core\Tests\Unit\Exporters;
 
-use Modules\Core\Tests\AbstractTestCase;
-
 use Modules\Core\Exports\ModelExport;
-
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

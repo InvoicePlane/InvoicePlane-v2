@@ -2,12 +2,6 @@
 
 namespace Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Invoices\Models\InvoiceTransaction;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -16,6 +10,8 @@ use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoi
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
 use Modules\Core\Models\InvoiceTransaction;
+use Modules\Core\Models\User;
+use Modules\Invoices\Models\InvoiceTransaction;
 
 class InvoiceTransactionsTest extends TestCase
 {

@@ -2,22 +2,15 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Modules\Core\Helpers\EnumHelper;
-
-use Modules\Core\Models\CustomField;
-
-use Modules\Core\Enums\CustomFieldType;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\ListCustomFields;
-
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource;
-
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Modules\Core\Enums\CustomFieldType;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\CustomField;
 
 class CustomFieldResource extends Resource
 {

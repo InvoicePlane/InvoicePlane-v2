@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Directory;
-
-use Modules\Core\Support\ProfileImage\Drivers\Gravatar;
-
 class ProfileImageFactory
 {
     public static function create()

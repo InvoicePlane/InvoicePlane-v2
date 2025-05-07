@@ -2,14 +2,9 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Core\Models\User;
-
-use Modules\Core\Models\UserProfile;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int    $id

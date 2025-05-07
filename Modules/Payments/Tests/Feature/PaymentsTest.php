@@ -2,41 +2,20 @@
 
 namespace Modules\Payments\Tests\Feature;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Invoices\Enums\InvoiceStatus;
-
-use Modules\Payments\Tests\Feature\PaymentsTest;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Filament\Company\Resources\PaymentResource;
+use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
+use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
+use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
+use Modules\Payments\Models\Payment;
+use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

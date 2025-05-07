@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Directory;
-
-use Modules\Core\Support\Languages;
-
 class Languages
 {
     /**

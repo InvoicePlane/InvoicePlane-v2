@@ -2,15 +2,10 @@
 
 namespace Modules\Projects\Tests\Unit;
 
-use Modules\Projects\Tests\Unit\TaskToInvoiceServiceTest;
-
-use Modules\Projects\Models\Task;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Projects\Services\TaskToInvoiceService;
-
 use Exception;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Projects\Models\Task;
+use Modules\Projects\Services\TaskToInvoiceService;
 use PHPUnit\Framework\Attributes\Test;
 
 class TaskToInvoiceServiceTest extends AbstractTestCase

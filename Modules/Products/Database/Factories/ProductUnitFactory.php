@@ -2,14 +2,10 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Database\Factories\ProductUnitFactory;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Core\Models\Company;
+use Modules\Products\Models\ProductUnit;
 
 class ProductUnitFactory extends Factory
 {

@@ -2,14 +2,10 @@
 
 namespace Modules\Core\Support\Drivers;
 
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Invoices\Models\Invoice;
-
 use Exception;
 use Modules\Core\Support\MerchantDriver;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
 
 class Stripe extends MerchantDriver
 {

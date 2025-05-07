@@ -2,13 +2,8 @@
 
 namespace Modules\Core\Widgets\Dashboard\ClientActivity\Providers;
 
-use Modules\Core\Widgets\Dashboard\ClientActivity\Composers\ClientActivityWidgetComposer;
-
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Providers\WidgetServiceProvider;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Widgets\Dashboard\QuoteSummary\Providers\WidgetServiceProvider;
 
 class WidgetServiceProvider extends ServiceProvider
 {

@@ -2,13 +2,9 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Modules\Products\Database\Seeders\ProductCategoriesSeeder;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Seeder;
+use Modules\Core\Models\Company;
+use Modules\Products\Models\ProductCategory;
 
 class ProductCategoriesSeeder extends Seeder
 {

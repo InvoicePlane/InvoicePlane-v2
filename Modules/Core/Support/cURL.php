@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\cURL;
-
 class cURL
 {
     public static function post($url, $postVars)

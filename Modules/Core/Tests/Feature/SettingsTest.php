@@ -2,16 +2,12 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Tests\Feature\SettingsTest;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 
 class SettingsTest extends AbstractTestCase
 {

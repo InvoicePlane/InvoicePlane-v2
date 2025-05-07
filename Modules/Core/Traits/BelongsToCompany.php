@@ -2,13 +2,10 @@
 
 namespace Modules\Core\Traits;
 
-use Modules\Core\Models\Company;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Models\Company;
 
 /**
  * Automatically scopes models to the currently authenticated user’s company,

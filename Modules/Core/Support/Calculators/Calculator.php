@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support\Calculators;
 
-use Modules\Core\Support\Calculators\Calculator;
-
 abstract class Calculator
 {
     /**

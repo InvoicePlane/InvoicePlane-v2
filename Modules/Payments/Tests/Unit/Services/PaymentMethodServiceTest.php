@@ -2,13 +2,8 @@
 
 namespace Modules\Payments\Services;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Services\PaymentMethodService;
-
 use InvalidArgumentException;
+use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

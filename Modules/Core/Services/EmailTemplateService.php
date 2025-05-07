@@ -2,13 +2,8 @@
 
 namespace Modules\Core\Services;
 
-use Modules\Core\Models\EmailTemplate;
-
-use Modules\Core\Services\BaseService;
-
-use Modules\Core\Services\EmailTemplateService;
-
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Models\EmailTemplate;
 
 class EmailTemplateService extends BaseService
 {

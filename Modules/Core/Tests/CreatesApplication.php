@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Tests;
 
-use Modules\Core\Tests\CreatesApplication;
-
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 

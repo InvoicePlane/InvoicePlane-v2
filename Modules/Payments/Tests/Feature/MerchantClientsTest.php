@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -14,6 +10,7 @@ use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantC
 use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
 use Modules\Core\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
 use Modules\Core\Models\MerchantClient;
+use Modules\Core\Models\User;
 
 class MerchantClientsTest extends TestCase
 {

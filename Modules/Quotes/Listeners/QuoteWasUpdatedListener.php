@@ -2,12 +2,7 @@
 
 namespace Modules\Quotes\Listeners;
 
-use Modules\Quotes\Listeners\QuoteWasUpdatedListener;
-
 use Modules\Quotes\Events\QuoteWasUpdated;
-
-use Modules\Core\Support\Results\Quotes;
-
 
 class QuoteWasUpdatedListener
 {

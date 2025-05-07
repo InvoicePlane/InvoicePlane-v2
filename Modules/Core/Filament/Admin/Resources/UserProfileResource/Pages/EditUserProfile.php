@@ -2,12 +2,9 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages;
 
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
-
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProfile;
-
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 class EditUserProfile extends EditRecord
 {

@@ -2,14 +2,7 @@
 
 namespace Modules\Core\Support\Results;
 
-use Modules\Core\Support\Results\QuoteItems;
-
-use Modules\Core\Support\Results\SourceInterface;
-
-use Modules\Core\Support\Results\Quotes;
-
 use Modules\Quotes\Models\QuoteItem;
-
 
 class QuoteItems implements SourceInterface
 {

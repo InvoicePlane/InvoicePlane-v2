@@ -2,12 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
-
-use Modules\Core\Models\Company;
-
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Modules\Core\Models\Company;
 
 class CompanyResource extends Resource
 {

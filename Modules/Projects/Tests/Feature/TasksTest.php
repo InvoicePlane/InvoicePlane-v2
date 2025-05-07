@@ -2,33 +2,20 @@
 
 namespace Modules\Projects\Tests\Feature;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Projects\Enums\TaskStatus;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\CreateTask;
-
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\EditTask;
-
-use Modules\Core\Models\User;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Projects\Tests\Feature\TasksTest;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Projects\Enums\TaskStatus;
+use Modules\Projects\Filament\Company\Resources\TaskResource;
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\CreateTask;
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\EditTask;
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

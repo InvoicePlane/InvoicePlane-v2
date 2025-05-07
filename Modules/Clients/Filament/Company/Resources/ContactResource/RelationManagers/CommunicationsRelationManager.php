@@ -2,21 +2,10 @@
 
 namespace Modules\Clients\Filament\Company\Resources\ContactResource\RelationManagers;
 
-use Modules\Core\Enums\CommunicationType;
-
-use Modules\Clients\Filament\Company\Resources\ContactResource\RelationManagers\CommunicationsRelationManager;
-
-use Modules\Core\Models\Communication;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\Company;
-
-use Modules\Clients\Filament\Company\Resources\ContactResource;
-
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Modules\Core\Enums\CommunicationType;
 
 class CommunicationsRelationManager extends RelationManager
 {

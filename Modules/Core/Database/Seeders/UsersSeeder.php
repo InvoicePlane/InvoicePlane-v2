@@ -2,14 +2,10 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Modules\Core\Models\User;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Database\Seeders\UsersSeeder;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\User;
 
 class UsersSeeder extends Seeder
 {

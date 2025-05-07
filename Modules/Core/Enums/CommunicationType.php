@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Enums;
 
-use Modules\Core\Enums\CommunicationType;
-
-use Modules\Core\Contracts\LabeledEnum;
-
 enum CommunicationType: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case EMAIL    = 'email';

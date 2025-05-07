@@ -2,33 +2,20 @@
 
 namespace Modules\Products\Tests\Feature;
 
-use Modules\Products\Models\ProductUnit;
-
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Products\Filament\Company\Resources\ProductResource;
-
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
-
-use Modules\Core\Models\User;
-
-use Modules\Products\Models\ProductCategory;
-
-use Modules\Products\Tests\Feature\ProductsTest;
-
-use Modules\Products\Models\Product;
-
-use Modules\Core\Models\Company;
-
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
-
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Products\Filament\Company\Resources\ProductResource;
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,18 +2,11 @@
 
 namespace Modules\Reports\Reports;
 
-use Modules\Core\Support\DateFormatter;
-
-use Modules\Core\Support\Statuses\InvoiceStatuses;
-
 use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Invoices\Models\InvoiceItem;
-
-use Modules\Core\Support\Results\Invoices;
-
+use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\NumberFormatter;
-
+use Modules\Core\Support\Statuses\InvoiceStatuses;
+use Modules\Invoices\Models\InvoiceItem;
 
 class ItemSalesReport
 {

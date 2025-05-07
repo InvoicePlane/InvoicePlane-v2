@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Widgets\Dashboard\ClientActivity\Composers;
 
-use Modules\Core\Widgets\Dashboard\ClientActivity\Composers\ClientActivityWidgetComposer;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
 use Modules\Activity\Models\Activity;
 
 class ClientActivityWidgetComposer

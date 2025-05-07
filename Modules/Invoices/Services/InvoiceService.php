@@ -2,14 +2,8 @@
 
 namespace Modules\Invoices\Services;
 
-use Modules\Invoices\Services\InvoiceService;
-
-use Modules\Invoices\Models\Invoice;
-
 use Modules\Core\Services\BaseService;
-
-use Modules\Core\Support\Results\Invoices;
-
+use Modules\Invoices\Models\Invoice;
 
 class InvoiceService extends BaseService
 {

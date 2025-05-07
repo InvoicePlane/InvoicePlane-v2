@@ -2,17 +2,11 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Core\Support\DateFormatter;
-
-use Modules\Core\Models\Note;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Core\Support\DateFormatter;
+use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int    $id

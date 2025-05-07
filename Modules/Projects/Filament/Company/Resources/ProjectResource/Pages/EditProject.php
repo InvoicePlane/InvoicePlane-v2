@@ -2,13 +2,8 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\Pages;
 
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\EditProject;
-
-use Modules\Core\Models\Company;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-
 use Filament\Resources\Pages\EditRecord;
+use Modules\Projects\Filament\Company\Resources\ProjectResource;
 
 class EditProject extends EditRecord
 {

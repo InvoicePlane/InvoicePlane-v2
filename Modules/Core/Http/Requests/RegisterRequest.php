@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Http\Requests;
 
-use Modules\Core\Http\Requests\RegisterRequest;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest

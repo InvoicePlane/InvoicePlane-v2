@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Core\Providers\UserPanelProvider;
-
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;

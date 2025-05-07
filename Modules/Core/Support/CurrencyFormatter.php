@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Core\Support\NumberFormatter;
-
 class CurrencyFormatter extends NumberFormatter
 {
     /**

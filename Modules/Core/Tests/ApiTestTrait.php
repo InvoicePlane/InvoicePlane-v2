@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Tests;
 
-use Modules\Core\Tests\ApiTestTrait;
-
 trait ApiTestTrait
 {
     private $response;

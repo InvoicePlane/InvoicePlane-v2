@@ -2,24 +2,6 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
-use Modules\Expenses\Enums\ExpenseType;
-
-use Modules\Core\Helpers\EnumHelper;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Expenses\Enums\ExpenseStatus;
-
-use Modules\Core\Models\Company;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages\ListExpenses;
-
-use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
-
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -34,7 +16,12 @@ use Filament\Forms\Get;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Expenses\Enums\ExpenseStatus;
+use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages;
+use Modules\Expenses\Models\Expense;
 
 class ExpenseResource extends AbstractTenantResource
 {

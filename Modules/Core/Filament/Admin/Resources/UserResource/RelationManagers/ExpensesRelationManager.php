@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers;
 
-use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
-
-use Modules\Core\Filament\Admin\Resources\UserResource;
-
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

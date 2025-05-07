@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Utils;
 
-use Modules\Core\Utils\ResponseUtil;
-
 class ResponseUtil
 {
     public static function makeResponse(string $message, mixed $data): array

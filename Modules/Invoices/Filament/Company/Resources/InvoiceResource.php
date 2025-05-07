@@ -2,34 +2,6 @@
 
 namespace Modules\Invoices\Filament\Company\Resources;
 
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\QuoteRelationManager;
-
-use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
-
-use Modules\Invoices\Enums\InvoiceStatus;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\ExpenseRelationManager;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\UserRelationManager;
-
-use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\CustomerRelationManager;
-
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\DocumentGroupRelationManager;
-
-use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
-
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -45,8 +17,11 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
+use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages;
 use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers;
+use Modules\Invoices\Models\Invoice;
 
 class InvoiceResource extends AbstractTenantResource
 {

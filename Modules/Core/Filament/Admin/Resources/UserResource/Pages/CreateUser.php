@@ -2,11 +2,8 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserResource\Pages;
 
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;
-
-use Modules\Core\Filament\Admin\Resources\UserResource;
-
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Core\Filament\Admin\Resources\UserResource;
 
 class CreateUser extends CreateRecord
 {

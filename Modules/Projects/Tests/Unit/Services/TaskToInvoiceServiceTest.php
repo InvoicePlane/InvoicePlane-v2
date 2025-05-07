@@ -2,12 +2,8 @@
 
 namespace Modules\Projects\Services;
 
-use Modules\Projects\Tests\Unit\TaskToInvoiceServiceTest;
-
 use Modules\Projects\Models\Task;
-
-use Modules\Projects\Services\TaskToInvoiceService;
-
+use Modules\Projects\Tests\Unit\TaskToInvoiceServiceTest;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

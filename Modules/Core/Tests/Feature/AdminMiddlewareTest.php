@@ -2,14 +2,10 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Tests\Feature\AdminMiddlewareTest;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 
 class AdminMiddlewareTest extends AbstractTestCase
 {

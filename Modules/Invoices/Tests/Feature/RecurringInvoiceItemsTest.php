@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -14,6 +10,7 @@ use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRec
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
 use Modules\Core\Models\RecurringInvoiceItem;
+use Modules\Core\Models\User;
 
 class RecurringInvoiceItemsTest extends TestCase
 {

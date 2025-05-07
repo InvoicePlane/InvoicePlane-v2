@@ -2,26 +2,16 @@
 
 namespace Modules\Projects\Tests\Api;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Projects\Tests\Api\TasksApiTest;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Tests\ApiTestTrait;
-
-use Modules\Projects\Models\Project;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
 use Modules\Clients\Models\Client;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\ApiTestTrait;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
 
 class TasksApiTest extends AbstractTestCase
 {

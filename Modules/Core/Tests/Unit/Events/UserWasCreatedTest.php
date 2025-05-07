@@ -2,14 +2,9 @@
 
 namespace Modules\Core\Tests\Unit\Events;
 
-use Modules\Core\Tests\Unit\Events\UserWasCreatedTest;
-
 use Modules\Core\Events\UserWasCreated;
-
-use Modules\Core\Tests\AbstractTestCase;
-
 use Modules\Core\Models\User;
-
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class UserWasCreatedTest extends AbstractTestCase

@@ -2,8 +2,6 @@
 
 namespace Modules\Projects\Events;
 
-use Modules\Projects\Events\ProjectWasCreated;
-
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

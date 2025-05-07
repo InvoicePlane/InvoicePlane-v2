@@ -2,8 +2,6 @@
 
 namespace Modules\Projects\Listeners;
 
-use Modules\Projects\Listeners\TaskWasUpdatedListener;
-
 class TaskWasUpdatedListener
 {
     public function __construct() {}

@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Http\Requests\API;
 
-use Modules\Core\Http\Requests\API\APIRequest;
-
-use Modules\Core\Http\Requests\API\RegistrationAPIRequest;
-
 class RegistrationAPIRequest extends APIRequest
 {
     public function authorize(): bool

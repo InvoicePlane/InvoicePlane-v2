@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Parser;
-
 use Exception;
 
 class Parser

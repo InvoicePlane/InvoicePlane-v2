@@ -2,16 +2,9 @@
 
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages;
 
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages\EditExpense;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Models\Company;
-
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
 
 class EditExpense extends EditRecord
 {

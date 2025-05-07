@@ -2,15 +2,9 @@
 
 namespace Modules\Expenses\Database\Factories;
 
-use Modules\Expenses\Models\ExpenseCategory;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Expenses\Database\Factories\ExpenseCategoryFactory;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Models\Company;
+use Modules\Expenses\Models\ExpenseCategory;
 
 class ExpenseCategoryFactory extends Factory
 {

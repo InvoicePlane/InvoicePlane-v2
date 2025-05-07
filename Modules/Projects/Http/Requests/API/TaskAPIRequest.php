@@ -2,16 +2,11 @@
 
 namespace Modules\Projects\Http\Requests\API;
 
-use Modules\Core\Http\Requests\API\APIRequest;
-
-use Modules\Projects\Http\Requests\API\TaskAPIRequest;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Projects\Models\Project;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Core\Http\Requests\API\APIRequest;
+use Modules\Core\Models\TaxRate;
+use Modules\Projects\Models\Project;
 
 class TaskAPIRequest extends APIRequest
 {

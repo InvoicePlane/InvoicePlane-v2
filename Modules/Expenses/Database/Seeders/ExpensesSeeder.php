@@ -2,15 +2,9 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
-use Modules\Expenses\Models\Expense;
-
-use Modules\Expenses\Database\Seeders\ExpensesSeeder;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Models\Company;
-
 use Illuminate\Database\Seeder;
+use Modules\Core\Models\Company;
+use Modules\Expenses\Models\Expense;
 
 class ExpensesSeeder extends Seeder
 {

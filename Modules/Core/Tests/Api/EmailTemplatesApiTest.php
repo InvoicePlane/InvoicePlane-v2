@@ -2,19 +2,13 @@
 
 namespace Modules\Core\Tests\Api;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Models\EmailTemplate;
-
-use Modules\Core\Tests\Api\EmailTemplatesApiTest;
-
-use Modules\Core\Tests\ApiTestTrait;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
+use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\ApiTestTrait;
 
 class EmailTemplatesApiTest extends AbstractTestCase
 {

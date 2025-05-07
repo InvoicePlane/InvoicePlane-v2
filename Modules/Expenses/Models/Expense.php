@@ -2,45 +2,23 @@
 
 namespace Modules\Expenses\Models;
 
-use Modules\Expenses\Enums\ExpenseType;
-
-use Modules\Clients\Enums\RelationType;
-
-use Modules\Core\Support\DateFormatter;
-
-use Modules\Expenses\Models\ExpenseCategory;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Expenses\Database\Factories\ExpenseFactory;
-
-use Modules\Core\Support\CurrencyFormatter;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Expenses\Models\ExpenseItem;
-
-use Modules\Expenses\Enums\ExpenseStatus;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Support\NumberFormatter;
-
-use Modules\Clients\Models\Relation;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\User;
+use Modules\Core\Support\CurrencyFormatter;
+use Modules\Core\Support\DateFormatter;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Database\Factories\ExpenseFactory;
+use Modules\Expenses\Enums\ExpenseStatus;
+use Modules\Expenses\Enums\ExpenseType;
+use Modules\Invoices\Models\Invoice;
 
 /**
  * @property int             $id

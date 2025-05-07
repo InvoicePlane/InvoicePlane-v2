@@ -2,28 +2,14 @@
 
 namespace Modules\Payments\Providers;
 
-use Modules\Payments\Models\PaymentMethod;
-
-use Modules\Payments\Providers\PaymentsServiceProvider;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Payments\Observers\PaymentObserver;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Providers\EventServiceProvider;
-
-use Modules\Core\Support\Migrations;
-
-use Modules\Payments\Observers\PaymentMethodObserver;
-
-use Modules\Quotes\Providers\RouteServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Payments\Models\Payment;
+use Modules\Payments\Models\PaymentMethod;
+use Modules\Payments\Observers\PaymentMethodObserver;
+use Modules\Payments\Observers\PaymentObserver;
+use Modules\Quotes\Providers\EventServiceProvider;
+use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

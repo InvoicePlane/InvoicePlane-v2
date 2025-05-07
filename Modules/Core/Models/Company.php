@@ -2,46 +2,14 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Core\Models\CompanyUser;
-
-use Modules\Invoices\Models\RecurringInvoice;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Expenses\Models\Expense;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Database\Factories\CompanyFactory;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Core\Models\Address;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Projects\Models\Project;
-
-use Modules\Core\Models\Company;
-
-use Modules\Core\Models\Addressable;
-
-use Modules\Core\Models\DocumentGroup;
-
-use Modules\Core\Support\Results\Invoices;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Factories\CompanyFactory;
 use Modules\Core\Events\CompanyProfileCreated;
 use Modules\Core\Events\CompanyProfileCreating;
 use Modules\Core\Events\CompanyProfileDeleted;
@@ -49,23 +17,28 @@ use Modules\Core\Events\CompanyProfileSaving;
 use Modules\Core\Modules\Expenses\Models\Expense;
 use Modules\Core\Modules\Invoices\Models\Invoice;
 use Modules\Core\Modules\Quotes\Models\Quote;
+use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Projects\Models\Project;
+use Modules\Quotes\Models\Quote;
 
 /**
- * @property int              $id
- * @property string           $search_code
- * @property string|null      $company_name
- * @property string           $slug
- * @property string           $vat_number
- * @property string           $id_number
- * @property string           $coc_number
- * @property string|null      $web
- * @property string|null      $logo
- * @property string           $quote_template
- * @property string           $invoice_template
- * @property CompanyUser[]    $companyUsers
- * @property DocumentGroup[]  $documentGroups
- * @property Project[]        $projects
- * @property TaxRate[] $taxRates
+ * @property int             $id
+ * @property string          $search_code
+ * @property string|null     $company_name
+ * @property string          $slug
+ * @property string          $vat_number
+ * @property string          $id_number
+ * @property string          $coc_number
+ * @property string|null     $web
+ * @property string|null     $logo
+ * @property string          $quote_template
+ * @property string          $invoice_template
+ * @property CompanyUser[]   $companyUsers
+ * @property DocumentGroup[] $documentGroups
+ * @property Project[]       $projects
+ * @property TaxRate[]       $taxRates
  */
 class Company extends Model
 {

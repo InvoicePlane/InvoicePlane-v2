@@ -2,16 +2,6 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-
-use Modules\Expenses\Models\ExpenseCategory;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Core\Models\Company;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\ListExpenseCategories;
-
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -21,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages;
+use Modules\Expenses\Models\ExpenseCategory;
 
 class ExpenseCategoryResource extends Resource
 {

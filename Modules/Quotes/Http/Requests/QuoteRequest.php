@@ -2,22 +2,12 @@
 
 namespace Modules\Quotes\Http\Requests;
 
-use Modules\Quotes\Http\Requests\QuoteRequest;
-
-use Modules\Quotes\Enums\QuoteStatus;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Models\User;
-
-use Modules\Core\Support\Results\Clients;
-
-use Modules\Core\Models\DocumentGroup;
-
-use Modules\Clients\Models\Relation;
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\User;
+use Modules\Quotes\Enums\QuoteStatus;
 
 class QuoteRequest extends FormRequest
 {

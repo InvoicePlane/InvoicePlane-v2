@@ -2,15 +2,8 @@
 
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages;
 
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-
-use Modules\Core\Support\Results\Expenses;
-
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\CreateExpenseCategory;
-
-use Modules\Core\Models\Company;
-
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
 
 class CreateExpenseCategory extends CreateRecord
 {

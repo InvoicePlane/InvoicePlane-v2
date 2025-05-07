@@ -2,21 +2,13 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
-
-use Modules\Core\Tests\Feature\EmailTemplatesTest;
-
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
-
-use Modules\Core\Models\EmailTemplate;
-
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
-
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
-
 use Livewire\Livewire;
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
+use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Http\Requests\API;
 
-use Modules\Core\Http\Requests\API\TaxRateAPIRequest;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;

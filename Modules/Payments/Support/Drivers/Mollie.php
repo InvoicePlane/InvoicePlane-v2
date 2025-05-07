@@ -2,16 +2,10 @@
 
 namespace Modules\Core\Support\Drivers;
 
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Core\Support\Results\Invoices;
-
 use Modules\Core\Models\MerchantPayment;
 use Modules\Core\Support\MerchantDriverPayable;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
 use Mollie_API_Client;
 
 class Mollie extends MerchantDriverPayable

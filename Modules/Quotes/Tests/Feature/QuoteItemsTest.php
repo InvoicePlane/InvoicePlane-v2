@@ -2,14 +2,6 @@
 
 namespace Tests\Feature;
 
-use Modules\Core\Tests\AbstractTestCase;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Core\Models\User;
-
-use Modules\Quotes\Models\QuoteItem;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -18,6 +10,8 @@ use Modules\Core\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
 use Modules\Core\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
 use Modules\Core\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
 use Modules\Core\Models\QuoteItem;
+use Modules\Core\Models\User;
+use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItemsTest extends TestCase
 {

@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Helpers;
 
-use Modules\Core\Helpers\PathsHelper;
-
 class PathsHelper
 {
     public function addon_path($path = '')

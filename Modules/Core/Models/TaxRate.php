@@ -2,37 +2,22 @@
 
 namespace Modules\Core\Models;
 
-use Modules\Projects\Models\Task;
-
-use Modules\Invoices\Models\RecurringInvoice;
-
-use Modules\Core\Enums\TaxRateType;
-
-use Modules\Invoices\Models\Invoice;
-
-use Modules\Core\Models\TaxRate;
-
-use Modules\Core\Support\Results\Quotes;
-
-use Modules\Quotes\Models\Quote;
-
-use Modules\Products\Models\Product;
-
-use Modules\Quotes\Models\QuoteItem;
-
-use Modules\Core\Database\Factories\TaxRateFactory;
-
-use Modules\Invoices\Models\InvoiceItem;
-
-use Modules\Core\Support\NumberFormatter;
-
-use Modules\Core\Traits\BelongsToCompany;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Database\Factories\TaxRateFactory;
+use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceItem;
+use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Products\Models\Product;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteItem;
 
 /**
  * Class TaxRate.

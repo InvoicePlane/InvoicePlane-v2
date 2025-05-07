@@ -2,10 +2,6 @@
 
 namespace Modules\Core\Enums;
 
-use Modules\Core\Enums\CustomFieldType;
-
-use Modules\Core\Contracts\LabeledEnum;
-
 enum CustomFieldType: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case TEXT    = 'text';
