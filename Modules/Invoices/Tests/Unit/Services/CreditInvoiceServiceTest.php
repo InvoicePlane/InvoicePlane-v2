@@ -1,9 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Services;
+namespace Modules\Invoices\Tests\Unit\Services;
 
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Tests\Unit\CreditInvoiceServiceTest;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

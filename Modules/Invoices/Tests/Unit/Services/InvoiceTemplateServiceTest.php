@@ -1,13 +1,14 @@
 <?php
 
-namespace Modules\Invoices\Test\Unit\Services;
+namespace Modules\Invoices\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Services\InvoiceTemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
-class InvoiceTemplateServiceTest extends TestCase
+class InvoiceTemplateServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

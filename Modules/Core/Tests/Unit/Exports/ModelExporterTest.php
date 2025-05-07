@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit\Exporters;
+namespace Modules\Core\Tests\Unit\Exports;
 
 use Modules\Core\Exports\ModelExport;
 use Modules\Core\Tests\AbstractTestCase;

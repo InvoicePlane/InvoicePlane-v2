@@ -1,12 +1,9 @@
 <?php
 
-namespace Modules\RecurringInvoices\Support;
+namespace Modules\Invoices\Support;
 
 use Modules\Invoices\Models\RecurringInvoice;
-use Modules\RecurringInvoices\Models\RecurringInvoice;
-use Modules\RecurringInvoices\Models\RecurringInvoiceAmount;
-use Modules\RecurringInvoices\Models\RecurringInvoiceItem;
-use Modules\RecurringInvoices\Models\RecurringInvoiceItemAmount;
+use Modules\Invoices\Models\RecurringInvoiceItem;
 
 class RecurringInvoiceCalculate
 {

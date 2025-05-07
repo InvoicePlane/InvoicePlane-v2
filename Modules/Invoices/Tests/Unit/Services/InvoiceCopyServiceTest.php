@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Invoices\Services;
+namespace Modules\Invoices\Tests\Unit\Services;
 
 use Exception;
 use Modules\Core\Tests\AbstractTestCase;

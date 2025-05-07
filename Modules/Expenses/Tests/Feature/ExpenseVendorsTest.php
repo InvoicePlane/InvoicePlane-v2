@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Expenses\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;

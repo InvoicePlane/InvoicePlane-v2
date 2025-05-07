@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Importers;
+namespace Modules\Core\Tests\Unit\Importers;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;

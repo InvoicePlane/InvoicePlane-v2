@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Core\Support;
+namespace Modules\Core\Tests\Unit\Support;
 
 use InvalidArgumentException;
-use Modules\Core\Support\Drivers\Mollie;
-use Modules\Core\Support\Drivers\PayPal;
-use Modules\Core\Support\Drivers\Stripe;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Payments\Support\Drivers\Mollie;
+use Modules\Payments\Support\Drivers\PayPal;
+use Modules\Payments\Support\Drivers\Stripe;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class MerchantFactoryTest extends TestCase
+class MerchantFactoryTest extends AbstractTestCase
 {
     #[Test]
     #[Group('support')]

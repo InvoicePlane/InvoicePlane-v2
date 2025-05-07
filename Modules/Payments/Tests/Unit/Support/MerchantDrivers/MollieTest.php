@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Payments\Tests\Unit\Support\Drivers;
+namespace Modules\Payments\Tests\Unit\Support\MerchantDrivers;
 
 use PHPUnit\Framework\TestCase;
 

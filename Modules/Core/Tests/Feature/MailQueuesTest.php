@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Core\Models\MailQueue;
-use Modules\Core\Support\MailQueue;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

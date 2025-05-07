@@ -1,9 +1,8 @@
 <?php
 
-namespace Modules\Invoices\Services;
+namespace Modules\Invoices\Tests\Unit\Services;
 
 use Modules\Core\Tests\AbstractTestCase;
-use Modules\Invoices\Tests\Unit\SumexServiceTest;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;

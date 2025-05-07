@@ -1,17 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Core\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
-use Modules\Core\Filament\Resources\CurrencyResource\Pages\EditCurrency;
-use Modules\Core\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
-use Modules\Core\Models\Currency;
+use Modules\Core\Tests\AbstractTestCase;
 
-class CurrenciesTest extends TestCase
+//use Modules\Core\Models\Currency;
+//use Modules\Core\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
+//use Modules\Core\Filament\Resources\CurrencyResource\Pages\EditCurrency;
+//use Modules\Core\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
+
+class CurrenciesTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;

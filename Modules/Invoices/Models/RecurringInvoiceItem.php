@@ -1,36 +1,31 @@
 <?php
 
-namespace Modules\RecurringInvoices\Models;
+namespace Modules\Invoices\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Events\RecurringInvoiceItemSaving;
-use Modules\Core\Events\RecurringInvoiceModified;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
-use Modules\Invoices\Models\RecurringInvoice;
 
 /**
- * Class RecurringInvoiceItem.
- *
- * @property int              $id
- * @property int              $recurring_invoice_id
- * @property int              $item_id
- * @property int              $tax_rate_id
- * @property int              $tax_rate_2_id
- * @property string           $name
- * @property float            $quantity
- * @property float            $price
- * @property float            $subtotal
- * @property float            $tax_1
- * @property float            $tax_2
- * @property float            $tax
- * @property float            $total
- * @property int              $display_order
- * @property string           $description
+ * @property int $id
+ * @property int $recurring_invoice_id
+ * @property int $item_id
+ * @property int $tax_rate_id
+ * @property int $tax_rate_2_id
+ * @property string $name
+ * @property float $quantity
+ * @property float $price
+ * @property float $subtotal
+ * @property float $tax_1
+ * @property float $tax_2
+ * @property float $tax
+ * @property float $total
+ * @property int $display_order
+ * @property string $description
  * @property RecurringInvoice $recurring_invoice
- * @property TaxRate          $tax_rate
+ * @property TaxRate $tax_rate
  */
 class RecurringInvoiceItem extends Model
 {
@@ -44,13 +39,13 @@ class RecurringInvoiceItem extends Model
     protected $table = 'recurring_invoice_items';
 
     protected $casts = [
-        'quantity'      => 'float',
-        'price'         => 'float',
-        'subtotal'      => 'float',
-        'tax_1'         => 'float',
-        'tax_2'         => 'float',
-        'tax'           => 'float',
-        'total'         => 'float',
+        'quantity' => 'float',
+        'price' => 'float',
+        'subtotal' => 'float',
+        'tax_1' => 'float',
+        'tax_2' => 'float',
+        'tax' => 'float',
+        'total' => 'float',
         'display_order' => 'int',
     ];
 

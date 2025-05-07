@@ -1,17 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Invoices\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRecurringInvoiceItem;
-use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
-use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
-use Modules\Core\Models\RecurringInvoiceItem;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Invoices\Models\RecurringInvoiceItem;
 
-class RecurringInvoiceItemsTest extends TestCase
+//use Modules\Invoices\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRecurringInvoiceItem;
+//use Modules\Invoices\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
+//use Modules\Invoices\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
+
+class RecurringInvoiceItemsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;

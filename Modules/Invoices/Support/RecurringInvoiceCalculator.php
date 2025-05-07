@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\RecurringInvoices\Support;
+namespace Modules\Invoices\Support;
 
 use Modules\Core\Support\Calculators\Calculator;
 

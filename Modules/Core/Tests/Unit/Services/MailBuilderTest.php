@@ -1,10 +1,13 @@
 <?php
+namespace Modules\Core\Tests\Unit\Services;
+
 
 use Modules\Core\Services\MailBuilder;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-class MailBuilderTest extends TestCase
+class MailBuilderTest extends AbstractTestCase
 {
     #[Test]
     #[Group('support')]

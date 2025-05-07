@@ -1,18 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Invoices\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoiceTransaction;
-use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
-use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
-use Modules\Core\Models\InvoiceTransaction;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\InvoiceTransaction;
 
-class InvoiceTransactionsTest extends TestCase
+//use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoiceTransaction;
+//use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
+//use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
+
+class InvoiceTransactionsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;
