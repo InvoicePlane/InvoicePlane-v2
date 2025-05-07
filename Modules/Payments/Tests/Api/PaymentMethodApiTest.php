@@ -2,6 +2,18 @@
 
 namespace Modules\Payments\Tests\Api;
 
+use Modules\Payments\Models\PaymentMethod;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Models\User;
+
+use Modules\Payments\Tests\Api\PaymentMethodApiTest;
+
+use Modules\Core\Tests\ApiTestTrait;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;

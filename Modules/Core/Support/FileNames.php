@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\FileNames;
+
 class FileNames
 {
     public static function invoice($invoice)

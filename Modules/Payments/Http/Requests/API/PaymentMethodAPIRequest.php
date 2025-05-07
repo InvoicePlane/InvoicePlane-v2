@@ -2,6 +2,12 @@
 
 namespace Modules\Payments\Http\Requests\API;
 
+use Modules\Core\Http\Requests\API\APIRequest;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Http\Requests\API\PaymentMethodAPIRequest;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Core\Http\Requests\API\APIRequest;

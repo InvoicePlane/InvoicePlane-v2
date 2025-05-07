@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Commands;
 
+use Modules\Core\Commands\MakeUserCommand;
+
 use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Console\Command;

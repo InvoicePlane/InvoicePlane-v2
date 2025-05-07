@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support\Calculators\Interfaces;
 
+use Modules\Core\Support\Calculators\Interfaces\PayableInterface;
+
 interface PayableInterface
 {
     /**

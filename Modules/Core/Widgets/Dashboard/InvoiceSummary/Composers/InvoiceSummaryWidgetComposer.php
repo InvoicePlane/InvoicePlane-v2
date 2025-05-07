@@ -2,6 +2,18 @@
 
 namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers;
 
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Core\Filament\Company\Pages\Dashboard;
+
+use Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers\InvoiceSummaryWidgetComposer;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Invoices\Models\InvoiceAmount;

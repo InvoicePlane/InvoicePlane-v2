@@ -2,6 +2,18 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Filament\Admin\Resources\UserResource;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
+
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

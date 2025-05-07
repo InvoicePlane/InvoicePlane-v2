@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers;
 
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
+
+use Modules\Core\Filament\Admin\Resources\UserResource;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

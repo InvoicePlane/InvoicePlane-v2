@@ -4,6 +4,12 @@ namespace Modules\Quotes\Listeners;
 
 use Modules\Quotes\Events\QuoteWasUpdated;
 
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Listeners\QuoteWasCreatedListener;
+
+use Modules\Quotes\Events\QuoteWasUpdated;
+
 class QuoteWasCreatedListener
 {
     public function __construct() {}

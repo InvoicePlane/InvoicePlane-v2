@@ -2,6 +2,20 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;
+
+use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\EditCompany;
+
+use Modules\Core\Tests\Feature\CompaniesTest;
+
+use Modules\Core\Filament\Admin\Resources\CompanyResource;
+
+use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
+
+use Modules\Core\Models\Company;
+
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;

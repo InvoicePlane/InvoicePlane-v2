@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Modules\Core\Database\Seeders\DocumentGroupsSeeder;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\DocumentGroup;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;

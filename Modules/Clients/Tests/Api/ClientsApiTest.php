@@ -2,6 +2,16 @@
 
 namespace Modules\Clients\Tests\Api;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Tests\Api\ClientsApiTest;
+
+use Modules\Core\Tests\ApiTestTrait;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;

@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\Directory;
+
+use Modules\Core\Support\DashboardWidgets;
+
+use Modules\Core\Filament\Company\Pages\Dashboard;
+
 class DashboardWidgets
 {
     public static function listsByOrder()

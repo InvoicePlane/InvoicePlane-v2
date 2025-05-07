@@ -2,6 +2,22 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Tests\Feature\CustomFieldValuesTest;
+
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\EditCustomFieldValue;
+
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\CreateCustomFieldValue;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\ListCustomFieldValues;
+
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Models\CustomFieldValue;
+
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;

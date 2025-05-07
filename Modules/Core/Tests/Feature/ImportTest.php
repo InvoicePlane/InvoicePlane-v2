@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Models\Import;
+
+use Modules\Core\Tests\Feature\ImportTest;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;

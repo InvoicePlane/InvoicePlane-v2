@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Helpers;
 
+use Modules\Core\Helpers\TempFileCleanupHelper;
+
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 

@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\HTML;
+
 use Modules\Core\Events\InvoiceHTMLCreating;
 use Modules\Core\Events\QuoteHTMLCreating;
 

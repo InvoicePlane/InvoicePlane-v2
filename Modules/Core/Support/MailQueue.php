@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\MailQueue;
+
+use Modules\Core\Support\PDF\PDFFactory;
+
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Modules\Core\Support\PDF\PDFFactory;

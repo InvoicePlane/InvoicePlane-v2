@@ -2,6 +2,14 @@
 
 namespace Modules\Payments\Database\Factories;
 
+use Modules\Payments\Models\PaymentMethod;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Database\Factories\PaymentMethodFactory;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Payments\Models\PaymentMethod;

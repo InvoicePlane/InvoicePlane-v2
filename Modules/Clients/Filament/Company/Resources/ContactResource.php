@@ -2,6 +2,28 @@
 
 namespace Modules\Clients\Filament\Company\Resources;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Core\Helpers\EnumHelper;
+
+use Modules\Core\Enums\CommunicationType;
+
+use Modules\Clients\Filament\Company\Resources\ContactResource\RelationManagers\CommunicationsRelationManager;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\ListContacts;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Enums\Gender;
+
+use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
+
+use Modules\Clients\Filament\Company\Resources\ContactResource;
+
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;

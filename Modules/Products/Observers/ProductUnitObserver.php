@@ -4,4 +4,8 @@ namespace Modules\Products\Observers;
 
 use Modules\Core\Observers\AbstractObserver;
 
+use Modules\Products\Observers\ProductUnitObserver;
+
+use Modules\Core\Observers\AbstractObserver;
+
 class ProductUnitObserver extends AbstractObserver {}

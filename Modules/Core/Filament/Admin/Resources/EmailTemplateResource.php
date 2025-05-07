@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
+
+use Modules\Core\Models\EmailTemplate;
+
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
+
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;

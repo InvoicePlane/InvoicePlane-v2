@@ -2,6 +2,22 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\CreateUserProfile;
+
+use Modules\Core\Filament\Admin\Resources\UserProfileResource;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Tests\Feature\UserProfilesTest;
+
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Models\UserProfile;
+
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProfile;
+
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;

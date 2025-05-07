@@ -2,6 +2,12 @@
 
 namespace Modules\Payments\Providers;
 
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Providers\RouteServiceProvider;
+
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 

@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Helpers;
 
+use Modules\Core\Helpers\AddressHelper;
+
 class AddressHelper
 {
     public function formatAddress($object)

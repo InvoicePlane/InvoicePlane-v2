@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Core\Database\Seeders\CompaniesSeeder;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 

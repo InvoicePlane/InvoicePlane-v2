@@ -2,6 +2,36 @@
 
 namespace Modules\Core\Commands;
 
+use Modules\Projects\Models\Task;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Core\Commands\GenerateObservers;
+
+use Modules\Products\Models\Product;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 

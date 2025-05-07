@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Support\PDF\Drivers;
 
+use Modules\Core\Support\PDF\Drivers\domPDF;
+
+use Modules\Core\Support\PDF\PDFAbstract;
+
 use Dompdf\Dompdf as PDF;
 use Dompdf\Options;
 use Modules\Core\Support\PDF\PDFAbstract;

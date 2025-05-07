@@ -4,6 +4,10 @@ namespace Modules\Core\Support\PDF;
 
 use Modules\Core\Support\Directory;
 
+use Modules\Core\Support\PDF\PDFFactory;
+
+use Modules\Core\Support\Directory;
+
 class PDFFactory
 {
     public static function create()

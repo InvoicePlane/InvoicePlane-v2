@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Helpers;
 
+use Modules\Core\Helpers\EnumHelper;
+
+use Modules\Core\Contracts\LabeledEnum;
+
 use Modules\Core\Contracts\LabeledEnum;
 
 class EnumHelper

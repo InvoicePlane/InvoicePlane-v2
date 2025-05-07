@@ -2,6 +2,14 @@
 
 namespace Modules\Core\Enums;
 
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Enums\DocumentGroupType;
+
+use Modules\Core\Contracts\LabeledEnum;
+
+use Modules\Core\Support\Results\Invoices;
+
 enum DocumentGroupType: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case CREDIT_NOTES       = 'credit_notes';

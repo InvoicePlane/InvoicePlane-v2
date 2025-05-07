@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages;
 
+use Modules\Core\Filament\Admin\Resources\TaxRateResource;
+
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource;

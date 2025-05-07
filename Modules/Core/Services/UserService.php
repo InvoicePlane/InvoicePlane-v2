@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Services;
 
+use Modules\Core\Events\UserWasCreated;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Services\BaseService;
+
+use Modules\Core\Events\UserWasUpdated;
+
+use Modules\Core\Services\UserService;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Modules\Core\Events\UserWasCreated;

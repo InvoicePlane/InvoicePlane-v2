@@ -2,6 +2,16 @@
 
 namespace Modules\Quotes\Tests\Unit;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Quotes\Services\QuoteCopyService;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Quotes\Tests\Unit\QuoteCopyServiceTest;
+
 use Exception;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Models\Quote;

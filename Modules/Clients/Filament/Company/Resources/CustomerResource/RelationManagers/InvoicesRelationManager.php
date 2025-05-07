@@ -2,6 +2,16 @@
 
 namespace Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers;
 
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Filament\Admin\Resources\UserResource;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

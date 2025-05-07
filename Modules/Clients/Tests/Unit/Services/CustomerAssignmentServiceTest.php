@@ -3,6 +3,14 @@
 namespace Modules\Clients\Services;
 
 use Modules\Clients\Models\Contact;
+
+use Modules\Clients\Services\CustomerAssignmentService;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

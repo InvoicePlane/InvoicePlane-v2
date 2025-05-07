@@ -4,6 +4,10 @@ namespace Modules\Products\Listeners;
 
 use Modules\Products\Events\ProductWasUpdated;
 
+use Modules\Products\Listeners\ProductWasUpdatedListener;
+
+use Modules\Products\Events\ProductWasUpdated;
+
 class ProductWasUpdatedListener
 {
     public function __construct() {}

@@ -2,6 +2,14 @@
 
 namespace Modules\Customers\Services;
 
+use Modules\Clients\Services\CustomerService;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Models\Relation;
+
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
 use Modules\Clients\Services\CustomerService;

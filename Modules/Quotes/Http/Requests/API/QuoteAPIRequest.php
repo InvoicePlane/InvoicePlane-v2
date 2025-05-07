@@ -2,6 +2,22 @@
 
 namespace Modules\Quotes\Http\Requests\API;
 
+use Modules\Core\Http\Requests\API\APIRequest;
+
+use Modules\Quotes\Enums\QuoteStatus;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Http\Requests\API\QuoteAPIRequest;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;

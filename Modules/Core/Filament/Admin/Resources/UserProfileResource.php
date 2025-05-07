@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Modules\Core\Filament\Admin\Resources\UserProfileResource;
+
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
+
+use Modules\Core\Models\UserProfile;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

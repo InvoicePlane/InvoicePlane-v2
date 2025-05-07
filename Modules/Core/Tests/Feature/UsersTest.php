@@ -2,6 +2,20 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Tests\Feature\UsersTest;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\EditUser;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Filament\Admin\Resources\UserResource;
+
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\UserResource;
 use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;

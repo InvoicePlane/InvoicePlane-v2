@@ -2,6 +2,14 @@
 
 namespace Modules\Quotes\Services;
 
+use Modules\Quotes\Services\QuoteCustomerSwitchService;
+
+use Modules\Quotes\Tests\Unit\QuoteCustomerSwitchServiceTest;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

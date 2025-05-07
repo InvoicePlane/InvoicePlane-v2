@@ -2,6 +2,10 @@
 
 namespace Modules\Clients\Models;
 
+use Modules\Clients\Models\ClientCustom;
+
+use Modules\Core\Support\Results\Clients;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

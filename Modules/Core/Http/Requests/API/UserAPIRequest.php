@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Http\Requests\API;
 
+use Modules\Core\Http\Requests\API\APIRequest;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Http\Requests\API\UserAPIRequest;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Core\Models\User;

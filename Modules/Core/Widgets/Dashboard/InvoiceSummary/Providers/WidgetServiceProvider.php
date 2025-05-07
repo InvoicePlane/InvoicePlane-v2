@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Providers;
 
+use Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers\InvoiceSummarySettingComposer;
+
+use Modules\Core\Widgets\Dashboard\QuoteSummary\Providers\WidgetServiceProvider;
+
+use Modules\Core\Filament\Company\Pages\Dashboard;
+
+use Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers\WidgetController;
+
+use Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers\InvoiceSummaryWidgetComposer;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 

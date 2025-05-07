@@ -2,6 +2,14 @@
 
 namespace Modules\Clients\Importers;
 
+use Modules\Core\Models\CustomField;
+
+use Modules\Clients\Importers\ContactImporter;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Core\Support\Results\Clients;
+
 use Illuminate\Support\Facades\Validator;
 use Modules\Clients\Models\Contact;
 use Modules\Core\Models\CustomField;

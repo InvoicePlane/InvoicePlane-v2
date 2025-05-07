@@ -2,6 +2,12 @@
 
 namespace Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages;
 
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
+
+use Modules\Core\Models\Company;
+
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource;

@@ -2,6 +2,20 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
+
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;
+
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
+
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Tests\Feature\DocumentGroupsTest;
+
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;

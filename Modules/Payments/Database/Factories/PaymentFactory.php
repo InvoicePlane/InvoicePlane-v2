@@ -2,6 +2,22 @@
 
 namespace Modules\Payments\Database\Factories;
 
+use Modules\Payments\Models\PaymentMethod;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Payments\Database\Factories\PaymentFactory;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Payments\Enums\PaymentStatus;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Invoices\Models\Invoice;

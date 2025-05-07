@@ -2,6 +2,14 @@
 
 namespace Modules\Payments\Database\Seeders;
 
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Payments\Database\Seeders\PaymentsSeeder;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Payments\Models\Payment;

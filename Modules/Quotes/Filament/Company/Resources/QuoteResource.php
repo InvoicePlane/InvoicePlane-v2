@@ -2,6 +2,28 @@
 
 namespace Modules\Quotes\Filament\Company\Resources;
 
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\InvoiceRelationManager;
+
+use Modules\Quotes\Enums\QuoteStatus;
+
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
+
+use Modules\Core\Helpers\EnumHelper;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\UserRelationManager;
+
+use Modules\Core\Models\Company;
+
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\DocumentGroupRelationManager;
+
+use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
+
+use Modules\Quotes\Filament\Company\Resources\QuoteResource;
+
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;

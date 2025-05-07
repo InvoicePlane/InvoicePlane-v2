@@ -2,6 +2,14 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Core\Models\CustomField;
+
+use Modules\Core\Enums\CustomFieldType;
+
+use Modules\Core\Models\CustomFieldValue;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Enums\CustomFieldType;

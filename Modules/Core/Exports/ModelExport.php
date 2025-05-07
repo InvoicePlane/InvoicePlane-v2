@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Exports;
 
+use Modules\Core\Exports\ModelExport;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;

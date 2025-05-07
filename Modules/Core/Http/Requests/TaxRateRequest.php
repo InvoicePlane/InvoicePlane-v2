@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Http\Requests;
 
+use Modules\Core\Http\Requests\TaxRateRequest;
+
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaxRateRequest extends FormRequest

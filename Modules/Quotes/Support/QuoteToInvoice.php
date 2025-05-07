@@ -2,6 +2,22 @@
 
 namespace Modules\Quotes\Support;
 
+use Modules\Core\Models\CustomField;
+
+use Modules\Core\Support\Statuses\InvoiceStatuses;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Quotes\Support\QuoteToInvoice;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Support\Statuses\QuoteStatuses;
+
+use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Modules\Core\Events\InvoiceModified;
 use Modules\Core\Models\CustomField;
 use Modules\Core\Support\Statuses\InvoiceStatuses;

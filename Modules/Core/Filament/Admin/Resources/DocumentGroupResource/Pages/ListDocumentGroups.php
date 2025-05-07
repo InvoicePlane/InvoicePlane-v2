@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages;
 
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
+
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;

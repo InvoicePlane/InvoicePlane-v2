@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Support\Statuses;
 
+use Modules\Core\Support\Statuses\AbstractStatuses;
+
+use Modules\Core\Support\Statuses\QuoteStatuses;
+
 class QuoteStatuses extends AbstractStatuses
 {
     protected static $statuses = [

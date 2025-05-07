@@ -2,6 +2,16 @@
 
 namespace Modules\Payments\Http\Requests;
 
+use Modules\Payments\Models\PaymentMethod;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Http\Requests\PaymentRequest;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\PaymentMethod;

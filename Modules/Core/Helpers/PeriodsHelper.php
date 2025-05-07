@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Helpers;
 
+use Modules\Core\Helpers\PeriodsHelper;
+
 class PeriodsHelper
 {
     public function periods()

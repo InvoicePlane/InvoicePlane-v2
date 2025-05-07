@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Modules\Core\Database\Seeders\EmailTemplatesSeeder;
+
+use Modules\Core\Models\EmailTemplate;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;

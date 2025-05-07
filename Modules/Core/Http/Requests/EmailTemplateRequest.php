@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Http\Requests;
 
+use Modules\Core\Http\Requests\EmailTemplateRequest;
+
 use Illuminate\Foundation\Http\FormRequest;
 
 class EmailTemplateRequest extends FormRequest

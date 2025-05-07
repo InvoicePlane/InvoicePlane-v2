@@ -4,6 +4,12 @@ namespace Modules\Quotes\Support;
 
 use Modules\Core\Support\Directory;
 
+use Modules\Quotes\Support\QuoteTemplates;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Support\Directory;
+
 class QuoteTemplates
 {
     /**

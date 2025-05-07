@@ -4,6 +4,10 @@ namespace Modules\Core\Support;
 
 use Modules\Invoices\Models\Invoice;
 
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Invoices\Models\Invoice;
+
 abstract class MerchantDriver
 {
     protected $isRedirect;

@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Tests\Unit\Services\TemplateParserServiceTest;
+
+use Modules\Core\Services\TemplateParserService;
+
 use Modules\Core\Services\TemplateParserService;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;

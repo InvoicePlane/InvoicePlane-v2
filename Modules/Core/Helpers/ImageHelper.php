@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Helpers;
 
+use Modules\Core\Helpers\ImageHelper;
+
 class ImageHelper
 {
     public function image($imagePath, $width, $height)

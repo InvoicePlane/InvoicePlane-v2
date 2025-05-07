@@ -2,6 +2,14 @@
 
 namespace Modules\Payments\Tests\Api;
 
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Payments\Tests\Api\PaymentsApiTest;
+
 use Modules\Core\Tests\AbstractTestCase;
 
 class PaymentsApiTest extends AbstractTestCase

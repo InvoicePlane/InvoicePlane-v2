@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use Modules\Core\Support\MailQueue;
+
+use Modules\Core\Tests\AbstractTestCase;
+
 use Livewire\Livewire;
 use Modules\Core\Models\MailQueue;
 use Modules\Core\Tests\AbstractTestCase;

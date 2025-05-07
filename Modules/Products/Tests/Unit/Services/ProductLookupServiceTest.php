@@ -2,6 +2,10 @@
 
 namespace Modules\Products\Services;
 
+use Modules\Products\Models\Product;
+
+use Modules\Products\Services\ProductLookupService;
+
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

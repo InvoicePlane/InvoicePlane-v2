@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Core\Importers\InvoiceImporter;
+
+use Modules\Core\Importers\ImportFactory;
+
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

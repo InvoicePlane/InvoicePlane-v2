@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Http\Requests;
 
+use Modules\Core\Http\Requests\UserRequest;
+
+use Modules\Core\Models\User;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Core\Models\User;
 

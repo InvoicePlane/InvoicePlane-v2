@@ -2,6 +2,20 @@
 
 namespace Modules\Quotes\Tests\Unit;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Quotes\Services\QuoteCustomerSwitchService;
+
+use Modules\Quotes\Tests\Unit\QuoteCustomerSwitchServiceTest;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Models\Relation;
+
 use Exception;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractTestCase;

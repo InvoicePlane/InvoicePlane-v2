@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Enums;
 
+use Modules\Core\Enums\TaxRateType;
+
+use Modules\Core\Contracts\LabeledEnum;
+
 enum TaxRateType: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case EXCLUSIVE = 'exclusive';

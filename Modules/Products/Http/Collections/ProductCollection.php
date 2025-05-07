@@ -2,6 +2,8 @@
 
 namespace Modules\Products\Http\Collections;
 
+use Modules\Products\Http\Collections\ProductCollection;
+
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use JsonSerializable;
 

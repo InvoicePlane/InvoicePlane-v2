@@ -2,6 +2,14 @@
 
 namespace Modules\Core\Support\Results;
 
+use Modules\Core\Support\Results\InvoiceItems;
+
+use Modules\Core\Support\Results\SourceInterface;
+
+use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Modules\Invoices\Models\InvoiceItem;
 
 class InvoiceItems implements SourceInterface

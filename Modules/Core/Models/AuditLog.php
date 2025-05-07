@@ -2,6 +2,16 @@
 
 namespace Modules\Activity\Models;
 
+use Modules\Core\Support\DateFormatter;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\DateFormatter;
 use Modules\Invoices\Models\Invoice;

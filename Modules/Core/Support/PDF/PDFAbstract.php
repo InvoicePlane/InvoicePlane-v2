@@ -2,6 +2,10 @@
 
 namespace Modules\Core\Support\PDF;
 
+use Modules\Core\Support\PDF\PDFAbstract;
+
+use Modules\Core\Support\PDF\PDFInterface;
+
 abstract class PDFAbstract implements PDFInterface
 {
     protected $paperSize;

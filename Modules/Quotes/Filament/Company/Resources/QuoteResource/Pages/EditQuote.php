@@ -2,6 +2,14 @@
 
 namespace Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages;
 
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Models\Company;
+
+use Modules\Quotes\Filament\Company\Resources\QuoteResource;
+
 use Filament\Resources\Pages\EditRecord;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 

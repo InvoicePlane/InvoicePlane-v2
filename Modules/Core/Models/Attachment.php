@@ -2,6 +2,10 @@
 
 namespace Modules\Attachments\Models;
 
+use Modules\Core\Support\DateFormatter;
+
+use Modules\Core\Models\User;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\AttachmentCreating;

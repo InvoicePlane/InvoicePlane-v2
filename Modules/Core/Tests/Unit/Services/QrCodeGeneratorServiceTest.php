@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
+use Modules\Core\Services\QrCodeGeneratorService;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Tests\Unit\Services\QrCodeGeneratorServiceTest;
+
 use Exception;
 use Modules\Core\Services\QrCodeGeneratorService;
 use Modules\Core\Tests\AbstractTestCase;

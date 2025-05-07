@@ -2,6 +2,28 @@
 
 namespace Modules\Clients\Tests\Feature;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCustomer;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\EditCustomer;
+
+use Modules\Clients\Tests\Feature\CustomersTest;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Clients\Enums\RelationType;

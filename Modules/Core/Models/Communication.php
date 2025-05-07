@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Core\Enums\CommunicationType;
+
+use Modules\Core\Models\Communication;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Core\Enums\CommunicationType;

@@ -4,6 +4,10 @@ namespace Modules\Core\Listeners;
 
 use Modules\Core\Events\UserWasCreated;
 
+use Modules\Core\Listeners\UserWasCreatedListener;
+
+use Modules\Core\Events\UserWasCreated;
+
 class UserWasCreatedListener
 {
     public function __construct() {}

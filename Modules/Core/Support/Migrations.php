@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\Migrations;
+
 use DB;
 use Exception;
 use Illuminate\Support\Facades\File;

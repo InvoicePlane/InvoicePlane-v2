@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Tests\Unit\Services\PdfGenerationServiceTest;
+
+use Modules\Core\Services\PdfGenerationService;
+
 use Exception;
 use Modules\Core\Services\PdfGenerationService;
 use Modules\Core\Tests\AbstractTestCase;
