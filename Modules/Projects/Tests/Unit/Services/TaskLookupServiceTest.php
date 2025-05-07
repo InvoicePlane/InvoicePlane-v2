@@ -14,7 +14,7 @@ class TaskLookupServiceTest extends AbstractTestCase
     public function it_finds_task_by_id(): void
     {
         $task   = Task::factory()->create();
-        $result = TaskLookupService::find($task->id);
+        $result = TaskLookupService::query()->find($task->id);
 
         $this->assertEquals($task->id, $result->id);
     }
@@ -23,6 +23,6 @@ class TaskLookupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_returns_null_for_missing_task(): void
     {
-        $this->assertNull(TaskLookupService::find(999999));
+        $this->assertNull(TaskLookupService::query()->find(999999));
     }
 }

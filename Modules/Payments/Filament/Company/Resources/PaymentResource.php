@@ -72,7 +72,7 @@ class PaymentResource extends Resource
                                                         ->get()
                                                         ->pluck('invoice_number', 'id')
                                                         ->mapWithKeys(fn ($number, $id) => [
-                                                            $id => "{$number} – " . Invoice::find($id)->customer?->company_name,
+                                                            $id => "{$number} – " . Invoice::query()->find($id)->customer?->company_name,
                                                         ])
                                                         ->toArray();
                                                 })

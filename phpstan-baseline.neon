@@ -73,18 +73,6 @@ parameters:
 			path: Modules/Clients/Listeners/CustomerWasUpdatedListener.php
 
 		-
-			message: '#^Class Modules\\Clients\\Models\\Client not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/ClientNote.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Clients/Models/ClientNote.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -133,12 +121,6 @@ parameters:
 			path: Modules/Clients/Models/Contact.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\Company\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Models/Contact.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -177,12 +159,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
 			count: 1
 			path: Modules/Clients/Models/Relation.php
 
@@ -332,12 +308,6 @@ parameters:
 
 		-
 			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Services/CustomerService.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:find\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
 			path: Modules/Clients/Services/CustomerService.php
@@ -943,12 +913,6 @@ parameters:
 			path: Modules/Core/Models/DocumentGroup.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\DocumentGroup\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: Modules/Core/Models/DocumentGroup.php
-
-		-
 			message: '#^Call to an undefined static method Modules\\Core\\Models\\DocumentGroup\:\:orderBy\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -957,6 +921,12 @@ parameters:
 		-
 			message: '#^Call to an undefined static method Modules\\Core\\Models\\DocumentGroup\:\:where\(\)\.$#'
 			identifier: staticMethod.notFound
+			count: 1
+			path: Modules/Core/Models/DocumentGroup.php
+
+		-
+			message: '#^Parameter \#1 \$string of function mb_str_pad expects string, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: Modules/Core/Models/DocumentGroup.php
 
@@ -1393,8 +1363,8 @@ parameters:
 			path: Modules/Core/Support/HTML.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\MailQueue\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Core\\Models\\MailQueue\>\|Modules\\Core\\Models\\MailQueue\:\:\$sent\.$#'
+			identifier: property.notFound
 			count: 1
 			path: Modules/Core/Support/MailQueue.php
 
@@ -2293,12 +2263,6 @@ parameters:
 			path: Modules/Expenses/Models/ExpenseCategory.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\ExpenseCategory\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Expenses/Models/ExpenseCategory.php
-
-		-
 			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\ExpenseCategory\:\:firstOrNew\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -2719,12 +2683,6 @@ parameters:
 			path: Modules/Invoices/Support/InvoiceCalculate.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\RecurringInvoice\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Support/RecurringInvoiceCalculate.php
-
-		-
 			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\RecurringInvoice\:\:select\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
@@ -3015,19 +2973,13 @@ parameters:
 		-
 			message: '#^Access to property \$company_name on an unknown class Modules\\Invoices\\Models\\Customer\.$#'
 			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:find\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
+			count: 2
 			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
 
 		-
 			message: '#^Using nullsafe property access on non\-nullable type Modules\\Invoices\\Models\\Customer\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
-			count: 1
+			count: 2
 			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
 
 		-
@@ -4165,7 +4117,7 @@ parameters:
 			path: Modules/Projects/Tests/Unit/Services/TaskLookupServiceTest.php
 
 		-
-			message: '#^Call to static method find\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\TaskLookupService\.$#'
+			message: '#^Call to static method query\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\TaskLookupService\.$#'
 			identifier: class.notFound
 			count: 2
 			path: Modules/Projects/Tests/Unit/Services/TaskLookupServiceTest.php
@@ -4657,14 +4609,8 @@ parameters:
 			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
 
 		-
-			message: '#^Call to method switch\(\) on an unknown class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteCustomerSwitchService\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteCustomerSwitchService not found\.$#'
-			identifier: class.notFound
+			message: '#^Call to an undefined method Modules\\Quotes\\Services\\QuoteCustomerSwitchService\:\:switch\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
 

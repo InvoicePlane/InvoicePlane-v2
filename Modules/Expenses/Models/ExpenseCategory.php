@@ -39,7 +39,7 @@ class ExpenseCategory extends Model
             $expenseCategory->name = $categoryName;
             $expenseCategory->save();
 
-            return self::find($expenseCategory->id);
+            return self::query()->find($expenseCategory->id);
         }
 
         return $expenseCategory;

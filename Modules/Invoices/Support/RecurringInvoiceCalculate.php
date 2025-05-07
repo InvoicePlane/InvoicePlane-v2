@@ -18,7 +18,7 @@ class RecurringInvoiceCalculate
 
     public function calculate($recurringInvoiceId): void
     {
-        $recurringInvoice = RecurringInvoice::find($recurringInvoiceId);
+        $recurringInvoice = RecurringInvoice::query()->find($recurringInvoiceId);
 
         $recurringInvoiceItems = RecurringInvoiceItem::select(
             'recurring_invoice_items.*',

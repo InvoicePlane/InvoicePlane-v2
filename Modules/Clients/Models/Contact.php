@@ -120,7 +120,7 @@ class Contact extends Model
 
     public function getCompanyNameAttribute()
     {
-        return $this->company_id ? Company::find($this->company_id)->company_name : null;
+        return $this->company_id ? Company::query()->find($this->company_id)->company_name : null;
     }
 
     /*

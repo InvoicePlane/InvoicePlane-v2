@@ -110,7 +110,7 @@ class Relation extends Model
             $client->name = $uniqueName;
             $client->save();
 
-            return self::find($client->id);
+            return self::query()->find($client->id);
         }
 
         return $client;

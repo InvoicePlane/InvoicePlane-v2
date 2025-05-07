@@ -25,7 +25,7 @@ class CustomerService extends BaseService
 
     public function update(array $input, $client): Relation
     {
-        $client = Relation::find($client);
+        $client = Relation::query()->find($client);
         $client->fill($input);
         $client->save();
 

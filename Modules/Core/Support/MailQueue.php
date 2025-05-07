@@ -25,7 +25,7 @@ class MailQueue
 
     public function send($id)
     {
-        $mail = \Modules\Core\Models\MailQueue::find($id);
+        $mail = \Modules\Core\Models\MailQueue::query()->find($id);
 
         if ($this->sendMail(
             $mail->from,

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\DocumentGroupFactory;
 use Modules\Core\Enums\DocumentGroupType;
-use Modules\Core\Support\Results\Invoices;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\RecurringInvoice;
@@ -76,7 +75,7 @@ class DocumentGroup extends Model
 
     public static function generateNumber($id): array|string
     {
-        $group = self::find($id);
+        $group = self::query()->find($id);
 
         // Only check for resets if this group has been used.
         if ($group->last_id != 0) {
@@ -125,7 +124,7 @@ class DocumentGroup extends Model
 
     public static function incrementNextId($document): void
     {
-        $group          = self::find($document->group_id);
+        $group          = self::query()->find($document->group_id);
         $group->last_id = $group->next_id;  // Setting last_id to old nex_id before increment
         $group->next_id = $group->next_id + 1;
         $group->save();
