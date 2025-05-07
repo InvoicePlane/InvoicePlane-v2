@@ -4,10 +4,10 @@ namespace Modules\Expenses\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
-use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
+
 use Modules\Products\Models\ProductUnit;
 
 class ExpenseItemFactory extends Factory

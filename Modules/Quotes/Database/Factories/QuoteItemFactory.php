@@ -4,8 +4,9 @@ namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
-use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
+use Modules\Quotes\Models\QuoteItem;
+
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Models\QuoteItem;
 

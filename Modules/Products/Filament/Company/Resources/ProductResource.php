@@ -15,7 +15,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages;
-use Modules\Products\Models\Product;
+
 
 class ProductResource extends Resource
 {

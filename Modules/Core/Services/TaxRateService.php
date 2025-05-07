@@ -3,7 +3,6 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Models\TaxRate;
 
 class TaxRateService extends BaseService
 {

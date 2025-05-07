@@ -4,9 +4,10 @@ namespace Modules\Products\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
 use Modules\Products\Enums\ProductType;
-use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 

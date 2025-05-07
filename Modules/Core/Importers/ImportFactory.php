@@ -20,7 +20,7 @@ class ImportFactory
             case 'quoteItems':
                 return app()->make(\Modules\Core\Importers\QuoteItemImporter::class);
             case 'itemLookups':
-                return app()->make(\Modules\Core\Importers\ItemLookupImporter::class);
+                return app()->make(\Modules\Core\Importers\ProductImporter::class);
             case 'expenses':
                 return app(\Modules\Core\Importers\ExpenseImporter::class);
         }

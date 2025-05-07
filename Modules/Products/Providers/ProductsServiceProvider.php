@@ -4,7 +4,15 @@ namespace Modules\Products\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+use Modules\Products\Observers\ItemObserver;
+use Modules\Products\Observers\ProductCategoryObserver;
+use Modules\Products\Observers\ProductUnitObserver;
+use Nwidart\Modules\Traits\PathNamespace;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use Modules\Products\Observers\ItemObserver;

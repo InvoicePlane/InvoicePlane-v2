@@ -4,7 +4,7 @@ namespace Modules\Products\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
-use Modules\Products\Models\Product;
+
 
 class ProductsSeeder extends Seeder
 {

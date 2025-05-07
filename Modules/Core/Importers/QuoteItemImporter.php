@@ -3,9 +3,7 @@
 namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Core\Events\QuoteModified;
 use Modules\Quotes\Models\Quote;
-use Modules\TaxRates\Models\TaxRate;
 
 class QuoteItemImporter extends AbstractImporter
 {

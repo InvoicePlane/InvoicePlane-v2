@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Services;
 
 use Exception;
-use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\InvoiceTaxRateService;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;

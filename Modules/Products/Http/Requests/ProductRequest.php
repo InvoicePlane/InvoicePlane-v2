@@ -3,7 +3,6 @@
 namespace Modules\Products\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 

@@ -3,9 +3,7 @@
 namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Core\Events\InvoiceModified;
 use Modules\Invoices\Models\Invoice;
-use Modules\TaxRates\Models\TaxRate;
 
 class InvoiceItemImporter extends AbstractImporter
 {

@@ -5,7 +5,6 @@ namespace Modules\Projects\Http\Requests\API;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Http\Requests\API\APIRequest;
 
 class ProjectAPIRequest extends APIRequest
 {

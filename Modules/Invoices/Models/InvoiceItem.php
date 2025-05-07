@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Database\Factories\InvoiceItemFactory;
-use Modules\Products\Models\Product;
-use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Task;
+
+
 use Modules\Products\Models\ProductUnit;
 use Modules\Projects\Models\Task;
 

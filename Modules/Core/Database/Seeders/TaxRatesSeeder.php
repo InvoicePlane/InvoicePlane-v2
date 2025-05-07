@@ -4,7 +4,6 @@ namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
 
 class TaxRatesSeeder extends Seeder
 {
