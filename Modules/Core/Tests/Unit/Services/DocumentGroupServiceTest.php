@@ -9,7 +9,7 @@ use Modules\Core\Tests\Unit\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
 #[CoversClass(DocumentGroupService::class)]
 class DocumentGroupServiceTest extends TestCase

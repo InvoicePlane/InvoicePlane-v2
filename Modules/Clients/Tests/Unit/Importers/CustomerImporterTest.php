@@ -5,7 +5,7 @@ namespace Modules\Clients\Tests\Unit\Importers;
 use Modules\Clients\Importers\CustomerImporter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
 #[Group('support')]
 class CustomerImporterTest extends TestCase

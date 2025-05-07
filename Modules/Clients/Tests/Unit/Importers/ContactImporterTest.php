@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Modules\Clients\Importers\ContactImporter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
 #[Group('support')]
 class ContactImporterTest extends TestCase

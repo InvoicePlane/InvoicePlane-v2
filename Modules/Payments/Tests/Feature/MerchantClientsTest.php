@@ -10,8 +10,7 @@ use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantC
 use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
 use Modules\Core\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
 use Modules\Core\Models\MerchantClient;
-use Modules\Core\Models\User;
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
 class MerchantClientsTest extends TestCase
 {

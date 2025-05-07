@@ -1,5 +1,5 @@
 <?php
 
-use Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
 class DocumentGroupService extends TestCase {}
