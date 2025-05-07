@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Tests\Unit\Support\MerchantDrivers;
 
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
