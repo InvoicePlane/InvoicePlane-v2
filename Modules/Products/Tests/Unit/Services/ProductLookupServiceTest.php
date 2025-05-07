@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Products\Models\Product;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

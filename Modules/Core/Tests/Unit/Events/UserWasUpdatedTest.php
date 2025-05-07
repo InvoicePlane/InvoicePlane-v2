@@ -4,6 +4,7 @@ namespace Modules\Core\Tests\Unit\Events;
 
 use Modules\Core\Events\UserWasUpdated;
 use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class UserWasUpdatedTest extends AbstractTestCase

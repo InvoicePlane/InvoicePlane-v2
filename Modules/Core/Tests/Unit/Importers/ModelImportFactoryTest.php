@@ -3,6 +3,7 @@
 namespace Modules\Core\Tests\Unit\Importers;
 
 use InvalidArgumentException;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

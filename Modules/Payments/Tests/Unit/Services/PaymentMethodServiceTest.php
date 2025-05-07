@@ -3,6 +3,7 @@
 namespace Modules\Payments\Tests\Unit\Services;
 
 use InvalidArgumentException;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Payments\Models\PaymentMethod;
 use Modules\Payments\Services\PaymentMethodService;
 use PHPUnit\Framework\Attributes\Group;

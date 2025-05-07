@@ -3,6 +3,7 @@
 namespace Modules\Core\Tests\Unit\Calculators;
 
 use Modules\Core\Support\Calculators\Calculator;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

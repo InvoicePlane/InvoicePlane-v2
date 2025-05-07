@@ -3,6 +3,7 @@
 namespace Modules\Products\Tests\Unit\Services;
 
 use InvalidArgumentException;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Products\Models\ProductCategory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
