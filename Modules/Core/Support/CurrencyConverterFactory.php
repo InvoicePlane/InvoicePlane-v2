@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Currencies\Support;
+namespace Modules\Core\Support;
 
 class CurrencyConverterFactory
 {
     public static function create()
     {
-        $class = 'Modules\Currencies\Support\Drivers\\' . config('ip.currencyConversionDriver');
+        $class = 'Modules\Core\Support\Drivers\\' . config('ip.currencyConversionDriver');
 
         return new $class();
     }

@@ -1,18 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Payments\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantClient;
-use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
-use Modules\Core\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
-use Modules\Core\Models\MerchantClient;
-use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Payments\Models\MerchantClient;
 
-class MerchantClientsTest extends TestCase
+//use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantClient;
+//use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
+//use Modules\Core\Filament\Resources\MerchantClientResource\Pages\ListMerchantClients;
+
+class MerchantClientsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -25,14 +26,14 @@ class MerchantClientsTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
      * @group smoke
      *
      * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      */
-    public function it_lists_merchantclients(): void
+    public function it_lists_merchant_clients(): void
     {
         $this->markTestIncomplete();
 
@@ -45,8 +46,8 @@ class MerchantClientsTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -57,7 +58,7 @@ class MerchantClientsTest extends TestCase
      * @payload
      * []
      */
-    public function it_creates_a_merchantclient(): void
+    public function it_creates_a_merchant_client(): void
     {
         $this->markTestIncomplete();
 
@@ -72,8 +73,8 @@ class MerchantClientsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -84,7 +85,7 @@ class MerchantClientsTest extends TestCase
      * @payload
      * []
      */
-    public function it_fails_to_create_merchantclient_when_required_fields_are_missing(): void
+    public function it_fails_to_create_merchant_client_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -103,15 +104,15 @@ class MerchantClientsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      *
      * @payload
      * []
      */
-    public function it_updates_a_merchantclient(): void
+    public function it_updates_a_merchant_client(): void
     {
         $this->markTestIncomplete('Needs full payload and assertions.');
 
@@ -128,19 +129,13 @@ class MerchantClientsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
-     *
      * @payload
      * []
      */
-    public function it_fails_to_update_merchantclient_when_required_fields_are_missing(): void
+    public function it_fails_to_update_merchant_client_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -161,15 +156,13 @@ class MerchantClientsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
-     *
      * @payload
      * []
      */
-    public function it_deletes_a_merchantclient(): void
+    public function it_deletes_a_merchant_client(): void
     {
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
@@ -180,7 +173,7 @@ class MerchantClientsTest extends TestCase
         Livewire::test(ListMerchantClients::class)
             ->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('merchantclients', ['id' => $record->id]);
+        $this->assertDatabaseMissing('merchant_clients', ['id' => $record->id]);
     }
 
     // endregion

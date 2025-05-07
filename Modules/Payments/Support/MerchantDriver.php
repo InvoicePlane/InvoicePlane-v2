@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Support;
+namespace Modules\Payments\Support;
 
 use Modules\Invoices\Models\Invoice;
 

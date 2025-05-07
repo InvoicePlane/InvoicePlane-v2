@@ -10,7 +10,6 @@ use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRec
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
 use Modules\Core\Models\RecurringInvoiceItem;
-use Modules\Core\Models\User;
 
 class RecurringInvoiceItemsTest extends TestCase
 {
@@ -25,8 +24,8 @@ class RecurringInvoiceItemsTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
      * @group smoke
      *
@@ -45,8 +44,8 @@ class RecurringInvoiceItemsTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -72,8 +71,8 @@ class RecurringInvoiceItemsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -103,8 +102,8 @@ class RecurringInvoiceItemsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
@@ -128,8 +127,8 @@ class RecurringInvoiceItemsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -161,8 +160,8 @@ class RecurringInvoiceItemsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *

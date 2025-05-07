@@ -1,11 +1,10 @@
 <?php
 
-namespace Modules\Core\Support\Drivers;
+namespace Modules\Payments\Support\Drivers;
 
-use Modules\Core\Models\MerchantPayment;
-use Modules\Core\Support\MerchantDriverPayable;
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\Payment;
+use Modules\Payments\Models\MerchantPayment;
+use Modules\Payments\Support\MerchantDriverPayable;
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;

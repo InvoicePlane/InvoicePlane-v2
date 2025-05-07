@@ -1,9 +1,10 @@
 <?php
 
-namespace Modules\Payments\Services;
+namespace Modules\Payments\Tests\Unit\Services;
 
 use InvalidArgumentException;
 use Modules\Payments\Models\PaymentMethod;
+use Modules\Payments\Services\PaymentMethodService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

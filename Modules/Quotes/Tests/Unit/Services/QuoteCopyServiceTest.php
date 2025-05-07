@@ -1,10 +1,9 @@
 <?php
 
-namespace Modules\Quotes\Services;
+namespace Modules\Quotes\Tests\Unit\Services;
 
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Tests\Unit\QuoteCopyServiceTest;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

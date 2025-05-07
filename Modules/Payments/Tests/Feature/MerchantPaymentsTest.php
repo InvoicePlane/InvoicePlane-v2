@@ -1,18 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Payments\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\CreateMerchantPayment;
-use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\EditMerchantPayment;
-use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\ListMerchantPayments;
-use Modules\Core\Models\MerchantPayment;
-use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
+use Modules\Payments\Models\MerchantPayment;
 
-class MerchantPaymentsTest extends TestCase
+//use Modules\Payments\Filament\Resources\MerchantPaymentResource\Pages\CreateMerchantPayment;
+//use Modules\Payments\Filament\Resources\MerchantPaymentResource\Pages\EditMerchantPayment;
+//use Modules\Payments\Filament\Resources\MerchantPaymentResource\Pages\ListMerchantPayments;
+
+class MerchantPaymentsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -25,8 +26,8 @@ class MerchantPaymentsTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
      * @group smoke
      *
@@ -45,8 +46,8 @@ class MerchantPaymentsTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -72,8 +73,8 @@ class MerchantPaymentsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -103,8 +104,8 @@ class MerchantPaymentsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantPaymentResource
      *
@@ -128,8 +129,8 @@ class MerchantPaymentsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -161,8 +162,8 @@ class MerchantPaymentsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantPaymentResource
      *

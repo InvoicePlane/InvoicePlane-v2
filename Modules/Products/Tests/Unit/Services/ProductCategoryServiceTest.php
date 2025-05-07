@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Services;
+namespace Modules\Products\Tests\Unit\Services;
 
 use InvalidArgumentException;
 use Modules\Products\Models\ProductCategory;

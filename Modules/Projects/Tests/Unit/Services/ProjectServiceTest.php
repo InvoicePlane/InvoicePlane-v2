@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Projects\Services;
+namespace Modules\Projects\Tests\Unit\Services;
 
 use InvalidArgumentException;
 use Modules\Projects\Models\Project;

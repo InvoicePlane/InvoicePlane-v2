@@ -1,9 +1,8 @@
 <?php
 
-namespace Modules\Quotes\Services;
+namespace Modules\Quotes\Tests\Unit\Services;
 
 use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Tests\Unit\QuoteCustomerSwitchServiceTest;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

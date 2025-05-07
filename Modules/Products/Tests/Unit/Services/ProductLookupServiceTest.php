@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Products\Services;
+namespace Modules\Products\Tests\Unit\Services;
 
 use Modules\Products\Models\Product;
 use PHPUnit\Framework\Attributes\Group;

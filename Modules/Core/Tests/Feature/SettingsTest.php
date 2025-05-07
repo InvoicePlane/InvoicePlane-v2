@@ -74,8 +74,8 @@ class SettingsTest extends AbstractTestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -105,8 +105,8 @@ class SettingsTest extends AbstractTestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
@@ -130,8 +130,8 @@ class SettingsTest extends AbstractTestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -163,8 +163,8 @@ class SettingsTest extends AbstractTestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *

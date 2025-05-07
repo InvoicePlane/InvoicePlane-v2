@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Customers\Services;
+namespace Modules\Clients\Tests\Unit\Services;
 
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;

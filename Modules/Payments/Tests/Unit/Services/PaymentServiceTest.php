@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Payments\Services;
+namespace Modules\Payments\Tests\Unit\Services;
 
 use Modules\Payments\Models\Payment;
 use PHPUnit\Framework\Attributes\Group;

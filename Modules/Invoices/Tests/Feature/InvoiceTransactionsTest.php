@@ -10,7 +10,6 @@ use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoi
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
 use Modules\Core\Models\InvoiceTransaction;
-use Modules\Core\Models\User;
 use Modules\Invoices\Models\InvoiceTransaction;
 
 class InvoiceTransactionsTest extends TestCase
@@ -26,8 +25,8 @@ class InvoiceTransactionsTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
      * @group smoke
      *
@@ -46,8 +45,8 @@ class InvoiceTransactionsTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -73,8 +72,8 @@ class InvoiceTransactionsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -104,8 +103,8 @@ class InvoiceTransactionsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
@@ -129,8 +128,8 @@ class InvoiceTransactionsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -162,8 +161,8 @@ class InvoiceTransactionsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *

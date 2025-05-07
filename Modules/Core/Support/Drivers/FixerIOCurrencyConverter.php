@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Currencies\Support\Drivers;
+namespace Modules\Core\Support\Drivers;
 
 use Exception;
 

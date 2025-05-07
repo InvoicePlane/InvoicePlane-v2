@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Reports\Reports;
+namespace Modules\Core\Reports;
 
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Payments\Models\Payment;

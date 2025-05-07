@@ -1,6 +1,7 @@
 <?php
+namespace Modules\Core\Helpers;
 
-use Modules\Core\Support\ProfileImage\ProfileImageFactory;
+use Modules\Core\Support\ProfileImageFactory;
 
 class ImageProfileHelper
 {

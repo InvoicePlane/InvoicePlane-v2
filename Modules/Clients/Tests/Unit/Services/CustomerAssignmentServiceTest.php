@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Clients\Services;
+namespace Modules\Clients\Tests\Unit\Services;
 
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;

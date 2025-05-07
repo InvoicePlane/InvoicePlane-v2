@@ -10,7 +10,6 @@ use Modules\Core\Filament\Resources\NoteResource\Pages\CreateNote;
 use Modules\Core\Filament\Resources\NoteResource\Pages\EditNote;
 use Modules\Core\Filament\Resources\NoteResource\Pages\ListNotes;
 use Modules\Core\Models\Note;
-use Modules\Core\Models\User;
 
 class NotesTest extends TestCase
 {
@@ -25,8 +24,8 @@ class NotesTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
      * @group smoke
      *
@@ -45,8 +44,8 @@ class NotesTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -72,8 +71,8 @@ class NotesTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -103,8 +102,8 @@ class NotesTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\NoteResource
      *
@@ -128,8 +127,8 @@ class NotesTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -161,8 +160,8 @@ class NotesTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\NoteResource
      *

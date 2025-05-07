@@ -1,11 +1,14 @@
 <?php
 
-namespace Modules\Core\Support\Drivers;
+namespace Modules\Payments\Support\Drivers;
 
 use Exception;
-use Modules\Core\Support\MerchantDriver;
+use Modules\Clients\Models\Relation;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\MerchantClient;
+use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Models\Payment;
+use Modules\Payments\Support\MerchantDriver;
 
 class Stripe extends MerchantDriver
 {
@@ -20,11 +23,11 @@ class Stripe extends MerchantDriver
     {
         \Stripe\Stripe::setApiKey($this->getSetting('secretKey'));
 
-        $clientMerchantId = PaymentTypeClient::getByKey($this->getName(), $invoice->customer_id, 'id');
+        $clientMerchantId = MerchantClient::getByKey($this->getName(), $invoice->customer_id, 'id');
 
         if ($clientMerchantId) {
             try {
-                $customer = Customer::retrieve($clientMerchantId);
+                $customer = Relation::retrieve($clientMerchantId);
             } catch (Exception $e) {
                 // Don't need to do anything here.
             }
@@ -67,7 +70,7 @@ class Stripe extends MerchantDriver
             'source'      => $source,
         ]);
 
-        PaymentTypeClient::saveByKey($this->getName(), $invoice->customer_id, 'id', $customer->id);
+        MerchantClient::saveByKey($this->getName(), $invoice->customer_id, 'id', $customer->id);
 
         return $customer;
     }

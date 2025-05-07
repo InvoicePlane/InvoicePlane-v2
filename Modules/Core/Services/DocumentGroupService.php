@@ -1,3 +1,7 @@
 <?php
 
-class DocumentGroupService extends TestCase {}
+namespace Modules\Core\Services;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+class DocumentGroupService extends AbstractTestCase {}

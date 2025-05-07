@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Core\Support\Drivers;
+namespace Modules\Payments\Support\Drivers;
 
-use Modules\Core\Models\MerchantPayment;
-use Modules\Core\Support\MerchantDriverPayable;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Models\Payment;
+use Modules\Payments\Support\MerchantDriverPayable;
 use Mollie_API_Client;
 
 class Mollie extends MerchantDriverPayable

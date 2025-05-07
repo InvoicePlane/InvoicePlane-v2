@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Models;
+namespace Modules\Payments\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +39,7 @@ class MerchantPayment extends Model
         if ($setting) {
             return $setting->merchant_value;
         }
+        return $setting;
     }
 
     public static function saveByKey($driver, $paymentId, $key, $value): void

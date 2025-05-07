@@ -19,7 +19,6 @@ use Modules\Core\Models\Communication;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\Results\Invoices;
 use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
@@ -172,7 +171,7 @@ class Relation extends Model
 
     public function merchant()
     {
-        return $this->hasOne('Modules\Core\Models\PaymentTypeClient');
+        return $this->hasOne('Modules\Core\Models\MerchantClient');
     }
 
     public function notes()

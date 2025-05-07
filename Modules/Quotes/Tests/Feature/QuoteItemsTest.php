@@ -1,19 +1,19 @@
 <?php
 
-namespace Tests\Feature;
+namespace Modules\Quotes\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
-use Modules\Core\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
-use Modules\Core\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
-use Modules\Core\Models\QuoteItem;
-use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Models\QuoteItem;
 
-class QuoteItemsTest extends TestCase
+//use Modules\Core\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
+//use Modules\Core\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
+//use Modules\Core\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
+
+class QuoteItemsTest extends AbstractTestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -26,14 +26,11 @@ class QuoteItemsTest extends TestCase
     }
 
     // region smoke
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('smoke')]
+    #[Test]
+    #[Group('smoke')]
     /**
-     * @group smoke
-     *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      */
-    public function it_lists_quoteitems(): void
+    public function it_lists_quote_items(): void
     {
         $this->markTestIncomplete();
 
@@ -46,8 +43,8 @@ class QuoteItemsTest extends TestCase
     // endregion
 
     // region crud
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -73,8 +70,8 @@ class QuoteItemsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -104,8 +101,8 @@ class QuoteItemsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
@@ -129,8 +126,8 @@ class QuoteItemsTest extends TestCase
             ->assertHasNoFormErrors();
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @test
      *
@@ -162,8 +159,8 @@ class QuoteItemsTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    #[\PHPUnit\Framework\Attributes\Group('crud')]
+    #[Test]
+    #[Group('Crud')]
     /**
      * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
@@ -181,7 +178,7 @@ class QuoteItemsTest extends TestCase
         Livewire::test(ListQuoteItems::class)
             ->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('quoteitems', ['id' => $record->id]);
+        $this->assertDatabaseMissing('quote_items', ['id' => $record->id]);
     }
 
     // endregion
