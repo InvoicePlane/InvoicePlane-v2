@@ -7,7 +7,6 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\CreateUserPr
 use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 class CreateUserProfile extends CreateRecord
 {

@@ -6,7 +6,6 @@ use Modules\Core\Traits\WithAdminUser;
 
 use Modules\Core\Models\User;
 
-use Modules\Core\Models\User;
 
 trait WithAdminUser
 {

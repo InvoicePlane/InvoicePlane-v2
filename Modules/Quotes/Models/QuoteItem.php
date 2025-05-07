@@ -26,9 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\QuoteItemSaving;
 use Modules\Core\Events\QuoteModified;
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\NumberFormatter;
-use Modules\Quotes\Database\Factories\QuoteItemFactory;
 
 /**
  * Class QuoteItem.

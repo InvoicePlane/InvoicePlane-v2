@@ -11,7 +11,6 @@ use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePaym
 use Modules\Payments\Filament\Company\Resources\PaymentResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
 
 class CreatePayment extends CreateRecord
 {

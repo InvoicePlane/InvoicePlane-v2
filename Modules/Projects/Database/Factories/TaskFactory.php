@@ -23,13 +23,6 @@ use Modules\Core\Models\Company;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Projects\Enums\TaskStatus;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
 
 class TaskFactory extends Factory
 {

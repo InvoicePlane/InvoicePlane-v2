@@ -12,7 +12,6 @@ use Modules\Core\Support\Results\Invoices;
 
 use Modules\Core\Models\MerchantPayment;
 use Modules\Core\Support\MerchantDriverPayable;
-use Modules\Invoices\Models\Invoice;
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;

@@ -8,6 +8,5 @@ use Modules\Core\Observers\AbstractObserver;
 
 use Modules\Payments\Observers\PaymentMethodObserver;
 
-use Modules\Core\Observers\AbstractObserver;
 
 class PaymentMethodObserver extends AbstractObserver {}

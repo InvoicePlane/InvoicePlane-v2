@@ -2,10 +2,17 @@
 
 namespace Modules\Invoices\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
 use Modules\Invoices\Models\Invoice;
+
+use Modules\Invoices\Database\Seeders\InvoicesSeeder;
+
+use Modules\Core\Models\Company;
+
 use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Illuminate\Database\Seeder;
 
 class InvoicesSeeder extends Seeder
 {

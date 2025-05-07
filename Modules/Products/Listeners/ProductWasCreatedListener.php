@@ -6,7 +6,6 @@ use Modules\Products\Events\ProductWasCreated;
 
 use Modules\Products\Listeners\ProductWasCreatedListener;
 
-use Modules\Products\Events\ProductWasCreated;
 
 class ProductWasCreatedListener
 {

@@ -7,7 +7,6 @@ use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\CreateC
 use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource;
 
 class CreateCustomFieldValue extends CreateRecord
 {

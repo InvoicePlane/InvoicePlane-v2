@@ -42,13 +42,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Clients\Enums\RelationStatus;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers;
-use Modules\Clients\Models\Contact;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Helpers\EnumHelper;
 
 class CustomerResource extends Resource
 {

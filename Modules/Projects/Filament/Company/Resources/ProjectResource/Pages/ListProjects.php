@@ -2,9 +2,14 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\Pages;
 
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
+
+use Modules\Core\Models\Company;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
 
 class ListProjects extends ListRecords
 {

@@ -2,12 +2,25 @@
 
 namespace Modules\Expenses\Tests\Feature;
 
-use Livewire\Livewire;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Expenses\Tests\Feature\ExpenseCategoriesTest;
+
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\CreateExpenseCategory;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\ListExpenseCategories;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\EditExpenseCategory;
+
 use Modules\Expenses\Models\ExpenseCategory;
+
+use Modules\Core\Support\Results\Expenses;
+
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\CreateExpenseCategory;
+
+use Modules\Core\Models\Company;
+
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\ListExpenseCategories;
+
+use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

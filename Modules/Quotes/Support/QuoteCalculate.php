@@ -12,9 +12,7 @@ use Modules\Quotes\Models\QuoteItem;
 
 use Modules\Quotes\Support\QuoteCalculate;
 
-use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteAmount;
-use Modules\Quotes\Models\QuoteItem;
 use Modules\Quotes\Models\QuoteItemAmount;
 
 class QuoteCalculate

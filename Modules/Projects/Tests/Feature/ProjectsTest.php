@@ -2,20 +2,34 @@
 
 namespace Modules\Projects\Tests\Feature;
 
+use Modules\Projects\Enums\ProjectStatus;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\CreateProject;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\EditProject;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Core\Models\Company;
+
+use Modules\Projects\Tests\Feature\ProjectsTest;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Projects\Enums\ProjectStatus;
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\CreateProject;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\EditProject;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
-use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

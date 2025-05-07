@@ -19,9 +19,6 @@ use Modules\Products\Models\Product;
 use Modules\Core\Services\BaseService;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Services\BaseService;
-use Modules\Products\Events\ProductWasCreated;
-use Modules\Products\Events\ProductWasUpdated;
 
 
 class ProductService extends BaseService

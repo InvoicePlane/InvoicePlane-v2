@@ -33,11 +33,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Core\Database\Factories\TaxRateFactory;
-use Modules\Core\Enums\TaxRateType;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Products\Models\Product;
-use Modules\Projects\Models\Task;
 
 /**
  * Class TaxRate.

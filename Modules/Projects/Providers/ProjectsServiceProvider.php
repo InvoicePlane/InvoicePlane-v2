@@ -22,10 +22,6 @@ use Modules\Quotes\Providers\RouteServiceProvider;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
-use Modules\Projects\Observers\ProjectObserver;
-use Modules\Projects\Observers\TaskObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

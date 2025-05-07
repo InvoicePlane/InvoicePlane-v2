@@ -17,9 +17,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Core\Models\Company;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Products\Database\Factories\ProductCategoryFactory;
 
 /**
  * @property int         $id

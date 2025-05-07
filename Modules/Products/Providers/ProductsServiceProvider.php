@@ -26,9 +26,6 @@ use Modules\Quotes\Providers\RouteServiceProvider;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Products\Observers\ItemObserver;
-use Modules\Products\Observers\ProductCategoryObserver;
-use Modules\Products\Observers\ProductUnitObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

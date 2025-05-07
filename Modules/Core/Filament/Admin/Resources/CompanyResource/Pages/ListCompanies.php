@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
 
 class ListCompanies extends ListRecords
 {

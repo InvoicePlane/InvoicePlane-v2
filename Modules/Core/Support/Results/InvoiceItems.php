@@ -10,7 +10,6 @@ use Modules\Invoices\Models\InvoiceItem;
 
 use Modules\Core\Support\Results\Invoices;
 
-use Modules\Invoices\Models\InvoiceItem;
 
 class InvoiceItems implements SourceInterface
 {

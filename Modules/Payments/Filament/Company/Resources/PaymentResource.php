@@ -30,10 +30,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages;
-use Modules\Payments\Models\Payment;
 
 class PaymentResource extends Resource
 {

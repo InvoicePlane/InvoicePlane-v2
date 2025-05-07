@@ -9,8 +9,6 @@ use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\EmailTemplate;
 
 class EmailTemplatesSeeder extends Seeder
 {

@@ -17,7 +17,6 @@ use Modules\Clients\Filament\Company\Resources\ContactResource;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Modules\Core\Enums\CommunicationType;
 
 class CommunicationsRelationManager extends RelationManager
 {

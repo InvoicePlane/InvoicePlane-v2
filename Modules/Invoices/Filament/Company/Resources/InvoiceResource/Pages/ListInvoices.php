@@ -2,9 +2,16 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages;
 
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
+
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
 
 class ListInvoices extends ListRecords
 {

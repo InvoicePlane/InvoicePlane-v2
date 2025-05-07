@@ -11,7 +11,6 @@ use Modules\Core\Models\Company;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 class EditQuote extends EditRecord
 {

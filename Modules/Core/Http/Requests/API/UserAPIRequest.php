@@ -10,7 +10,6 @@ use Modules\Core\Http\Requests\API\UserAPIRequest;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Modules\Core\Models\User;
 
 class UserAPIRequest extends APIRequest
 {

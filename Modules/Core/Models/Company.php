@@ -42,8 +42,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Database\Factories\CompanyFactory;
 use Modules\Core\Events\CompanyProfileCreated;
 use Modules\Core\Events\CompanyProfileCreating;
 use Modules\Core\Events\CompanyProfileDeleted;
@@ -51,7 +49,6 @@ use Modules\Core\Events\CompanyProfileSaving;
 use Modules\Core\Modules\Expenses\Models\Expense;
 use Modules\Core\Modules\Invoices\Models\Invoice;
 use Modules\Core\Modules\Quotes\Models\Quote;
-use Modules\Projects\Models\Project;
 
 /**
  * @property int              $id

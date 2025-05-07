@@ -35,14 +35,7 @@ use Filament\Forms\Get;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\ContactResource\Pages;
-use Modules\Clients\Filament\Company\Resources\ContactResource\RelationManagers\CommunicationsRelationManager;
-use Modules\Clients\Models\Contact;
-use Modules\Core\Enums\CommunicationType;
-use Modules\Core\Enums\Gender;
-use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
-use Modules\Core\Helpers\EnumHelper;
 
 class ContactResource extends AbstractTenantResource
 {

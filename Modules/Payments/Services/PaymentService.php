@@ -10,8 +10,6 @@ use Modules\Payments\Models\Payment;
 
 use Modules\Core\Services\BaseService;
 
-use Modules\Core\Services\BaseService;
-use Modules\Payments\Models\Payment;
 
 class PaymentService extends BaseService
 {

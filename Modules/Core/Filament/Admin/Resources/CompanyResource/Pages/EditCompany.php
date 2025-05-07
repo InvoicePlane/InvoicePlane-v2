@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\CompanyResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
 
 class EditCompany extends EditRecord
 {

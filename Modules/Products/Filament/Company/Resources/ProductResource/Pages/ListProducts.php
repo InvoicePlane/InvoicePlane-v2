@@ -10,7 +10,6 @@ use Modules\Core\Models\Company;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Products\Filament\Company\Resources\ProductResource;
 
 class ListProducts extends ListRecords
 {

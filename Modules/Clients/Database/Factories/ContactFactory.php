@@ -15,10 +15,6 @@ use Modules\Core\Enums\Gender;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Models\Contact;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Enums\Gender;
-use Modules\Core\Models\Company;
 
 class ContactFactory extends Factory
 {

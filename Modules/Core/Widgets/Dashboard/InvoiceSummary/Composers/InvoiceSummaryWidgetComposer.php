@@ -15,9 +15,7 @@ use Modules\Core\Widgets\Dashboard\InvoiceSummary\Composers\InvoiceSummaryWidget
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Support\CurrencyFormatter;
 use Modules\Invoices\Models\InvoiceAmount;
-use Modules\Payments\Models\Payment;
 
 class InvoiceSummaryWidgetComposer
 {

@@ -12,7 +12,6 @@ use Modules\Projects\Models\Project;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Modules\Projects\Models\Project;
 
 class TaskAPIRequest extends APIRequest
 {

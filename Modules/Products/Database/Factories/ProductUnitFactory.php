@@ -10,7 +10,6 @@ use Modules\Core\Models\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Modules\Core\Models\Company;
 
 class ProductUnitFactory extends Factory
 {

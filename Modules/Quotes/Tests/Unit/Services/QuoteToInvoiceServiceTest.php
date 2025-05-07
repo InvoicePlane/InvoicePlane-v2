@@ -12,8 +12,6 @@ use Modules\Quotes\Services\QuoteToInvoiceService;
 
 use Modules\Quotes\Tests\Unit\QuoteToInvoiceServiceTest;
 
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

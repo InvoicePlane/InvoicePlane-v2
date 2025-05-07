@@ -24,10 +24,6 @@ use Modules\Quotes\Providers\RouteServiceProvider;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
-use Modules\Payments\Observers\PaymentMethodObserver;
-use Modules\Payments\Observers\PaymentObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

@@ -11,7 +11,6 @@ use Modules\Core\Support\Results\Expenses;
 use Modules\Core\Importers\ExpenseImporter;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Expenses\Models\Expense;
 
 class ExpenseImporter extends AbstractImporter
 {

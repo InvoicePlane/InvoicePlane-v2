@@ -2,6 +2,12 @@
 
 namespace Modules\Invoices\Providers;
 
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Quotes\Providers\RouteServiceProvider;
+
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 

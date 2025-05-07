@@ -8,7 +8,6 @@ use Modules\Core\Support\PDF\PDFFactory;
 
 use Exception;
 use Illuminate\Support\Facades\Mail;
-use Modules\Core\Support\PDF\PDFFactory;
 
 class MailQueue
 {

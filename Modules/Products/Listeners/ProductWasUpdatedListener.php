@@ -6,7 +6,6 @@ use Modules\Products\Events\ProductWasUpdated;
 
 use Modules\Products\Listeners\ProductWasUpdatedListener;
 
-use Modules\Products\Events\ProductWasUpdated;
 
 class ProductWasUpdatedListener
 {

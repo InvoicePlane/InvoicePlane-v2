@@ -17,12 +17,6 @@ use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
 use Modules\Core\Models\Company;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\EditCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
-use Modules\Core\Models\Company;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

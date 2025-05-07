@@ -8,7 +8,6 @@ use Modules\Core\Support\Results\Quotes;
 
 use Modules\Quotes\Listeners\QuoteWasCreatedListener;
 
-use Modules\Quotes\Events\QuoteWasUpdated;
 
 class QuoteWasCreatedListener
 {

@@ -41,12 +41,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Expenses\Database\Factories\ExpenseFactory;
-use Modules\Expenses\Enums\ExpenseStatus;
-use Modules\Expenses\Enums\ExpenseType;
 
 /**
  * @property int             $id

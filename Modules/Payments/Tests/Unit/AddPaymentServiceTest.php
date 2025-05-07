@@ -15,9 +15,6 @@ use Modules\Payments\Tests\Unit\AddPaymentServiceTest;
 use Modules\Core\Support\Results\Invoices;
 
 use Exception;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\Payment;
 use Modules\Payments\Services\AddPaymentService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

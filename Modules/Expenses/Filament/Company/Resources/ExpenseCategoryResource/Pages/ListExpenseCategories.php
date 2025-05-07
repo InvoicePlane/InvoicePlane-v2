@@ -2,9 +2,16 @@
 
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages;
 
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
+
+use Modules\Core\Support\Results\Expenses;
+
+use Modules\Core\Models\Company;
+
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\ListExpenseCategories;
+
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
 
 class ListExpenseCategories extends ListRecords
 {

@@ -14,7 +14,6 @@ use Modules\Core\Filament\Resources\CurrencyResource\Pages\CreateCurrency;
 use Modules\Core\Filament\Resources\CurrencyResource\Pages\EditCurrency;
 use Modules\Core\Filament\Resources\CurrencyResource\Pages\ListCurrencies;
 use Modules\Core\Models\Currency;
-use Modules\Core\Tests\AbstractTestCase;
 
 class CurrenciesTest extends TestCase
 {

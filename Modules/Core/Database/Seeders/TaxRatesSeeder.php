@@ -9,7 +9,6 @@ use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
 
 class TaxRatesSeeder extends Seeder
 {

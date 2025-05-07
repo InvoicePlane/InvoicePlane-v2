@@ -17,8 +17,6 @@ use Modules\Quotes\Models\QuoteItem;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItemFactory extends Factory
 {

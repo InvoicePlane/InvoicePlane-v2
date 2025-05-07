@@ -11,9 +11,6 @@ use Modules\Core\Support\Results\Clients;
 use Modules\Clients\Models\Relation;
 
 use InvalidArgumentException;
-use Modules\Clients\Models\Relation;
-use Modules\Clients\Services\CustomerService;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

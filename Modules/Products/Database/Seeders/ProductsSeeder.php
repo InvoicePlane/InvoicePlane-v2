@@ -9,7 +9,6 @@ use Modules\Products\Models\Product;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
 
 
 class ProductsSeeder extends Seeder

@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 
 class ListEmailTemplates extends ListRecords
 {

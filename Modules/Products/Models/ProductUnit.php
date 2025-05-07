@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Modules\Core\Models\Company;
-use Modules\Products\Database\Factories\ProductUnitFactory;
 
 /**
  * @property int         $id

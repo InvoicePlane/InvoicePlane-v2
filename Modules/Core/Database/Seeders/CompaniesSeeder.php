@@ -13,7 +13,6 @@ use Modules\Core\Models\Company;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
 
 class CompaniesSeeder extends Seeder
 {

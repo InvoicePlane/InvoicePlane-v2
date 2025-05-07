@@ -13,9 +13,6 @@ use Modules\Quotes\Models\QuoteItem;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
-use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Models\QuoteItem;
 
 class QuotesSeeder extends Seeder
 {

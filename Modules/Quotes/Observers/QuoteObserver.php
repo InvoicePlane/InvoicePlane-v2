@@ -8,6 +8,5 @@ use Modules\Core\Support\Results\Quotes;
 
 use Modules\Core\Observers\AbstractObserver;
 
-use Modules\Core\Observers\AbstractObserver;
 
 class QuoteObserver extends AbstractObserver {}

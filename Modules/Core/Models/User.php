@@ -34,9 +34,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use Modules\Core\Database\Factories\UserFactory;
-use Modules\Invoices\Models\Invoice;
-use Modules\Quotes\Models\Quote;
 
 /**
  * @property int                           $id

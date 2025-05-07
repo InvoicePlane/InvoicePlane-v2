@@ -12,7 +12,6 @@ use Modules\Core\Models\Company;
 
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 
 class EditPaymentMethod extends EditRecord
 {

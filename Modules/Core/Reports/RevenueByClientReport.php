@@ -8,8 +8,6 @@ use Modules\Payments\Models\Payment;
 
 use Modules\Core\Support\CurrencyFormatter;
 
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Payments\Models\Payment;
 
 class RevenueByClientReport
 {

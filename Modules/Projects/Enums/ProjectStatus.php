@@ -2,6 +2,10 @@
 
 namespace Modules\Projects\Enums;
 
+use Modules\Projects\Enums\ProjectStatus;
+
+use Modules\Core\Contracts\LabeledEnum;
+
 enum ProjectStatus: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case PLANNED   = 'planned';

@@ -13,9 +13,6 @@ use Modules\Core\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Database\Factories\EmailTemplateFactory;
-use Modules\Core\Enums\EmailTemplateType;
-use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int    $id

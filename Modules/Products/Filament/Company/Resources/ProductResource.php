@@ -31,7 +31,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
-use Modules\Products\Enums\ProductType;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages;
 
 

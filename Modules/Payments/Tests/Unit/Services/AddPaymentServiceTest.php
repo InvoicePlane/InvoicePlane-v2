@@ -11,7 +11,6 @@ use Modules\Payments\Models\Payment;
 use Modules\Payments\Tests\Unit\AddPaymentServiceTest;
 
 use InvalidArgumentException;
-use Modules\Payments\Models\Payment;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

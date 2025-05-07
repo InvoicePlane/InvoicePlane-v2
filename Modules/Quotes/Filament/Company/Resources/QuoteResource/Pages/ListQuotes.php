@@ -12,7 +12,6 @@ use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 class ListQuotes extends ListRecords
 {

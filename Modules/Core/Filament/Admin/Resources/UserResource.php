@@ -26,7 +26,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Admin\Resources\UserResource\Pages;
 use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers;
-use Modules\Core\Models\User;
 
 class UserResource extends Resource
 {

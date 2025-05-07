@@ -8,7 +8,6 @@ use Modules\Core\Support\Results\Quotes;
 
 use Modules\Core\Contracts\LabeledEnum;
 
-use Modules\Core\Contracts\LabeledEnum;
 
 enum QuoteStatus: string implements LabeledEnum
 {

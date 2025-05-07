@@ -11,9 +11,6 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Enums\DocumentGroupType;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 
 class DocumentGroupFactory extends Factory
 {

@@ -11,8 +11,6 @@ use Modules\Payments\Services\PaymentMethodService;
 use Modules\Core\Services\BaseService;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Services\BaseService;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentMethodService extends BaseService
 {

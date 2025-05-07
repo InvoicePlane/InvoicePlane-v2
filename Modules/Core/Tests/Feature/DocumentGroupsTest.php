@@ -17,12 +17,6 @@ use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Tests\Feature\DocumentGroupsTest;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

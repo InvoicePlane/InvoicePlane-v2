@@ -8,7 +8,6 @@ use Modules\Core\Support\Results\Clients;
 
 use Modules\Clients\Models\Relation;
 
-use Modules\Clients\Models\Relation;
 
 class CustomerWasUpdatedListener
 {

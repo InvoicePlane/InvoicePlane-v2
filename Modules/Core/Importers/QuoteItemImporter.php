@@ -13,7 +13,6 @@ use Modules\Quotes\Models\Quote;
 use Modules\Core\Importers\QuoteItemImporter;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Quotes\Models\Quote;
 
 class QuoteItemImporter extends AbstractImporter
 {

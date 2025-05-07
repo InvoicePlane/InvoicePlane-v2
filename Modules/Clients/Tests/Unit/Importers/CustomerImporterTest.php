@@ -10,10 +10,8 @@ use Modules\Clients\Importers\CustomerImporter;
 
 use Modules\Core\Support\Results\Clients;
 
-use Modules\Clients\Importers\CustomerImporter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\AbstractTestCase;
 
 #[Group('support')]
 class CustomerImporterTest extends TestCase

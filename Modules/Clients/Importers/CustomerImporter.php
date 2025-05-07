@@ -13,9 +13,6 @@ use Modules\Core\Support\Results\Clients;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Importers\AbstractImporter;
-use Modules\Core\Models\CustomField;
 
 class CustomerImporter extends AbstractImporter
 {

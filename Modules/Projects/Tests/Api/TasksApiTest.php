@@ -22,11 +22,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
 use Modules\Clients\Models\Client;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Core\Tests\ApiTestTrait;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
 
 class TasksApiTest extends AbstractTestCase
 {

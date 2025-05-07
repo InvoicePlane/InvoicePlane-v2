@@ -13,7 +13,6 @@ use Modules\Core\Models\TaxRate;
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Invoices\Models\Invoice;
 
 class InvoiceItemImporter extends AbstractImporter
 {

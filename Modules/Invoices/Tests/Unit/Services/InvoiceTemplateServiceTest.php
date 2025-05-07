@@ -10,7 +10,6 @@ use Modules\Invoices\Services\InvoiceTemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
-use Modules\Core\Tests\AbstractTestCase;
 
 class InvoiceTemplateServiceTest extends TestCase
 {

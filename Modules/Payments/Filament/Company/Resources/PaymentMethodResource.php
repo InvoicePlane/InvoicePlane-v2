@@ -21,7 +21,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentMethodResource extends Resource
 {

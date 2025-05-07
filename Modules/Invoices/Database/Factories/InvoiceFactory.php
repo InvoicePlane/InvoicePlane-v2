@@ -2,14 +2,27 @@
 
 namespace Modules\Invoices\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
-use Modules\Invoices\Enums\InvoiceStatus;
+
 use Modules\Invoices\Models\Invoice;
+
+use Modules\Invoices\Database\Factories\InvoiceFactory;
+
+use Modules\Invoices\Enums\InvoiceStatus;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Clients\Models\Relation;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceFactory extends Factory
 {

@@ -21,11 +21,6 @@ use Modules\Clients\Models\Relation;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Http\Requests\API\APIRequest;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
-use Modules\Quotes\Enums\QuoteStatus;
 
 class QuoteAPIRequest extends APIRequest
 {

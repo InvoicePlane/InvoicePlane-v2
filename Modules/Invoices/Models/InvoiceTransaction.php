@@ -2,6 +2,12 @@
 
 namespace Modules\Invoices\Models;
 
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Invoices\Models\InvoiceTransaction;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Models\Invoice;

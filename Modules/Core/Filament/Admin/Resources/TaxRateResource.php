@@ -22,8 +22,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
-use Modules\Core\Enums\TaxRateType;
-use Modules\Core\Helpers\EnumHelper;
 
 class TaxRateResource extends Resource
 {

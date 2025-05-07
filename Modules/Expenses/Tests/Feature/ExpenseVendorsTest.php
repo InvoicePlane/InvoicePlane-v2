@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;
+
+use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

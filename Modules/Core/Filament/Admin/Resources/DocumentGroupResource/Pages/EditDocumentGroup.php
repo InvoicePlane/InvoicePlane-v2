@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocume
 
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 class EditDocumentGroup extends EditRecord
 {

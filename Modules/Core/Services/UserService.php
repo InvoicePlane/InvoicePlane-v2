@@ -14,9 +14,6 @@ use Modules\Core\Services\UserService;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Modules\Core\Events\UserWasCreated;
-use Modules\Core\Events\UserWasUpdated;
-use Modules\Core\Models\User;
 
 class UserService extends BaseService
 {

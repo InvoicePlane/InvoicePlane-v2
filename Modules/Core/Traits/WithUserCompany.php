@@ -6,7 +6,6 @@ use Modules\Core\Traits\WithUserCompany;
 
 use Modules\Core\Models\User;
 
-use Modules\Core\Models\User;
 
 trait WithUserCompany
 {

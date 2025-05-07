@@ -2,6 +2,8 @@
 
 namespace Modules\Projects\Listeners;
 
+use Modules\Projects\Listeners\TaskWasCreatedListener;
+
 class TaskWasCreatedListener
 {
     public function __construct() {}

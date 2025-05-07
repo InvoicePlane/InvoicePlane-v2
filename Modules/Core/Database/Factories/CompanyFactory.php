@@ -18,7 +18,6 @@ use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company as CompanyModel;
 
 class CompanyFactory extends Factory

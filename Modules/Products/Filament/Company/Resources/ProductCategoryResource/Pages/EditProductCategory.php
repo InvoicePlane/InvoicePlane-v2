@@ -9,7 +9,6 @@ use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\Ed
 use Modules\Core\Models\Company;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
 
 class EditProductCategory extends EditRecord
 {

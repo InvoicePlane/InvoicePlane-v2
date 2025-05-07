@@ -12,7 +12,6 @@ use Modules\Clients\Filament\Company\Resources\CustomerResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
 
 class ListCustomers extends ListRecords
 {

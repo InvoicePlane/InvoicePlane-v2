@@ -13,9 +13,6 @@ use Modules\Core\Services\InvoiceTaxRateService;
 use Modules\Core\Support\Results\Invoices;
 
 use Exception;
-use Modules\Core\Services\InvoiceTaxRateService;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

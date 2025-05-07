@@ -9,7 +9,6 @@ use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProd
 use Modules\Core\Models\Company;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Products\Filament\Company\Resources\ProductResource;
 
 class CreateProduct extends CreateRecord
 {

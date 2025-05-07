@@ -2,30 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
-
-use Modules\Core\Support\Results\Payments;
-
-use Modules\Core\Filament\Admin\Resources\TaxRateResource;
-
-use Modules\Payments\Models\Payment;
-
-use Modules\Core\Providers\AdminPanelProvider;
-
-use Modules\Core\Filament\Company\Pages\Dashboard;
-
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-
-use Modules\Core\Models\Import;
-
-use Modules\Core\Filament\Admin\Resources\UserResource;
-
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
-
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -35,7 +11,6 @@ use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets;
@@ -50,6 +25,7 @@ use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\UserResource;
+use Modules\Core\Filament\Company\Pages\Dashboard;
 
 class AdminPanelProvider extends PanelProvider
 {

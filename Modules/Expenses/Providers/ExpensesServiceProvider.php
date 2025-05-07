@@ -24,10 +24,6 @@ use Modules\Quotes\Providers\RouteServiceProvider;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Expenses\Models\Expense;
-use Modules\Expenses\Models\ExpenseCategory;
-use Modules\Expenses\Observers\ExpenseCategoryObserver;
-use Modules\Expenses\Observers\ExpenseObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

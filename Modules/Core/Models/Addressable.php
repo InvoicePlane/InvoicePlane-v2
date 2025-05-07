@@ -13,8 +13,6 @@ use Modules\Core\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Core\Enums\AddressType;
-use Modules\Core\Traits\BelongsToCompany;
 
 class Addressable extends Model
 {

@@ -7,7 +7,6 @@ use Modules\Core\Support\PDF\PDFAbstract;
 use Modules\Core\Support\PDF\Drivers\wkhtmltopdf;
 
 use Knp\Snappy\Pdf;
-use Modules\Core\Support\PDF\PDFAbstract;
 
 class wkhtmltopdf extends PDFAbstract
 {

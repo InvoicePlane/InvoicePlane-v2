@@ -16,7 +16,6 @@ use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\CreateInvoi
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\EditInvoiceTransaction;
 use Modules\Core\Filament\Resources\InvoiceTransactionResource\Pages\ListInvoiceTransactions;
 use Modules\Core\Models\InvoiceTransaction;
-use Modules\Core\Tests\AbstractTestCase;
 
 class InvoiceTransactionsTest extends TestCase
 {

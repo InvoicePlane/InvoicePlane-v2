@@ -17,10 +17,6 @@ use Modules\Core\Support\Results\Clients;
 use Modules\Clients\Models\Relation;
 
 use Exception;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Services\QuoteCustomerSwitchService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

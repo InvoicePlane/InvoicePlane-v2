@@ -8,7 +8,6 @@ use Modules\Core\Models\User;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Modules\Core\Models\User;
 
 class AdminUserSeeder extends Seeder
 {

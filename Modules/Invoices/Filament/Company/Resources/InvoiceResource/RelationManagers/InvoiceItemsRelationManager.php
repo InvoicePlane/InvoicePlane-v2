@@ -2,6 +2,14 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers;
 
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
+
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

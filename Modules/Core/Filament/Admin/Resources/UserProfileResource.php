@@ -14,7 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
-use Modules\Core\Models\UserProfile;
 
 class UserProfileResource extends Resource
 {

@@ -2,9 +2,14 @@
 
 namespace Modules\Projects\Tests\Unit;
 
-use Modules\Core\Tests\AbstractTestCase;
 use Modules\Projects\Models\Task;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Projects\Tests\Unit\TaskLookupServiceTest;
+
 use Modules\Projects\Services\TaskLookupService;
+
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

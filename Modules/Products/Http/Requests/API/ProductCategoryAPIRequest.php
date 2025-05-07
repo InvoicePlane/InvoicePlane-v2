@@ -8,7 +8,6 @@ use Modules\Products\Http\Requests\API\ProductCategoryAPIRequest;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Modules\Core\Http\Requests\API\APIRequest;
 
 class ProductCategoryAPIRequest extends APIRequest
 {

@@ -9,7 +9,6 @@ use Modules\Products\Database\Seeders\ProductUnitsSeeder;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
 
 class ProductUnitsSeeder extends Seeder
 {

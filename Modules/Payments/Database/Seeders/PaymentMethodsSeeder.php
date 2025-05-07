@@ -11,8 +11,6 @@ use Modules\Payments\Database\Seeders\PaymentMethodsSeeder;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentMethodsSeeder extends Seeder
 {

@@ -13,9 +13,6 @@ use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Tests\Unit\QuoteCopyServiceTest;
 
 use Exception;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Services\QuoteCopyService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

@@ -2,11 +2,17 @@
 
 namespace Modules\Projects\Services;
 
-use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Services\BaseService;
-use Modules\Projects\Events\ProjectWasCreated;
+use Modules\Projects\Services\ProjectService;
+
 use Modules\Projects\Events\ProjectWasUpdated;
+
+use Modules\Projects\Events\ProjectWasCreated;
+
 use Modules\Projects\Models\Project;
+
+use Modules\Core\Services\BaseService;
+
+use Illuminate\Database\Eloquent\Model;
 
 class ProjectService extends BaseService
 {

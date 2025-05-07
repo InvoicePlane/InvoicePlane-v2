@@ -26,13 +26,6 @@ use Modules\Clients\Models\Relation;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCustomer;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

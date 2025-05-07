@@ -7,7 +7,6 @@ use Modules\Core\Filament\Admin\Resources\UserResource\Pages\EditUser;
 use Modules\Core\Filament\Admin\Resources\UserResource;
 
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\Filament\Admin\Resources\UserResource;
 
 class EditUser extends EditRecord
 {

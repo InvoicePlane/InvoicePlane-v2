@@ -11,8 +11,6 @@ use Modules\Payments\Database\Factories\PaymentMethodFactory;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentMethodFactory extends Factory
 {

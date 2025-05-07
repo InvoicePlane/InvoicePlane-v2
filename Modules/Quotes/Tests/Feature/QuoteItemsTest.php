@@ -18,7 +18,6 @@ use Modules\Core\Filament\Resources\QuoteItemResource\Pages\CreateQuoteItem;
 use Modules\Core\Filament\Resources\QuoteItemResource\Pages\EditQuoteItem;
 use Modules\Core\Filament\Resources\QuoteItemResource\Pages\ListQuoteItems;
 use Modules\Core\Models\QuoteItem;
-use Modules\Core\Tests\AbstractTestCase;
 
 class QuoteItemsTest extends TestCase
 {

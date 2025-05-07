@@ -17,8 +17,6 @@ use Modules\Core\Models\Company;
 use Modules\Products\Database\Factories\ProductFactory;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Products\Enums\ProductType;
 
 
 class ProductFactory extends Factory

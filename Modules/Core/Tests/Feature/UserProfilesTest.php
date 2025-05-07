@@ -21,12 +21,6 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProf
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\CreateUserProfile;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProfile;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
-use Modules\Core\Models\UserProfile;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

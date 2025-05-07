@@ -19,11 +19,6 @@ use Modules\Core\Models\Company;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
 
 use Livewire\Livewire;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\CreateProductCategory;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\EditProductCategory;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

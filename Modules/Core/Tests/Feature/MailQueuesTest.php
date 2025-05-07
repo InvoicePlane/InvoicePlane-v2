@@ -8,7 +8,6 @@ use Modules\Core\Tests\AbstractTestCase;
 
 use Livewire\Livewire;
 use Modules\Core\Models\MailQueue;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

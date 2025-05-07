@@ -10,9 +10,6 @@ use Modules\Payments\Models\Payment;
 
 use Modules\Core\Support\CurrencyFormatter;
 
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\DateFormatter;
-use Modules\Payments\Models\Payment;
 
 class PaymentsCollectedReport
 {

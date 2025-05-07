@@ -2,8 +2,13 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\Pages;
 
-use Filament\Resources\Pages\CreateRecord;
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\CreateProject;
+
+use Modules\Core\Models\Company;
+
 use Modules\Projects\Filament\Company\Resources\ProjectResource;
+
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateProject extends CreateRecord
 {

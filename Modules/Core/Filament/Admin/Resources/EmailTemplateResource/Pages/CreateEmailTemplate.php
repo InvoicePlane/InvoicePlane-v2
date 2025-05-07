@@ -7,7 +7,6 @@ use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\CreateEmai
 use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 
 class CreateEmailTemplate extends CreateRecord
 {

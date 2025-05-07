@@ -6,7 +6,6 @@ use Modules\Core\Contracts\LabeledEnum;
 
 use Modules\Core\Enums\EmailTemplateType;
 
-use Modules\Core\Contracts\LabeledEnum;
 
 enum EmailTemplateType: string implements LabeledEnum
 {

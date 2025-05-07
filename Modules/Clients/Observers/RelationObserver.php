@@ -9,7 +9,6 @@ use Modules\Core\Support\Results\Clients;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Clients\Models\Relation;
 
 class RelationObserver
 {

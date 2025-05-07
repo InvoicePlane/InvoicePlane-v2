@@ -12,7 +12,6 @@ use Modules\Clients\Models\Relation;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Modules\Clients\Models\Relation;
 
 class ProjectAPIRequest extends APIRequest
 {

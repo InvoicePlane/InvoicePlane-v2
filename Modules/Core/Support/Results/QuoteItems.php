@@ -10,7 +10,6 @@ use Modules\Core\Support\Results\Quotes;
 
 use Modules\Quotes\Models\QuoteItem;
 
-use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItems implements SourceInterface
 {

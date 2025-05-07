@@ -17,7 +17,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Modules\Core\Models\Company;
 
 class CompanyResource extends Resource
 {

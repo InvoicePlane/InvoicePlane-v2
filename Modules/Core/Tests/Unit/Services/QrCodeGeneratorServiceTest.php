@@ -9,8 +9,6 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\Unit\Services\QrCodeGeneratorServiceTest;
 
 use Exception;
-use Modules\Core\Services\QrCodeGeneratorService;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

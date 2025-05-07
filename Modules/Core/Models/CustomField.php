@@ -12,8 +12,6 @@ use Modules\Core\Traits\BelongsToCompany;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Core\Enums\CustomFieldType;
-use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int                $id

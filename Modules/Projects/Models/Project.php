@@ -24,11 +24,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Projects\Database\Factories\ProjectFactory;
-use Modules\Projects\Enums\ProjectStatus;
 
 /**
  * @property int         $id

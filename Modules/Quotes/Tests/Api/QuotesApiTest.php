@@ -36,16 +36,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
 use Modules\Clients\Models\Client;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Core\Tests\ApiTestTrait;
-use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceGroup;
-use Modules\Payments\Enums\PaymentStatus;
-use Modules\Payments\Models\PaymentMethod;
-use Modules\Projects\Models\Task;
-use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Models\QuoteItem;
 
 class QuotesApiTest extends AbstractTestCase
 {

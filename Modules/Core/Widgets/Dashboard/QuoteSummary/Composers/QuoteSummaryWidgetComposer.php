@@ -11,7 +11,6 @@ use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Widgets\Dashboard\QuoteSummary\Composers\QuoteSummaryWidgetComposer;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Support\CurrencyFormatter;
 use Modules\Quotes\Models\QuoteAmount;
 
 class QuoteSummaryWidgetComposer

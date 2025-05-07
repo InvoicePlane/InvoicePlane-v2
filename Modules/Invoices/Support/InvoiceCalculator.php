@@ -2,8 +2,14 @@
 
 namespace Modules\Invoices\Support;
 
+use Modules\Invoices\Support\InvoiceCalculator;
+
 use Modules\Core\Support\Calculators\Calculator;
+
 use Modules\Core\Support\Calculators\Interfaces\PayableInterface;
+
+use Modules\Core\Support\Results\Invoices;
+
 
 class InvoiceCalculator extends Calculator implements PayableInterface
 {

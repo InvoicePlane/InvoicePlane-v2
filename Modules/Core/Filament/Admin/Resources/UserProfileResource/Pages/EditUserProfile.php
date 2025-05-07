@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProf
 
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 class EditUserProfile extends EditRecord
 {

@@ -24,11 +24,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\User;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Projects\Database\Factories\TaskFactory;
-use Modules\Projects\Enums\TaskStatus;
 
 /**
  * @property int      $id

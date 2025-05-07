@@ -11,7 +11,6 @@ use Modules\Core\Models\Company;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 class CreateQuote extends CreateRecord
 {

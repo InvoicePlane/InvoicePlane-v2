@@ -64,13 +64,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Invoices\Database\Factories\InvoiceFactory;
-use Modules\Invoices\Enums\InvoiceStatus;
-use Modules\Payments\Models\PaymentMethod;
 use stdClass;
 
 /**

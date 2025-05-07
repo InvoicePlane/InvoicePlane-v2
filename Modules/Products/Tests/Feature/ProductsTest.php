@@ -29,13 +29,6 @@ use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduc
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Products\Filament\Company\Resources\ProductResource;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

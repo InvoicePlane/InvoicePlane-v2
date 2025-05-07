@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProf
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 
 class ListUserProfiles extends ListRecords
 {

@@ -14,7 +14,6 @@ use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\CreateMerchant
 use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\EditMerchantPayment;
 use Modules\Core\Filament\Resources\MerchantPaymentResource\Pages\ListMerchantPayments;
 use Modules\Core\Models\MerchantPayment;
-use Modules\Core\Tests\AbstractTestCase;
 
 class MerchantPaymentsTest extends TestCase
 {

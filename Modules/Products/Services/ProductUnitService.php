@@ -9,7 +9,6 @@ use Modules\Products\Services\ProductUnitService;
 use Modules\Core\Services\BaseService;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Services\BaseService;
 
 class ProductUnitService extends BaseService
 {

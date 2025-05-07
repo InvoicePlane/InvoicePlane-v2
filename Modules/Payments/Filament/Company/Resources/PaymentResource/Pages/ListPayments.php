@@ -12,7 +12,6 @@ use Modules\Payments\Filament\Company\Resources\PaymentResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
 
 class ListPayments extends ListRecords
 {

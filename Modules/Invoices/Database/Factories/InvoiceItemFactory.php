@@ -19,9 +19,6 @@ use Modules\Invoices\Models\InvoiceItem;
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\InvoiceItem;
 
 
 class InvoiceItemFactory extends Factory

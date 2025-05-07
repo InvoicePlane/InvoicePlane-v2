@@ -7,7 +7,6 @@ use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocu
 use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 class CreateDocumentGroup extends CreateRecord
 {

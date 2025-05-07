@@ -10,7 +10,6 @@ use Modules\Core\Traits\BelongsToCompany;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Traits\BelongsToCompany;
 
 class Import extends Model
 {

@@ -8,7 +8,6 @@ use Modules\Core\Support\Results\Quotes;
 
 use Modules\Quotes\Models\Quote;
 
-use Modules\Quotes\Models\Quote;
 
 class Quotes implements SourceInterface
 {

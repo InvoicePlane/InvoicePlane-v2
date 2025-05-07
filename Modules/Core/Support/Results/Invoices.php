@@ -8,7 +8,6 @@ use Modules\Core\Support\Results\SourceInterface;
 
 use Modules\Core\Support\Results\Invoices;
 
-use Modules\Invoices\Models\Invoice;
 
 class Invoices implements SourceInterface
 {

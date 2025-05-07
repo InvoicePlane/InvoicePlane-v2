@@ -41,12 +41,8 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
-use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
-use Modules\Core\Helpers\EnumHelper;
-use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers;
-use Modules\Quotes\Models\Quote;
 
 class QuoteResource extends AbstractTenantResource
 {

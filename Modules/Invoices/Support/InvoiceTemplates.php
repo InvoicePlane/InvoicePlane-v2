@@ -8,7 +8,6 @@ use Modules\Invoices\Support\InvoiceTemplates;
 
 use Modules\Core\Support\Results\Invoices;
 
-use Modules\Core\Support\Directory;
 
 class InvoiceTemplates
 {

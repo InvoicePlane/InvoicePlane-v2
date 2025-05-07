@@ -18,10 +18,6 @@ use Modules\Clients\Models\Relation;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
-use Modules\Quotes\Enums\QuoteStatus;
 
 class QuoteRequest extends FormRequest
 {

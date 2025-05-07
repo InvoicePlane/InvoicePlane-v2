@@ -7,7 +7,6 @@ use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\MailQueue;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Support\DateFormatter;
 
 /**
  * Class MailQueue.

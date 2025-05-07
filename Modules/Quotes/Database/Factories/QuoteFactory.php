@@ -23,12 +23,6 @@ use Modules\Core\Models\Company;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Quotes\Enums\QuoteStatus;
-use Modules\Quotes\Models\Quote;
 
 class QuoteFactory extends Factory
 {

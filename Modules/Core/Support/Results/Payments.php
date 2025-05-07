@@ -8,7 +8,6 @@ use Modules\Payments\Models\Payment;
 
 use Modules\Core\Support\Results\SourceInterface;
 
-use Modules\Payments\Models\Payment;
 
 class Payments implements SourceInterface
 {

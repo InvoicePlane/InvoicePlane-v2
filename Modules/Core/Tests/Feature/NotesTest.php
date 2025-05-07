@@ -15,8 +15,6 @@ use Livewire\Livewire;
 use Modules\Core\Filament\Resources\NoteResource\Pages\CreateNote;
 use Modules\Core\Filament\Resources\NoteResource\Pages\EditNote;
 use Modules\Core\Filament\Resources\NoteResource\Pages\ListNotes;
-use Modules\Core\Models\Note;
-use Modules\Core\Tests\AbstractTestCase;
 
 class NotesTest extends TestCase
 {

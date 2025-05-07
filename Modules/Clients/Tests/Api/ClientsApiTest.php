@@ -16,9 +16,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Laravel\Sanctum\Sanctum;
 use Modules\Clients\Models\Client;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Core\Tests\ApiTestTrait;
 
 class ClientsApiTest extends AbstractTestCase
 {

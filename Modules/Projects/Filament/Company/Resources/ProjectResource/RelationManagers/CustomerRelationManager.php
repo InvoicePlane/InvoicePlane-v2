@@ -2,6 +2,12 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers;
 
+use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\CustomerRelationManager;
+
+use Modules\Core\Models\Company;
+
+use Modules\Projects\Filament\Company\Resources\ProjectResource;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;

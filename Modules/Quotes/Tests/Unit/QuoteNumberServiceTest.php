@@ -13,9 +13,6 @@ use Modules\Core\Models\DocumentGroup;
 use Modules\Quotes\Tests\Unit\QuoteNumberServiceTest;
 
 use Exception;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Services\QuoteNumberService;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

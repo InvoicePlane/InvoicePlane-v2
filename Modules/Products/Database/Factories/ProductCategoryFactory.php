@@ -11,7 +11,6 @@ use Modules\Projects\Models\Project;
 use Modules\Core\Models\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
 
 class ProductCategoryFactory extends Factory
 {

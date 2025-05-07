@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\CustomFieldResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\CustomFieldResource;
 
 class ListCustomFields extends ListRecords
 {

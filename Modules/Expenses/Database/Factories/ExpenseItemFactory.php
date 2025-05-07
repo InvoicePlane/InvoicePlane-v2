@@ -21,9 +21,6 @@ use Modules\Core\Models\Company;
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Expenses\Models\ExpenseItem;
-use Modules\Invoices\Models\Invoice;
 
 
 class ExpenseItemFactory extends Factory

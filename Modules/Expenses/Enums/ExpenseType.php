@@ -2,7 +2,12 @@
 
 namespace Modules\Expenses\Enums;
 
+use Modules\Expenses\Enums\ExpenseType;
+
+use Modules\Core\Support\Results\Expenses;
+
 use Modules\Core\Contracts\LabeledEnum;
+
 
 enum ExpenseType: string implements LabeledEnum
 {

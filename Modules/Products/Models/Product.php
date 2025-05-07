@@ -32,12 +32,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Invoices\Models\InvoiceItem;
-use Modules\Products\Database\Factories\ProductFactory;
-use Modules\Products\Enums\ProductType;
 
 /**
  * @property int                 $id

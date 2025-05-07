@@ -12,8 +12,6 @@ use Modules\Quotes\Models\Quote;
 
 use Modules\Quotes\Tests\Unit\QuoteCopyServiceTest;
 
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

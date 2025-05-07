@@ -8,7 +8,6 @@ use Modules\Clients\Enums\RelationStatus;
 
 use Modules\Core\Contracts\LabeledEnum;
 
-use Modules\Core\Contracts\LabeledEnum;
 
 enum RelationStatus: string implements LabeledEnum
 {

@@ -10,8 +10,6 @@ use Modules\Core\Models\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
 
 class DashboardTest extends AbstractTestCase
 {

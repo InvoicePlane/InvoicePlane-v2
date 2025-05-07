@@ -30,14 +30,6 @@ use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Expenses\Models\Expense;
-use Modules\Invoices\Models\Invoice;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
-use Modules\Quotes\Models\Quote;
 
 class CustomersSeeder extends Seeder
 {

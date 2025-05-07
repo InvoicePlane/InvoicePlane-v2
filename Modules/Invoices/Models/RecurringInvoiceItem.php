@@ -2,12 +2,18 @@
 
 namespace Modules\RecurringInvoices\Models;
 
+use Modules\Invoices\Models\RecurringInvoice;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Core\Support\NumberFormatter;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\RecurringInvoiceItemSaving;
 use Modules\Core\Events\RecurringInvoiceModified;
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\NumberFormatter;
 
 /**
  * Class RecurringInvoiceItem.

@@ -54,18 +54,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
-use Modules\Clients\Database\Factories\RelationFactory;
-use Modules\Clients\Enums\RelationStatus;
-use Modules\Clients\Enums\RelationType;
-use Modules\Core\Models\Address;
-use Modules\Core\Models\Addressable;
-use Modules\Core\Models\Communication;
-use Modules\Core\Models\Note;
-use Modules\Core\Traits\BelongsToCompany;
-use Modules\Invoices\Models\Invoice;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
-use Modules\Quotes\Models\Quote;
 
 /**
  * @property int                           $id

@@ -15,10 +15,6 @@ use Modules\Core\Models\Company;
 use Modules\Clients\Models\Relation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationStatus;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
 
 class CustomerFactory extends Factory
 {

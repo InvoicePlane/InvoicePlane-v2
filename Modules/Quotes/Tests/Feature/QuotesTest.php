@@ -36,16 +36,6 @@ use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Invoices\Enums\InvoiceStatus;
-use Modules\Invoices\Models\Invoice;
-use Modules\Quotes\Enums\QuoteStatus;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\CreateQuote;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
-use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

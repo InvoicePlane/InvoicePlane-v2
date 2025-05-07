@@ -2,8 +2,11 @@
 
 namespace Modules\Projects\Services;
 
-use InvalidArgumentException;
 use Modules\Projects\Models\Task;
+
+use Modules\Projects\Services\TaskService;
+
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

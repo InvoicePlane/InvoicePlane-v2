@@ -14,7 +14,6 @@ use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\CreateRec
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\EditRecurringInvoiceItem;
 use Modules\Core\Filament\Resources\RecurringInvoiceItemResource\Pages\ListRecurringInvoiceItems;
 use Modules\Core\Models\RecurringInvoiceItem;
-use Modules\Core\Tests\AbstractTestCase;
 
 class RecurringInvoiceItemsTest extends TestCase
 {

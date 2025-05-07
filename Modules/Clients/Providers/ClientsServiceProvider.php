@@ -26,11 +26,6 @@ use Modules\Quotes\Providers\RouteServiceProvider;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Clients\Models\Contact;
-use Modules\Clients\Models\Relation;
-use Modules\Clients\Observers\ContactObserver;
-use Modules\Clients\Observers\RelationObserver;
-use Modules\Core\Commands\GenerateObservers;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

@@ -2,8 +2,13 @@
 
 namespace Modules\Projects\Filament\Company\Resources\TaskResource\Pages;
 
-use Filament\Resources\Pages\EditRecord;
 use Modules\Projects\Filament\Company\Resources\TaskResource;
+
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\EditTask;
+
+use Modules\Core\Models\Company;
+
+use Filament\Resources\Pages\EditRecord;
 
 class EditTask extends EditRecord
 {

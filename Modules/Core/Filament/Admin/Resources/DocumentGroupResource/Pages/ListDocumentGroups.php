@@ -8,7 +8,6 @@ use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
 
 class ListDocumentGroups extends ListRecords
 {

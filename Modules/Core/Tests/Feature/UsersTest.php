@@ -17,12 +17,6 @@ use Modules\Core\Models\User;
 use Modules\Core\Filament\Admin\Resources\UserResource;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\UserResource;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\EditUser;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

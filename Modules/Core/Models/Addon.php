@@ -5,7 +5,6 @@ namespace Modules\Addons\Models;
 use Modules\Core\Support\Migrations;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Support\Migrations;
 
 /**
  * Class Addon.

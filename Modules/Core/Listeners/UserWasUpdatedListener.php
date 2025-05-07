@@ -6,7 +6,6 @@ use Modules\Core\Listeners\UserWasUpdatedListener;
 
 use Modules\Core\Events\UserWasUpdated;
 
-use Modules\Core\Events\UserWasUpdated;
 
 class UserWasUpdatedListener
 {

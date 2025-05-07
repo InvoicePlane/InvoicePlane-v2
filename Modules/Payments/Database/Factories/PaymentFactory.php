@@ -19,11 +19,6 @@ use Modules\Core\Models\Company;
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Enums\PaymentStatus;
-use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentFactory extends Factory
 {

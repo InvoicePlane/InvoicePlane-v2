@@ -9,7 +9,6 @@ use Modules\Core\Services\BaseService;
 use Modules\Products\Services\ProductCategoryService;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Services\BaseService;
 
 class ProductCategoryService extends BaseService
 {

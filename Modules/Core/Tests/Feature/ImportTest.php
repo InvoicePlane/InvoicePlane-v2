@@ -13,8 +13,6 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Filament\Resources\ImportResource\Pages\CreateImport;
 use Modules\Core\Filament\Resources\ImportResource\Pages\ManageImports;
-use Modules\Core\Models\Import;
-use Modules\Core\Tests\AbstractTestCase;
 
 class ImportTest extends AbstractTestCase
 {

@@ -11,10 +11,8 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\Unit\Services\MailQueueServiceTest;
 
 use Modules\Core\Models\MailQueue;
-use Modules\Core\Services\MailQueueService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\AbstractTestCase;
 
 #[Group('services')]
 class MailQueueServiceTest extends TestCase

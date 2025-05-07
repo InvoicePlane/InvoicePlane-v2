@@ -13,13 +13,10 @@ use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Tests\Unit\Services\DocumentGroupServiceTest;
 
 use DocumentGroupService;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Tests\Unit\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\AbstractTestCase;
 
 #[CoversClass(DocumentGroupService::class)]
 class DocumentGroupServiceTest extends TestCase

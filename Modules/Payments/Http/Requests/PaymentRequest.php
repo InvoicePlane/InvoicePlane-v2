@@ -13,8 +13,6 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Core\Support\Results\Invoices;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentRequest extends FormRequest
 {

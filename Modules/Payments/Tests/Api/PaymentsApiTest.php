@@ -10,7 +10,6 @@ use Modules\Payments\Models\Payment;
 
 use Modules\Payments\Tests\Api\PaymentsApiTest;
 
-use Modules\Core\Tests\AbstractTestCase;
 
 class PaymentsApiTest extends AbstractTestCase
 {
