@@ -2,13 +2,13 @@
 
 namespace Modules\Invoices\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use TypeError;
 
-class CreditInvoiceServiceTest extends TestCase
+class CreditInvoiceServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

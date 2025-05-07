@@ -3,12 +3,13 @@
 namespace Modules\Invoices\Tests\Unit\Services;
 
 use InvalidArgumentException;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class InvoiceServiceTest extends TestCase
+class InvoiceServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]
