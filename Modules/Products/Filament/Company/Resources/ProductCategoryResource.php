@@ -13,7 +13,6 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages;
-use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryResource extends Resource
 {

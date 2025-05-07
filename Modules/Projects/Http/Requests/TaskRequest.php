@@ -3,7 +3,6 @@
 namespace Modules\Projects\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Core\Models\TaxRate;
 use Modules\Projects\Models\Project;
 
 class TaskRequest extends FormRequest

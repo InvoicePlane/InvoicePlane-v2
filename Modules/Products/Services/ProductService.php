@@ -6,11 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
 use Modules\Products\Events\ProductWasCreated;
 use Modules\Products\Events\ProductWasUpdated;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
 class ProductService extends BaseService
 {

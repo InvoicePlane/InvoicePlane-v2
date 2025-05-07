@@ -3,7 +3,6 @@
 namespace Modules\Products\Services;
 
 use InvalidArgumentException;
-use Modules\Products\Models\ProductCategory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

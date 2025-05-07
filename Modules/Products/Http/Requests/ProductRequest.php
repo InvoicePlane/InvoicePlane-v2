@@ -3,8 +3,6 @@
 namespace Modules\Products\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
 class ProductRequest extends FormRequest
 {

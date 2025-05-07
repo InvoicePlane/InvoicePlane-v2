@@ -8,7 +8,6 @@ use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
-use Modules\Products\Models\ProductUnit;
 
 class ProductUnitsApiTest extends AbstractTestCase
 {

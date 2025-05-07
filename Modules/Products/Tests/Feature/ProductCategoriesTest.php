@@ -8,7 +8,6 @@ use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\CreateProductCategory;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\EditProductCategory;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
-use Modules\Products\Models\ProductCategory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

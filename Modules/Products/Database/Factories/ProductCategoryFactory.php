@@ -4,7 +4,6 @@ namespace Modules\Products\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryFactory extends Factory
 {

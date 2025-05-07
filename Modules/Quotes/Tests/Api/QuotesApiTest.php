@@ -17,10 +17,6 @@ use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
-use Modules\Projects\Models\Task;
-use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Models\QuoteItem;
-
 class QuotesApiTest extends AbstractTestCase
 {
     use ApiTestTrait;
@@ -159,7 +155,7 @@ class QuotesApiTest extends AbstractTestCase
             'user_id'          => $user->user_id,
             'client_id'        => $client->client_id,
             'invoice_group_id' => $invoiceGroup->invoice_group_id,
-            'quote_status_id'  => PaymentStatus::DRAFT,
+            'quote_status_id'  => PaymentStatus::PENDING,
             'quote_number'     => '::quote_number::',
         ]);
 

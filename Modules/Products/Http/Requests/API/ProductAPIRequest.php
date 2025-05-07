@@ -4,8 +4,6 @@ namespace Modules\Products\Http\Requests\API;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
 class ProductAPIRequest extends APIRequest
 {

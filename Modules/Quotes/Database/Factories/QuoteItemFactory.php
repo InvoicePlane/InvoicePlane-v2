@@ -4,10 +4,6 @@ namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Products\Models\ProductUnit;
-use Modules\Quotes\Models\QuoteItem;
-
-use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItemFactory extends Factory

@@ -7,16 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Invoices\Database\Factories\InvoiceItemFactory;
-use Modules\Products\Models\ProductUnit;
-use Modules\Projects\Models\Task;
-
-
-use Modules\Products\Models\ProductUnit;
 use Modules\Projects\Models\Task;
 
 /**
- * Class InvoiceItem.
- *
  * @property int            $id
  * @property int            $invoice_id
  * @property int            $item_id
@@ -89,10 +82,10 @@ class InvoiceItem extends Model
         return $this->belongsTo(ProductUnit::class, 'item_unit_id');
     }
 
-    public function taxRate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /*public function taxRate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(TaxRate::class);
-    }
+    }*/
 
     public function taxRate2(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

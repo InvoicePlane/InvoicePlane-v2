@@ -12,7 +12,6 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages;
-use Modules\Products\Models\ProductUnit;
 
 class ProductUnitResource extends Resource
 {

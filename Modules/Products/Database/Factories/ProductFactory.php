@@ -5,11 +5,7 @@ namespace Modules\Products\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Products\Enums\ProductType;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
 class ProductFactory extends Factory
 {

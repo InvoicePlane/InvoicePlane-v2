@@ -12,14 +12,6 @@ use Modules\Products\Filament\Company\Resources\ProductResource;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

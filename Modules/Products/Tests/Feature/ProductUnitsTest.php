@@ -8,7 +8,6 @@ use Modules\Products\Filament\Company\Resources\ProductUnitResource;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\CreateProductUnit;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\EditProductUnit;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\ListProductUnits;
-use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

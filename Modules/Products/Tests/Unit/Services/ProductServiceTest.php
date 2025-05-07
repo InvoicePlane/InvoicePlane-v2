@@ -7,10 +7,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
-
 class ProductServiceTest extends TestCase
 {
     #[Test]

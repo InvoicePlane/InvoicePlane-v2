@@ -4,7 +4,6 @@ namespace Modules\Products\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
-use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryService extends BaseService
 {

@@ -10,10 +10,6 @@ use Modules\Core\Events\QuoteItemSaving;
 use Modules\Core\Events\QuoteModified;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
-use Modules\Products\Models\ProductUnit;
-use Modules\Quotes\Database\Factories\QuoteItemFactory;
-
-use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Database\Factories\QuoteItemFactory;
 
 /**
@@ -114,10 +110,10 @@ class QuoteItem extends Model
         return $this->belongsTo(ProductUnit::class, 'item_unit_id');
     }
 
-    public function taxRate(): BelongsTo
+    /*public function taxRate(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class);
-    }
+    }*/
 
     public function taxRate2(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
