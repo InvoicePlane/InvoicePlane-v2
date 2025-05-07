@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\NumberFormatter;
+
 class NumberFormatter
 {
     /**

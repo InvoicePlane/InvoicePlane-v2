@@ -2,6 +2,10 @@
 
 namespace Modules\Products\Services;
 
+use Modules\Products\Services\ProductService;
+
+use Modules\Products\Models\Product;
+
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

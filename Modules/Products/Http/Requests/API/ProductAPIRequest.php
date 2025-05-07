@@ -2,6 +2,16 @@
 
 namespace Modules\Products\Http\Requests\API;
 
+use Modules\Core\Http\Requests\API\APIRequest;
+
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Products\Http\Requests\API\ProductAPIRequest;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 

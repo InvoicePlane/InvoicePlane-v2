@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Core\Models\Import;
+
+use Modules\Core\Importers\ImportFactory;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Traits\BelongsToCompany;

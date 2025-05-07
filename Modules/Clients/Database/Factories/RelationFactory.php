@@ -2,6 +2,18 @@
 
 namespace Modules\Clients\Database\Factories;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Clients\Database\Factories\RelationFactory;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Enums\RelationStatus;
+
+use Modules\Core\Models\Company;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;

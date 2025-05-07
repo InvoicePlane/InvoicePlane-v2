@@ -2,6 +2,16 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
+
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;

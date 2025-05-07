@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Core\Importers\AbstractImporter;
+
+use Modules\Core\Importers\QuoteImporter;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Support\Facades\Validator;
 use Modules\Companies\Models\Company;
 use Modules\Groups\Models\Group;

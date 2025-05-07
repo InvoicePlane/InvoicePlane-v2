@@ -2,6 +2,22 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Products\Tests\Feature\ProductCategoriesTest;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\CreateProductCategory;
+
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\EditProductCategory;
+
+use Modules\Core\Models\Company;
+
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
+
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource;

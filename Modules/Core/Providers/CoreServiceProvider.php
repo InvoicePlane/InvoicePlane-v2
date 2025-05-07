@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Providers;
 
+use Modules\Core\Providers\CoreServiceProvider;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Providers\EventServiceProvider;
+
+use Modules\Core\Support\Migrations;
+
+use Modules\Quotes\Providers\RouteServiceProvider;
+
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;

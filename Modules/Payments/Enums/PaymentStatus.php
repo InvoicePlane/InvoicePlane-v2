@@ -2,6 +2,12 @@
 
 namespace Modules\Payments\Enums;
 
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Payments\Enums\PaymentStatus;
+
+use Modules\Core\Contracts\LabeledEnum;
+
 use Modules\Core\Contracts\LabeledEnum;
 
 enum PaymentStatus: string implements LabeledEnum

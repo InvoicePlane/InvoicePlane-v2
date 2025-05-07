@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Core\Importers\InvoiceItemImporter;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Importers\AbstractImporter;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Support\Facades\Validator;
 use Modules\Invoices\Models\Invoice;
 

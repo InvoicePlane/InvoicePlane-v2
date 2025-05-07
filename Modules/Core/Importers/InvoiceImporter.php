@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Core\Importers\InvoiceImporter;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Importers\AbstractImporter;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Support\Facades\Validator;
 use Modules\Companies\Models\Company;
 use Modules\Groups\Models\Group;

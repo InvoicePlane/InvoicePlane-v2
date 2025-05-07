@@ -2,6 +2,24 @@
 
 namespace Modules\Projects\Models;
 
+use Modules\Projects\Models\Task;
+
+use Modules\Projects\Enums\TaskStatus;
+
+use Modules\Projects\Database\Factories\TaskFactory;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

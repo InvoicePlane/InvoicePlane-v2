@@ -2,6 +2,12 @@
 
 namespace Tests\Feature;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Invoices\Models\InvoiceTransaction;
+
+use Modules\Core\Models\User;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;

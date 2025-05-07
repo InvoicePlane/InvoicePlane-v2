@@ -2,6 +2,28 @@
 
 namespace Modules\Clients\Models;
 
+use Modules\Clients\Database\Factories\ContactFactory;
+
+use Modules\Core\Enums\CommunicationType;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Core\Models\Address;
+
+use Modules\Core\Models\Communication;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\Addressable;
+
+use Modules\Core\Enums\Gender;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -2,6 +2,26 @@
 
 namespace Modules\Projects\Database\Factories;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Projects\Models\Task;
+
+use Modules\Projects\Enums\TaskStatus;
+
+use Modules\Projects\Database\Factories\TaskFactory;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Core\Models\Company;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;

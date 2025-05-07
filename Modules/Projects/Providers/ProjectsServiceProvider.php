@@ -2,6 +2,24 @@
 
 namespace Modules\Projects\Providers;
 
+use Modules\Projects\Models\Task;
+
+use Modules\Projects\Observers\TaskObserver;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Providers\EventServiceProvider;
+
+use Modules\Projects\Providers\ProjectsServiceProvider;
+
+use Modules\Projects\Observers\ProjectObserver;
+
+use Modules\Core\Support\Migrations;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Quotes\Providers\RouteServiceProvider;
+
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Projects\Models\Project;

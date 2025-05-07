@@ -2,6 +2,28 @@
 
 namespace Modules\Clients\Providers;
 
+use Modules\Clients\Observers\RelationObserver;
+
+use Modules\Clients\Observers\ContactObserver;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Quotes\Providers\EventServiceProvider;
+
+use Modules\Clients\Providers\ClientsServiceProvider;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Support\Migrations;
+
+use Modules\Core\Commands\GenerateObservers;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Quotes\Providers\RouteServiceProvider;
+
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Clients\Models\Contact;

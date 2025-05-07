@@ -2,6 +2,8 @@
 
 namespace Modules\Products\Http\Requests;
 
+use Modules\Products\Http\Requests\ProductCategoryRequest;
+
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductCategoryRequest extends FormRequest

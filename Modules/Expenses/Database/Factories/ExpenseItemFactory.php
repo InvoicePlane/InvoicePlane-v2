@@ -2,6 +2,24 @@
 
 namespace Modules\Expenses\Database\Factories;
 
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Expenses\Database\Factories\ExpenseItemFactory;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Expenses;
+
+use Modules\Expenses\Models\ExpenseItem;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseItem;

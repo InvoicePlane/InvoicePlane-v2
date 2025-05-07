@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support\Statuses;
 
+use Modules\Core\Support\Statuses\AbstractStatuses;
+
 abstract class AbstractStatuses
 {
     public static function statuses()

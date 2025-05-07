@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Modules\Core\Database\Seeders\TaxRatesSeeder;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 

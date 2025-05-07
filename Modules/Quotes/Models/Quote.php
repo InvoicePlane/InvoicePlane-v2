@@ -2,6 +2,50 @@
 
 namespace Modules\Quotes\Models;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Core\Support\DateFormatter;
+
+use Modules\Quotes\Enums\QuoteStatus;
+
+use Modules\Core\Support\MailQueue;
+
+use Modules\Core\Support\FileNames;
+
+use Modules\Core\Support\HTML;
+
+use Modules\Quotes\Database\Factories\QuoteFactory;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Core\Models\Note;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Support\Statuses\QuoteStatuses;
+
+use Modules\Quotes\Models\QuoteItem;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Core\Support\NumberFormatter;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

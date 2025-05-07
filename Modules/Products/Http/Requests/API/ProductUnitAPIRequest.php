@@ -2,6 +2,10 @@
 
 namespace Modules\Products\Http\Requests\API;
 
+use Modules\Core\Http\Requests\API\APIRequest;
+
+use Modules\Products\Http\Requests\API\ProductUnitAPIRequest;
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Core\Http\Requests\API\APIRequest;

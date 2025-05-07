@@ -2,6 +2,24 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\QuoteItemsRelationManager;
+
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
+
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
+
+use Modules\Products\Filament\Company\Resources\ProductResource;
+
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductUnitRelationManager;
+
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductCategoryRelationManager;
+
+use Modules\Products\Enums\ProductType;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;

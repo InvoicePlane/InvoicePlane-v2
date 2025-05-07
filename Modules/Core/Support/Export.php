@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Modules\Core\Support\Export;
+
 class Export
 {
     protected $exportType;

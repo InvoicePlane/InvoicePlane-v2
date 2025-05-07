@@ -2,6 +2,22 @@
 
 namespace Modules\Projects\Models;
 
+use Modules\Projects\Models\Task;
+
+use Modules\Projects\Enums\ProjectStatus;
+
+use Modules\Projects\Database\Factories\ProjectFactory;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Core\Models\Company;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

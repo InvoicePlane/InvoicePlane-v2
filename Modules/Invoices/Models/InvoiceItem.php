@@ -2,6 +2,26 @@
 
 namespace Modules\Invoices\Models;
 
+use Modules\Invoices\Database\Factories\InvoiceItemFactory;
+
+use Modules\Projects\Models\Task;
+
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Products\Models\Product;
+
+use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Core\Support\NumberFormatter;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

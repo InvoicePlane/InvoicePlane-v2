@@ -2,6 +2,20 @@
 
 namespace Modules\Products\Database\Factories;
 
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Products\Enums\ProductType;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
+use Modules\Products\Database\Factories\ProductFactory;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Products\Enums\ProductType;

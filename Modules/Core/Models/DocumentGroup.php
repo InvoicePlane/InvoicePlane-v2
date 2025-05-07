@@ -2,6 +2,26 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Core\Database\Factories\DocumentGroupFactory;
+
+use Modules\Invoices\Models\RecurringInvoice;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Enums\DocumentGroupType;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

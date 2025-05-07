@@ -2,6 +2,28 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Invoices\Models\RecurringInvoice;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Expenses\Models\Expense;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Models\Upload;
+
+use Modules\Core\Models\Note;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Database\Factories\UserFactory;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Support\Results\Invoices;
+
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;

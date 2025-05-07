@@ -2,6 +2,14 @@
 
 namespace Tests\Feature;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Models\User;
+
+use Modules\Quotes\Models\QuoteItem;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;

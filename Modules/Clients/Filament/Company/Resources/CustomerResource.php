@@ -2,6 +2,32 @@
 
 namespace Modules\Clients\Filament\Company\Resources;
 
+use Modules\Clients\Enums\RelationType;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
+
+use Modules\Core\Helpers\EnumHelper;
+
+use Modules\Clients\Models\Contact;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Clients\Enums\RelationStatus;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Filament\Admin\Resources\UserResource;
+
+use Modules\Clients\Filament\Company\Resources\CustomerResource;
+
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
+
+use Modules\Clients\Models\Relation;
+
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;

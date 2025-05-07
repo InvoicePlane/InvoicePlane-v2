@@ -2,6 +2,30 @@
 
 namespace Modules\Products\Models;
 
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Products\Models\ProductCategory;
+
+use Modules\Products\Enums\ProductType;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
+use Modules\Products\Database\Factories\ProductFactory;
+
+use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Core\Support\NumberFormatter;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

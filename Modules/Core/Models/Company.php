@@ -2,6 +2,40 @@
 
 namespace Modules\Core\Models;
 
+use Modules\Core\Models\CompanyUser;
+
+use Modules\Invoices\Models\RecurringInvoice;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Expenses\Models\Expense;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Database\Factories\CompanyFactory;
+
+use Modules\Core\Support\Results\Expenses;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Models\Address;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Projects\Models\Project;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\Addressable;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Clients\Models\Relation;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

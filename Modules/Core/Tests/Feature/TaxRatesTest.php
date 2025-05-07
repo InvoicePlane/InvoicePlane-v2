@@ -2,6 +2,22 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Modules\Core\Filament\Admin\Resources\TaxRateResource;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\EditTaxRate;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
+
+use Modules\Core\Tests\Feature\TaxRatesTest;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\CreateTaxRate;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;

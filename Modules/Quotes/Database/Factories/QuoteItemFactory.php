@@ -2,6 +2,20 @@
 
 namespace Modules\Quotes\Database\Factories;
 
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Database\Factories\QuoteItemFactory;
+
+use Modules\Products\Models\Product;
+
+use Modules\Quotes\Models\QuoteItem;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Quotes\Models\QuoteItem;

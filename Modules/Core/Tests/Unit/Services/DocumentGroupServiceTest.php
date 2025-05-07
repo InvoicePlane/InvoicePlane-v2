@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Core\Models\Note;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Core\Tests\Unit\Services\DocumentGroupServiceTest;
+
 use DocumentGroupService;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;

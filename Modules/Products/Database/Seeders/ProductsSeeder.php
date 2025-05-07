@@ -2,6 +2,12 @@
 
 namespace Modules\Products\Database\Seeders;
 
+use Modules\Products\Database\Seeders\ProductsSeeder;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 

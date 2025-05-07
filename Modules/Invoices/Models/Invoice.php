@@ -2,6 +2,60 @@
 
 namespace Modules\Invoices\Models;
 
+use Modules\Payments\Models\PaymentMethod;
+
+use Modules\Core\Support\DateFormatter;
+
+use Modules\Core\Support\Results\Payments;
+
+use Modules\Core\Support\MailQueue;
+
+use Modules\Core\Support\FileNames;
+
+use Modules\Payments\Models\Payment;
+
+use Modules\Core\Support\HTML;
+
+use Modules\Core\Support\Statuses\InvoiceStatuses;
+
+use Modules\Invoices\Models\Invoice;
+
+use Modules\Expenses\Models\Expense;
+
+use Modules\Invoices\Database\Factories\InvoiceFactory;
+
+use Modules\Invoices\Enums\InvoiceStatus;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Core\Support\CurrencyFormatter;
+
+use Modules\Core\Models\Note;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Invoices\Models\InvoiceTransaction;
+
+use Modules\Core\Models\User;
+
+use Modules\Core\Support\Results\Clients;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Models\DocumentGroup;
+
+use Modules\Invoices\Models\InvoiceItem;
+
+use Modules\Core\Support\Results\Invoices;
+
+use Modules\Core\Support\NumberFormatter;
+
+use Modules\Clients\Models\Relation;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

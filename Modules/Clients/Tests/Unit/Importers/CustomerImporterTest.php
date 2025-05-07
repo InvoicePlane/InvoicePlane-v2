@@ -2,6 +2,14 @@
 
 namespace Modules\Clients\Tests\Unit\Importers;
 
+use Modules\Clients\Tests\Unit\Importers\CustomerImporterTest;
+
+use Modules\Core\Tests\AbstractTestCase;
+
+use Modules\Clients\Importers\CustomerImporter;
+
+use Modules\Core\Support\Results\Clients;
+
 use Modules\Clients\Importers\CustomerImporter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

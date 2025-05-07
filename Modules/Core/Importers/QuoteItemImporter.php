@@ -2,6 +2,16 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Core\Importers\AbstractImporter;
+
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Support\Results\Quotes;
+
+use Modules\Quotes\Models\Quote;
+
+use Modules\Core\Importers\QuoteItemImporter;
+
 use Illuminate\Support\Facades\Validator;
 use Modules\Quotes\Models\Quote;
 

@@ -2,6 +2,16 @@
 
 namespace Modules\Products\Models;
 
+use Modules\Products\Models\ProductUnit;
+
+use Modules\Products\Database\Factories\ProductUnitFactory;
+
+use Modules\Products\Models\Product;
+
+use Modules\Core\Models\Company;
+
+use Modules\Core\Traits\BelongsToCompany;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

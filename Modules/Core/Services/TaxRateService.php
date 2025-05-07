@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Services;
 
+use Modules\Core\Models\TaxRate;
+
+use Modules\Core\Services\TaxRateService;
+
+use Modules\Core\Services\BaseService;
+
 use Illuminate\Database\Eloquent\Model;
 
 class TaxRateService extends BaseService
