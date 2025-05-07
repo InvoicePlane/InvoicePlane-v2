@@ -17,6 +17,7 @@ class TaskToInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_maps_task_into_invoice_line(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $task    = Task::factory()->create(['hours' => 2, 'rate' => 50]);
@@ -35,6 +36,7 @@ class TaskToInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_task(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new TaskToInvoiceService();

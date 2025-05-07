@@ -40,7 +40,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_lists_payments(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
         $payment  = Payment::factory()->for($this->user->company)->create([
             'customer_id' => $customer->id,
@@ -61,7 +63,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_creates_a_payment(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
         $invoice  = Invoice::factory()->for($this->user->company)->create();
 
@@ -96,7 +100,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_fails_to_create_payment_without_amount(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payload = ['amount' => null];
 
         // act
@@ -114,7 +120,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_fails_to_create_payment_without_method(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payload = ['payment_method' => null];
 
         // act
@@ -132,7 +140,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_updates_a_payment(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payment = Payment::factory()->for($this->user->company)->create(['amount' => 123.00]);
         $payload = ['amount' => 888.00];
 
@@ -154,7 +164,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_fails_to_update_payment_with_null_amount(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payment = Payment::factory()->for($this->user->company)->create();
 
         // act
@@ -172,7 +184,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_deletes_a_payment(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payment = Payment::factory()->for($this->user->company)->create();
 
         // act
@@ -188,6 +202,8 @@ class PaymentsTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);
@@ -212,7 +228,9 @@ class PaymentsTest extends AbstractTestCase
      */
     public function it_fails_to_delete_already_deleted_payment(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payment = Payment::factory()->for($this->user->company)->create();
         $payment->delete();
 

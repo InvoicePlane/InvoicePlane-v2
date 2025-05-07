@@ -49,6 +49,7 @@ class UserProfilesTest extends AbstractTestCase
      */
     public function it_creates_a_userprofile(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         //$this->actingAs(User::factory()->create());
@@ -89,6 +90,8 @@ class UserProfilesTest extends AbstractTestCase
      */
     public function it_updates_a_userprofile(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestIncomplete('Needs full payload and assertions.');
 
         //$this->actingAs(User::factory()->create());
@@ -131,6 +134,8 @@ class UserProfilesTest extends AbstractTestCase
      */
     public function it_deletes_a_userprofile(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
         //$this->actingAs(User::factory()->create());

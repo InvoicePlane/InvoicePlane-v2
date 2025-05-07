@@ -315,30 +315,36 @@ parameters:
 		-
 			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
 			identifier: class.notFound
-			count: 5
+			count: 4
 			path: Modules/Clients/Tests/Api/ClientsApiTest.php
 
 		-
 			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
 			identifier: class.notFound
-			count: 6
+			count: 5
 			path: Modules/Clients/Tests/Api/ClientsApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 6
+			count: 7
 			path: Modules/Clients/Tests/Api/ClientsApiTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
-			count: 4
+			count: 1
 			path: Modules/Clients/Tests/Feature/ContactsTest.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Clients/Tests/Feature/ContactsTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 6
 			path: Modules/Clients/Tests/Feature/ContactsTest.php
 
@@ -346,119 +352,41 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 5
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Clients/Tests/Feature/CustomersTest.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
 			identifier: method.notFound
-			count: 2
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
 			count: 1
 			path: Modules/Clients/Tests/Feature/CustomersTest.php
 
 		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 5
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 8
 			path: Modules/Clients/Tests/Feature/CustomersTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Clients\\Importers\\ContactImporter\:\:run\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Clients/Tests/Unit/Importers/ContactImporterTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Clients\\Importers\\CustomerImporter\:\:run\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Clients/Tests/Unit/Importers/CustomerImporterTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$customer_id\.$#'
-			identifier: property.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Clients/Tests/Unit/Services/CustomerAssignmentServiceTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Clients/Tests/Unit/Services/CustomerAssignmentServiceTest.php
-
-		-
-			message: '#^Call to static method assign\(\) on an unknown class Modules\\Clients\\Tests\\Unit\\Services\\CustomerAssignmentService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Clients/Tests/Unit/Services/CustomerAssignmentServiceTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Tests/Unit/Services/CustomerServiceTest.php
-
-		-
-			message: '#^Class Modules\\Clients\\Services\\CustomerService constructor invoked with 0 parameters, 1 required\.$#'
-			identifier: arguments.count
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Clients/Tests/Unit/Services/CustomerServiceTest.php
 
@@ -1561,69 +1489,21 @@ parameters:
 			path: Modules/Core/Support/cURL.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$email_template_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Core/Tests/Api/EmailTemplatesApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 4
 			path: Modules/Core/Tests/Api/EmailTemplatesApiTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$tax_rate_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Core/Tests/Api/TaxRatesApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 5
 			path: Modules/Core/Tests/Api/TaxRatesApiTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Tests/Api/TaxRatesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$user_company\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Tests/Api/UsersApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Core/Tests/Api/UsersApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$user_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Tests/Api/UsersApiTest.php
-
-		-
-			message: '#^Access to undefined constant Modules\\Core\\Models\\User\:\:ADMIN\.$#'
-			identifier: classConstant.notFound
-			count: 5
-			path: Modules/Core/Tests/Api/UsersApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 5
-			path: Modules/Core/Tests/Api/UsersApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 2
+			count: 7
 			path: Modules/Core/Tests/Api/UsersApiTest.php
 
 		-
@@ -1633,38 +1513,8 @@ parameters:
 			path: Modules/Core/Tests/Feature/AdminMiddlewareTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Feature\\CompaniesTest\:\:superAdmin\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 5
 			path: Modules/Core/Tests/Feature/CompaniesTest.php
 
@@ -1711,74 +1561,14 @@ parameters:
 			path: Modules/Core/Tests/Feature/DashboardTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Feature\\DocumentGroupsTest\:\:superAdmin\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 5
 			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
 
 		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 5
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Feature\\EmailTemplatesTest\:\:superAdmin\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 3
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 5
 			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
 
@@ -1843,38 +1633,8 @@ parameters:
 			path: Modules/Core/Tests/Feature/UserProfilesTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Feature\\UsersTest\:\:superAdmin\(\)\.$#'
-			identifier: method.notFound
-			count: 7
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 7
 			path: Modules/Core/Tests/Feature/UsersTest.php
 
@@ -1885,93 +1645,39 @@ parameters:
 			path: Modules/Core/Tests/Feature/WelcomeViewTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Unit\\Events\\UserWasCreatedTest\:\:expectsEvents\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Core/Tests/Unit/Events/UserWasCreatedTest.php
 
 		-
-			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
-			identifier: method.alreadyNarrowedType
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasCreatedTest.php
-
-		-
-			message: '#^Parameter \#1 \$user of class Modules\\Core\\Events\\UserWasCreated constructor expects Modules\\Core\\Models\\User, Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasCreatedTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Tests\\Unit\\Events\\UserWasUpdatedTest\:\:expectsEvents\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Core/Tests/Unit/Events/UserWasUpdatedTest.php
 
 		-
-			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
-			identifier: method.alreadyNarrowedType
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasUpdatedTest.php
-
-		-
-			message: '#^Parameter \#1 \$user of class Modules\\Core\\Events\\UserWasUpdated constructor expects Modules\\Core\\Models\\User, Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasUpdatedTest.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Exports\\ModelExport\:\:toCsv\(\)\.$#'
-			identifier: staticMethod.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Core/Tests/Unit/Exports/ModelExporterTest.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\Address\:\:format\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
 			path: Modules/Core/Tests/Unit/Helpers/AddressTest.php
 
 		-
-			message: '#^Call to static method formatAddress\(\) on an unknown class Modules\\Core\\Tests\\Unit\\Helpers\\AddressHelper\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Helpers/AddressTest.php
-
-		-
-			message: '#^Call to static method resolve\(\) on an unknown class Modules\\Core\\Tests\\Unit\\Importers\\ImportFactory\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Core/Tests/Unit/Importers/ModelImportFactoryTest.php
 
 		-
-			message: '#^Class Modules\\Core\\Tests\\Unit\\Importers\\InvoiceImporter not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Importers/ModelImportFactoryTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\DocumentGroupService\:\:create\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
-			path: Modules/Core/Tests/Unit/Services/DocumentGroupServiceTest.php
-
-		-
-			message: '#^Class Modules\\Core\\Services\\DocumentGroupService constructor invoked with 0 parameters, 1 required\.$#'
-			identifier: arguments.count
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/DocumentGroupServiceTest.php
-
-		-
-			message: '#^Class Modules\\Core\\Tests\\Unit\\Services\\InvalidArgumentException not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Services/DocumentGroupServiceTest.php
-
-		-
-			message: '#^Parameter \#1 \$exception of method PHPUnit\\Framework\\TestCase\:\:expectException\(\) expects class\-string\<Throwable\>, string given\.$#'
-			identifier: argument.type
-			count: 1
 			path: Modules/Core/Tests/Unit/Services/DocumentGroupServiceTest.php
 
 		-
@@ -1981,32 +1687,14 @@ parameters:
 			path: Modules/Core/Tests/Unit/Services/EmailTemplatePreviewServiceTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\MailBuilder\:\:getBody\(\)\.$#'
-			identifier: method.notFound
-			count: 1
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
 			path: Modules/Core/Tests/Unit/Services/MailBuilderTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\MailBuilder\:\:getSubject\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Services/MailBuilderTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\MailBuilder\:\:setBody\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Services/MailBuilderTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\MailBuilder\:\:setSubject\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Tests/Unit/Services/MailBuilderTest.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Core\\Services\\MailQueueService\:\:queue\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Core/Tests/Unit/Services/MailQueueServiceTest.php
 
@@ -2035,20 +1723,14 @@ parameters:
 			path: Modules/Core/Tests/Unit/Services/TemplateParserServiceTest.php
 
 		-
-			message: '#^Call to method convert\(\) on an unknown class Modules\\Core\\Tests\\Unit\\Support\\Drivers\\FixerIOCurrencyConverter\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Core/Tests/Unit/Support/Drivers/FixerIOCurrencyConverterTest.php
 
 		-
-			message: '#^Instantiated class Modules\\Core\\Tests\\Unit\\Support\\Drivers\\FixerIOCurrencyConverter not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Core/Tests/Unit/Support/Drivers/FixerIOCurrencyConverterTest.php
-
-		-
-			message: '#^Call to static method make\(\) on an unknown class Modules\\Core\\Tests\\Unit\\Support\\MerchantFactory\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 4
 			path: Modules/Core/Tests/Unit/Support/MerchantFactoryTest.php
 
@@ -2275,38 +1957,8 @@ parameters:
 			path: Modules/Expenses/Models/ExpenseCategory.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Expenses\\Tests\\Feature\\ExpenseCategoriesTest\:\:\$user\.$#'
-			identifier: property.notFound
-			count: 12
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 7
 			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
 
@@ -2317,63 +1969,9 @@ parameters:
 			path: Modules/Expenses/Tests/Feature/ExpenseVendorsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 8
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Expenses\\Tests\\Feature\\ExpensesTest\:\:\$user\.$#'
-			identifier: property.notFound
-			count: 18
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Access to undefined constant Modules\\Expenses\\Enums\\ExpenseStatus\:\:ACTIVE\.$#'
-			identifier: classConstant.notFound
-			count: 3
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Access to undefined constant Modules\\Expenses\\Enums\\ExpenseType\:\:FIXED\.$#'
-			identifier: classConstant.notFound
-			count: 4
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Expenses\\Tests\\Feature\\ExpenseVendor\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Call to static method parse\(\) on an unknown class Modules\\Expenses\\Tests\\Feature\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 6
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 7
 			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
 
 		-
@@ -2725,33 +2323,9 @@ parameters:
 			path: Modules/Invoices/Tests/Feature/InvoiceTransactionsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 8
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
-			count: 12
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:hasPayments\(\)\.$#'
-			identifier: method.notFound
-			count: 2
 			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
 
 		-
@@ -2761,27 +2335,9 @@ parameters:
 			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
 
 		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 5
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 8
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 15
 			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
 
 		-
@@ -2803,15 +2359,9 @@ parameters:
 			path: Modules/Invoices/Tests/Feature/RecurringInvoiceItemsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Invoices\\Tests\\Feature\\RecurringInvoicesTest\:\:\$user\.$#'
 			identifier: property.notFound
-			count: 11
+			count: 1
 			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
 
 		-
@@ -2821,15 +2371,9 @@ parameters:
 			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\RecurringInvoice\:\:factory\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
-
-		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 4
+			count: 9
 			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
 
 		-
@@ -2839,20 +2383,14 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/CreditInvoiceServiceTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Core\\Importers\\InvoiceImporter\:\:run\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Invoices/Tests/Unit/Importers/InvoiceImporterTest.php
 
 		-
-			message: '#^Call to method createFrom\(\) on an unknown class Modules\\Invoices\\Tests\\Unit\\Services\\CreditInvoiceService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/CreditInvoiceServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Invoices\\Tests\\Unit\\Services\\CreditInvoiceService not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Invoices/Tests/Unit/Services/CreditInvoiceServiceTest.php
 
@@ -2875,8 +2413,8 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/Services/InvoiceNumberServiceTest.php
 
 		-
-			message: '#^Class Modules\\Invoices\\Services\\InvoiceService constructor invoked with 0 parameters, 1 required\.$#'
-			identifier: arguments.count
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Invoices/Tests/Unit/Services/InvoiceServiceTest.php
 
@@ -2887,8 +2425,8 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/Services/InvoiceTaxRateServiceTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Invoices\\Services\\InvoiceTemplateService\:\:render\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Invoices/Tests/Unit/Services/InvoiceTemplateServiceTest.php
 
@@ -2899,14 +2437,8 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/Services/RecurringInvoiceServiceTest.php
 
 		-
-			message: '#^Call to method export\(\) on an unknown class Modules\\Invoices\\Tests\\Unit\\Services\\SumexService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/SumexServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Invoices\\Tests\\Unit\\Services\\SumexService not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Invoices/Tests/Unit/Services/SumexServiceTest.php
 
@@ -3343,21 +2875,9 @@ parameters:
 			path: Modules/Payments/Support/MerchantFactory.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$payment_method_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Payments/Tests/Api/PaymentMethodApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$payment_method_name\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Payments/Tests/Api/PaymentMethodApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 3
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 5
 			path: Modules/Payments/Tests/Api/PaymentMethodApiTest.php
 
 		-
@@ -3403,69 +2923,27 @@ parameters:
 			path: Modules/Payments/Tests/Feature/MerchantPaymentsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Parameter \#1 \$user of method Illuminate\\Foundation\\Testing\\TestCase\:\:actingAs\(\) expects Illuminate\\Contracts\\Auth\\Authenticatable, Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
 			count: 1
 			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 4
+			count: 6
 			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 10
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
-			count: 10
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
-			count: 2
 			path: Modules/Payments/Tests/Feature/PaymentsTest.php
 
 		-
@@ -3475,27 +2953,9 @@ parameters:
 			path: Modules/Payments/Tests/Feature/PaymentsTest.php
 
 		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 6
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 9
 			path: Modules/Payments/Tests/Feature/PaymentsTest.php
 
 		-
@@ -3505,86 +2965,38 @@ parameters:
 			path: Modules/Payments/Tests/Unit/AddPaymentServiceTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Payments\\Services\\PaymentService\:\:validate\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: Modules/Payments/Tests/Unit/PaymentValidationServiceTest.php
-
-		-
-			message: '#^Class Modules\\Payments\\Services\\PaymentService constructor invoked with 0 parameters, 1 required\.$#'
-			identifier: arguments.count
-			count: 2
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 4
 			path: Modules/Payments/Tests/Unit/PaymentValidationServiceTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
 			count: 2
-			path: Modules/Payments/Tests/Unit/PaymentValidationServiceTest.php
-
-		-
-			message: '#^Call to method add\(\) on an unknown class Modules\\Payments\\Tests\\Unit\\Services\\PaymentService\.$#'
-			identifier: class.notFound
-			count: 1
 			path: Modules/Payments/Tests/Unit/Services/AddPaymentServiceTest.php
 
 		-
-			message: '#^Call to method addPayment\(\) on an unknown class Modules\\Payments\\Tests\\Unit\\Services\\PaymentService\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Tests/Unit/Services/AddPaymentServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Tests\\Unit\\Services\\PaymentService not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/AddPaymentServiceTest.php
-
-		-
-			message: '#^Class Modules\\Payments\\Services\\PaymentMethodService constructor invoked with 0 parameters, 1 required\.$#'
-			identifier: arguments.count
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Payments/Tests/Unit/Services/PaymentMethodServiceTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Payments/Tests/Unit/Services/PaymentServiceTest.php
 
 		-
-			message: '#^Call to method find\(\) on an unknown class Modules\\Payments\\Tests\\Unit\\Services\\PaymentService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/PaymentServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Tests\\Unit\\Services\\PaymentService not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/PaymentServiceTest.php
-
-		-
-			message: '#^Call to method getRedirectUrl\(\) on an unknown class Modules\\Payments\\Tests\\Unit\\Support\\MerchantDrivers\\PayPal\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/PayPalTest.php
 
 		-
-			message: '#^Instantiated class Modules\\Payments\\Tests\\Unit\\Support\\MerchantDrivers\\PayPal not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/PayPalTest.php
-
-		-
-			message: '#^Call to method getFormUrl\(\) on an unknown class Modules\\Payments\\Tests\\Unit\\Support\\MerchantDrivers\\Stripe\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/StripeTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Tests\\Unit\\Support\\MerchantDrivers\\Stripe not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/StripeTest.php
 
@@ -3655,236 +3067,56 @@ parameters:
 			path: Modules/Products/Services/ProductUnitService.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$family_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$tax_rate_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$unit_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 2
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 6
 			path: Modules/Products/Tests/Api/ProductApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$family_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Api/ProductFamiliesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$family_name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Products/Tests/Api/ProductFamiliesApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 2
+			count: 9
 			path: Modules/Products/Tests/Api/ProductFamiliesApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Products/Tests/Api/ProductFamiliesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$unit_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Api/ProductUnitsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$unit_name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Products/Tests/Api/ProductUnitsApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 2
+			count: 9
 			path: Modules/Products/Tests/Api/ProductUnitsApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Products/Tests/Api/ProductUnitsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Products\\Tests\\Feature\\ProductCategoriesTest\:\:\$user\.$#'
-			identifier: property.notFound
-			count: 12
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
 			count: 7
 			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Products\\Tests\\Feature\\ProductUnitsTest\:\:\$user\.$#'
-			identifier: property.notFound
-			count: 12
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 7
 			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$family_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$tax_rate_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$unit_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Call to an undefined method Livewire\\Features\\SupportTesting\\Testable\:\:callTableBulkAction\(\)\.$#'
-			identifier: method.notFound
-			count: 1
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 9
 			path: Modules/Products/Tests/Feature/ProductsTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 8
-			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Products\\Models\\ProductCategory\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Unit/Services/ProductCategoryServiceTest.php
-
-		-
-			message: '#^Call to method create\(\) on an unknown class Modules\\Products\\Tests\\Unit\\Services\\ProductCategoryService\.$#'
-			identifier: class.notFound
 			count: 2
 			path: Modules/Products/Tests/Unit/Services/ProductCategoryServiceTest.php
 
 		-
-			message: '#^Instantiated class Modules\\Products\\Tests\\Unit\\Services\\ProductCategoryService not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Products/Tests/Unit/Services/ProductCategoryServiceTest.php
-
-		-
-			message: '#^Call to static method findBySku\(\) on an unknown class Modules\\Products\\Tests\\Unit\\Services\\ProductLookupService\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Products/Tests/Unit/Services/ProductLookupServiceTest.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Products\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Tests/Unit/Services/ProductServiceTest.php
-
-		-
-			message: '#^Call to method create\(\) on an unknown class Modules\\Products\\Tests\\Unit\\Services\\ProductService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Products/Tests/Unit/Services/ProductServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Products\\Tests\\Unit\\Services\\ProductService not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Products/Tests/Unit/Services/ProductServiceTest.php
 
@@ -3991,63 +3223,15 @@ parameters:
 			path: Modules/Projects/Models/Task.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$product_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Projects/Tests/Api/ProjectsApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Projects/Tests/Api/ProjectsApiTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
-			identifier: class.notFound
-			count: 2
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 8
 			path: Modules/Projects/Tests/Api/ProjectsApiTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Projects/Tests/Api/ProjectsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$project_id\.$#'
-			identifier: property.notFound
 			count: 5
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$task_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$tax_rate_id\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
 			path: Modules/Projects/Tests/Api/TasksApiTest.php
 
 		-
@@ -4057,92 +3241,32 @@ parameters:
 			path: Modules/Projects/Tests/Feature/ProjectsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$project_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Testing\\TestResponse\:\:assertCanSeeTableRecords\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Projects\\Tests\\Feature\\Client\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Parameter \#1 \$user of method Illuminate\\Foundation\\Testing\\TestCase\:\:actingAs\(\) expects Illuminate\\Contracts\\Auth\\Authenticatable, Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 12
 			path: Modules/Projects/Tests/Feature/TasksTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 11
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Call to method create\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\ProjectService\.$#'
-			identifier: class.notFound
 			count: 2
 			path: Modules/Projects/Tests/Unit/Services/ProjectServiceTest.php
 
 		-
-			message: '#^Instantiated class Modules\\Projects\\Tests\\Unit\\Services\\ProjectService not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/ProjectServiceTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Projects/Tests/Unit/Services/TaskLookupServiceTest.php
 
 		-
-			message: '#^Call to static method query\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\TaskLookupService\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/TaskLookupServiceTest.php
-
-		-
-			message: '#^Call to method create\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\TaskService\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 2
 			path: Modules/Projects/Tests/Unit/Services/TaskServiceTest.php
 
 		-
-			message: '#^Instantiated class Modules\\Projects\\Tests\\Unit\\Services\\TaskService not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/TaskServiceTest.php
-
-		-
-			message: '#^Call to method convert\(\) on an unknown class Modules\\Projects\\Tests\\Unit\\Services\\TaskToInvoiceService\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Projects/Tests/Unit/Services/TaskToInvoiceServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Projects\\Tests\\Unit\\Services\\TaskToInvoiceService not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Projects/Tests/Unit/Services/TaskToInvoiceServiceTest.php
 
@@ -4429,63 +3553,9 @@ parameters:
 			path: Modules/Quotes/Support/QuoteToInvoice.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$invoice_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$payment_method_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$product_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$quote_id\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Invoices\\Models\\InvoiceGroup\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 10
+			count: 14
 			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
 
 		-
@@ -4507,27 +3577,9 @@ parameters:
 			path: Modules/Quotes/Tests/Feature/QuoteItemsTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 13
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company\.$#'
-			identifier: property.notFound
-			count: 12
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
-			count: 2
 			path: Modules/Quotes/Tests/Feature/QuotesTest.php
 
 		-
@@ -4537,27 +3589,9 @@ parameters:
 			path: Modules/Quotes/Tests/Feature/QuotesTest.php
 
 		-
-			message: '#^Cannot call method assertSuccessful\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Cannot call method callTableAction\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Cannot call method fillForm\(\) on null\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Result of method Livewire\\Features\\SupportTesting\\Testable\:\:actingAs\(\) \(void\) is used\.$#'
-			identifier: method.void
-			count: 6
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 12
 			path: Modules/Quotes/Tests/Feature/QuotesTest.php
 
 		-
@@ -4585,43 +3619,19 @@ parameters:
 			path: Modules/Quotes/Tests/Unit/QuoteToInvoiceServiceTest.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Quotes/Tests/Unit/Services/QuoteCopyServiceTest.php
 
 		-
-			message: '#^Call to method copy\(\) on an unknown class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteCopyService\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCopyServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteCopyService not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCopyServiceTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$customer_id\.$#'
-			identifier: property.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
 
 		-
-			message: '#^Call to an undefined method Modules\\Quotes\\Services\\QuoteCustomerSwitchService\:\:switch\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
-
-		-
-			message: '#^Call to method convert\(\) on an unknown class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteToInvoiceService\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteToInvoiceServiceTest.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Tests\\Unit\\Services\\QuoteToInvoiceService not found\.$#'
-			identifier: class.notFound
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
 			count: 1
 			path: Modules/Quotes/Tests/Unit/Services/QuoteToInvoiceServiceTest.php

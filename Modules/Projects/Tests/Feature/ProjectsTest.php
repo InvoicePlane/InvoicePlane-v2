@@ -43,6 +43,7 @@ class ProjectsTest extends AbstractTestCase
     #[Group('smoke')]
     public function it_lists_projects(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $company = Company::factory()->create();
@@ -92,6 +93,7 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_creates_a_project(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $company = Company::factory()->create();
@@ -135,6 +137,7 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_fails_to_create_project_without_project_name(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $company = Company::factory()->create();
@@ -169,6 +172,8 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_updates_a_project(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
         $client = Client::factory()->create(['client_name' => '::client_name::']);
@@ -209,6 +214,7 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_fails_to_update_project_when_required_fields_are_missing(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         //$this->actingAs(User::factory()->create());
@@ -239,6 +245,8 @@ class ProjectsTest extends AbstractTestCase
     #[Group('crud')]
     public function it_deletes_a_project(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
 
@@ -262,6 +270,8 @@ class ProjectsTest extends AbstractTestCase
      */
     public function it_projects_assign_client(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
         $client  = Client::factory()->create();
@@ -281,6 +291,8 @@ class ProjectsTest extends AbstractTestCase
 
     public function it_fails_to_assign_client_without_project_id(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('needs assignClient action');
         // $this->authenticate();
         $client  = Client::factory()->create();
@@ -300,6 +312,8 @@ class ProjectsTest extends AbstractTestCase
 
     public function it_projects_change_client(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('needs assignClient action');        // $this->authenticate();
         $client  = Client::factory()->create();
         $project = Project::factory()->create(['client_id' => $client->client_id]);
@@ -318,6 +332,8 @@ class ProjectsTest extends AbstractTestCase
 
     public function it_fails_to_change_project_client_without_client_id(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
         $client  = Client::factory()->create();

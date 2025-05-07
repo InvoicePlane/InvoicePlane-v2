@@ -22,6 +22,7 @@ class WelcomeViewTest extends AbstractTestCase
      */
     public function it_shows_welcome_page(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         Livewire::test(Welcome::class)

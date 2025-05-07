@@ -19,6 +19,7 @@ class QuoteToInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_converts_quote_to_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $quote   = Quote::factory()->create(['total' => 500]);
@@ -38,6 +39,7 @@ class QuoteToInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_quote(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new QuoteToInvoiceService();

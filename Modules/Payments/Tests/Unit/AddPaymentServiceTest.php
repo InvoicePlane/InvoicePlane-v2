@@ -19,6 +19,7 @@ class AddPaymentServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_adds_payment_to_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $invoice = Invoice::factory()->create(['balance' => 200]);
@@ -38,6 +39,7 @@ class AddPaymentServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_when_amount_exceeds_balance(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $invoice = Invoice::factory()->create(['balance' => 200]);

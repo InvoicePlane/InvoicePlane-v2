@@ -18,6 +18,7 @@ class InvoiceNumberServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_generates_formatted_number(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $group   = DocumentGroup::factory()->create(['left_pad' => 'INV', 'next_number' => 100]);
@@ -36,6 +37,7 @@ class InvoiceNumberServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_when_group_missing(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new InvoiceNumberService();

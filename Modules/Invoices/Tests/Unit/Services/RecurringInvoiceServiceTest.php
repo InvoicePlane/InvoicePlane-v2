@@ -17,6 +17,7 @@ class RecurringInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_creates_a_recurring_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $template = Invoice::factory()->create(['is_recurring' => true]);
@@ -36,6 +37,7 @@ class RecurringInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_when_template_invalid(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new RecurringInvoiceService();

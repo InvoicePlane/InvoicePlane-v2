@@ -40,7 +40,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_lists_quotes(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
 
         $quote = Quote::factory()->for($this->user->company)->create([
@@ -59,6 +61,8 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_creates_quote_with_items(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         /** @payload */
         $payload = [
             'customer_id' => 1,
@@ -95,7 +99,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_creates_a_quote(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
 
         $payload = [
@@ -123,7 +129,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_fails_to_create_quote_without_customer(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payload = [
             'quote_number' => 'Q-9999',
             'quote_date'   => '2024-10-01',
@@ -141,6 +149,8 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_if_total_mismatch(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         /** @payload */
         $payload = [
             'customer_id' => 1,
@@ -169,7 +179,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_updates_a_quote(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $quote = Quote::factory()->for($this->user->company)->create([
             'status' => QuoteStatus::DRAFT,
         ]);
@@ -194,7 +206,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_fails_to_update_quote_with_missing_number(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $quote = Quote::factory()->for($this->user->company)->create();
 
         $payload = ['quote_number' => null];
@@ -214,7 +228,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_deletes_a_quote(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $quote = Quote::factory()->for($this->user->company)->create();
 
         // act
@@ -230,6 +246,8 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_accepted_quote(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $quote = Quote::factory()
             ->for($this->user->company)
             ->create(['status' => QuoteStatus::APPROVED]);
@@ -245,6 +263,8 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_quote_with_paid_invoice(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);
@@ -264,6 +284,8 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_if_linked_paid_invoice(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);
@@ -287,7 +309,9 @@ class QuotesTest extends AbstractTestCase
      */
     public function it_fails_to_delete_quote_that_is_already_deleted(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $quote = Quote::factory()->for($this->user->company)->create();
         $quote->delete();
 

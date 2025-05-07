@@ -17,6 +17,7 @@ class TaskLookupServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_finds_tasks_by_criteria(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         Task::factory()->create(['title' => 'Urgent task']);
@@ -35,6 +36,7 @@ class TaskLookupServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_returns_empty_for_empty_criteria(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new TaskLookupService();

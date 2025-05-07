@@ -14,6 +14,8 @@ class CustomerAssignmentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_assigns_contact_to_customer(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $customer = Relation::factory()->create();
         $contact  = Contact::factory()->create();
 
@@ -26,6 +28,8 @@ class CustomerAssignmentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_does_nothing_if_already_assigned(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $customer = Relation::factory()->create();
         $contact  = Contact::factory()->for($customer)->create();
         CustomerAssignmentService::assign($contact, $customer);

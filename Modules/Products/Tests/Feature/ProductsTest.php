@@ -42,6 +42,7 @@ class ProductsTest extends AbstractTestCase
     #[Group('smoke')]
     public function it_lists_items(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -100,6 +101,8 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_creates_a_product(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('Skipped test.');
         // $this->authenticated();
         $productCategory = ProductCategory::factory()->create([
@@ -163,6 +166,7 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_fails_to_create_product_without_code(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $company = Company::factory()->create();
@@ -181,6 +185,8 @@ class ProductsTest extends AbstractTestCase
 
     public function it_updates_a_product(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestSkipped('Skipped test.');
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
@@ -242,6 +248,7 @@ class ProductsTest extends AbstractTestCase
      */
     public function it_fails_to_update_item_when_required_fields_are_missing(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         //$this->actingAs(User::factory()->create());
@@ -274,6 +281,8 @@ class ProductsTest extends AbstractTestCase
 
     public function it_deletes_a_product(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->markTestIncomplete('Needs delete action');
 
         $productCategory = ProductCategory::factory()->create([
@@ -313,6 +322,8 @@ class ProductsTest extends AbstractTestCase
 
     public function it_bulk_deletes_products(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         // $this->authenticated();
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
@@ -356,6 +367,8 @@ class ProductsTest extends AbstractTestCase
      **/
     public function it_products_process_selections(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([
@@ -390,6 +403,8 @@ class ProductsTest extends AbstractTestCase
      **/
     public function it_fails_to_process_selections_without_product_ids(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([

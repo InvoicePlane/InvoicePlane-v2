@@ -17,6 +17,7 @@ class InvoiceCopyServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_copies_an_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $invoice = Invoice::factory()->create(['status' => 'draft']);
@@ -36,6 +37,7 @@ class InvoiceCopyServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_nonexistent_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new InvoiceCopyService();

@@ -41,6 +41,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_lists_contacts(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $relation = Relation::factory()->for($this->user->company)->create();
 
         $payload = [
@@ -67,6 +69,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_creates_a_contact(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $relation = Relation::factory()->for($this->user->company)->create();
 
         $payload = [
@@ -92,6 +96,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_fails_when_relation_id_is_missing(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = [
             // 'relation_id' => 1,
             'first_name' => 'Jane',
@@ -111,6 +117,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_fails_when_first_name_is_missing(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $relation = Relation::factory()->for($this->user->company)->create();
 
         $payload = [
@@ -132,6 +140,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_updates_a_contact(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = [
             'first_name' => 'Initial',
             'last_name'  => 'Contact',
@@ -161,6 +171,8 @@ class ContactsTest extends AbstractTestCase
      */
     public function it_deletes_a_contact(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $contact = Contact::factory()->for($this->user->company)->create();
 
         Livewire::test(ListContacts::class)

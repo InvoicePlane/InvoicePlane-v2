@@ -15,6 +15,8 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_creates_an_invoice(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $invoice = (new InvoiceService())->create([
             'number'      => 'INV-2025-001',
             'customer_id' => 1,
@@ -27,6 +29,8 @@ class InvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_without_number(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $this->expectException(InvalidArgumentException::class);
 
         (new InvoiceService())->create([

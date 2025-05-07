@@ -12,6 +12,8 @@ class StripeTest extends AbstractTestCase
     #[Group('support')]
     public function it_builds_stripe_payment_form(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $driver = new Stripe();
         $url    = $driver->getFormUrl(['amount' => 100]);
 

@@ -19,6 +19,7 @@ class QuoteCustomerSwitchServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_switches_quote_client(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $quote    = Quote::factory()->create();
@@ -38,6 +39,7 @@ class QuoteCustomerSwitchServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_ids(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new QuoteCustomerSwitchService();

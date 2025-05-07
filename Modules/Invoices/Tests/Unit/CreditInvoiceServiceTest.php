@@ -18,6 +18,7 @@ class CreditInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_applies_credit_to_invoice(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $invoice = Invoice::factory()->create(['balance' => 100]);
@@ -37,6 +38,7 @@ class CreditInvoiceServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_when_credit_exceeds_balance(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $invoice = Invoice::factory()->create(['balance' => 100]);

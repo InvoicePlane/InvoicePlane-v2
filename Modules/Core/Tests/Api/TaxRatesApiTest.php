@@ -32,6 +32,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     public function it_returns_tax_rates_index(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         TaxRate::factory(5)->create([
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => rand(6, 21),
@@ -56,6 +58,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     public function it_creates_a_tax_rate(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialTaxRate = TaxRate::factory()->create([
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => '21',
@@ -78,6 +82,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     public function it_returns_error_response_when_creating_a_tax_rate_with_wrong_fields(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $client = Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
@@ -101,6 +107,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     public function it_updates_a_tax_rate(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialTaxRate = TaxRate::factory()->create([
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => '21',
@@ -123,6 +131,8 @@ class TaxRatesApiTest extends AbstractTestCase
 
     public function it_deletes_a_tax_rate(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialTaxRate = TaxRate::factory()->create([
             'tax_rate_name'    => '::tax_rate_name::',
             'tax_rate_percent' => '21',

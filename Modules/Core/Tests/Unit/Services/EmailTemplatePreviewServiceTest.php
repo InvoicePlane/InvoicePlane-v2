@@ -16,6 +16,7 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_parses_merge_tags_correctly(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new EmailTemplatePreviewService();
@@ -33,6 +34,7 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_handles_empty_template(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new EmailTemplatePreviewService();

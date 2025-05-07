@@ -17,6 +17,7 @@ class PdfGenerationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_generates_pdf_binary_content(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new PdfGenerationService();
@@ -35,6 +36,7 @@ class PdfGenerationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_on_empty_html(): void
     {
+        /* arrange */
         $this->markTestIncomplete();
 
         $service = new PdfGenerationService();

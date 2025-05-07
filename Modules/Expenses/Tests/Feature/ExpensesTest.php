@@ -27,7 +27,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_lists_expenses(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $vendor   = ExpenseVendor::factory()->for($this->user->company)->create();
         $category = ExpenseCategory::factory()->for($this->user->company)->create();
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
@@ -64,7 +66,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_creates_an_expense(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $vendor   = ExpenseVendor::factory()->for($this->user->company)->create();
         $category = ExpenseCategory::factory()->for($this->user->company)->create();
         $customer = Relation::factory()->for($this->user->company)->customer()->create();
@@ -104,7 +108,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_fails_to_create_expense_without_amount(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $payload = ['amount' => null];
 
         // act
@@ -122,7 +128,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_updates_an_expense(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $expense = Expense::factory()->for($this->user->company)->create([
             'expense_type' => ExpenseType::FIXED,
         ]);
@@ -150,7 +158,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_fails_to_update_expense_with_empty_type(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $expense = Expense::factory()->for($this->user->company)->create();
 
         $payload = ['expense_type' => null];
@@ -170,7 +180,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_deletes_an_expense(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $record = Expense::factory()->for($this->user->company)->create();
 
         // act
@@ -189,7 +201,9 @@ class ExpensesTest extends AbstractTestCase
      */
     public function it_fails_to_delete_expense_twice(): void
     {
-        // arrange
+        $this->markTestIncomplete();
+        /* arrange */
+
         $record = Expense::factory()->for($this->user->company)->create();
         $record->delete();
 

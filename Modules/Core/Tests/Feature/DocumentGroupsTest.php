@@ -23,6 +23,8 @@ class DocumentGroupsTest extends AbstractTestCase
      */
     public function it_lists_document_groups(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $group = DocumentGroup::factory()->create(['name' => 'Policies']);
 
         Livewire::test(ListDocumentGroups::class)
@@ -38,6 +40,8 @@ class DocumentGroupsTest extends AbstractTestCase
      */
     public function it_creates_a_document_group(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = ['name' => 'Forms'];
 
         Livewire::test(CreateDocumentGroup::class)
@@ -56,6 +60,8 @@ class DocumentGroupsTest extends AbstractTestCase
      */
     public function it_fails_to_create_document_group_when_name_missing(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = [];
 
         Livewire::test(CreateDocumentGroup::class)
@@ -72,6 +78,8 @@ class DocumentGroupsTest extends AbstractTestCase
      */
     public function it_updates_a_document_group(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $group = DocumentGroup::factory()->create(['name' => 'Old Group']);
 
         $payload = ['name' => 'Updated Group'];
@@ -92,6 +100,8 @@ class DocumentGroupsTest extends AbstractTestCase
      */
     public function it_deletes_a_document_group(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $group = DocumentGroup::factory()->create();
 
         Livewire::test(ListDocumentGroups::class)

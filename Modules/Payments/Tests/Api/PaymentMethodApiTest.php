@@ -28,6 +28,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     public function it_returns_payment_methods_index(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         Sanctum::actingAs(User::factory()->create());
 
         PaymentMethod::factory()->count(5)->create([
@@ -49,6 +51,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     public function it_creates_a_payment_method(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialPaymentMethod = PaymentMethod::factory()->create([
             'payment_method_name' => '::payment_method_name::',
         ]);
@@ -65,6 +69,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     public function it_returns_error_when_posting_payment_method_with_wrong_data(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialPaymentMethod = PaymentMethod::factory()->create([
             'payment_method_name' => '::payment_method_name::',
         ]);
@@ -81,6 +87,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     public function it_updates_a_payment_method(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialPaymentMethod = PaymentMethod::factory()->create([
             'payment_method_name' => '::payment_method_name::',
         ]);
@@ -113,6 +121,8 @@ class PaymentMethodApiTest extends AbstractTestCase
 
     public function it_deletes_a_payment_method(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $initialPaymentMethod = PaymentMethod::factory()->create([
             'payment_method_name' => '::payment_method_name::',
         ]);

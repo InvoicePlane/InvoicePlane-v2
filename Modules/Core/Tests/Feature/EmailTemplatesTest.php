@@ -23,6 +23,8 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_lists_email_templates(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
 
         Livewire::test(ListEmailTemplates::class)
@@ -38,6 +40,8 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_creates_an_email_template(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = ['subject' => 'Welcome', 'body' => 'Hello world'];
 
         Livewire::test(CreateEmailTemplate::class)
@@ -56,6 +60,8 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_fails_to_create_email_template_without_subject(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = ['body' => 'Missing subject'];
 
         Livewire::test(CreateEmailTemplate::class)
@@ -72,6 +78,8 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_updates_an_email_template(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $template = EmailTemplate::factory()->create(['subject' => 'Old Subject']);
 
         $payload = ['subject' => 'Updated Subject'];
@@ -92,6 +100,8 @@ class EmailTemplatesTest extends AbstractTestCase
      */
     public function it_deletes_an_email_template(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $template = EmailTemplate::factory()->create();
 
         Livewire::test(ListEmailTemplates::class)

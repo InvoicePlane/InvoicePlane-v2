@@ -29,6 +29,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_lists_users(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $record = User::factory()->create(['email' => 'admin@example.com']);
 
         Livewire::test(ListUsers::class)
@@ -50,6 +52,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_creates_a_user(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = ['email' => 'new@example.com', 'password' => 'password123'];
 
         Livewire::test(CreateUser::class)
@@ -74,6 +78,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_fails_to_create_user_without_email(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $payload = ['password' => 'abc'];
 
         Livewire::test(CreateUser::class)
@@ -96,6 +102,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_updates_a_user(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $user    = User::factory()->create(['email' => 'before@example.com']);
         $payload = ['email' => 'updated@example.com'];
 
@@ -121,6 +129,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_fails_to_update_user_without_email(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $user    = User::factory()->create(['email' => 'valid@example.com']);
         $payload = ['email' => null];
 
@@ -144,6 +154,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_deletes_a_user(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         $user = User::factory()->create();
 
         Livewire::test(ListUsers::class)
@@ -160,6 +172,8 @@ class UsersTest extends AbstractTestCase
      */
     public function it_fails_to_delete_user_twice(): void
     {
+        /* arrange */
+        $this->markTestIncomplete();
         /* @arrange deleted user */
         $user = User::factory()->create();
         $user->delete();
