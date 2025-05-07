@@ -4,11 +4,8 @@ namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\DateFormatter;
-use Modules\Core\Support\MailQueue;
 
 /**
- * Class MailQueue.
- *
  * @property int         $id
  * @property int         $mailable_id
  * @property string      $mailable_type

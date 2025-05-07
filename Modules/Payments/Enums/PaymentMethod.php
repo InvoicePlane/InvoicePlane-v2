@@ -2,8 +2,6 @@
 
 namespace Modules\Payments\Enums;
 
-use Modules\Payments\Models\PaymentMethod;
-
 enum PaymentMethod: string implements \Modules\Core\Contracts\LabeledEnum
 {
     case BANK_TRANSFER = 'bank_transfer';

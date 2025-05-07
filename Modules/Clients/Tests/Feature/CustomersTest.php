@@ -10,7 +10,6 @@ use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCust
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\EditCustomer;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
