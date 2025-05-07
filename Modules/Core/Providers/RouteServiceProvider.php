@@ -4,7 +4,6 @@ namespace Modules\Core\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Modules\Quotes\Providers\RouteServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {

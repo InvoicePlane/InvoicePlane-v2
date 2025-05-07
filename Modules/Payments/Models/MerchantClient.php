@@ -39,6 +39,8 @@ class MerchantClient extends Model
         if ($setting) {
             return $setting->merchant_value;
         }
+
+        return $setting;
     }
 
     public static function saveByKey($driver, $clientId, $key, $value): void

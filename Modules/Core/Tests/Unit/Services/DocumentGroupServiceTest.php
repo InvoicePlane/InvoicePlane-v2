@@ -2,16 +2,16 @@
 
 namespace Modules\Core\Tests\Unit\Services;
 
-use DocumentGroupService;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Tests\Unit\InvalidArgumentException;
+use Modules\Core\Services\DocumentGroupService;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(DocumentGroupService::class)]
-class DocumentGroupServiceTest extends TestCase
+class DocumentGroupServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

@@ -3,11 +3,12 @@
 namespace Modules\Clients\Tests\Unit\Importers;
 
 use Modules\Clients\Importers\CustomerImporter;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[Group('support')]
-class CustomerImporterTest extends TestCase
+class CustomerImporterTest extends AbstractTestCase
 {
     #[Test]
     public function it_imports_customer(): void

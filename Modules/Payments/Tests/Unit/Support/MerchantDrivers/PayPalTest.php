@@ -4,9 +4,8 @@ namespace Modules\Payments\Tests\Unit\Support\MerchantDrivers;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class PayPalTest extends TestCase
+class PayPalTest extends AbstractTestCase
 {
     #[Test]
     #[Group('support')]

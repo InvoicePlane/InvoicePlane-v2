@@ -6,9 +6,8 @@ use InvalidArgumentException;
 use Modules\Products\Models\ProductCategory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class ProductCategoryServiceTest extends TestCase
+class ProductCategoryServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

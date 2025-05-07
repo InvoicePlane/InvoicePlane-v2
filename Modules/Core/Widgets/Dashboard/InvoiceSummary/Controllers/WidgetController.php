@@ -3,8 +3,7 @@
 namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Controllers;
 
 use App\Http\Controllers\Controller;
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Controllers\WidgetController;
-use Modules\Settings\Models\Setting;
+use Modules\Core\Models\Setting;
 
 class WidgetController extends Controller
 {

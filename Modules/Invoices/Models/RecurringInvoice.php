@@ -84,9 +84,10 @@ class RecurringInvoice extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
         // return $this->morphMany(Activity::class, 'audit');
+        return null;
     }
 
     public function customer(): BelongsTo
@@ -242,8 +243,9 @@ class RecurringInvoice extends Model
     | Factory
     |--------------------------------------------------------------------------
     */
-    protected static function newFactory(): Factory
+    protected static function newFactory(): ?Factory
     {
         //return RecurringInvoiceFactory::new();
+        return null;
     }
 }

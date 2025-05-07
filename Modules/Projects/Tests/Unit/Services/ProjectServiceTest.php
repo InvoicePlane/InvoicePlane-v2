@@ -6,9 +6,8 @@ use InvalidArgumentException;
 use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class ProjectServiceTest extends TestCase
+class ProjectServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

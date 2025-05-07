@@ -7,9 +7,8 @@ use Modules\Payments\Models\PaymentMethod;
 use Modules\Payments\Services\PaymentMethodService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class PaymentMethodServiceTest extends TestCase
+class PaymentMethodServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

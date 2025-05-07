@@ -6,9 +6,8 @@ use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class CustomerAssignmentServiceTest extends TestCase
+class CustomerAssignmentServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

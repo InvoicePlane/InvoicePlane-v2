@@ -4,11 +4,12 @@ namespace Modules\Clients\Tests\Unit\Importers;
 
 use InvalidArgumentException;
 use Modules\Clients\Importers\ContactImporter;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[Group('support')]
-class ContactImporterTest extends TestCase
+class ContactImporterTest extends AbstractTestCase
 {
     #[Test]
     public function it_creates_contact(): void

@@ -5,9 +5,8 @@ namespace Modules\Core\Tests\Unit\Importers;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class ModelImportFactoryTest extends TestCase
+class ModelImportFactoryTest extends AbstractTestCase
 {
     #[Test]
     #[Group('support')]

@@ -6,9 +6,8 @@ use InvalidArgumentException;
 use Modules\Payments\Models\Payment;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class AddPaymentServiceTest extends TestCase
+class AddPaymentServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

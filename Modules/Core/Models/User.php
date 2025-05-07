@@ -31,8 +31,6 @@ use Modules\Quotes\Models\Quote;
  * @property Note[]                        $notes
  * @property Collection|Attachment[]       $attachments
  * @property Collection|Expense[]          $expenses
- * @property Collection|Invoice[]          $invoices
- * @property Collection|Note[]             $notes
  * @property Collection|Quote[]            $quotes
  * @property Collection|RecurringInvoice[] $recurringInvoices
  * @property Upload[]                      $uploads
@@ -82,9 +80,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function attachments(): HasMany
+    public function attachments(): ?HasMany
     {
         // return $this->hasMany(Attachment::class);
+        return null;
     }
 
     public function companies(): BelongsToMany

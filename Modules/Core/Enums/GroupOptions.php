@@ -19,10 +19,12 @@ enum GroupOptions: string implements LabeledEnum
     public function label(): string
     {
         // TODO: Implement label() method.
+        return '';
     }
 
     public function color(): string
     {
         // TODO: Implement color() method.
+        return '';
     }
 }

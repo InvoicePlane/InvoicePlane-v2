@@ -2,6 +2,6 @@
 
 namespace Modules\Quotes\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 
-class QuoteWasUpdatedTest extends TestCase {}
+class QuoteWasUpdatedTest extends AbstractTestCase {}

@@ -5,9 +5,8 @@ namespace Modules\Quotes\Tests\Unit\Services;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class QuoteCustomerSwitchServiceTest extends TestCase
+class QuoteCustomerSwitchServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

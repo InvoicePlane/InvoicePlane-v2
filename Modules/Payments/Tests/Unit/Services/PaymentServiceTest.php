@@ -5,10 +5,9 @@ namespace Modules\Payments\Tests\Unit\Services;
 use Modules\Payments\Models\Payment;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[Group('services')]
-class PaymentServiceTest extends TestCase
+class PaymentServiceTest extends AbstractTestCase
 {
     #[Test]
     #[Group('services')]

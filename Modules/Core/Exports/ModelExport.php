@@ -5,13 +5,15 @@ namespace Modules\Core\Exports;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ModelExport implements FromCollection, WithHeadings
+//use Maatwebsite\Excel\Concerns\Exportable;
+//use Maatwebsite\Excel\Concerns\FromCollection;
+//use Maatwebsite\Excel\Concerns\WithHeadings;
+
+//implements FromCollection, WithHeadings
+class ModelExport
 {
-    use Exportable;
+    //use Exportable;
 
     public Model $model;
 

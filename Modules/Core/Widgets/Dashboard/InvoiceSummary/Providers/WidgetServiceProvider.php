@@ -4,7 +4,6 @@ namespace Modules\Core\Widgets\Dashboard\InvoiceSummary\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Widgets\Dashboard\QuoteSummary\Providers\WidgetServiceProvider;
 
 class WidgetServiceProvider extends ServiceProvider
 {

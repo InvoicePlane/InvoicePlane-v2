@@ -99,9 +99,10 @@ class Expense extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
         // return $this->morphMany(Attachment::class, 'attachable');
+        return null;
     }
 
     public function customer(): BelongsTo

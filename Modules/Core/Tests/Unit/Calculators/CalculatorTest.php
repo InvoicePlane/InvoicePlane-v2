@@ -6,11 +6,10 @@ use Modules\Core\Support\Calculators\Calculator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Calculator::class)]
 
-class CalculatorTest extends TestCase
+class CalculatorTest extends AbstractTestCase
 {
     #[Test]
     #[Group('support')]
