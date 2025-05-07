@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Activity\Models;
+namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\DateFormatter;

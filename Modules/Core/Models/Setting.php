@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Settings\Models;
+namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;

@@ -2,10 +2,9 @@
 
 namespace Modules\Products\Enums;
 
-use Modules\Expenses\Models\Expense;
-use Modules\Products\Models\Product;
+use Modules\Core\Contracts\LabeledEnum;
 
-enum ProductType: string implements \Modules\Core\Contracts\LabeledEnum
+enum ProductType: string implements LabeledEnum
 {
     case PRODUCT  = 'product';
     case EXPENSE  = 'expense';
