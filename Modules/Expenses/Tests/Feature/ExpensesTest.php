@@ -43,10 +43,10 @@ class ExpensesTest extends AbstractTestCase
         ]);
 
         // act + assert
-        Livewire::test(ListExpenses::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        $response = Livewire::actingAs($this->user)->test(ListExpenses::class)
+            ->assertSuccessful();
+
+        $response->assertSeeDatabaseRecords($record);
     }
 
     #[Test]

@@ -4,11 +4,6 @@ namespace Modules\Core\Support;
 
 class Frequency
 {
-    /**
-     * Returns a list of frequencies for recurring invoices.
-     *
-     * @return array
-     */
     public static function lists()
     {
         return [

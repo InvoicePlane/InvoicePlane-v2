@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\AttachmentCreating;
 use Modules\Core\Events\AttachmentDeleted;
-use Modules\Core\Models\User;
 use Modules\Core\Support\DateFormatter;
 use Modules\Users\Models\User;
 

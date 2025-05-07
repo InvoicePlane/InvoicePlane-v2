@@ -9,13 +9,12 @@ use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Enums\PaymentMethod as PaymentMethodEnum;
 use Modules\Payments\Filament\Company\Resources\PaymentResource;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
 use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -68,7 +67,7 @@ class PaymentsTest extends AbstractTestCase
 
         $payload = [
             'amount'         => 250.00,
-            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
             'paid_at'        => '2024-11-01',
             'customer_id'    => $customer->id,
             'invoice_id'     => $invoice->id,
@@ -84,7 +83,7 @@ class PaymentsTest extends AbstractTestCase
         // assert
         $this->assertDatabaseHas('payments', [
             'amount'         => 250.00,
-            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
             'customer_id'    => $customer->id,
             'invoice_id'     => $invoice->id,
         ]);

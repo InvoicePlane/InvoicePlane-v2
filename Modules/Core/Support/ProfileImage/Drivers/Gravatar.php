@@ -4,7 +4,6 @@ namespace Modules\Core\Support\ProfileImage\Drivers;
 
 use Modules\Core\Models\User;
 use Modules\Core\Support\ProfileImage\ProfileImageInterface;
-use Modules\Users\Models\User;
 
 class Gravatar implements ProfileImageInterface
 {

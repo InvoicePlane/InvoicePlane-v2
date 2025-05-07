@@ -39,6 +39,7 @@ class MerchantPayment extends Model
         if ($setting) {
             return $setting->merchant_value;
         }
+
         return $setting;
     }
 

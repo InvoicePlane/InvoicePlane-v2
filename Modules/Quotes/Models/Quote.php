@@ -12,14 +12,11 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\Note;
-use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\DateFormatter;
-use Modules\Core\Support\FileNames;
 use Modules\Core\Support\HTML;
 use Modules\Core\Support\NumberFormatter;
-use Modules\Core\Support\Results\Clients;
 use Modules\Core\Support\Statuses\QuoteStatuses;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
@@ -97,23 +94,26 @@ class Quote extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
         //return $this->morphMany(Activity::class, 'audit');
+        return null;
     }
 
-    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
         // return $this->morphMany(Attachment::class, 'attachable');
+        return null;
     }
 
-    public function clientAttachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function clientAttachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
         /*$relationship = $this->morphMany(Attachment::class, 'attachable');
 
         $relationship->where('client_visibility', 1);
 
         return $relationship;*/
+        return null;
     }
 
     public function customer(): BelongsTo
@@ -366,20 +366,20 @@ class Quote extends Model
         return $query;
     }
 
-    public function scopeGuest(Builder $query): Builder
+    /*public function scopeGuest(Builder $query): Builder
     {
         return $query->whereIn('quote_status', [QuoteStatus::SENT, QuoteStatus::VIEWED, QuoteStatus::APPROVED, QuoteStatus::REJECTED]);
-    }
+    }*/
 
     public function scopeUrlKey(Builder $query, $url_key): Builder
     {
         return $query->where('quote_url_key', $url_key);
     }
 
-    public function scopeIsOpen(Builder $query): Builder
+    /*public function scopeIsOpen(Builder $query): Builder
     {
         return $query->whereIn('quote_status_id', [QuoteStatus::SENT, QuoteStatus::VIEWED]);
-    }
+    }*/
 
     public function scopeClients(Builder $query, $clients = ''): Builder
     {

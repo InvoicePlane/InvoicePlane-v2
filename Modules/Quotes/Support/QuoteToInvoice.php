@@ -6,7 +6,6 @@ use Modules\Core\Events\InvoiceModified;
 use Modules\Core\Models\CustomField;
 use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Core\Support\Statuses\QuoteStatuses;
-use Modules\Groups\Models\Group;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 

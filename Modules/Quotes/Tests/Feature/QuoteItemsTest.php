@@ -28,8 +28,6 @@ class QuoteItemsTest extends AbstractTestCase
     // region smoke
     #[Test]
     #[Group('smoke')]
-    /**
-     */
     public function it_lists_quote_items(): void
     {
         $this->markTestIncomplete();

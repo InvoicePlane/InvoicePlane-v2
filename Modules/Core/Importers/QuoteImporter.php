@@ -3,9 +3,7 @@
 namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
-use Modules\Companies\Models\Company;
 use Modules\Core\Models\Company;
-use Modules\Groups\Models\Group;
 use Modules\Quotes\Models\Quote;
 
 class QuoteImporter extends AbstractImporter

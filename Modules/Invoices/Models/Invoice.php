@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
@@ -18,12 +19,9 @@ use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\DateFormatter;
-use Modules\Core\Support\FileNames;
 use Modules\Core\Support\HTML;
 use Modules\Core\Support\MailQueue;
 use Modules\Core\Support\NumberFormatter;
-use Modules\Core\Support\Results\Clients;
-use Modules\Core\Support\Results\Invoices;
 use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
@@ -35,8 +33,6 @@ use Modules\Quotes\Models\Quote;
 use stdClass;
 
 /**
- * Class Invoice.
- *
  * @property int                             $id
  * @property int                             $company_id
  * @property int                             $customer_id
@@ -124,9 +120,10 @@ class Invoice extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function activities(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphMany(Activity::class, 'audit');
+        //return $this->morphMany(Activity::class, 'audit');
+        return null;
     }
 
     public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany

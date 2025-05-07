@@ -1,6 +1,6 @@
 <?php
-namespace Modules\Core\Tests\Unit\Services;
 
+namespace Modules\Core\Tests\Unit\Services;
 
 use Modules\Core\Services\MailBuilder;
 use Modules\Core\Tests\AbstractTestCase;

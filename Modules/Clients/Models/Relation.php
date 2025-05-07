@@ -19,7 +19,6 @@ use Modules\Core\Models\Communication;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;

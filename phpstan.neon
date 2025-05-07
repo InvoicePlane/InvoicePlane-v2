@@ -5,6 +5,10 @@ parameters:
     paths:
         - Modules/
 
+    excludePaths:
+        analyse:
+            - */Http/*
+
     ignoreErrors:
         - '#Access to an undefined property .*::\$[a-zA-Z_]+#'
         - '#Call to an undefined method .*#'

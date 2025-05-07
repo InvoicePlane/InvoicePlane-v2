@@ -10,18 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\CompanyFactory;
-use Modules\Core\Events\CompanyProfileCreated;
-use Modules\Core\Events\CompanyProfileCreating;
-use Modules\Core\Events\CompanyProfileDeleted;
-use Modules\Core\Events\CompanyProfileSaving;
-use Modules\Core\Modules\Expenses\Models\Expense;
-use Modules\Core\Modules\Invoices\Models\Invoice;
-use Modules\Core\Modules\Quotes\Models\Quote;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Projects\Models\Project;
 use Modules\Quotes\Models\Quote;
+
+//use Modules\Core\Events\CompanyProfileCreated;
+//use Modules\Core\Events\CompanyProfileCreating;
+//use Modules\Core\Events\CompanyProfileDeleted;
+//use Modules\Core\Events\CompanyProfileSaving;
 
 /**
  * @property int             $id
