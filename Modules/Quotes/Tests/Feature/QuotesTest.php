@@ -38,6 +38,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload ['quote_date' => '2024-10-01', 'quote_number' => 'Q-1001']
      */
+    #[Group('crud')]
     public function it_lists_quotes(): void
     {
         $this->markTestIncomplete();
@@ -100,6 +101,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload ['quote_number' => 'Q-2024-01', 'quote_date' => '2024-10-01', 'customer_id' => 1, 'status' => 'draft']
      */
+    #[Group('crud')]
     public function it_creates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -130,6 +132,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload ['customer_id' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_create_quote_without_customer(): void
     {
         $this->markTestIncomplete();
@@ -182,6 +185,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload ['status' => 'sent']
      */
+    #[Group('crud')]
     public function it_updates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -209,6 +213,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload ['quote_number' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_update_quote_with_missing_number(): void
     {
         $this->markTestIncomplete();
@@ -231,6 +236,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -318,6 +324,7 @@ class QuotesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_quote_that_is_already_deleted(): void
     {
         $this->markTestIncomplete();

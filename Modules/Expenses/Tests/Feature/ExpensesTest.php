@@ -25,6 +25,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload ['amount' => 550.00, 'expensed_at' => '2024-12-01', 'expense_type' => 'fixed']
      */
+    #[Group('crud')]
     public function it_lists_expenses(): void
     {
         $this->markTestIncomplete();
@@ -64,6 +65,7 @@ class ExpensesTest extends AbstractTestCase
      *   'status' => 'active'
      * ]
      */
+    #[Group('crud')]
     public function it_creates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -106,6 +108,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload ['amount' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_create_expense_without_amount(): void
     {
         $this->markTestIncomplete();
@@ -126,6 +129,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload ['expense_type' => 'recurring']
      */
+    #[Group('crud')]
     public function it_updates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -156,6 +160,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload ['expense_type' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_update_expense_with_empty_type(): void
     {
         $this->markTestIncomplete();
@@ -178,6 +183,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -198,6 +204,7 @@ class ExpensesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_expense_twice(): void
     {
         $this->markTestIncomplete();

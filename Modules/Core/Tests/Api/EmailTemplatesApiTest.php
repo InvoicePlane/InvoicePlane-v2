@@ -30,6 +30,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_email_templates_index(): void
     {
         $this->markTestIncomplete();
@@ -56,6 +57,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
 
+    #[Group('crud')]
     public function it_creates_an_email_template(): void
     {
         $this->markTestIncomplete();
@@ -79,6 +81,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => '::email_template_title::']);
     }
 
+    #[Group('crud')]
     public function it_updates_an_email_template(): void
     {
         $this->markTestIncomplete();
@@ -104,6 +107,7 @@ class EmailTemplatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['title' => $updatedData['email_template_title']]);
     }
 
+    #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {
         $this->markTestIncomplete();

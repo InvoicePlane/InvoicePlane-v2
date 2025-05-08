@@ -21,6 +21,7 @@ class CompaniesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Acme LLC']
      */
+    #[Group('crud')]
     public function it_lists_companies(): void
     {
         $this->markTestIncomplete();
@@ -41,6 +42,7 @@ class CompaniesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Rocket Corp']
      */
+    #[Group('crud')]
     public function it_creates_a_company(): void
     {
         $this->markTestIncomplete();
@@ -63,6 +65,7 @@ class CompaniesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_create_company_when_name_missing(): void
     {
         $this->markTestIncomplete();
@@ -83,6 +86,7 @@ class CompaniesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Updated Corp']
      */
+    #[Group('crud')]
     public function it_updates_a_company(): void
     {
         $this->markTestIncomplete();
@@ -107,6 +111,7 @@ class CompaniesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_a_company(): void
     {
         $this->markTestIncomplete();

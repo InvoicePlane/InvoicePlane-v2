@@ -42,6 +42,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['company_name' => 'Acme Inc.', 'relation_type' => 'customer']
      */
+    #[Group('crud')]
     public function it_lists_customers(): void
     {
         $this->markTestIncomplete();
@@ -69,6 +70,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['company_name' => 'Beta LLC', 'relation_type' => 'customer', 'relation_number' => 'C123']
      */
+    #[Group('crud')]
     public function it_creates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -95,6 +97,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['relation_type' => 'customer']
      */
+    #[Group('crud')]
     public function it_fails_when_company_name_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -118,6 +121,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['company_name' => 'Zeta Ltd.']
      */
+    #[Group('crud')]
     public function it_fails_when_relation_type_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -141,6 +145,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['company_name' => 'Updated Name']
      */
+    #[Group('crud')]
     public function it_updates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -172,6 +177,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload ['company_name' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_update_if_company_name_missing(): void
     {
         $this->markTestIncomplete();
@@ -199,6 +205,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -221,6 +228,7 @@ class CustomersTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_customer_when_not_owner(): void
     {
         $this->markTestIncomplete();

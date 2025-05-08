@@ -94,6 +94,7 @@ class ProjectsTest extends AbstractTestCase
      *   "description": "Redesigning the corporate website"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_project(): void
     {
         $this->markTestIncomplete();
@@ -139,6 +140,7 @@ class ProjectsTest extends AbstractTestCase
      *   "description": "Redesigning the corporate website"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_project_without_project_name(): void
     {
         $this->markTestIncomplete();
@@ -175,6 +177,7 @@ class ProjectsTest extends AbstractTestCase
      * *    "project_name": "Updated Project Name"
      * * }
      */
+    #[Group('crud')]
     public function it_updates_a_project(): void
     {
         $this->markTestIncomplete();
@@ -219,6 +222,7 @@ class ProjectsTest extends AbstractTestCase
      * "description": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_update_project_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -281,6 +285,7 @@ class ProjectsTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
+    #[Group('crud')]
     public function it_projects_assign_client(): void
     {
         $this->markTestIncomplete();
@@ -305,6 +310,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
+    #[Group('crud')]
     public function it_fails_to_assign_client_without_project_id(): void
     {
         $this->markTestIncomplete();
@@ -329,6 +335,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
+    #[Group('crud')]
     public function it_projects_change_client(): void
     {
         $this->markTestIncomplete();
@@ -352,6 +359,7 @@ class ProjectsTest extends AbstractTestCase
         ]);
     }
 
+    #[Group('crud')]
     public function it_fails_to_change_project_client_without_client_id(): void
     {
         $this->markTestIncomplete();

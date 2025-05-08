@@ -26,6 +26,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         parent::tearDown();
     }
 
+    #[Group('crud')]
     public function it_returns_payment_methods_index(): void
     {
         $this->markTestIncomplete();
@@ -51,6 +52,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::payment_method_name::']);
     }
 
+    #[Group('crud')]
     public function it_creates_a_payment_method(): void
     {
         $this->markTestIncomplete();
@@ -71,6 +73,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::payment_method_name::']);
     }
 
+    #[Group('crud')]
     public function it_returns_error_when_posting_payment_method_with_wrong_data(): void
     {
         $this->markTestIncomplete();
@@ -91,6 +94,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $response->assertJsonFragment(['errors' => ['payment_method_name' => ['The payment method name field is required.']], ]);
     }
 
+    #[Group('crud')]
     public function it_updates_a_payment_method(): void
     {
         $this->markTestIncomplete();
@@ -127,6 +131,7 @@ class PaymentMethodApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['payment_method_name'], $initialPaymentMethod->payment_method_name);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_payment_method(): void
     {
         $this->markTestIncomplete();

@@ -36,6 +36,7 @@ class TaxRatesTest extends AbstractTestCase
     }
 
     // region smoke
+    #[Group('crud')]
     public function it_lists_tax_rates(): void
     {
         $this->markTestIncomplete();
@@ -81,6 +82,7 @@ class TaxRatesTest extends AbstractTestCase
      * "rate": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_taxrate(): void
     {
         $this->markTestIncomplete();
@@ -124,6 +126,7 @@ class TaxRatesTest extends AbstractTestCase
      * "rate": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_taxrate(): void
     {
         $this->markTestIncomplete();
@@ -179,6 +182,7 @@ class TaxRatesTest extends AbstractTestCase
      * "rate": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_deletes_a_taxrate(): void
     {
         $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');

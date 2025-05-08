@@ -103,6 +103,7 @@ class ProductsTest extends AbstractTestCase
      *   "description": "Example description"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_product(): void
     {
         $this->markTestIncomplete();
@@ -161,6 +162,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
      *   "description": "Example description"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_product_without_code(): void
     {
         $this->markTestIncomplete();
@@ -182,6 +184,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $component->assertHasErrors(['item_name', 'price', 'category_id']);
     }
 
+    #[Group('crud')]
     public function it_updates_a_product(): void
     {
         $this->markTestIncomplete();
@@ -245,6 +248,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
      * "description": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_update_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -280,6 +284,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         }
     }
 
+    #[Group('crud')]
     public function it_deletes_a_product(): void
     {
         $this->markTestIncomplete();
@@ -325,6 +330,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         ]);
     }
 
+    #[Group('crud')]
     public function it_bulk_deletes_products(): void
     {
         $this->markTestIncomplete();
@@ -374,6 +380,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
      *
      * @skip Not implemented yet
      **/
+    #[Group('crud')]
     public function it_products_process_selections(): void
     {
         $this->markTestIncomplete();
@@ -414,6 +421,7 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
      *
      * @skip Not implemented yet
      **/
+    #[Group('crud')]
     public function it_fails_to_process_selections_without_product_ids(): void
     {
         $this->markTestIncomplete();

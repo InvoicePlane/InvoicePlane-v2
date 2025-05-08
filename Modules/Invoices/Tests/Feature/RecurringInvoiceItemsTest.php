@@ -31,6 +31,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
     /**
      * @group smoke
      */
+    #[Group('crud')]
     public function it_lists_recurring_invoice_items(): void
     {
         $this->markTestIncomplete();
@@ -59,6 +60,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_creates_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();
@@ -87,6 +89,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_create_recurring_invoice_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -115,6 +118,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_updates_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();
@@ -147,6 +151,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_update_recurring_invoice_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -177,6 +182,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();

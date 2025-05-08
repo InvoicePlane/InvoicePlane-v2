@@ -27,6 +27,7 @@ class ImportTest extends AbstractTestCase
         parent::tearDown();
     }
 
+    #[Group('crud')]
     public function it_shows_import_details_index(): void
     {
         $this->markTestIncomplete();
@@ -45,6 +46,7 @@ class ImportTest extends AbstractTestCase
         $component->assertSee('2022-04-01');
     }
 
+    #[Group('crud')]
     public function it_creates_an_import(): void
     {
         $this->markTestIncomplete();

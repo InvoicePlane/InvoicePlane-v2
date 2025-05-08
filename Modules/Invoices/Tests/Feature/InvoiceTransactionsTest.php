@@ -31,7 +31,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
     /**
      * @group smoke
      */
-    public function it_lists_invoicetransactions(): void
+    #[Group('crud')]
+    public function it_lists_invoice_transactions(): void
     {
         $this->markTestIncomplete();
 
@@ -59,7 +60,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
      * @payload
      * []
      */
-    public function it_creates_a_invoicetransaction(): void
+    #[Group('crud')]
+    public function it_creates_a_invoice_transaction(): void
     {
         $this->markTestIncomplete();
 
@@ -87,7 +89,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
      * @payload
      * []
      */
-    public function it_fails_to_create_invoicetransaction_when_required_fields_are_missing(): void
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_transaction_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -115,7 +118,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
      * @payload
      * []
      */
-    public function it_updates_a_invoicetransaction(): void
+    #[Group('crud')]
+    public function it_updates_a_invoice_transaction(): void
     {
         $this->markTestIncomplete();
 
@@ -147,7 +151,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
      * @payload
      * []
      */
-    public function it_fails_to_update_invoicetransaction_when_required_fields_are_missing(): void
+    #[Group('crud')]
+    public function it_fails_to_update_invoice_transaction_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -177,7 +182,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
      * @payload
      * []
      */
-    public function it_deletes_a_invoicetransaction(): void
+    #[Group('crud')]
+    public function it_deletes_a_invoice_transaction(): void
     {
         $this->markTestIncomplete();
 
@@ -192,7 +198,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListInvoiceTransactions::class)->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('invoicetransactions', ['id' => $record->id]);
+        $this->assertDatabaseMissing('invoice_transactions', ['id' => $record->id]);
     }
 
     // endregion

@@ -30,6 +30,7 @@ class TaxRatesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_tax_rates_index(): void
     {
         $this->markTestIncomplete();
@@ -58,6 +59,7 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::tax_rate_name::']);
     }
 
+    #[Group('crud')]
     public function it_creates_a_tax_rate(): void
     {
         $this->markTestIncomplete();
@@ -84,6 +86,7 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['percentage' => '21.00']);
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_when_creating_a_tax_rate_with_wrong_fields(): void
     {
         $this->markTestIncomplete();
@@ -111,6 +114,7 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('tax_rate_name', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_tax_rate(): void
     {
         $this->markTestIncomplete();
@@ -137,6 +141,7 @@ class TaxRatesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => $updatedData['tax_rate_name']]);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_tax_rate(): void
     {
         $this->markTestIncomplete();

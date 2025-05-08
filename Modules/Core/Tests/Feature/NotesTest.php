@@ -31,6 +31,7 @@ class NotesTest extends AbstractTestCase
     /**
      * @group smoke
      */
+    #[Group('crud')]
     public function it_lists_notes(): void
     {
         $this->markTestIncomplete();
@@ -59,6 +60,7 @@ class NotesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_creates_a_note(): void
     {
         $this->markTestIncomplete();
@@ -87,6 +89,7 @@ class NotesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_create_note_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -115,6 +118,7 @@ class NotesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_updates_a_note(): void
     {
         $this->markTestIncomplete();
@@ -147,6 +151,7 @@ class NotesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_update_note_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -177,6 +182,7 @@ class NotesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_note(): void
     {
         $this->markTestIncomplete();

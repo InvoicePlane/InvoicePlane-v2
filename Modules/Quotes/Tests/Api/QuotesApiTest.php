@@ -63,6 +63,7 @@ class QuotesApiTest extends AbstractTestCase
      * }
      * ]
      */
+    #[Group('crud')]
     public function it_returns_quotes_index(): void
     {
         $this->markTestIncomplete();
@@ -117,6 +118,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['quote_number' => '::quote_number::']);
     }
 
+    #[Group('crud')]
     public function it_fails_to_retrieve_quotes_without_authentication(): void
     {
         $this->markTestIncomplete();
@@ -132,6 +134,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertStatus(401); // Unauthorized
     }
 
+    #[Group('crud')]
     public function it_creates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -197,6 +200,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['quote_number' => '::quote_number::']);
     }
 
+    #[Group('crud')]
     public function it_returns_an_error_when_posting_quote_without_status_id(): void
     {
         $this->markTestIncomplete();
@@ -243,6 +247,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('quote_status_id', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -294,6 +299,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['quote_number'], $initialQuote->quote_number);
     }
 
+    #[Group('crud')]
     public function it_can_update_quote_line_items(): void
     {
         $this->markTestIncomplete();
@@ -328,6 +334,7 @@ class QuotesApiTest extends AbstractTestCase
         $this->assertDatabaseHas('quote_items', ['quote_id' => $quote->quote_id]);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -380,6 +387,7 @@ class QuotesApiTest extends AbstractTestCase
 
     // region Custom Tests
 
+    #[Group('crud')]
     public function it_changes_the_client_of_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -397,6 +405,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_adds_a_product_to_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -418,6 +427,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_adds_a_task_to_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -442,6 +452,7 @@ class QuotesApiTest extends AbstractTestCase
 
     // region Spicy Tests
 
+    #[Group('crud')]
     public function it_generates_a_quote_pdf(): void
     {
         $this->markTestIncomplete();
@@ -457,6 +468,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_copies_a_quote_to_an_invoice(): void
     {
         $this->markTestIncomplete();
@@ -477,6 +489,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_clones_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -497,6 +510,7 @@ class QuotesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['number' => '::quote_number:: - Copy']);
     }
 
+    #[Group('crud')]
     public function it_calculates_totals(): void
     {
         $this->markTestIncomplete();

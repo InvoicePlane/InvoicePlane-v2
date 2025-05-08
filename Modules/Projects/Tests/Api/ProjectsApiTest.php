@@ -30,6 +30,7 @@ class ProjectsApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_projects_index(): void
     {
         $this->markTestIncomplete();
@@ -62,6 +63,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::project_name::']);
     }
 
+    #[Group('crud')]
     public function it_lists_projects_via_api(): void
     {
         $this->markTestIncomplete();
@@ -87,6 +89,7 @@ class ProjectsApiTest extends AbstractTestCase
      *            'project_description' => 'This is a test project',
      *            ]
      */
+    #[Group('crud')]
     public function it_creates_a_project(): void
     {
         $this->markTestIncomplete();
@@ -131,6 +134,7 @@ class ProjectsApiTest extends AbstractTestCase
      *            'project_description' => 'This is a test project',
      *            ]
      */
+    #[Group('crud')]
     public function it_creates_a_project_via_api(): void
     {
         $this->markTestIncomplete();
@@ -152,6 +156,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_when_creating_a_project_without_required_field(): void
     {
         $this->markTestIncomplete();
@@ -192,6 +197,7 @@ class ProjectsApiTest extends AbstractTestCase
      *            'project_description' => 'Updated description',
      *            ]
      */
+    #[Group('crud')]
     public function it_updates_a_project(): void
     {
         $this->markTestIncomplete();
@@ -235,6 +241,7 @@ class ProjectsApiTest extends AbstractTestCase
      *            'project_description' => 'Updated description',
      *            ]
      */
+    #[Group('crud')]
     public function it_updates_a_project_via_api(): void
     {
         $this->markTestIncomplete();
@@ -253,6 +260,7 @@ class ProjectsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_deletes_a_project_via_api(): void
     {
         $this->markTestIncomplete();

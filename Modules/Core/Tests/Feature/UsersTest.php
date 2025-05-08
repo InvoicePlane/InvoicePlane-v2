@@ -27,6 +27,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert email is visible
      */
+    #[Group('crud')]
     public function it_lists_users(): void
     {
         $this->markTestIncomplete();
@@ -53,6 +54,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert inserted in database
      */
+    #[Group('crud')]
     public function it_creates_a_user(): void
     {
         $this->markTestIncomplete();
@@ -81,6 +83,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert form error triggered
      */
+    #[Group('crud')]
     public function it_fails_to_create_user_without_email(): void
     {
         $this->markTestIncomplete();
@@ -107,6 +110,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert email updated in database
      */
+    #[Group('crud')]
     public function it_updates_a_user(): void
     {
         $this->markTestIncomplete();
@@ -136,6 +140,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert form error triggered
      */
+    #[Group('crud')]
     public function it_fails_to_update_user_without_email(): void
     {
         $this->markTestIncomplete();
@@ -163,6 +168,7 @@ class UsersTest extends AbstractTestCase
      *
      * @assert record removed
      */
+    #[Group('crud')]
     public function it_deletes_a_user(): void
     {
         $this->markTestIncomplete();
@@ -182,6 +188,7 @@ class UsersTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_user_twice(): void
     {
         $this->markTestIncomplete();

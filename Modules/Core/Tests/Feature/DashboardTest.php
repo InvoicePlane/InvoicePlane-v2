@@ -23,6 +23,7 @@ class DashboardTest extends AbstractTestCase
         parent::tearDown();
     }
 
+    #[Group('crud')]
     public function it_shows_dashboard_index(): void
     {
         $this->markTestIncomplete();

@@ -20,6 +20,7 @@ class WelcomeViewTest extends AbstractTestCase
      *
      * @assert page renders with 200
      */
+    #[Group('crud')]
     public function it_shows_welcome_page(): void
     {
         $this->markTestIncomplete();

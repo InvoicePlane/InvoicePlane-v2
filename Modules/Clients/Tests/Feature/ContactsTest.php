@@ -39,6 +39,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload ['relation_id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe', 'gender' => 'female']
      */
+    #[Group('crud')]
     public function it_lists_contacts(): void
     {
         $this->markTestIncomplete();
@@ -68,6 +69,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload ['relation_id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe', 'gender' => 'female']
      */
+    #[Group('crud')]
     public function it_creates_a_contact(): void
     {
         $this->markTestIncomplete();
@@ -97,6 +99,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload ['first_name' => 'Jane']
      */
+    #[Group('crud')]
     public function it_fails_when_relation_id_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -120,6 +123,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload ['relation_id' => 1]
      */
+    #[Group('crud')]
     public function it_fails_when_first_name_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -145,6 +149,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload ['first_name' => 'Updated', 'last_name' => 'Contact']
      */
+    #[Group('crud')]
     public function it_updates_a_contact(): void
     {
         $this->markTestIncomplete();
@@ -178,6 +183,7 @@ class ContactsTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_a_contact(): void
     {
         $this->markTestIncomplete();

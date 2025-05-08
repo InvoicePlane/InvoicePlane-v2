@@ -81,6 +81,7 @@ class PaymentMethodsTest extends AbstractTestCase
      *   "payment_method_name": "Credit Card"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_payment_method(): void
     {
         $this->markTestIncomplete();
@@ -126,6 +127,7 @@ class PaymentMethodsTest extends AbstractTestCase
      *   "payment_method_name": "Credit Card"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
     {
         $this->markTestIncomplete();
@@ -165,6 +167,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
+    #[Group('crud')]
     public function it_updates_a_payment_method(): void
     {
         $this->markTestIncomplete();
@@ -196,6 +199,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
+    #[Group('crud')]
     public function it_deletes_a_payment_method(): void
     {
         $this->markTestIncomplete();

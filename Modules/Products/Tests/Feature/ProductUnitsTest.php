@@ -21,6 +21,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Box']
      */
+    #[Group('crud')]
     public function it_lists_product_units(): void
     {
         $this->markTestIncomplete();
@@ -41,6 +42,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Pack']
      */
+    #[Group('crud')]
     public function it_creates_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -64,6 +66,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_create_product_unit_without_name(): void
     {
         $this->markTestIncomplete();
@@ -84,6 +87,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Updated Unit']
      */
+    #[Group('crud')]
     public function it_updates_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -108,6 +112,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload ['name' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_update_product_unit_with_null_name(): void
     {
         $this->markTestIncomplete();
@@ -129,6 +134,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -149,6 +155,7 @@ class ProductUnitsTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_product_unit_twice(): void
     {
         $this->markTestIncomplete();

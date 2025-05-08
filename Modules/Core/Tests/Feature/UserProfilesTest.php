@@ -47,6 +47,7 @@ class UserProfilesTest extends AbstractTestCase
      * "user_iban": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_userprofile(): void
     {
         $this->markTestIncomplete();
@@ -90,6 +91,7 @@ class UserProfilesTest extends AbstractTestCase
      * "user_iban": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_userprofile(): void
     {
         $this->markTestIncomplete();
@@ -137,6 +139,7 @@ class UserProfilesTest extends AbstractTestCase
      * "user_iban": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_deletes_a_userprofile(): void
     {
         $this->markTestIncomplete();

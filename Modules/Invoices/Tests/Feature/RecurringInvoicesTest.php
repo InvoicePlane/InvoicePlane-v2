@@ -152,6 +152,7 @@ class RecurringInvoicesTest extends AbstractTestCase
      * "end_at": "2025-04-30"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_recurringinvoice_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -252,6 +253,7 @@ class RecurringInvoicesTest extends AbstractTestCase
      * "end_at": "2025-04-30"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_update_recurringinvoice_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -288,6 +290,7 @@ class RecurringInvoicesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_recurringinvoice(): void
     {
         $this->markTestIncomplete();

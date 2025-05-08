@@ -31,6 +31,7 @@ class CurrenciesTest extends AbstractTestCase
     /**
      * @group smoke
      */
+    #[Group('crud')]
     public function it_lists_currencies(): void
     {
         $this->markTestIncomplete();
@@ -59,6 +60,7 @@ class CurrenciesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_creates_a_currency(): void
     {
         $this->markTestIncomplete();
@@ -87,6 +89,7 @@ class CurrenciesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_create_currency_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -115,6 +118,7 @@ class CurrenciesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_updates_a_currency(): void
     {
         $this->markTestIncomplete();
@@ -147,6 +151,7 @@ class CurrenciesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_update_currency_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -177,6 +182,7 @@ class CurrenciesTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_currency(): void
     {
         $this->markTestIncomplete();

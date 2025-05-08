@@ -100,6 +100,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_task(): void
     {
         $this->markTestIncomplete();
@@ -150,6 +151,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_task_without_required_name(): void
     {
         $this->markTestIncomplete();
@@ -206,6 +208,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_task_without_required_customer(): void
     {
         $this->markTestIncomplete();
@@ -258,6 +261,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_task_without_required_assigned_to(): void
     {
         $this->markTestIncomplete();
@@ -306,6 +310,7 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
+    #[Group('crud')]
     public function it_fails_to_create_task_without_required_tax_rate(): void
     {
         $this->markTestIncomplete();
@@ -354,6 +359,7 @@ class TasksTest extends AbstractTestCase
      * "description": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_task(): void
     {
         $this->markTestIncomplete();
@@ -428,6 +434,7 @@ class TasksTest extends AbstractTestCase
      * "description": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_deletes_a_task(): void
     {
         $this->markTestIncomplete();
@@ -471,6 +478,7 @@ class TasksTest extends AbstractTestCase
     // endregion
 
     // region Custom tests
+    #[Group('crud')]
     public function it_assigns_a_task_to_a_project(): void
     {
         $this->markTestIncomplete();
@@ -513,6 +521,7 @@ class TasksTest extends AbstractTestCase
         ]);
     }
 
+    #[Group('crud')]
     public function it_fails_to_assign_project_without_project_id(): void
     {
         $this->markTestIncomplete();
@@ -568,6 +577,7 @@ class TasksTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
+    #[Group('crud')]
     public function it_creates_recurring_task(): void
     {
         $this->markTestIncomplete();
@@ -612,6 +622,7 @@ class TasksTest extends AbstractTestCase
      *
      * @skip Not implemented yet
      */
+    #[Group('crud')]
     public function it_fails_to_create_recurring_task_without_frequency(): void
     {
         $this->markTestIncomplete();

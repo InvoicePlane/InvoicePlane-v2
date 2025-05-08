@@ -32,6 +32,7 @@ class ProductApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_products_index(): void
     {
         $this->markTestIncomplete();
@@ -84,6 +85,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_name' => '::product_name::']);
     }
 
+    #[Group('crud')]
     public function it_creates_a_product(): void
     {
         $this->markTestIncomplete();
@@ -136,6 +138,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_price' => '1.00']);
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
         $this->markTestIncomplete();
@@ -176,6 +179,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('product_price', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_product(): void
     {
         $this->markTestIncomplete();
@@ -230,6 +234,7 @@ class ProductApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['product_price'], $initialProduct->product_price);
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_when_updating_a_product_with_invalid_values(): void
     {
         $this->markTestIncomplete();
@@ -273,6 +278,7 @@ class ProductApiTest extends AbstractTestCase
         $response->assertJsonFragment(['errors' => ['product_price' => ['The product price must be a number.']], ]);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_product(): void
     {
         $this->markTestIncomplete();

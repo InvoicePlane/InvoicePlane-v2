@@ -32,6 +32,7 @@ class TasksApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_tasks_index(): void
     {
         $this->markTestIncomplete();
@@ -80,6 +81,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::task_name::']);
     }
 
+    #[Group('crud')]
     public function it_creates_a_task(): void
     {
         $this->markTestIncomplete();
@@ -124,6 +126,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonFragment(['name' => '::task_name::']);
     }
 
+    #[Group('crud')]
     public function it_returns_error_when_storing_task_without_proper_fields(): void
     {
         $this->markTestIncomplete();
@@ -167,6 +170,7 @@ class TasksApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('task_finish_date', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_task(): void
     {
         $this->markTestIncomplete();

@@ -60,6 +60,7 @@ class SettingsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_creates_a_setting(): void
     {
         $this->markTestIncomplete();
@@ -88,6 +89,7 @@ class SettingsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_create_setting_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -116,6 +118,7 @@ class SettingsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_updates_a_setting(): void
     {
         $this->markTestIncomplete();
@@ -148,6 +151,7 @@ class SettingsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_update_setting_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -178,6 +182,7 @@ class SettingsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_setting(): void
     {
         $this->markTestIncomplete();

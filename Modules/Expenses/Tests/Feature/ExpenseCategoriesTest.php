@@ -21,6 +21,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Travel']
      */
+    #[Group('crud')]
     public function it_lists_expense_categories(): void
     {
         $this->markTestIncomplete();
@@ -41,6 +42,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Meals']
      */
+    #[Group('crud')]
     public function it_creates_an_expense_category(): void
     {
         $this->markTestIncomplete();
@@ -64,6 +66,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_create_category_without_name(): void
     {
         $this->markTestIncomplete();
@@ -84,6 +87,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload ['name' => 'Updated Name']
      */
+    #[Group('crud')]
     public function it_updates_an_expense_category(): void
     {
         $this->markTestIncomplete();
@@ -108,6 +112,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload ['name' => null]
      */
+    #[Group('crud')]
     public function it_fails_to_update_category_with_empty_name(): void
     {
         $this->markTestIncomplete();
@@ -129,6 +134,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_deletes_an_expense_category(): void
     {
         $this->markTestIncomplete();
@@ -149,6 +155,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
     /**
      * @payload []
      */
+    #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
         $this->markTestIncomplete();

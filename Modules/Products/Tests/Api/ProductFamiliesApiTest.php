@@ -29,6 +29,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_product_families_index(): void
     {
         $this->markTestIncomplete();
@@ -55,6 +56,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonFragment(['product_family' => '::family_name::']);
     }
 
+    #[Group('crud')]
     public function it_lists_product_families_via_api(): void
     {
         $this->markTestIncomplete();
@@ -68,6 +70,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_creates_a_product_family(): void
     {
         $this->markTestIncomplete();
@@ -100,6 +103,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
      *            'family_name' => 'Test Family',
      *            ]
      */
+    #[Group('crud')]
     public function it_creates_a_product_family_via_api(): void
     {
         $this->markTestIncomplete();
@@ -117,6 +121,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_with_invalid_family_name_key(): void
     {
         $this->markTestIncomplete();
@@ -135,6 +140,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('family_name', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_product_family(): void
     {
         $this->markTestIncomplete();
@@ -172,6 +178,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
      *            'family_name' => 'Updated Family',
      *            ]
      */
+    #[Group('crud')]
     public function it_updates_a_product_family_via_api(): void
     {
         $this->markTestIncomplete();
@@ -211,6 +218,7 @@ class ProductFamiliesApiTest extends AbstractTestCase
         $this->response->assertStatus(404);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_product_family_via_api(): void
     {
         $this->markTestIncomplete();

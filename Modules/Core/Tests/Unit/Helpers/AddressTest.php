@@ -12,6 +12,7 @@ class AddressTest extends AbstractTestCase
     /**
      * Find Legacy Function.
      */
+    #[Group('crud')]
     public function it_formats_address_correctly(): void
     {
         $this->markTestIncomplete();

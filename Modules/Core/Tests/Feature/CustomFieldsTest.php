@@ -43,6 +43,7 @@ class CustomFieldsTest extends AbstractTestCase
      * "field_order": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_customfield(): void
     {
         $this->markTestIncomplete();
@@ -80,6 +81,7 @@ class CustomFieldsTest extends AbstractTestCase
      * "field_order": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_customfield(): void
     {
         $this->markTestIncomplete();
@@ -121,6 +123,7 @@ class CustomFieldsTest extends AbstractTestCase
      * "field_order": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_deletes_a_customfield(): void
     {
         $this->markTestIncomplete();

@@ -28,6 +28,7 @@ class UsersApiTest extends AbstractTestCase
 
     // region CRUD Tests
 
+    #[Group('crud')]
     public function it_returns_users_index(): void
     {
         $this->markTestIncomplete();
@@ -64,6 +65,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonFragment(['company' => '::localhost corporation::']);
     }
 
+    #[Group('crud')]
     public function it_can_retrieve_a_list_of_users(): void
     {
         $this->markTestIncomplete();
@@ -100,6 +102,7 @@ class UsersApiTest extends AbstractTestCase
             ->assertJsonStructure([['user_id', 'user_name', 'user_company', 'email']]);
     }
 
+    #[Group('crud')]
     public function it_fails_to_retrieve_users_without_authentication(): void
     {
         $this->markTestIncomplete();
@@ -115,6 +118,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertStatus(401); // Unauthorized
     }
 
+    #[Group('crud')]
     public function it_creates_a_user(): void
     {
         $this->markTestIncomplete();
@@ -142,6 +146,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonFragment(['company' => '::localhost corporation::']);
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_when_creating_a_user_without_required_fields(): void
     {
         $this->markTestIncomplete();
@@ -163,6 +168,7 @@ class UsersApiTest extends AbstractTestCase
         $response->assertJsonValidationErrorFor('user_password_confirmation', 'errors');
     }
 
+    #[Group('crud')]
     public function it_updates_a_user(): void
     {
         $this->markTestIncomplete();
@@ -211,6 +217,7 @@ class UsersApiTest extends AbstractTestCase
         $this->assertEquals($updatedData['user_company'], $initialUser->user_company);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_user(): void
     {
         $this->markTestIncomplete();

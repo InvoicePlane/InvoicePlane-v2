@@ -30,6 +30,7 @@ class MerchantClientsTest extends AbstractTestCase
     /**
      * @group smoke
      */
+    #[Group('crud')]
     public function it_lists_merchant_clients(): void
     {
         $this->markTestIncomplete();
@@ -58,6 +59,7 @@ class MerchantClientsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_creates_a_merchant_client(): void
     {
         $this->markTestIncomplete();
@@ -86,6 +88,7 @@ class MerchantClientsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_create_merchant_client_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -114,6 +117,7 @@ class MerchantClientsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_updates_a_merchant_client(): void
     {
         $this->markTestIncomplete();
@@ -142,6 +146,7 @@ class MerchantClientsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_fails_to_update_merchant_client_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -172,6 +177,7 @@ class MerchantClientsTest extends AbstractTestCase
      * @payload
      * []
      */
+    #[Group('crud')]
     public function it_deletes_a_merchant_client(): void
     {
         $this->markTestIncomplete();

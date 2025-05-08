@@ -29,6 +29,7 @@ class ProductUnitsApiTest extends AbstractTestCase
 
     // region CRUD tests
 
+    #[Group('crud')]
     public function it_returns_product_units_index(): void
     {
         $this->markTestIncomplete();
@@ -53,6 +54,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);
     }
 
+    #[Group('crud')]
     public function it_lists_product_units_via_api(): void
     {
         $this->markTestIncomplete();
@@ -66,6 +68,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_creates_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -99,6 +102,7 @@ class ProductUnitsApiTest extends AbstractTestCase
      *            'unit_symbol' => 'TU',
      *            ]
      */
+    #[Group('crud')]
     public function it_creates_a_product_unit_via_api(): void
     {
         $this->markTestIncomplete();
@@ -117,6 +121,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_returns_error_response_with_invalid_or_missing_unit_name_value(): void
     {
         $this->markTestIncomplete();
@@ -137,6 +142,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertJsonFragment(['unit_name' => '::unit_name::']);
     }
 
+    #[Group('crud')]
     public function it_updates_a_product_unit(): void
     {
         $this->markTestIncomplete();
@@ -175,6 +181,7 @@ class ProductUnitsApiTest extends AbstractTestCase
      *            'unit_symbol' => 'UU',
      *            ]
      */
+    #[Group('crud')]
     public function it_updates_a_product_unit_via_api(): void
     {
         $this->markTestIncomplete();
@@ -193,6 +200,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $response->assertSuccessful();
     }
 
+    #[Group('crud')]
     public function it_delete_unit(): void
     {
         $this->markTestIncomplete();
@@ -219,6 +227,7 @@ class ProductUnitsApiTest extends AbstractTestCase
         $this->response->assertStatus(404);
     }
 
+    #[Group('crud')]
     public function it_deletes_a_product_unit_via_api(): void
     {
         $this->markTestIncomplete();

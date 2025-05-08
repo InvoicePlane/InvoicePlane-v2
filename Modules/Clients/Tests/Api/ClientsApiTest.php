@@ -50,6 +50,7 @@ class ClientsApiTest extends AbstractTestCase
         $response->assertUnauthorized();
     }
 
+    #[Group('crud')]
     public function it_returns_clients_index(): void
     {
         $this->markTestIncomplete();
@@ -213,6 +214,7 @@ class ClientsApiTest extends AbstractTestCase
      *     "country": "Test Country"
      * }
      */
+    #[Group('crud')]
     public function it_creates_a_client_via_api(): void
     {
         $this->markTestIncomplete();
@@ -250,6 +252,7 @@ class ClientsApiTest extends AbstractTestCase
      *     "phone": "0987654321"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_client_via_api(): void
     {
         $this->markTestIncomplete();
@@ -277,6 +280,7 @@ class ClientsApiTest extends AbstractTestCase
      *
      * No payload required for deleting a client.
      */
+    #[Group('crud')]
     public function it_deletes_a_client_via_api(): void
     {
         $this->markTestIncomplete();
