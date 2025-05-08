@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
+use App\ImportModelIfMissingRector;
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\AddCoversClassAttributeRector;
 
 return RectorConfig::configure()
+    ->withImportNames()
     ->withSkip([
         '*/Modules/*/Http/*',
     ])
@@ -13,6 +14,5 @@ return RectorConfig::configure()
         __DIR__ . '/Modules',
     ])
     ->withRules([
-        AddCoversClassAttributeRector::class,
-    ])
-    ->withImportNames();
+        ImportModelIfMissingRector::class,
+    ]);
