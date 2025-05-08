@@ -3,6 +3,7 @@
 namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
+use Modules\Core\Models\ItemLookup;
 use Modules\Core\Models\TaxRate;
 
 class ProductImporter extends AbstractImporter

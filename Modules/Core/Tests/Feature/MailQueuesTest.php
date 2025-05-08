@@ -3,6 +3,9 @@
 namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
+use Modules\Core\Models\CreateMailQueue;
+use Modules\Core\Models\EditMailQueue;
+use Modules\Core\Models\ListMailQueues;
 use Modules\Core\Models\MailQueue;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;

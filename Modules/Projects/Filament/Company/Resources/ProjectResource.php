@@ -4,7 +4,6 @@ namespace Modules\Projects\Filament\Company\Resources;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -19,7 +18,6 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Helpers\EnumHelper;
-use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
 use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\TasksRelationManager;
@@ -63,7 +61,7 @@ class ProjectResource extends Resource
                         //
                         // LEFT COLUMN: Client selector + info
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.client'))
@@ -90,7 +88,7 @@ class ProjectResource extends Resource
                         //
                         // RIGHT COLUMN: Project details
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))

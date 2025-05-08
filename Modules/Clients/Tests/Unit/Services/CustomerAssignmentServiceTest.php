@@ -4,6 +4,7 @@ namespace Modules\Clients\Tests\Unit\Services;
 
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\CustomerAssignmentService;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

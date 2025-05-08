@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services;
 
+use Modules\Core\Models\DocumentGroupService;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 

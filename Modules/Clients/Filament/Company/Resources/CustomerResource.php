@@ -5,7 +5,6 @@ namespace Modules\Clients\Filament\Company\Resources;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -65,7 +64,7 @@ class CustomerResource extends Resource
                         //
                         // LEFT COLUMN: just a placeholder summary of “Client (Type)”
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make()
                                     ->schema([
@@ -121,7 +120,7 @@ class CustomerResource extends Resource
                         //
                         // RIGHT COLUMN: all the real inputs, in a 2-column grid
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make()
                                     ->schema([

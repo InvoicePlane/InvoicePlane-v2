@@ -6,7 +6,7 @@ use Exception;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
-use Modules\Payments\Services\AddPaymentService;
+use Modules\Payments\Services\PaymentService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -24,7 +24,7 @@ class AddPaymentServiceTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()->create(['balance' => 200]);
-        $service = new AddPaymentService();
+        $service = new PaymentService();
         $payment = $service->add($invoice->id, 100);
         if (app()->isLocal()) {
             dump($payment);
@@ -45,7 +45,7 @@ class AddPaymentServiceTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()->create(['balance' => 200]);
-        $service = new AddPaymentService();
+        $service = new PaymentService();
         $this->expectException(Exception::class);
         $service->add($invoice->id, 300);
     }

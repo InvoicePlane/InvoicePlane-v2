@@ -7,6 +7,7 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Payments\Support\Drivers\Mollie;
 use Modules\Payments\Support\Drivers\PayPal;
 use Modules\Payments\Support\Drivers\Stripe;
+use Modules\Payments\Support\MerchantFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

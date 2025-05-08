@@ -27,6 +27,12 @@ use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\UserResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
+use Modules\Core\Models\ImportResource;
+use Modules\Core\Models\PaymentMethodResource;
+use Modules\Core\Models\PermissionResource;
+use Modules\Core\Models\RoleResource;
+use Modules\Core\Models\SystemSettingResource;
+use Modules\Core\Models\UserProfileResource;
 
 class AdminPanelProvider extends PanelProvider
 {

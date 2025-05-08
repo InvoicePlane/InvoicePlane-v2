@@ -4,6 +4,7 @@ namespace Modules\Core\Support;
 
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Modules\Core\Models\MailQueue;
 use Modules\Core\Support\PDF\PDFFactory;
 
 class MailQueue

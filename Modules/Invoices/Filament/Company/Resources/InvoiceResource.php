@@ -5,7 +5,6 @@ namespace Modules\Invoices\Filament\Company\Resources;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -69,7 +68,7 @@ class InvoiceResource extends AbstractTenantResource
                 //
                 Grid::make(2)
                     ->schema([
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.client'))
@@ -93,7 +92,7 @@ class InvoiceResource extends AbstractTenantResource
                                     ]),
                             ]),
 
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))
@@ -188,10 +187,10 @@ class InvoiceResource extends AbstractTenantResource
                         Grid::make(2)
                             ->schema([
                                 // Left side reserved (e.g. “Add Item” button later)
-                                Group::make()->schema([]),
+                                DocumentGroup::make()->schema([]),
 
                                 // Right side: the actual totals
-                                Group::make()
+                                DocumentGroup::make()
                                     ->schema([
                                         TextInput::make('invoice_item_subtotal')
                                             ->label(trans('ip.subtotal'))

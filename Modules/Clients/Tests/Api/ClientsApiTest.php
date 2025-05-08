@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Sanctum;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;

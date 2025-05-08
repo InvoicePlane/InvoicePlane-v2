@@ -3,6 +3,10 @@
 namespace Modules\Expenses\Tests\Feature;
 
 use Livewire\Livewire;
+use Modules\Core\Models\CreateExpenseVendor;
+use Modules\Core\Models\EditExpenseVendor;
+use Modules\Core\Models\ExpenseVendor;
+use Modules\Core\Models\ListExpenseVendors;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

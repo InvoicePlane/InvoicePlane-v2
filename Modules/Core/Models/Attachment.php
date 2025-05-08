@@ -5,10 +5,7 @@ namespace Modules\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Core\Events\AttachmentCreating;
-use Modules\Core\Events\AttachmentDeleted;
 use Modules\Core\Support\DateFormatter;
-use Modules\Users\Models\User;
 
 /**
  * Class Attachment.

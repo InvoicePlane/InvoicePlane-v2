@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;

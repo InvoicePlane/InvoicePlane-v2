@@ -4,7 +4,6 @@ namespace Modules\Expenses\Filament\Company\Resources;
 
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -61,7 +60,7 @@ class ExpenseResource extends AbstractTenantResource
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make()
                                     ->schema([
@@ -112,7 +111,7 @@ class ExpenseResource extends AbstractTenantResource
                                     ->collapsed(false),
                             ]),
 
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make(trans('ip.details'))
                                     ->schema([
@@ -220,10 +219,10 @@ class ExpenseResource extends AbstractTenantResource
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Group::make()
+                                DocumentGroup::make()
                                     ->schema([]), // Optional button space
 
-                                Group::make()
+                                DocumentGroup::make()
                                     ->schema([
                                         TextInput::make('expense_item_subtotal')
                                             ->label(trans('ip.subtotal'))

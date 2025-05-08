@@ -4,6 +4,7 @@ namespace Modules\Expenses\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Models\Schedule;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Expenses\Observers\ExpenseCategoryObserver;

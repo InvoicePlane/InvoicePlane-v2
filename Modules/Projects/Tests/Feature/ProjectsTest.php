@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\ManageProjects;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Projects\Enums\ProjectStatus;

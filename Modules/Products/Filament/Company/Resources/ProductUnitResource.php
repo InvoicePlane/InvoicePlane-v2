@@ -3,7 +3,6 @@
 namespace Modules\Products\Filament\Company\Resources;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,6 +12,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Models\Placeholder;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\ListProductUnits;
 use Modules\Products\Models\ProductUnit;
 
@@ -45,7 +45,7 @@ class ProductUnitResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()->schema([
+                DocumentGroup::make()->schema([
                     Grid::make(2)
                         ->schema([
                             TextInput::make('unit_name')
@@ -59,7 +59,7 @@ class ProductUnitResource extends Resource
                                 ->required(),
                         ]),
                 ])->columns(1),
-                Group::make()->schema([
+                DocumentGroup::make()->schema([
                     Placeholder::make('explanation Product Unit')
                         ->label('just some text'),
                 ])->columns(1),

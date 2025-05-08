@@ -3,7 +3,6 @@
 namespace Modules\Core\Filament\Admin\Resources;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -39,7 +38,7 @@ class DocumentGroupResource extends Resource
                     Grid::make(2)
                         ->schema([
                             // ── LEFT: just the Name
-                            Group::make()
+                            DocumentGroup::make()
                                 ->schema([
                                     TextInput::make('document_group_name')
                                         ->label(trans('ip.document_group_name'))
@@ -71,7 +70,7 @@ class DocumentGroupResource extends Resource
                         Grid::make(2)
                             ->columns(2)
                             ->schema([
-                                Group::make()->schema([
+                                DocumentGroup::make()->schema([
                                     TextInput::make('format')
                                         ->label(trans('ip.identifier_formatting'))
                                         ->placeholder('{{month}}-{{day}}-{{number}}')
@@ -90,7 +89,7 @@ class DocumentGroupResource extends Resource
                                             $set('__tag_to_insert', null);
                                         }),
                                 ]),
-                                Group::make()->schema([
+                                DocumentGroup::make()->schema([
                                     // helper text under the two inputs
                                     Placeholder::make('format_helper')
                                         ->label('')

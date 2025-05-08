@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\Migrations;
 
 /**
- * Class Addon.
- *
  * @property int         $id
  * @property bool        $is_enabled
  * @property string      $name

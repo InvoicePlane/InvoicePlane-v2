@@ -4,6 +4,7 @@ namespace Modules\Projects\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Models\Schedule;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Observers\ProjectObserver;

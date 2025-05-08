@@ -16,6 +16,8 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Core\Models\Address;
 use Modules\Core\Models\Addressable;
 use Modules\Core\Models\Communication;
+use Modules\Core\Models\Contact;
+use Modules\Core\Models\InvoiceStatuses;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;

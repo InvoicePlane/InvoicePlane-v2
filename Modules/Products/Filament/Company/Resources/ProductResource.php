@@ -3,7 +3,6 @@
 namespace Modules\Products\Filament\Company\Resources;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -58,7 +57,7 @@ class ProductResource extends Resource
                         //
                         // LEFT COLUMN: basic details
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))
@@ -78,7 +77,7 @@ class ProductResource extends Resource
                         //
                         // RIGHT COLUMN: classification
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.classification'))

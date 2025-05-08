@@ -1,3 +1,5 @@
+use Modules\Core\Models\Form;
+
 @include('layouts._datepicker')
 
 <script type="text/javascript">

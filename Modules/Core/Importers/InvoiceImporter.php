@@ -4,6 +4,8 @@ namespace Modules\Core\Importers;
 
 use Illuminate\Support\Facades\Validator;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\Customer;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Invoices\Models\Invoice;
 
 class InvoiceImporter extends AbstractImporter
@@ -48,7 +50,7 @@ class InvoiceImporter extends AbstractImporter
         $fields          = [];
         $clients         = Customer::select('id', 'unique_name')->get();
         $companyProfiles = Company::get();
-        $groups          = Group::get();
+        $groups          = DocumentGroup::get();
         $userId          = auth()->user()->id;
 
         foreach ($input as $field => $key) {

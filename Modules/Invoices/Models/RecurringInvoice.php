@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Modules\Core\Models\Activity;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Invoice;
+use Modules\Core\Models\RecurringInvoiceFactory;
+use Modules\Core\Models\RecurringInvoiceItem;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\NumberFormatter;
@@ -94,12 +100,12 @@ class RecurringInvoice extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Relation::class);
     }
 
     public function group(): BelongsTo
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(DocumentGroup::class);
     }
 
     /*

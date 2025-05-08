@@ -3,7 +3,6 @@
 namespace Modules\Products\Filament\Company\Resources;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -48,7 +47,7 @@ class ProductCategoryResource extends Resource
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 TextInput::make('category_name')
                                     ->label(trans('ip.family'))
@@ -56,7 +55,7 @@ class ProductCategoryResource extends Resource
                                     ->autofocus()
                                     ->required(),
                             ]),
-                        Group::make()->schema([
+                        DocumentGroup::make()->schema([
                             Placeholder::make('explanation Product Family')
                                 ->label('just some text'),
                         ]),

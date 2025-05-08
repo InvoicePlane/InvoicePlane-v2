@@ -2,6 +2,8 @@
 
 namespace Modules\Invoices\Support;
 
+use Modules\Core\Models\RecurringInvoiceAmount;
+use Modules\Core\Models\RecurringInvoiceItemAmount;
 use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Invoices\Models\RecurringInvoiceItem;
 

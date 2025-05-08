@@ -4,6 +4,8 @@ namespace Modules\Quotes\Support;
 
 use Modules\Core\Events\InvoiceModified;
 use Modules\Core\Models\CustomField;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Core\Support\Statuses\QuoteStatuses;
 use Modules\Invoices\Models\Invoice;
@@ -18,7 +20,7 @@ class QuoteToInvoice
             'invoiced_at'       => $invoiceDate,
             'due_at'            => $dueAt,
             'group_id'          => $groupId,
-            'number'            => Group::generateNumber($groupId),
+            'number'            => DocumentGroup::generateNumber($groupId),
             'user_id'           => $quote->user_id,
             'invoice_status_id' => InvoiceStatuses::getStatusId('draft'),
             'terms'             => ((config('ip.convertQuoteTerms') == 'quote') ? $quote->terms : config('ip.invoiceTerms')),

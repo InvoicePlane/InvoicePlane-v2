@@ -4,7 +4,6 @@ namespace Modules\Projects\Filament\Company\Resources;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -63,7 +62,7 @@ class TaskResource extends Resource
                         //
                         // LEFT COLUMN: name, status, project + summary
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.task'))
@@ -125,7 +124,7 @@ class TaskResource extends Resource
                         //
                         // RIGHT COLUMN: due date, price, tax & description
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))

@@ -5,7 +5,6 @@ namespace Modules\Quotes\Filament\Company\Resources;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -67,7 +66,7 @@ class QuoteResource extends AbstractTenantResource
                 Grid::make(2)
                     ->schema([
                         // Left side (Client selector + Info)
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Select::make('prospect_id')
                                     ->label(trans('ip.client_name'))
@@ -96,7 +95,7 @@ class QuoteResource extends AbstractTenantResource
                             ])
                             ->columnSpan(1),
 
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
@@ -191,10 +190,10 @@ class QuoteResource extends AbstractTenantResource
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Group::make()
+                                DocumentGroup::make()
                                     ->schema([]), // Optional left column
 
-                                Group::make()
+                                DocumentGroup::make()
                                     ->schema([
                                         TextInput::make('quote_item_subtotal')
                                             ->label(trans('ip.subtotal'))

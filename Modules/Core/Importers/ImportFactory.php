@@ -3,6 +3,13 @@
 namespace Modules\Core\Importers;
 
 use Modules\Clients\Importers\CustomerImporter;
+use Modules\Core\Models\ExpenseImporter;
+use Modules\Core\Models\InvoiceImporter;
+use Modules\Core\Models\InvoiceItemImporter;
+use Modules\Core\Models\PaymentImporter;
+use Modules\Core\Models\ProductImporter;
+use Modules\Core\Models\QuoteImporter;
+use Modules\Core\Models\QuoteItemImporter;
 
 class ImportFactory
 {

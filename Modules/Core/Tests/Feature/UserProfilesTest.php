@@ -9,6 +9,7 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\CreateUserProfile;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProfile;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
+use Modules\Core\Models\User;
 use Modules\Core\Models\UserProfile;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

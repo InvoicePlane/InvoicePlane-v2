@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Api;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Models\Sanctum;
 // use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;

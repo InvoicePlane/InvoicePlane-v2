@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -45,7 +44,7 @@ class EmailTemplateResource extends Resource
     {
         return $form
             ->schema([
-                Group::make()
+                DocumentGroup::make()
                     ->schema([
                         Section::make(heading:null)
                             ->schema([
@@ -65,7 +64,7 @@ class EmailTemplateResource extends Resource
                                 TextInput::make('bcc')->label(trans('ip.bcc')),
                             ])->columns(1),
                     ]),
-                Group::make()
+                DocumentGroup::make()
                     ->schema([
                         Section::make(heading:null)
                             ->schema(components: [

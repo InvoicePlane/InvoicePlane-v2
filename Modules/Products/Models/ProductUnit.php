@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Modules\Core\Models\Company;
-use Modules\Core\Traits\BelongsToCompany;
 use Modules\Products\Database\Factories\ProductUnitFactory;
 
 /**

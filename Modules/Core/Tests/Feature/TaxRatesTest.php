@@ -11,6 +11,7 @@ use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\CreateTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\EditTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
 use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

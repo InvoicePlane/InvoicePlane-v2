@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support\ProfileImage;
 
+use Modules\Core\Support\Directory;
+
 class ProfileImageFactory
 {
     public static function create()

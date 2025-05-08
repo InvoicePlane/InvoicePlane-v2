@@ -4,7 +4,6 @@ namespace Modules\Payments\Filament\Company\Resources;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -60,11 +59,11 @@ class PaymentResource extends Resource
                         //
                         // LEFT COLUMN: payable type + reference + status + amount
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make(trans('ip.payment'))
                                     ->schema([
-                                        Group::make()->schema([
+                                        DocumentGroup::make()->schema([
                                             Select::make('invoice_id')
                                                 ->label(trans('ip.invoice'))
                                                 ->getSearchResultsUsing(function (string $search): array {
@@ -116,7 +115,7 @@ class PaymentResource extends Resource
                         //
                         // RIGHT COLUMN: paid date + method
                         //
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 Section::make(trans('ip.payment_details'))
                                     ->schema([

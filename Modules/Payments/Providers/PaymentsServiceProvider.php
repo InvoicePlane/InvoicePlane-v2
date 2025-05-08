@@ -4,6 +4,7 @@ namespace Modules\Payments\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Models\Schedule;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Models\PaymentMethod;
 use Modules\Payments\Observers\PaymentMethodObserver;

@@ -2,6 +2,8 @@
 
 namespace Modules\Payments\Support\Drivers;
 
+use Modules\Core\Models\FIPayment;
+use Modules\Core\Models\Log;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Support\MerchantDriverPayable;

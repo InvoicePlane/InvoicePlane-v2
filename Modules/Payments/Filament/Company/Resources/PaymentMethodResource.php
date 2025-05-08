@@ -3,7 +3,6 @@
 namespace Modules\Payments\Filament\Company\Resources;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,7 +46,7 @@ class PaymentMethodResource extends Resource
             ->schema([
                 Grid::make(1)
                     ->schema([
-                        Group::make()
+                        DocumentGroup::make()
                             ->schema([
                                 TextInput::make('payment_method_name')
                                     ->inlineLabel()

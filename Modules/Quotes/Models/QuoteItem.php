@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Events\QuoteItemSaving;
-use Modules\Core\Events\QuoteModified;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;

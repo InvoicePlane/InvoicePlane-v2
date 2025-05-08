@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Reports;
 
+use Modules\Core\Models\Customer;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\DateFormatter;
 

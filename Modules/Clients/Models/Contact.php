@@ -15,6 +15,7 @@ use Modules\Core\Models\Address;
 use Modules\Core\Models\Addressable;
 use Modules\Core\Models\Communication;
 use Modules\Core\Models\Company;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**

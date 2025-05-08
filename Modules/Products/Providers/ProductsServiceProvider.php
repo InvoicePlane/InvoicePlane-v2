@@ -4,6 +4,7 @@ namespace Modules\Products\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Models\Schedule;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
