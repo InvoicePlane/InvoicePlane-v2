@@ -14,8 +14,10 @@ class QuoteCustomerSwitchServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_switches_customer(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $quote = Quote::factory()->create(['customer_id' => 1]);
         $newId = 2;
 

@@ -13,8 +13,10 @@ class CustomerImporterTest extends AbstractTestCase
     #[Test]
     public function it_imports_customer(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $importer = new CustomerImporter();
         $result   = $importer->run(['name' => 'Example']);
 

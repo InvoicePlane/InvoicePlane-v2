@@ -23,8 +23,10 @@ class CompaniesTest extends AbstractTestCase
      */
     public function it_lists_companies(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create(['name' => 'Acme LLC']);
 
         Livewire::test(ListCompanies::class)
@@ -40,8 +42,10 @@ class CompaniesTest extends AbstractTestCase
      */
     public function it_creates_a_company(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = ['name' => 'Rocket Corp'];
 
         Livewire::test(CreateCompany::class)
@@ -60,8 +64,10 @@ class CompaniesTest extends AbstractTestCase
      */
     public function it_fails_to_create_company_when_name_missing(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = [];
 
         Livewire::test(CreateCompany::class)
@@ -78,8 +84,10 @@ class CompaniesTest extends AbstractTestCase
      */
     public function it_updates_a_company(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create(['name' => 'Old Name']);
 
         $payload = ['name' => 'Updated Corp'];
@@ -100,8 +108,10 @@ class CompaniesTest extends AbstractTestCase
      */
     public function it_deletes_a_company(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create();
 
         Livewire::test(ListCompanies::class)

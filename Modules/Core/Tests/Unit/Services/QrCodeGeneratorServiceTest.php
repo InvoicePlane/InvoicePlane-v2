@@ -17,8 +17,10 @@ class QrCodeGeneratorServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_generates_base64_png_qr_code(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new QrCodeGeneratorService();
         $qr      = $service->generate('https://app.test');
@@ -36,8 +38,10 @@ class QrCodeGeneratorServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_on_empty_input(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new QrCodeGeneratorService();
         $this->expectException(Exception::class);

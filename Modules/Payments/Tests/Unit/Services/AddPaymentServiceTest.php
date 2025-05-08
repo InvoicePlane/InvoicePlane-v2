@@ -14,8 +14,10 @@ class AddPaymentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_adds_a_payment(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payment = (new PaymentService())->addPayment([
             'amount'     => 100.00,
             'invoice_id' => 1,
@@ -28,8 +30,10 @@ class AddPaymentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_requires_invoice_id(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
 
         (new PaymentService())->add(['amount' => 100.00]);

@@ -18,8 +18,10 @@ class InvoiceCustomerSwitchServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_switches_invoice_client(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $invoice  = Invoice::factory()->create();
         $new      = Relation::factory()->create();
@@ -38,8 +40,10 @@ class InvoiceCustomerSwitchServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_ids(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new InvoiceCustomerSwitchService();
         $this->expectException(Exception::class);

@@ -12,8 +12,10 @@ class PayPalTest extends AbstractTestCase
     #[Group('support')]
     public function it_returns_paypal_redirect_url(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $driver = new PayPal();
         $url    = $driver->getRedirectUrl(['amount' => 50]);
 

@@ -50,8 +50,10 @@ class ClientsApiTest extends AbstractTestCase
 
     public function it_returns_clients_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
@@ -211,8 +213,10 @@ class ClientsApiTest extends AbstractTestCase
      */
     public function it_creates_a_client_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         // Payload for the create client request
         $payload = [
             'name'    => 'Test Client',
@@ -246,8 +250,10 @@ class ClientsApiTest extends AbstractTestCase
      */
     public function it_updates_a_client_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         // Payload for updating client
         $payload = [
             'name'  => 'Updated Client',
@@ -271,8 +277,10 @@ class ClientsApiTest extends AbstractTestCase
      */
     public function it_deletes_a_client_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 

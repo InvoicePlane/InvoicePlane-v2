@@ -14,8 +14,10 @@ class ProductCategoryServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_creates_a_family(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $service = new ProductCategoryService();
 
         $family = $service->create(['name' => 'Lighting']);
@@ -28,8 +30,10 @@ class ProductCategoryServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_requires_a_name(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
 
         (new ProductCategoryService())->create([]);

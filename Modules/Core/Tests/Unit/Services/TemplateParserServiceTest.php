@@ -16,8 +16,10 @@ class TemplateParserServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_replaces_variables_in_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new TemplateParserService();
         $output  = $service->parse('Value: {{val}}', ['val' => '123']);
@@ -34,8 +36,10 @@ class TemplateParserServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_leaves_unmatched_tags_intact(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new TemplateParserService();
         $output  = $service->parse('{{unknown}}', []);

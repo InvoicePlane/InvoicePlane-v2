@@ -14,8 +14,10 @@ class CreditInvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_generates_credit_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $original = Invoice::factory()->create();
         $credit   = (new CreditInvoiceService())->createFrom($original);
 
@@ -26,8 +28,10 @@ class CreditInvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_with_invalid_input(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(TypeError::class);
         (new CreditInvoiceService())->createFrom(null);
     }

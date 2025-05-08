@@ -19,8 +19,10 @@ class InvoiceTaxRateServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_applies_tax_rate_to_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $invoice = Invoice::factory()->create();
         $rate    = TaxRate::factory()->create(['percent' => 10]);
@@ -39,8 +41,10 @@ class InvoiceTaxRateServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_on_invalid_input(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new InvoiceTaxRateService();
         $this->expectException(Exception::class);

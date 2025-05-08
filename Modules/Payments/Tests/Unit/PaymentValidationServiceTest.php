@@ -18,8 +18,10 @@ class PaymentValidationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_validates_payment_amount_successfully(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new PaymentService();
         $result  = $service->validate(100, 200);
@@ -33,8 +35,10 @@ class PaymentValidationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_validates_required_fields(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $validated = (new PaymentService())->validate([
             'amount'     => 42.0,
             'invoice_id' => 1,
@@ -47,8 +51,10 @@ class PaymentValidationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_fails_without_amount(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
         (new PaymentService())->validate(['invoice_id' => 1]);
     }
@@ -60,8 +66,10 @@ class PaymentValidationServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_fails_validation_for_excess_amount(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new PaymenService();
         $this->expectException(Exception::class);

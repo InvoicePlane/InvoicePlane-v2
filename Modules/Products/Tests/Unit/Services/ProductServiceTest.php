@@ -14,8 +14,10 @@ class ProductServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_creates_a_product(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $service = new ProductService();
 
         $product = $service->create([
@@ -32,8 +34,10 @@ class ProductServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_to_create_without_sku(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $service = new ProductService();
 
         $this->expectException(InvalidArgumentException::class);

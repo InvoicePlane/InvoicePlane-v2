@@ -202,8 +202,10 @@ class PaymentsTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);

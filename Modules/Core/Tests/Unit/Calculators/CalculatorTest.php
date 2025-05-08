@@ -16,8 +16,10 @@ class CalculatorTest extends AbstractTestCase
     #[Group('support')]
     public function it_adds_and_subtracts_correctly(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         //$calc = new Calculator();
         //$calc->add(100);
         //$calc->subtract(25);
@@ -29,8 +31,10 @@ class CalculatorTest extends AbstractTestCase
     #[Group('support')]
     public function it_resets_total(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         //$calc = new Calculator();
         //$calc->add(50);
         //$calc->reset();

@@ -13,8 +13,10 @@ class TaskLookupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_finds_task_by_id(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $task   = Task::factory()->create();
         $result = TaskLookupService::query()->find($task->id);
 
@@ -25,8 +27,10 @@ class TaskLookupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_returns_null_for_missing_task(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->assertNull(TaskLookupService::query()->find(999999));
     }
 }

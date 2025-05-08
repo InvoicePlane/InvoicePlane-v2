@@ -41,8 +41,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Group('smoke')]
     public function it_lists_recurring_invoices(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         //$recurringInvoice = RecurringInvoice::factory()->create();
         $recurring = RecurringInvoice::factory()->for($this->user->company)->create();
@@ -59,8 +61,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Test]
     public function it_creates_recurring_invoice_with_items(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create();
 
         /** @payload */
@@ -91,8 +95,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_without_items(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create();
 
         /** @payload */
@@ -113,8 +119,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_without_frequency(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create();
 
         /** @payload */
@@ -148,8 +156,10 @@ class RecurringInvoicesTest extends AbstractTestCase
      */
     public function it_fails_to_create_recurringinvoice_when_required_fields_are_missing(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         //$this->actingAs(User::factory()->create());
 
@@ -175,8 +185,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_if_end_at_is_before_today(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create();
 
         /** @payload */
@@ -200,8 +212,10 @@ class RecurringInvoicesTest extends AbstractTestCase
     #[Test]
     public function it_updates_recurring_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $recurring = RecurringInvoice::factory()
             ->for($this->user->company)
             ->create([
@@ -242,8 +256,10 @@ class RecurringInvoicesTest extends AbstractTestCase
      */
     public function it_fails_to_update_recurringinvoice_when_required_fields_are_missing(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         //$this->actingAs(User::factory()->create());
 
@@ -276,8 +292,10 @@ class RecurringInvoicesTest extends AbstractTestCase
      */
     public function it_deletes_a_recurringinvoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
         $recurring = RecurringInvoice::factory()->for($this->user->company)->create();

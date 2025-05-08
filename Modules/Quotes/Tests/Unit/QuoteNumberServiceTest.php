@@ -18,8 +18,10 @@ class QuoteNumberServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_generates_quote_number(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $group   = DocumentGroup::factory()->create(['left_pad' => 'QUO', 'next_number' => 5]);
         $service = new QuoteNumberService();
@@ -37,8 +39,10 @@ class QuoteNumberServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_group(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new QuoteNumberService();
         $this->expectException(Exception::class);

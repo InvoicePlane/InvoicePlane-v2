@@ -14,8 +14,10 @@ class SumexServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_returns_pdf_path(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $pdf = (new SumexService())->export(1);
         $this->assertStringEndsWith('.pdf', $pdf);
     }
@@ -24,8 +26,10 @@ class SumexServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_for_invalid_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(RuntimeException::class);
         (new SumexService())->export(999);
     }

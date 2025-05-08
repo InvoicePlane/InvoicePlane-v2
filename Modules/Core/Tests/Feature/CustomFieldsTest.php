@@ -45,8 +45,10 @@ class CustomFieldsTest extends AbstractTestCase
      */
     public function it_creates_a_customfield(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         //$this->actingAs(User::factory()->create());
 
@@ -80,8 +82,10 @@ class CustomFieldsTest extends AbstractTestCase
      */
     public function it_updates_a_customfield(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Needs full payload and assertions.');
 
         //$this->actingAs(User::factory()->create());
@@ -118,8 +122,10 @@ class CustomFieldsTest extends AbstractTestCase
      */
     public function it_deletes_a_customfield(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
         //$this->actingAs(User::factory()->create());

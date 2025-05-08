@@ -13,8 +13,10 @@ class QuoteToInvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_converts_quote_to_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $quote = Quote::factory()->create();
 
         $invoice = (new QuoteToInvoiceService())->convert($quote);

@@ -16,8 +16,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_lists_expense_vendors(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Staples Inc.']);
@@ -36,8 +38,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_creates_an_expense_vendor(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $payload = ['name' => 'Paper Supplies Ltd.'];
@@ -60,8 +64,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_fails_to_create_vendor_without_name(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $payload = [];
@@ -81,8 +87,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_updates_an_expense_vendor(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Initial']);
@@ -106,8 +114,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_fails_to_update_vendor_with_empty_name(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'X']);
@@ -128,8 +138,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_deletes_an_expense_vendor(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create();
@@ -150,8 +162,10 @@ class ExpenseVendorsTest extends AbstractTestCase
      */
     public function it_fails_to_delete_already_deleted_vendor(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create();

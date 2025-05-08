@@ -14,8 +14,10 @@ class InvoiceTemplateServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_renders_invoice_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $html = (new InvoiceTemplateService())->render(['number' => 'INV-001']);
         $this->assertStringContainsString('INV-001', $html);
     }
@@ -24,8 +26,10 @@ class InvoiceTemplateServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_for_invalid_data(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(RuntimeException::class);
         (new InvoiceTemplateService())->render([]);
     }

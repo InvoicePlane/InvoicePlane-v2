@@ -13,8 +13,10 @@ class QuoteCopyServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_clones_a_quote(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $original = Quote::factory()->create(['number' => 'Q-Original']);
         $copy     = (new QuoteCopyService())->copy($original);
 

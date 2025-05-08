@@ -20,8 +20,10 @@ class MailerServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_sends_email_when_configured(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         Mail::fake();
         $service = new MailerService();
@@ -42,8 +44,10 @@ class MailerServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_when_not_configured(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         config(['mail.host' => null]);
         $service = new MailerService();
@@ -55,8 +59,10 @@ class MailerServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_fails_without_recipient(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $this->expectException(InvalidArgumentException::class);
         (new MailerService())->send('', 'Subject', 'Body');

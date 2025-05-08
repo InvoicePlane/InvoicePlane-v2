@@ -14,8 +14,10 @@ class MailQueueServiceTest extends AbstractTestCase
     #[Test]
     public function it_queues_mail(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $job = (new MailQueueService())->queue([
             'to'      => 'test@example.com',
             'subject' => 'Queued Mail',

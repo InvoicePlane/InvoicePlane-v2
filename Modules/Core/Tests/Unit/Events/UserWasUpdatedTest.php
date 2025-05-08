@@ -12,8 +12,10 @@ class UserWasUpdatedTest extends AbstractTestCase
     #[Test]
     public function it_dispatches_user_was_updated_event(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $user = User::factory()->create();
         $user->update(['email' => 'new@example.com']);
 

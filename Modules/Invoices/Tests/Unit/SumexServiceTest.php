@@ -18,8 +18,10 @@ class SumexServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_processes_sumex_for_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $invoice = Invoice::factory()->create();
         $service = new SumexService();
@@ -37,8 +39,10 @@ class SumexServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new SumexService();
         $this->expectException(Exception::class);

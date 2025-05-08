@@ -13,8 +13,10 @@ class TaskToInvoiceServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_generates_invoice_from_task(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $task    = Task::factory()->create();
         $invoice = (new TaskToInvoiceService())->convert($task);
 

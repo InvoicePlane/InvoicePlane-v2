@@ -13,8 +13,10 @@ class ModelExporterTest extends AbstractTestCase
     #[Group('support')]
     public function it_exports_collection_to_csv(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $data = collect([
             ['id' => 1, 'name' => 'Test'],
             ['id' => 2, 'name' => 'Example'],

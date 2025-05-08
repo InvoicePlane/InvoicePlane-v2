@@ -30,8 +30,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_returns_users_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $user = User::factory()->create();
 
         User::factory(5)->create([
@@ -64,8 +66,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_can_retrieve_a_list_of_users(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->withAuthentication();
 
@@ -98,8 +102,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_fails_to_retrieve_users_without_authentication(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
 
         // Act
@@ -111,8 +117,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_creates_a_user(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $adminUser = User::factory()->create([
             'user_email' => 'admin@gmail.com',
         ]);
@@ -136,8 +144,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_returns_error_response_when_creating_a_user_without_required_fields(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         Sanctum::actingAs(User::factory()->create());
 
         $response = $this->post(route('api.users.store'), [
@@ -155,8 +165,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_updates_a_user(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialUser = User::factory()->create([
             'user_type'     => User::ADMIN,
             'user_language' => '::maybe_english::',
@@ -201,8 +213,10 @@ class UsersApiTest extends AbstractTestCase
 
     public function it_deletes_a_user(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialUser = User::factory()->create([
             'user_type'     => User::ADMIN,
             'user_language' => '::maybe_english::',

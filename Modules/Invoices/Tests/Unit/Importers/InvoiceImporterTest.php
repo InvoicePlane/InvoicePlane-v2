@@ -14,8 +14,10 @@ class InvoiceImporterTest extends AbstractTestCase
     #[Group('support')]
     public function it_imports_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $importer = new InvoiceImporter();
         $result   = $importer->run(['number' => 'INV-123', 'customer_id' => 1]);
 
@@ -27,8 +29,10 @@ class InvoiceImporterTest extends AbstractTestCase
     #[Group('support')]
     public function it_fails_for_missing_number(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
         (new InvoiceImporter())->run(['customer_id' => 1]);
     }

@@ -17,8 +17,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_lists_mail_queues(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $record = MailQueue::factory()->create(['subject' => 'Queued Message']);
 
         Livewire::test(ListMailQueues::class)
@@ -34,8 +36,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_creates_mail_queue(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = ['subject' => 'Queued Subject', 'to' => 'user@example.com'];
 
         Livewire::test(CreateMailQueue::class)
@@ -54,8 +58,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_fails_to_create_mail_queue_without_subject(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = ['to' => 'fail@example.com'];
 
         Livewire::test(CreateMailQueue::class)
@@ -72,8 +78,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_updates_mail_queue(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $queue = MailQueue::factory()->create(['subject' => 'Initial Subject']);
 
         $payload = ['subject' => 'Updated Subject'];
@@ -94,8 +102,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_fails_to_update_mail_queue_with_empty_subject(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $queue = MailQueue::factory()->create(['subject' => 'Valid Subject']);
 
         $payload = ['subject' => null];
@@ -114,8 +124,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_deletes_mail_queue(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $queue = MailQueue::factory()->create();
 
         Livewire::test(ListMailQueues::class)
@@ -132,8 +144,10 @@ class MailQueuesTest extends AbstractTestCase
      */
     public function it_fails_to_delete_mail_queue_that_does_not_exist(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $queue = MailQueue::factory()->create();
         $queue->delete();
 

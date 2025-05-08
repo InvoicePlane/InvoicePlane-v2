@@ -13,8 +13,10 @@ class ProductLookupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_finds_products_by_sku(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         Product::factory()->create(['sku' => 'A123']);
 
         $result = ProductLookupService::findBySku('A123');
@@ -27,8 +29,10 @@ class ProductLookupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_returns_null_for_unknown_sku(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->assertNull(ProductLookupService::findBySku('does-not-exist'));
     }
 }

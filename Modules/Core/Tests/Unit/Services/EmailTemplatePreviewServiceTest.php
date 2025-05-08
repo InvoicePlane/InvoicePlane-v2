@@ -16,8 +16,10 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_parses_merge_tags_correctly(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new EmailTemplatePreviewService();
         $preview = $service->preview('Hi {{name}}', ['name' => 'Alice']);
@@ -34,8 +36,10 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_handles_empty_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new EmailTemplatePreviewService();
         $preview = $service->preview('', []);

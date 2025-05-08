@@ -13,8 +13,10 @@ class FixerIOCurrencyConverterTest extends AbstractTestCase
     #[Group('support')]
     public function it_converts_currency(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $driver = new FixerIOCurrencyConverter();
         $amount = $driver->convert(100, 'EUR', 'USD');
 
@@ -25,8 +27,10 @@ class FixerIOCurrencyConverterTest extends AbstractTestCase
     #[Group('support')]
     public function it_fails_with_invalid_input(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
 
         $driver = new FixerIOCurrencyConverter();

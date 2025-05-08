@@ -32,8 +32,10 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     public function it_returns_email_templates_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         EmailTemplate::factory(5)->create([
             'email_template_title' => '::email_template_title::',
         ]);
@@ -56,8 +58,10 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     public function it_creates_an_email_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialEmailTemplate = EmailTemplate::factory()->create([
             'email_template_title' => '::email_template_title::',
         ]);
@@ -77,8 +81,10 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     public function it_updates_an_email_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialEmailTemplate = EmailTemplate::factory()->create([
             'email_template_title' => '::email_template_title::',
         ]);
@@ -100,8 +106,10 @@ class EmailTemplatesApiTest extends AbstractTestCase
 
     public function it_deletes_an_email_template(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialEmailTemplate = EmailTemplate::factory()->create([
             'email_template_title' => '::email_template_title::',
         ]);

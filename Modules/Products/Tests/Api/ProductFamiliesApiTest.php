@@ -31,8 +31,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_returns_product_families_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         Sanctum::actingAs(User::factory()->create());
 
         ProductCategory::factory(5)->create([
@@ -55,8 +57,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_lists_product_families_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
@@ -66,8 +70,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_creates_a_product_family(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialFamily = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -96,8 +102,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
      */
     public function it_creates_a_product_family_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = [
             'family_name' => 'Test Family',
         ];
@@ -111,8 +119,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_returns_error_response_with_invalid_family_name_key(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialFamily = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -127,8 +137,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_updates_a_product_family(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $initialProductCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -162,8 +174,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
      */
     public function it_updates_a_product_family_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payload = [
             'family_name' => 'Updated Family',
         ];
@@ -199,8 +213,10 @@ class ProductFamiliesApiTest extends AbstractTestCase
 
     public function it_deletes_a_product_family_via_api(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 

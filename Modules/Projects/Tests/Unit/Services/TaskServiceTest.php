@@ -14,8 +14,10 @@ class TaskServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_creates_a_task(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $task = (new TaskService())->create(['title' => 'Prepare specs']);
         $this->assertInstanceOf(Task::class, $task);
     }
@@ -24,8 +26,10 @@ class TaskServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_requires_title(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->expectException(InvalidArgumentException::class);
         (new TaskService())->create([]);
     }

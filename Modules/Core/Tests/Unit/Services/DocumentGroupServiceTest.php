@@ -17,8 +17,10 @@ class DocumentGroupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_creates_a_document_group(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create();
         $service = new DocumentGroupService();
 
@@ -32,8 +34,10 @@ class DocumentGroupServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fails_without_name(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create();
         $service = new DocumentGroupService();
 

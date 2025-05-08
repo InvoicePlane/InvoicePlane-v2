@@ -59,8 +59,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_creates_invoice_with_items(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         /** @payload */
         $payload = [
             'customer_id'   => 1,
@@ -173,8 +175,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_create_invoice_without_items(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         /** @payload */
         $payload = [
             'customer_id'   => 1,
@@ -197,8 +201,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_if_total_mismatch(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         /** @payload */
         $payload = [
             'customer_id'   => 1,
@@ -253,8 +259,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_edits_invoice_and_updates_total(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create([
             'subtotal' => 100,
             'tax'      => 20,
@@ -282,8 +290,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_update_with_invalid_discount(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()->for($this->user->company)->create([
             'subtotal' => 200,
             'tax'      => 40,
@@ -352,8 +362,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_paid_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->hasPayments(1)
@@ -372,8 +384,10 @@ class InvoicesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_if_has_payments(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->hasPayments(1)

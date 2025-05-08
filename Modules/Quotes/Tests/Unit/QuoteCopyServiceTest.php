@@ -18,8 +18,10 @@ class QuoteCopyServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_copies_a_quote(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $quote   = Quote::factory()->create(['status' => 'draft']);
         $service = new QuoteCopyService();
@@ -37,8 +39,10 @@ class QuoteCopyServiceTest extends AbstractTestCase
     #[Group('spicy')]
     public function it_throws_for_invalid_quote(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $service = new QuoteCopyService();
         $this->expectException(Exception::class);

@@ -14,8 +14,10 @@ class PaymentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_fetches_payment_by_id(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $payment = Payment::factory()->create();
         $found   = (new PaymentService())->find($payment->id);
 
@@ -26,8 +28,10 @@ class PaymentServiceTest extends AbstractTestCase
     #[Group('services')]
     public function it_returns_null_for_unknown(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->assertNull((new PaymentService())->find(99999));
     }
 }

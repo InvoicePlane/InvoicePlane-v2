@@ -39,8 +39,10 @@ class TaxRatesTest extends AbstractTestCase
     // region smoke
     public function it_lists_tax_rates(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Some error with a livewire view');
 
         //$this->actingAs(User::factory()->create());
@@ -79,8 +81,10 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_creates_a_taxrate(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Some error with a livewire view');
 
         //$this->actingAs(User::factory()->create());
@@ -119,8 +123,10 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_updates_a_taxrate(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Needs full payload and assertions.');
 
         //$this->actingAs(User::factory()->create());
@@ -171,8 +177,10 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_deletes_a_taxrate(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
 
         //$this->actingAs(User::factory()->create());

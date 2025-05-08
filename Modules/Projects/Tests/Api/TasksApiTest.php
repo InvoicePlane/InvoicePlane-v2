@@ -34,8 +34,10 @@ class TasksApiTest extends AbstractTestCase
 
     public function it_returns_tasks_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $client = Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
@@ -80,8 +82,10 @@ class TasksApiTest extends AbstractTestCase
 
     public function it_creates_a_task(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $client = Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
@@ -122,8 +126,10 @@ class TasksApiTest extends AbstractTestCase
 
     public function it_returns_error_when_storing_task_without_proper_fields(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $client = Client::factory()->create([
             'client_name' => '::client_name::',
         ]);
@@ -163,8 +169,10 @@ class TasksApiTest extends AbstractTestCase
 
     public function it_updates_a_task(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $client = Client::factory()->create([
             'client_name' => '::client_name::',
         ]);

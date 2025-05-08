@@ -47,8 +47,10 @@ class PaymentMethodsTest extends AbstractTestCase
     #[Group('module')]
     public function it_lists_payment_methods(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -78,8 +80,10 @@ class PaymentMethodsTest extends AbstractTestCase
      */
     public function it_creates_a_payment_method(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -122,8 +126,10 @@ class PaymentMethodsTest extends AbstractTestCase
      */
     public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -159,8 +165,10 @@ class PaymentMethodsTest extends AbstractTestCase
 
     public function it_updates_a_payment_method(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
@@ -187,8 +195,10 @@ class PaymentMethodsTest extends AbstractTestCase
 
     public function it_deletes_a_payment_method(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
@@ -208,8 +218,10 @@ class PaymentMethodsTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_method_with_attached_payment(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $method = PaymentMethod::factory()->for($this->user->company)->create();
         Payment::factory()->for($this->user->company)->for($method)->create();
 

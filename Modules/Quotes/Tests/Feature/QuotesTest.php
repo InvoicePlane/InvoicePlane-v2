@@ -61,8 +61,10 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_creates_quote_with_items(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         /** @payload */
         $payload = [
             'customer_id' => 1,
@@ -149,8 +151,10 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_if_total_mismatch(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         /** @payload */
         $payload = [
             'customer_id' => 1,
@@ -246,8 +250,10 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_accepted_quote(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $quote = Quote::factory()
             ->for($this->user->company)
             ->create(['status' => QuoteStatus::APPROVED]);
@@ -263,8 +269,10 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_quote_with_paid_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);
@@ -284,8 +292,10 @@ class QuotesTest extends AbstractTestCase
     #[Test]
     public function it_fails_to_delete_if_linked_paid_invoice(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $invoice = Invoice::factory()
             ->for($this->user->company)
             ->create(['status' => InvoiceStatus::PAID]);

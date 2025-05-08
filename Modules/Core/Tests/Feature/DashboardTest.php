@@ -25,8 +25,10 @@ class DashboardTest extends AbstractTestCase
 
     public function it_shows_dashboard_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Route product_families.index not defined');
         $user     = User::factory()->create();
         $response = $this->actingAs($user, 'web')->get(route('filament.ivpl.resources.filament.resources.dashboard.index'));

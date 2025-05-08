@@ -34,8 +34,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_returns_products_index(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('Failed asserting that an array has the key family');
         $user = User::factory()->create();
 
@@ -84,8 +86,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_creates_a_product(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('test is failing? also on family key');
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
@@ -134,8 +138,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_returns_error_response_when_creating_a_product_without_required_field(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -172,8 +178,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_updates_a_product(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestIncomplete('test is failing? also on family key');
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
@@ -224,8 +232,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_returns_error_response_when_updating_a_product_with_invalid_values(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -265,8 +275,10 @@ class ProductApiTest extends AbstractTestCase
 
     public function it_deletes_a_product(): void
     {
-        /* arrange */
         $this->markTestIncomplete();
+
+        /* arrange */
+
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticated();
 
