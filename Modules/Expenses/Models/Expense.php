@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Attachment;
-use Modules\Core\Models\Carbon;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\ExpenseCategory;
 use Modules\Core\Models\ExpenseItem;

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Core\Models\Expense;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Database\Factories\ExpenseCategoryFactory;
 

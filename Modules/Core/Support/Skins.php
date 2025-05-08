@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Support\Directory;
-
 class Skins
 {
     public static function lists()

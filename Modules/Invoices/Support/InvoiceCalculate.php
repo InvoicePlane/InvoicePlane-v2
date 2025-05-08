@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Support;
 
 use Modules\Core\Models\InvoiceAmount;
-use Modules\Core\Models\InvoiceItemAmount;
 use Modules\Core\Support\Statuses\InvoiceStatuses;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;

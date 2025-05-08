@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Models\Invoice;
+use Illuminate\Support\Carbon;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
@@ -34,7 +34,7 @@ use Modules\Projects\Models\Task;
  * @property int         $display_order
  * @property string      $description
  * @property Invoice     $invoice
- * @property ItemLookup  $item_lookup
+ * @property Product     $item_lookup
  * @property TaxRate     $tax_rate
  */
 class InvoiceItem extends Model

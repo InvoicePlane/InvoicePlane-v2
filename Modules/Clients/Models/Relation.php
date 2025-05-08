@@ -10,14 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Models\Address;
 use Modules\Core\Models\Addressable;
 use Modules\Core\Models\Communication;
-use Modules\Core\Models\Contact;
-use Modules\Core\Models\InvoiceStatuses;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
@@ -51,8 +50,6 @@ use Modules\Quotes\Models\Quote;
  * @property string|null                   $language
  * @property Collection|Contact[]          $contacts
  * @property Collection|Expense[]          $expenses
- * @property Collection|Invoice[]          $invoices
- * @property Collection|Quote[]            $quotes
  * @property Collection|RecurringInvoice[] $recurring_invoices
  * @property Collection|User[]             $users
  * @property Task[]                        $tasks

@@ -2,9 +2,9 @@
 
 namespace Modules\Products\Tests\Unit\Services;
 
-use Modules\Core\Models\ProductLookupService;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductLookupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 

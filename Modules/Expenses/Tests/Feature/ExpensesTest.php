@@ -4,7 +4,6 @@ namespace Modules\Expenses\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Carbon;
 use Modules\Core\Models\ExpenseVendor;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Enums\ExpenseStatus;

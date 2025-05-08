@@ -4,7 +4,6 @@ namespace Modules\Products\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Modules\Core\Models\Sanctum;
 use Modules\Core\Models\TaxRate;
 // use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
