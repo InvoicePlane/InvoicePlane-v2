@@ -32,11 +32,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['subject' => 'Queued Subject', 'to' => 'user@example.com']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_creates_mail_queue(): void
     {
         $this->markTestIncomplete();
@@ -55,11 +55,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['subject' => null]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_create_mail_queue_without_subject(): void
     {
         $this->markTestIncomplete();
@@ -76,11 +76,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['subject' => 'Updated Subject']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_updates_mail_queue(): void
     {
         $this->markTestIncomplete();
@@ -101,11 +101,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['subject' => null]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_update_mail_queue_with_empty_subject(): void
     {
         $this->markTestIncomplete();
@@ -124,11 +124,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_deletes_mail_queue(): void
     {
         $this->markTestIncomplete();
@@ -144,11 +144,11 @@ class MailQueuesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_delete_mail_queue_that_does_not_exist(): void
     {
         $this->markTestIncomplete();

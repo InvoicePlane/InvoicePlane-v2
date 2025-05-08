@@ -53,19 +53,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload [
-     *   'amount' => 120.00,
-     *   'expensed_at' => '2024-11-01',
-     *   'vendor_id' => 1,
-     *   'category_id' => 1,
-     *   'customer_id' => 1,
-     *   'expense_type' => 'fixed',
-     *   'status' => 'active'
-     * ]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_creates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -104,11 +96,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['amount' => null]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_create_expense_without_amount(): void
     {
         $this->markTestIncomplete();
@@ -125,11 +117,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['expense_type' => 'recurring']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_updates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -156,11 +148,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['expense_type' => null]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_update_expense_with_empty_type(): void
     {
         $this->markTestIncomplete();
@@ -179,11 +171,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_deletes_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -200,11 +192,11 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_delete_expense_twice(): void
     {
         $this->markTestIncomplete();

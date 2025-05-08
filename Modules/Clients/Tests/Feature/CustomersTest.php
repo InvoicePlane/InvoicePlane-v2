@@ -66,11 +66,11 @@ class CustomersTest extends AbstractTestCase
 
     # region crud
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['company_name' => 'Beta LLC', 'relation_type' => 'customer', 'relation_number' => 'C123']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_creates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -93,11 +93,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['relation_type' => 'customer']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_when_company_name_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -117,11 +117,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['company_name' => 'Zeta Ltd.']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_when_relation_type_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -141,11 +141,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['company_name' => 'Updated Name']
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_updates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -173,11 +173,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload ['company_name' => null]
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_update_if_company_name_missing(): void
     {
         $this->markTestIncomplete();
@@ -201,11 +201,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_deletes_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -224,11 +224,11 @@ class CustomersTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('crud')]
-    /**
-     * @payload []
-     */
-    #[Group('crud')]
+
+
+#[Group('crud')]
+
+
     public function it_fails_to_delete_customer_when_not_owner(): void
     {
         $this->markTestIncomplete();
