@@ -2,21 +2,19 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages;
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
 use Modules\Products\Models\ProductCategory;
 
 class ProductCategoryResource extends Resource

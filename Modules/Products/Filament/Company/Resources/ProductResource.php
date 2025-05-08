@@ -2,15 +2,6 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductCategoryRelationManager;
-use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
-use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\QuoteItemsRelationManager;
-use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductUnitRelationManager;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
@@ -19,11 +10,18 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Enums\ProductType;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages;
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductCategoryRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductUnitRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\QuoteItemsRelationManager;
 use Modules\Products\Models\Product;
 
 class ProductResource extends Resource
