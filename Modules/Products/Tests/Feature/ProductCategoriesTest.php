@@ -39,10 +39,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_a_product_category(): void
     {
         $this->markTestIncomplete();
@@ -63,10 +60,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_product_category_without_name(): void
     {
         $this->markTestIncomplete();
@@ -84,10 +78,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_a_product_category(): void
     {
         $this->markTestIncomplete();
@@ -109,10 +100,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_category_with_null_name(): void
     {
         $this->markTestIncomplete();
@@ -131,10 +119,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_a_product_category(): void
     {
         $this->markTestIncomplete();
@@ -152,10 +137,7 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
         $this->markTestIncomplete();

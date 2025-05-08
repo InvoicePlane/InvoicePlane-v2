@@ -98,10 +98,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_an_invoice(): void
     {
         $this->markTestIncomplete();
@@ -129,10 +126,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_invoice_without_customer(): void
     {
         $this->markTestIncomplete();
@@ -153,10 +147,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_invoice_without_number(): void
     {
         $this->markTestIncomplete();
@@ -233,10 +224,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_an_invoice(): void
     {
         $this->markTestIncomplete();
@@ -324,10 +312,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_invoice_with_invalid_status(): void
     {
         $this->markTestIncomplete();
@@ -346,10 +331,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_an_invoice(): void
     {
         $this->markTestIncomplete();
@@ -412,10 +394,7 @@ class InvoicesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
         $this->markTestIncomplete();

@@ -67,10 +67,7 @@ class CustomersTest extends AbstractTestCase
     # region crud
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -94,10 +91,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_when_company_name_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -118,10 +112,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_when_relation_type_is_missing(): void
     {
         $this->markTestIncomplete();
@@ -142,10 +133,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -174,10 +162,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_if_company_name_missing(): void
     {
         $this->markTestIncomplete();
@@ -202,10 +187,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_a_customer(): void
     {
         $this->markTestIncomplete();
@@ -225,10 +207,7 @@ class CustomersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_customer_when_not_owner(): void
     {
         $this->markTestIncomplete();

@@ -39,10 +39,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_a_document_group(): void
     {
         $this->markTestIncomplete();
@@ -62,10 +59,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_document_group_when_name_missing(): void
     {
         $this->markTestIncomplete();
@@ -83,10 +77,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_a_document_group(): void
     {
         $this->markTestIncomplete();
@@ -108,10 +99,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_a_document_group(): void
     {
         $this->markTestIncomplete();

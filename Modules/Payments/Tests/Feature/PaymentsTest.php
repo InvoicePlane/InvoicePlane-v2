@@ -60,10 +60,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_a_payment(): void
     {
         $this->markTestIncomplete();
@@ -98,10 +95,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_payment_without_amount(): void
     {
         $this->markTestIncomplete();
@@ -119,10 +113,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_payment_without_method(): void
     {
         $this->markTestIncomplete();
@@ -140,10 +131,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_a_payment(): void
     {
         $this->markTestIncomplete();
@@ -165,10 +153,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_payment_with_null_amount(): void
     {
         $this->markTestIncomplete();
@@ -186,10 +171,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
         $this->markTestIncomplete();
@@ -233,10 +215,7 @@ class PaymentsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_already_deleted_payment(): void
     {
         $this->markTestIncomplete();

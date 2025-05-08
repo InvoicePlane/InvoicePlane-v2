@@ -34,10 +34,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_an_expense_vendor(): void
     {
         $this->markTestIncomplete();
@@ -60,10 +57,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_vendor_without_name(): void
     {
         $this->markTestIncomplete();
@@ -83,10 +77,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_an_expense_vendor(): void
     {
         $this->markTestIncomplete();
@@ -110,10 +101,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_vendor_with_empty_name(): void
     {
         $this->markTestIncomplete();
@@ -134,10 +122,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_an_expense_vendor(): void
     {
         $this->markTestIncomplete();
@@ -157,10 +142,7 @@ class ExpenseVendorsTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_already_deleted_vendor(): void
     {
         $this->markTestIncomplete();

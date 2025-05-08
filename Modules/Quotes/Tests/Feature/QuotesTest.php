@@ -98,10 +98,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -129,10 +126,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_quote_without_customer(): void
     {
         $this->markTestIncomplete();
@@ -182,10 +176,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -210,10 +201,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_quote_with_missing_number(): void
     {
         $this->markTestIncomplete();
@@ -233,10 +221,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_a_quote(): void
     {
         $this->markTestIncomplete();
@@ -321,10 +306,7 @@ class QuotesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_quote_that_is_already_deleted(): void
     {
         $this->markTestIncomplete();

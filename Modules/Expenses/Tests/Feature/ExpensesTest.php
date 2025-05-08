@@ -54,10 +54,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -97,10 +94,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_expense_without_amount(): void
     {
         $this->markTestIncomplete();
@@ -118,10 +112,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -149,10 +140,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_update_expense_with_empty_type(): void
     {
         $this->markTestIncomplete();
@@ -172,10 +160,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_an_expense(): void
     {
         $this->markTestIncomplete();
@@ -193,10 +178,7 @@ class ExpensesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_expense_twice(): void
     {
         $this->markTestIncomplete();

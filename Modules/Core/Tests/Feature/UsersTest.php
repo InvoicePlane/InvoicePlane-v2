@@ -43,10 +43,7 @@ class UsersTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_delete_user_twice(): void
     {
         $this->markTestIncomplete();

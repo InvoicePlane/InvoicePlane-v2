@@ -39,10 +39,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_creates_an_email_template(): void
     {
         $this->markTestIncomplete();
@@ -62,10 +59,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_fails_to_create_email_template_without_subject(): void
     {
         $this->markTestIncomplete();
@@ -83,10 +77,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_updates_an_email_template(): void
     {
         $this->markTestIncomplete();
@@ -108,10 +99,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
     #[Test]
 
-
-#[Group('crud')]
-
-
+    #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {
         $this->markTestIncomplete();
