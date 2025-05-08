@@ -35,10 +35,11 @@ class UsersTest extends AbstractTestCase
 
         $record = User::factory()->create(['email' => 'admin@example.com']);
 
-        Livewire::test(ListUsers::class)
-            ->actingAs($this->superAdmin())
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(ListUsers::class)->);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -60,11 +61,11 @@ class UsersTest extends AbstractTestCase
 
         $payload = ['email' => 'new@example.com', 'password' => 'password123'];
 
-        Livewire::test(CreateUser::class)
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(CreateUser::class)->)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('users', ['email' => 'new@example.com']);
     }
@@ -88,11 +89,11 @@ class UsersTest extends AbstractTestCase
 
         $payload = ['password' => 'abc'];
 
-        Livewire::test(CreateUser::class)
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['email']);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(CreateUser::class)->)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['email']);
     }
 
     #[Test]
@@ -115,11 +116,11 @@ class UsersTest extends AbstractTestCase
         $user    = User::factory()->create(['email' => 'before@example.com']);
         $payload = ['email' => 'updated@example.com'];
 
-        Livewire::test(EditUser::class, ['record' => $user->id])
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(EditUser::class, ['record' => $user->id])->)->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('users', ['email' => 'updated@example.com']);
     }
@@ -144,11 +145,11 @@ class UsersTest extends AbstractTestCase
         $user    = User::factory()->create(['email' => 'valid@example.com']);
         $payload = ['email' => null];
 
-        Livewire::test(EditUser::class, ['record' => $user->id])
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['email']);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(EditUser::class, ['record' => $user->id])->)->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['email']);
     }
 
     #[Test]
@@ -170,9 +171,8 @@ class UsersTest extends AbstractTestCase
 
         $user = User::factory()->create();
 
-        Livewire::test(ListUsers::class)
-            ->actingAs($this->superAdmin())
-            ->callTableAction('delete', $user);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(ListUsers::class)->)->callTableAction('delete', $user);
 
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
@@ -193,10 +193,11 @@ class UsersTest extends AbstractTestCase
         $user->delete();
 
         /* @act try to delete again */
-        Livewire::test(ListUsers::class)
-            ->actingAs($this->superAdmin())
-            ->callTableAction('delete', $user)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(ListUsers::class)->)->callTableAction('delete', $user);
+
+/** assert */
+$component->assertHasErrors();
 
         /* @assert form error triggered */
         $this->assertDatabaseMissing('users', ['id' => $user->id]);

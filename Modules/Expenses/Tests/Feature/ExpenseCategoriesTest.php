@@ -29,10 +29,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $record = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'Travel']);
 
         // act + assert
-        Livewire::test(ListExpenseCategories::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -48,11 +49,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Meals'];
 
         // act
-        Livewire::test(CreateExpenseCategory::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_categories', $payload);
@@ -71,11 +72,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = [];
 
         // act
-        Livewire::test(CreateExpenseCategory::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -92,11 +93,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Updated Name'];
 
         // act
-        Livewire::test(EditExpenseCategory::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_categories', $payload);
@@ -116,11 +117,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => null];
 
         // act
-        Livewire::test(EditExpenseCategory::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -136,9 +137,8 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $record = ExpenseCategory::factory()->for($this->user->company)->create();
 
         // act
-        Livewire::test(ListExpenseCategories::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
@@ -158,10 +158,11 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $record->delete();
 
         // act + assert
-        Livewire::test(ListExpenseCategories::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
+
+/** assert */
+$component->assertHasErrors();
 
         $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
     }

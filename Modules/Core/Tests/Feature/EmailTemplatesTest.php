@@ -29,10 +29,11 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
 
-        Livewire::test(ListEmailTemplates::class)
-            ->actingAs($this->superAdmin())
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($template);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(ListEmailTemplates::class)->);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($template);
     }
 
     #[Test]
@@ -48,11 +49,11 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Welcome', 'body' => 'Hello world'];
 
-        Livewire::test(CreateEmailTemplate::class)
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(CreateEmailTemplate::class)->)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('email_templates', $payload);
     }
@@ -70,11 +71,11 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['body' => 'Missing subject'];
 
-        Livewire::test(CreateEmailTemplate::class)
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['subject']);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(CreateEmailTemplate::class)->)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['subject']);
     }
 
     #[Test]
@@ -92,11 +93,11 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Updated Subject'];
 
-        Livewire::test(EditEmailTemplate::class, ['record' => $template->id])
-            ->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(EditEmailTemplate::class, ['record' => $template->id])->)->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('email_templates', $payload);
     }
@@ -114,9 +115,8 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $template = EmailTemplate::factory()->create();
 
-        Livewire::test(ListEmailTemplates::class)
-            ->actingAs($this->superAdmin())
-            ->callTableAction('delete', $template);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin()->test(ListEmailTemplates::class)->)->callTableAction('delete', $template);
 
         $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);
     }

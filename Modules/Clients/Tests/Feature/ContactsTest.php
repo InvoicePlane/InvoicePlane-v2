@@ -83,11 +83,11 @@ class ContactsTest extends AbstractTestCase
             'gender'      => 'female',
         ];
 
-        Livewire::test(CreateContact::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('contacts', $payload);
     }
@@ -108,11 +108,11 @@ class ContactsTest extends AbstractTestCase
             'first_name' => 'Jane',
         ];
 
-        Livewire::test(CreateContact::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['relation_id']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['relation_id']);
     }
 
     #[Test]
@@ -133,11 +133,11 @@ class ContactsTest extends AbstractTestCase
             // 'first_name' => 'Jane',
         ];
 
-        Livewire::test(CreateContact::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['first_name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['first_name']);
     }
 
     #[Test]
@@ -164,11 +164,11 @@ class ContactsTest extends AbstractTestCase
             'last_name'  => 'Contact',
         ];
 
-        Livewire::test(EditContact::class, ['record' => $contact->getKey()])
-            ->actingAs($this->user)
-            ->fillForm($update)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('contacts', $update);
     }
@@ -186,9 +186,8 @@ class ContactsTest extends AbstractTestCase
 
         $contact = Contact::factory()->for($this->user->company)->create();
 
-        Livewire::test(ListContacts::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $contact);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
 
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
     }

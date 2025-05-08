@@ -29,10 +29,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $record = ProductCategory::factory()->for($this->user->company)->create(['name' => 'Hardware']);
 
         // act + assert
-        Livewire::test(ListProductCategories::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductCategories::class);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -48,11 +49,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Office Supplies'];
 
         // act
-        Livewire::test(CreateProductCategory::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_categories', $payload);
@@ -71,11 +72,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = [];
 
         // act
-        Livewire::test(CreateProductCategory::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -92,11 +93,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Updated Category'];
 
         // act
-        Livewire::test(EditProductCategory::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_categories', $payload);
@@ -116,11 +117,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = ['name' => null];
 
         // act
-        Livewire::test(EditProductCategory::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -136,9 +137,8 @@ class ProductCategoriesTest extends AbstractTestCase
         $record = ProductCategory::factory()->for($this->user->company)->create();
 
         // act
-        Livewire::test(ListProductCategories::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
@@ -158,10 +158,11 @@ class ProductCategoriesTest extends AbstractTestCase
         $record->delete();
 
         // act + assert
-        Livewire::test(ListProductCategories::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
+
+/** assert */
+$component->assertHasErrors();
 
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
     }

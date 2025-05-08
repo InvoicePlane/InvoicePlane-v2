@@ -50,10 +50,11 @@ class InvoicesTest extends AbstractTestCase
         ]);
 
         // act + assert
-        Livewire::test(ListInvoices::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($invoice);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListInvoices::class);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($invoice);
     }
 
     #[Test]
@@ -114,11 +115,11 @@ class InvoicesTest extends AbstractTestCase
         ];
 
         // act
-        Livewire::test(CreateInvoice::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('invoices', $payload);
@@ -140,11 +141,11 @@ class InvoicesTest extends AbstractTestCase
         ];
 
         // act
-        Livewire::test(CreateInvoice::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['customer_id']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['customer_id']);
     }
 
     #[Test]
@@ -165,11 +166,11 @@ class InvoicesTest extends AbstractTestCase
         ];
 
         // act
-        Livewire::test(CreateInvoice::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['invoice_number']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['invoice_number']);
     }
 
     #[Test]
@@ -243,11 +244,11 @@ class InvoicesTest extends AbstractTestCase
         $payload = ['status' => InvoiceStatus::SENT];
 
         // act
-        Livewire::test(EditInvoice::class, ['record' => $invoice->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('invoices', [
@@ -330,11 +331,11 @@ class InvoicesTest extends AbstractTestCase
         $payload = ['status' => null];
 
         // act
-        Livewire::test(EditInvoice::class, ['record' => $invoice->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['status']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['status']);
     }
 
     #[Test]
@@ -350,10 +351,11 @@ class InvoicesTest extends AbstractTestCase
         $invoice = Invoice::factory()->for($this->user->company)->create();
 
         // act
-        Livewire::test(ListInvoices::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $invoice)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
+
+/** assert */
+$component->assertHasNoErrors();
 
         // assert
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
@@ -415,10 +417,11 @@ class InvoicesTest extends AbstractTestCase
         $invoice->delete();
 
         // act + assert
-        Livewire::test(ListInvoices::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $invoice)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
+
+/** assert */
+$component->assertHasErrors();
 
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }

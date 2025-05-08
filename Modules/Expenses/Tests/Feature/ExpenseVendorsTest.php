@@ -25,10 +25,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $record = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Staples Inc.']);
 
         // act + assert
-        Livewire::test(ListExpenseVendors::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -47,11 +48,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $payload = ['name' => 'Paper Supplies Ltd.'];
 
         // act
-        Livewire::test(CreateExpenseVendor::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_vendors', $payload);
@@ -73,11 +74,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $payload = [];
 
         // act
-        Livewire::test(CreateExpenseVendor::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -97,11 +98,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $payload = ['name' => 'Vendor Updated'];
 
         // act
-        Livewire::test(EditExpenseVendor::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_vendors', $payload);
@@ -124,11 +125,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $payload = ['name' => null];
 
         // act
-        Livewire::test(EditExpenseVendor::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -147,9 +148,8 @@ class ExpenseVendorsTest extends AbstractTestCase
         $record = ExpenseVendor::factory()->for($this->user->company)->create();
 
         // act
-        Livewire::test(ListExpenseVendors::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
@@ -172,10 +172,11 @@ class ExpenseVendorsTest extends AbstractTestCase
         $record->delete();
 
         // act + assert
-        Livewire::test(ListExpenseVendors::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
+
+/** assert */
+$component->assertHasErrors();
 
         $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
     }

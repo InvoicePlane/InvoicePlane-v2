@@ -29,10 +29,11 @@ class ProductUnitsTest extends AbstractTestCase
         $record = ProductUnit::factory()->for($this->user->company)->create(['name' => 'Box']);
 
         // act + assert
-        Livewire::test(ListProductUnits::class)
-            ->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSeeDatabaseRecords($record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductUnits::class);
+
+/** assert */
+$component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -48,11 +49,11 @@ class ProductUnitsTest extends AbstractTestCase
         $payload = ['name' => 'Pack'];
 
         // act
-        Livewire::test(CreateProductUnit::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProductUnit::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_units', $payload);
@@ -71,11 +72,11 @@ class ProductUnitsTest extends AbstractTestCase
         $payload = [];
 
         // act
-        Livewire::test(CreateProductUnit::class)
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProductUnit::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -92,11 +93,11 @@ class ProductUnitsTest extends AbstractTestCase
         $payload = ['name' => 'Updated Unit'];
 
         // act
-        Livewire::test(EditProductUnit::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_units', $payload);
@@ -116,11 +117,11 @@ class ProductUnitsTest extends AbstractTestCase
         $payload = ['name' => null];
 
         // act
-        Livewire::test(EditProductUnit::class, ['record' => $record->id])
-            ->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors(['name']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -136,9 +137,8 @@ class ProductUnitsTest extends AbstractTestCase
         $record = ProductUnit::factory()->for($this->user->company)->create();
 
         // act
-        Livewire::test(ListProductUnits::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductUnits::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
@@ -158,10 +158,11 @@ class ProductUnitsTest extends AbstractTestCase
         $record->delete();
 
         // act + assert
-        Livewire::test(ListProductUnits::class)
-            ->actingAs($this->user)
-            ->callTableAction('delete', $record)
-            ->assertHasErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProductUnits::class)->callTableAction('delete', $record);
+
+/** assert */
+$component->assertHasErrors();
 
         $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
     }
