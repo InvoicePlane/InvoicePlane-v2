@@ -313,15 +313,33 @@ parameters:
 			path: Modules/Clients/Services/CustomerService.php
 
 		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Laravel\\Sanctum\\Sanctum\.$#'
-			identifier: class.notFound
-			count: 4
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_birthdate\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/Clients/Tests/Api/ClientsApiTest.php
 
 		-
-			message: '#^Call to static method factory\(\) on an unknown class Modules\\Clients\\Models\\Client\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Clients/Tests/Api/ClientsApiTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Clients/Tests/Api/ClientsApiTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_surname\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Clients/Tests/Api/ClientsApiTest.php
+
+		-
+			message: '#^Call to static method actingAs\(\) on an unknown class Modules\\Clients\\Tests\\Api\\Sanctum\.$#'
 			identifier: class.notFound
-			count: 5
+			count: 4
 			path: Modules/Clients/Tests/Api/ClientsApiTest.php
 
 		-
@@ -401,6 +419,12 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: Modules/Core/Commands/MakeUserCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Core/Database/Factories/UserFactory.php
 
 		-
 			message: '#^Method Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:has\(\) invoked with 0 parameters, 1\-2 required\.$#'
@@ -2243,12 +2267,6 @@ parameters:
 			identifier: property.defaultValue
 			count: 1
 			path: Modules/Invoices/Models/RecurringInvoiceItem.php
-
-		-
-			message: '#^Class Modules\\Invoices\\Models\\InvoiceGroup not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Services/InvoiceGroupService.php
 
 		-
 			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:get\(\)\.$#'
