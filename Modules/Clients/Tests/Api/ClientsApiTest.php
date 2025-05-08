@@ -2,13 +2,15 @@
 
 namespace Modules\Clients\Tests\Api;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Laravel\Sanctum\Sanctum;
-use Modules\Clients\Models\Client;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
+
+// use Laravel\Sanctum\Sanctum;
 
 class ClientsApiTest extends AbstractTestCase
 {
@@ -32,14 +34,14 @@ class ClientsApiTest extends AbstractTestCase
 
     public function route_is_403_for_not_authenticated(): void
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->expectException(AuthenticationException::class);
         $response = $this->getJson(route('api.clients.index'));
         $response->assertStatus(403);
     }
 
     public function route_is_401_for_guest_user(): void
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->expectException(AuthenticationException::class);
         $this->markTestIncomplete();
         $user = User::factory(['user_type' => 2])->create();
         Sanctum::actingAs($user);
@@ -57,7 +59,7 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        Client::factory()->count(5)->create();
+        Relation::factory()->count(5)->create();
         $response = $this->get(route('api.clients.index'));
         $response->assertSuccessful();
 
@@ -86,7 +88,7 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        $client   = Client::factory()->create();
+        $client   = Relation::factory()->create();
         $response = $this->getJson(
             route(
                 'api.clients.show',
@@ -106,7 +108,7 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        $client = Client::factory()->make()->toArray();
+        $client = Relation::factory()->make()->toArray();
 
         $response = $this->postJson(
             route('api.clients.store'),
@@ -123,7 +125,7 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory()->create(['user_type' => 1]);
         Sanctum::actingAs($user);
 
-        $client = Client::factory()->make(['client_name' => null]);
+        $client = Relation::factory()->make(['client_name' => null]);
 
         $response = $this->postJson(
             route('api.clients.store'),
@@ -138,8 +140,8 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        $client       = Client::factory()->create();
-        $editedClient = Client::factory()->make()->toArray();
+        $client       = Relation::factory()->create();
+        $editedClient = Relation::factory()->make()->toArray();
 
         $response = $this->putJson(
             route('api.clients.update', ['client' => $client->client_id]),
@@ -157,8 +159,8 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        $client       = Client::factory()->create();
-        $editedClient = Client::factory()->make()->toArray();
+        $client       = Relation::factory()->create();
+        $editedClient = Relation::factory()->make()->toArray();
 
         $response = $this->patchJson(
             route('api.clients.update', ['client' => $client->client_id]),
@@ -176,7 +178,7 @@ class ClientsApiTest extends AbstractTestCase
         $user = User::factory(['user_type' => 1])->create();
         Sanctum::actingAs($user);
 
-        $client = Client::factory()->make()->toArray();
+        $client = Relation::factory()->make()->toArray();
 
         $response_created = $this->post(route('api.clients.store', $client));
         $response_created->assertSuccessful();

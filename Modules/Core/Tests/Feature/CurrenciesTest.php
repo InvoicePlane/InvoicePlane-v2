@@ -31,7 +31,6 @@ class CurrenciesTest extends AbstractTestCase
     /**
      * @group smoke
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      */
     public function it_lists_currencies(): void
     {
@@ -42,8 +41,11 @@ class CurrenciesTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListCurrencies::class)->actingAs($this->superAdmin())
-            ->assertSuccessful();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListCurrencies::class);
+
+/** assert */
+$component->assertSuccessful();
     }
 
     // endregion
@@ -56,7 +58,6 @@ class CurrenciesTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      *
      * @payload
      * []
@@ -73,10 +74,11 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateCurrency::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateCurrency::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -86,7 +88,6 @@ class CurrenciesTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      *
      * @payload
      * []
@@ -103,10 +104,11 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateCurrency::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateCurrency::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -116,7 +118,6 @@ class CurrenciesTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      *
      * @payload
      * []
@@ -136,10 +137,11 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditCurrency::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditCurrency::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -149,7 +151,6 @@ class CurrenciesTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      *
      * @payload
      * []
@@ -168,10 +169,11 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditCurrency::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditCurrency::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -181,7 +183,6 @@ class CurrenciesTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\CurrencyResource
      *
      * @payload
      * []
@@ -198,8 +199,8 @@ class CurrenciesTest extends AbstractTestCase
 
         $record = Currency::factory()->create();
 
-        Livewire::test(ListCurrencies::class)->actingAs($this->superAdmin())
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListCurrencies::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('currencies', ['id' => $record->id]);
     }

@@ -76,9 +76,11 @@ class ProductsTest extends AbstractTestCase
             'product_tariff'      => 12345,
         ];
         $product = Product::factory()->create($payload);
-        Livewire::test(ListProducts::class)->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertSee('::product_name::');
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProducts::class);
+
+/** assert */
+$component->assertSuccessful()->assertSee('::product_name::');
     }
     // endregion
 
@@ -135,17 +137,8 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        $component = Livewire::test(CreateProduct::class)->actingAs($this->user)
-            ->set('data.family_id', $payload['family_id'])
-            ->set('data.product_sku', $payload['product_sku'])
-            ->set('data.product_name', $payload['product_name'])
-            ->set('data.product_description', $payload['product_description'])
-            ->set('data.product_price', $payload['product_price'])
-            ->set('data.provider_name', $payload['provider_name'])
-            ->set('data.tax_rate_id', $payload['tax_rate_id'])
-            ->set('data.unit_id', $payload['unit_id'])
-            ->set('data.product_tariff', $payload['product_tariff'])
-            ->call('create');
+        $component = /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProduct::class)->set('data.family_id', $payload['family_id'])->set('data.product_sku', $payload['product_sku'])->set('data.product_name', $payload['product_name'])->set('data.product_description', $payload['product_description'])->set('data.product_price', $payload['product_price'])->set('data.provider_name', $payload['provider_name'])->set('data.tax_rate_id', $payload['tax_rate_id'])->set('data.unit_id', $payload['unit_id'])->set('data.product_tariff', $payload['product_tariff'])->call('create');
         dd($component->get('data'));
 
         $this->assertDatabaseHas('products', $payload);
@@ -181,12 +174,13 @@ class ProductsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        Livewire::test(CreateProduct::class)->actingAs($this->user)
-            ->fillForm([
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateProduct::class)->fillForm([
                 'item_name' => '',
-            ])
-            ->call('create')
-            ->assertHasErrors(['item_name', 'price', 'category_id']);
+            ])->call('create');
+
+/** assert */
+$component->assertHasErrors(['item_name', 'price', 'category_id']);
     }
 
     public function it_updates_a_product(): void
@@ -226,10 +220,8 @@ class ProductsTest extends AbstractTestCase
             'product_price' => 70.00,
         ];
 
-        Livewire::test(EditProduct::class, ['record' => $product->product_id])->actingAs($this->user)
-            ->set('data.`product_name`', $updatedData['product_name'])
-            ->set('data.product_price', $updatedData['product_price'])
-            ->call('save');
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProduct::class, ['record' => $product->product_id])->set('data.`product_name`', $updatedData['product_name'])->set('data.product_price', $updatedData['product_price'])->call('save');
 
         $this->assertDatabaseHas('products', array_merge($updatedData, [
             'product_id' => $product->product_id,
@@ -279,10 +271,11 @@ class ProductsTest extends AbstractTestCase
             'description' => 'Example',
         ];
 
-        Livewire::test(EditProduct::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditProduct::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -323,9 +316,11 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)->actingAs($this->user)
-            ->callTableAction('delete', $product)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('delete', $product);
+
+/** assert */
+$component->assertHasNoErrors();
 
         $this->assertDatabaseMissing('products', [
             'product_id' => $product->product_id,
@@ -358,9 +353,11 @@ class ProductsTest extends AbstractTestCase
 
         $products = Product::factory(3)->create($payload);
 
-        Livewire::test(ListProducts::class)->actingAs($this->user)
-            ->callTableBulkAction('delete', $products)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableBulkAction('delete', $products);
+
+/** assert */
+$component->assertHasNoErrors();
 
         foreach ($products as $product) {
             $this->assertDatabaseMissing('products', [
@@ -405,9 +402,11 @@ class ProductsTest extends AbstractTestCase
 
         $product1 = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)->actingAs($this->user)
-            ->callTableAction('processSelections', $product1)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product1);
+
+/** assert */
+$component->assertHasNoErrors();
     }
 
     /**
@@ -443,9 +442,11 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)->actingAs($this->user)
-            ->callTableAction('processSelections', $product)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product);
+
+/** assert */
+$component->assertHasNoErrors();
     }
     // endregion
 }

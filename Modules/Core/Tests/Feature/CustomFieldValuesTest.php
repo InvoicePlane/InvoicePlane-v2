@@ -61,10 +61,11 @@ class CustomFieldValuesTest extends AbstractTestCase
             'custom_field_value' => 'Example',
         ];
 
-        Livewire::test(CreateCustomFieldValue::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateCustomFieldValue::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -101,10 +102,11 @@ class CustomFieldValuesTest extends AbstractTestCase
             'custom_field_value' => 'Example',
         ];
 
-        Livewire::test(EditCustomFieldValue::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditCustomFieldValue::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -133,8 +135,8 @@ class CustomFieldValuesTest extends AbstractTestCase
 
         $record = CustomFieldValue::factory()->create();
 
-        Livewire::test(ListCustomFieldValues::class)->actingAs($this->superAdmin())
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListCustomFieldValues::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('customfieldvalues', ['id' => $record->id]);
     }

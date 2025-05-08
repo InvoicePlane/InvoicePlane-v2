@@ -31,7 +31,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
     /**
      * @group smoke
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      */
     public function it_lists_invoicetransactions(): void
     {
@@ -42,8 +41,11 @@ class InvoiceTransactionsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListInvoiceTransactions::class)->actingAs($this->user)
-            ->assertSuccessful();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListInvoiceTransactions::class);
+
+/** assert */
+$component->assertSuccessful();
     }
 
     // endregion
@@ -56,7 +58,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
      * @payload
      * []
@@ -73,10 +74,11 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateInvoiceTransaction::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateInvoiceTransaction::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -86,7 +88,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
      * @payload
      * []
@@ -103,10 +104,11 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateInvoiceTransaction::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateInvoiceTransaction::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -116,7 +118,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
      * @payload
      * []
@@ -136,10 +137,11 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditInvoiceTransaction::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -149,7 +151,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
      * @payload
      * []
@@ -168,10 +169,11 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditInvoiceTransaction::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -181,7 +183,6 @@ class InvoiceTransactionsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\InvoiceTransactionResource
      *
      * @payload
      * []
@@ -198,8 +199,8 @@ class InvoiceTransactionsTest extends AbstractTestCase
 
         $record = InvoiceTransaction::factory()->create();
 
-        Livewire::test(ListInvoiceTransactions::class)->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListInvoiceTransactions::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('invoicetransactions', ['id' => $record->id]);
     }

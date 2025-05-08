@@ -4,19 +4,24 @@ namespace Modules\Quotes\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Laravel\Sanctum\Sanctum;
-use Modules\Clients\Models\Client;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\InvoiceGroup;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\PaymentMethod;
 use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
+
+// use Laravel\Sanctum\Sanctum;
+
+// // use Laravel\Sanctum\Sanctum;
+
+// // // use Laravel\Sanctum\Sanctum;
 
 class QuotesApiTest extends AbstractTestCase
 {
@@ -67,9 +72,9 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
 
         $user   = User::factory()->create();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
+        $invoiceGroup = DocumentGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
         ]);
@@ -136,9 +141,9 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet.');
 
         $user   = User::factory()->create();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
+        $invoiceGroup = DocumentGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
         ]);
@@ -199,9 +204,9 @@ class QuotesApiTest extends AbstractTestCase
         /* arrange */
 
         $user   = User::factory()->create();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
+        $invoiceGroup = DocumentGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
         ]);
@@ -247,9 +252,9 @@ class QuotesApiTest extends AbstractTestCase
         $this->markTestSkipped('Not implemented yet');
 
         $user   = User::factory()->create();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
+        $invoiceGroup = DocumentGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
         ]);
@@ -330,9 +335,9 @@ class QuotesApiTest extends AbstractTestCase
         /* arrange */
 
         $user   = User::factory()->create();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $invoiceGroup = InvoiceGroup::factory()->create([
+        $invoiceGroup = DocumentGroup::factory()->create([
             'invoice_group_name'              => '::invoicegroup_name::',
             'invoice_group_identifier_format' => '::invoice_group_identifier_format::',
         ]);
@@ -382,7 +387,7 @@ class QuotesApiTest extends AbstractTestCase
         /* arrange */
 
         $quote     = Quote::factory()->create();
-        $newClient = Client::factory()->create();
+        $newClient = Relation::factory()->create();
         $payload   = ['client_id' => $newClient->id];
 
         $this->markTestSkipped('Not implemented yet');

@@ -62,8 +62,11 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'Credit Card',
         ]);
 
-        Livewire::test(ListPaymentMethods::class)->actingAs($this->user)
-            ->assertSee('Credit Card');
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListPaymentMethods::class);
+
+/** assert */
+$component->assertSee('Credit Card');
     }
 
     // endregion
@@ -104,11 +107,11 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'Credit Card',
         ];
 
-        Livewire::test(CreatePaymentMethod::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors()
-            ->assertSee('Credit Card');
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreatePaymentMethod::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors()->assertSee('Credit Card');
 
         $this->assertDatabaseHas('payment_methods', array_merge($data, [
             'payment_method_name' => 'Credit Card',
@@ -148,10 +151,11 @@ class PaymentMethodsTest extends AbstractTestCase
             'description' => '::description::',
         ];
 
-        Livewire::test(CreatePaymentMethod::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['payment_method_name' => 'required']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreatePaymentMethod::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['payment_method_name' => 'required']);
 
         if (app()->isLocal()) {
             dump($payload);
@@ -182,10 +186,11 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'updated_payment_method_name',
         ];
 
-        Livewire::test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])->actingAs($this->user)
-            ->set('data.payment_method_name', $updatedData['payment_method_name'])
-            ->call('save')
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])->set('data.payment_method_name', $updatedData['payment_method_name'])->call('save');
+
+/** assert */
+$component->assertHasNoErrors();
 
         $this->assertDatabaseHas('payment_methods', array_merge($updatedData, [
             'payment_method_id'   => $paymentMethod->payment_method_id,
@@ -206,9 +211,11 @@ class PaymentMethodsTest extends AbstractTestCase
 
         $paymentMethod = PaymentMethod::factory()->create();
 
-        Livewire::test(ListPaymentMethods::class)->actingAs($this->user)
-            ->callTableAction('delete', $paymentMethod)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListPaymentMethods::class)->callTableAction('delete', $paymentMethod);
+
+/** assert */
+$component->assertHasNoErrors();
 
         $this->assertDatabaseMissing('payment_methods', [
             'payment_method_id' => $paymentMethod->payment_method_id,

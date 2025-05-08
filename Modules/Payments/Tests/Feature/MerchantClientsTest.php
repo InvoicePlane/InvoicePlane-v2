@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractTestCase;
-use Modules\Payments\Models\MerchantClient;
 
 //use Modules\Core\Filament\Resources\MerchantClientResource\Pages\CreateMerchantClient;
 //use Modules\Core\Filament\Resources\MerchantClientResource\Pages\EditMerchantClient;
@@ -31,7 +30,6 @@ class MerchantClientsTest extends AbstractTestCase
     /**
      * @group smoke
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      */
     public function it_lists_merchant_clients(): void
     {
@@ -42,8 +40,11 @@ class MerchantClientsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListMerchantClients::class)->actingAs($this->user)
-            ->assertSuccessful();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListMerchantClients::class);
+
+/** assert */
+$component->assertSuccessful();
     }
 
     // endregion
@@ -56,7 +57,6 @@ class MerchantClientsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      *
      * @payload
      * []
@@ -73,10 +73,11 @@ class MerchantClientsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateMerchantClient::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -86,7 +87,6 @@ class MerchantClientsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      *
      * @payload
      * []
@@ -103,10 +103,11 @@ class MerchantClientsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateMerchantClient::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -116,7 +117,6 @@ class MerchantClientsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\MerchantClientResource
      *
      * @payload
      * []
@@ -131,15 +131,16 @@ class MerchantClientsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        $record = MerchantClient::factory()->create();
+        $record = MerchantRelation::factory()->create();
 
         $payload = [
         ];
 
-        Livewire::test(EditMerchantClient::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -157,15 +158,16 @@ class MerchantClientsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        $record = MerchantClient::factory()->create();
+        $record = MerchantRelation::factory()->create();
 
         $payload = [
         ];
 
-        Livewire::test(EditMerchantClient::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -188,10 +190,10 @@ class MerchantClientsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        $record = MerchantClient::factory()->create();
+        $record = MerchantRelation::factory()->create();
 
-        Livewire::test(ListMerchantClients::class)->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListMerchantClients::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('merchant_clients', ['id' => $record->id]);
     }

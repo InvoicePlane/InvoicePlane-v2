@@ -4,8 +4,8 @@ namespace Modules\Core\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Laravel\Sanctum\Sanctum;
-use Modules\Clients\Models\Client;
+// use Laravel\Sanctum\Sanctum;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
@@ -90,7 +90,7 @@ class TaxRatesApiTest extends AbstractTestCase
 
         /* arrange */
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
         $initialTaxRate = TaxRate::factory()->create([

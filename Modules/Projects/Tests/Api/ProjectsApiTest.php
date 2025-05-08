@@ -4,8 +4,8 @@ namespace Modules\Projects\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Laravel\Sanctum\Sanctum;
-use Modules\Clients\Models\Client;
+// use Laravel\Sanctum\Sanctum;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
@@ -36,7 +36,7 @@ class ProjectsApiTest extends AbstractTestCase
 
         /* arrange */
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
 
@@ -95,7 +95,7 @@ class ProjectsApiTest extends AbstractTestCase
 
         $this->markTestSkipped('Not implemented yet');
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
         $initialProject = Project::factory()->create([
@@ -158,7 +158,7 @@ class ProjectsApiTest extends AbstractTestCase
 
         /* arrange */
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
         $initialProject = Project::factory()->create([
@@ -200,7 +200,7 @@ class ProjectsApiTest extends AbstractTestCase
 
         $this->markTestSkipped('Not implemented yet');
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
 

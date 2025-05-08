@@ -53,7 +53,7 @@ class TasksTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -64,7 +64,7 @@ class TasksTest extends AbstractTestCase
             'tax_rate_name' => '::taxrate_name::',
         ]);
 
-        $taxRate = TaxRate::factory()->for($company)->create();
+        //$taxRate = TaxRate::factory()->for($company)->create();
 
         $task = Task::factory()
             ->for($company)
@@ -74,9 +74,11 @@ class TasksTest extends AbstractTestCase
                 'task_name'  => '::task_name::',
             ]);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->assertSuccessful()
-            ->assertCanSeeTableRecords([$task]);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class);
+
+/** assert */
+$component->assertSuccessful()->assertCanSeeTableRecords([$task]);
     }
     // endregion
 
@@ -126,10 +128,11 @@ class TasksTest extends AbstractTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -161,7 +164,7 @@ class TasksTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        $client  = Client::factory()->create(['client_name' => '::client_name::']);
+        $client  = Relation::factory()->create(['client_name' => '::client_name::']);
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
             'project_name' => '::project_name::',
@@ -181,10 +184,11 @@ class TasksTest extends AbstractTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['data.task_name' => 'required']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['data.task_name' => 'required']);
 
         $this->assertDatabaseMissing('tasks', $payload);
     }
@@ -235,10 +239,11 @@ class TasksTest extends AbstractTestCase
 
         $updatedData = ['task_name' => '::updated_task_name::'];
 
-        Livewire::test(CreateTask::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['customer_id']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['customer_id']);
     }
 
     #[Test]
@@ -283,10 +288,11 @@ class TasksTest extends AbstractTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['assigned_to']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['assigned_to']);
     }
 
     #[Test]
@@ -329,10 +335,11 @@ class TasksTest extends AbstractTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['tax_rate_id']);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors(['tax_rate_id']);
     }
 
     #[Test]
@@ -364,7 +371,7 @@ class TasksTest extends AbstractTestCase
         $user->companies()->attach($company->id);
         $this->actingAs($user);
 
-        $client = Client::factory()->create([
+        $client = Relation::factory()->create([
             'client_name' => '::client_name::',
         ]);
 
@@ -399,10 +406,11 @@ class TasksTest extends AbstractTestCase
             'description' => 'Updated description',
         ];
 
-        Livewire::test(EditTask::class, ['record' => $task->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditTask::class, ['record' => $task->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [
             'task_id' => $task->task_id,
@@ -434,7 +442,7 @@ class TasksTest extends AbstractTestCase
 
         $this->markTestIncomplete('delete action not implemented');
         // $this->authenticate();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -457,10 +465,11 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->callTableAction('delete', $task->task_id)
-            ->assertSuccessful()
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('delete', $task->task_id);
+
+/** assert */
+$component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseMissing('tasks', ['task_id' => $task->task_id]);
     }
@@ -475,7 +484,7 @@ class TasksTest extends AbstractTestCase
         /* arrange */
 
         $this->markTestIncomplete('assignProject action not implemented');
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -498,10 +507,11 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id])
-            ->assertSuccessful()
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
+
+/** assert */
+$component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
             'task_id'    => $task->task_id,
@@ -517,7 +527,7 @@ class TasksTest extends AbstractTestCase
 
         $this->markTestIncomplete('assignProject action not implemented');
         // $this->authenticate();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -539,10 +549,11 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->callTableAction('assignProject', $task->task_id)
-            ->assertStatus(422)
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id);
+
+/** assert */
+$component->assertStatus(422)->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
             'task_id' => $task->task_id,
@@ -571,7 +582,7 @@ class TasksTest extends AbstractTestCase
 
 
         // $this->authenticate();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -590,13 +601,11 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->callTableAction('storeRecurringTask', $task->task_id)
-            ->assertSuccessful()
-            ->set('data.project_id', $payload['project_id'])
-            ->set('data.task_name', $payload['task_name'])
-            ->set('data.tax_rate_id', $payload['tax_rate_id'])
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
+
+/** assert */
+$component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', $payload);
     }
@@ -618,7 +627,7 @@ class TasksTest extends AbstractTestCase
 
 
         // $this->authenticate();
-        $client = Client::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -637,13 +646,11 @@ class TasksTest extends AbstractTestCase
 
         $task = Task::factory()->create($payload);
 
-        Livewire::test(ListTasks::class)->actingAs($this->user)
-            ->callTableAction('storeRecurringTask', $task->task_id)
-            ->assertSuccessful()
-            ->set('data.project_id', $payload['project_id'])
-            ->set('data.task_name', $payload['task_name'])
-            ->set('data.tax_rate_id', $payload['tax_rate_id'])
-            ->assertHasNoErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
+
+/** assert */
+$component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', $payload);
     }

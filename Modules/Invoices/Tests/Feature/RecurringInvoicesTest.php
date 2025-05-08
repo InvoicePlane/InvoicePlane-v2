@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Enums\RecurringFrequency;
@@ -172,10 +171,11 @@ class RecurringInvoicesTest extends AbstractTestCase
             'end_at'            => '2025-04-30',
         ];
 
-        Livewire::test(CreateRecurringInvoice::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -274,10 +274,11 @@ class RecurringInvoicesTest extends AbstractTestCase
             'end_at'            => '2025-04-30',
         ];
 
-        Livewire::test(EditRecurringInvoice::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);

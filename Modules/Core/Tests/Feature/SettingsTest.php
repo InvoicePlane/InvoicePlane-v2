@@ -58,7 +58,6 @@ class SettingsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
      * @payload
      * []
@@ -75,10 +74,11 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateSetting::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -88,7 +88,6 @@ class SettingsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
      * @payload
      * []
@@ -105,10 +104,11 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateSetting::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -118,7 +118,6 @@ class SettingsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
      * @payload
      * []
@@ -138,10 +137,11 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditSetting::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -151,7 +151,6 @@ class SettingsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
      * @payload
      * []
@@ -170,10 +169,11 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditSetting::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -183,7 +183,6 @@ class SettingsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\SettingResource
      *
      * @payload
      * []
@@ -200,8 +199,8 @@ class SettingsTest extends AbstractTestCase
 
         $record = Setting::factory()->create();
 
-        Livewire::test(ListSettings::class)->actingAs($this->superAdmin())
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListSettings::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('settings', ['id' => $record->id]);
     }

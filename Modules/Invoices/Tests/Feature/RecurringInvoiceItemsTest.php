@@ -31,9 +31,8 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
     /**
      * @group smoke
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      */
-    public function it_lists_recurringinvoiceitems(): void
+    public function it_lists_recurring_invoice_items(): void
     {
         $this->markTestIncomplete();
 
@@ -42,8 +41,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListRecurringInvoiceItems::class)->actingAs($this->user)
-            ->assertSuccessful();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListRecurringInvoiceItems::class);
+
+/** assert */
+$component->assertSuccessful();
     }
 
     // endregion
@@ -56,12 +58,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
      * @payload
      * []
      */
-    public function it_creates_a_recurringinvoiceitem(): void
+    public function it_creates_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();
 
@@ -73,10 +74,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateRecurringInvoiceItem::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateRecurringInvoiceItem::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -86,12 +88,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
      * @payload
      * []
      */
-    public function it_fails_to_create_recurringinvoiceitem_when_required_fields_are_missing(): void
+    public function it_fails_to_create_recurring_invoice_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -103,10 +104,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateRecurringInvoiceItem::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateRecurringInvoiceItem::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -116,12 +118,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
      * @payload
      * []
      */
-    public function it_updates_a_recurringinvoiceitem(): void
+    public function it_updates_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();
 
@@ -136,10 +137,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -149,12 +151,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
      * @payload
      * []
      */
-    public function it_fails_to_update_recurringinvoiceitem_when_required_fields_are_missing(): void
+    public function it_fails_to_update_recurring_invoice_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
 
@@ -168,10 +169,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -181,12 +183,11 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\RecurringInvoiceItemResource
      *
      * @payload
      * []
      */
-    public function it_deletes_a_recurringinvoiceitem(): void
+    public function it_deletes_a_recurring_invoice_item(): void
     {
         $this->markTestIncomplete();
 
@@ -198,10 +199,10 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         $record = RecurringInvoiceItem::factory()->create();
 
-        Livewire::test(ListRecurringInvoiceItems::class)->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListRecurringInvoiceItems::class)->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('recurringinvoiceitems', ['id' => $record->id]);
+        $this->assertDatabaseMissing('recurring_invoice_items', ['id' => $record->id]);
     }
 
     // endregion

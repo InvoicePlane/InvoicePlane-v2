@@ -55,8 +55,11 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        Livewire::test(ListTaxRates::class)->actingAs($this->superAdmin())
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -97,10 +100,11 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        Livewire::test(CreateTaxRate::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -151,10 +155,11 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '20',
         ];
 
-        Livewire::test(EditTaxRate::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
             'tax_rate_id' => $taxRate->tax_rate_id,
@@ -184,8 +189,8 @@ class TaxRatesTest extends AbstractTestCase
 
         $record = TaxRate::factory()->create();
 
-        Livewire::test(ListTaxRates::class)->actingAs($this->superAdmin())
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);
     }

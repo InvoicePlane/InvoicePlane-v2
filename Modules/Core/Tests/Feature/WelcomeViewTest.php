@@ -28,7 +28,7 @@ class WelcomeViewTest extends AbstractTestCase
 
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(Welcome::class)->);
+$component = Livewire::actingAs($this->superAdmin())->test(Welcome::class);
 
 /** assert */
 $component->assertSuccessful();

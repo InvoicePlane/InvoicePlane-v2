@@ -60,10 +60,11 @@ class CustomFieldsTest extends AbstractTestCase
             'field_order'    => 'Example',
         ];
 
-        Livewire::test(CreateCustomField::class)->actingAs($this->superAdmin())
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(CreateCustomField::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -100,10 +101,11 @@ class CustomFieldsTest extends AbstractTestCase
             'field_order'    => 'Example',
         ];
 
-        Livewire::test(EditCustomField::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(EditCustomField::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -132,8 +134,8 @@ class CustomFieldsTest extends AbstractTestCase
 
         $record = CustomField::factory()->create();
 
-        Livewire::test(ListCustomFields::class)->actingAs($this->superAdmin())
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->superAdmin())->test(ListCustomFields::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('customfields', ['id' => $record->id]);
     }

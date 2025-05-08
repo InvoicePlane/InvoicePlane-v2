@@ -30,7 +30,7 @@ class EmailTemplatesTest extends AbstractTestCase
         $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(ListEmailTemplates::class)->);
+$component = Livewire::actingAs($this->superAdmin())->test(ListEmailTemplates::class);
 
 /** assert */
 $component->assertSuccessful()->assertSeeDatabaseRecords($template);
@@ -50,7 +50,7 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($template);
         $payload = ['subject' => 'Welcome', 'body' => 'Hello world'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(CreateEmailTemplate::class)->)->fillForm($payload)->call('create');
+$component = Livewire::actingAs($this->superAdmin())->test(CreateEmailTemplate::class)->fillForm($payload)->call('create');
 
 /** assert */
 $component->assertHasNoFormErrors();
@@ -72,7 +72,7 @@ $component->assertHasNoFormErrors();
         $payload = ['body' => 'Missing subject'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(CreateEmailTemplate::class)->)->fillForm($payload)->call('create');
+$component = Livewire::actingAs($this->superAdmin())->test(CreateEmailTemplate::class)->fillForm($payload)->call('create');
 
 /** assert */
 $component->assertHasFormErrors(['subject']);
@@ -94,7 +94,7 @@ $component->assertHasFormErrors(['subject']);
         $payload = ['subject' => 'Updated Subject'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(EditEmailTemplate::class, ['record' => $template->id])->)->fillForm($payload)->call('save');
+$component = Livewire::actingAs($this->superAdmin())->test(EditEmailTemplate::class, ['record' => $template->id])->fillForm($payload)->call('save');
 
 /** assert */
 $component->assertHasNoFormErrors();
@@ -116,7 +116,7 @@ $component->assertHasNoFormErrors();
         $template = EmailTemplate::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin()->test(ListEmailTemplates::class)->)->callTableAction('delete', $template);
+$component = Livewire::actingAs($this->superAdmin())->test(ListEmailTemplates::class)->callTableAction('delete', $template);
 
         $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);
     }

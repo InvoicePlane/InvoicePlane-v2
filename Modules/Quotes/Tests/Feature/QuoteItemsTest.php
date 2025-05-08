@@ -37,8 +37,11 @@ class QuoteItemsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListQuoteItems::class)->actingAs($this->user)
-            ->assertSuccessful();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListQuoteItems::class);
+
+/** assert */
+$component->assertSuccessful();
     }
 
     // endregion
@@ -51,7 +54,6 @@ class QuoteItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
      * @payload
      * []
@@ -68,10 +70,11 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateQuoteItem::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateQuoteItem::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -81,7 +84,6 @@ class QuoteItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
      * @payload
      * []
@@ -98,10 +100,11 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateQuoteItem::class)->actingAs($this->user)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(CreateQuoteItem::class)->fillForm($payload)->call('create');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -111,7 +114,6 @@ class QuoteItemsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
      * @payload
      * []
@@ -131,10 +133,11 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditQuoteItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -144,7 +147,6 @@ class QuoteItemsTest extends AbstractTestCase
      *
      * @group crud
      *
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
      * @payload
      * []
@@ -163,10 +165,11 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()->actingAs($this->user)])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasFormErrors();
+        /** act */
+$component = Livewire::actingAs($this->user)->test(EditQuoteItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+
+/** assert */
+$component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -176,7 +179,6 @@ class QuoteItemsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @covers \Modules\.\Filament\./app/Filament\Resources\QuoteItemResource
      *
      * @payload
      * []
@@ -193,8 +195,8 @@ class QuoteItemsTest extends AbstractTestCase
 
         $record = QuoteItem::factory()->create();
 
-        Livewire::test(ListQuoteItems::class)->actingAs($this->user)
-            ->callTableAction('delete', $record);
+        /** act */
+$component = Livewire::actingAs($this->user)->test(ListQuoteItems::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('quote_items', ['id' => $record->id]);
     }
