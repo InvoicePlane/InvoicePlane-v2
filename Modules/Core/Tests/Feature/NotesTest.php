@@ -42,7 +42,7 @@ class NotesTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListNotes::class)
+        Livewire::test(ListNotes::class)->actingAs($this->superAdmin())
             ->assertSuccessful();
     }
 
@@ -73,7 +73,7 @@ class NotesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateNote::class)
+        Livewire::test(CreateNote::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -103,7 +103,7 @@ class NotesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateNote::class)
+        Livewire::test(CreateNote::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -136,7 +136,7 @@ class NotesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditNote::class, ['record' => $record->getKey()])
+        Livewire::test(EditNote::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -168,7 +168,7 @@ class NotesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditNote::class, ['record' => $record->getKey()])
+        Livewire::test(EditNote::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -198,7 +198,7 @@ class NotesTest extends AbstractTestCase
 
         $record = Note::factory()->create();
 
-        Livewire::test(ListNotes::class)
+        Livewire::test(ListNotes::class)->actingAs($this->superAdmin())
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('notes', ['id' => $record->id]);

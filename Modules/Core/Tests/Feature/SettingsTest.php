@@ -35,7 +35,7 @@ class SettingsTest extends AbstractTestCase
 
         /* arrange */
 
-        $this->markTestSkipped();
+
         $user     = User::factory()->create();
         $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.settings.index'));
         $response->assertSuccessful();
@@ -75,7 +75,7 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateSetting::class)
+        Livewire::test(CreateSetting::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -105,7 +105,7 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateSetting::class)
+        Livewire::test(CreateSetting::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -138,7 +138,7 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditSetting::class, ['record' => $record->getKey()])
+        Livewire::test(EditSetting::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -170,7 +170,7 @@ class SettingsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditSetting::class, ['record' => $record->getKey()])
+        Livewire::test(EditSetting::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -200,7 +200,7 @@ class SettingsTest extends AbstractTestCase
 
         $record = Setting::factory()->create();
 
-        Livewire::test(ListSettings::class)
+        Livewire::test(ListSettings::class)->actingAs($this->superAdmin())
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('settings', ['id' => $record->id]);

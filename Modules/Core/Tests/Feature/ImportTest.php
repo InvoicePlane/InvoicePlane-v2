@@ -5,10 +5,11 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Resources\ImportResource\Pages\CreateImport;
-use Modules\Core\Filament\Resources\ImportResource\Pages\ManageImports;
 use Modules\Core\Models\Import;
 use Modules\Core\Tests\AbstractTestCase;
+
+//use Modules\Core\Filament\Resources\ImportResource\Pages\CreateImport;
+//use Modules\Core\Filament\Resources\ImportResource\Pages\ManageImports;
 
 class ImportTest extends AbstractTestCase
 {
@@ -32,13 +33,13 @@ class ImportTest extends AbstractTestCase
 
         /* arrange */
 
-        $this->markTestSkipped();
+
         //$this->authenticate();
         Import::factory()->create([
             'import_date' => '2022-04-01',
         ]);
 
-        Livewire::test(ManageImports::class)
+        Livewire::test(ListImports::class)->actingAs($this->superAdmin())
             ->assertSee('2022-04-01');
     }
 
@@ -48,10 +49,10 @@ class ImportTest extends AbstractTestCase
 
         /* arrange */
 
-        $this->markTestSkipped();
+
         $data = Import::factory()->make()->toArray();
 
-        Livewire::test(CreateImport::class)
+        Livewire::test(CreateImport::class)->actingAs($this->superAdmin())
             ->callTableAction('create', $data)
             ->assertHasNoTableActionErrors();
 

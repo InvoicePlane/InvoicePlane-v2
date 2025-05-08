@@ -67,7 +67,7 @@ class UserProfilesTest extends AbstractTestCase
             'user_iban'     => 'Example',
         ];
 
-        Livewire::test(CreateUserProfile::class)
+        Livewire::test(CreateUserProfile::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -113,7 +113,7 @@ class UserProfilesTest extends AbstractTestCase
             'user_iban'     => 'Example',
         ];
 
-        Livewire::test(EditUserProfile::class, ['record' => $record->getKey()])
+        Livewire::test(EditUserProfile::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -148,7 +148,7 @@ class UserProfilesTest extends AbstractTestCase
 
         $record = UserProfile::factory()->create();
 
-        Livewire::test(ListUserProfiles::class)
+        Livewire::test(ListUserProfiles::class)->actingAs($this->superAdmin())
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('userprofiles', ['id' => $record->id]);

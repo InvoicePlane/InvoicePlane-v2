@@ -11,7 +11,6 @@ use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\CreateTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\EditTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -56,7 +55,7 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        Livewire::test(ListTaxRates::class)
+        Livewire::test(ListTaxRates::class)->actingAs($this->superAdmin())
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
@@ -98,7 +97,7 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        Livewire::test(CreateTaxRate::class)
+        Livewire::test(CreateTaxRate::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -152,7 +151,7 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '20',
         ];
 
-        Livewire::test(EditTaxRate::class, ['record' => $record->getKey()])
+        Livewire::test(EditTaxRate::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -177,20 +176,18 @@ class TaxRatesTest extends AbstractTestCase
      */
     public function it_deletes_a_taxrate(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
 
         /* arrange */
-
-        $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
 
         //$this->actingAs(User::factory()->create());
 
         $record = TaxRate::factory()->create();
 
-        Livewire::test(ListTaxRates::class)
+        Livewire::test(ListTaxRates::class)->actingAs($this->superAdmin())
             ->callTableAction('delete', $record);
 
-        $this->assertDatabaseMissing('taxrates', ['id' => $record->id]);
+        $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);
     }
 
     // endregion

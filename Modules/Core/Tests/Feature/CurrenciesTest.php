@@ -42,7 +42,7 @@ class CurrenciesTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListCurrencies::class)
+        Livewire::test(ListCurrencies::class)->actingAs($this->superAdmin())
             ->assertSuccessful();
     }
 
@@ -73,7 +73,7 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateCurrency::class)
+        Livewire::test(CreateCurrency::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -103,7 +103,7 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateCurrency::class)
+        Livewire::test(CreateCurrency::class)->actingAs($this->superAdmin())
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -136,7 +136,7 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditCurrency::class, ['record' => $record->getKey()])
+        Livewire::test(EditCurrency::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -168,7 +168,7 @@ class CurrenciesTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditCurrency::class, ['record' => $record->getKey()])
+        Livewire::test(EditCurrency::class, ['record' => $record->getKey()->actingAs($this->superAdmin())])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -198,7 +198,7 @@ class CurrenciesTest extends AbstractTestCase
 
         $record = Currency::factory()->create();
 
-        Livewire::test(ListCurrencies::class)
+        Livewire::test(ListCurrencies::class)->actingAs($this->superAdmin())
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('currencies', ['id' => $record->id]);
