@@ -2,12 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -15,10 +9,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Models\TaxRate;
 

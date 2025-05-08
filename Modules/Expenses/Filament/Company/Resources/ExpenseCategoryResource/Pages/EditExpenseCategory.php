@@ -3,7 +3,6 @@
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
 

@@ -4,17 +4,15 @@ namespace Modules\Core\Filament\Admin\Resources;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
 use Modules\Core\Models\UserProfile;
 
 class UserProfileResource extends Resource

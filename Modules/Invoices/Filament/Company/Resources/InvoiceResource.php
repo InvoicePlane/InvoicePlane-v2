@@ -2,17 +2,6 @@
 
 namespace Modules\Invoices\Filament\Company\Resources;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\CustomerRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\ExpenseRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\DocumentGroupRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\InvoiceItemsRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\QuoteRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\UserRelationManager;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -24,14 +13,22 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Admin\Resources\AbstractTenantResource;
 use Modules\Invoices\Enums\InvoiceStatus;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\CustomerRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\DocumentGroupRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\ExpenseRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\InvoiceItemsRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\QuoteRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\UserRelationManager;
 use Modules\Invoices\Models\Invoice;
 
 class InvoiceResource extends AbstractTenantResource

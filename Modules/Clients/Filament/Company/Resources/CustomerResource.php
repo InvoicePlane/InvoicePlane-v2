@@ -2,12 +2,6 @@
 
 namespace Modules\Clients\Filament\Company\Resources;
 
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\ExpensesRelationManager;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\InvoicesRelationManager;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\QuotesRelationManager;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -19,13 +13,16 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\ExpensesRelationManager;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\InvoicesRelationManager;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\QuotesRelationManager;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Helpers\EnumHelper;

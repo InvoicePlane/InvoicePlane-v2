@@ -3,7 +3,6 @@
 namespace Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Quotes\Filament\Company\Resources\QuoteResource;
 

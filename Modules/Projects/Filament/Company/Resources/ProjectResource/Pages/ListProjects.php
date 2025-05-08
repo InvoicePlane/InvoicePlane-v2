@@ -3,7 +3,6 @@
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Projects\Filament\Company\Resources\ProjectResource;
 

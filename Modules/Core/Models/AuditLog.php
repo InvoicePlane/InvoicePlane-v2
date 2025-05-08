@@ -2,9 +2,9 @@
 
 namespace Modules\Core\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Core\Support\DateFormatter;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;

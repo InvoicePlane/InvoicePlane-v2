@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Application;
 use Modules\Core\Support\DateFormatter;
 
 /**

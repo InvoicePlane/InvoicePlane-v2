@@ -3,7 +3,6 @@
 namespace Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 

@@ -2,25 +2,22 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
-use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
-use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages;
-use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers;
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
 use Modules\Core\Models\User;
 
 class UserResource extends Resource

@@ -2,10 +2,6 @@
 
 namespace Modules\Projects\Filament\Company\Resources;
 
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -17,13 +13,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 use Modules\Projects\Enums\TaskStatus;
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages;
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 
