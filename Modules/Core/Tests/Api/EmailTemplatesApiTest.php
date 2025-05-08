@@ -4,11 +4,12 @@ namespace Modules\Core\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-// use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\EmailTemplate;
+// use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
+use PHPUnit\Framework\Attributes\Group;
 
 class EmailTemplatesApiTest extends AbstractTestCase
 {

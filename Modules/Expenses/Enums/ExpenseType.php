@@ -6,7 +6,7 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum ExpenseType: string implements LabeledEnum
 {
-    case FIXED    = 'fixed';
+    case FIXED       = 'fixed';
     case ONE_TIME    = 'one_time';
     case RECURRING   = 'recurring';
     case TRAVEL      = 'travel';

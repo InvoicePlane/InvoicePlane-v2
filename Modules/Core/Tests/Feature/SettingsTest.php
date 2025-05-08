@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class SettingsTest extends AbstractTestCase
 {

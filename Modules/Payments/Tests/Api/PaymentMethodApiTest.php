@@ -4,11 +4,12 @@ namespace Modules\Payments\Tests\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-// use Laravel\Sanctum\Sanctum;
 use Modules\Core\Models\User;
+// use Laravel\Sanctum\Sanctum;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Core\Tests\ApiTestTrait;
 use Modules\Payments\Models\PaymentMethod;
+use PHPUnit\Framework\Attributes\Group;
 
 class PaymentMethodApiTest extends AbstractTestCase
 {

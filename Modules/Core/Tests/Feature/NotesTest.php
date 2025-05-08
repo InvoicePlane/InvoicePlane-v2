@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\Note;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 //use Modules\Core\Filament\Resources\NoteResource\Pages\CreateNote;
 //use Modules\Core\Filament\Resources\NoteResource\Pages\EditNote;
