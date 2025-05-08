@@ -2,6 +2,13 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\CustomFieldValueResource\Pages\ListCustomFieldValues;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,10 +27,10 @@ class CustomFieldValueResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('custom_field_id')->relationship('customField', 'name')->required(),
-                Forms\Components\TextInput::make('fieldable_type'),
-                Forms\Components\TextInput::make('fieldable_id'),
-                Forms\Components\TextInput::make('custom_field_value'),
+                Select::make('custom_field_id')->relationship('customField', 'name')->required(),
+                TextInput::make('fieldable_type'),
+                TextInput::make('fieldable_id'),
+                TextInput::make('custom_field_value'),
             ]);
     }
 
@@ -31,22 +38,22 @@ class CustomFieldValueResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('customField.name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('fieldable_type')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('fieldable_id')->hiddenFrom('sm')->searchable()->sortable()->toggleable(false),
-                Tables\Columns\TextColumn::make('custom_field_value')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('customField.name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('fieldable_type')->searchable()->sortable()->toggleable(),
+                TextColumn::make('fieldable_id')->hiddenFrom('sm')->searchable()->sortable()->toggleable(false),
+                TextColumn::make('custom_field_value')->limit(10)->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -63,7 +70,7 @@ class CustomFieldValueResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => CustomFieldValueResource\Pages\ListCustomFieldValues::route('/'),
+            'index' => ListCustomFieldValues::route('/'),
         ];
     }
 }

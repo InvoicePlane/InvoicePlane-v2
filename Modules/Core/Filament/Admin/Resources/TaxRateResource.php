@@ -2,6 +2,12 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\TaxRateResource\Pages\ListTaxRates;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -120,7 +126,7 @@ class TaxRateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tax_rate_type')
+                TextColumn::make('tax_rate_type')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(TaxRateType::class, $state);
 
@@ -129,21 +135,21 @@ class TaxRateResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\IconColumn::make('is_active')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('name')->limit(10)->label(trans('ip.name'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('code')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('rate')->label(trans('ip.percentage'))->searchable()->sortable()->toggleable(),
+                IconColumn::make('is_active')->searchable()->sortable()->toggleable(),
+                TextColumn::make('name')->limit(10)->label(trans('ip.name'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('code')->searchable()->sortable()->toggleable(),
+                TextColumn::make('rate')->label(trans('ip.percentage'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('name', 'asc');
@@ -161,7 +167,7 @@ class TaxRateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => TaxRateResource\Pages\ListTaxRates::route('/'),
+            'index' => ListTaxRates::route('/'),
         ];
     }
 }

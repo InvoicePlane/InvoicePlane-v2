@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages;
 
+use Filament\Actions\CreateAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
@@ -13,7 +14,7 @@ class ListEmailTemplates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->modalWidth('7xl'),
+            CreateAction::make()->modalWidth('7xl'),
         ];
     }
 }

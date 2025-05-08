@@ -2,7 +2,9 @@
 
 namespace Modules\Clients\Enums;
 
-enum RelationType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum RelationType: string implements LabeledEnum
 {
     case CUSTOMER = 'customer';
     case LEAD     = 'lead';

@@ -17,7 +17,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(TaxRateResource::class)]
-
 class TaxRatesTest extends AbstractTestCase
 {
     use RefreshDatabase;

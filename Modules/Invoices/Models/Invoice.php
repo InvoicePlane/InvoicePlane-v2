@@ -2,6 +2,8 @@
 
 namespace Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -120,19 +122,19 @@ class Invoice extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?MorphMany
     {
         //return $this->morphMany(Activity::class, 'audit');
         return null;
     }
 
-    public function attachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): ?MorphMany
     {
         // return $this->morphMany(Attachment::class, 'attachable');
         return null;
     }
 
-    public function clientAttachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function clientAttachments(): MorphMany
     {
         $relationship = $this->morphMany('Attachment', 'attachable');
 
@@ -177,12 +179,12 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function mailQueue(): MorphMany
     {
         return $this->morphMany(MailQueue::class, 'mailable');
     }
 
-    public function notes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'notable');
     }
@@ -197,7 +199,7 @@ class Invoice extends Model
         return $this->belongsTo(PaymentMethod::class, 'payment_method');
     }
 
-    public function quote(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function quote(): HasOne
     {
         return $this->hasOne(Quote::class);
     }

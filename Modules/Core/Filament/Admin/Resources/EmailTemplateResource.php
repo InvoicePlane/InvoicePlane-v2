@@ -2,6 +2,11 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -76,22 +81,22 @@ class EmailTemplateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->limit(10)->label(trans('ip.title'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('type')->label(trans('ip.type'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('subject')->limit(10)->label(trans('ip.subject'))->hiddenFrom('sm')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('from_name')->limit(10)->label(trans('ip.from_name'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('from_email')->limit(10)->label(trans('ip.from_email'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('title')->limit(10)->label(trans('ip.title'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('type')->label(trans('ip.type'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('subject')->limit(10)->label(trans('ip.subject'))->hiddenFrom('sm')->searchable()->sortable()->toggleable(),
+                TextColumn::make('from_name')->limit(10)->label(trans('ip.from_name'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('from_email')->limit(10)->label(trans('ip.from_email'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('title', 'asc');
@@ -109,7 +114,7 @@ class EmailTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => EmailTemplateResource\Pages\ListEmailTemplates::route('/'),
+            'index' => ListEmailTemplates::route('/'),
         ];
     }
 }

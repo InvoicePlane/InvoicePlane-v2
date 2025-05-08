@@ -2,7 +2,9 @@
 
 namespace Modules\Projects\Enums;
 
-enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum TaskStatus: string implements LabeledEnum
 {
     case OPEN        = 'open';
     case IN_PROGRESS = 'in_progress';

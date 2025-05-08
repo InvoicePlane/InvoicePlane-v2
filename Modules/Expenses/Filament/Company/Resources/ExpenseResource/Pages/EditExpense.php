@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
@@ -13,7 +14,7 @@ class EditExpense extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

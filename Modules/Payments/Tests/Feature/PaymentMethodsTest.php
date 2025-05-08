@@ -20,7 +20,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(PaymentMethodResource::class)]
-
 class PaymentMethodsTest extends AbstractTestCase
 {
     use RefreshDatabase;

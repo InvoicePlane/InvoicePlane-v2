@@ -2,6 +2,13 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\InvoicesRelationManager;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\ExpensesRelationManager;
+use Modules\Core\Filament\Admin\Resources\UserResource\RelationManagers\QuotesRelationManager;
+use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -104,12 +111,12 @@ class UserResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -120,16 +127,16 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\InvoicesRelationManager::class,
-            RelationManagers\ExpensesRelationManager::class,
-            RelationManagers\QuotesRelationManager::class,
+            InvoicesRelationManager::class,
+            ExpensesRelationManager::class,
+            QuotesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
+            'index' => ListUsers::route('/'),
         ];
     }
 }

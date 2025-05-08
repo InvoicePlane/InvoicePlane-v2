@@ -2,6 +2,15 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductCategoryRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\InvoiceItemsRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\QuoteItemsRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\RelationManagers\ProductUnitRelationManager;
+use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
@@ -123,27 +132,27 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category.category_name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('code')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('product_name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('category.category_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('code')->searchable()->sortable()->toggleable(),
+                TextColumn::make('product_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('type')
                     ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('price')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('productUnit.unit_name')->limit(5)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('price')->searchable()->sortable()->toggleable(),
+                TextColumn::make('productUnit.unit_name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('product_name', 'asc');
@@ -155,17 +164,17 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ProductResource\RelationManagers\ProductCategoryRelationManager::class,
-            ProductResource\RelationManagers\InvoiceItemsRelationManager::class,
-            ProductResource\RelationManagers\QuoteItemsRelationManager::class,
-            ProductResource\RelationManagers\ProductUnitRelationManager::class,
+            ProductCategoryRelationManager::class,
+            InvoiceItemsRelationManager::class,
+            QuoteItemsRelationManager::class,
+            ProductUnitRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
+            'index' => ListProducts::route('/'),
         ];
     }
 }

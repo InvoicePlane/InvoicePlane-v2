@@ -2,6 +2,13 @@
 
 namespace Modules\Payments\Filament\Company\Resources\PaymentResource\RelationManagers;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -17,7 +24,7 @@ class InvoiceRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('invoice_number')
+                TextInput::make('invoice_number')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -28,23 +35,23 @@ class InvoiceRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('invoice_number')
             ->columns([
-                Tables\Columns\TextColumn::make('invoice_number'),
+                TextColumn::make('invoice_number'),
             ])
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->modalWidth('7xl'),
+                CreateAction::make()->modalWidth('7xl'),
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
-                    Tables\Actions\DeleteAction::make(),
+                    EditAction::make()->modalWidth('7xl'),
+                    DeleteAction::make(),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

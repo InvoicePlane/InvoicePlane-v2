@@ -2,7 +2,9 @@
 
 namespace Modules\Projects\Enums;
 
-enum ProjectStatus: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum ProjectStatus: string implements LabeledEnum
 {
     case PLANNED   = 'planned';
     case ACTIVE    = 'active';

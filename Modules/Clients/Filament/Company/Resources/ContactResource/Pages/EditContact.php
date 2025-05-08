@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Filament\Company\Resources\ContactResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Clients\Filament\Company\Resources\ContactResource;
@@ -13,7 +14,7 @@ class EditContact extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

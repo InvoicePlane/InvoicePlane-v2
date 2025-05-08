@@ -2,6 +2,11 @@
 
 namespace Modules\Payments\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -151,7 +156,7 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('paid_at')
+                TextColumn::make('paid_at')
                     ->date('d-m-Y')
                     ->color(
                         fn (Payment $record) => optional($record->payable)->invoice_date_due && $record->paid_at > $record->payable->invoice_date_due
@@ -162,13 +167,13 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('invoice.invoice_due_at')
+                TextColumn::make('invoice.invoice_due_at')
                     ->label(trans('ip.due_date'))
                     ->since()
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('invoice.invoice_number')
+                TextColumn::make('invoice.invoice_number')
                     ->label(trans('ip.payment_reference'))
                     ->state(function (Payment $record) {
                         $invoice = $record->invoice;
@@ -181,25 +186,25 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('invoice.documentGroup.document_group_name')
+                TextColumn::make('invoice.documentGroup.document_group_name')
                     ->limit(10)
                     ->label(trans('ip.invoice_group'))
                     ->hiddenFrom('xl')
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('invoice.customer.company_name')
+                TextColumn::make('invoice.customer.company_name')
                     ->limit(10)
                     ->label(trans('ip.client'))
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('payment_amount')
+                TextColumn::make('payment_amount')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('paymentMethod.payment_method_name')
+                TextColumn::make('paymentMethod.payment_method_name')
                     ->limit(10)
                     ->label(trans('ip.payment_method'))
                     ->sortable()
@@ -210,12 +215,12 @@ class PaymentResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -233,7 +238,7 @@ class PaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayments::route('/'),
+            'index' => ListPayments::route('/'),
         ];
     }
 }

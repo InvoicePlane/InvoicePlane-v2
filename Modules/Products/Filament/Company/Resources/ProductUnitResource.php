@@ -2,6 +2,10 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\ListProductUnits;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
@@ -75,12 +79,12 @@ class ProductUnitResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -97,7 +101,7 @@ class ProductUnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProductUnits::route('/'),
+            'index' => ListProductUnits::route('/'),
         ];
     }
 }

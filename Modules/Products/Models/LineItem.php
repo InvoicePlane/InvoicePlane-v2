@@ -38,6 +38,6 @@ class LineItem extends Model
 
     public function item(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Products\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 }

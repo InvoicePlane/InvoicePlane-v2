@@ -9,7 +9,7 @@ use Modules\Core\Models\User;
 use Modules\Core\Traits\HasCompanyFactoryState;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Core\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {

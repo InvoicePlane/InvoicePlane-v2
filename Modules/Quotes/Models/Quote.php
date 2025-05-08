@@ -2,6 +2,7 @@
 
 namespace Modules\Quotes\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -94,19 +95,19 @@ class Quote extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?MorphMany
     {
         //return $this->morphMany(Activity::class, 'audit');
         return null;
     }
 
-    public function attachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): ?MorphMany
     {
         // return $this->morphMany(Attachment::class, 'attachable');
         return null;
     }
 
-    public function clientAttachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function clientAttachments(): ?MorphMany
     {
         /*$relationship = $this->morphMany(Attachment::class, 'attachable');
 
@@ -131,12 +132,12 @@ class Quote extends Model
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
-    public function mailQueue(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function mailQueue(): MorphMany
     {
         return $this->morphMany('Modules\Core\Models\MailQueue', 'mailable');
     }
 
-    public function notes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'notable');
     }

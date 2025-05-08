@@ -2,6 +2,17 @@
 
 namespace Modules\Invoices\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\CustomerRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\ExpenseRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\DocumentGroupRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\InvoiceItemsRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\QuoteRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\RelationManagers\UserRelationManager;
+use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -259,7 +270,7 @@ class InvoiceResource extends AbstractTenantResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('invoice_status')
+                TextColumn::make('invoice_status')
                     ->formatStateUsing(function ($state) {
                         $status = $state instanceof InvoiceStatus ? $state : InvoiceStatus::tryFrom($state);
 
@@ -273,21 +284,21 @@ class InvoiceResource extends AbstractTenantResource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('invoice_number')
+                TextColumn::make('invoice_number')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('customer.company_name')->limit(10)
+                TextColumn::make('customer.company_name')->limit(10)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('invoice_due_at')
+                TextColumn::make('invoice_due_at')
                     ->date()
                     ->since()
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('invoice_total')
+                TextColumn::make('invoice_total')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -295,7 +306,7 @@ class InvoiceResource extends AbstractTenantResource
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                     Action::make('download pdf')
                         ->label(trans('ip.download_pdf'))
                         ->modalDescription(
@@ -311,8 +322,8 @@ class InvoiceResource extends AbstractTenantResource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('invoice_due_at', 'desc');
@@ -326,19 +337,19 @@ class InvoiceResource extends AbstractTenantResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CustomerRelationManager::class,
-            RelationManagers\ExpenseRelationManager::class,
-            RelationManagers\DocumentGroupRelationManager::class,
-            RelationManagers\InvoiceItemsRelationManager::class,
-            RelationManagers\QuoteRelationManager::class,
-            RelationManagers\UserRelationManager::class,
+            CustomerRelationManager::class,
+            ExpenseRelationManager::class,
+            DocumentGroupRelationManager::class,
+            InvoiceItemsRelationManager::class,
+            QuoteRelationManager::class,
+            UserRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInvoices::route('/'),
+            'index' => ListInvoices::route('/'),
         ];
     }
 }

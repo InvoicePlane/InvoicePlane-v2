@@ -2,6 +2,14 @@
 
 namespace Modules\Quotes\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\DocumentGroupRelationManager;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\InvoiceRelationManager;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\RelationManagers\UserRelationManager;
+use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -234,7 +242,7 @@ class QuoteResource extends AbstractTenantResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('quote_status')
+                TextColumn::make('quote_status')
                     ->label(trans('ip.quote_status'))
                     ->badge()
                     ->formatStateUsing(function (Quote $record) {
@@ -250,15 +258,15 @@ class QuoteResource extends AbstractTenantResource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('quote_number')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('prospect.company_name')->limit(10)->label(trans('ip.client_name'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('quote_expires_at')->date()->label(trans('ip.expires'))->color(fn (Quote $record) => Carbon::parse($record->quote_expires_at)->isPast() ? 'text-red-500' : null)->since()->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('quote_total')->searchable()->sortable()->toggleable(),
+                TextColumn::make('quote_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('prospect.company_name')->limit(10)->label(trans('ip.client_name'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('quote_expires_at')->date()->label(trans('ip.expires'))->color(fn (Quote $record) => Carbon::parse($record->quote_expires_at)->isPast() ? 'text-red-500' : null)->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('quote_total')->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                     Action::make('download pdf')
                         ->label(trans('ip.download_pdf'))
                         ->modalDescription(
@@ -274,8 +282,8 @@ class QuoteResource extends AbstractTenantResource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('quote_expires_at', 'asc');
@@ -288,16 +296,16 @@ class QuoteResource extends AbstractTenantResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\DocumentGroupRelationManager::class,
-            RelationManagers\InvoiceRelationManager::class,
-            RelationManagers\UserRelationManager::class,
+            DocumentGroupRelationManager::class,
+            InvoiceRelationManager::class,
+            UserRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListQuotes::route('/'),
+            'index' => ListQuotes::route('/'),
         ];
     }
 }

@@ -2,6 +2,11 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages\ListExpenses;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -265,7 +270,7 @@ class ExpenseResource extends AbstractTenantResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('expense_status')
+                TextColumn::make('expense_status')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseStatus::class, $state);
 
@@ -280,13 +285,13 @@ class ExpenseResource extends AbstractTenantResource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('expenseCategory.category_name')
+                TextColumn::make('expenseCategory.category_name')
                     ->limit(10)
                     ->placeholder('-')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('expense_type')
+                TextColumn::make('expense_type')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseType::class, $state);
 
@@ -296,20 +301,20 @@ class ExpenseResource extends AbstractTenantResource
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('md'),
-                Tables\Columns\TextColumn::make('expense_number')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('vendor.company_name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('expense_amount')->searchable()->sortable()->toggleable(),
+                TextColumn::make('expense_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('vendor.company_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('expense_amount')->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -327,7 +332,7 @@ class ExpenseResource extends AbstractTenantResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExpenses::route('/'),
+            'index' => ListExpenses::route('/'),
         ];
     }
 }

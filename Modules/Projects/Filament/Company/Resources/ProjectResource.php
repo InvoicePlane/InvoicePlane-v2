@@ -2,6 +2,11 @@
 
 namespace Modules\Projects\Filament\Company\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers\TasksRelationManager;
+use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -142,7 +147,7 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->limit(10)
                     ->label(trans('ip.project_name'))
                     ->formatStateUsing(fn ($state) => $state)
@@ -152,7 +157,7 @@ class ProjectResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.client_name'))
+                TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.client_name'))
                     ->searchable()
                     ->sortable()->toggleable(),
                 TextColumn::make('project_status')
@@ -163,18 +168,18 @@ class ProjectResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('start_at')->hiddenFrom('sm')->date()->since()->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('end_at')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('start_at')->hiddenFrom('sm')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('end_at')->date()->since()->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('end_at', 'asc');
@@ -187,14 +192,14 @@ class ProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\TasksRelationManager::class,
+            TasksRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProjects::route('/'),
+            'index' => ListProjects::route('/'),
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -84,7 +86,7 @@ class RecurringInvoice extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function activities(): ?MorphMany
     {
         // return $this->morphMany(Activity::class, 'audit');
         return null;
@@ -109,7 +111,7 @@ class RecurringInvoice extends Model
 
     // This and items() are the exact same. This is added to appease the IDE gods
     // and the fact that Laravel has a protected items property.
-    public function recurringInvoiceItems(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function recurringInvoiceItems(): HasMany
     {
         return $this->hasMany(RecurringInvoiceItem::class)
             ->orderBy('display_order');

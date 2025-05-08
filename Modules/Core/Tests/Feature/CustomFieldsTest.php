@@ -10,14 +10,12 @@ use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\CreateCustom
 use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\EditCustomField;
 use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\ListCustomFields;
 use Modules\Core\Models\CustomField;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(CustomFieldResource::class)]
-
 class CustomFieldsTest extends AbstractTestCase
 {
     use WithFaker;

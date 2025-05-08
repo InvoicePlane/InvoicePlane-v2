@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum Gender: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum Gender: string implements LabeledEnum
 {
     case MALE    = 'male';
     case FEMALE  = 'female';

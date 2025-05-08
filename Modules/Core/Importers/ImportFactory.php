@@ -2,27 +2,29 @@
 
 namespace Modules\Core\Importers;
 
+use Modules\Clients\Importers\CustomerImporter;
+
 class ImportFactory
 {
     public static function create($importType)
     {
         switch ($importType) {
             case 'customers':
-                return app()->make(\Modules\Clients\Importers\CustomerImporter::class);
+                return app()->make(CustomerImporter::class);
             case 'quotes':
-                return app()->make(\Modules\Core\Importers\QuoteImporter::class);
+                return app()->make(QuoteImporter::class);
             case 'invoices':
-                return app()->make(\Modules\Core\Importers\InvoiceImporter::class);
+                return app()->make(InvoiceImporter::class);
             case 'payments':
-                return app()->make(\Modules\Core\Importers\PaymentImporter::class);
+                return app()->make(PaymentImporter::class);
             case 'invoiceItems':
-                return app()->make(\Modules\Core\Importers\InvoiceItemImporter::class);
+                return app()->make(InvoiceItemImporter::class);
             case 'quoteItems':
-                return app()->make(\Modules\Core\Importers\QuoteItemImporter::class);
+                return app()->make(QuoteItemImporter::class);
             case 'itemLookups':
-                return app()->make(\Modules\Core\Importers\ProductImporter::class);
+                return app()->make(ProductImporter::class);
             case 'expenses':
-                return app(\Modules\Core\Importers\ExpenseImporter::class);
+                return app(ExpenseImporter::class);
         }
     }
 }

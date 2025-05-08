@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum CommunicationType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum CommunicationType: string implements LabeledEnum
 {
     case EMAIL    = 'email';
     case PHONE    = 'phone';

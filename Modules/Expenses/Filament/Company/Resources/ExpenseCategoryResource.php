@@ -2,6 +2,12 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\ListExpenseCategories;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -50,7 +56,7 @@ class ExpenseCategoryResource extends Resource
                     ->schema([
                         Group::make()
                             ->schema([
-                                Forms\Components\TextInput::make('category_name')
+                                TextInput::make('category_name')
                                     ->label(trans('ip.expense_category'))
                                     ->inlineLabel()
                                     ->autofocus()
@@ -64,19 +70,19 @@ class ExpenseCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category_name')->searchable()->sortable()->toggleable(),
+                TextColumn::make('category_name')->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
+                    EditAction::make(),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -93,7 +99,7 @@ class ExpenseCategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExpenseCategories::route('/'),
+            'index' => ListExpenseCategories::route('/'),
         ];
     }
 }

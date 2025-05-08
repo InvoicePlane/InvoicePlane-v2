@@ -2,6 +2,9 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\DateFormatter;
 
@@ -55,7 +58,7 @@ class MailQueue extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function mailable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function mailable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -93,7 +96,7 @@ class MailQueue extends Model
         return implode(', ', json_decode($this->attributes['bcc']));
     }
 
-    public function getFormattedSentAttribute(): \Illuminate\Foundation\Application|array|string|\Illuminate\Contracts\Translation\Translator
+    public function getFormattedSentAttribute(): Application|array|string|Translator
     {
         return ($this->attributes['is_sent']) ? trans('ip.yes') : trans('ip.no');
     }

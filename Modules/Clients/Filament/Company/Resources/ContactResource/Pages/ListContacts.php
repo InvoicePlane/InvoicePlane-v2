@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Filament\Company\Resources\ContactResource\Pages;
 
+use Filament\Actions\CreateAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Clients\Filament\Company\Resources\ContactResource;
@@ -13,7 +14,7 @@ class ListContacts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->modalWidth('7xl'),
+            CreateAction::make()->modalWidth('7xl'),
         ];
     }
 }

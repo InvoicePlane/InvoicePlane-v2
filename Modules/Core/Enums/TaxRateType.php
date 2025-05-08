@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum TaxRateType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum TaxRateType: string implements LabeledEnum
 {
     case EXCLUSIVE = 'exclusive';
     case INCLUSIVE = 'inclusive';

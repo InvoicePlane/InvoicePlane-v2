@@ -2,6 +2,13 @@
 
 namespace Modules\Invoices\Filament\Company\Resources;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource\Pages\ListRecurringInvoices;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -46,8 +53,8 @@ class RecurringInvoiceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('invoice_id')->relationship('invoice', 'name')->required(),
-                Forms\Components\Select::make('frequency')
+                Select::make('invoice_id')->relationship('invoice', 'name')->required(),
+                Select::make('frequency')
                     ->options(
                         collect(RecurringFrequency::cases())
                             ->mapWithKeys(fn (RecurringFrequency $status) => [
@@ -56,8 +63,8 @@ class RecurringInvoiceResource extends Resource
                             ->toArray()
                     )
                     ->required(),
-                Forms\Components\DatePicker::make('recurring_start_at'),
-                Forms\Components\DatePicker::make('recurring_end_at'),
+                DatePicker::make('recurring_start_at'),
+                DatePicker::make('recurring_end_at'),
             ]);
     }
 
@@ -65,8 +72,8 @@ class RecurringInvoiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('invoice.invoice_number')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('frequency')
+                TextColumn::make('invoice.invoice_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('frequency')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(RecurringFrequency::class, $state);
 
@@ -75,20 +82,20 @@ class RecurringInvoiceResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('recurring_start_at')->date()->since()->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('recurring_end_at')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('recurring_start_at')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('recurring_end_at')->date()->since()->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -105,7 +112,7 @@ class RecurringInvoiceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRecurringInvoices::route('/'),
+            'index' => ListRecurringInvoices::route('/'),
         ];
     }
 }

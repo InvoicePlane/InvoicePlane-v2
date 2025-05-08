@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -99,7 +100,7 @@ class Expense extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function attachments(): ?\Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): ?MorphMany
     {
         // return $this->morphMany(Attachment::class, 'attachable');
         return null;

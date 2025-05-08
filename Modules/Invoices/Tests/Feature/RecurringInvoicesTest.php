@@ -20,7 +20,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(RecurringInvoiceResource::class)]
-
 class RecurringInvoicesTest extends AbstractTestCase
 {
     use RefreshDatabase;

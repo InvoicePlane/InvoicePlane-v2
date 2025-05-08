@@ -2,6 +2,10 @@
 
 namespace Modules\Projects\Filament\Company\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -226,12 +230,12 @@ class TaskResource extends Resource
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('due_at', 'asc');
@@ -250,7 +254,7 @@ class TaskResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTasks::route('/'),
+            'index' => ListTasks::route('/'),
         ];
     }
 }

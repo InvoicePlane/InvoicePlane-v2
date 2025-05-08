@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Support\DateFormatter;
 use Modules\Invoices\Models\Invoice;
@@ -29,12 +31,12 @@ class AuditLog extends Model
         'info',
     ];
 
-    public function audit(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function audit(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function getFormattedActivityAttribute(): array|string|\Illuminate\Contracts\Translation\Translator
+    public function getFormattedActivityAttribute(): array|string|Translator
     {
         if ($this->audit) {
             switch ($this->audit_type) {

@@ -2,6 +2,11 @@
 
 namespace Modules\Payments\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\ListPaymentMethods;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\TextInput;
@@ -60,18 +65,18 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('payment_method_name')->label(trans('ip.payment_method'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('payment_method_name')->label(trans('ip.payment_method'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('payment_method_name', 'asc');
@@ -89,7 +94,7 @@ class PaymentMethodResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPaymentMethods::route('/'),
+            'index' => ListPaymentMethods::route('/'),
         ];
     }
 }

@@ -92,7 +92,7 @@ class InvoiceItem extends Model
         return $this->belongsTo(TaxRate::class);
     }*/
 
-    public function taxRate2(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function taxRate2(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class, 'tax_rate_2_id');
     }

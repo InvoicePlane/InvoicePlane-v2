@@ -2,6 +2,11 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
@@ -102,7 +107,7 @@ class DocumentGroupResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->limit(10)
                     ->formatStateUsing(function ($state) {
                         if ($state instanceof DocumentGroupType) {
@@ -126,22 +131,22 @@ class DocumentGroupResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('document_group_name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('left_pad')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('format')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('next_id')->searchable()->sortable()->toggleable(),
+                TextColumn::make('document_group_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('left_pad')->searchable()->sortable()->toggleable(),
+                TextColumn::make('format')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('next_id')->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -158,7 +163,7 @@ class DocumentGroupResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => DocumentGroupResource\Pages\ListDocumentGroups::route('/'),
+            'index' => ListDocumentGroups::route('/'),
         ];
     }
 }

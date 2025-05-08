@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(Calculator::class)]
-
 class CalculatorTest extends AbstractTestCase
 {
     #[Test]

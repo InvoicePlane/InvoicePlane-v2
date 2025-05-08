@@ -39,11 +39,11 @@ class Upload extends Model
 
     public function details(): HasMany
     {
-        return $this->hasMany(\Modules\Core\Models\UploadDetail::class);
+        return $this->hasMany(UploadDetail::class);
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Core\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 }

@@ -2,6 +2,13 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,14 +27,14 @@ class UserProfileResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')->relationship('user', 'name')->required(),
-                Forms\Components\TextInput::make('user_phone'),
-                Forms\Components\TextInput::make('user_mobile'),
-                Forms\Components\TextInput::make('user_language'),
-                Forms\Components\TextInput::make('user_web'),
-                Forms\Components\TextInput::make('user_vat_id'),
-                Forms\Components\TextInput::make('user_tax_code'),
-                Forms\Components\TextInput::make('user_iban'),
+                Select::make('user_id')->relationship('user', 'name')->required(),
+                TextInput::make('user_phone'),
+                TextInput::make('user_mobile'),
+                TextInput::make('user_language'),
+                TextInput::make('user_web'),
+                TextInput::make('user_vat_id'),
+                TextInput::make('user_tax_code'),
+                TextInput::make('user_iban'),
             ]);
     }
 
@@ -35,26 +42,26 @@ class UserProfileResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_phone')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_mobile')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_language')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_web')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_vat_id')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_tax_code')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('user_iban')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user.name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_phone')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_mobile')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_language')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_web')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_vat_id')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_tax_code')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('user_iban')->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -71,7 +78,7 @@ class UserProfileResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => UserProfileResource\Pages\ListUserProfiles::route('/'),
+            'index' => ListUserProfiles::route('/'),
         ];
     }
 }

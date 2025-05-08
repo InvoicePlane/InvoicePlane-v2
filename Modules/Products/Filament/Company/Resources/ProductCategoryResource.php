@@ -2,6 +2,10 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\ListProductCategories;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
@@ -71,12 +75,12 @@ class ProductCategoryResource extends Resource
             ->filters([])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('category_name', 'asc');
@@ -94,7 +98,7 @@ class ProductCategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProductCategories::route('/'),
+            'index' => ListProductCategories::route('/'),
         ];
     }
 }

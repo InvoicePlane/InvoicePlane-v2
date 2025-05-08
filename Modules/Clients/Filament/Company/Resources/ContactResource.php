@@ -2,6 +2,11 @@
 
 namespace Modules\Clients\Filament\Company\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\ListContacts;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -147,8 +152,8 @@ class ContactResource extends AbstractTenantResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('relation.company_name')->limit(10)->label(trans('ip.company_name'))->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('relation.relation_type')
+                TextColumn::make('relation.company_name')->limit(10)->label(trans('ip.company_name'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('relation.relation_type')
                     ->limit(10)
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(RelationType::class, $state);
@@ -164,22 +169,22 @@ class ContactResource extends AbstractTenantResource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('full_name')
+                TextColumn::make('full_name')
                     ->label(trans('ip.contact_name'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('primary_email')
+                TextColumn::make('primary_email')
                     ->label(trans('ip.email'))
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('primary_phone')
+                TextColumn::make('primary_phone')
                     ->label(trans('ip.phone'))
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('gender')
+                TextColumn::make('gender')
                     ->hiddenFrom('sm')
                     ->label(trans('ip.gender'))
                     ->formatStateUsing(function ($state) {
@@ -192,12 +197,12 @@ class ContactResource extends AbstractTenantResource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -215,7 +220,7 @@ class ContactResource extends AbstractTenantResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListContacts::route('/'),
+            'index' => ListContacts::route('/'),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Events\AttachmentCreating;
@@ -63,7 +64,7 @@ class Attachment extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function attachable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function attachable(): MorphTo
     {
         return $this->morphTo();
     }

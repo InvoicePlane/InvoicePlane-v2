@@ -31,7 +31,7 @@ trait BelongsToCompany
      */
     public function company()
     {
-        return $this->belongsTo(\Modules\Core\Models\Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     /**

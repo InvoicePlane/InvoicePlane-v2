@@ -2,6 +2,12 @@
 
 namespace Modules\Clients\Filament\Company\Resources;
 
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\ExpensesRelationManager;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\InvoicesRelationManager;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\RelationManagers\QuotesRelationManager;
+use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -218,10 +224,10 @@ class CustomerResource extends Resource
             ])
             ->defaultSort('company_name', 'asc')
             ->actions([
-                Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                EditAction::make()->modalWidth('7xl'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
     }
 
@@ -231,16 +237,16 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ExpensesRelationManager::class,
-            RelationManagers\InvoicesRelationManager::class,
-            RelationManagers\QuotesRelationManager::class,
+            ExpensesRelationManager::class,
+            InvoicesRelationManager::class,
+            QuotesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCustomers::route('/'),
+            'index' => ListCustomers::route('/'),
         ];
     }
 }

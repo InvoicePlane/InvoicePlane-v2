@@ -2,6 +2,13 @@
 
 namespace Modules\Core\Filament\Admin\Resources;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Modules\Core\Filament\Admin\Resources\CustomFieldResource\Pages\ListCustomFields;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,8 +29,8 @@ class CustomFieldResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('fieldable_type'),
-                Forms\Components\Select::make('type')
+                TextInput::make('fieldable_type'),
+                Select::make('type')
                     ->options(
                         collect(CustomFieldType::cases())
                             ->mapWithKeys(fn (CustomFieldType $status) => [
@@ -32,8 +39,8 @@ class CustomFieldResource extends Resource
                             ->toArray()
                     )
                     ->required(),
-                Forms\Components\TextInput::make('field_label'),
-                Forms\Components\TextInput::make('field_order'),
+                TextInput::make('field_label'),
+                TextInput::make('field_order'),
             ]);
     }
 
@@ -41,8 +48,8 @@ class CustomFieldResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('fieldable_type')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('fieldable_type')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('type')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(CustomFieldType::class, $state);
 
@@ -51,20 +58,20 @@ class CustomFieldResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('field_label')->limit(10)->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('field_order')->searchable()->sortable()->toggleable(),
+                TextColumn::make('field_label')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('field_order')->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()->modalWidth('7xl'),
+                    EditAction::make()->modalWidth('7xl'),
                 ]),
             ])
 
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -81,7 +88,7 @@ class CustomFieldResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => CustomFieldResource\Pages\ListCustomFields::route('/'),
+            'index' => ListCustomFields::route('/'),
         ];
     }
 }

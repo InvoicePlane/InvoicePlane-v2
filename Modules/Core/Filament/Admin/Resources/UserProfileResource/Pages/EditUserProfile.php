@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource;
@@ -13,7 +14,7 @@ class EditUserProfile extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

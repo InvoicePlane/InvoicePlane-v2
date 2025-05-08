@@ -2,6 +2,10 @@
 
 namespace Modules\Projects\Filament\Company\Resources\ProjectResource\RelationManagers;
 
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -33,14 +37,14 @@ class TasksRelationManager extends RelationManager
                 TextColumn::make('name'),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->modalWidth('7xl'),
+                CreateAction::make()->modalWidth('7xl'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->modalWidth('7xl'),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make()->modalWidth('7xl'),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
     }
 }

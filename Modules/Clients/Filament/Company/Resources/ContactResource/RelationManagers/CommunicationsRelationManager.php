@@ -2,6 +2,18 @@
 
 namespace Modules\Clients\Filament\Company\Resources\ContactResource\RelationManagers;
 
+use Filament\Forms\Form;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -15,13 +27,13 @@ class CommunicationsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'contactable_value';
 
-    public function form(Forms\Form $form): Forms\Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make(2)
+                Grid::make(2)
                     ->schema([
-                        Forms\Components\Select::make('contactable_type')
+                        Select::make('contactable_type')
                             ->label(trans('ip.contact_type'))
                             ->options(
                                 collect(CommunicationType::cases())
@@ -29,34 +41,34 @@ class CommunicationsRelationManager extends RelationManager
                             )
                             ->required(),
 
-                        Forms\Components\TextInput::make('contactable_value')
+                        TextInput::make('contactable_value')
                             ->label(trans('ip.contact_value'))
                             ->required(),
                     ]),
 
-                Forms\Components\Toggle::make('is_primary')
+                Toggle::make('is_primary')
                     ->label(trans('ip.primary'))
                     ->inline(false),
             ]);
     }
 
-    public function table(Tables\Table $table): Tables\Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('contactable_type')->label(trans('ip.contact_type'))->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('contactable_value')->label(trans('ip.contact_value'))->sortable()->searchable(),
-                Tables\Columns\IconColumn::make('is_primary')->boolean()->label(trans('ip.primary')),
+                TextColumn::make('contactable_type')->label(trans('ip.contact_type'))->sortable()->searchable(),
+                TextColumn::make('contactable_value')->label(trans('ip.contact_value'))->sortable()->searchable(),
+                IconColumn::make('is_primary')->boolean()->label(trans('ip.primary')),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->modalWidth('7xl'),
+                CreateAction::make()->modalWidth('7xl'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
     }
 }
