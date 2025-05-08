@@ -56,10 +56,10 @@ class TaxRatesTest extends AbstractTestCase
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -101,10 +101,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -156,10 +156,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
             'tax_rate_id' => $taxRate->tax_rate_id,
@@ -190,7 +190,7 @@ $component->assertHasNoFormErrors();
         $record = TaxRate::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);
     }

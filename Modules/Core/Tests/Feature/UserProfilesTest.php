@@ -53,7 +53,6 @@ class UserProfilesTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
@@ -68,10 +67,10 @@ class UserProfilesTest extends AbstractTestCase
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateUserProfile::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateUserProfile::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -115,10 +114,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditUserProfile::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditUserProfile::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -151,7 +150,7 @@ $component->assertHasNoFormErrors();
         $record = UserProfile::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListUserProfiles::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListUserProfiles::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('userprofiles', ['id' => $record->id]);
     }

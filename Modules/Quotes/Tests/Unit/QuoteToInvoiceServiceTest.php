@@ -23,7 +23,6 @@ class QuoteToInvoiceServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $quote   = Quote::factory()->create(['total' => 500]);
         $service = new QuoteToInvoiceService();
         $invoice = $service->convert($quote->id);
@@ -44,7 +43,6 @@ class QuoteToInvoiceServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new QuoteToInvoiceService();
         $this->expectException(Exception::class);

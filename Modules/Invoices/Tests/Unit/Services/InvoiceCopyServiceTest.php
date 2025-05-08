@@ -21,7 +21,6 @@ class InvoiceCopyServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice = Invoice::factory()->create(['status' => 'draft']);
         $service = new InvoiceCopyService();
         $copy    = $service->copy($invoice->id);
@@ -42,7 +41,6 @@ class InvoiceCopyServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new InvoiceCopyService();
         $this->expectException(Exception::class);

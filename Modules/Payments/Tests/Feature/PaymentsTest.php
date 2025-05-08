@@ -51,10 +51,10 @@ class PaymentsTest extends AbstractTestCase
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListPayments::class);
+        $component = Livewire::actingAs($this->user)->test(ListPayments::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($payment);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($payment);
     }
 
     #[Test]
@@ -108,10 +108,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($payment);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreatePayment::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreatePayment::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['amount']);
+        /* assert */
+        $component->assertHasFormErrors(['amount']);
     }
 
     #[Test]
@@ -128,10 +128,10 @@ $component->assertHasFormErrors(['amount']);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreatePayment::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreatePayment::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['payment_method']);
+        /* assert */
+        $component->assertHasFormErrors(['payment_method']);
     }
 
     #[Test]
@@ -149,10 +149,10 @@ $component->assertHasFormErrors(['payment_method']);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('payments', ['id' => $payment->id, 'amount' => 888.00]);
@@ -172,10 +172,10 @@ $component->assertHasNoFormErrors();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['amount' => null])->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['amount' => null])->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['amount']);
+        /* assert */
+        $component->assertHasFormErrors(['amount']);
     }
 
     #[Test]
@@ -239,10 +239,10 @@ $component->assertHasFormErrors(['amount']);
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListPayments::class)->callTableAction('delete', $payment);
+        $component = Livewire::actingAs($this->user)->test(ListPayments::class)->callTableAction('delete', $payment);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
     }

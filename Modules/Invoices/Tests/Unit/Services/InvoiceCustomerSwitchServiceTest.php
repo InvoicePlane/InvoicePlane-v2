@@ -22,7 +22,6 @@ class InvoiceCustomerSwitchServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice  = Invoice::factory()->create();
         $new      = Relation::factory()->create();
         $service  = new InvoiceCustomerSwitchService();
@@ -43,7 +42,6 @@ class InvoiceCustomerSwitchServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new InvoiceCustomerSwitchService();
         $this->expectException(Exception::class);

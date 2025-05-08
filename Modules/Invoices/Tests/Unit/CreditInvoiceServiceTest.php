@@ -22,7 +22,6 @@ class CreditInvoiceServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice = Invoice::factory()->create(['balance' => 100]);
         $service = new CreditInvoiceService();
         $credit  = $service->credit($invoice->id, 50);
@@ -43,7 +42,6 @@ class CreditInvoiceServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $invoice = Invoice::factory()->create(['balance' => 100]);
         $service = new CreditInvoiceService();

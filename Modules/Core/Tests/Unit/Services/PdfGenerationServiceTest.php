@@ -21,7 +21,6 @@ class PdfGenerationServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $service = new PdfGenerationService();
         $pdf     = $service->generate('<h1>Test</h1>');
         if (app()->isLocal()) {
@@ -41,7 +40,6 @@ class PdfGenerationServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new PdfGenerationService();
         $this->expectException(Exception::class);

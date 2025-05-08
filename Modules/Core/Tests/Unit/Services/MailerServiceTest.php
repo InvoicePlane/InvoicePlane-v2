@@ -24,7 +24,6 @@ class MailerServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         Mail::fake();
         $service = new MailerService();
         $result  = $service->send('user@example.com', 'Hello', 'World');
@@ -48,7 +47,6 @@ class MailerServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         config(['mail.host' => null]);
         $service = new MailerService();
         $this->expectException(Exception::class);
@@ -62,7 +60,6 @@ class MailerServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $this->expectException(InvalidArgumentException::class);
         (new MailerService())->send('', 'Subject', 'Body');

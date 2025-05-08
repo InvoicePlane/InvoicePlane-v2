@@ -75,10 +75,10 @@ class TasksTest extends AbstractTestCase
             ]);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class);
 
-/** assert */
-$component->assertSuccessful()->assertCanSeeTableRecords([$task]);
+        /* assert */
+        $component->assertSuccessful()->assertCanSeeTableRecords([$task]);
     }
     // endregion
 
@@ -106,7 +106,6 @@ $component->assertSuccessful()->assertCanSeeTableRecords([$task]);
 
         /* arrange */
 
-
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -129,10 +128,10 @@ $component->assertSuccessful()->assertCanSeeTableRecords([$task]);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -156,7 +155,6 @@ $component->assertHasNoFormErrors();
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -185,10 +183,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['data.task_name' => 'required']);
+        /* assert */
+        $component->assertHasFormErrors(['data.task_name' => 'required']);
 
         $this->assertDatabaseMissing('tasks', $payload);
     }
@@ -213,7 +211,6 @@ $component->assertHasFormErrors(['data.task_name' => 'required']);
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -240,10 +237,10 @@ $component->assertHasFormErrors(['data.task_name' => 'required']);
         $updatedData = ['task_name' => '::updated_task_name::'];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['customer_id']);
+        /* assert */
+        $component->assertHasFormErrors(['customer_id']);
     }
 
     #[Test]
@@ -267,7 +264,6 @@ $component->assertHasFormErrors(['customer_id']);
 
         /* arrange */
 
-
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -289,10 +285,10 @@ $component->assertHasFormErrors(['customer_id']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['assigned_to']);
+        /* assert */
+        $component->assertHasFormErrors(['assigned_to']);
     }
 
     #[Test]
@@ -316,7 +312,6 @@ $component->assertHasFormErrors(['assigned_to']);
 
         /* arrange */
 
-
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -336,10 +331,10 @@ $component->assertHasFormErrors(['assigned_to']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['tax_rate_id']);
+        /* assert */
+        $component->assertHasFormErrors(['tax_rate_id']);
     }
 
     #[Test]
@@ -364,7 +359,6 @@ $component->assertHasFormErrors(['tax_rate_id']);
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $company = Company::factory()->create();
         $user    = User::factory()->create();
@@ -407,10 +401,10 @@ $component->assertHasFormErrors(['tax_rate_id']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditTask::class, ['record' => $task->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditTask::class, ['record' => $task->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [
             'task_id' => $task->task_id,
@@ -466,10 +460,10 @@ $component->assertHasNoFormErrors();
         $task = Task::factory()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('delete', $task->task_id);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('delete', $task->task_id);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseMissing('tasks', ['task_id' => $task->task_id]);
     }
@@ -508,10 +502,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         $task = Task::factory()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
             'task_id'    => $task->task_id,
@@ -550,10 +544,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         $task = Task::factory()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('assignProject', $task->task_id);
 
-/** assert */
-$component->assertStatus(422)->assertHasNoErrors();
+        /* assert */
+        $component->assertStatus(422)->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
             'task_id' => $task->task_id,
@@ -580,7 +574,6 @@ $component->assertStatus(422)->assertHasNoErrors();
 
         /* arrange */
 
-
         // $this->authenticate();
         $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
@@ -602,10 +595,10 @@ $component->assertStatus(422)->assertHasNoErrors();
         $task = Task::factory()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', $payload);
     }
@@ -625,7 +618,6 @@ $component->assertSuccessful()->assertHasNoErrors();
 
         /* arrange */
 
-
         // $this->authenticate();
         $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
@@ -647,10 +639,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         $task = Task::factory()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
+        $component = Livewire::actingAs($this->user)->test(ListTasks::class)->callTableAction('storeRecurringTask', $task->task_id)->set('data.project_id', $payload['project_id'])->set('data.task_name', $payload['task_name'])->set('data.tax_rate_id', $payload['tax_rate_id']);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', $payload);
     }

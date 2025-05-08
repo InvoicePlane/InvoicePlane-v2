@@ -21,7 +21,6 @@ class TaskLookupServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         Task::factory()->create(['title' => 'Urgent task']);
         $service = new TaskLookupService();
         $results = $service->lookup('Urgent');
@@ -41,7 +40,6 @@ class TaskLookupServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new TaskLookupService();
         $results = $service->lookup('');

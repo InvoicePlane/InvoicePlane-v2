@@ -22,7 +22,6 @@ class InvoiceNumberServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $group   = DocumentGroup::factory()->create(['left_pad' => 'INV', 'next_number' => 100]);
         $service = new InvoiceNumberService();
         $number  = $service->generate($group->id);
@@ -42,7 +41,6 @@ class InvoiceNumberServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new InvoiceNumberService();
         $this->expectException(Exception::class);

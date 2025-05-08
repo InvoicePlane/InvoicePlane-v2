@@ -30,10 +30,10 @@ class ProductCategoriesTest extends AbstractTestCase
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListProductCategories::class);
+        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -50,10 +50,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($record);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_categories', $payload);
@@ -73,10 +73,10 @@ $component->assertHasNoFormErrors();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['name']);
+        /* assert */
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -94,10 +94,10 @@ $component->assertHasFormErrors(['name']);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('product_categories', $payload);
@@ -118,10 +118,10 @@ $component->assertHasNoFormErrors();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['name']);
+        /* assert */
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -138,7 +138,7 @@ $component->assertHasFormErrors(['name']);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
@@ -159,10 +159,10 @@ $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
     }

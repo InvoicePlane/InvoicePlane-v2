@@ -22,7 +22,6 @@ class PaymentValidationServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $service = new PaymentService();
         $result  = $service->validate(100, 200);
         if (app()->isLocal()) {
@@ -69,7 +68,6 @@ class PaymentValidationServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new PaymenService();
         $this->expectException(Exception::class);

@@ -33,17 +33,16 @@ class ImportTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->authenticate();
         Import::factory()->create([
             'import_date' => '2022-04-01',
         ]);
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListImports::class);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListImports::class);
 
-/** assert */
-$component->assertSee('2022-04-01');
+        /* assert */
+        $component->assertSee('2022-04-01');
     }
 
     public function it_creates_an_import(): void
@@ -52,14 +51,13 @@ $component->assertSee('2022-04-01');
 
         /* arrange */
 
-
         $data = Import::factory()->make()->toArray();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateImport::class)->callTableAction('create', $data);
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateImport::class)->callTableAction('create', $data);
 
-/** assert */
-$component->assertHasNoTableActionErrors();
+        /* assert */
+        $component->assertHasNoTableActionErrors();
 
         $this->assertDatabaseHas('imports', $data);
     }

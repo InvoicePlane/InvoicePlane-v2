@@ -20,7 +20,6 @@ class TemplateParserServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $service = new TemplateParserService();
         $output  = $service->parse('Value: {{val}}', ['val' => '123']);
         if (app()->isLocal()) {
@@ -39,7 +38,6 @@ class TemplateParserServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new TemplateParserService();
         $output  = $service->parse('{{unknown}}', []);

@@ -44,7 +44,6 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$recurringInvoice = RecurringInvoice::factory()->create();
         $recurring = RecurringInvoice::factory()->for($this->user->company)->create();
         //$this->actingAs(User::factory()->create());
@@ -159,7 +158,6 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
@@ -172,10 +170,10 @@ class RecurringInvoicesTest extends AbstractTestCase
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -260,7 +258,6 @@ $component->assertHasFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $record = RecurringInvoice::factory()->create();
@@ -275,10 +272,10 @@ $component->assertHasFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);

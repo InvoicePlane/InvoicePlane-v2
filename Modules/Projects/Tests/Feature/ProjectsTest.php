@@ -47,7 +47,6 @@ class ProjectsTest extends AbstractTestCase
 
         /* arrange */
 
-
         $company = Company::factory()->create();
 
         $user = User::factory()->create();
@@ -73,10 +72,10 @@ class ProjectsTest extends AbstractTestCase
         Project::query()->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListProjects::class);
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class);
 
-/** assert */
-$component->assertSuccessful()->assertSee('Example');
+        /* assert */
+        $component->assertSuccessful()->assertSee('Example');
     }
     // endregion
 
@@ -101,7 +100,6 @@ $component->assertSuccessful()->assertSee('Example');
 
         /* arrange */
 
-
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -119,10 +117,10 @@ $component->assertSuccessful()->assertSee('Example');
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors()->assertSee('Website Redesign');
+        /* assert */
+        $component->assertHasNoFormErrors()->assertSee('Website Redesign');
 
         $this->assertDatabaseHas('projects', $payload);
     }
@@ -147,7 +145,6 @@ $component->assertHasNoFormErrors()->assertSee('Website Redesign');
 
         /* arrange */
 
-
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company->id);
@@ -164,10 +161,10 @@ $component->assertHasNoFormErrors()->assertSee('Website Redesign');
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertStatus(422)->assertHasFormErrors(['project_name' => 'required']);
+        /* assert */
+        $component->assertStatus(422)->assertHasFormErrors(['project_name' => 'required']);
     }
 
     /**
@@ -198,10 +195,10 @@ $component->assertStatus(422)->assertHasFormErrors(['project_name' => 'required'
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $project->project_id])->set('data.project_name', $updatedData['project_name'])->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $project->project_id])->set('data.project_name', $updatedData['project_name'])->call('save');
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', array_merge($updatedData, [
             'project_id' => $project->project_id,
@@ -228,7 +225,6 @@ $component->assertSuccessful()->assertHasNoErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $record = Project::factory()->create();
@@ -244,10 +240,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -268,10 +264,10 @@ $component->assertHasFormErrors();
         $project = Project::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('delete', $project->project_id);
+        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('delete', $project->project_id);
 
-/** assert */
-$component->assertHasNoErrors();
+        /* assert */
+        $component->assertHasNoErrors();
 
         $this->assertDatabaseMissing('projects', ['project_id' => $project->project_id]);
     }
@@ -298,10 +294,10 @@ $component->assertHasNoErrors();
         $client2 = Relation::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
             'project_id' => $project->project_id,
@@ -322,10 +318,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         $client2 = Relation::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
 
-/** assert */
-$component->assertStatus(422)->assertHasNoErrors();
+        /* assert */
+        $component->assertStatus(422)->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
             'project_id' => $project->project_id,
@@ -345,10 +341,10 @@ $component->assertStatus(422)->assertHasNoErrors();
         $client2 = Relation::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
 
-/** assert */
-$component->assertSuccessful()->assertHasNoErrors();
+        /* assert */
+        $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
             'project_id' => $project->project_id,
@@ -369,10 +365,10 @@ $component->assertSuccessful()->assertHasNoErrors();
         $client2 = Relation::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient');
+        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient');
 
-/** assert */
-$component->assertStatus(422)->assertHasNoErrors();
+        /* assert */
+        $component->assertStatus(422)->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
             'project_id' => $project->project_id,

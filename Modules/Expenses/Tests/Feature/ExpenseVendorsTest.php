@@ -20,16 +20,15 @@ class ExpenseVendorsTest extends AbstractTestCase
 
         /* arrange */
 
-
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Staples Inc.']);
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class);
+        $component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -43,16 +42,15 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($record);
 
         /* arrange */
 
-
         // arrange
         $payload = ['name' => 'Paper Supplies Ltd.'];
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_vendors', $payload);
@@ -69,16 +67,15 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         // arrange
         $payload = [];
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateExpenseVendor::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['name']);
+        /* assert */
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -92,17 +89,16 @@ $component->assertHasFormErrors(['name']);
 
         /* arrange */
 
-
         // arrange
         $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'Initial']);
         $payload = ['name' => 'Vendor Updated'];
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('expense_vendors', $payload);
@@ -119,17 +115,16 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         // arrange
         $record  = ExpenseVendor::factory()->for($this->user->company)->create(['name' => 'X']);
         $payload = ['name' => null];
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditExpenseVendor::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['name']);
+        /* assert */
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -143,13 +138,12 @@ $component->assertHasFormErrors(['name']);
 
         /* arrange */
 
-
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
 
         // assert
         $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
@@ -166,17 +160,16 @@ $component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->c
 
         /* arrange */
 
-
         // arrange
         $record = ExpenseVendor::factory()->for($this->user->company)->create();
         $record->delete();
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)->test(ListExpenseVendors::class)->callTableAction('delete', $record);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseMissing('expense_vendors', ['id' => $record->id]);
     }

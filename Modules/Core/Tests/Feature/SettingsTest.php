@@ -35,7 +35,6 @@ class SettingsTest extends AbstractTestCase
 
         /* arrange */
 
-
         $user     = User::factory()->create();
         $response = $this->actingAs(user: $user, guard: 'web')->get(route('filament.ivpl.resources.filament.resources.settings.index'));
         $response->assertSuccessful();
@@ -58,7 +57,6 @@ class SettingsTest extends AbstractTestCase
      *
      * @group crud
      *
-     *
      * @payload
      * []
      */
@@ -68,17 +66,16 @@ class SettingsTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -87,7 +84,6 @@ $component->assertHasNoFormErrors();
      * @test
      *
      * @group crud
-     *
      *
      * @payload
      * []
@@ -98,17 +94,16 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateSetting::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -118,7 +113,6 @@ $component->assertHasFormErrors();
     #[Test]
     #[Group('Crud')]
     /**
-     *
      * @payload
      * []
      */
@@ -138,10 +132,10 @@ $component->assertHasFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -150,7 +144,6 @@ $component->assertHasNoFormErrors();
      * @test
      *
      * @group crud
-     *
      *
      * @payload
      * []
@@ -161,7 +154,6 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $record = Setting::factory()->create();
@@ -170,10 +162,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditSetting::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -183,7 +175,6 @@ $component->assertHasFormErrors();
     #[Test]
     #[Group('Crud')]
     /**
-     *
      * @payload
      * []
      */
@@ -200,7 +191,7 @@ $component->assertHasFormErrors();
         $record = Setting::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListSettings::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListSettings::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('settings', ['id' => $record->id]);
     }

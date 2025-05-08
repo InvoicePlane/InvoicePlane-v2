@@ -21,7 +21,6 @@ class RecurringInvoiceServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $template = Invoice::factory()->create(['is_recurring' => true]);
         $service  = new RecurringInvoiceService();
         $rec      = $service->createFromTemplate($template->id);
@@ -42,7 +41,6 @@ class RecurringInvoiceServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new RecurringInvoiceService();
         $this->expectException(Exception::class);

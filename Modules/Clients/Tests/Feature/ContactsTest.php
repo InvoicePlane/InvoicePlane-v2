@@ -84,10 +84,10 @@ class ContactsTest extends AbstractTestCase
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('contacts', $payload);
     }
@@ -109,10 +109,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['relation_id']);
+        /* assert */
+        $component->assertHasFormErrors(['relation_id']);
     }
 
     #[Test]
@@ -134,10 +134,10 @@ $component->assertHasFormErrors(['relation_id']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['first_name']);
+        /* assert */
+        $component->assertHasFormErrors(['first_name']);
     }
 
     #[Test]
@@ -165,10 +165,10 @@ $component->assertHasFormErrors(['first_name']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('contacts', $update);
     }
@@ -187,7 +187,7 @@ $component->assertHasNoFormErrors();
         $contact = Contact::factory()->for($this->user->company)->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
+        $component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
 
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
     }

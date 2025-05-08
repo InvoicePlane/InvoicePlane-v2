@@ -29,7 +29,6 @@ class MerchantClientsTest extends AbstractTestCase
     #[Group('smoke')]
     /**
      * @group smoke
-     *
      */
     public function it_lists_merchant_clients(): void
     {
@@ -37,14 +36,13 @@ class MerchantClientsTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListMerchantClients::class);
+        $component = Livewire::actingAs($this->user)->test(ListMerchantClients::class);
 
-/** assert */
-$component->assertSuccessful();
+        /* assert */
+        $component->assertSuccessful();
     }
 
     // endregion
@@ -57,7 +55,6 @@ $component->assertSuccessful();
      *
      * @group crud
      *
-     *
      * @payload
      * []
      */
@@ -67,17 +64,16 @@ $component->assertSuccessful();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -86,7 +82,6 @@ $component->assertHasNoFormErrors();
      * @test
      *
      * @group crud
-     *
      *
      * @payload
      * []
@@ -97,17 +92,16 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateMerchantClient::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -117,7 +111,6 @@ $component->assertHasFormErrors();
     #[Test]
     #[Group('Crud')]
     /**
-     *
      * @payload
      * []
      */
@@ -137,10 +130,10 @@ $component->assertHasFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -155,7 +148,6 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $record = MerchantRelation::factory()->create();
@@ -164,10 +156,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditMerchantClient::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -193,7 +185,7 @@ $component->assertHasFormErrors();
         $record = MerchantRelation::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListMerchantClients::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)->test(ListMerchantClients::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('merchant_clients', ['id' => $record->id]);
     }

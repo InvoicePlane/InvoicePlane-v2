@@ -22,7 +22,6 @@ class QuoteNumberServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $group   = DocumentGroup::factory()->create(['left_pad' => 'QUO', 'next_number' => 5]);
         $service = new QuoteNumberService();
         $num     = $service->generate($group->id);
@@ -42,7 +41,6 @@ class QuoteNumberServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new QuoteNumberService();
         $this->expectException(Exception::class);

@@ -23,7 +23,6 @@ class QuoteCustomerSwitchServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $quote    = Quote::factory()->create();
         $cust     = Relation::factory()->create();
         $service  = new QuoteCustomerSwitchService();
@@ -44,7 +43,6 @@ class QuoteCustomerSwitchServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new QuoteCustomerSwitchService();
         $this->expectException(Exception::class);

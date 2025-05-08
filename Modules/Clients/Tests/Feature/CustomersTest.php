@@ -56,10 +56,10 @@ class CustomersTest extends AbstractTestCase
         $customer = Relation::factory()->for($this->user->company)->create($payload);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListCustomers::class);
+        $component = Livewire::actingAs($this->user)->test(ListCustomers::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($customer);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($customer);
     }
     #endregion
 
@@ -82,10 +82,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($customer);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('relations', $payload);
     }
@@ -107,10 +107,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['company_name']);
+        /* assert */
+        $component->assertHasFormErrors(['company_name']);
     }
 
     #[Test]
@@ -130,10 +130,10 @@ $component->assertHasFormErrors(['company_name']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['relation_type']);
+        /* assert */
+        $component->assertHasFormErrors(['relation_type']);
     }
 
     #[Test]
@@ -159,10 +159,10 @@ $component->assertHasFormErrors(['relation_type']);
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('relations', $update);
     }
@@ -188,10 +188,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['company_name']);
+        /* assert */
+        $component->assertHasFormErrors(['company_name']);
     }
 
     #[Test]
@@ -211,7 +211,7 @@ $component->assertHasFormErrors(['company_name']);
         ]);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
 
         $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
     }
@@ -234,10 +234,10 @@ $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTa
         ]);
 
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseHas('relations', ['id' => $customer->id]);
     }

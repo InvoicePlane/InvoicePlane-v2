@@ -24,10 +24,10 @@ class MailQueuesTest extends AbstractTestCase
         $record = MailQueue::factory()->create(['subject' => 'Queued Message']);
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
     }
 
     #[Test]
@@ -44,10 +44,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($record);
         $payload = ['subject' => 'Queued Subject', 'to' => 'user@example.com'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('mail_queues', $payload);
     }
@@ -66,10 +66,10 @@ $component->assertHasNoFormErrors();
         $payload = ['to' => 'fail@example.com'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['subject']);
+        /* assert */
+        $component->assertHasFormErrors(['subject']);
     }
 
     #[Test]
@@ -88,10 +88,10 @@ $component->assertHasFormErrors(['subject']);
         $payload = ['subject' => 'Updated Subject'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('mail_queues', $payload);
     }
@@ -112,10 +112,10 @@ $component->assertHasNoFormErrors();
         $payload = ['subject' => null];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['subject']);
+        /* assert */
+        $component->assertHasFormErrors(['subject']);
     }
 
     #[Test]
@@ -132,7 +132,7 @@ $component->assertHasFormErrors(['subject']);
         $queue = MailQueue::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
 
         $this->assertDatabaseMissing('mail_queues', ['id' => $queue->id]);
     }
@@ -152,10 +152,10 @@ $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class
         $queue->delete();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseMissing('mail_queues', ['id' => $queue->id]);
     }

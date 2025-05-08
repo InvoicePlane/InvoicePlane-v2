@@ -21,7 +21,6 @@ class TaskToInvoiceServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $task    = Task::factory()->create(['hours' => 2, 'rate' => 50]);
         $service = new TaskToInvoiceService();
         $line    = $service->map($task->id);
@@ -41,7 +40,6 @@ class TaskToInvoiceServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new TaskToInvoiceService();
         $this->expectException(Exception::class);

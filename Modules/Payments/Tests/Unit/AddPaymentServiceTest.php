@@ -23,7 +23,6 @@ class AddPaymentServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice = Invoice::factory()->create(['balance' => 200]);
         $service = new AddPaymentService();
         $payment = $service->add($invoice->id, 100);
@@ -44,7 +43,6 @@ class AddPaymentServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $invoice = Invoice::factory()->create(['balance' => 200]);
         $service = new AddPaymentService();

@@ -20,7 +20,6 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $service = new EmailTemplatePreviewService();
         $preview = $service->preview('Hi {{name}}', ['name' => 'Alice']);
         if (app()->isLocal()) {
@@ -39,7 +38,6 @@ class EmailTemplatePreviewServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new EmailTemplatePreviewService();
         $preview = $service->preview('', []);

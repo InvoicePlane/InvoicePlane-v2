@@ -53,10 +53,10 @@ class QuotesTest extends AbstractTestCase
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListQuotes::class);
+        $component = Livewire::actingAs($this->user)->test(ListQuotes::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($quote);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($quote);
     }
 
     #[Test]
@@ -116,10 +116,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($quote);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('quotes', $payload);
@@ -143,10 +143,10 @@ $component->assertHasNoFormErrors();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['customer_id']);
+        /* assert */
+        $component->assertHasFormErrors(['customer_id']);
     }
 
     #[Test]
@@ -195,10 +195,10 @@ $component->assertHasFormErrors(['customer_id']);
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         // assert
         $this->assertDatabaseHas('quotes', ['id' => $quote->id, 'status' => QuoteStatus::SENT]);
@@ -220,10 +220,10 @@ $component->assertHasNoFormErrors();
 
         // act
         /** act */
-$component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors(['quote_number']);
+        /* assert */
+        $component->assertHasFormErrors(['quote_number']);
     }
 
     #[Test]
@@ -328,10 +328,10 @@ $component->assertHasFormErrors(['quote_number']);
 
         // act + assert
         /** act */
-$component = Livewire::actingAs($this->user)->test(ListQuotes::class)->callTableAction('delete', $quote);
+        $component = Livewire::actingAs($this->user)->test(ListQuotes::class)->callTableAction('delete', $quote);
 
-/** assert */
-$component->assertHasErrors();
+        /* assert */
+        $component->assertHasErrors();
 
         $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }

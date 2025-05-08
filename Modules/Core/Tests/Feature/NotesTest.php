@@ -30,7 +30,6 @@ class NotesTest extends AbstractTestCase
     #[Group('smoke')]
     /**
      * @group smoke
-     *
      */
     public function it_lists_notes(): void
     {
@@ -38,14 +37,13 @@ class NotesTest extends AbstractTestCase
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListNotes::class);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListNotes::class);
 
-/** assert */
-$component->assertSuccessful();
+        /* assert */
+        $component->assertSuccessful();
     }
 
     // endregion
@@ -58,7 +56,6 @@ $component->assertSuccessful();
      *
      * @group crud
      *
-     *
      * @payload
      * []
      */
@@ -68,17 +65,16 @@ $component->assertSuccessful();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateNote::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateNote::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -87,7 +83,6 @@ $component->assertHasNoFormErrors();
      * @test
      *
      * @group crud
-     *
      *
      * @payload
      * []
@@ -98,17 +93,16 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $payload = [
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateNote::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateNote::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -118,7 +112,6 @@ $component->assertHasFormErrors();
     #[Test]
     #[Group('Crud')]
     /**
-     *
      * @payload
      * []
      */
@@ -138,10 +131,10 @@ $component->assertHasFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditNote::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditNote::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -150,7 +143,6 @@ $component->assertHasNoFormErrors();
      * @test
      *
      * @group crud
-     *
      *
      * @payload
      * []
@@ -161,7 +153,6 @@ $component->assertHasNoFormErrors();
 
         /* arrange */
 
-
         //$this->actingAs(User::factory()->create());
 
         $record = Note::factory()->create();
@@ -170,10 +161,10 @@ $component->assertHasNoFormErrors();
         ];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditNote::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditNote::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasFormErrors();
+        /* assert */
+        $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
             dump($payload);
@@ -183,7 +174,6 @@ $component->assertHasFormErrors();
     #[Test]
     #[Group('Crud')]
     /**
-     *
      * @payload
      * []
      */
@@ -200,7 +190,7 @@ $component->assertHasFormErrors();
         $record = Note::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListNotes::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListNotes::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('notes', ['id' => $record->id]);
     }

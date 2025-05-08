@@ -23,7 +23,6 @@ class InvoiceTaxRateServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice = Invoice::factory()->create();
         $rate    = TaxRate::factory()->create(['percent' => 10]);
         $service = new InvoiceTaxRateService();
@@ -44,7 +43,6 @@ class InvoiceTaxRateServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new InvoiceTaxRateService();
         $this->expectException(Exception::class);

@@ -30,10 +30,10 @@ class CompaniesTest extends AbstractTestCase
         $company = Company::factory()->create(['name' => 'Acme LLC']);
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class);
 
-/** assert */
-$component->assertSuccessful()->assertSeeDatabaseRecords($company);
+        /* assert */
+        $component->assertSuccessful()->assertSeeDatabaseRecords($company);
     }
 
     #[Test]
@@ -50,10 +50,10 @@ $component->assertSuccessful()->assertSeeDatabaseRecords($company);
         $payload = ['name' => 'Rocket Corp'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('companies', $payload);
     }
@@ -72,10 +72,10 @@ $component->assertHasNoFormErrors();
         $payload = [];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
 
-/** assert */
-$component->assertHasFormErrors(['name']);
+        /* assert */
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -94,10 +94,10 @@ $component->assertHasFormErrors(['name']);
         $payload = ['name' => 'Updated Corp'];
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(EditCompany::class, ['record' => $company->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditCompany::class, ['record' => $company->id])->fillForm($payload)->call('save');
 
-/** assert */
-$component->assertHasNoFormErrors();
+        /* assert */
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('companies', $payload);
     }
@@ -116,7 +116,7 @@ $component->assertHasNoFormErrors();
         $company = Company::factory()->create();
 
         /** act */
-$component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class)->callTableAction('delete', $company);
+        $component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class)->callTableAction('delete', $company);
 
         $this->assertDatabaseMissing('companies', ['id' => $company->id]);
     }

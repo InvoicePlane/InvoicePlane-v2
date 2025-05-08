@@ -21,7 +21,6 @@ class QrCodeGeneratorServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $service = new QrCodeGeneratorService();
         $qr      = $service->generate('https://app.test');
         if (app()->isLocal()) {
@@ -41,7 +40,6 @@ class QrCodeGeneratorServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new QrCodeGeneratorService();
         $this->expectException(Exception::class);

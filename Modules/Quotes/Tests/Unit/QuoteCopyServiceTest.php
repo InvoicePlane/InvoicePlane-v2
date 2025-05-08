@@ -22,7 +22,6 @@ class QuoteCopyServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $quote   = Quote::factory()->create(['status' => 'draft']);
         $service = new QuoteCopyService();
         $copy    = $service->copy($quote->id);
@@ -42,7 +41,6 @@ class QuoteCopyServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new QuoteCopyService();
         $this->expectException(Exception::class);

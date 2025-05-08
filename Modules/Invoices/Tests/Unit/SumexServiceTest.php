@@ -22,7 +22,6 @@ class SumexServiceTest extends AbstractTestCase
 
         /* arrange */
 
-
         $invoice = Invoice::factory()->create();
         $service = new SumexService();
         $output  = $service->process($invoice->id);
@@ -42,7 +41,6 @@ class SumexServiceTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
 
         $service = new SumexService();
         $this->expectException(Exception::class);
