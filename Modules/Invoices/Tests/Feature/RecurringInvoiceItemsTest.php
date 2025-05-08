@@ -42,7 +42,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListRecurringInvoiceItems::class)
+        Livewire::test(ListRecurringInvoiceItems::class)->actingAs($this->user)
             ->assertSuccessful();
     }
 
@@ -73,7 +73,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateRecurringInvoiceItem::class)
+        Livewire::test(CreateRecurringInvoiceItem::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -103,7 +103,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateRecurringInvoiceItem::class)
+        Livewire::test(CreateRecurringInvoiceItem::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -136,7 +136,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])
+        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -168,7 +168,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])
+        Livewire::test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -198,7 +198,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         $record = RecurringInvoiceItem::factory()->create();
 
-        Livewire::test(ListRecurringInvoiceItems::class)
+        Livewire::test(ListRecurringInvoiceItems::class)->actingAs($this->user)
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('recurringinvoiceitems', ['id' => $record->id]);

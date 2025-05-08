@@ -76,7 +76,7 @@ class ProductsTest extends AbstractTestCase
             'product_tariff'      => 12345,
         ];
         $product = Product::factory()->create($payload);
-        Livewire::test(ListProducts::class)
+        Livewire::test(ListProducts::class)->actingAs($this->user)
             ->assertSuccessful()
             ->assertSee('::product_name::');
     }
@@ -135,7 +135,7 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        $component = Livewire::test(CreateProduct::class)
+        $component = Livewire::test(CreateProduct::class)->actingAs($this->user)
             ->set('data.family_id', $payload['family_id'])
             ->set('data.product_sku', $payload['product_sku'])
             ->set('data.product_name', $payload['product_name'])
@@ -181,7 +181,7 @@ class ProductsTest extends AbstractTestCase
         session(['current_company_id' => $company->id]);
         $this->actingAs($user);
 
-        Livewire::test(CreateProduct::class)
+        Livewire::test(CreateProduct::class)->actingAs($this->user)
             ->fillForm([
                 'item_name' => '',
             ])
@@ -226,7 +226,7 @@ class ProductsTest extends AbstractTestCase
             'product_price' => 70.00,
         ];
 
-        Livewire::test(EditProduct::class, ['record' => $product->product_id])
+        Livewire::test(EditProduct::class, ['record' => $product->product_id])->actingAs($this->user)
             ->set('data.`product_name`', $updatedData['product_name'])
             ->set('data.product_price', $updatedData['product_price'])
             ->call('save');
@@ -279,7 +279,7 @@ class ProductsTest extends AbstractTestCase
             'description' => 'Example',
         ];
 
-        Livewire::test(EditProduct::class, ['record' => $record->getKey()])
+        Livewire::test(EditProduct::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -323,7 +323,7 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)
+        Livewire::test(ListProducts::class)->actingAs($this->user)
             ->callTableAction('delete', $product)
             ->assertHasNoErrors();
 
@@ -358,7 +358,7 @@ class ProductsTest extends AbstractTestCase
 
         $products = Product::factory(3)->create($payload);
 
-        Livewire::test(ListProducts::class)
+        Livewire::test(ListProducts::class)->actingAs($this->user)
             ->callTableBulkAction('delete', $products)
             ->assertHasNoErrors();
 
@@ -405,7 +405,7 @@ class ProductsTest extends AbstractTestCase
 
         $product1 = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)
+        Livewire::test(ListProducts::class)->actingAs($this->user)
             ->callTableAction('processSelections', $product1)
             ->assertHasNoErrors();
     }
@@ -443,7 +443,7 @@ class ProductsTest extends AbstractTestCase
 
         $product = Product::factory()->create($payload);
 
-        Livewire::test(ListProducts::class)
+        Livewire::test(ListProducts::class)->actingAs($this->user)
             ->callTableAction('processSelections', $product)
             ->assertHasNoErrors();
     }

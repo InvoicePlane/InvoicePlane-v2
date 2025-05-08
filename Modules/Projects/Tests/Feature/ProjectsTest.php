@@ -72,7 +72,7 @@ class ProjectsTest extends AbstractTestCase
 
         Project::query()->create($payload);
 
-        Livewire::test(ListProjects::class)
+        Livewire::test(ListProjects::class)->actingAs($this->user)
             ->assertSuccessful()
             ->assertSee('Example');
     }
@@ -116,7 +116,7 @@ class ProjectsTest extends AbstractTestCase
             'description'    => 'Redesigning the corporate website',
         ];
 
-        Livewire::test(CreateProject::class)
+        Livewire::test(CreateProject::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors()
@@ -161,7 +161,7 @@ class ProjectsTest extends AbstractTestCase
             'description'    => 'Redesigning the corporate website',
         ];
 
-        Livewire::test(CreateProject::class)
+        Livewire::test(CreateProject::class)->actingAs($this->user)
             ->assertStatus(422)
             ->fillForm($payload)
             ->call('create')
@@ -195,7 +195,7 @@ class ProjectsTest extends AbstractTestCase
             'project_name' => '::updated_project_name::',
         ];
 
-        Livewire::test(EditProject::class, ['record' => $project->project_id])
+        Livewire::test(EditProject::class, ['record' => $project->project_id])->actingAs($this->user)
             ->assertSuccessful()
             ->set('data.project_name', $updatedData['project_name'])
             ->call('save')
@@ -241,7 +241,7 @@ class ProjectsTest extends AbstractTestCase
             'description'    => 'Example',
         ];
 
-        Livewire::test(EditProject::class, ['record' => $record->getKey()])
+        Livewire::test(EditProject::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -264,7 +264,7 @@ class ProjectsTest extends AbstractTestCase
 
         $project = Project::factory()->create();
 
-        Livewire::test(ManageProjects::class)
+        Livewire::test(ManageProjects::class)->actingAs($this->user)
             ->callTableAction('delete', $project->project_id)
             ->assertHasNoErrors();
 
@@ -292,7 +292,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create(['client_id' => $client->client_id]);
         $client2 = Client::factory()->create();
 
-        Livewire::test(ManageProjects::class)
+        Livewire::test(ManageProjects::class)->actingAs($this->user)
             ->assertSuccessful()
             ->callTableAction('assignClient', $client2->client_id)
             ->assertHasNoErrors();
@@ -315,7 +315,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create(['client_id' => $client->client_id]);
         $client2 = Client::factory()->create();
 
-        Livewire::test(ManageProjects::class)
+        Livewire::test(ManageProjects::class)->actingAs($this->user)
             ->assertStatus(422)
             ->callTableAction('assignClient', $client2->client_id)
             ->assertHasNoErrors();
@@ -337,7 +337,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create(['client_id' => $client->client_id]);
         $client2 = Client::factory()->create();
 
-        Livewire::test(ManageProjects::class)
+        Livewire::test(ManageProjects::class)->actingAs($this->user)
             ->assertSuccessful()
             ->callTableAction('assignClient', $client2->client_id)
             ->assertHasNoErrors();
@@ -360,7 +360,7 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create(['client_id' => $client->client_id]);
         $client2 = Client::factory()->create();
 
-        Livewire::test(ManageProjects::class)
+        Livewire::test(ManageProjects::class)->actingAs($this->user)
             ->assertStatus(422)
             ->callTableAction('assignClient')
             ->assertHasNoErrors();

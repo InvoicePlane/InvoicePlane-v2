@@ -42,7 +42,7 @@ class MerchantPaymentsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListMerchantPayments::class)
+        Livewire::test(ListMerchantPayments::class)->actingAs($this->user)
             ->assertSuccessful();
     }
 
@@ -73,7 +73,7 @@ class MerchantPaymentsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateMerchantPayment::class)
+        Livewire::test(CreateMerchantPayment::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -103,7 +103,7 @@ class MerchantPaymentsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateMerchantPayment::class)
+        Livewire::test(CreateMerchantPayment::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -136,7 +136,7 @@ class MerchantPaymentsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditMerchantPayment::class, ['record' => $record->getKey()])
+        Livewire::test(EditMerchantPayment::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -168,7 +168,7 @@ class MerchantPaymentsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditMerchantPayment::class, ['record' => $record->getKey()])
+        Livewire::test(EditMerchantPayment::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -198,7 +198,7 @@ class MerchantPaymentsTest extends AbstractTestCase
 
         $record = MerchantPayment::factory()->create();
 
-        Livewire::test(ListMerchantPayments::class)
+        Livewire::test(ListMerchantPayments::class)->actingAs($this->user)
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('merchantpayments', ['id' => $record->id]);

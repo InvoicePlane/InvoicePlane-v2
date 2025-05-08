@@ -62,7 +62,7 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'Credit Card',
         ]);
 
-        Livewire::test(ListPaymentMethods::class)
+        Livewire::test(ListPaymentMethods::class)->actingAs($this->user)
             ->assertSee('Credit Card');
     }
 
@@ -104,7 +104,7 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'Credit Card',
         ];
 
-        Livewire::test(CreatePaymentMethod::class)
+        Livewire::test(CreatePaymentMethod::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors()
@@ -148,7 +148,7 @@ class PaymentMethodsTest extends AbstractTestCase
             'description' => '::description::',
         ];
 
-        Livewire::test(CreatePaymentMethod::class)
+        Livewire::test(CreatePaymentMethod::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors(['payment_method_name' => 'required']);
@@ -182,7 +182,7 @@ class PaymentMethodsTest extends AbstractTestCase
             'payment_method_name' => 'updated_payment_method_name',
         ];
 
-        Livewire::test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])
+        Livewire::test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])->actingAs($this->user)
             ->set('data.payment_method_name', $updatedData['payment_method_name'])
             ->call('save')
             ->assertHasNoErrors();
@@ -206,7 +206,7 @@ class PaymentMethodsTest extends AbstractTestCase
 
         $paymentMethod = PaymentMethod::factory()->create();
 
-        Livewire::test(ListPaymentMethods::class)
+        Livewire::test(ListPaymentMethods::class)->actingAs($this->user)
             ->callTableAction('delete', $paymentMethod)
             ->assertHasNoErrors();
 

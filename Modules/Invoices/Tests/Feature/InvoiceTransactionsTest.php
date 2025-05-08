@@ -42,7 +42,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListInvoiceTransactions::class)
+        Livewire::test(ListInvoiceTransactions::class)->actingAs($this->user)
             ->assertSuccessful();
     }
 
@@ -73,7 +73,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateInvoiceTransaction::class)
+        Livewire::test(CreateInvoiceTransaction::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -103,7 +103,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateInvoiceTransaction::class)
+        Livewire::test(CreateInvoiceTransaction::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -136,7 +136,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()])
+        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -168,7 +168,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()])
+        Livewire::test(EditInvoiceTransaction::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -198,7 +198,7 @@ class InvoiceTransactionsTest extends AbstractTestCase
 
         $record = InvoiceTransaction::factory()->create();
 
-        Livewire::test(ListInvoiceTransactions::class)
+        Livewire::test(ListInvoiceTransactions::class)->actingAs($this->user)
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('invoicetransactions', ['id' => $record->id]);

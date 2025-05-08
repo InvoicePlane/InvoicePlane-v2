@@ -37,7 +37,7 @@ class QuoteItemsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        Livewire::test(ListQuoteItems::class)
+        Livewire::test(ListQuoteItems::class)->actingAs($this->user)
             ->assertSuccessful();
     }
 
@@ -68,7 +68,7 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateQuoteItem::class)
+        Livewire::test(CreateQuoteItem::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
@@ -98,7 +98,7 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(CreateQuoteItem::class)
+        Livewire::test(CreateQuoteItem::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -131,7 +131,7 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()])
+        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasNoFormErrors();
@@ -163,7 +163,7 @@ class QuoteItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()])
+        Livewire::test(EditQuoteItem::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
@@ -193,7 +193,7 @@ class QuoteItemsTest extends AbstractTestCase
 
         $record = QuoteItem::factory()->create();
 
-        Livewire::test(ListQuoteItems::class)
+        Livewire::test(ListQuoteItems::class)->actingAs($this->user)
             ->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('quote_items', ['id' => $record->id]);

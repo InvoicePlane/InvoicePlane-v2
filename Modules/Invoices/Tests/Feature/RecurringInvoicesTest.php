@@ -172,7 +172,7 @@ class RecurringInvoicesTest extends AbstractTestCase
             'end_at'            => '2025-04-30',
         ];
 
-        Livewire::test(CreateRecurringInvoice::class)
+        Livewire::test(CreateRecurringInvoice::class)->actingAs($this->user)
             ->fillForm($payload)
             ->call('create')
             ->assertHasFormErrors();
@@ -274,7 +274,7 @@ class RecurringInvoicesTest extends AbstractTestCase
             'end_at'            => '2025-04-30',
         ];
 
-        Livewire::test(EditRecurringInvoice::class, ['record' => $record->getKey()])
+        Livewire::test(EditRecurringInvoice::class, ['record' => $record->getKey()->actingAs($this->user)])
             ->fillForm($payload)
             ->call('save')
             ->assertHasFormErrors();
