@@ -2,7 +2,9 @@
 
 namespace Modules\Clients\Tests\Feature;
 
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
+use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\CustomerResource;
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCustomer;
@@ -10,28 +12,15 @@ use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\EditCustom
 use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(CustomerResource::class)]
-class CustomersTest extends AbstractTestCase
+class CustomersTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        /*$this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);*/
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
 
     #region smoke
     #[Test]
@@ -42,22 +31,25 @@ class CustomersTest extends AbstractTestCase
     #[Group('crud')]
     public function it_lists_customers(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $payload = [
-            'company_name'  => 'Acme Inc.',
-            'relation_type' => RelationType::CUSTOMER,
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        $customer = Relation::factory()->for($this->user->company)->create($payload);
+        $customer = Relation::factory()->for($this->user->companies()->first())->create($payload);
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ListCustomers::class);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListCustomers::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($customer);
+        $component->assertSuccessful()
+            ->assertSee('Acme Inc.');
+        $this->assertDatabaseHas('relations', $payload);
     }
     #endregion
 
@@ -66,21 +58,25 @@ class CustomersTest extends AbstractTestCase
     #[Group('crud')]
     public function it_creates_a_customer(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $payload = [
             'company_name'    => 'Beta LLC',
             'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
             'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateCustomer::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('relations', $payload);
     }
@@ -89,17 +85,19 @@ class CustomersTest extends AbstractTestCase
     #[Group('crud')]
     public function it_fails_when_company_name_is_missing(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $payload = [
             // 'company_name' => 'Missing Inc.',
-            'relation_type' => RelationType::CUSTOMER,
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateCustomer::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['company_name']);
@@ -109,13 +107,13 @@ class CustomersTest extends AbstractTestCase
     #[Group('crud')]
     public function it_fails_when_relation_type_is_missing(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $payload = [
             'company_name' => 'Zeta Ltd.',
             // 'relation_type' => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
         /** act */
@@ -123,6 +121,46 @@ class CustomersTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['relation_type']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_when_relation_status_is_missing(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+        ];
+
+        /** act */
+        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['relation_status']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_when_registered_at_is_missing(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name'    => 'Zeta Ltd.',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_number' => 'C123',
+        ];
+
+        /** act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateCustomer::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['registered_at']);
     }
 
     #[Test]
@@ -138,7 +176,7 @@ class CustomersTest extends AbstractTestCase
             'relation_type' => RelationType::CUSTOMER,
         ];
 
-        $customer = Relation::factory()->for($this->user->company)->create($original);
+        $customer = Relation::factory()->for($this->user->companies()->first())->create($original);
 
         $update = [
             'company_name' => 'Updated Name',
@@ -161,7 +199,7 @@ class CustomersTest extends AbstractTestCase
 
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->create([
+        $customer = Relation::factory()->for($this->user->companies()->first())->create([
             'company_name'  => 'Will Not Update',
             'relation_type' => RelationType::CUSTOMER,
         ]);
@@ -184,7 +222,7 @@ class CustomersTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Relation::factory()->for($this->user->company)->create([
+        $customer = Relation::factory()->for($this->user->companies()->first())->create([
             'company_name'  => 'Delete Me',
             'relation_type' => RelationType::CUSTOMER,
         ]);
