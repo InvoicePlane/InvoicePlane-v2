@@ -46,7 +46,7 @@ class PaymentMethodResource extends Resource
             ->schema([
                 Grid::make(1)
                     ->schema([
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 TextInput::make('payment_method_name')
                                     ->inlineLabel()

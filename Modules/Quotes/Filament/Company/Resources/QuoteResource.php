@@ -66,7 +66,7 @@ class QuoteResource extends AbstractTenantResource
                 Grid::make(2)
                     ->schema([
                         // Left side (Client selector + Info)
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 Select::make('prospect_id')
                                     ->label(trans('ip.client_name'))
@@ -95,7 +95,7 @@ class QuoteResource extends AbstractTenantResource
                             ])
                             ->columnSpan(1),
 
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
@@ -190,10 +190,10 @@ class QuoteResource extends AbstractTenantResource
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Form\Components\Group::make()
+                                Forms\Components\Group::make()
                                     ->schema([]), // Optional left column
 
-                                Form\Components\Group::make()
+                                Forms\Components\Group::make()
                                     ->schema([
                                         TextInput::make('quote_item_subtotal')
                                             ->label(trans('ip.subtotal'))

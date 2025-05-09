@@ -86,17 +86,19 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_when_relation_id_is_missing(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $payload = [
-            // 'relation_id' => 1,
+            //'relation_id' => $relation->id,
             'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+            'gender'     => 'female',
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_id']);
@@ -106,22 +108,50 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_when_first_name_is_missing(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $relation = Relation::factory()->for($this->user->companies()->first())->create();
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
 
         $payload = [
             'relation_id' => $relation->id,
-            // 'first_name' => 'Jane',
+            'last_name'   => 'Doe',
+            'gender'      => 'female',
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateContact::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['first_name']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_when_last_name_is_missing(): void
+    {
+        /* arrange */
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
+
+        $payload = [
+            'relation_id' => $relation->id,
+            'first_name'  => 'Jane',
+            'gender'      => 'female',
+        ];
+
+        /** act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['last_name']);
     }
 
     #[Test]

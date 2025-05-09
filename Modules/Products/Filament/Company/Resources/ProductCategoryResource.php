@@ -47,7 +47,7 @@ class ProductCategoryResource extends Resource
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 TextInput::make('category_name')
                                     ->label(trans('ip.family'))
@@ -55,7 +55,7 @@ class ProductCategoryResource extends Resource
                                     ->autofocus()
                                     ->required(),
                             ]),
-                        Form\Components\Group::make()->schema([
+                        Forms\Components\Group::make()->schema([
                             Placeholder::make('explanation Product Family')
                                 ->label('just some text'),
                         ]),

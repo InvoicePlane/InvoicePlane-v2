@@ -44,7 +44,7 @@ class EmailTemplateResource extends Resource
     {
         return $form
             ->schema([
-                Form\Components\Group::make()
+                Forms\Components\Group::make()
                     ->schema([
                         Section::make(heading:null)
                             ->schema([
@@ -64,7 +64,7 @@ class EmailTemplateResource extends Resource
                                 TextInput::make('bcc')->label(trans('ip.bcc')),
                             ])->columns(1),
                     ]),
-                Form\Components\Group::make()
+                Forms\Components\Group::make()
                     ->schema([
                         Section::make(heading:null)
                             ->schema(components: [

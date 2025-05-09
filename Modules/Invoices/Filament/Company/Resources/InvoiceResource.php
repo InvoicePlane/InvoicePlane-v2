@@ -68,7 +68,7 @@ class InvoiceResource extends AbstractTenantResource
                 //
                 Grid::make(2)
                     ->schema([
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.client'))
@@ -92,7 +92,7 @@ class InvoiceResource extends AbstractTenantResource
                                     ]),
                             ]),
 
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))
@@ -187,10 +187,10 @@ class InvoiceResource extends AbstractTenantResource
                         Grid::make(2)
                             ->schema([
                                 // Left side reserved (e.g. “Add Item” button later)
-                                Form\Components\Group::make()->schema([]),
+                                Forms\Components\Group::make()->schema([]),
 
                                 // Right side: the actual totals
-                                Form\Components\Group::make()
+                                Forms\Components\Group::make()
                                     ->schema([
                                         TextInput::make('invoice_item_subtotal')
                                             ->label(trans('ip.subtotal'))

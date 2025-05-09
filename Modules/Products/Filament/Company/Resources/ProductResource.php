@@ -57,7 +57,7 @@ class ProductResource extends Resource
                         //
                         // LEFT COLUMN: basic details
                         //
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))
@@ -77,7 +77,7 @@ class ProductResource extends Resource
                         //
                         // RIGHT COLUMN: classification
                         //
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.classification'))

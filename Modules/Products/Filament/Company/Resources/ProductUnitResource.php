@@ -45,7 +45,7 @@ class ProductUnitResource extends Resource
     {
         return $form
             ->schema([
-                Form\Components\Group::make()->schema([
+                Forms\Components\Group::make()->schema([
                     Grid::make(2)
                         ->schema([
                             TextInput::make('unit_name')
@@ -59,7 +59,7 @@ class ProductUnitResource extends Resource
                                 ->required(),
                         ]),
                 ])->columns(1),
-                Form\Components\Group::make()->schema([
+                Forms\Components\Group::make()->schema([
                     Placeholder::make('explanation Product Unit')
                         ->label('just some text'),
                 ])->columns(1),
