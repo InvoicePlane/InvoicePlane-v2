@@ -39,9 +39,9 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
-        $invoice = Invoice::factory()->for($this->user->company)->create([
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'invoice_number' => 'INV-0001',
             'invoice_date'   => '2024-11-01',
             'customer_id'    => $customer->id,
@@ -100,7 +100,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
         $payload = [
             'invoice_number' => 'INV-9000',
@@ -147,7 +147,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
         $payload  = [
             'invoice_date'   => '2024-11-01',
             'customer_id'    => $customer->id,
@@ -223,7 +223,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create([
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'status' => InvoiceStatus::DRAFT,
         ]);
 
@@ -250,7 +250,7 @@ class InvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create([
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'subtotal' => 100,
             'tax'      => 20,
             'discount' => 0,
@@ -281,7 +281,7 @@ class InvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create([
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'subtotal' => 200,
             'tax'      => 40,
             'discount' => 10,
@@ -310,7 +310,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
         $payload = ['status' => null];
 
         // act
@@ -328,7 +328,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         // act
         /** act */
@@ -349,7 +349,7 @@ class InvoicesTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->hasPayments(1)
             ->create([
                 'status' => InvoiceStatus::PAID,
@@ -371,7 +371,7 @@ class InvoicesTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->hasPayments(1)
             ->create();
 
@@ -390,7 +390,7 @@ class InvoicesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
         $invoice->delete();
 
         // act + assert

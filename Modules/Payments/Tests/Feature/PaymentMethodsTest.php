@@ -228,8 +228,8 @@ class PaymentMethodsTest extends AbstractTestCase
 
         /* arrange */
 
-        $method = PaymentMethod::factory()->for($this->user->company)->create();
-        Payment::factory()->for($this->user->company)->for($method)->create();
+        $method = PaymentMethod::factory()->for($this->user->companies()->first())->create();
+        Payment::factory()->for($this->user->companies()->first())->for($method)->create();
 
         Livewire::actingAs($this->user)
             ->test(ListPaymentMethods::class)

@@ -41,7 +41,7 @@ class RecurringInvoicesTest extends AbstractTestCase
         /* arrange */
 
         //$recurringInvoice = RecurringInvoice::factory()->create();
-        $recurring = RecurringInvoice::factory()->for($this->user->company)->create();
+        $recurring = RecurringInvoice::factory()->for($this->user->companies()->first())->create();
         //$this->actingAs(User::factory()->create());
 
         Livewire::actingAs($this->user)
@@ -59,7 +59,7 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         /** @payload */
         $payload = [
@@ -93,7 +93,7 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         /** @payload */
         $payload = [
@@ -117,7 +117,7 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         /** @payload */
         $payload = [
@@ -184,7 +184,7 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         /* arrange */
 
-        $invoice = Invoice::factory()->for($this->user->company)->create();
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         /** @payload */
         $payload = [
@@ -212,7 +212,7 @@ class RecurringInvoicesTest extends AbstractTestCase
         /* arrange */
 
         $recurring = RecurringInvoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create([
                 'frequency' => RecurringFrequency::WEEKLY->value,
                 'end_at'    => now()->addWeeks(2)->format('Y-m-d'),
@@ -295,7 +295,7 @@ class RecurringInvoicesTest extends AbstractTestCase
 
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
-        $recurring = RecurringInvoice::factory()->for($this->user->company)->create();
+        $recurring = RecurringInvoice::factory()->for($this->user->companies()->first())->create();
         //$this->actingAs(User::factory()->create());
 
         $record = RecurringInvoice::factory()->create();

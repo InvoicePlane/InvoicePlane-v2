@@ -62,7 +62,7 @@ class TaskResource extends Resource
                         //
                         // LEFT COLUMN: name, status, project + summary
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.task'))
@@ -124,7 +124,7 @@ class TaskResource extends Resource
                         //
                         // RIGHT COLUMN: due date, price, tax & description
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))

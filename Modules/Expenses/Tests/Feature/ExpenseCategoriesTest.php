@@ -27,7 +27,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'Travel']);
+        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Travel']);
 
         // act + assert
         /** act */
@@ -81,7 +81,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'Original']);
+        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Original']);
         $payload = ['name' => 'Updated Name'];
 
         // act
@@ -102,7 +102,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ExpenseCategory::factory()->for($this->user->company)->create(['name' => 'X']);
+        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'X']);
         $payload = ['name' => null];
 
         // act
@@ -120,7 +120,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ExpenseCategory::factory()->for($this->user->company)->create();
+        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
 
         // act
         /** act */
@@ -137,7 +137,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ExpenseCategory::factory()->for($this->user->company)->create();
+        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
         // act + assert

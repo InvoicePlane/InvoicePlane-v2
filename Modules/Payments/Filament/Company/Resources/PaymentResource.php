@@ -59,11 +59,11 @@ class PaymentResource extends Resource
                         //
                         // LEFT COLUMN: payable type + reference + status + amount
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->schema([
                                 Section::make(trans('ip.payment'))
                                     ->schema([
-                                        DocumentGroup::make()->schema([
+                                        Form\Components\Group::make()->schema([
                                             Select::make('invoice_id')
                                                 ->label(trans('ip.invoice'))
                                                 ->getSearchResultsUsing(function (string $search): array {
@@ -115,7 +115,7 @@ class PaymentResource extends Resource
                         //
                         // RIGHT COLUMN: paid date + method
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->schema([
                                 Section::make(trans('ip.payment_details'))
                                     ->schema([

@@ -41,8 +41,8 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
-        $payment  = Payment::factory()->for($this->user->company)->create([
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
+        $payment  = Payment::factory()->for($this->user->companies()->first())->create([
             'customer_id' => $customer->id,
             'amount'      => 500.00,
         ]);
@@ -62,8 +62,8 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
-        $invoice  = Invoice::factory()->for($this->user->company)->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
+        $invoice  = Invoice::factory()->for($this->user->companies()->first())->create();
 
         $payload = [
             'amount'         => 250.00,
@@ -130,7 +130,7 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $payment = Payment::factory()->for($this->user->company)->create(['amount' => 123.00]);
+        $payment = Payment::factory()->for($this->user->companies()->first())->create(['amount' => 123.00]);
         $payload = ['amount' => 888.00];
 
         // act
@@ -151,7 +151,7 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $payment = Payment::factory()->for($this->user->company)->create();
+        $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         // act
         /** act */
@@ -168,7 +168,7 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $payment = Payment::factory()->for($this->user->company)->create();
+        $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         // act
         Livewire::actingAs($this->user)
@@ -188,11 +188,11 @@ class PaymentsTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['status' => InvoiceStatus::PAID]);
 
         $payment = Payment::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->for($invoice)
             ->create();
 
@@ -211,7 +211,7 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $payment = Payment::factory()->for($this->user->company)->create();
+        $payment = Payment::factory()->for($this->user->companies()->first())->create();
         $payment->delete();
 
         // act + assert

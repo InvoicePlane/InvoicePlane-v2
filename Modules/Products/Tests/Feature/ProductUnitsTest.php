@@ -27,7 +27,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ProductUnit::factory()->for($this->user->company)->create(['name' => 'Box']);
+        $record = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'Box']);
 
         // act + assert
         /** act */
@@ -81,7 +81,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductUnit::factory()->for($this->user->company)->create(['name' => 'Old Unit']);
+        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'Old Unit']);
         $payload = ['name' => 'Updated Unit'];
 
         // act
@@ -102,7 +102,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductUnit::factory()->for($this->user->company)->create(['name' => 'X']);
+        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'X']);
         $payload = ['name' => null];
 
         // act
@@ -120,7 +120,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ProductUnit::factory()->for($this->user->company)->create();
+        $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
 
         // act
         /** act */
@@ -137,7 +137,7 @@ class ProductUnitsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = ProductUnit::factory()->for($this->user->company)->create();
+        $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
         // act + assert

@@ -61,7 +61,7 @@ class ProjectResource extends Resource
                         //
                         // LEFT COLUMN: Client selector + info
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.client'))
@@ -88,7 +88,7 @@ class ProjectResource extends Resource
                         //
                         // RIGHT COLUMN: Project details
                         //
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->columnSpan(1)
                             ->schema([
                                 Section::make(trans('ip.details'))

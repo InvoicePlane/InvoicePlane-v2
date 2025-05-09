@@ -41,9 +41,9 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
-        $quote = Quote::factory()->for($this->user->company)->create([
+        $quote = Quote::factory()->for($this->user->companies()->first())->create([
             'quote_number' => 'Q-1001',
             'quote_date'   => '2024-10-01',
             'customer_id'  => $customer->id,
@@ -100,7 +100,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
         $payload = [
             'quote_number' => 'Q-2024-01',
@@ -176,7 +176,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $quote = Quote::factory()->for($this->user->company)->create([
+        $quote = Quote::factory()->for($this->user->companies()->first())->create([
             'status' => QuoteStatus::DRAFT,
         ]);
 
@@ -200,7 +200,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $quote = Quote::factory()->for($this->user->company)->create();
+        $quote = Quote::factory()->for($this->user->companies()->first())->create();
 
         $payload = ['quote_number' => null];
 
@@ -219,7 +219,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $quote = Quote::factory()->for($this->user->company)->create();
+        $quote = Quote::factory()->for($this->user->companies()->first())->create();
 
         // act
         Livewire::actingAs($this->user)
@@ -239,7 +239,7 @@ class QuotesTest extends AbstractTestCase
         /* arrange */
 
         $quote = Quote::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['status' => QuoteStatus::APPROVED]);
 
         Livewire::actingAs($this->user)
@@ -258,11 +258,11 @@ class QuotesTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['status' => InvoiceStatus::PAID]);
 
         $quote = Quote::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['invoice_id' => $invoice->id]);
 
         Livewire::actingAs($this->user)
@@ -281,11 +281,11 @@ class QuotesTest extends AbstractTestCase
         /* arrange */
 
         $invoice = Invoice::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['status' => InvoiceStatus::PAID]);
 
         $quote = Quote::factory()
-            ->for($this->user->company)
+            ->for($this->user->companies()->first())
             ->create(['invoice_id' => $invoice->id]);
 
         Livewire::actingAs($this->user)
@@ -303,7 +303,7 @@ class QuotesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $quote = Quote::factory()->for($this->user->company)->create();
+        $quote = Quote::factory()->for($this->user->companies()->first())->create();
         $quote->delete();
 
         // act + assert

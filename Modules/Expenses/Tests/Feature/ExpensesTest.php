@@ -32,11 +32,11 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $vendor   = ExpenseVendor::factory()->for($this->user->company)->create();
-        $category = ExpenseCategory::factory()->for($this->user->company)->create();
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $vendor   = ExpenseVendor::factory()->for($this->user->companies()->first())->create();
+        $category = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
-        $record = Expense::factory()->for($this->user->company)->create([
+        $record = Expense::factory()->for($this->user->companies()->first())->create([
             'amount'       => 550.00,
             'expensed_at'  => Carbon::parse('2024-12-01'),
             'vendor_id'    => $vendor->id,
@@ -60,9 +60,9 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $vendor   = ExpenseVendor::factory()->for($this->user->company)->create();
-        $category = ExpenseCategory::factory()->for($this->user->company)->create();
-        $customer = Relation::factory()->for($this->user->company)->customer()->create();
+        $vendor   = ExpenseVendor::factory()->for($this->user->companies()->first())->create();
+        $category = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
 
         $payload = [
             'amount'       => 120.00,
@@ -116,7 +116,7 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $expense = Expense::factory()->for($this->user->company)->create([
+        $expense = Expense::factory()->for($this->user->companies()->first())->create([
             'expense_type' => ExpenseType::FIXED,
         ]);
 
@@ -143,7 +143,7 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $expense = Expense::factory()->for($this->user->company)->create();
+        $expense = Expense::factory()->for($this->user->companies()->first())->create();
 
         $payload = ['expense_type' => null];
 
@@ -162,7 +162,7 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = Expense::factory()->for($this->user->company)->create();
+        $record = Expense::factory()->for($this->user->companies()->first())->create();
 
         // act
         /** act */
@@ -179,7 +179,7 @@ class ExpensesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record = Expense::factory()->for($this->user->company)->create();
+        $record = Expense::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
         // act + assert

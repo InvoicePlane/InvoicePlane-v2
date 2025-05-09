@@ -60,7 +60,7 @@ class ExpenseResource extends AbstractTenantResource
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->schema([
                                 Section::make()
                                     ->schema([
@@ -111,7 +111,7 @@ class ExpenseResource extends AbstractTenantResource
                                     ->collapsed(false),
                             ]),
 
-                        DocumentGroup::make()
+                        Form\Components\Group::make()
                             ->schema([
                                 Section::make(trans('ip.details'))
                                     ->schema([
@@ -219,10 +219,10 @@ class ExpenseResource extends AbstractTenantResource
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                DocumentGroup::make()
+                                Form\Components\Group::make()
                                     ->schema([]), // Optional button space
 
-                                DocumentGroup::make()
+                                Form\Components\Group::make()
                                     ->schema([
                                         TextInput::make('expense_item_subtotal')
                                             ->label(trans('ip.subtotal'))
