@@ -5,7 +5,7 @@ namespace Modules\Payments\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class MerchantPayment.
+ * Class merchant_payment.
  *
  * @property int    $id
  * @property int    $payment_id
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $merchant_key
  * @property string $merchant_value
  */
-class MerchantPayment extends Model
+class merchant_payment extends Model
 {
     public $timestamps = false;
 

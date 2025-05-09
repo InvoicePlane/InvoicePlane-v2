@@ -2,14 +2,12 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\CreateRecurringInvoiceItem;
 use Modules\Core\Models\EditRecurringInvoiceItem;
 use Modules\Core\Models\ListRecurringInvoiceItems;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\RecurringInvoiceItem;
 use PHPUnit\Framework\Attributes\Group;
@@ -21,7 +19,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 class RecurringInvoiceItemsTest extends AbstractTestCase
 {
-    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 

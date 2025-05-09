@@ -3,7 +3,6 @@
 namespace Modules\Payments\Support\Drivers;
 
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Support\MerchantDriverPayable;
 use Mollie_API_Client;
@@ -48,7 +47,7 @@ class Mollie extends MerchantDriverPayable
                 'payment_method_id' => config('ip.onlinePaymentMethod'),
             ]);
 
-            MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->id);
+            merchant_payment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->id);
         }
     }
 }

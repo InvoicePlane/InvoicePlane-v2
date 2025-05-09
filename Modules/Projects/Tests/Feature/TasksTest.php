@@ -2,7 +2,6 @@
 
 namespace Modules\Projects\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
@@ -24,7 +23,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(TaskResource::class)]
 class TasksTest extends AbstractTestCase
 {
-    use RefreshDatabase;
     use WithoutMiddleware;
     // endregion
 

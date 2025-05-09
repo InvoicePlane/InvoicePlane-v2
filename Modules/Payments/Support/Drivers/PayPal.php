@@ -3,7 +3,6 @@
 namespace Modules\Payments\Support\Drivers;
 
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Support\MerchantDriverPayable;
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
@@ -103,7 +102,7 @@ class PayPal extends MerchantDriverPayable
                     'payment_method_id' => config('ip.onlinePaymentMethod'),
                 ]);
 
-                MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
+                merchant_payment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
             }
 
             return true;

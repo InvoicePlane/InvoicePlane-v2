@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Core\Models\CreateImport;
@@ -16,7 +15,6 @@ use PHPUnit\Framework\Attributes\Group;
 
 class ImportTest extends AbstractTestCase
 {
-    use RefreshDatabase;
     use WithoutMiddleware;
 
     public function setUp(): void

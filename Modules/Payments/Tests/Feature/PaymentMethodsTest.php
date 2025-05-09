@@ -2,7 +2,6 @@
 
 namespace Modules\Payments\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -22,7 +21,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(PaymentMethodResource::class)]
 class PaymentMethodsTest extends AbstractTestCase
 {
-    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
@@ -31,8 +29,8 @@ class PaymentMethodsTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);
+        /*$this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);*/
         $this->withoutExceptionHandling();
     }
 

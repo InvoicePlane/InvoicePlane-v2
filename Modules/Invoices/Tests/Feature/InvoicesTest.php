@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
@@ -20,15 +19,13 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(InvoiceResource::class)]
 class InvoicesTest extends AbstractTestCase
 {
-    use RefreshDatabase;
-
     protected User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);
+        /*$this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);*/
     }
 
     #[Test]

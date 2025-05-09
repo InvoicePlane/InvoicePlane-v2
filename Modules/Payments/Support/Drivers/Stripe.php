@@ -6,7 +6,6 @@ use Exception;
 use Modules\Clients\Models\Relation;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\MerchantClient;
-use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Support\MerchantDriver;
 
@@ -54,7 +53,7 @@ class Stripe extends MerchantDriver
                 'payment_method_id' => config('ip.onlinePaymentMethod'),
             ]);
 
-            MerchantPayment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
+            merchant_payment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
 
             return true;
         } catch (Exception $e) {

@@ -2,11 +2,9 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Enums\RecurringFrequency;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
@@ -22,15 +20,14 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(RecurringInvoiceResource::class)]
 class RecurringInvoicesTest extends AbstractTestCase
 {
-    use RefreshDatabase;
     use WithFaker;
     use WithoutMiddleware;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);
+        /*$this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);*/
         $this->withoutExceptionHandling();
     }
 

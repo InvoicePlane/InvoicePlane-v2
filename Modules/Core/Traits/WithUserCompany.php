@@ -12,7 +12,7 @@ trait WithUserCompany
     {
         parent::setUp();
 
-        $this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);
+        /*$this->user = User::factory()->withCompany()->create();
+        session(['current_company_id' => $this->user->company_id]);*/
     }
 }
