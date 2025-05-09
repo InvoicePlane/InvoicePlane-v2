@@ -14,10 +14,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Attachment;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\InvoiceItem;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
@@ -106,15 +104,15 @@ class Invoice extends Model
         parent::boot();
 
         static::creating(function ($invoice): void {
-            event(new InvoiceCreating($invoice));
+            //event(new InvoiceCreating($invoice));
         });
 
         static::created(function ($invoice): void {
-            event(new InvoiceCreated($invoice));
+            //event(new InvoiceCreated($invoice));
         });
 
         static::deleted(function ($invoice): void {
-            event(new InvoiceDeleted($invoice));
+            //event(new InvoiceDeleted($invoice));
         });
     }
 

@@ -17,7 +17,7 @@ return new class () extends Migration {
 
             $table->string('invoice_number');
             $table->string('invoice_status');
-            $table->enum('sign', ['1', '-1'])->default('1');
+            $table->enum('invoice_sign', ['1', '-1'])->default('1');
             $table->date('invoiced_at')->nullable();
             $table->date('invoice_due_at')->nullable();
             $table->decimal('invoice_discount_amount', 20, 2)->default(0);
@@ -27,7 +27,7 @@ return new class () extends Migration {
             $table->decimal('invoice_tax_total', 20);
             $table->decimal('invoice_total', 20);
             $table->string('invoice_password')->nullable();
-            $table->string('url_key', 30)->nullable();
+            $table->string('url_key', 32)->nullable();
             $table->boolean('is_read_only')->nullable()->default(false);
 
             $table->string('template')->nullable();

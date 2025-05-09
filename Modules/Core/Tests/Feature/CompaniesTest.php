@@ -38,7 +38,6 @@ class CompaniesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_creates_a_company(): void
     {
@@ -58,7 +57,6 @@ class CompaniesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_create_company_when_name_missing(): void
     {
@@ -76,7 +74,6 @@ class CompaniesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_updates_a_company(): void
     {
@@ -98,7 +95,6 @@ class CompaniesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_deletes_a_company(): void
     {

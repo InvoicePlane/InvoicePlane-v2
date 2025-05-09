@@ -13,9 +13,9 @@ return new class () extends Migration {
             $table->unsignedBigInteger('relation_id');
             $table->string('first_name', 50);
             $table->string('last_name', 50);
-            $table->boolean('default_to');
-            $table->boolean('default_cc');
-            $table->boolean('default_bcc');
+            $table->boolean('default_to')->nullable();
+            $table->boolean('default_cc')->nullable();
+            $table->boolean('default_bcc')->nullable();
             $table->string('gender', 10)->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

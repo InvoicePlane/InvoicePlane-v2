@@ -25,7 +25,7 @@ class RelationFactory extends Factory
             'id_number'          => $this->faker->optional()->numerify('#########'),
             'coc_number'         => $this->faker->optional()->numerify('#########'),
             'vat_number'         => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
-            'registered_at'      => $this->faker->dateTimeBetween('-10 years', '-1 month')->format('Y-m-d'),
+            'registered_at'      => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
         ];
     }
 

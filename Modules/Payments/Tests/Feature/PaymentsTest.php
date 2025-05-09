@@ -56,7 +56,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_creates_a_payment(): void
     {
@@ -91,7 +90,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_create_payment_without_amount(): void
     {
@@ -109,7 +107,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_create_payment_without_method(): void
     {
@@ -127,7 +124,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_updates_a_payment(): void
     {
@@ -149,7 +145,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_update_payment_with_null_amount(): void
     {
@@ -167,7 +162,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
@@ -211,7 +205,6 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_payment(): void
     {

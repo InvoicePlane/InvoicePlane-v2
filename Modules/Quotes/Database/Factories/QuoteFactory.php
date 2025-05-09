@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Quotes\Enums\QuoteStatus;
@@ -21,10 +22,12 @@ class QuoteFactory extends Factory
             ->inRandomOrder()
             ->first()
     ?: Company::factory()->create();
-        $prospect = Relation::where('relation_type', RelationType::PROSPECT->value)
+        $prospect = Relation::query()->where('relation_type', RelationType::PROSPECT->value)
             ->inRandomOrder()
             ->first() ?? Relation::factory()->create(['relation_type' => RelationType::PROSPECT->value]);
         $user = User::query()->inRandomOrder()->first() ?? User::factory()->create();
+
+        $documentGroup = DocumentGroup::query()->inRandomOrder()->first() ?? DocumentGroup::factory()->create();
 
         $taxRate        = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
         $taxRatePercent = $taxRate->rate / 100;
@@ -39,6 +42,7 @@ class QuoteFactory extends Factory
         return [
             'company_id'             => $company->id,
             'prospect_id'            => $prospect->id,
+            'document_group_id'      => $documentGroup->id,
             'user_id'                => $user->id,
             'quote_number'           => $this->faker->unique()->numerify('QUO-#####'),
             'quote_status'           => $this->faker->randomElement(QuoteStatus::cases())->value,
@@ -46,12 +50,15 @@ class QuoteFactory extends Factory
             'quote_expires_at'       => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
             'quote_discount_amount'  => $discountAmount,
             'quote_discount_percent' => $discountPercent,
-            'quote_item_tax_total'   => $itemTaxTotal,
             'quote_item_subtotal'    => $subtotal,
             'quote_tax_total'        => $taxTotal,
             'quote_total'            => $total,
             'quote_password'         => bcrypt('password'),
-            'quote_url_key'          => $this->faker->regexify('[A-Za-z0-9]{30}'),
+            'url_key'                => $this->faker->regexify('[A-Za-z0-9]{30}'),
+            'template'               => null,
+            'summary'                => null,
+            'terms'                  => null,
+            'footer'                 => null,
         ];
     }
 

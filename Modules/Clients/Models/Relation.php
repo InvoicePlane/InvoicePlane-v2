@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
@@ -78,19 +80,19 @@ class Relation extends Model
         parent::boot();
 
         static::creating(function ($client): void {
-            event(new ClientCreating($client));
+            //event(new CustomerCreating($client));
         });
 
         static::created(function ($client): void {
-            event(new ClientCreated($client));
+            //event(new CustomerCreated($client));
         });
 
         static::saving(function ($client): void {
-            event(new ClientSaving($client));
+            //event(new CustomerSaving($client));
         });
 
         static::deleted(function ($client): void {
-            event(new ClientDeleted($client));
+            //event(new CustomerDeleted($client));
         });
     }
 
@@ -169,7 +171,7 @@ class Relation extends Model
 
     public function merchant()
     {
-        return $this->hasOne('Modules\Core\Models\MerchantClient');
+        return $this->hasOne('Modules\Core\Models\MerchantCustomer');
     }
 
     public function notes()
@@ -237,7 +239,7 @@ class Relation extends Model
         return nl2br(formatAddress($this));
     }
 
-    public function getClientEmailAttribute()
+    public function getCustomerEmailAttribute()
     {
         return $this->email;
     }

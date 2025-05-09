@@ -21,26 +21,33 @@ class InvoiceItemFactory extends Factory
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 
+        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
+
         $quantity = $this->faker->randomFloat(2, 1, 20);
         $price    = $this->faker->randomFloat(2, 10, 500);
         $discount = $this->faker->randomFloat(2, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
         return [
-            'company_id'   => $company->id,
-            'invoice_id'   => Invoice::query()->inRandomOrder()->first()?->id,
-            'item_id'      => $item->id,
-            'unit_id'      => $unit->id,
-            'added_at'     => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
-            'item_name'    => $item->item_name,
-            'is_recurring' => false,
-            'quantity'     => $quantity,
-            'price'        => $price,
-            'discount'     => $discount,
-            'subtotal'     => $subtotal,
-            'tax_rate_id'  => $taxRate->id,
-            'order'        => $this->faker->numberBetween(1, 9999),
-            'description'  => null,
+            'company_id'    => $company->id,
+            'invoice_id'    => Invoice::query()->inRandomOrder()->first()?->id,
+            'item_id'       => $item->id,
+            'unit_id'       => $unit->id,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
+            'item_name'     => $item->item_name,
+            'is_recurring'  => false,
+            'quantity'      => $quantity,
+            'price'         => $price,
+            'discount'      => $discount,
+            'subtotal'      => $subtotal,
+            'tax_1'         => $subtotal,
+            'tax_2'         => $subtotal,
+            'tax'           => $subtotal,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => $taxRate2?->id,
+            'display_order' => $this->faker->numberBetween(1, 9999),
+            'description'   => null,
         ];
     }
 

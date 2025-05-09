@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
@@ -73,16 +74,16 @@ class QuoteItem extends Model
 
         static::deleted(function ($quoteItem): void {
             if ($quoteItem->quote) {
-                event(new QuoteModified($quoteItem->quote));
+                //event(new QuoteModified($quoteItem->quote));
             }
         });
 
         static::saving(function ($quoteItem): void {
-            event(new QuoteItemSaving($quoteItem));
+            //event(new QuoteItemSaving($quoteItem));
         });
 
         static::saved(function ($quoteItem): void {
-            event(new QuoteModified($quoteItem->quote));
+            //event(new QuoteModified($quoteItem->quote));
         });
     }
 

@@ -38,7 +38,6 @@ class EmailTemplatesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_creates_an_email_template(): void
     {
@@ -58,7 +57,6 @@ class EmailTemplatesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_create_email_template_without_subject(): void
     {
@@ -76,7 +74,6 @@ class EmailTemplatesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_updates_an_email_template(): void
     {
@@ -98,7 +95,6 @@ class EmailTemplatesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {

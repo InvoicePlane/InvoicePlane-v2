@@ -3,7 +3,6 @@
 namespace Modules\Projects\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -20,7 +19,7 @@ class ProjectFactory extends Factory
             ->inRandomOrder()
             ->first()
     ?: Company::factory()->create();
-        $customer = Relation::where('relation_type', RelationType::CUSTOMER->value)
+        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first()
             ?? Relation::factory()

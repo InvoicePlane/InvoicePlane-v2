@@ -56,19 +56,19 @@ class Company extends Model
         parent::boot();
 
         static::saving(function ($companyProfile): void {
-            event(new CompanyProfileSaving($companyProfile));
+            //event(new CompanyProfileSaving($companyProfile));
         });
 
         static::creating(function ($companyProfile): void {
-            event(new CompanyProfileCreating($companyProfile));
+            //event(new CompanyProfileCreating($companyProfile));
         });
 
         static::created(function ($companyProfile): void {
-            event(new CompanyProfileCreated($companyProfile));
+            //event(new CompanyProfileCreated($companyProfile));
         });
 
         static::deleted(function ($companyProfile): void {
-            event(new CompanyProfileDeleted($companyProfile));
+            //event(new CompanyProfileDeleted($companyProfile));
         });
     }
 

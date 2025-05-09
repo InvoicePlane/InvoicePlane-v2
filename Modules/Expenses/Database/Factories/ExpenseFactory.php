@@ -17,7 +17,7 @@ class ExpenseFactory extends Factory
 
     public function definition(): array
     {
-        $customer = Relation::where('relation_type', RelationType::CUSTOMER->value)
+        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first() ?? Relation::factory()->create(['relation_type' => RelationType::CUSTOMER->value]);
 
@@ -45,6 +45,7 @@ class ExpenseFactory extends Factory
             'category_id'    => ExpenseCategory::query()->inRandomOrder()->first()->id,
             'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'expense_status' => $this->faker->randomElement(ExpenseStatus::cases())->value,
+            'expensed_at'    => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
             'expense_type'   => $this->faker->randomElement(ExpenseType::cases())->value,
             'expense_amount' => $this->faker->randomFloat(2, 10, 500),
             'description'    => null,

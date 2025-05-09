@@ -14,12 +14,12 @@ class CompaniesSeeder extends Seeder
         Company::factory()
             ->count(1)
             ->has(
-                /*Relation::factory()
+                Relation::factory()
                     ->count(25)
                     ->state([
                         'relation_type' => RelationType::CUSTOMER->value,
                     ]),
-                'relations'*/
+                'relations'
             )
             ->create();
     }

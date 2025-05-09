@@ -5,15 +5,13 @@ namespace Modules\Payments\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class merchant_payment.
- *
  * @property int    $id
  * @property int    $payment_id
  * @property string $driver
  * @property string $merchant_key
  * @property string $merchant_value
  */
-class merchant_payment extends Model
+class MerchantPayment extends Model
 {
     public $timestamps = false;
 

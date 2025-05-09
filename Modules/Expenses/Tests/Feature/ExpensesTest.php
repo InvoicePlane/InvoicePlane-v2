@@ -54,7 +54,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_creates_an_expense(): void
     {
@@ -94,7 +93,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_create_expense_without_amount(): void
     {
@@ -112,7 +110,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_updates_an_expense(): void
     {
@@ -140,7 +137,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_update_expense_with_empty_type(): void
     {
@@ -160,7 +156,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_deletes_an_expense(): void
     {
@@ -178,7 +173,6 @@ class ExpensesTest extends AbstractTestCase
     }
 
     #[Test]
-
     #[Group('crud')]
     public function it_fails_to_delete_expense_twice(): void
     {

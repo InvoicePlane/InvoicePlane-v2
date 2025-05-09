@@ -16,12 +16,18 @@ class DocumentGroupFactory extends Factory
         $groupType = $this->faker->randomElement(DocumentGroupType::cases());
 
         return [
-            'company_id' => Company::query()->inRandomOrder()->first()->id,
-            'type'       => $groupType->value,
-            'name'       => $groupType->label(),
-            'left_pad'   => $groupType->prefix(),
-            'format'     => $this->faker->optional()->numerify($groupType->prefix() . '-#####'),
-            'next_id'    => 1,
+            'company_id'              => Company::query()->inRandomOrder()->first()->id,
+            'group_identifier_format' => $groupType->prefix() . '-' . $this->faker->numberBetween(100, 700),
+            'type'                    => $groupType->value,
+            'name'                    => $groupType->label(),
+            'left_pad'                => $groupType->prefix(),
+            'format'                  => $this->faker->optional()->numerify($groupType->prefix() . '-#####'),
+            'next_id'                 => 1,
+            'reset_number'            => 1,
+            'last_id'                 => 1,
+            'last_year'               => 1,
+            'last_month'              => 1,
+            'last_week'               => 1,
         ];
     }
 }

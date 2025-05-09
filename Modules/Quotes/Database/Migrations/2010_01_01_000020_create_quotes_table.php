@@ -24,7 +24,7 @@ return new class () extends Migration {
             $table->decimal('quote_tax_total', 20);
             $table->decimal('quote_total', 20);
             $table->string('quote_password')->nullable();
-            $table->string('quote_url_key', 30)->nullable();
+            $table->string('url_key', 32)->nullable();
 
             $table->string('template')->nullable();
             $table->string('summary')->nullable();

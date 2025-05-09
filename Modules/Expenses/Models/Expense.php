@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\ExpenseCategory;
-use Modules\Core\Models\ExpenseItem;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\DateFormatter;
@@ -65,15 +63,15 @@ class Expense extends Model
         parent::boot();
 
         static::created(function ($expense): void {
-            event(new ExpenseCreated($expense));
+            //event(new ExpenseCreated($expense));
         });
 
         static::saved(function ($expense): void {
-            event(new CheckAttachment($expense));
+            //event(new CheckAttachment($expense));
         });
 
         static::saving(function ($expense): void {
-            event(new ExpenseSaving($expense));
+            //event(new ExpenseSaving($expense));
         });
 
         static::deleting(function ($expense): void {

@@ -78,15 +78,15 @@ class Quote extends Model
         parent::boot();
 
         static::creating(function ($quote): void {
-            event(new QuoteCreating($quote));
+            //event(new QuoteCreating($quote));
         });
 
         static::created(function ($quote): void {
-            event(new QuoteCreated($quote));
+            //event(new QuoteCreated($quote));
         });
 
         static::deleted(function ($quote): void {
-            event(new QuoteDeleted($quote));
+            //event(new QuoteDeleted($quote));
         });
     }
 
@@ -374,7 +374,7 @@ class Quote extends Model
 
     public function scopeUrlKey(Builder $query, $url_key): Builder
     {
-        return $query->where('quote_url_key', $url_key);
+        return $query->where('url_key', $url_key);
     }
 
     /*public function scopeIsOpen(Builder $query): Builder

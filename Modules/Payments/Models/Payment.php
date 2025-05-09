@@ -50,16 +50,16 @@ class Payment extends Model
         parent::boot();
 
         self::created(function ($payment): void {
-            event(new InvoiceModified($payment->invoice));
-            event(new PaymentCreated($payment));
+            //event(new InvoiceModified($payment->invoice));
+            //event(new PaymentCreated($payment));
         });
 
         self::creating(function ($payment): void {
-            event(new PaymentCreating($payment));
+            //event(new PaymentCreating($payment));
         });
 
         self::updated(function ($payment): void {
-            event(new InvoiceModified($payment->invoice));
+            //event(new InvoiceModified($payment->invoice));
         });
 
         self::deleting(function ($payment): void {

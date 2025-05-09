@@ -37,7 +37,7 @@ class ProductCategoryFactory extends Factory
 
         return [
             'company_id'    => $company->id,
-            'category_name' => $this->faker->unique()->randomElement($categories),
+            'category_name' => $this->faker->randomElement($categories),
             'description'   => null,
         ];
     }

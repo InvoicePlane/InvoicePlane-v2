@@ -18,7 +18,7 @@ class ProductUnitFactory extends Factory
             ->first()
             ?: Company::factory()->create();
 
-        $unitName = $this->faker->unique()->randomElement([
+        $unitName = $this->faker->randomElement([
             'pc', 'box', 'kg', 'ltr', 'pack',
             'meter', 'dozen', 'bundle', 'set', 'unit',
         ]);

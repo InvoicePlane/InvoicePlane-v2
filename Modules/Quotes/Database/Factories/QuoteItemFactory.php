@@ -7,6 +7,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
+use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItemFactory extends Factory
@@ -20,25 +21,30 @@ class QuoteItemFactory extends Factory
         $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
         $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
 
+        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
+
         $quantity = $this->faker->randomFloat(2, 0, 100);
         $price    = $this->faker->randomFloat(2, 0, 100);
         $discount = $this->faker->randomFloat(2, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
         return [
-            'company_id'   => $company->id,
-            'item_id'      => $item->id,
-            'unit_id'      => $unit->id,
-            'added_at'     => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
-            'item_name'    => $item->item_name,
-            'is_recurring' => false,
-            'quantity'     => $quantity,
-            'price'        => $price,
-            'discount'     => $discount,
-            'subtotal'     => $subtotal,
-            'tax_rate_id'  => $taxRate->id,
-            'order'        => $this->faker->randomNumber(4, true),
-            'description'  => null,
+            'company_id'    => $company->id,
+            'quote_id'      => Quote::query()->inRandomOrder()->first()?->id,
+            'item_id'       => $item->id,
+            'unit_id'       => $unit->id,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
+            'item_name'     => $item->item_name,
+            'is_recurring'  => false,
+            'quantity'      => $quantity,
+            'price'         => $price,
+            'discount'      => $discount,
+            'subtotal'      => $subtotal,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => $taxRate2?->id,
+            'display_order' => $this->faker->randomNumber(4, true),
+            'description'   => null,
         ];
     }
 

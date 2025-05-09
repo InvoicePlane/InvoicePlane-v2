@@ -67,11 +67,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
         parent::boot();
 
         static::created(function ($user): void {
-            event(new UserCreated($user));
+            //event(new UserCreated($user));
         });
 
         static::deleted(function ($user): void {
-            event(new UserDeleted($user));
+            //event(new UserDeleted($user));
         });
     }
 
@@ -98,7 +98,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 
     public function getCurrentCompanyId(): ?int
     {
-        return session('current_company_id');
+        $companyId = session('current_company_id');
+
+        if ( ! $companyId) {
+            $companyId = $this->companies()->first()?->id;
+        }
+
+        return $companyId;
     }
 
     public function expenses(): HasMany
