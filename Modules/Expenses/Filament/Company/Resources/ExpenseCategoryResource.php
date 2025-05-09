@@ -50,7 +50,7 @@ class ExpenseCategoryResource extends Resource
             ->schema([
                 Grid::make(1)
                     ->schema([
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 TextInput::make('category_name')
                                     ->label(trans('ip.expense_category'))

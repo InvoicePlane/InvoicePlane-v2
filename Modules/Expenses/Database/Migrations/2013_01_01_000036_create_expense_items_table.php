@@ -21,7 +21,7 @@ return new class () extends Migration {
             $table->decimal('discount', 20, 2)->default(0);
             $table->decimal('subtotal', 20, 2);
             $table->unsignedBigInteger('tax_rate_id')->nullable();
-            $table->unsignedMediumInteger('order')->nullable();
+            $table->unsignedMediumInteger('display_order')->nullable();
             $table->string('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

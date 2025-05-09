@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
+use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\MarkdownEditor;
@@ -60,7 +61,7 @@ class ExpenseResource extends AbstractTenantResource
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 Section::make()
                                     ->schema([
@@ -91,7 +92,6 @@ class ExpenseResource extends AbstractTenantResource
                                         Select::make('vendor_id')
                                             ->relationship('vendor', 'company_name')
                                             ->label(trans('ip.vendor'))
-                                            ->required()
                                             ->searchable()
                                             ->preload()
                                             ->native(false),
@@ -111,7 +111,7 @@ class ExpenseResource extends AbstractTenantResource
                                     ->collapsed(false),
                             ]),
 
-                        Form\Components\Group::make()
+                        Forms\Components\Group::make()
                             ->schema([
                                 Section::make(trans('ip.details'))
                                     ->schema([
@@ -219,10 +219,10 @@ class ExpenseResource extends AbstractTenantResource
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Form\Components\Group::make()
+                                Forms\Components\Group::make()
                                     ->schema([]), // Optional button space
 
-                                Form\Components\Group::make()
+                                Forms\Components\Group::make()
                                     ->schema([
                                         TextInput::make('expense_item_subtotal')
                                             ->label(trans('ip.subtotal'))
