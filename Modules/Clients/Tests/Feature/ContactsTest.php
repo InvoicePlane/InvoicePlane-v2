@@ -9,27 +9,13 @@ use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\ListContact
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-class ContactsTest extends AbstractTestCase
+class ContactsTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->user       = User::factory()->withCompany()->create();
-        $currentCompanyId = $this->user->getCurrentCompanyId();
-        session(['current_company_id' => $currentCompanyId]);
-        $this->withoutExceptionHandling();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
 
     #region smoke
     #[Test]
@@ -124,7 +110,7 @@ class ContactsTest extends AbstractTestCase
 
         /* arrange */
 
-        $relation = Relation::factory()->for($this->user->company)->create();
+        $relation = Relation::factory()->for($this->user->companies()->first())->create();
 
         $payload = [
             'relation_id' => $relation->id,
@@ -152,7 +138,7 @@ class ContactsTest extends AbstractTestCase
             'gender'     => 'male',
         ];
 
-        $contact = Contact::factory()->for($this->user->company)->create($payload);
+        $contact = Contact::factory()->for($this->user->companies()->first())->create($payload);
 
         $update = [
             'first_name' => 'Updated',
@@ -176,7 +162,7 @@ class ContactsTest extends AbstractTestCase
 
         /* arrange */
 
-        $contact = Contact::factory()->for($this->user->company)->create();
+        $contact = Contact::factory()->for($this->user->companies()->first())->create();
 
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
