@@ -2551,22 +2551,22 @@ parameters:
 			path: Modules/Payments/Models/MerchantClient.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\MerchantPayment\:\:firstOrNew\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Payments\\Models\\merchant_payment\:\:firstOrNew\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Payments/Models/MerchantPayment.php
+			path: Modules/Payments/Models/merchant_payment.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\MerchantPayment\:\:where\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Payments\\Models\\merchant_payment\:\:where\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Payments/Models/MerchantPayment.php
+			path: Modules/Payments/Models/merchant_payment.php
 
 		-
-			message: '#^Method Modules\\Payments\\Models\\MerchantPayment\:\:getByKey\(\) should return static\(Modules\\Payments\\Models\\MerchantPayment\) but returns array\|float\|int\|string\|false\|null\.$#'
+			message: '#^Method Modules\\Payments\\Models\\merchant_payment\:\:getByKey\(\) should return static\(Modules\\Payments\\Models\\merchant_payment\) but returns array\|float\|int\|string\|false\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: Modules/Payments/Models/MerchantPayment.php
+			path: Modules/Payments/Models/merchant_payment.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
