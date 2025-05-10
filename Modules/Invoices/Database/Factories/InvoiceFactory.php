@@ -27,7 +27,7 @@ class InvoiceFactory extends Factory
             ->first() ?? Relation::factory()->customer()->create();
         $documentGroup = DocumentGroup::query()->inRandomOrder()->first() ?? DocumentGroup::factory()->create();
 
-        $subtotal = $this->faker->randomFloat(2, 100, 1000);
+        $subtotal = $this->faker->randomFloat(4, 100, 1000);
         $taxRate  = 0.20;
         $sign     = $this->faker->boolean(75) ? '1' : '-1';
         $taxTotal = $subtotal * $taxRate;
@@ -44,8 +44,8 @@ class InvoiceFactory extends Factory
             'invoice_sign'             => $sign,
             'invoiced_at'              => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),
             'invoice_due_at'           => $this->faker->dateTimeBetween('-3 years', '+4 months')->format('Y-m-d'),
-            'invoice_discount_amount'  => $this->faker->randomFloat(2, 0, 100),
-            'invoice_discount_percent' => $this->faker->randomFloat(2, 0, 25),
+            'invoice_discount_amount'  => $this->faker->randomFloat(4, 0, 100),
+            'invoice_discount_percent' => $this->faker->randomFloat(4, 0, 25),
             'invoice_item_subtotal'    => $subtotal,
             'invoice_tax_total'        => $taxTotal,
             'invoice_total'            => $total,

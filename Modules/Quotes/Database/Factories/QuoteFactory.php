@@ -32,11 +32,11 @@ class QuoteFactory extends Factory
         $taxRate        = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
         $taxRatePercent = $taxRate->rate / 100;
 
-        $subtotal        = $this->faker->randomFloat(2, 100, 2000);
+        $subtotal        = $this->faker->randomFloat(4, 100, 2000);
         $itemTaxTotal    = $subtotal * $taxRatePercent;
         $taxTotal        = $subtotal * $taxRatePercent;
-        $discountAmount  = $this->faker->randomFloat(2, 0, 100);
-        $discountPercent = $this->faker->randomFloat(2, 0, 20);
+        $discountAmount  = $this->faker->randomFloat(4, 0, 100);
+        $discountPercent = $this->faker->randomFloat(4, 0, 20);
         $total           = ($subtotal + $itemTaxTotal + $taxTotal) - $discountAmount;
 
         return [

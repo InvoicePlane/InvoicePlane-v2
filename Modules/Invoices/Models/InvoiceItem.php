@@ -44,10 +44,10 @@ class InvoiceItem extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'quantity'      => 'decimal:2',
-        'price'         => 'decimal:2',
-        'discount'      => 'decimal:2',
-        'subtotal'      => 'decimal:2',
+        'quantity'      => 'decimal:4',
+        'price'         => 'decimal:4',
+        'discount'      => 'decimal:4',
+        'subtotal'      => 'decimal:4',
         'display_order' => 'int',
     ];
 

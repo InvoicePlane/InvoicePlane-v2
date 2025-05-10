@@ -52,7 +52,7 @@ class TaskFactory extends Factory
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
             'name'        => $this->faker->words(3, true),
             'due_at'      => $this->faker->dateTimeBetween('-3 year', '+2 year')->format('Y-m-d'),
-            'price'       => $this->faker->randomFloat(2, 0, 100),
+            'price'       => $this->faker->randomFloat(4, 0, 100),
             'description' => null,
         ];
     }

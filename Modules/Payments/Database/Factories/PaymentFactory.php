@@ -32,7 +32,7 @@ class PaymentFactory extends Factory
             'payment_method_id' => $paymentMethod->id,
             'payment_status'    => $this->faker->randomElement(PaymentStatus::cases())->value,
             'paid_at'           => $this->faker->dateTimeBetween('-3 years', '-2 days'),
-            'payment_amount'    => $this->faker->randomFloat(2, 0, 100),
+            'payment_amount'    => $this->faker->randomFloat(4, 0, 100),
         ];
     }
 

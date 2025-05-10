@@ -24,9 +24,9 @@ class InvoiceItemFactory extends Factory
         $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
         $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
 
-        $quantity = $this->faker->randomFloat(2, 1, 20);
-        $price    = $this->faker->randomFloat(2, 10, 500);
-        $discount = $this->faker->randomFloat(2, 0, 50);
+        $quantity = $this->faker->randomFloat(4, 1, 20);
+        $price    = $this->faker->randomFloat(4, 10, 500);
+        $discount = $this->faker->randomFloat(4, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
         return [
@@ -54,9 +54,9 @@ class InvoiceItemFactory extends Factory
     public function discounted(): static
     {
         return $this->state(function (array $attributes) {
-            $quantity = $this->faker->randomFloat(2, 1, 20);
-            $price    = $this->faker->randomFloat(2, 10, 500);
-            $discount = $this->faker->randomFloat(2, 50, $price * $quantity * 0.5);
+            $quantity = $this->faker->randomFloat(4, 1, 20);
+            $price    = $this->faker->randomFloat(4, 10, 500);
+            $discount = $this->faker->randomFloat(4, 50, $price * $quantity * 0.5);
             $subtotal = ($quantity * $price) - $discount;
 
             return [

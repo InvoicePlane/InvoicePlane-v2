@@ -42,7 +42,7 @@ class TaxRate extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'rate'          => 'decimal:2',
+        'rate'          => 'decimal:4',
         'is_active'     => 'boolean',
         'tax_rate_type' => TaxRateType::class,
     ];

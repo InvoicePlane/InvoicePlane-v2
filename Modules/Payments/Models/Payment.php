@@ -37,7 +37,7 @@ class Payment extends Model
     protected $casts = [
         'payment_status' => PaymentStatus::class,
         'paid_at'        => 'date',
-        'payment_amount' => 'decimal:2',
+        'payment_amount' => 'decimal:4',
     ];
 
     protected $guarded = [];

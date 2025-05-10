@@ -2,7 +2,9 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Filament\Forms;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,7 +14,6 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Core\Models\Placeholder;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages\ListProductUnits;
 use Modules\Products\Models\ProductUnit;
 

@@ -25,10 +25,10 @@ class LineItem extends Model
     protected $fillable = ['line_itemable_type', 'line_itemable_id', 'item_id', 'item_quantity', 'item_price', 'item_discount', 'item_subtotal', 'description', 'created_at', 'updated_at'];
 
     protected $casts = [
-        'quantity' => 'decimal:2',
-        'price'    => 'decimal:2',
-        'discount' => 'decimal:2',
-        'subtotal' => 'decimal:2',
+        'quantity' => 'decimal:4',
+        'price'    => 'decimal:4',
+        'discount' => 'decimal:4',
+        'subtotal' => 'decimal:4',
     ];
 
     public function lineItemable(): MorphTo

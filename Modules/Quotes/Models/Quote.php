@@ -56,12 +56,12 @@ class Quote extends Model
         'quote_status'           => QuoteStatus::class,
         'quoted_at'              => 'date',
         'quote_expires_at'       => 'date',
-        'quote_discount_amount'  => 'decimal:2',
-        'quote_discount_percent' => 'decimal:2',
-        'quote_item_tax_total'   => 'decimal:2',
-        'quote_item_subtotal'    => 'decimal:2',
-        'quote_tax_total'        => 'decimal:2',
-        'quote_total'            => 'decimal:2',
+        'quote_discount_amount'  => 'decimal:4',
+        'quote_discount_percent' => 'decimal:4',
+        'quote_item_tax_total'   => 'decimal:4',
+        'quote_item_subtotal'    => 'decimal:4',
+        'quote_tax_total'        => 'decimal:4',
+        'quote_total'            => 'decimal:4',
     ];
 
     protected $guarded = [];

@@ -46,8 +46,8 @@ class Product extends Model
 
     protected $casts = [
         'type'       => ProductType::class,
-        'price'      => 'decimal:2',
-        'cost_price' => 'decimal:2',
+        'price'      => 'decimal:4',
+        'cost_price' => 'decimal:4',
     ];
 
     protected $guarded = [];

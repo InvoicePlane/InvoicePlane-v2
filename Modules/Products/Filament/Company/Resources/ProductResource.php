@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Filament\Company\Resources;
 
+use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;

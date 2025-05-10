@@ -78,14 +78,14 @@ class Invoice extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'invoice_discount_amount'  => 'decimal:2',
-        'invoice_discount_percent' => 'decimal:2',
-        'invoice_item_subtotal'    => 'decimal:2',
-        'invoice_item_tax_total'   => 'decimal:2',
+        'invoice_discount_amount'  => 'decimal:4',
+        'invoice_discount_percent' => 'decimal:4',
+        'invoice_item_subtotal'    => 'decimal:4',
+        'invoice_item_tax_total'   => 'decimal:4',
         'invoice_due_at'           => 'date',
         'invoice_status'           => InvoiceStatus::class,
-        'invoice_tax_total'        => 'decimal:2',
-        'invoice_total'            => 'decimal:2',
+        'invoice_tax_total'        => 'decimal:4',
+        'invoice_total'            => 'decimal:4',
         'invoiced_at'              => 'date',
         'is_read_only'             => 'boolean',
     ];

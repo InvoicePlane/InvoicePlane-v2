@@ -40,8 +40,8 @@ class ProductFactory extends Factory
         $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
 
         $itemType = $this->faker->randomElement(ProductType::cases());
-        $price    = $this->faker->randomFloat(2, 10, 1000);
-        $cost     = $this->faker->optional(0.7)->randomFloat(2, 5, $price);
+        $price    = $this->faker->randomFloat(4, 10, 1000);
+        $cost     = $this->faker->optional(0.7)->randomFloat(4, 5, $price);
         $tariff   = $this->faker->optional()->numberBetween(1, 200);
 
         return [
