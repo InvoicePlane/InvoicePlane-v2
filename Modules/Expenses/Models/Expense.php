@@ -4,12 +4,14 @@ namespace Modules\Expenses\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\AbstractDocumentModel;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Support\CurrencyFormatter;
@@ -39,19 +41,19 @@ use Modules\Invoices\Models\Invoice;
  * @property User            $user
  * @property ExpenseVendor   $expense_vendor
  */
-class Expense extends Model
+class Expense extends AbstractDocumentModel
 {
     use BelongsToCompany;
     use HasFactory;
 
-    public $timestamps = false;
+    public bool $timestamps = false;
 
-    protected $casts = [
+    protected array $casts = [
         'expense_status' => ExpenseStatus::class,
         'expense_type'   => ExpenseType::class,
     ];
 
-    protected $guarded = [];
+    protected array $guarded = [];
 
     /*
     |--------------------------------------------------------------------------

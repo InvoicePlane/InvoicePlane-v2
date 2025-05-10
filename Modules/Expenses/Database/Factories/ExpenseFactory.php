@@ -35,19 +35,19 @@ class ExpenseFactory extends Factory
             'customer_id' => $customer->id,
             'vendor_id'   => Relation::factory()->state([
                 'company_name' => $vendor,
-                'trading_name' => $this->faker->boolean(50)
+                'trading_name' => $this->faker->boolean(75)
                     ? "{$vendor} {$this->faker->companySuffix()}"
                     : $vendor,
                 'relation_type'   => RelationType::VENDOR->value,
-                'relation_number' => $this->faker->numerify('##########'),
+                'relation_number' => $this->faker->numerify('CUS-#####'),
                 'registered_at'   => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
             ]),
             'category_id'    => ExpenseCategory::query()->inRandomOrder()->first()->id,
             'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'expense_status' => $this->faker->randomElement(ExpenseStatus::cases())->value,
-            'expensed_at'    => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
             'expense_type'   => $this->faker->randomElement(ExpenseType::cases())->value,
-            'expense_amount' => $this->faker->randomFloat(2, 10, 500),
+            'expensed_at'    => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
+            'expense_amount' => $this->faker->randomFloat(4, 10, 500),
             'description'    => null,
         ];
     }

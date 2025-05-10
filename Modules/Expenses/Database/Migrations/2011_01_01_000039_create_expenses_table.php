@@ -17,9 +17,9 @@ return new class () extends Migration {
             $table->unsignedBigInteger('user_id')->nullable()->index('fk_expenses_user_id');
             $table->string('expense_number');
             $table->string('expense_status');
-            $table->date('expensed_at');
             $table->string('expense_type');
-            $table->decimal('expense_amount', 20, 2);
+            $table->date('expensed_at');
+            $table->decimal('expense_amount', 20, 4);
             $table->string('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

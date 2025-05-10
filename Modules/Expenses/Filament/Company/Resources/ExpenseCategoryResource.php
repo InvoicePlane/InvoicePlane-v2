@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Filament\Company\Resources;
 
+use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
