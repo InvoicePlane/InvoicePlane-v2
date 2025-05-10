@@ -29,7 +29,6 @@ class ProductUnitsTest extends AbstractTestCase
 
         $record = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'Box']);
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListProductUnits::class);
 
@@ -140,7 +139,6 @@ class ProductUnitsTest extends AbstractTestCase
         $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListProductUnits::class)->callTableAction('delete', $record);
 

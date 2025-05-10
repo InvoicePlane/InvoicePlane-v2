@@ -138,46 +138,35 @@ class InvoiceResource extends AbstractTenantResource
                     ->collapsed()
                     ->schema([
                         Repeater::make('invoiceItems')
-                            ->relationship('invoiceItems')
-                            ->reorderable()
-                            ->addActionLabel(trans('ip.add_new_row'))
+                            ->default([])
+                            ->dehydrated()
                             ->schema([
-                                Grid::make(5)
-                                    ->schema([
-                                        TextInput::make('item_name')
-                                            ->label(trans('ip.item'))
-                                            ->required(),
+                                TextInput::make('item_name')
+                                    ->label(trans('ip.item'))
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('quantity')
-                                            ->label(trans('ip.quantity'))
-                                            ->numeric()
-                                            ->required()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('quantity')
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('price')
-                                            ->label(trans('ip.price'))
-                                            ->numeric()
-                                            ->required()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('price')
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('discount')
-                                            ->label(trans('ip.discount'))
-                                            ->numeric()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('discount')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->dehydrated(),
 
-                                        TextInput::make('subtotal')
-                                            ->label(trans('ip.subtotal'))
-                                            ->disabled(),
-                                    ]),
-                            ])
-                            ->columns(1)
-                            ->reactive()
-                            ->afterStateUpdated(
-                                fn ($set, $get) => static::updateGrandTotal($set, $get, 'invoiceItems', 'subtotal', 'invoice_item_subtotal')
-                            ),
+                                TextInput::make('subtotal')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->dehydrated()
+                                    ->disabled(),
+                            ]),
                     ])
                     ->columnSpanFull(),
 

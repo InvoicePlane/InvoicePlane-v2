@@ -47,7 +47,6 @@ class PaymentsTest extends AbstractTestCase
             'amount'      => 500.00,
         ]);
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListPayments::class);
 
@@ -214,7 +213,6 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
         $payment->delete();
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListPayments::class)->callTableAction('delete', $payment);
 

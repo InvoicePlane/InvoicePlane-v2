@@ -118,7 +118,7 @@ class InvoiceImporter extends AbstractImporter
 
                 // The record *should* validate, but just in case...
                 if ($this->validateRecord($record)) {
-                    Invoice::create($record);
+                    Invoice::query()->create($record);
                 }
             }
             $row++;

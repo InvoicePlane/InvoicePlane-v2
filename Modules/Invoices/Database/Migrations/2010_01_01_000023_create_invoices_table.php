@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->date('invoice_due_at')->nullable();
             $table->decimal('invoice_discount_amount', 20, 4)->default(0);
             $table->decimal('invoice_discount_percent', 20);
-            $table->decimal('item_tax_total', 20, 4)->nullable();
+            $table->decimal('item_tax_total', 20, 4);
             $table->decimal('invoice_item_subtotal', 20);
             $table->decimal('invoice_tax_total', 20);
             $table->decimal('invoice_total', 20);

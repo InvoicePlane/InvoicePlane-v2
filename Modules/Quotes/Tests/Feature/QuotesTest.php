@@ -49,7 +49,6 @@ class QuotesTest extends AbstractTestCase
             'customer_id'  => $customer->id,
         ]);
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListQuotes::class);
 
@@ -306,7 +305,6 @@ class QuotesTest extends AbstractTestCase
         $quote = Quote::factory()->for($this->user->companies()->first())->create();
         $quote->delete();
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListQuotes::class)->callTableAction('delete', $quote);
 

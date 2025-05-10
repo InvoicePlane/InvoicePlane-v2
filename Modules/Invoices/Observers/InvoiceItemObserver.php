@@ -4,4 +4,4 @@ namespace Modules\Invoices\Observers;
 
 use Modules\Core\Observers\AbstractObserver;
 
-class InvoiceObserver extends AbstractObserver {}
+class InvoiceItemObserver extends AbstractObserver {}

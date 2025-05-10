@@ -455,7 +455,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $record = Expense::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
-        // act + assert
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListExpenses::class)->callTableAction('delete', $record);
 

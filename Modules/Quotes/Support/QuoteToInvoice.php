@@ -32,7 +32,7 @@ class QuoteToInvoice
             'company_id'        => $quote->company_id,
         ];
 
-        $toInvoice = Invoice::create($record);
+        $toInvoice = Invoice::query()->create($record);
 
         CustomField::copyCustomFieldValues($quote, $toInvoice);
 
