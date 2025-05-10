@@ -15,11 +15,9 @@ class CreateExpense extends CreateRecord
     public function create(bool $another = false): void
     {
         $this->authorizeAccess();
+
         $this->callHook('beforeValidate');
         $data = $this->form->getState();
-
-        dd($data);
-
         $this->callHook('afterValidate');
 
         $data = $this->mutateFormDataBeforeCreate($data);
@@ -28,9 +26,11 @@ class CreateExpense extends CreateRecord
         $this->record = $this->handleRecordCreation($data);
 
         $this->form->model($this->getRecord())->saveRelationships();
+
         $this->callHook('afterCreate');
 
         $this->rememberData();
+
         $this->getCreatedNotification()?->send();
 
         if ($another) {
@@ -49,11 +49,11 @@ class CreateExpense extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        return app(ExpenseService::class)->createInvoiceWithItems($data);
+        return app(ExpenseService::class)->createExpense($data);
     }
 
     protected function afterCreate(): void
     {
-        // You can hook here for events, notifications, logging, etc
+        // optional event dispatch / audit log
     }
 }

@@ -25,6 +25,7 @@ use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Filament\Company\Resources\ExpenseResource\Pages\ListExpenses;
 use Modules\Expenses\Models\Expense;
+use Modules\Products\Models\Product;
 
 class ExpenseResource extends AbstractTenantResource
 {
@@ -172,42 +173,43 @@ class ExpenseResource extends AbstractTenantResource
                 Section::make(trans('ip.expense_items'))
                     ->schema([
                         Repeater::make('expenseItems')
-                            ->relationship('expenseItems')
-                            ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
+                            ->label(trans('ip.expense_items'))
+                            ->default([])
+                            ->dehydrated()
                             ->schema([
-                                Grid::make(5)
-                                    ->schema([
-                                        TextInput::make('item_name')
-                                            ->label(trans('ip.item')),
+                                Select::make('item_id')
+                                    ->label(trans('ip.item'))
+                                    ->options(Product::pluck('item_name', 'id')->toArray())
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('quantity')
-                                            ->label(trans('ip.quantity'))
-                                            ->numeric()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('quantity')
+                                    ->label(trans('ip.quantity'))
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('price')
-                                            ->label(trans('ip.price'))
-                                            ->numeric()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('price')
+                                    ->label(trans('ip.price'))
+                                    ->numeric()
+                                    ->required()
+                                    ->dehydrated(),
 
-                                        TextInput::make('discount')
-                                            ->label(trans('ip.discount'))
-                                            ->numeric()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
+                                TextInput::make('discount')
+                                    ->label(trans('ip.discount'))
+                                    ->numeric()
+                                    ->default(0)
+                                    ->dehydrated(),
 
-                                        TextInput::make('subtotal')
-                                            ->label(trans('ip.subtotal'))
-                                            ->disabled(),
-                                    ])
-                                    ->columns(5),
-                            ])
-                            ->columns(1)
-                            ->reactive()
-                            ->afterStateUpdated(fn (callable $set, callable $get) => static::updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
+                                TextInput::make('subtotal')
+                                    ->label(trans('ip.subtotal'))
+                                    ->numeric()
+                                    ->default(0)
+                                    ->dehydrated()
+                                    ->disabled(),
+                            ]),
                     ])
                     ->collapsed(true)
                     ->columnSpanFull(),
