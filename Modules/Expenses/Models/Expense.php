@@ -46,14 +46,14 @@ class Expense extends AbstractDocumentModel
     use BelongsToCompany;
     use HasFactory;
 
-    public bool $timestamps = false;
+    public $timestamps = false;
 
-    protected array $casts = [
+    protected $casts = [
         'expense_status' => ExpenseStatus::class,
         'expense_type'   => ExpenseType::class,
     ];
 
-    protected array $guarded = [];
+    protected $guarded = [];
 
     /*
     |--------------------------------------------------------------------------
