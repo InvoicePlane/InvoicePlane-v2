@@ -179,20 +179,17 @@ class ExpenseResource extends AbstractTenantResource
                                 Grid::make(5)
                                     ->schema([
                                         TextInput::make('item_name')
-                                            ->label(trans('ip.item'))
-                                            ->required(),
+                                            ->label(trans('ip.item')),
 
                                         TextInput::make('quantity')
                                             ->label(trans('ip.quantity'))
                                             ->numeric()
-                                            ->required()
                                             ->reactive()
                                             ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
 
                                         TextInput::make('price')
                                             ->label(trans('ip.price'))
                                             ->numeric()
-                                            ->required()
                                             ->reactive()
                                             ->afterStateUpdated(fn ($state, callable $set, callable $get) => static::updateItemTotals($set, $get)),
 

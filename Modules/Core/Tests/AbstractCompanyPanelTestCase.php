@@ -2,11 +2,14 @@
 
 namespace Modules\Core\Tests;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Modules\Core\Models\User;
 
 abstract class AbstractCompanyPanelTestCase extends BaseTestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();

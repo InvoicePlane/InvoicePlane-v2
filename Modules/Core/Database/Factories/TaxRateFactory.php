@@ -4,6 +4,7 @@ namespace Modules\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 
 class TaxRateFactory extends Factory
@@ -26,6 +27,7 @@ class TaxRateFactory extends Factory
         ];
 
         $selected = $this->faker->randomElement($rates);
+        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
 
         return [
             'tax_rate_type' => $this->faker->randomElement(TaxRateType::cases())->value,
@@ -33,6 +35,7 @@ class TaxRateFactory extends Factory
             'name'          => $selected['name'],
             'code'          => mb_strtoupper($this->faker->unique()->bothify('TAX#####')),
             'rate'          => $selected['rate'],
+            'company_id'    => $company->id,
         ];
     }
 }

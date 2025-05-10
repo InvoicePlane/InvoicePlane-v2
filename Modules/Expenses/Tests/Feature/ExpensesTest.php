@@ -5,6 +5,7 @@ namespace Modules\Expenses\Tests\Feature;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
@@ -22,6 +23,8 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ExpenseResource::class)]
 class ExpensesTest extends AbstractCompanyPanelTestCase
 {
+    protected User $user;
+
     #[Test]
     #[Group('smoke')]
     /**
@@ -71,11 +74,19 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
             'expense_status' => ExpenseStatus::COMPLETED,
-            'expense_items'  => [
-                'item_id'      => $item->id,
-                'is_recurring' => false,
-                'quantity'     => 2,
-                'price'        => 10,
+            'expenseItems'   => [ // 👈 match form name exactly
+                [
+                    'item_id'      => $item->id,
+                    'is_recurring' => false,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                ],
+                [
+                    'item_id'      => $item->id,
+                    'is_recurring' => false,
+                    'quantity'     => 10,
+                    'price'        => 2,
+                ],
             ],
         ];
 
@@ -90,8 +101,19 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoFormErrors();
 
-        // assert
-        $this->assertDatabaseHas('expenses', $payload);
+        $this->assertDatabaseHas('expenses', [
+            'expense_amount' => $payload['expense_amount'],
+            'category_id'    => $payload['category_id'],
+            'customer_id'    => $payload['customer_id'],
+        ]);
+
+        foreach ($payload['expense_items'] as $item) {
+            $this->assertDatabaseHas('expense_items', [
+                'item_id'  => $item['item_id'],
+                'quantity' => $item['quantity'],
+                'price'    => $item['price'],
+            ]);
+        }
     }
 
     #[Test]

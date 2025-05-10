@@ -16,33 +16,18 @@ class ProductFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-            ?: Company::factory()->create();
+        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $category = ProductCategory::query()->inRandomOrder()->first() ?? ProductCategory::factory()->create();
+        $unit     = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
+        $taxRate  = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create();
 
-        $category = ProductCategory::query()
-            ->inRandomOrder()
-            ->first()
-            ?: ProductCategory::factory()->create();
-
-        $unit = ProductUnit::query()
-            ->inRandomOrder()
-            ->first()
-            ?: ProductUnit::factory()->create();
-
-        $taxRate = TaxRate::query()
-            ->inRandomOrder()
-            ->first()
-            ?: TaxRate::factory()->create();
-
-        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
+        $taxRate2 = $this->faker->boolean(75) ? TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create() : null;
 
         $itemType = $this->faker->randomElement(ProductType::cases());
-        $price    = $this->faker->randomFloat(4, 10, 1000);
-        $cost     = $this->faker->optional(0.7)->randomFloat(4, 5, $price);
-        $tariff   = $this->faker->optional()->numberBetween(1, 200);
+
+        $price  = $this->faker->randomFloat(4, 10, 1000);
+        $cost   = $this->faker->optional(0.7)->randomFloat(4, 5, $price);
+        $tariff = $this->faker->optional()->numberBetween(1, 200);
 
         return [
             'company_id'    => $company->id,
