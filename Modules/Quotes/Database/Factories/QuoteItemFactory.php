@@ -4,10 +4,8 @@ namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
-use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
 class QuoteItemFactory extends Factory
@@ -16,34 +14,28 @@ class QuoteItemFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
-        $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-
-        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
-
-        $quantity = $this->faker->randomFloat(4, 0, 100);
-        $price    = $this->faker->randomFloat(4, 0, 100);
-        $discount = $this->faker->randomFloat(4, 0, 50);
-        $subtotal = ($quantity * $price) - $discount;
+        $company  = Company::factory()->create();
+        $product  = Product::factory()->create();
+        $unit     = ProductUnit::factory()->create();
+        $quantity = 2;
+        $price    = 150;
+        $discount = 0;
+        $subtotal = $quantity * $price - $discount;
 
         return [
             'company_id'    => $company->id,
-            'quote_id'      => Quote::query()->inRandomOrder()->first()?->id,
-            'item_id'       => $item->id,
+            'item_id'       => $product->id,
             'unit_id'       => $unit->id,
-            'added_at'      => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
-            'item_name'     => $item->item_name,
-            'is_recurring'  => false,
+            'item_name'     => 'Design',
             'quantity'      => $quantity,
             'price'         => $price,
             'discount'      => $discount,
             'subtotal'      => $subtotal,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => $taxRate2?->id,
-            'display_order' => $this->faker->randomNumber(4, true),
+            'tax_1'         => 0,
+            'tax_2'         => 0,
+            'tax_total'     => 0,
+            'total'         => $subtotal,
+            'display_order' => 1,
             'description'   => null,
         ];
     }

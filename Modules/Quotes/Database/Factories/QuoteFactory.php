@@ -7,7 +7,6 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
@@ -18,43 +17,35 @@ class QuoteFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-    ?: Company::factory()->create();
-        $prospect = Relation::query()->where('relation_type', RelationType::PROSPECT->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()->create(['relation_type' => RelationType::PROSPECT->value]);
-        $user = User::query()->inRandomOrder()->first() ?? User::factory()->create();
+        $company  = Company::factory()->create();
+        $prospect = Relation::factory()->create(['relation_type' => RelationType::PROSPECT->value]);
+        $user     = User::factory()->create();
+        $group    = DocumentGroup::factory()->create();
 
-        $documentGroup = DocumentGroup::query()->inRandomOrder()->first() ?? DocumentGroup::factory()->create();
-
-        $taxRate        = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-        $taxRatePercent = $taxRate->rate / 100;
-
-        $subtotal        = $this->faker->randomFloat(4, 100, 2000);
-        $itemTaxTotal    = $subtotal * $taxRatePercent;
-        $taxTotal        = $subtotal * $taxRatePercent;
-        $discountAmount  = $this->faker->randomFloat(4, 0, 100);
-        $discountPercent = $this->faker->randomFloat(4, 0, 20);
-        $total           = ($subtotal + $itemTaxTotal + $taxTotal) - $discountAmount;
+        $subtotal        = 300;
+        $itemTaxTotal    = 0;
+        $taxTotal        = 60;
+        $discountAmount  = 0;
+        $discountPercent = 0;
+        $total           = $subtotal + $taxTotal - $discountAmount;
 
         return [
             'company_id'             => $company->id,
             'prospect_id'            => $prospect->id,
-            'document_group_id'      => $documentGroup->id,
+            'document_group_id'      => $group->id,
             'user_id'                => $user->id,
-            'quote_number'           => $this->faker->unique()->numerify('QUO-#####'),
-            'quote_status'           => $this->faker->randomElement(QuoteStatus::cases())->value,
-            'quoted_at'              => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
-            'quote_expires_at'       => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
+            'quote_number'           => 'Q-2025-001',
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
             'quote_discount_amount'  => $discountAmount,
             'quote_discount_percent' => $discountPercent,
+            'item_tax_total'         => $itemTaxTotal,
             'quote_item_subtotal'    => $subtotal,
             'quote_tax_total'        => $taxTotal,
             'quote_total'            => $total,
-            'quote_password'         => bcrypt('password'),
-            'url_key'                => $this->faker->regexify('[A-Za-z0-9]{30}'),
+            'quote_password'         => null,
+            'url_key'                => Str::random(32),
             'template'               => null,
             'summary'                => null,
             'terms'                  => null,

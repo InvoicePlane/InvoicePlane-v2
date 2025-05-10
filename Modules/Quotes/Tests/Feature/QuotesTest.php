@@ -5,7 +5,7 @@ namespace Modules\Quotes\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Enums\QuoteStatus;
@@ -19,16 +19,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(QuoteResource::class)]
-class QuotesTest extends AbstractTestCase
+class QuotesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        /*$this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);*/
-    }
 
     #[Test]
     #[Group('smoke')]
@@ -57,66 +50,51 @@ class QuotesTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_creates_quote_with_items(): void
     {
-        $this->markTestIncomplete();
+        $company       = $this->user->companies()->first();
+        $prospect      = Relation::factory()->for($company)->create(['relation_type' => RelationType::PROSPECT]);
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
 
-        /* arrange */
-
-        /** @payload */
         $payload = [
-            'customer_id' => 1,
-            'quote_date'  => now()->format('Y-m-d'),
-            'expires_at'  => now()->addDays(30)->format('Y-m-d'),
-            'quote_items' => [
-                ['name' => 'Design', 'quantity' => 2, 'price' => 150],
+            'company_id'             => $company->id,
+            'prospect_id'            => $prospect->id,
+            'document_group_id'      => $documentGroup->id,
+            'quote_number'           => 'Q-987654',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0,
+            'quote_discount_percent' => 0,
+            'item_tax_total'         => 0,
+            'quote_item_subtotal'    => 300,
+            'quote_tax_total'        => 60,
+            'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'item_name' => 'Design',
+                    'quantity'  => 2,
+                    'price'     => 150,
+                    'discount'  => 0,
+                    'subtotal'  => 300,
+                    'total'     => 300,
+                ],
             ],
-            'subtotal' => 300,
-            'tax'      => 60,
-            'discount' => 0,
-            'total'    => 360,
         ];
 
         Livewire::actingAs($this->user)
             ->test(CreateQuote::class)
             ->fillForm($payload)
             ->call('create')
-            ->assertHasNoErrors();
+            ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('quotes', [
-            'customer_id' => 1,
-            'subtotal'    => 300,
-            'total'       => 360,
+            'quote_number' => $payload['quote_number'],
+            'quote_total'  => $payload['quote_total'],
         ]);
 
         $this->assertDatabaseCount('quote_items', 1);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_creates_a_quote(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();
-
-        $payload = [
-            'quote_number' => 'Q-2024-01',
-            'quote_date'   => '2024-10-01',
-            'customer_id'  => $customer->id,
-            'status'       => QuoteStatus::DRAFT,
-        ];
-
-        // act
-        /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
-
-        /* assert */
-        $component->assertHasNoFormErrors();
-
-        // assert
-        $this->assertDatabaseHas('quotes', $payload);
     }
 
     #[Test]
@@ -141,6 +119,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_if_total_mismatch(): void
     {
         $this->markTestIncomplete();
@@ -231,6 +210,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_to_delete_accepted_quote(): void
     {
         $this->markTestIncomplete();
@@ -250,6 +230,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_to_delete_quote_with_paid_invoice(): void
     {
         $this->markTestIncomplete();
@@ -273,6 +254,7 @@ class QuotesTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_to_delete_if_linked_paid_invoice(): void
     {
         $this->markTestIncomplete();

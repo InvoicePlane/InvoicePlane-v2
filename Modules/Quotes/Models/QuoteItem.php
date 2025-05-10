@@ -46,17 +46,15 @@ class QuoteItem extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'item_date_added' => 'datetime',
-        'quantity'        => 'float',
-        'price'           => 'float',
-        'subtotal'        => 'float',
-        'tax_1'           => 'float',
-        'tax_2'           => 'float',
-        'tax'             => 'float',
-        'item_discount'   => 'float',
-        'total'           => 'float',
-        'discount_amount' => 'float',
-        'display_order'   => 'int',
+        'quantity'      => 'decimal:4',
+        'price'         => 'decimal:4',
+        'discount'      => 'decimal:4',
+        'subtotal'      => 'decimal:4',
+        'tax_1'         => 'decimal:4',
+        'tax_2'         => 'decimal:4',
+        'tax_total'     => 'decimal:4',
+        'total'         => 'decimal:4',
+        'display_order' => 'integer',
     ];
 
     protected $guarded = [];

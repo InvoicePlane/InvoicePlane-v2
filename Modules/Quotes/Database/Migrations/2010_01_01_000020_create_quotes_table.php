@@ -17,15 +17,14 @@ return new class () extends Migration {
             $table->string('quote_status');
             $table->date('quoted_at')->nullable();
             $table->date('quote_expires_at')->nullable();
-            $table->decimal('quote_discount_amount', 20, 4)->default(0);
+            $table->decimal('quote_discount_amount', 20, 4)->default(0.00);
             $table->decimal('quote_discount_percent', 20);
             $table->decimal('item_tax_total', 20)->nullable()->default(0.00);
-            $table->decimal('quote_item_subtotal', 20);
+            $table->decimal('quote_item_subtotal', 20, 4);
             $table->decimal('quote_tax_total', 20);
             $table->decimal('quote_total', 20);
             $table->string('quote_password')->nullable();
             $table->string('url_key', 32)->nullable();
-
             $table->string('template')->nullable();
             $table->string('summary')->nullable();
             $table->text('terms')->nullable();
