@@ -59,12 +59,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_an_expense_with_items(): void
     {
-        $this->markTestIncomplete('expense_id on expense items nullable?');
-        /**
-         * It's somehow _creating_ a taxRate.
-         * company_id doesn't have a default value in Database/Factories/ProductFactory.php line 37.
-         */
-
         /* arrange */
         $category = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
         $customer = Relation::factory()->for($this->user->companies()->first())->customer()->create();

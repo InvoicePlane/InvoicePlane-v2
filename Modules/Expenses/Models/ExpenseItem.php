@@ -14,8 +14,6 @@ class ExpenseItem extends AbstractLineItem
 
     public $timestamps = false;
 
-    protected $fillable = ['category_number', 'category_name'];
-
     public function expenses(): BelongsTo
     {
         return $this->belongsTo(Expense::class);
