@@ -15,7 +15,7 @@ class CompaniesSeeder extends Seeder
             ->count(1)
             ->has(
                 Relation::factory()
-                    ->count(25)
+                    ->count(5)
                     ->state([
                         'relation_type' => RelationType::CUSTOMER->value,
                     ]),

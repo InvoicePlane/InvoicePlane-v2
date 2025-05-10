@@ -16,7 +16,7 @@ class UsersSeeder extends Seeder
             $company = $model;
 
             User::factory()
-                ->count(random_int(15, 25))
+                ->count(random_int(5, 10))
                 ->create()
                 ->each(function (Model $model) use ($company): void {
                     /** @var User $user */

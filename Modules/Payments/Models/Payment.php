@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\FileNames;
@@ -17,15 +18,15 @@ use Modules\Payments\Database\Factories\PaymentFactory;
 use Modules\Payments\Enums\PaymentStatus;
 
 /**
- * @property int                             $id
- * @property int                             $company_id
- * @property int                             $payable_id
- * @property string                          $payable_type
- * @property int                             $payment_method_id
- * @property PaymentMethod                   $paymentMethod
- * @property \Illuminate\Support\Carbon|null $paid_at
- * @property float                           $payment_amount
- * @property string|null                     $payment_note
+ * @property int           $id
+ * @property int           $company_id
+ * @property int           $payable_id
+ * @property string        $payable_type
+ * @property int           $payment_method_id
+ * @property PaymentMethod $paymentMethod
+ * @property Carbon|null   $paid_at
+ * @property float         $payment_amount
+ * @property string|null   $payment_note
  */
 class Payment extends Model
 {

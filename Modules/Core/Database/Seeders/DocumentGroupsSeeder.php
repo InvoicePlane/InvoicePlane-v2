@@ -11,7 +11,7 @@ class DocumentGroupsSeeder extends Seeder
     public function run(): void
     {
         Company::all()->each(function (Company $company): void {
-            DocumentGroup::factory(random_int(2, 5))->create([
+            DocumentGroup::factory(random_int(2, 3))->create([
                 'company_id' => $company->id,
             ]);
         });

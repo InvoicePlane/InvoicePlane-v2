@@ -18,17 +18,11 @@ class PaymentFactory extends Factory
         $company       = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
         $paymentMethod = PaymentMethod::query()->inRandomOrder()->first() ?? PaymentMethod::factory()->create();
 
-        $payableType = $this->faker->randomElement([
-            Invoice::class,
-        ]);
-        $payableId = match ($payableType) {
-            Invoice::class => Invoice::query()->inRandomOrder()->first()?->id,
-        } ?? null;
+        $payableId = Invoice::query()->inRandomOrder()->first()?->id ?? Invoice::factory()->create();
 
         return [
             'company_id'        => $company->id,
-            'payable_type'      => $payableType,
-            'payable_id'        => $payableId,
+            'invoice_id'        => $payableId,
             'payment_method_id' => $paymentMethod->id,
             'payment_status'    => $this->faker->randomElement(PaymentStatus::cases())->value,
             'paid_at'           => $this->faker->dateTimeBetween('-3 years', '-2 days'),
