@@ -15,6 +15,8 @@ class ExpenseItem extends AbstractLineItem
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function expenses(): BelongsTo
     {
         return $this->belongsTo(Expense::class);

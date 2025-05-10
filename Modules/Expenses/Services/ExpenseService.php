@@ -2,11 +2,11 @@
 
 namespace Modules\Expenses\Services;
 
-use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Expenses\Models\Expense;
+use Throwable;
 
 class ExpenseService extends BaseService
 {
@@ -15,12 +15,52 @@ class ExpenseService extends BaseService
         return Expense::class;
     }
 
-    public function createExpense(array $data)
+    public function createExpense(array $data): Expense
     {
         DB::beginTransaction();
 
         try {
             $expense = Expense::create([
+                'expense_number' => $data['expense_number'],
+                'expense_amount' => $data['expense_amount'],
+                'expensed_at'    => isset($data['expensed_at'])
+                    ? Carbon::parse($data['expensed_at'])
+                    : now(),
+                'category_id'    => $data['category_id'],
+                'customer_id'    => $data['customer_id'],
+                'expense_type'   => $data['expense_type'],
+                'expense_status' => $data['expense_status'],
+            ]);
+
+            foreach ($data['expenseItems'] ?? [] as $item) {
+                $expense->expenseItems()->create([
+                    'item_id'      => $item['item_id'] ?? null,
+                    'is_recurring' => $item['is_recurring'] ?? false,
+                    'quantity'     => $item['quantity'],
+                    'price'        => $item['price'],
+                    'discount'     => $item['discount'] ?? 0,
+                    'subtotal'     => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                    'tax_1'        => $item['tax_1'] ?? 0,
+                    'tax_2'        => $item['tax_2'] ?? 0,
+                ]);
+            }
+
+            DB::commit();
+
+            return $expense;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function updateExpense(Expense $expense, array $data): Expense
+    {
+        DB::beginTransaction();
+
+        try {
+            $expense->update([
+                'expense_number' => $data['expense_number'],
                 'expense_amount' => $data['expense_amount'],
                 'expensed_at'    => Carbon::parse($data['expensed_at']),
                 'category_id'    => $data['category_id'],
@@ -29,22 +69,25 @@ class ExpenseService extends BaseService
                 'expense_status' => $data['expense_status'],
             ]);
 
-            foreach ($data['expense_items'] as $item) {
+            $expense->expenseItems()->delete();
+
+            foreach ($data['expenseItems'] ?? [] as $item) {
                 $expense->expenseItems()->create([
-                    'item_id'      => $item['item_id'],
-                    'is_recurring' => $item['is_recurring'],
+                    'item_id'      => $item['item_id'] ?? null,
+                    'is_recurring' => $item['is_recurring'] ?? false,
                     'quantity'     => $item['quantity'],
                     'price'        => $item['price'],
-                    'discount'     => $item['discount'],
-                    'subtotal'     => $item['subtotal'],
-                    'tax'          => $item['tax'],
+                    'discount'     => $item['discount'] ?? 0,
+                    'subtotal'     => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                    'tax_1'        => $item['tax_1'] ?? 0,
+                    'tax_2'        => $item['tax_2'] ?? 0,
                 ]);
             }
 
             DB::commit();
 
             return $expense;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
         }

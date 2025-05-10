@@ -111,7 +111,7 @@ class Expense extends AbstractDocumentModel
     public function customer(): BelongsTo
     {
         return $this
-            ->belongsTo(Relation::class, 'relation_id')
+            ->belongsTo(Relation::class, 'customer_id')
             ->where('relation_type', RelationType::CUSTOMER->value);
     }
 
@@ -138,7 +138,7 @@ class Expense extends AbstractDocumentModel
     public function vendor(): BelongsTo
     {
         return $this
-            ->belongsTo(Relation::class, 'relation_id')
+            ->belongsTo(Relation::class, 'vendor_id')
             ->where('relation_type', RelationType::VENDOR->value);
     }
 

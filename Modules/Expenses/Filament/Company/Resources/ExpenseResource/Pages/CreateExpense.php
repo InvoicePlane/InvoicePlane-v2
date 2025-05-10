@@ -18,6 +18,7 @@ class CreateExpense extends CreateRecord
 
         $this->callHook('beforeValidate');
         $data = $this->form->getState();
+
         $this->callHook('afterValidate');
 
         $data = $this->mutateFormDataBeforeCreate($data);

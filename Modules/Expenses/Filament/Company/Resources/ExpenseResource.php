@@ -3,6 +3,7 @@
 namespace Modules\Expenses\Filament\Company\Resources;
 
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\MarkdownEditor;
@@ -119,7 +120,10 @@ class ExpenseResource extends AbstractTenantResource
                                         Grid::make(2)
                                             ->schema([
                                                 TextInput::make('expense_number')
-                                                    ->label(trans('ip.expense_number')),
+                                                    ->label(trans('ip.expense_number'))
+                                                    ->disabled()
+                                                    ->dehydrated()
+                                                    ->required(),
 
                                                 Select::make('expense_status')
                                                     ->label(trans('ip.expense_status'))
@@ -163,6 +167,11 @@ class ExpenseResource extends AbstractTenantResource
                                                     ->label(trans('ip.amount'))
                                                     ->numeric()
                                                     ->required(),
+
+                                                DatePicker::make('expensed_at')
+                                                    ->label(trans('ip.expensed_at'))
+                                                    ->required()
+                                                    ->dehydrated(true),
                                             ])
                                             ->columns(2),
                                     ])
