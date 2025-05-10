@@ -20,9 +20,9 @@ return new class () extends Migration {
             $table->enum('invoice_sign', ['1', '-1'])->default('1');
             $table->date('invoiced_at')->nullable();
             $table->date('invoice_due_at')->nullable();
-            $table->decimal('invoice_discount_amount', 20, 2)->default(0);
+            $table->decimal('invoice_discount_amount', 20, 4)->default(0);
             $table->decimal('invoice_discount_percent', 20);
-            $table->decimal('item_tax_total', 20, 2)->nullable();
+            $table->decimal('item_tax_total', 20, 4)->nullable();
             $table->decimal('invoice_item_subtotal', 20);
             $table->decimal('invoice_tax_total', 20);
             $table->decimal('invoice_total', 20);

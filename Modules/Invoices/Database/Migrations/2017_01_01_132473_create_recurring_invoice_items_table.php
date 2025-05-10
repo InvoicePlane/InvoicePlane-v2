@@ -10,18 +10,18 @@ return new class () extends Migration {
         Schema::create('recurring_invoice_items', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBiginteger('recurring_invoice_id')->index();
-            $table->unsignedBiginteger('item_id')->index(); // LOOKUP!
+            $table->unsignedBiginteger('item_id')->index();
             $table->unsignedBiginteger('tax_rate_id')->index()->default(0);
             $table->unsignedBiginteger('tax_rate_2_id')->index()->default(0);
-            $table->string('name');
-            $table->decimal('quantity', 20, 4);
-            $table->decimal('price', 20, 4);
+            $table->string('item_name');
+            $table->decimal('quantity', 20, 4)->nullable()->default(0.00);
+            $table->decimal('price', 20, 4)->nullable()->default(0.00);
 
-            $table->decimal('subtotal', 20, 4);
-            $table->decimal('tax_1', 20, 4);
-            $table->decimal('tax_2', 20, 4);
-            $table->decimal('tax', 20, 4);
-            $table->decimal('total', 20, 4);
+            $table->decimal('subtotal', 20, 4)->nullable()->default(0.00);
+            $table->decimal('tax_1', 20, 4)->nullable()->default(0.00);
+            $table->decimal('tax_2', 20, 4)->nullable()->default(0.00);
+            $table->decimal('tax_total', 20, 4)->nullable()->default(0.00);
+            $table->decimal('total', 20, 4)->nullable()->default(0.00);
 
             $table->unsignedBiginteger('display_order')->index()->default(0);
 

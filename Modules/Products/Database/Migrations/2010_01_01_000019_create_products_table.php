@@ -15,8 +15,8 @@ return new class () extends Migration {
             $table->string('type');
             $table->string('code');
             $table->string('item_name');
-            $table->decimal('price', 20, 2)->default(0.00);
-            $table->decimal('cost_price', 20, 2)->nullable();
+            $table->decimal('price', 20, 4)->default(0.00);
+            $table->decimal('cost_price', 20, 4)->nullable();
             $table->integer('tariff')->nullable();
             $table->unsignedBiginteger('tax_rate_id')->nullable()->default(0)->index('tax_rate_id');
             $table->unsignedBiginteger('tax_rate_2_id')->nullable()->default(0)->index('tax_rate_2_id');

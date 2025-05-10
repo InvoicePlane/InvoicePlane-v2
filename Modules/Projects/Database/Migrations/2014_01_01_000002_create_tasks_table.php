@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->string('task_status');
             $table->string('name');
-            $table->decimal('price', 20, 2)->default(0);
+            $table->decimal('price', 20, 4)->default(0);
             $table->date('due_at')->nullable();
             $table->text('description')->nullable();
 

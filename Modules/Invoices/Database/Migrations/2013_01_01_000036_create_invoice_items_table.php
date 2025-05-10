@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->decimal('subtotal', 20, 4);
             $table->decimal('tax_1', 20, 4)->nullable()->default(0.00);
             $table->decimal('tax_2', 20, 4)->nullable()->default(0.00);
-            $table->decimal('tax', 20, 4)->nullable()->default(0.00);
+            $table->decimal('tax_total', 20, 4)->nullable()->default(0.00);
             $table->decimal('total', 20, 4)->nullable()->default(0.00);
             $table->unsignedBigInteger('tax_rate_id')->nullable();
             $table->unsignedBigInteger('tax_rate_2_id')->nullable();
