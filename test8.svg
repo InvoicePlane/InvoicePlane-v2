@@ -1,5 +1,5 @@
 <svg width="300" height="300" 
-  viewBox="260 160 100 100" xmlns="http://www.w3.org/2000/svg">
+  viewBox="260 100 100 100" xmlns="http://www.w3.org/2000/svg">
   <!-- First mirror (flip horizontally), then rotate 90° CCW around center -->
   <g transform="rotate(90 150 150)">
     <g transform="translate(300,0) scale(-1,1)">
