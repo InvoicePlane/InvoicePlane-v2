@@ -1,4 +1,5 @@
-<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<svg width="300" height="300"
+    viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
   <g transform="translate(150,150) rotate(45) scale(-1,1)">
     <g transform="scale(0.95)" fill="none" fill-rule="evenodd">
       <path fill="#66CC66" d="M273.067 12.006L374.4-42.088l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
