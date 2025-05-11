@@ -7,7 +7,7 @@
     <!-- Tip inner shadow nudged in 2px horizontally, 2px vertically -->
     <g transform="
         translate(294.533 145.992)
-        translate(32 -19)
+        translate(32 -22)
         rotate(-45)
         scale(0.35)
         translate(-294.533 -145.992)
