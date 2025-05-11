@@ -1,6 +1,7 @@
-<svg width="300" height="300" 
-  viewBox="235 130 150 20" xmlns="http://www.w3.org/2000/svg">
-  <g fill="none" fill-rule="evenodd">
+<svg width="300" height="300"
+    viewBox="226 121 140 4" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" fill-rule="evenodd"
+      transform="translate(1, 0) scale(0.95)">
     <path fill="#429AE1" d="M294.392 145.867l11.403 5.462 8.872 3.179-21.734 27.092z"/>
     <path fill="#2181CE" d="M273.067 133.027L374.4 78.933l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
     <path fill="#1E73B8" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526zM294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
