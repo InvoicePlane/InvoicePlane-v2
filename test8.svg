@@ -1,17 +1,11 @@
 <svg width="300" height="300" 
-  viewBox="260 100 100 100" xmlns="http://www.w3.org/2000/svg">
-  <!-- First mirror (flip horizontally), then rotate 90° CCW around center -->
-  <g transform="rotate(90 150 150)">
-    <g transform="translate(300,0) scale(-1,1)">
-      <!-- shrink slightly for padding -->
-      <g transform="translate(1.9,0) scale(0.95)" fill="none" fill-rule="evenodd">
-        <!-- Long down-stroke: Light green -->
-        <path fill="#66CC66" d="M273.067 133.027L374.4 78.933l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
-        <!-- Short up-stroke: Medium green -->
-        <path fill="#339933" d="M294.392 145.867l11.403 5.462 8.872 3.179-21.734 27.092z"/>
-        <!-- Shadow: Darkest green -->
-        <path fill="#2E8B57" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526zM294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
-      </g>
+    viewBox="226 121 140 4" xmlns="http://www.w3.org/2000/svg">
+  <g 
+      transform="translate(226,121) rotate(45) scale(-1,1)">
+    <g transform="scale(0.95)" fill="none" fill-rule="evenodd">
+      <path fill="#66CC66" d="M273.067 12.006L374.4-42.088l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
+      <path fill="#339933" d="M294.392 24.846l11.403 5.462 8.872 3.179-21.734 27.092z"/>
+      <path fill="#2E8B57" d="M243.067 2.125l4.708-2.857 13.083-9.693L374.4-42.088l-101.383 54.134-17.475-4.526zM294.533 25.008l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
     </g>
   </g>
 </svg>
