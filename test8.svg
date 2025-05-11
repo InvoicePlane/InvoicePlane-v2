@@ -7,7 +7,7 @@
     <!-- Medium-green arm (40% scale, shifted right) -->
     <g transform="
         translate(243.067 123.146)
-        translate(10 0)
+        translate(15 0)
         scale(0.6)
         translate(-243.067 -123.146)
       ">
@@ -18,7 +18,7 @@
     <!-- Light-green tip (75% scale, shifted closer to the other leg) -->
     <g transform="
         translate(294.533 145.992)
-        translate(40 -30)
+        translate(45 -30)
         scale(0.35)
         translate(-294.533 -145.992)
       ">
