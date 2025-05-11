@@ -7,7 +7,7 @@
     <!-- Blue shadow -->
     <g transform="
         translate(294.533 145.992)
-        translate(30 -12)
+        translate(22 -18)
         rotate(-45)
         scale(0.35)
         translate(-294.533 -145.992)
@@ -31,7 +31,7 @@
     <!-- Light-green tip -->
     <g transform="
         translate(294.533 145.992)
-        translate(22 -18)
+        translate(30 -12)
         rotate(-40)
         scale(0.35)
         translate(-294.533 -145.992)
