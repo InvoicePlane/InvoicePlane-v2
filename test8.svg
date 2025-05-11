@@ -8,7 +8,7 @@
     <g transform="
         translate(243.067 123.146)
         translate(5 0)
-rotate(-45)
+rotate(-5)
         scale(0.6)
         translate(-243.067 -123.146)
       ">
@@ -19,7 +19,7 @@ rotate(-45)
     <!-- Light green tip, rotated and positioned visually as a checkmark -->
     <g transform="
         translate(294.533 145.992)
-        translate(30 -10)
+        translate(30 -5)
         rotate(-45)
         scale(0.45)
         translate(-294.533 -145.992)
