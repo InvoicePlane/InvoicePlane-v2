@@ -7,7 +7,7 @@
     <!-- Medium-green arm (40% scale, shifted right) -->
     <g transform="
         translate(243.067 123.146)
-        translate(15 0)
+        translate(45 0)
         scale(0.6)
         translate(-243.067 -123.146)
       ">
