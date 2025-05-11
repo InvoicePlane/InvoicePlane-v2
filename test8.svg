@@ -18,8 +18,8 @@
     <!-- Light green tip, rotated and positioned visually as a checkmark -->
     <g transform="
         translate(294.533 145.992)
-        translate(30 -50)
-        rotate(-25)
+        translate(30 -45)
+        rotate(-35)
         scale(0.35)
         translate(-294.533 -145.992)
       ">
