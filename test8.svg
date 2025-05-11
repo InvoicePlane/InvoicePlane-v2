@@ -7,7 +7,7 @@
     <!-- Tip inner shadow nudged in 2px horizontally, 2px vertically -->
     <g transform="
         translate(294.533 145.992)
-        translate(26 -13)
+        translate(34 -17)
         rotate(-45)
         scale(0.35)
         translate(-294.533 -145.992)
@@ -43,9 +43,9 @@
     <!-- Tip face -->
     <g transform="
         translate(294.533 145.992)
-        translate(27 -9)
-        rotate(-40)
-        scale(0.35)
+        translate(34 -19)
+        rotate(-45)
+        scale(0.45)
         translate(-294.533 -145.992)
       ">
       <path fill="#66CC66"
