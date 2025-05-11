@@ -1,16 +1,12 @@
-<svg width="300" height="300" 
-    viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
-  <g 
-      transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
+<svg width="300" height="300" viewBox="275 110 200 160" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
     <g transform="scale(0.95)">
-      <!-- Left leg stays -->
-      <path fill="navy" d="M294.392 145.867l11.403 5.462 8.872 3.179-21.734 27.092z"/>
-      <!-- Right leg hung way to the right -->
-      <g transform="translate(80,0)">
-        <path fill="#cccccc" d="M273.067 133.027L374.4 78.933l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
+      <!-- Left check arm in green -->
+      <path fill="#66CC66" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
+      <!-- Right (long) check arm, hung further right -->
+      <g transform="translate(180,0)">
+        <path fill="#CC66CC" d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
       </g>
-      <!-- Tail/highlight leg stays -->
-      <path fill="yellow" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526zM294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
     </g>
   </g>
 </svg>
