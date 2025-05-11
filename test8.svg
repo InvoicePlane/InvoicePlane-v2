@@ -4,8 +4,8 @@
       <!-- Left check arm in green -->
       <path fill="#66CC66" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
       <!-- Right (long) check arm, hung further right -->
-      <g transform="translate(180,0)">
-        <path fill="#CC66CC" d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
+      <g transform="translate(100,0)">
+        <path fill="navy" d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
       </g>
     </g>
   </g>
