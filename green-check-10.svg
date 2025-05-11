@@ -7,7 +7,7 @@
     <!-- Tip inner shadow, moved 2px closer -->
     <g transform="
         translate(294.533 145.992)
-        translate(26 -13)
+        translate(26 -23)
         rotate(-45)
         scale(0.35)
         translate(-294.533 -145.992)
@@ -43,7 +43,7 @@
     <!-- Tip face -->
     <g transform="
         translate(294.533 145.992)
-        translate(27 -9)
+        translate(27 -23)
         rotate(-40)
         scale(0.35)
         translate(-294.533 -145.992)
