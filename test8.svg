@@ -1,10 +1,12 @@
-<svg width="300" height="300" viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
-  <g transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
+<svg width="300" height="300" 
+    viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
+  <g 
+      transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
     <g transform="scale(0.95)">
       <!-- Left leg stays -->
       <path fill="#66CC66" d="M294.392 145.867l11.403 5.462 8.872 3.179-21.734 27.092z"/>
-      <!-- Right leg shifted right for extra “hang” -->
-      <g transform="translate(40,0)">
+      <!-- Right leg hung way to the right -->
+      <g transform="translate(80,0)">
         <path fill="#cccccc" d="M273.067 133.027L374.4 78.933l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
       </g>
       <!-- Tail/highlight leg stays -->
