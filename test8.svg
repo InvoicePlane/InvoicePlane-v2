@@ -9,14 +9,18 @@
         translate(243.067 123.146)
         scale(0.75)
         translate(-243.067 -123.146)
-        translate(0 5)
       ">
       <path fill="#339933"
             d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
     </g>
 
     <!-- Light-green arm scaled 50% -->
-    <g transform="translate(294.533 145.992) scale(0.5) translate(-294.533 -145.992)">
+    <g transform="
+        translate(294.533 145.992)
+        scale(0.4)
+        translate(-294.533 -145.992)
+        translate(0 5)
+        ">
       <path fill="#66CC66"
             d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
     </g>
