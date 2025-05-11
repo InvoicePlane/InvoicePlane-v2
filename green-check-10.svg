@@ -21,7 +21,7 @@
         translate(243.067 123.146)
         translate(15 2)
         rotate(-12)
-        scale(0.62)
+        scale(0.75)
         translate(-243.067 -123.146)
       ">
       <path fill="maroon"
@@ -31,7 +31,7 @@
     <!-- Light-green tip -->
     <g transform="
         translate(294.533 145.992)
-        translate(27 -14)
+        translate(27 -18)
         rotate(-40)
         scale(0.35)
         translate(-294.533 -145.992)
