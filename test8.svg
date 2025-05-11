@@ -1,10 +1,17 @@
 <svg width="300" height="300" viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
   <g transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
     <g transform="scale(0.95)">
-      
-      <!-- Split the original yellow into two separate shapes -->
-      <path fill="yellow" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
-      <path fill="navy" d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
+
+      <!-- Left arm: rotated 15° CW and colored medium green -->
+      <path 
+        transform="rotate(15 300 180)" 
+        fill="#339933" 
+        d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
+
+      <!-- Right arm: colored light green -->
+      <path 
+        fill="#66CC66" 
+        d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
       
     </g>
   </g>
