@@ -18,7 +18,7 @@
     <!-- Light-green tip (75% scale, shifted closer to the other leg) -->
     <g transform="
         translate(294.533 145.992)
-        translate(-20 30)
+        translate(-40 -30)
         scale(0.35)
         translate(-294.533 -145.992)
       ">
