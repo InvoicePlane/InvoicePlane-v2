@@ -1,10 +1,16 @@
-<svg width="300" height="300"
+<svg width="300" height="300" 
     viewBox="275 110 160 160" xmlns="http://www.w3.org/2000/svg">
-  <g transform="translate(150,150) rotate(45) scale(-1,1)">
-    <g transform="scale(0.95)" fill="none" fill-rule="evenodd">
-      <path fill="#66CC66" d="M273.067 12.006L374.4-42.088l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
-      <path fill="#339933" d="M294.392 24.846l11.403 5.462 8.872 3.179-21.734 27.092z"/>
-      <path fill="#2E8B57" d="M243.067 2.125l4.708-2.857 13.083-9.693L374.4-42.088l-101.383 54.134-17.475-4.526zM294.533 25.008l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
+  <g 
+      transform="rotate(90 300 180)" fill="none" fill-rule="evenodd">
+    <g transform="scale(0.95)">
+      <!-- Left leg stays -->
+      <path fill="#66CC66" d="M294.392 145.867l11.403 5.462 8.872 3.179-21.734 27.092z"/>
+      <!-- Right leg shifted right for extra “hang” -->
+      <g transform="translate(20,0)">
+        <path fill="#339933" d="M273.067 133.027L374.4 78.933l-79.864 67.035-1.59 35.632-11.733-23.794z"/>
+      </g>
+      <!-- Tail/highlight leg stays -->
+      <path fill="#66CC66" d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526zM294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
     </g>
   </g>
 </svg>
