@@ -1,1 +1,32 @@
+<svg width="300" height="300"
+     viewBox="243 73 132 74"
+     preserveAspectRatio="xMidYMid meet"
+     xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(165 309 115)" fill="none" fill-rule="evenodd">
+    
+    <!-- Tip inner shadow -->
+    <g transform="translate(294.533 145.992) translate(24 -15) rotate(-45) scale(0.35) translate(-294.533 -145.992)">
+      <path fill="#2E8B57"
+            d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
+    </g>
 
+    <!-- Base-leg inner shadow -->
+    <g transform="translate(243.067 123.146) translate(8 4) rotate(-12) scale(0.62) translate(-243.067 -123.146)">
+      <path fill="#2E8B57"
+            d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
+    </g>
+
+    <!-- Base leg -->
+    <g transform="translate(243.067 123.146) translate(15 2) rotate(-12) scale(0.62) translate(-243.067 -123.146)">
+      <path fill="#339933"
+            d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
+    </g>
+
+    <!-- Tip -->
+    <g transform="translate(294.533 145.992) translate(27 -9) rotate(-40) scale(0.35) translate(-294.533 -145.992)">
+      <path fill="#66CC66"
+            d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
+    </g>
+
+  </g>
+</svg>
