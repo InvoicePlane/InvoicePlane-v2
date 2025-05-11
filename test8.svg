@@ -7,7 +7,7 @@
     <!-- Tip inner shadow nudged in 2px horizontally, 2px vertically -->
     <g transform="
         translate(294.533 145.992)
-        translate(34 -17)
+        translate(32 -19)
         rotate(-45)
         scale(0.35)
         translate(-294.533 -145.992)
@@ -16,10 +16,10 @@
             d="M294.533 145.992l10.8 6 14.962 5.608 24.332-6.696 29.773-71.97z"/>
     </g>
 
-    <!-- Base-leg inner shadow -->
+    <!-- Big-leg inner shadow -->
     <g transform="
         translate(243.067 123.146)
-        translate(8 4)
+        translate(12 2)
         rotate(-12)
         scale(0.62)
         translate(-243.067 -123.146)
