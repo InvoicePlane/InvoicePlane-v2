@@ -3,11 +3,11 @@
      preserveAspectRatio="xMidYMid meet"
      xmlns="http://www.w3.org/2000/svg">
   <g transform="rotate(165 309 115)" fill="none" fill-rule="evenodd">
-    
-    <!-- Medium-green arm (40% scale, shifted right) -->
+  
+    <!-- Dark green arm -->
     <g transform="
         translate(243.067 123.146)
-        translate(45 0)
+        translate(25 0)
         scale(0.6)
         translate(-243.067 -123.146)
       ">
@@ -15,10 +15,11 @@
             d="M243.067 123.146l4.708-2.857 13.083-9.693L374.4 78.933l-101.383 54.134-17.475-4.526z"/>
     </g>
 
-    <!-- Light-green tip (75% scale, shifted closer to the other leg) -->
+    <!-- Light green tip, rotated and positioned visually as a checkmark -->
     <g transform="
         translate(294.533 145.992)
-        translate(45 -30)
+        translate(45 -50)
+        rotate(-15)
         scale(0.35)
         translate(-294.533 -145.992)
       ">
