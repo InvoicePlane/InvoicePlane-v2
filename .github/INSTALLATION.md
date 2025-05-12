@@ -1,71 +1,96 @@
-# Installation Guide
+## Installation Guide
+
+InvoicePlane V2 is a **Laravel-based, self-hosted** invoicing platform. This guide explains how to install and run it in your preferred environment.
+
 ---
 
 ## Requirements
 
 - PHP 8.2+
 - Composer
-- MariaDB, MySQL, or your own choice. Tested with MariaDB.
-- Node.js & yarm (or npm)
+- MariaDB, MySQL or your own choice (tested with MariaDB)
+- Node.js & Yarn (or npm)
+- Laravel CLI (`php artisan`)
+- Docker, Laravel Herd, or XAMPP/WAMP (or equivalents)
 
 ---
 
-## Setup Instructions
-
-### 1. Clone the Repository
-
-```bash
+## Preparations:
+```
 git clone https://github.com/InvoicePlane/InvoicePlane.git
 cd InvoicePlane
 ```
 
-2. Install PHP Dependencies
+## Environment Setup Options
 
+### Option 1: Docker or Laravel Sail
+
+```bash
+docker compose up -d
 ```
-composer install
+or
+```bash
+sail up -d
 ```
 
-3. Environment Configuration
-
-cp .env.example .env
-php artisan key:generate
-
-Update the .env file to match your database, mail, and app URL settings.
-
+Visit: `http://localhost/` or your own sitename
 
 ---
 
-Database Setup
+Option 2: Laravel Herd (macOS / Windows)
 
-Option A: Use your local MySQL/MariaDB
+Visit: http://invoiceplane.test/
+See YouTube video
 
-Ensure the database is running and configured in your .env.
+---
+
+Option 3: XAMPP / WAMP / MAMP
+
+1. Place the project inside your htdocs or www directory.
+2. Create a database (e.g., invoiceplane_db).
+3. Update your .env:
 
 ```
 DB_CONNECTION=mysql
 DB_DATABASE=invoiceplane_db
 DB_USERNAME=root
-DB_PASSWORD=secret
+DB_PASSWORD=
 ```
 
+Visit: `http://localhost/invoiceplane`
+
+
 ---
 
-Migrate & Seed
+Option 4: PHP Artisan Serve
 
+```
+php artisan serve
+```
+
+Visit: `http://127.0.0.1:8000/`
+
+
+---
+
+### Shared Setup Steps
+
+Run these steps regardless of which environment you use:
+
+```
+cp .env.example .env
+composer install
+php artisan key:generate
 php artisan migrate --seed
+```
 
 
 ---
 
-First-Time Setup
-
-
----
-
-Support
+### Support
 
 Discord: https://discord.gg/PPzD2hTrXt
 
 Community Forums: https://community.invoiceplane.com
 
-Documentation Wiki: https://wiki.invoiceplane.com
+Wiki: https://wiki.invoiceplane.com
