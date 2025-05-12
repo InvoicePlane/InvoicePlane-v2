@@ -98,4 +98,4 @@ To ensure a successful import:
 
 ---
 
-*For more information and updates, refer to the [InvoicePlane Wiki](https://wiki.invoiceplane.com/en/1.6/system/importing-data).*
+*For more information and updates, refer to the [InvoicePlane Wiki](https://wiki.invoiceplane.com/en/2.0/system/importing-data).*
