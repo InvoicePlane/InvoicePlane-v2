@@ -1,4 +1,3 @@
-
 # Translating InvoicePlane
 
 InvoicePlane is a multilingual application, and we rely on community contributions to keep translations up to date. If you want to help translate InvoicePlane into your language, follow this guide.
