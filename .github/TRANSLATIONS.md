@@ -7,14 +7,14 @@ InvoicePlane is a multilingual application, and we rely on community contributio
 ## 🌍 Where Are Translations Managed?
 
 All translations are hosted on **[Crowdin](https://crowdin.com/)** under the project name:  
-**[FusionInvoice on Crowdin](https://translations.invoiceplane.com)**
+**[InvoicePlane on Crowdin](https://translations.invoiceplane.com)**
 
 ---
 
 ## 🔹 How to Contribute
 
 1. Create an account at [crowdin.com](https://crowdin.com/).
-2. Join the **FusionInvoice** project via [translations.invoiceplane.com](https://translations.invoiceplane.com).
+2. Join the **InvoicePlane** project via [translations.invoiceplane.com](https://translations.invoiceplane.com).
 3. Choose your preferred language (e.g., `de`, `fr`, `es`, `pt-BR`).
 4. Translate missing strings or improve existing ones.
 5. Save and submit your translations for review.
