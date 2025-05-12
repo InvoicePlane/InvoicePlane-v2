@@ -1,4 +1,3 @@
-
 name: Quickstart Smoke Test
 
 on:
@@ -6,7 +5,7 @@ on:
 
 jobs:
   quickstart:
-    name: Quickstart Bootstrap Verification
+    name: Quickstart Bootstrap & Smoke Tests
     runs-on: ubuntu-latest
 
     services:
@@ -32,13 +31,15 @@ jobs:
       APP_ENV: testing
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -58,8 +59,8 @@ jobs:
           cp .env.testing.example .env
           php artisan key:generate
 
-      - name: Run migrations
+      - name: Run database migrations
         run: php artisan migrate --force
 
-      - name: Confirm Laravel boots
-        run: php artisan about
+      - name: Run smoke tests
+        run: php artisan test --group=smoke
