@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
-use Modules\Core\Support\CurrencyFormatter;
+use Modules\Clients\Models\Customer;
+use Modules\Core\Models\MailQueue;
+use Modules\Core\Models\Note;
 use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\FileNames;
 use Modules\Core\Support\HTML;
@@ -20,8 +23,8 @@ use Modules\Payments\Enums\PaymentStatus;
 /**
  * @property int           $id
  * @property int           $company_id
- * @property int           $payable_id
- * @property string        $payable_type
+ * @property int           $invoice_id
+ * @property int           $customer_id
  * @property int           $payment_method_id
  * @property PaymentMethod $paymentMethod
  * @property Carbon|null   $paid_at
@@ -38,7 +41,7 @@ class Payment extends Model
     protected $casts = [
         'payment_status' => PaymentStatus::class,
         'paid_at'        => 'date',
-        'payment_amount' => 'decimal:4',
+        'payment_amount' => 'float',
     ];
 
     protected $guarded = [];
@@ -73,7 +76,7 @@ class Payment extends Model
 
         self::deleted(function ($payment): void {
             if ($payment->invoice) {
-                event(new InvoiceModified($payment->invoice));
+                //event(new InvoiceModified($payment->invoice));
             }
         });
     }
@@ -83,24 +86,29 @@ class Payment extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
-    public function mailQueue()
+    public function mailQueue(): MorphMany
     {
-        return $this->morphMany('Modules\Core\Models\MailQueue', 'mailable');
+        return $this->morphMany(MailQueue::class, 'mailable');
     }
 
-    public function notes()
+    public function merchantClient(): BelongsTo
     {
-        return $this->morphMany('Modules\Notes\Models\Note', 'notable');
+        return $this->belongsTo(MerchantClient::class, 'merchant_client_id');
     }
 
-    public function paymentMethod(): BelongsTo
+    public function notes(): MorphMany
     {
-        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+        return $this->morphMany(Note::class, 'notable');
     }
 
     /*
@@ -113,17 +121,17 @@ class Payment extends Model
         return DateFormatter::format($this->attributes['paid_at']);
     }
 
-    public function getFormattedAmountAttribute()
+    public function getFormattedPaymentAmountAttribute(): string
     {
-        return CurrencyFormatter::format($this->attributes['amount'], $this->invoice->currency);
+        return NumberFormatter::formatTrimmed($this->payment_amount);
     }
 
-    public function getFormattedNumericAmountAttribute()
+    public function getFormattedNumericAmountAttribute(): float
     {
         return NumberFormatter::format($this->attributes['amount']);
     }
 
-    public function getFormattedNoteAttribute()
+    public function getFormattedNoteAttribute(): string
     {
         return nl2br($this->attributes['note']);
     }
@@ -138,14 +146,14 @@ class Payment extends Model
         return HTML::invoice($this->invoice);
     }
 
-    public function getPdfFilenameAttribute()
+    public function getPdfFilenameAttribute(): string
     {
         return FileNames::invoice($this->invoice);
     }
 
-    public function getPayableReferenceAttribute(): ?string
+    public function getInvoiceReferenceAttribute(): ?string
     {
-        return match ($this->payable_type) {
+        return match ($this->invoice_type) {
             Invoice::class => $this->invoice?->invoice_number,
             default        => null,
         };
@@ -201,12 +209,12 @@ class Payment extends Model
                             );
                         });
                 })
-                ->orWhereIn('payment_method_id', function ($query) use ($keywords): void {
-                    $query->select('id')->from('payment_methods')->where(
+                ->orWhereIn('payment_method', function ($query): void {
+                    /*$query->select('id')->from('payment_methods')->where(
                         DB::raw('lower(name)'),
                         'like',
                         '%' . $keywords . '%'
-                    );
+                    );*/
                 });
         }
 

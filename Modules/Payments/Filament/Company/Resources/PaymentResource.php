@@ -18,6 +18,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
 use Modules\Payments\Models\Payment;
@@ -58,37 +59,46 @@ class PaymentResource extends Resource
                 Grid::make(2)
                     ->schema([
                         //
-                        // LEFT COLUMN: payable type + reference + status + amount
+                        // LEFT COLUMN: invoice + status + amount
                         //
                         Forms\Components\Group::make()
                             ->schema([
                                 Section::make(trans('ip.payment'))
                                     ->schema([
-                                        Forms\Components\Group::make()->schema([
-                                            Select::make('invoice_id')
-                                                ->label(trans('ip.invoice'))
-                                                ->getSearchResultsUsing(function (string $search): array {
-                                                    return Invoice::with('customer')
-                                                        ->where('invoice_number', 'like', "%{$search}%")
-                                                        ->orWhereHas('customer', fn ($q) => $q->where('company_name', 'like', "%{$search}%"))
-                                                        ->limit(50)
-                                                        ->get()
-                                                        ->pluck('invoice_number', 'id')
-                                                        ->mapWithKeys(fn ($number, $id) => [
-                                                            $id => "{$number} – " . Invoice::query()->find($id)->customer?->company_name,
-                                                        ])
-                                                        ->toArray();
-                                                })
-                                                ->getOptionLabelUsing(
-                                                    fn (int $value): string => ($invoice = Invoice::with('customer')->find($value))
-                                                        ? "{$invoice->invoice_number} – {$invoice->customer?->company_name}"
-                                                        : ''
-                                                )
-                                                ->required()
-                                                ->searchable()
-                                                ->preload()
-                                                ->default(fn (?Payment $record) => $record?->invoice_id),
-                                        ]),
+                                        Grid::make()
+                                            ->schema([
+                                                Select::make('invoice_id')
+                                                    ->label(trans('ip.invoice'))
+                                                    ->getSearchResultsUsing(function (string $search): array {
+                                                        return Invoice::with('customer')
+                                                            ->where('invoice_number', 'like', "%{$search}%")
+                                                            ->orWhereHas('customer', fn ($q) => $q->where('company_name', 'like', "%{$search}%"))
+                                                            ->limit(50)
+                                                            ->get()
+                                                            ->pluck('invoice_number', 'id')
+                                                            ->mapWithKeys(fn ($number, $id) => [
+                                                                $id => "{$number} – " . Invoice::query()->find($id)->customer?->company_name,
+                                                            ])
+                                                            ->toArray();
+                                                    })
+                                                    ->getOptionLabelUsing(
+                                                        fn (int $value): string => ($invoice = Invoice::with('customer')->find($value))
+                                                            ? "{$invoice->invoice_number} – {$invoice->customer?->company_name}"
+                                                            : ''
+                                                    )
+                                                    ->required()
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->default(fn (?Payment $record) => $record?->invoice_id),
+
+                                                Select::make('customer_id')
+                                                    ->label(trans('ip.customer'))
+                                                    ->relationship('customer', 'company_name')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->required(),
+                                            ]),
+
                                         Grid::make()
                                             ->schema([
                                                 Select::make('payment_status')
@@ -108,13 +118,16 @@ class PaymentResource extends Resource
                                                 TextInput::make('payment_amount')
                                                     ->label(trans('ip.payment_amount'))
                                                     ->numeric()
-                                                    ->required(),
+                                                    ->required()
+                                                    ->dehydrated(true)
+                                                    ->afterStateHydrated(fn ($component, $state) => $component->state($state))
+                                                    ->default(fn (?Payment $record) => $record?->payment_amount),
                                             ]),
                                     ]),
                             ]),
 
                         //
-                        // RIGHT COLUMN: paid date + method
+                        // RIGHT COLUMN: paid date + payment method (Enum-based)
                         //
                         Forms\Components\Group::make()
                             ->schema([
@@ -126,11 +139,18 @@ class PaymentResource extends Resource
                                                     ->label(trans('ip.paid_at'))
                                                     ->required(),
 
-                                                Select::make('payment_method_id')
+                                                Select::make('payment_method')
                                                     ->label(trans('ip.payment_method'))
-                                                    ->relationship('paymentMethod', 'payment_method_name')
+                                                    ->options(
+                                                        collect(PaymentMethod::cases())
+                                                            ->mapWithKeys(fn (PaymentMethod $m) => [
+                                                                $m->value => trans('ip.' . $m->value),
+                                                            ])
+                                                            ->toArray()
+                                                    )
                                                     ->searchable()
                                                     ->preload()
+                                                    ->native(false)
                                                     ->required(),
                                             ]),
                                     ]),
@@ -142,7 +162,7 @@ class PaymentResource extends Resource
                 //
                 Section::make(trans('ip.notes'))
                     ->schema([
-                        MarkdownEditor::make('payment_note')
+                        MarkdownEditor::make('note')
                             ->label(trans('ip.payment_note'))
                             ->toolbarButtons(['bold', 'italic']),
                     ])
@@ -157,9 +177,9 @@ class PaymentResource extends Resource
                 TextColumn::make('paid_at')
                     ->date('d-m-Y')
                     ->color(
-                        fn (Payment $record) => optional($record->payable)->invoice_date_due && $record->paid_at > $record->payable->invoice_date_due
-                        ? 'maroon'
-                        : null
+                        fn (Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
+                            ? 'maroon'
+                            : null
                     )
                     ->sortable()
                     ->searchable()
@@ -173,14 +193,7 @@ class PaymentResource extends Resource
 
                 TextColumn::make('invoice.invoice_number')
                     ->label(trans('ip.payment_reference'))
-                    ->state(function (Payment $record) {
-                        $invoice = $record->invoice;
-
-                        return match (true) {
-                            $invoice instanceof Invoice => $invoice->invoice_number,
-                            default                     => null,
-                        };
-                    })
+                    ->state(fn (Payment $record) => $record->invoice?->invoice_number)
                     ->searchable()
                     ->toggleable(),
 
@@ -202,9 +215,10 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make('paymentMethod.payment_method_name')
-                    ->limit(10)
+                TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
+                    ->formatStateUsing(fn ($state) => trans('ip.' . $state))
+                    ->limit(10)
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
@@ -224,13 +238,11 @@ class PaymentResource extends Resource
     }
 
     /**
-     * - payable (BelongsTo)
-     * - paymentMethod (BelongsTo).
+     * - invoice (BelongsTo).
      */
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

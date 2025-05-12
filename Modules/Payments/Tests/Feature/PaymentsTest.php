@@ -5,58 +5,75 @@ namespace Modules\Payments\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Core\Tests\TestDecimal;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Enums\PaymentMethod as PaymentMethodEnum;
+use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Filament\Company\Resources\PaymentResource;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
 use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
 use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(PaymentResource::class)]
-class PaymentsTest extends AbstractTestCase
+class PaymentsTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_payments(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
         $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
 
         $payload = [
-            'amount'         => 250.00,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
-            'paid_at'        => '2024-11-01',
-            'customer_id'    => $customer->id,
             'invoice_id'     => $invoice->id,
+            'customer_id'    => $customer->id,
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+            'payment_amount' => 250.00,
+            'paid_at'        => '2024-11-01',
         ];
-        $payment = Payment::factory()->for($company)->create($payload);
+        Payment::factory()->for($company)->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class);
 
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
         /* assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('payments', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "customer_id": 1,
+     *   "invoice_id": 1,
+     *   "payment_method": "bank_transfer",
+     *   "payment_status": "pending",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
+     * }
+     */
     public function it_creates_a_payment(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
@@ -65,8 +82,9 @@ class PaymentsTest extends AbstractTestCase
         $payload = [
             'invoice_id'     => $invoice->id,
             'customer_id'    => $customer->id,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
-            'amount'         => 250.00,
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+            'payment_status' => PaymentStatus::PENDING->value,
+            'payment_amount' => 250.00,
             'paid_at'        => '2024-11-01',
         ];
 
@@ -76,11 +94,17 @@ class PaymentsTest extends AbstractTestCase
             ->fillForm($payload)
             ->call('create');
 
-        $component
-            ->assertHasNoErrors();
+        if (app()->isLocal()) {
+            dd($payload);
+        }
 
         /* assert */
-        $this->assertDatabaseHas('payments', $payload);
+        $component->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', array_merge(
+            $payload,
+            ['payment_amount' => TestDecimal::exact(250)]
+        ));
     }
 
     #[Test]
@@ -88,9 +112,53 @@ class PaymentsTest extends AbstractTestCase
     /**
      * @payload missing: invoice_id
      * {
-     * 'payment_method_id' => 1,
-     * 'paid_at' => '2025-01-01',
-     * 'amount' => 500.00
+     *   "customer_id": 1,
+     *   "payment_method": "bank_transfer",
+     *   "payment_status": "pending",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
+     * }
+     */
+    public function it_fails_to_create_payment_without_required_invoice_id(): void
+    {
+        /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+
+        $payload = [
+            'customer_id'    => $customer->id,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'payment_amount' => 250.00,
+            'paid_at'        => '2024-11-01',
+        ];
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreatePayment::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['invoice_id']);
+
+        $this->assertDatabaseMissing('payments', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: customer_id
+     * {
+     *   "invoice_id": 1,
+     *   "payment_method": "bank_transfer",
+     *   "payment_status": "pending",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
      * }
      */
     public function it_fails_to_create_payment_without_required_customer_id(): void
@@ -102,8 +170,8 @@ class PaymentsTest extends AbstractTestCase
         /* arrange */
         $payload = [
             'invoice_id'     => $invoice->id,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
-            'amount'         => 250.00,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'payment_amount' => 250.00,
             'paid_at'        => '2024-11-01',
         ];
 
@@ -112,6 +180,10 @@ class PaymentsTest extends AbstractTestCase
             ->test(CreatePayment::class)
             ->fillForm($payload)
             ->call('create');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
 
         /* assert */
         $component->assertHasFormErrors(['customer_id']);
@@ -122,48 +194,13 @@ class PaymentsTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: invoice_id
+     * @payload missing: payment_method
      * {
-     *   "payment_method_id": 1,
-     *   "paid_at": "2025-05-11",
-     *   "amount": 100
-     * }
-     */
-    public function it_fails_to_create_payment_without_required_invoice_id(): void
-    {
-        /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
-        $method   = PaymentMethod::factory()->for($this->user->companies()->first())->create();
-
-        $payload = [
-            'customer_id'    => $customer->id,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
-            'amount'         => 250.00,
-            'paid_at'        => '2024-11-01',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(CreatePayment::class)
-            ->fillForm($payload)
-            ->call('createPayment');
-
-        /* assert */
-        $component->assertHasFormErrors(['invoice_id']);
-
-        $this->assertDatabaseMissing('payments', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload missing: payment_method_id
-     * {
+     *   "customer_id": 1,
      *   "invoice_id": 1,
-     *   "paid_at": "2025-05-11",
-     *   "amount": 100
+     *   "payment_status": "pending",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
      * }
      */
     public function it_fails_to_create_payment_without_required_payment_method(): void
@@ -174,20 +211,68 @@ class PaymentsTest extends AbstractTestCase
         $invoice  = Invoice::factory()->for($this->user->companies()->first())->create();
 
         $payload = [
-            'invoice_id'  => $invoice->id,
-            'customer_id' => $customer->id,
-            'amount'      => 250.00,
-            'paid_at'     => '2024-11-01',
+            'invoice_id'     => $invoice->id,
+            'customer_id'    => $customer->id,
+            'payment_amount' => 250.00,
+            'paid_at'        => '2024-11-01',
+        ];
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreatePayment::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['payment_method']);
+        $this->assertDatabaseMissing('payments', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: payment_status
+     * {
+     *   "customer_id": 1,
+     *   "invoice_id": 1,
+     *   "payment_method": "bank_transfer",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
+     * }
+     */
+    public function it_fails_to_create_payment_without_required_payment_status(): void
+    {
+        /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+
+        $payload = [
+            'invoice_id'     => $invoice->id,
+            'customer_id'    => $customer->id,
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+            'payment_amount' => 250.00,
+            'paid_at'        => '2024-11-01',
+            'notes'          => 'Test payment',
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
-            ->call('createPayment');
+            ->call('create');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
 
         /* assert */
-        $component->assertHasFormErrors(['payment_method_id']);
+        $component->assertHasFormErrors(['payment_status']);
+
         $this->assertDatabaseMissing('payments', $payload);
     }
 
@@ -196,9 +281,12 @@ class PaymentsTest extends AbstractTestCase
     /**
      * @payload missing: paid_at
      * {
+     *   "customer_id": 1,
      *   "invoice_id": 1,
-     *   "payment_method_id": 1,
-     *   "amount": 100
+     *   "payment_method": "bank_transfer",
+     *   "payment_status": "pending",
+     *   "payment_amount": 250.00,
+     *   "paid_at": "2024-11-01"
      * }
      */
     public function it_fails_to_create_payment_without_required_paid_at(): void
@@ -211,15 +299,19 @@ class PaymentsTest extends AbstractTestCase
         $payload = [
             'invoice_id'     => $invoice->id,
             'customer_id'    => $customer->id,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
-            'amount'         => 250.00,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
+            'payment_amount' => 250.00,
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
-            ->call('createPayment');
+            ->call('create');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
 
         /* assert */
         $component->assertHasFormErrors(['paid_at']);
@@ -229,11 +321,13 @@ class PaymentsTest extends AbstractTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: amount
+     * @payload missing: payment_amount
      * {
+     *   "customer_id": 1,
      *   "invoice_id": 1,
-     *   "payment_method_id": 1,
-     *   "paid_at": "2025-05-11"
+     *   "payment_method": "bank_transfer",
+     *   "payment_status": "pending",
+     *   "paid_at": "2024-11-01"
      * }
      */
     public function it_fails_to_create_payment_without_required_amount(): void
@@ -246,7 +340,7 @@ class PaymentsTest extends AbstractTestCase
         $payload = [
             'invoice_id'     => $invoice->id,
             'customer_id'    => $customer->id,
-            'payment_method' => PaymentMethodEnum::BANK_TRANSFER,
+            'payment_method' => PaymentMethod::BANK_TRANSFER,
             'paid_at'        => '2024-11-01',
         ];
 
@@ -254,10 +348,10 @@ class PaymentsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
-            ->call('createPayment');
+            ->call('create');
 
         /* assert */
-        $component->assertHasFormErrors(['amount']);
+        $component->assertHasFormErrors(['payment_amount']);
 
         $this->assertDatabaseMissing('payments', $payload);
     }
@@ -269,8 +363,8 @@ class PaymentsTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $payment = Payment::factory()->for($this->user->companies()->first())->create(['amount' => 123.00]);
-        $payload = ['amount' => 888.00];
+        $payment = Payment::factory()->for($this->user->companies()->first())->create(['payment_amount' => 123.00]);
+        $payload = ['payment_amount' => 888.00];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm($payload)->call('save');
@@ -281,7 +375,7 @@ class PaymentsTest extends AbstractTestCase
             ->assertHasNoErrors();
 
         /* assert */
-        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'amount' => 888.00]);
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_amount' => 888.00]);
     }
 
     #[Test]
@@ -294,10 +388,10 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['amount' => null])->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['payment_amount' => null])->call('save');
 
         /* assert */
-        $component->assertHasFormErrors(['amount']);
+        $component->assertHasFormErrors(['payment_amount']);
     }
 
     #[Test]
@@ -362,4 +456,5 @@ class PaymentsTest extends AbstractTestCase
 
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
     }
+    # endregion
 }

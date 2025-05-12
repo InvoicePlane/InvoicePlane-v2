@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Models\Schedule;
 use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
-use Modules\Payments\Observers\PaymentMethodObserver;
 use Modules\Payments\Observers\PaymentObserver;
 use Modules\Quotes\Providers\EventServiceProvider;
 use Modules\Quotes\Providers\RouteServiceProvider;
@@ -33,7 +31,6 @@ class PaymentsServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
 
         Payment::observe(PaymentObserver::class);
-        PaymentMethod::observe(PaymentMethodObserver::class);
     }
 
     public function register(): void

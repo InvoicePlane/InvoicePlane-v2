@@ -3,6 +3,8 @@
 namespace Modules\Payments\Support\Drivers;
 
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\MerchantPayment;
+use Modules\Payments\Models\Payment;
 use Modules\Payments\Support\MerchantDriverPayable;
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
@@ -96,19 +98,33 @@ class PayPal extends MerchantDriverPayable
 
         if ($payment->getState() == 'approved') {
             foreach ($payment->getTransactions() as $transaction) {
-                $fiPayment = FIPayment::create([
-                    'invoice_id'        => $invoice->id,
-                    'amount'            => $transaction->getAmount()->getTotal(),
-                    'payment_method_id' => config('ip.onlinePaymentMethod'),
+                $fiPayment = Payment::create([
+                    'invoice_id'     => $invoice->id,
+                    'amount'         => $transaction->getAmount()->getTotal(),
+                    'payment_method' => config('ip.onlinePaymentMethod'),
                 ]);
 
-                merchant_payment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
+                MerchantPayment::saveByKey($this->getName(), $fiPayment->id, 'id', $payment->getId());
             }
 
             return true;
         }
 
         return false;
+    }
+
+    public function processPayment(Payment $payment): bool
+    {
+        // logic to connect PayPal API
+        // Example pseudo-code:
+        $response = Http::withToken($this->getAccessToken())
+            ->post('https://api.paypal.com/payments', [
+                'amount'   => $payment->payment_amount,
+                'currency' => 'USD',
+                'metadata' => ['payment_id' => $payment->id],
+            ]);
+
+        return $response->successful();
     }
 
     private function getApiContext()
@@ -123,5 +139,11 @@ class PayPal extends MerchantDriverPayable
         $apiContext->setConfig(['mode' => $this->getSetting('mode')]);
 
         return $apiContext;
+    }
+
+    private function getAccessToken(): string
+    {
+        // securely fetch PayPal credentials
+        return config('services.paypal.access_token');
     }
 }

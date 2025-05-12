@@ -3,9 +3,11 @@
 namespace Modules\Payments\Support\Drivers;
 
 use Exception;
+use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\MerchantClient;
+use Modules\Payments\Models\MerchantPayment;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Support\MerchantDriver;
 
@@ -48,12 +50,12 @@ class Stripe extends MerchantDriver
             ]);
 
             $payment = Payment::create([
-                'invoice_id'        => $invoice->id,
-                'amount'            => $charge->amount / 100,
-                'payment_method_id' => config('ip.onlinePaymentMethod'),
+                'invoice_id'     => $invoice->id,
+                'amount'         => $charge->amount / 100,
+                'payment_method' => config('ip.onlinePaymentMethod'),
             ]);
 
-            merchant_payment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
+            MerchantPayment::saveByKey($this->getName(), $payment->id, 'id', $charge->id);
 
             return true;
         } catch (Exception $e) {
@@ -61,9 +63,23 @@ class Stripe extends MerchantDriver
         }
     }
 
+    public function processPayment(Payment $payment): bool
+    {
+        // logic to connect Stripe API
+        // Example pseudo-code:
+        $response = Http::withToken($this->getSecretKey())
+            ->post('https://api.stripe.com/v1/charges', [
+                'amount'      => $payment->payment_amount * 100, // cents
+                'currency'    => 'usd',
+                'description' => 'Payment #' . $payment->id,
+            ]);
+
+        return $response->successful();
+    }
+
     private function createCustomer($invoice, $source)
     {
-        $customer = Customer::create([
+        $customer = Customer::query()->create([
             'description' => $invoice->customer->name,
             'email'       => $invoice->customer->email,
             'source'      => $source,
@@ -72,5 +88,10 @@ class Stripe extends MerchantDriver
         MerchantClient::saveByKey($this->getName(), $invoice->customer_id, 'id', $customer->id);
 
         return $customer;
+    }
+
+    private function getSecretKey(): string
+    {
+        return config('services.stripe.secret_key');
     }
 }

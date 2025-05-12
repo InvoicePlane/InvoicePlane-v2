@@ -16,14 +16,14 @@ class PaymentMethodService extends BaseService
     public function createPaymentMethod(array $data): Model
     {
         return $this->create([
-            'name' => $data['name'],
+            'payment_method_name' => $data['payment_method_name'],
         ]);
     }
 
     public function updatePaymentMethod(PaymentMethod $model, array $data): PaymentMethod
     {
         $model->update([
-            'name' => $data['name'],
+            'payment_method_name' => $data['payment_method_name'],
         ]);
 
         return $model;

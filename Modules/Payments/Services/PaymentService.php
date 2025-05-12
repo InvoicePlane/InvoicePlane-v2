@@ -4,6 +4,8 @@ namespace Modules\Payments\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
+use Modules\Core\Support\NumberFormatter;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 
 class PaymentService extends BaseService
@@ -11,32 +13,36 @@ class PaymentService extends BaseService
     public function model(): string
     {
         return Payment::class;
-        //event(new PaymentWasCreated($payment));
     }
 
-    public function create(array $data): Model
+    public function createPayment(array $data): Model
     {
-        return parent::create([
-            'company_id'        => session('current_company_id'),
-            'customer_id'       => $data['customer_id'],
-            'user_id'           => auth()->id(),
-            'payment_method_id' => $data['payment_method_id'],
-            'paid_at'           => $data['paid_at'],
-            'amount'            => $data['amount'],
-            'notes'             => $data['notes'] ?? null,
+        $payment = $this->create([
+            'customer_id'        => $data['customer_id'],
+            'invoice_id'         => $data['invoice_id'] ?? null,
+            'merchant_client_id' => $data['merchant_client_id'] ?? null,
+            'payment_method'     => $data['payment_method'],
+            'payment_status'     => PaymentStatus::PENDING->value,
+            'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
+            'paid_at'            => $data['paid_at'],
+            'notes'              => $data['notes'] ?? null,
         ]);
+
+        /* if ($payment->merchant_client_id) {
+            dispatch(new ProcessMerchantPaymentJob($payment));
+        } */
+
+        return $payment;
     }
 
-    public function update(array $data, $model): Model
+    public function updatePayment(Payment $payment, array $data): Payment
     {
-        $model->update([
-            'customer_id'       => $data['customer_id'],
-            'payment_method_id' => $data['payment_method_id'],
-            'paid_at'           => $data['paid_at'],
-            'amount'            => $data['amount'],
-            'notes'             => $data['notes'] ?? null,
-        ]);
+        $payment->fill([
+            'payment_method' => $data['payment_method'],
+            'payment_amount' => $data['payment_amount'],
+            'paid_at'        => $data['paid_at'],
+        ])->save();
 
-        return $model;
+        return $payment;
     }
 }

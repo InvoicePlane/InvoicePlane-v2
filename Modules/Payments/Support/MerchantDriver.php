@@ -17,7 +17,7 @@ abstract class MerchantDriver
         return $this->isRedirect;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return class_basename($this);
     }
@@ -27,7 +27,7 @@ abstract class MerchantDriver
         return config('ip.' . $this->getSettingKey($setting));
     }
 
-    public function getSettingKey($setting)
+    public function getSettingKey($setting): string
     {
         return 'merchant_' . class_basename($this) . '_' . $setting;
     }

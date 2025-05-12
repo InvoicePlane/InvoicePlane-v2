@@ -6,7 +6,7 @@ use Modules\Core\Support\Directory;
 
 class MerchantFactory
 {
-    public static function getDrivers($enabledOnly = false)
+    public static function getDrivers($enabledOnly = false): array
     {
         $files = Directory::listContents(app_path('IpModules/Merchant/Support/MerchantDrivers'));
 
@@ -17,7 +17,7 @@ class MerchantFactory
 
             $driver = self::create($file);
 
-            if ( ! $enabledOnly || $enabledOnly && $driver->getSetting('enabled')) {
+            if ( ! $enabledOnly || ($enabledOnly && $driver->getSetting('enabled'))) {
                 $drivers[$file] = $driver;
             }
         }
@@ -26,12 +26,24 @@ class MerchantFactory
     }
 
     /**
+     * @param $driver
+     *
      * @return MerchantDriver
      */
-    public static function create($driver)
+    public static function create($driver): MerchantDriver
     {
         $driver = 'Modules\Core\\IpModules\\Merchant\\Support\\MerchantDrivers\\' . $driver;
 
         return new $driver();
     }
+
+    /*public static function make(string $merchantName): BankTransferClient|PaypalClient|StripeClient
+    {
+        return match (mb_strtolower($merchantName)) {
+            'paypal'        => new PaypalClient(),
+            'stripe'        => new StripeClient(),
+            'bank_transfer' => new BankTransferClient(),
+            default         => throw new InvalidArgumentException("Unknown merchant: {$merchantName}"),
+        };
+    }*/
 }
