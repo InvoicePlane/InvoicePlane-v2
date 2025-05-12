@@ -28,11 +28,11 @@ To ensure a successful import:
 
 ## 📁 Supported Files and Structures
 
-### 1. `clients.csv`
+### 1. `customers.csv`
 
 | Column Name         | Description                         |
 |---------------------|-------------------------------------|
-| `client_name`       | Client's full name                  |
+| `client_name`       | Customer's full name                |
 | `client_address_1`  | Primary address line                |
 | `client_address_2`  | Secondary address line              |
 | `client_city`       | City                                |
@@ -53,7 +53,7 @@ To ensure a successful import:
 | Column Name             | Description                               |
 |-------------------------|-------------------------------------------|
 | `user_email`            | Email of the InvoicePlane user            |
-| `client_name`           | Name of the client                        |
+| `client_name`           | Name of the customer                      |
 | `invoice_date_created`  | Creation date (`YYYY-MM-DD`)              |
 | `invoice_date_due`      | Due date (`YYYY-MM-DD`)                   |
 | `invoice_number`        | Unique invoice number                     |
