@@ -4,11 +4,14 @@ on:
   push:
     branches: [master, develop]
   pull_request:
-    branches: [master, develop]
+    branches: [develop]
+  workflow_dispatch:
 
 jobs:
   test:
+    name: PHPUnit (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mariadb:10.6
@@ -36,13 +39,26 @@ jobs:
         php-version: [8.2, 8.3, 8.4]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-      - run: composer install --prefer-dist --no-interaction
-      - run: cp .env.testing.example .env
-      - run: cp .env.testing.example .env.testing
-      - run: php artisan key:generate
-      - run: php artisan migrate --force
-      - run: php artisan test --env=testing
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare environment
+        run: |
+          cp .env.testing.example .env
+          cp .env.testing.example .env.testing
+          php artisan key:generate
+          php artisan config:clear
+
+      - name: Run database migrations
+        run: php artisan migrate --force
+
+      - name: Run tests
+        run: php artisan test --env=testing
