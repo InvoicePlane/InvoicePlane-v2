@@ -1,0 +1,51 @@
+name: Quickstart Smoke Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quickstart:
+    name: Quickstart Bootstrap Verification
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:10.6
+        env:
+          MYSQL_DATABASE: testing
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_DATABASE: testing
+      DB_USERNAME: root
+      DB_PASSWORD: password
+      DB_HOST: 127.0.0.1
+      APP_ENV: testing
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Prepare env
+        run: |
+          cp .env.testing.example .env
+          php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Validate app boots
+        run: php artisan about
