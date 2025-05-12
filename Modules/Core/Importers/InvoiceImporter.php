@@ -80,7 +80,7 @@ class InvoiceImporter extends AbstractImporter
                 if ($client = $clients->where('unique_name', $record['client_name'])->first()) {
                     $record['customer_id'] = $client->id;
                 } else {
-                    $record['customer_id'] = Customer::create(['name' => $record['client_name']])->id;
+                    $record['customer_id'] = Customer::query()->create(['name' => $record['client_name']])->id;
                 }
 
                 unset($record['client_name']);

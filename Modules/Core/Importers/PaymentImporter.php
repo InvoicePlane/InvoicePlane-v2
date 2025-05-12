@@ -14,31 +14,31 @@ class PaymentImporter extends AbstractImporter
     public function getFields()
     {
         return [
-            'paid_at'           => '* ' . trans('ip.date'),
-            'invoice_id'        => '* ' . trans('ip.invoice_number'),
-            'amount'            => '* ' . trans('ip.amount'),
-            'payment_method_id' => '* ' . trans('ip.payment_method'),
-            'note'              => trans('ip.note'),
+            'invoice_id'     => '* ' . trans('ip.invoice_number'),
+            'paid_at'        => '* ' . trans('ip.date'),
+            'amount'         => '* ' . trans('ip.amount'),
+            'payment_method' => '* ' . trans('ip.payment_method'),
+            'note'           => trans('ip.note'),
         ];
     }
 
     public function getMapRules()
     {
         return [
-            'paid_at'           => 'required',
-            'invoice_id'        => 'required',
-            'amount'            => 'required',
-            'payment_method_id' => 'required',
+            'invoice_id'     => 'required',
+            'paid_at'        => 'required',
+            'amount'         => 'required',
+            'payment_method' => 'required',
         ];
     }
 
     public function getValidator($input)
     {
         return Validator::make($input, [
-            'paid_at'           => 'required',
-            'invoice_id'        => 'required',
-            'amount'            => 'required|numeric',
-            'payment_method_id' => 'required',
+            'invoice_id'     => 'required',
+            'payment_method' => 'required',
+            'paid_at'        => 'required',
+            'amount'         => 'required|numeric',
         ]);
     }
 
@@ -81,8 +81,8 @@ class PaymentImporter extends AbstractImporter
                 $record['invoice_id'] = Invoice::where('number', $record['invoice_id'])->first()->id;
 
                 // Transform the payment method to the id
-                if ($record['payment_method_id'] != 'NULL') {
-                    $record['payment_method_id'] = PaymentMethod::firstOrCreate(['name' => $record['payment_method_id']])->id;
+                if ($record['payment_method'] != 'NULL') {
+                    $record['payment_method'] = PaymentMethod::firstOrCreate(['name' => $record['payment_method_id']])->id;
                 } else {
                     $record['payment_method_id'] = PaymentMethod::firstOrCreate(['name' => 'Other'])->id;
                 }

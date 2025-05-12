@@ -47,6 +47,7 @@ class InvoiceFactory extends Factory
             'invoice_discount_amount'  => $this->faker->randomFloat(4, 0, 100),
             'invoice_discount_percent' => $this->faker->randomFloat(4, 0, 25),
             'invoice_item_subtotal'    => $subtotal,
+            'item_tax_total'           => $subtotal * $taxRate,
             'invoice_tax_total'        => $taxTotal,
             'invoice_total'            => $total,
             'invoice_password'         => null,

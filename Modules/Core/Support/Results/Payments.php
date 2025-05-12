@@ -16,7 +16,7 @@ class Payments implements SourceInterface
             'payments.note'
         )
             ->join('invoices', 'invoices.id', '=', 'payments.invoice_id')
-            ->leftJoin('payment_methods', 'payment_methods.id', '=', 'payment_method_id')
+            //->leftJoin('payment_methods', 'payment_methods.id', '=', 'payment_method_id')
             ->orderBy('invoices.number');
 
         return $payment->get()->toArray();

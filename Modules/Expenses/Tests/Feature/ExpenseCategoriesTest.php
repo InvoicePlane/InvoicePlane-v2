@@ -87,7 +87,6 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_category_without_required_name(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $payload = [];
 

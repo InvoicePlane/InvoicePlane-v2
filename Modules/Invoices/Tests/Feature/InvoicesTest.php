@@ -86,6 +86,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_discount_amount'  => 10,
             'invoice_discount_percent' => 5,
             'invoice_item_subtotal'    => 450,
+            'item_tax_total'           => 90,
             'invoice_tax_total'        => 20,
             'invoice_total'            => 440,
             'customer_id'              => $customer->id,
