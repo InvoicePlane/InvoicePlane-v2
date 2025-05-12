@@ -19,15 +19,14 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('smoke')]
     /**
-     * @payload ['name' => 'Hardware']
+     * @payload ['category_name' => 'Hardware']
      */
     #[Group('crud')]
     public function it_lists_product_categories(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $payload = [
-            'name' => 'Hardware',
+            'category_name' => 'Hardware',
         ];
 
         $record = ProductCategory::factory()->for($this->user->companies()->first())->create($payload);
@@ -43,12 +42,18 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "category_name": "Electronics",
+     *   "category_description": "All electronic items"
+     * }
+     */
     public function it_creates_a_product_category(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $payload = [
-            'name' => 'Office Supplies',
+            'category_name' => 'Office Supplies',
         ];
 
         /* act */
@@ -69,14 +74,13 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: name
+     * @payload missing: category_name
      * {
-     *   "name": ""
+     *   "category_description": "Missing required name"
      * }
      */
     public function it_fails_to_create_product_category_without_name(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $payload = [];
 
@@ -87,7 +91,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['category_name']);
     }
 
     #[Test]
@@ -97,8 +101,8 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Old Cat']);
-        $payload = ['name' => 'Updated Category'];
+        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Old Cat']);
+        $payload = ['category_name' => 'Updated Category'];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
@@ -125,14 +129,14 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Valid']);
-        $payload = ['name' => null];
+        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Valid']);
+        $payload = ['category_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['category_name']);
     }
 
     #[Test]

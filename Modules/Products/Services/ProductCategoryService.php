@@ -16,14 +16,14 @@ class ProductCategoryService extends BaseService
     public function createProductCategory(array $data): Model
     {
         return $this->create([
-            'name' => $data['name'],
+            'category_name' => $data['category_name'],
         ]);
     }
 
     public function updateProductCategory(ProductCategory $model, array $data): ProductCategory
     {
         $model->update([
-            'name' => $data['name'],
+            'category_name' => $data['category_name'],
         ]);
 
         return $model;
