@@ -22,7 +22,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
-    // region smoke
+    # region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_products(): void
@@ -65,9 +65,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('products', $payload);
     }
-    // endregion
+    # endregion
 
-    // region crud
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -86,7 +86,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "description": "Example description"
      * }
      */
-    #[Group('crud')]
     public function it_creates_a_product(): void
     {
         $this->markTestIncomplete();
@@ -136,7 +135,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
+     * @payload missing: code
      * {
      *   "company_id": 1,
      *   "category_id": 2,
@@ -199,7 +198,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
+     * @payload missing: name
      * {
      *   "company_id": 1,
      *   "category_id": 2,
@@ -256,7 +255,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
+     * @payload missing: price
      * {
      *   "company_id": 1,
      *   "category_id": 2,
@@ -377,7 +376,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      * "description": "Example"
      * }
      */
-    #[Group('crud')]
     public function it_fails_to_update_item_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -423,6 +421,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseMissing('products', $payload);
     }
 
+    #[Test]
     #[Group('crud')]
     public function it_deletes_a_product(): void
     {
@@ -471,6 +470,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
     }
 
+    #[Test]
     #[Group('crud')]
     public function it_bulk_deletes_products(): void
     {
@@ -512,16 +512,17 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ]);
         }
     }
-    // endregion
+    # endregion
 
-    // region spicy
+    # region spicy
 
+    #[Test]
+    #[Group('crud')]
     /**
      * route('filament.ivpl.resources.filament.resources.products.process_selections').
      *
      * @skip Not implemented yet
      **/
-    #[Group('crud')]
     public function it_products_process_selections(): void
     {
         $this->markTestIncomplete();
@@ -557,12 +558,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
     }
 
+    #[Test]
+    #[Group('crud')]
     /**
      * route('filament.ivpl.resources.filament.resources.products.process_selections').
      *
      * @skip Not implemented yet
      **/
-    #[Group('crud')]
     public function it_fails_to_process_selections_without_product_ids(): void
     {
         $this->markTestIncomplete();
@@ -597,5 +599,5 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
     }
-    // endregion
+    # endregion
 }

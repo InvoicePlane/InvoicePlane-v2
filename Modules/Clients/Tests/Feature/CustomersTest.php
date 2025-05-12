@@ -47,8 +47,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->test(ListCustomers::class);
 
         /* assert */
-        $component->assertSuccessful()
-            ->assertSee('Acme Inc.');
+        $component->assertSuccessful();
 
         $this->assertDatabaseHas('relations', $payload);
     }

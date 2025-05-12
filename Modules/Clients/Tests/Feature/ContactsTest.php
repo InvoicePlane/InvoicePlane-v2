@@ -161,7 +161,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
         $payload = [
             'first_name' => 'Initial',
             'last_name'  => 'Contact',

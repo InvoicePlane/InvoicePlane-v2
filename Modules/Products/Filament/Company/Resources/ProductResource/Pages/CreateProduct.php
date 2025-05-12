@@ -3,7 +3,9 @@
 namespace Modules\Products\Filament\Company\Resources\ProductResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Products\Filament\Company\Resources\ProductResource;
+use Modules\Products\Services\ProductService;
 
 class CreateProduct extends CreateRecord
 {
@@ -11,8 +13,37 @@ class CreateProduct extends CreateRecord
 
     public function create(bool $another = false): void
     {
-        $this->form->fill();
+        $this->authorizeAccess();
 
-        parent::create($another);
+        $this->callHook('beforeValidate');
+        $data = $this->form->getState();
+        $this->callHook('afterValidate');
+
+        $data = $this->mutateFormDataBeforeCreate($data);
+        $this->callHook('beforeCreate');
+
+        $this->record = $this->handleRecordCreation($data);
+
+        $this->form->model($this->getRecord())->saveRelationships();
+
+        $this->callHook('afterCreate');
+        $this->rememberData();
+
+        $this->getCreatedNotification()?->send();
+
+        if ($another) {
+            $this->form->model($this->getRecord()::class);
+            $this->record = null;
+            $this->fillForm();
+
+            return;
+        }
+
+        $this->redirect($this->getRedirectUrl());
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        return app(ProductService::class)->createProduct($data);
     }
 }

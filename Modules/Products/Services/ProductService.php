@@ -18,7 +18,6 @@ class ProductService extends BaseService
     public function create(array $data): Product
     {
         return Product::create([
-            'company_id'   => session('current_company_id'),
             'product_name' => $data['product_name'],
             'product_sku'  => $data['product_sku'],
             'price'        => $data['price'],

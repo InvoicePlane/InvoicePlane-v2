@@ -20,7 +20,6 @@ return new class () extends Migration {
             $table->decimal('price', 20, 4)->nullable()->default(0.00);
             $table->decimal('discount', 20, 4)->default(0.00);
             $table->decimal('subtotal', 20, 4)->nullable()->default(0.00);
-            $table->decimal('tax_total', 20, 4)->nullable()->default(0.00);
             $table->decimal('tax_1', 20, 4)->nullable()->default(0.00);
             $table->decimal('tax_2', 20, 4)->nullable()->default(0.00);
             $table->decimal('tax_total', 20, 4)->nullable()->default(0.00);
