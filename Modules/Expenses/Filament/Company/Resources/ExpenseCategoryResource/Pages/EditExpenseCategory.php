@@ -4,7 +4,9 @@ namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pa
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
+use Modules\Expenses\Services\ExpenseCategoryService;
 
 class EditExpenseCategory extends EditRecord
 {
@@ -15,5 +17,10 @@ class EditExpenseCategory extends EditRecord
         return [
             DeleteAction::make(),
         ];
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        return app(ExpenseCategoryService::class)->updateExpenseCategory($record, $data);
     }
 }

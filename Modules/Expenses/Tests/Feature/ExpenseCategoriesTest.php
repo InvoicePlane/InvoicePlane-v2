@@ -3,7 +3,8 @@
 namespace Modules\Expenses\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Models\User;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\CreateExpenseCategory;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource\Pages\EditExpenseCategory;
@@ -14,41 +15,60 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ExpenseCategoryResource::class)]
-class ExpenseCategoriesTest extends AbstractTestCase
+class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 {
+    protected User $user;
+
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * @payload ['name' => 'Travel']
+     * @payload ['category_name' => 'Travel']
      */
     #[Group('crud')]
     public function it_lists_expense_categories(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
+        $payload = [
+            'category_name' => 'Travel',
+        ];
 
-        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Travel']);
+        $record = ExpenseCategory::factory()
+            ->for($this->user->companies()->first())
+            ->create($payload);
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenseCategories::class);
 
         /* assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas($record);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "category_name": "Travel"
+     * }
+     */
     public function it_creates_an_expense_category(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
-        $payload = ['name' => 'Meals'];
+        $payload = [
+            'category_name' => 'Meals',
+        ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpenseCategory::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -61,18 +81,25 @@ class ExpenseCategoriesTest extends AbstractTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_category_without_name(): void
+    /**
+     * @payload missing: name
+     * {}
+     */
+    public function it_fails_to_create_category_without_required_name(): void
     {
         $this->markTestIncomplete();
         /* arrange */
-
         $payload = [];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpenseCategory::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['category_name']);
+        $this->assertDatabaseMissing('expense_categories', $payload);
     }
 
     #[Test]
@@ -82,8 +109,8 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Original']);
-        $payload = ['name' => 'Updated Name'];
+        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
+        $payload = ['category_name' => 'Updated Name'];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
@@ -104,14 +131,14 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'X']);
-        $payload = ['name' => null];
+        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'X']);
+        $payload = ['category_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['category_name']);
     }
 
     #[Test]
@@ -148,4 +175,5 @@ class ExpenseCategoriesTest extends AbstractTestCase
 
         $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
     }
+    # endregion
 }
