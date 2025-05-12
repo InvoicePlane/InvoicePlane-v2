@@ -13,23 +13,19 @@ class ProductUnitService extends BaseService
         return ProductUnit::class;
     }
 
-    public function create(array $validatedInput): ProductUnit
+    public function createProductUnit(array $data): Model
     {
-        $productUnit = ProductUnit::create(
-            $validatedInput
-        );
-
-        $productUnit->save();
-
-        return $productUnit;
+        return $this->create([
+            'name' => $data['name'],
+        ]);
     }
 
-    public function update(array $validatedInput, $productUnitToUpdate): Model
+    public function updateProductUnit(ProductUnit $model, array $data): ProductUnit
     {
-        $productUnitToUpdate->fill($validatedInput);
+        $model->update([
+            'name' => $data['name'],
+        ]);
 
-        $productUnitToUpdate->save();
-
-        return $productUnitToUpdate;
+        return $model;
     }
 }

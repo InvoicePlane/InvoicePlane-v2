@@ -30,7 +30,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
         $group = DocumentGroup::factory()->create(['name' => 'Policies']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListDocumentGroups::class);
 
         /* assert */
@@ -47,7 +47,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
         $payload = ['name' => 'Forms'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -68,7 +68,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
         $payload = [];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -87,7 +87,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
         $payload = ['name' => 'Updated Group'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditDocumentGroup::class, ['record' => $group->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -108,7 +108,7 @@ class DocumentGroupsTest extends AbstractTestCase
 
         $group = DocumentGroup::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListDocumentGroups::class)->callTableAction('delete', $group);
 
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);

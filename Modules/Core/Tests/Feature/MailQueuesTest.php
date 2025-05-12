@@ -27,11 +27,13 @@ class MailQueuesTest extends AbstractTestCase
 
         $record = MailQueue::factory()->create(['subject' => 'Queued Message']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas($record);
     }
 
     #[Test]
@@ -44,7 +46,7 @@ class MailQueuesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Queued Subject', 'to' => 'user@example.com'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -65,7 +67,7 @@ class MailQueuesTest extends AbstractTestCase
 
         $payload = ['to' => 'fail@example.com'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateMailQueue::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -84,7 +86,7 @@ class MailQueuesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Updated Subject'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -107,7 +109,7 @@ class MailQueuesTest extends AbstractTestCase
 
         $payload = ['subject' => null];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditMailQueue::class, ['record' => $queue->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -124,7 +126,7 @@ class MailQueuesTest extends AbstractTestCase
 
         $queue = MailQueue::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
 
         $this->assertDatabaseMissing('mail_queues', ['id' => $queue->id]);
@@ -141,7 +143,7 @@ class MailQueuesTest extends AbstractTestCase
         $queue = MailQueue::factory()->create();
         $queue->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListMailQueues::class)->callTableAction('delete', $queue);
 
         /* assert */

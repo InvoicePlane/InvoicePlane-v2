@@ -396,7 +396,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $payload = ['expense_type' => ExpenseType::RECURRING];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditExpense::class, ['record' => $expense->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -423,7 +422,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $payload = ['expense_type' => null];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditExpense::class, ['record' => $expense->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -440,7 +438,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $record = Expense::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(ListExpenses::class)->callTableAction('delete', $record);
 
         /* assert */
@@ -457,7 +454,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $record = Expense::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListExpenses::class)->callTableAction('delete', $record);
 
         /* assert */

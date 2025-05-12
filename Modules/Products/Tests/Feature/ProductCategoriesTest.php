@@ -3,7 +3,7 @@
 namespace Modules\Products\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\CreateProductCategory;
 use Modules\Products\Filament\Company\Resources\ProductCategoryResource\Pages\EditProductCategory;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ProductCategoryResource::class)]
-class ProductCategoriesTest extends AbstractTestCase
+class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 {
     #[Test]
     #[Group('smoke')]
@@ -26,14 +26,19 @@ class ProductCategoriesTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
         /* arrange */
+        $payload = [
+            'name' => 'Hardware',
+        ];
 
-        $record = ProductCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Hardware']);
+        $record = ProductCategory::factory()->for($this->user->companies()->first())->create($payload);
 
-        /** act */
-        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class);
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProductCategories::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('product_categories', $payload);
     }
 
     #[Test]
@@ -42,12 +47,15 @@ class ProductCategoriesTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
         /* arrange */
-
-        $payload = ['name' => 'Office Supplies'];
+        $payload = [
+            'name' => 'Office Supplies',
+        ];
 
         /* act */
-        /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProductCategory::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -60,16 +68,23 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload missing: name
+     * {
+     *   "name": ""
+     * }
+     */
     public function it_fails_to_create_product_category_without_name(): void
     {
         $this->markTestIncomplete();
         /* arrange */
-
         $payload = [];
 
         /* act */
-        /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateProductCategory::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProductCategory::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['name']);
@@ -86,7 +101,6 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Updated Category'];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -100,7 +114,13 @@ class ProductCategoriesTest extends AbstractTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_category_with_null_name(): void
+    /**
+     * @payload missing: name
+     * {
+     *   "name": ""
+     * }
+     */
+    public function it_fails_to_update_category_with_missing_name(): void
     {
         $this->markTestIncomplete();
         /* arrange */
@@ -109,7 +129,6 @@ class ProductCategoriesTest extends AbstractTestCase
         $payload = ['name' => null];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -126,7 +145,6 @@ class ProductCategoriesTest extends AbstractTestCase
         $record = ProductCategory::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
 
         /* assert */
@@ -143,7 +161,7 @@ class ProductCategoriesTest extends AbstractTestCase
         $record = ProductCategory::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
 
         /* assert */

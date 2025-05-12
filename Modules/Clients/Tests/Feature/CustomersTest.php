@@ -42,7 +42,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         $customer = Relation::factory()->for($this->user->companies()->first())->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListCustomers::class);
 
@@ -68,7 +68,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateCustomer::class)
             ->fillForm($payload)
@@ -94,7 +94,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'relation_number' => 'C123',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateCustomer::class)
             ->fillForm($payload)
@@ -117,7 +117,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -136,7 +136,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -154,7 +154,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'relation_number' => 'C123',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateCustomer::class)
             ->fillForm($payload)
@@ -183,7 +183,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'company_name' => 'Updated Name',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
 
         /* assert */
@@ -211,7 +211,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             // 'company_name' => 'Blank',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
@@ -230,7 +230,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'relation_type' => RelationType::CUSTOMER,
         ]);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
 
         $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
@@ -250,7 +250,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'relation_type' => RelationType::CUSTOMER,
         ]);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
 
         /* assert */

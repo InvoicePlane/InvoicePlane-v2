@@ -115,6 +115,8 @@ class PaymentsTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['customer_id']);
+
+        $this->assertDatabaseMissing('payments', $payload);
     }
 
     #[Test]
@@ -150,7 +152,8 @@ class PaymentsTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['invoice_id']);
-        $this->assertDatabaseHas('payments', $payload);
+
+        $this->assertDatabaseMissing('payments', $payload);
     }
 
     #[Test]
@@ -185,7 +188,7 @@ class PaymentsTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['payment_method_id']);
-        $this->assertDatabaseHas('payments', $payload);
+        $this->assertDatabaseMissing('payments', $payload);
     }
 
     #[Test]
@@ -220,7 +223,7 @@ class PaymentsTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['paid_at']);
-        $this->assertDatabaseHas('payments', $payload);
+        $this->assertDatabaseMissing('payments', $payload);
     }
 
     #[Test]
@@ -255,7 +258,8 @@ class PaymentsTest extends AbstractTestCase
 
         /* assert */
         $component->assertHasFormErrors(['amount']);
-        $this->assertDatabaseHas('payments', $payload);
+
+        $this->assertDatabaseMissing('payments', $payload);
     }
 
     #[Test]
@@ -269,7 +273,6 @@ class PaymentsTest extends AbstractTestCase
         $payload = ['amount' => 888.00];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -291,7 +294,6 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['amount' => null])->call('save');
 
         /* assert */
@@ -318,6 +320,7 @@ class PaymentsTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
         $this->markTestIncomplete();
@@ -351,7 +354,7 @@ class PaymentsTest extends AbstractTestCase
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
         $payment->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListPayments::class)->callTableAction('delete', $payment);
 
         /* assert */

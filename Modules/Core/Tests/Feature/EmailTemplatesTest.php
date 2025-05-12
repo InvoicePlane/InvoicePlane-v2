@@ -30,7 +30,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListEmailTemplates::class);
 
         /* assert */
@@ -47,7 +47,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Welcome', 'body' => 'Hello world'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateEmailTemplate::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -68,7 +68,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['body' => 'Missing subject'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateEmailTemplate::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -87,7 +87,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $payload = ['subject' => 'Updated Subject'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditEmailTemplate::class, ['record' => $template->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -108,7 +108,7 @@ class EmailTemplatesTest extends AbstractTestCase
 
         $template = EmailTemplate::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListEmailTemplates::class)->callTableAction('delete', $template);
 
         $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);

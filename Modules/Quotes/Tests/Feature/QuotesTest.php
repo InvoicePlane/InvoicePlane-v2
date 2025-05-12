@@ -45,7 +45,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ];
         $quote = Quote::factory()->for($this->user->companies()->first())->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListQuotes::class);
 
@@ -129,7 +129,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -372,7 +371,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => QuoteStatus::SENT];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -396,7 +394,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = ['quote_number' => null];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -500,7 +497,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $quote = Quote::factory()->for($this->user->companies()->first())->create();
         $quote->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListQuotes::class)->callTableAction('delete', $quote);
 
         /* assert */

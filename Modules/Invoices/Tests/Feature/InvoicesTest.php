@@ -59,7 +59,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->for($company)
             ->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListInvoices::class);
 
         /* assert */
@@ -372,7 +372,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -409,7 +408,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -468,7 +466,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => InvoiceStatus::SENT];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -554,7 +551,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => null];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -571,7 +567,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
 
         /* assert */
@@ -635,7 +630,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
         $invoice->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
 
         /* assert */

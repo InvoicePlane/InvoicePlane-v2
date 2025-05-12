@@ -3,16 +3,16 @@
 namespace Modules\Products\Filament\Company\Resources\ProductUnitResource\Pages;
 
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Products\Filament\Company\Resources\ProductUnitResource;
+use Modules\Products\Services\ProductUnitService;
 
 class EditProductUnit extends EditRecord
 {
     protected static string $resource = ProductUnitResource::class;
 
-    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $this->form->fill();
-
-        parent::save();
+        return app(ProductUnitService::class)->updateProductUnit($record, $data);
     }
 }

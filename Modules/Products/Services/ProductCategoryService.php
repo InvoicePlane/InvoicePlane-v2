@@ -13,23 +13,19 @@ class ProductCategoryService extends BaseService
         return ProductCategory::class;
     }
 
-    public function create(array $validatedInput): Model
+    public function createProductCategory(array $data): Model
     {
-        $productCategory = ProductCategory::create(
-            $validatedInput
-        );
-
-        $productCategory->save();
-
-        return $productCategory;
+        return $this->create([
+            'name' => $data['name'],
+        ]);
     }
 
-    public function update(array $validatedInput, $productCategoryToUpdate): Model
+    public function updateProductCategory(ProductCategory $model, array $data): ProductCategory
     {
-        $productCategoryToUpdate->fill($validatedInput);
+        $model->update([
+            'name' => $data['name'],
+        ]);
 
-        $productCategoryToUpdate->save();
-
-        return $productCategoryToUpdate;
+        return $model;
     }
 }

@@ -55,7 +55,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ];
         $product = Product::factory()->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class);
 
@@ -116,7 +116,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'product_tariff'      => 12345,
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -178,7 +178,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'product_tariff'      => 12345,
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -348,7 +348,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'product_price' => 70.00,
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(EditProduct::class, ['record' => $product->product_id])
             ->fillForm($updatedData)
@@ -407,7 +407,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'product_tariff'      => 12345,
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -458,7 +458,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $product = Product::factory()->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('delete', $product);
 
         /* assert */
@@ -498,7 +498,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $products = Product::factory(3)->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableBulkAction('delete', $products);
 
         /* assert */
@@ -548,7 +548,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $product1 = Product::factory()->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product1);
 
         /* assert */
@@ -589,7 +589,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $product = Product::factory()->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product);
 
         /* assert */

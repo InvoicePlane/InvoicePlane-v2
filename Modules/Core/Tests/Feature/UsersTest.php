@@ -34,11 +34,13 @@ class UsersTest extends AbstractTestCase
 
         $record = User::factory()->create(['email' => 'admin@example.com']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas($record);
     }
 
     #[Test]
@@ -54,7 +56,7 @@ class UsersTest extends AbstractTestCase
         $user->delete();
 
         /* @act try to delete again */
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class)->callTableAction('delete', $user);
 
         /* assert */

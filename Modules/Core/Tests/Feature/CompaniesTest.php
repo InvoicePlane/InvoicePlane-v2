@@ -30,7 +30,7 @@ class CompaniesTest extends AbstractTestCase
 
         $company = Company::factory()->create(['name' => 'Acme LLC']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class);
 
         /* assert */
@@ -47,7 +47,7 @@ class CompaniesTest extends AbstractTestCase
 
         $payload = ['name' => 'Rocket Corp'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -68,7 +68,7 @@ class CompaniesTest extends AbstractTestCase
 
         $payload = [];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -87,7 +87,7 @@ class CompaniesTest extends AbstractTestCase
 
         $payload = ['name' => 'Updated Corp'];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditCompany::class, ['record' => $company->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -108,7 +108,7 @@ class CompaniesTest extends AbstractTestCase
 
         $company = Company::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class)->callTableAction('delete', $company);
 
         $this->assertDatabaseMissing('companies', ['id' => $company->id]);

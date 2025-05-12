@@ -41,7 +41,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $project = Project::factory()->for($company)->create($payload);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class);
 
@@ -85,7 +85,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Redesigning the corporate website',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
             ->fillForm($payload)
@@ -130,7 +130,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Redesigning the corporate website',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
             ->fillForm($payload)
@@ -175,7 +175,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Redesigning the corporate website',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
             ->fillForm($payload)
@@ -244,7 +244,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'project_name' => '::updated_project_name::',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $project->project_id])->set('data.project_name', $updatedData['project_name'])->call('save');
 
         /* assert */
@@ -289,7 +289,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
@@ -313,7 +313,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $project = Project::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('delete', $project->project_id);
 
         /* assert */
@@ -340,11 +340,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
-        $client  = Relation::factory()->create();
-        $project = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2 = Relation::factory()->create();
+        $customer = Customer::factory()->create();
+        $project  = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2  = Relation::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -365,11 +365,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $this->markTestSkipped('needs assignClient action');
         // $this->authenticate();
-        $client  = Relation::factory()->create();
-        $project = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2 = Relation::factory()->create();
+        $customer = Customer::factory()->create();
+        $project  = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2  = Relation::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -389,11 +389,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* arrange */
 
         $this->markTestSkipped('needs assignClient action');        // $this->authenticate();
-        $client  = Relation::factory()->create();
-        $project = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2 = Relation::factory()->create();
+        $customer = Customer::factory()->create();
+        $project  = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2  = Relation::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -414,11 +414,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
-        $client  = Relation::factory()->create();
-        $project = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2 = Relation::factory()->create();
+        $customer = Customer::factory()->create();
+        $project  = Project::factory()->create(['client_id' => $client->client_id]);
+        $client2  = Relation::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient');
 
         /* assert */

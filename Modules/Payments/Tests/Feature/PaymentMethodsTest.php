@@ -33,7 +33,7 @@ class PaymentMethodsTest extends AbstractCompanyPanelTestCase
             'payment_method_name' => 'Credit Card',
         ]);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPaymentMethods::class);
 
@@ -68,7 +68,7 @@ class PaymentMethodsTest extends AbstractCompanyPanelTestCase
             'payment_method_name' => 'Credit Card',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePaymentMethod::class)
             ->fillForm($payload)
@@ -108,7 +108,7 @@ class PaymentMethodsTest extends AbstractCompanyPanelTestCase
             'description' => '::description::',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePaymentMethod::class)
             ->fillForm($payload)
@@ -145,7 +145,7 @@ class PaymentMethodsTest extends AbstractCompanyPanelTestCase
             'payment_method_name' => 'updated_payment_method_name',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])->set('data.payment_method_name', $updatedData['payment_method_name'])->call('save');
 
         /* assert */
@@ -174,7 +174,7 @@ class PaymentMethodsTest extends AbstractCompanyPanelTestCase
 
         $paymentMethod = PaymentMethod::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListPaymentMethods::class)->callTableAction('delete', $paymentMethod);
 
         /* assert */

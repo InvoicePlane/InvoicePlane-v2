@@ -29,11 +29,13 @@ class ExpenseCategoriesTest extends AbstractTestCase
 
         $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['name' => 'Travel']);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($record);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas($record);
     }
 
     #[Test]
@@ -46,7 +48,6 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Meals'];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -68,7 +69,6 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = [];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(CreateExpenseCategory::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -86,7 +86,6 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => 'Updated Name'];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -109,7 +108,6 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $payload = ['name' => null];
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
@@ -126,7 +124,6 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        /** act */
         $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
 
         /* assert */
@@ -143,7 +140,7 @@ class ExpenseCategoriesTest extends AbstractTestCase
         $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
         $record->delete();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
 
         /* assert */

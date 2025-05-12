@@ -53,7 +53,7 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
 
         /* assert */
@@ -101,7 +101,7 @@ class TaxRatesTest extends AbstractTestCase
             'rate'          => 'Example',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -159,7 +159,7 @@ class TaxRatesTest extends AbstractTestCase
             'tax_rate_percent' => '20',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
@@ -196,7 +196,7 @@ class TaxRatesTest extends AbstractTestCase
 
         $record = TaxRate::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);

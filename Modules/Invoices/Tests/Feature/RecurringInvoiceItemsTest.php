@@ -43,7 +43,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         //$this->actingAs(User::factory()->create());
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListRecurringInvoiceItems::class);
 
         /* assert */
@@ -71,7 +71,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoiceItem::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -98,7 +98,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoiceItem::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -131,7 +131,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
@@ -160,7 +160,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $payload = [
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
@@ -190,7 +190,7 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
 
         $record = RecurringInvoiceItem::factory()->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListRecurringInvoiceItems::class)->callTableAction('delete', $record);
 
         $this->assertDatabaseMissing('recurring_invoice_items', ['id' => $record->id]);

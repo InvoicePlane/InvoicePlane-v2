@@ -40,7 +40,7 @@ class ImportTest extends AbstractTestCase
             'import_date' => '2022-04-01',
         ]);
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListImports::class);
 
         /* assert */
@@ -56,7 +56,7 @@ class ImportTest extends AbstractTestCase
 
         $data = Import::factory()->make()->toArray();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(CreateImport::class)->callTableAction('create', $data);
 
         /* assert */

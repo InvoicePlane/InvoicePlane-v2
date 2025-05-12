@@ -68,7 +68,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
@@ -94,7 +94,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'     => 'female',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
@@ -119,7 +119,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
@@ -144,7 +144,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
@@ -175,7 +175,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'last_name'  => 'Contact',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
 
         /* assert */
@@ -196,7 +196,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
         $contact = Contact::factory()->for($this->user->companies()->first())->create();
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
 
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);

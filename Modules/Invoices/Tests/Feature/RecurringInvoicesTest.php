@@ -189,7 +189,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
 
         /* assert */
@@ -296,7 +296,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
             'end_at'            => '2025-04-30',
         ];
 
-        /** act */
+        /* act */
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */

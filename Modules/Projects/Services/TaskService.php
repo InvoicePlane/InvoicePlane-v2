@@ -4,8 +4,6 @@ namespace Modules\Projects\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
-use Modules\Projects\Events\TaskWasCreated;
-use Modules\Projects\Events\TaskWasUpdated;
 use Modules\Projects\Models\Task;
 
 class TaskService extends BaseService
@@ -15,27 +13,21 @@ class TaskService extends BaseService
         return Task::class;
     }
 
-    public function create(array $validatedInput): Task
+    public function createTask(array $data): Model
     {
-        $task = new Task(
-            $validatedInput
-        );
-
-        $task->save();
-
-        event(new TaskWasCreated());
-
-        return $task;
+        return $this->create([
+            'title'  => $data['title'],
+            'status' => $data['status'],
+        ]);
     }
 
-    public function update(array $validatedInput, $taskToUpdate): Model
+    public function updateTask(Task $model, array $data): Task
     {
-        $taskToUpdate->fill($validatedInput);
+        $model->update([
+            'title'  => $data['title'],
+            'status' => $data['status'],
+        ]);
 
-        $taskToUpdate->save();
-
-        event(new TaskWasUpdated());
-
-        return $taskToUpdate;
+        return $model;
     }
 }
