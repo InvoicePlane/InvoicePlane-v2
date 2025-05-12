@@ -56,10 +56,6 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
     #[Test]
     #[Group('Crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
      * @payload
      * []
      */
@@ -79,16 +75,14 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoiceItem::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     #[Test]
     #[Group('Crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
      * @payload
      * []
      */
@@ -141,16 +135,14 @@ class RecurringInvoiceItemsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoiceItem::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     #[Test]
     #[Group('Crud')]
     /**
-     * @test
-     *
-     * @group crud
-     *
      * @payload
      * []
      */

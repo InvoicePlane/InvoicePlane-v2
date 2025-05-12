@@ -49,6 +49,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertSuccessful()
             ->assertSee('Acme Inc.');
+
         $this->assertDatabaseHas('relations', $payload);
     }
     #endregion
@@ -186,7 +187,9 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('relations', $update);
     }

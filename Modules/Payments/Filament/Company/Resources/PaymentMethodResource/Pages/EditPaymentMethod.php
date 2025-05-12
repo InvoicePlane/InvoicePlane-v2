@@ -4,7 +4,9 @@ namespace Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Page
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
+use Modules\Payments\Services\PaymentMethodService;
 
 class EditPaymentMethod extends EditRecord
 {
@@ -15,5 +17,10 @@ class EditPaymentMethod extends EditRecord
         return [
             DeleteAction::make(),
         ];
+    }
+
+    protected function handleRecordUpdate($record, array $data): Model
+    {
+        return app(PaymentMethodService::class)->updatePaymentMethod($record, $data);
     }
 }

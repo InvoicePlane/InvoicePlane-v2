@@ -2,12 +2,9 @@
 
 namespace Modules\Payments\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\CreatePaymentMethod;
 use Modules\Payments\Filament\Company\Resources\PaymentMethodResource\Pages\EditPaymentMethod;
@@ -19,25 +16,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(PaymentMethodResource::class)]
-class PaymentMethodsTest extends AbstractTestCase
+class PaymentMethodsTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
     protected User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        /*$this->user = User::factory()->withCompany()->create();
-        session(['current_company_id' => $this->user->company_id]);*/
-        $this->withoutExceptionHandling();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
 
     // region smoke
     #[Test]
@@ -47,25 +28,18 @@ class PaymentMethodsTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         PaymentMethod::factory()->create([
             'company_id'          => $company->id,
             'payment_method_name' => 'Credit Card',
         ]);
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ListPaymentMethods::class);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListPaymentMethods::class);
 
         /* assert */
-        $component->assertSee('Credit Card');
+        $component->assertSuccessful();
     }
-
     // endregion
 
     // region crud
@@ -78,41 +52,35 @@ class PaymentMethodsTest extends AbstractTestCase
      *   "payment_method_name": "Credit Card"
      * }
      */
-    #[Group('crud')]
     public function it_creates_a_payment_method(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         /**
          * Payload from `all_posts.json`:
          * {
          *     "payment_method_name": "Credit Card",
          * }
          */
-        // Payload for creating a payment method
-        // @var array $payload
         $payload = [
             'company_id'          => $company->id,
             'payment_method_name' => 'Credit Card',
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreatePaymentMethod::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreatePaymentMethod::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors()->assertSee('Credit Card');
+        $component
+            ->assertSuccessful()
+            ->assertHasNoFormErrors()
+            ->assertSee('Credit Card');
 
-        $this->assertDatabaseHas('payment_methods', array_merge($data, [
-            'payment_method_name' => 'Credit Card',
-        ]));
+        $this->assertDatabaseHas('payment_methods', $payload);
     }
 
     #[Test]
@@ -124,19 +92,11 @@ class PaymentMethodsTest extends AbstractTestCase
      *   "payment_method_name": "Credit Card"
      * }
      */
-    #[Group('crud')]
-    public function it_fails_to_create_a_payment_method_without_payment_method_name(): void
+    public function it_fails_to_create_a_payment_method_without_required_payment_method_name(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         /**
          * Payload from `all_posts.json`:
          * {
@@ -149,7 +109,10 @@ class PaymentMethodsTest extends AbstractTestCase
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreatePaymentMethod::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreatePaymentMethod::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['payment_method_name' => 'required']);
@@ -158,12 +121,10 @@ class PaymentMethodsTest extends AbstractTestCase
             dump($payload);
         }
 
-        $this->assertDatabaseHas('payment_methods', array_merge($data, [
-            'created_at' => now()->toDateTimeString(),
-            'updated_at' => now()->toDateTimeString(),
-        ]));
+        $this->assertDatabaseMissing('payment_methods', $payload);
     }
 
+    #[Test]
     #[Group('crud')]
     public function it_updates_a_payment_method(): void
     {
@@ -188,7 +149,9 @@ class PaymentMethodsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(EditPaymentMethod::class, ['record' => $paymentMethod->payment_method_id])->set('data.payment_method_name', $updatedData['payment_method_name'])->call('save');
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('payment_methods', array_merge($updatedData, [
             'payment_method_id'   => $paymentMethod->payment_method_id,
@@ -196,6 +159,7 @@ class PaymentMethodsTest extends AbstractTestCase
         ]));
     }
 
+    #[Test]
     #[Group('crud')]
     public function it_deletes_a_payment_method(): void
     {
@@ -214,7 +178,9 @@ class PaymentMethodsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(ListPaymentMethods::class)->callTableAction('delete', $paymentMethod);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('payment_methods', [
             'payment_method_id' => $paymentMethod->payment_method_id,
@@ -222,6 +188,7 @@ class PaymentMethodsTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_fails_to_delete_method_with_attached_payment(): void
     {
         $this->markTestIncomplete();

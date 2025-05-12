@@ -118,7 +118,7 @@ class QuoteImporter extends AbstractImporter
 
                 // The record *should* validate, but just in case...
                 if ($this->validateRecord($record)) {
-                    Quote::create($record);
+                    Quote::query()->create($record);
                 }
             }
             $row++;

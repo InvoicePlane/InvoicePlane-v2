@@ -3,49 +3,40 @@
 namespace Modules\Products\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\BaseService;
-use Modules\Products\Events\ProductWasCreated;
-use Modules\Products\Events\ProductWasUpdated;
 use Modules\Products\Models\Product;
-use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
 class ProductService extends BaseService
 {
     public function model(): string
     {
         return Product::class;
+        //event(new ProductWasCreated($product));
+        //event(new ProductWasUpdated($productToUpdate));
     }
 
-    public function create(array $validatedInput): Product
+    public function create(array $data): Product
     {
-        $productCategory = ProductCategory::findOrFail($validatedInput['family_id']);
-        $productUnit     = ProductUnit::findOrFail($validatedInput['unit_id']);
-        $taxRate         = TaxRate::findOrFail($validatedInput['tax_rate_id']);
-
-        $product = new Product(
-            $validatedInput
-        );
-        $product->productCategory()->associate($productCategory);
-        $product->productUnit()->associate($productUnit);
-        $product->taxRate()->associate($taxRate);
-
-        $product->save();
-
-        event(new ProductWasCreated($product));
-
-        return $product;
+        return Product::create([
+            'company_id'   => session('current_company_id'),
+            'product_name' => $data['product_name'],
+            'product_sku'  => $data['product_sku'],
+            'price'        => $data['price'],
+            'description'  => $data['description'] ?? null,
+            'unit_id'      => $data['unit_id'] ?? null,
+        ]);
     }
 
-    public function update(array $validatedInput, $productToUpdate): Model
+    public function update(array $data, $model): Model
     {
-        $productToUpdate->fill($validatedInput);
+        $model->update([
+            'product_name' => $data['product_name'],
+            'product_sku'  => $data['product_sku'],
+            'price'        => $data['price'],
+            'description'  => $data['description'] ?? null,
+            'unit_id'      => $data['unit_id'] ?? null,
+        ]);
 
-        $productToUpdate->save();
-
-        event(new ProductWasUpdated($productToUpdate));
-
-        return $productToUpdate;
+        return $model;
     }
 }

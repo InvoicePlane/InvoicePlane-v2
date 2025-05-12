@@ -179,7 +179,9 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         $component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('contacts', $update);
     }

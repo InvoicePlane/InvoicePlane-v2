@@ -4,8 +4,6 @@ namespace Modules\Projects\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
-use Modules\Projects\Events\ProjectWasCreated;
-use Modules\Projects\Events\ProjectWasUpdated;
 use Modules\Projects\Models\Project;
 
 class ProjectService extends BaseService
@@ -13,29 +11,29 @@ class ProjectService extends BaseService
     public function model(): string
     {
         return Project::class;
+        // event(new ProjectWasCreated());
+        // event(new ProjectWasUpdated());
     }
 
-    public function create(array $validatedInput): Project
+    public function createProject(array $data): Model
     {
-        $project = new Project(
-            $validatedInput
-        );
-
-        $project->save();
-
-        event(new ProjectWasCreated());
-
-        return $project;
+        return $this->create([
+            'name'        => $data['name'],
+            'description' => $data['description'] ?? null,
+            'starts_at'   => $data['starts_at'],
+            'ends_at'     => $data['ends_at'] ?? null,
+        ]);
     }
 
-    public function update(array $validatedInput, $projectToUpdate): Model
+    public function updateProject(Project $model, array $data): Project
     {
-        $projectToUpdate->fill($validatedInput);
+        $model->update([
+            'name'        => $data['name'],
+            'description' => $data['description'] ?? null,
+            'starts_at'   => $data['starts_at'],
+            'ends_at'     => $data['ends_at'] ?? null,
+        ]);
 
-        $projectToUpdate->save();
-
-        event(new ProjectWasUpdated());
-
-        return $projectToUpdate;
+        return $model;
     }
 }

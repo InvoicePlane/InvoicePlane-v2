@@ -46,12 +46,6 @@ class TasksTest extends AbstractTestCase
 
         /* arrange */
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         $client = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $project = Project::factory()->create([
@@ -106,12 +100,6 @@ class TasksTest extends AbstractTestCase
 
         /* arrange */
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         TaxRate::factory()->create(['company_id' => $company->id]);
 
         $payload = [
@@ -131,7 +119,9 @@ class TasksTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(CreateTask::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     #[Test]
@@ -156,12 +146,6 @@ class TasksTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
 
         $client  = Relation::factory()->create(['client_name' => '::client_name::']);
         $project = Project::factory()->create([
@@ -214,12 +198,6 @@ class TasksTest extends AbstractTestCase
 
         /* arrange */
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         TaxRate::factory()->create(['company_id' => $company->id]);
 
         $payload = [
@@ -267,12 +245,6 @@ class TasksTest extends AbstractTestCase
 
         /* arrange */
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         TaxRate::factory()->create(['company_id' => $company->id]);
 
         $payload = [
@@ -315,12 +287,6 @@ class TasksTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
 
         $payload = [
             'company_id'  => $company->id,
@@ -409,7 +375,9 @@ class TasksTest extends AbstractTestCase
         $component = Livewire::actingAs($this->user)->test(EditTask::class, ['record' => $task->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [
             'task_id' => $task->task_id,
@@ -476,7 +444,7 @@ class TasksTest extends AbstractTestCase
 
     // endregion
 
-    // region Custom tests
+    // region spicy
     #[Group('crud')]
     public function it_assigns_a_task_to_a_project(): void
     {
@@ -564,15 +532,14 @@ class TasksTest extends AbstractTestCase
 
     // endregion
 
-    // region Spicy Functions
+    // region spicy
     /**
-     * @test
      * route('filament.ivpl.resources.filament.resources.projects.store_recurring_task', [
      * 'project_id'       => $project->project_id,
      * 'recur_start_date' => now()->format('Y-m-d'),
      * 'recur_end_date'   => now()->addWeek()->format('Y-m-d'),
      * 'recur_frequency'  => 'weekly', // Ensure this uses the recurring frequency enum
-     * ])
+     * ]).
      *
      * @skip Not implemented yet
      */
@@ -613,11 +580,10 @@ class TasksTest extends AbstractTestCase
     }
 
     /**
-     * @test
      * route('filament.ivpl.resources.projects.create_recurring_task', [
      * 'project_id'       => $project->project_id,
      * 'recur_start_date' => now()->format('Y-m-d'),
-     * ])
+     * ]).
      *
      * @skip Not implemented yet
      */

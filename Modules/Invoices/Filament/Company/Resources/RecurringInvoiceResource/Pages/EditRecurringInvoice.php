@@ -4,7 +4,9 @@ namespace Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource\P
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
+use Modules\Invoices\Services\RecurringInvoiceService;
 
 class EditRecurringInvoice extends EditRecord
 {
@@ -15,5 +17,10 @@ class EditRecurringInvoice extends EditRecord
         return [
             DeleteAction::make(),
         ];
+    }
+
+    protected function handleRecordUpdate($record, array $data): Model
+    {
+        return app(RecurringInvoiceService::class)->updateRecurringInvoice($record, $data);
     }
 }

@@ -2,17 +2,18 @@
 
 namespace Modules\Invoices\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
+use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Activity;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\RecurringInvoiceFactory;
-use Modules\Core\Models\RecurringInvoiceItem;
 use Modules\Core\Models\User;
 use Modules\Core\Support\DateFormatter;
 use Modules\Core\Support\NumberFormatter;
@@ -20,8 +21,6 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Enums\RecurringFrequency;
 
 /**
- * Class RecurringInvoice.
- *
  * @property int                               $id
  * @property int                               $company_id
  * @property int                               $customer_id
@@ -43,13 +42,14 @@ use Modules\Invoices\Enums\RecurringFrequency;
  * @property string|null                       $footer
  * @property Company                           $company
  * @property Customer                          $customer
- * @property Group                             $group
+ * @property DocumentGroup                     $group
  * @property User                              $user
  * @property Collection|RecurringInvoiceItem[] $recurring_invoice_items
  */
 class RecurringInvoice extends Model
 {
     use BelongsToCompany;
+    use HasFactory;
 
     public $timestamps = false;
 

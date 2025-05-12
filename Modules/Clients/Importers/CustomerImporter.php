@@ -82,7 +82,7 @@ class CustomerImporter extends AbstractImporter
                 }
 
                 if ($this->validateRecord($record)) {
-                    $client = Relation::create($record);
+                    $client = Relation::query()->create($record);
 
                     if ($customFields) {
                         foreach ($customFields as $field => $key) {

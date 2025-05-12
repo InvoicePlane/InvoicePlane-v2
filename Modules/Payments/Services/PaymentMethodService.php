@@ -13,21 +13,19 @@ class PaymentMethodService extends BaseService
         return PaymentMethod::class;
     }
 
-    public function create(array $validatedInput): PaymentMethod
+    public function createPaymentMethod(array $data): Model
     {
-        $paymentMethod = new PaymentMethod($validatedInput);
-
-        $paymentMethod->save();
-
-        return $paymentMethod;
+        return $this->create([
+            'name' => $data['name'],
+        ]);
     }
 
-    public function update(array $validatedInput, $paymentMethodToUpdate): Model
+    public function updatePaymentMethod(PaymentMethod $model, array $data): PaymentMethod
     {
-        $paymentMethodToUpdate->fill($validatedInput);
+        $model->update([
+            'name' => $data['name'],
+        ]);
 
-        $paymentMethodToUpdate->save();
-
-        return $paymentMethodToUpdate;
+        return $model;
     }
 }

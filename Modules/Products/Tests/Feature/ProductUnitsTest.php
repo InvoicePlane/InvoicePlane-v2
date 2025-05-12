@@ -45,14 +45,16 @@ class ProductUnitsTest extends AbstractTestCase
 
         $payload = ['name' => 'Pack'];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(CreateProductUnit::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
-        // assert
+        /* assert */
         $this->assertDatabaseHas('product_units', $payload);
     }
 
@@ -65,7 +67,7 @@ class ProductUnitsTest extends AbstractTestCase
 
         $payload = [];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(CreateProductUnit::class)->fillForm($payload)->call('create');
 
@@ -83,14 +85,16 @@ class ProductUnitsTest extends AbstractTestCase
         $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'Old Unit']);
         $payload = ['name' => 'Updated Unit'];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
-        // assert
+        /* assert */
         $this->assertDatabaseHas('product_units', $payload);
     }
 
@@ -104,7 +108,7 @@ class ProductUnitsTest extends AbstractTestCase
         $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'X']);
         $payload = ['name' => null];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
@@ -121,11 +125,11 @@ class ProductUnitsTest extends AbstractTestCase
 
         $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListProductUnits::class)->callTableAction('delete', $record);
 
-        // assert
+        /* assert */
         $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
     }
 

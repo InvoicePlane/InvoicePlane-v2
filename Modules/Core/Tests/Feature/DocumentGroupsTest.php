@@ -51,7 +51,9 @@ class DocumentGroupsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('document_groups', $payload);
     }
@@ -89,7 +91,9 @@ class DocumentGroupsTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(EditDocumentGroup::class, ['record' => $group->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('document_groups', $payload);
     }

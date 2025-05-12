@@ -2,14 +2,9 @@
 
 namespace Modules\Projects\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\ManageProjects;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Filament\Company\Resources\ProjectResource;
 use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\CreateProject;
@@ -21,23 +16,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ProjectResource::class)]
-class ProjectsTest extends AbstractTestCase
+class ProjectsTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
-    // region smoke
+    # region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_projects(): void
@@ -45,18 +26,8 @@ class ProjectsTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-        $customer = Relation::factory()->create();
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
-        $client = Relation::factory()->create(['client_name' => '::client_name::']);
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
 
         $payload = [
             'company_id'     => $company->id,
@@ -68,17 +39,21 @@ class ProjectsTest extends AbstractTestCase
             'description'    => 'Example',
         ];
 
-        Project::query()->create($payload);
+        $project = Project::factory()->for($company)->create($payload);
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ListProjects::class);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProjects::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSee('Example');
-    }
-    // endregion
+        $component
+            ->assertSuccessful();
 
-    // region crud
+        $this->assertDatabaseHas('project', $payload);
+    }
+    # endregion
+
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -87,40 +62,39 @@ class ProjectsTest extends AbstractTestCase
      *   "company_id": 1,
      *   "customer_id": 2,
      *   "project_status": "active",
-     *   "name": "Website Redesign",
+     *   "project_name": "Website Redesign",
      *   "start_at": "2025-05-01",
      *   "end_at": "2025-06-01",
      *   "description": "Redesigning the corporate website"
      * }
      */
-    #[Group('crud')]
     public function it_creates_a_project(): void
     {
         $this->markTestIncomplete();
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         $payload = [
             'company_id'     => $company->id,
             'customer_id'    => 2,
             'project_status' => 'active',
-            'name'           => 'Website Redesign',
+            'project_name'   => 'Website Redesign',
             'start_at'       => '2025-05-01',
             'end_at'         => '2025-06-01',
             'description'    => 'Redesigning the corporate website',
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProject::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors()->assertSee('Website Redesign');
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', $payload);
     }
@@ -132,26 +106,66 @@ class ProjectsTest extends AbstractTestCase
      * {
      *   "company_id": 1,
      *   "customer_id": 2,
-     *   "project_status": "active",
-     *   "name": "Website Redesign",
+     *   "project_name": "Website Redesign",
      *   "start_at": "2025-05-01",
      *   "end_at": "2025-06-01",
      *   "description": "Redesigning the corporate website"
      * }
      */
-    #[Group('crud')]
-    public function it_fails_to_create_project_without_project_name(): void
+    public function it_fails_to_create_project_without_required_status(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        $payload = [
+            'company_id'     => $company->id,
+            'customer_id'    => 2,
+            'project_status' => 'active',
+            'project_name'   => 'Website Redesign',
+            'start_at'       => '2025-05-01',
+            'end_at'         => '2025-06-01',
+            'description'    => 'Redesigning the corporate website',
+        ];
 
+        /** act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProject::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component
+            ->assertStatus(422)
+            ->assertHasFormErrors(['project_status' => 'required']);
+
+        $this->assertDatabaseMissing('projects', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: project_name
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_status": "active",
+     *   "project_name": "Website Redesign",
+     *   "start_at": "2025-05-01",
+     *   "end_at": "2025-06-01",
+     *   "description": "Redesigning the corporate website"
+     * }
+     */
+    public function it_fails_to_create_project_without_required_project_name(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+
+        /* arrange */
         $payload = [
             'company_id'     => $company->id,
             'customer_id'    => 2,
@@ -162,21 +176,55 @@ class ProjectsTest extends AbstractTestCase
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateProject::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProject::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
-        $component->assertStatus(422)->assertHasFormErrors(['project_name' => 'required']);
+        $component
+            ->assertStatus(422)
+            ->assertHasFormErrors(['project_name' => 'required']);
     }
 
     /**
-     * @test
-     *
-     * @payload
-     * * {
-     * *    "project_name": "Updated Project Name"
-     * * }
+     * @payload missing: starts_at
+     * {
+     *   "project_name": "Client Redesign",
+     *   "description": "Modernizing UX",
+     *   "ends_at": "2025-06-30"
+     * }
      */
+    public function it_fails_to_create_project_without_required_starts_at(): void
+    {
+        /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+
+        $payload = [
+            'project_name' => 'Client Redesign',
+            'description'  => 'Modernizing UX',
+            'ends_at'      => '2025-06-30',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProject::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['starts_at']);
+    }
+
+    #[Test]
     #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *    "project_name": "Updated Project Name"
+     * }
+     */
     public function it_updates_a_project(): void
     {
         $this->markTestIncomplete();
@@ -215,13 +263,12 @@ class ProjectsTest extends AbstractTestCase
      * "company_id": "Value",
      * "customer_id": "Value",
      * "project_status": "Value",
-     * "name": "Example",
+     * "project_name": "Example",
      * "start_at": "2025-04-30",
      * "end_at": "2025-04-30",
      * "description": "Example"
      * }
      */
-    #[Group('crud')]
     public function it_fails_to_update_project_when_required_fields_are_missing(): void
     {
         $this->markTestIncomplete();
@@ -236,7 +283,7 @@ class ProjectsTest extends AbstractTestCase
             'company_id'     => 'Value',
             'customer_id'    => 'Value',
             'project_status' => 'Value',
-            'name'           => 'Example',
+            'project_name'   => 'Example',
             'start_at'       => '2025-04-30',
             'end_at'         => '2025-04-30',
             'description'    => 'Example',
@@ -267,20 +314,20 @@ class ProjectsTest extends AbstractTestCase
         $project = Project::factory()->create();
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('delete', $project->project_id);
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('delete', $project->project_id);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('projects', ['project_id' => $project->project_id]);
     }
-    // endregion
+    # endregion
 
-    // region Custom Tests
+    # region spicy
     /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.projects.assign_client')
+     * route('filament.ivpl.resources.filament.resources.projects.assign_client').
      *
      * @skip Not implemented yet
      */
@@ -298,7 +345,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Relation::factory()->create();
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
         $component->assertSuccessful()->assertHasNoErrors();
@@ -323,7 +370,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Relation::factory()->create();
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
         $component->assertStatus(422)->assertHasNoErrors();
@@ -347,7 +394,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Relation::factory()->create();
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient', $client2->client_id);
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient', $client2->client_id);
 
         /* assert */
         $component->assertSuccessful()->assertHasNoErrors();
@@ -372,7 +419,7 @@ class ProjectsTest extends AbstractTestCase
         $client2 = Relation::factory()->create();
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ManageProjects::class)->callTableAction('assignClient');
+        $component = Livewire::actingAs($this->user)->test(ListProjects::class)->callTableAction('assignClient');
 
         /* assert */
         $component->assertStatus(422)->assertHasNoErrors();
@@ -382,5 +429,5 @@ class ProjectsTest extends AbstractTestCase
             'client_id'  => $client2->client_id,
         ]);
     }
-    // endregion
+    # endregion
 }

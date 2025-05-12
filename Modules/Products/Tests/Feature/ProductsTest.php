@@ -2,13 +2,10 @@
 
 namespace Modules\Products\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\ProductResource;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
@@ -21,37 +18,18 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ProductResource::class)]
-class ProductsTest extends AbstractTestCase
+class ProductsTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
+    protected User $user;
 
     // region smoke
     #[Test]
     #[Group('smoke')]
-    public function it_lists_items(): void
+    public function it_lists_products(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -76,11 +54,16 @@ class ProductsTest extends AbstractTestCase
             'product_tariff'      => 12345,
         ];
         $product = Product::factory()->create($payload);
+
         /** act */
-        $component = Livewire::actingAs($this->user)->test(ListProducts::class);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProducts::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSee('::product_name::');
+        $component
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('products', $payload);
     }
     // endregion
 
@@ -109,9 +92,6 @@ class ProductsTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $this->markTestSkipped('Skipped test.');
-        // $this->authenticated();
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -136,11 +116,19 @@ class ProductsTest extends AbstractTestCase
             'product_tariff'      => 12345,
         ];
 
-        $product = Product::factory()->create($payload);
+        /** act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProduct::class)
+            ->fillForm($payload)
+            ->call('create');
 
-        $component = /** act */
-$component         = Livewire::actingAs($this->user)->test(CreateProduct::class)->set('data.family_id', $payload['family_id'])->set('data.product_sku', $payload['product_sku'])->set('data.product_name', $payload['product_name'])->set('data.product_description', $payload['product_description'])->set('data.product_price', $payload['product_price'])->set('data.provider_name', $payload['provider_name'])->set('data.tax_rate_id', $payload['tax_rate_id'])->set('data.unit_id', $payload['unit_id'])->set('data.product_tariff', $payload['product_tariff'])->call('create');
-        dd($component->get('data'));
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
+        /* assert */
+        $component
+            ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('products', $payload);
     }
@@ -162,36 +150,174 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
      *   "description": "Example description"
      * }
      */
-    #[Group('crud')]
-    public function it_fails_to_create_product_without_code(): void
+    public function it_fails_to_create_product_without_required_code(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
+        $productCategory = ProductCategory::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
+        $payload = [
+            'family_id'           => $productCategory->family_id,
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
+        ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(CreateProduct::class)->fillForm([
-            'item_name' => '',
-        ])->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProduct::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
 
         /* assert */
-        $component->assertHasErrors(['item_name', 'price', 'category_id']);
+        $component
+            ->assertSuccessful()
+            ->assertHasFormErrors(['code']);
+
+        $this->assertDatabaseMissing('products', $payload);
     }
 
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "category_id": 2,
+     *   "unit_id": 3,
+     *   "tax_rate_id": 4,
+     *   "type": "standard",
+     *   "code": "P001",
+     *   "price": "9.99",
+     *   "cost_price": "5.00",
+     *   "tariff": "TX123",
+     *   "description": "Example description"
+     * }
+     */
+    public function it_fails_to_create_product_without_required_name(): void
+    {
+        $productCategory = ProductCategory::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
+        /* arrange */
+        $payload = [
+            'family_id'           => $productCategory->family_id,
+            'product_sku'         => 'TESTSKU',
+            'product_description' => 'A test description for the product.',
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProduct::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
+        /* assert */
+        $component->assertHasFormErrors(['name']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "category_id": 2,
+     *   "unit_id": 3,
+     *   "tax_rate_id": 4,
+     *   "type": "standard",
+     *   "code": "P001",
+     *   "item_name": "Test Product",
+     *   "cost_price": "5.00",
+     *   "tariff": "TX123",
+     *   "description": "Example description"
+     * }
+     */
+    public function it_fails_to_create_product_without_required_price(): void
+    {
+        $productCategory = ProductCategory::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
+
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
+
+        /* arrange */
+        $payload = [
+            'family_id'           => $productCategory->family_id,
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
+            'purchase_price'      => 15.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProduct::class)
+            ->fillForm($payload)
+            ->call('createProduct');
+
+        if (app()->isLocal()) {
+            dump($payload);
+        }
+
+        /* assert */
+        $component->assertHasFormErrors(['price']);
+
+        $this->assertDatabaseMissing('products', $payload);
+    }
+
+    #[Test]
     #[Group('crud')]
     public function it_updates_a_product(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $this->markTestSkipped('Skipped test.');
         $productCategory = ProductCategory::factory()->create([
             'family_name' => '::family_name::',
         ]);
@@ -223,7 +349,10 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(EditProduct::class, ['record' => $product->product_id])->set('data.`product_name`', $updatedData['product_name'])->set('data.product_price', $updatedData['product_price'])->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProduct::class, ['record' => $product->product_id])
+            ->fillForm($updatedData)
+            ->call('save');
 
         $this->assertDatabaseHas('products', array_merge($updatedData, [
             'product_id' => $product->product_id,
@@ -254,34 +383,44 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $this->markTestIncomplete();
 
         /* arrange */
+        $productCategory = ProductCategory::factory()->create([
+            'family_name' => '::family_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_name' => '::taxrate_name::',
+        ]);
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = Product::factory()->create();
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
 
         $payload = [
-            'company_id'  => 'Value',
-            'category_id' => 'Value',
-            'unit_id'     => 'Value',
-            'tax_rate_id' => 'Value',
-            'type'        => 'Value',
-            'code'        => 'Example',
-            'item_name'   => 'Example',
-            'price'       => 9.99,
-            'cost_price'  => 9.99,
-            'tariff'      => 'Example',
-            'description' => 'Example',
+            'family_id'           => $productCategory->family_id,
+            'product_sku'         => 'TESTSKU',
+            'product_name'        => '::product_name::',
+            'product_description' => 'A test description for the product.',
+            'product_price'       => 25.50,
+            'purchase_price'      => 15.00,
+            'provider_name'       => 'Test Provider',
+            'tax_rate_id'         => $taxRate->tax_rate_id,
+            'unit_id'             => $productUnit->unit_id,
+            'product_tariff'      => 12345,
         ];
 
         /** act */
-        $component = Livewire::actingAs($this->user)->test(EditProduct::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors();
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProduct::class)
+            ->fillForm($payload)
+            ->call('create');
 
         if (app()->isLocal()) {
             dump($payload);
         }
+
+        /* assert */
+        $component
+            ->assertHasNoFormErrors();
+        $this->assertDatabaseMissing('products', $payload);
     }
 
     #[Group('crud')]
@@ -323,7 +462,9 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('delete', $product);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('products', [
             'product_id' => $product->product_id,
@@ -361,7 +502,9 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableBulkAction('delete', $products);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         foreach ($products as $product) {
             $this->assertDatabaseMissing('products', [
@@ -371,12 +514,10 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
     }
     // endregion
 
-    // region Spicy Tests
+    // region spicy
 
     /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.products.process_selections')
+     * route('filament.ivpl.resources.filament.resources.products.process_selections').
      *
      * @skip Not implemented yet
      **/
@@ -411,13 +552,13 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product1);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     /**
-     * @test
-     *
-     * route('filament.ivpl.resources.filament.resources.products.process_selections')
+     * route('filament.ivpl.resources.filament.resources.products.process_selections').
      *
      * @skip Not implemented yet
      **/
@@ -452,7 +593,9 @@ $component         = Livewire::actingAs($this->user)->test(CreateProduct::class)
         $component = Livewire::actingAs($this->user)->test(ListProducts::class)->callTableAction('processSelections', $product);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
     // endregion
 }

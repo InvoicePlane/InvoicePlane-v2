@@ -51,7 +51,9 @@ class CompaniesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('companies', $payload);
     }
@@ -89,7 +91,9 @@ class CompaniesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(EditCompany::class, ['record' => $company->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('companies', $payload);
     }

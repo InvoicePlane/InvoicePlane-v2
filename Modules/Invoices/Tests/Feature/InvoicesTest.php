@@ -371,7 +371,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_total'            => 440,
         ];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
 
@@ -408,7 +408,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_total'            => 440,
         ];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
 
@@ -467,14 +467,16 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = ['status' => InvoiceStatus::SENT];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
-        // assert
+        /* assert */
         $this->assertDatabaseHas('invoices', [
             'id'     => $invoice->id,
             'status' => InvoiceStatus::SENT,
@@ -551,7 +553,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
         $payload = ['status' => null];
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
 
@@ -568,14 +570,16 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
 
-        // act
+        /* act */
         /** act */
         $component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
 
         /* assert */
-        $component->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
-        // assert
+        /* assert */
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
 

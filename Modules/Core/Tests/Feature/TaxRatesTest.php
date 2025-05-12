@@ -57,7 +57,9 @@ class TaxRatesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -103,7 +105,9 @@ class TaxRatesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
     }
@@ -159,7 +163,9 @@ class TaxRatesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
             'tax_rate_id' => $taxRate->tax_rate_id,

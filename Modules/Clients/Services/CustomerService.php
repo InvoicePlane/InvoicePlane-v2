@@ -17,7 +17,7 @@ class CustomerService extends BaseService
 
     public function create(array $validatedInput): Model
     {
-        $client = Relation::create($validatedInput);
+        $client = Relation::query()->create($validatedInput);
         event(new CustomerWasCreated());
 
         return $client;

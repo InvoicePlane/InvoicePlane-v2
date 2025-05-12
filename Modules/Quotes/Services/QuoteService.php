@@ -2,8 +2,13 @@
 
 namespace Modules\Quotes\Services;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Core\Services\BaseService;
 use Modules\Quotes\Models\Quote;
+use Throwable;
 
 class QuoteService extends BaseService
 {
@@ -12,12 +17,12 @@ class QuoteService extends BaseService
         return Quote::class;
     }
 
-    public function create(array $data): Quote
+    public function create(array $data): Model
     {
         DB::beginTransaction();
 
         try {
-            $quote = Quote::create([
+            $quote = parent::create([
                 'company_id'             => $data['company_id'],
                 'prospect_id'            => $data['prospect_id'],
                 'document_group_id'      => $data['document_group_id'] ?? null,
@@ -67,5 +72,18 @@ class QuoteService extends BaseService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function updateQuote(Quote $model, array $data): Quote
+    {
+        $model->update([
+            'customer_id' => $data['customer_id'],
+            'quote_date'  => $data['quote_date'],
+            'expires_at'  => $data['expires_at'],
+            'status'      => $data['status'],
+            'summary'     => $data['summary'] ?? null,
+        ]);
+
+        return $model;
     }
 }

@@ -9,7 +9,6 @@ use Modules\Core\Filament\Admin\Resources\UserProfileResource;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\CreateUserProfile;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\EditUserProfile;
 use Modules\Core\Filament\Admin\Resources\UserProfileResource\Pages\ListUserProfiles;
-use Modules\Core\Models\User;
 use Modules\Core\Models\UserProfile;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -70,7 +69,9 @@ class UserProfilesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(CreateUserProfile::class)->fillForm($payload)->call('create');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     #[Test]
@@ -118,7 +119,9 @@ class UserProfilesTest extends AbstractTestCase
         $component = Livewire::actingAs($this->superAdmin())->test(EditUserProfile::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasNoFormErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
     }
 
     #[Test]
