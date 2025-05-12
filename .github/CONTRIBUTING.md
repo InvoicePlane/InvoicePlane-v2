@@ -86,10 +86,10 @@ https://translations.invoiceplane.com
 
 Community
 
-Discord
+Discord: https://discord.gg/PPzD2hTrXt
 
-Forums
+Community Forums: https://community.invoiceplane.com
 
-Issues
+GitHub Issues: https://github.com/InvoicePlane/InvoicePlane/issues
 
 
