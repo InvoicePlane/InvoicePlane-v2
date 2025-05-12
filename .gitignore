@@ -1,36 +1,38 @@
-# Laravel: Exclude compiled and storage files
+# Laravel - Ignored core directories
+/vendor/
+/node_modules/
+/.env*
+/storage/*.key
+/storage/logs/
+/storage/framework/
+/storage/generated-json/
+/public/storage
+
+# Laravel Modules - Ignore generated or compiled artifacts
 Modules/**/Controllers/
 Modules/**/Http/Controllers/
 Modules/**/Http/Requests/
 Modules/**/Resources/
 /Modules/*/resources/views/**
-/node_modules/
-/storage/*.key
-/storage/framework/
-/storage/generated-json/
-/storage/logs/
-/public/storage
-/vendor/
-/.env*
-/pint.txt
 
-# Build artifacts
-/public/assets/
+# Vite & Filament - Build outputs and hot files
 /public/build/
+/public/assets/
 /public/css/
-/public/hot/
 /public/js/
 /public/vendor/filament/
+/public/hot
+/.vite
+/vite.config.ts
+/vite.config.js
 
-# IDE/Editor folders
-/.fleet/
-/.idea/
-/.nova/
-/.phpactor.json
-/.vscode/
-/.zed/
+# Laravel Livewire temporary artifacts
+/livewire-tmp/
 
-# PHPUnit
+# Pint
+/pint.txt
+
+# PHPUnit / Pest
 /.phpunit.cache
 /.phpunit.result.cache
 /depr.txt
@@ -42,8 +44,16 @@ Modules/**/Resources/
 /todo.txt
 /unit_depr.txt
 
-# Misc / Dev
-.docker/
+# IDEs and Tools
+/.idea/
+/.vscode/
+/.phpactor.json
+/.nova/
+/.fleet/
+/.zed/
+
+# Miscellaneous
+/.docker/
 /.php-cs-fixer.cache
 *.sqlite
 /stan.txt
