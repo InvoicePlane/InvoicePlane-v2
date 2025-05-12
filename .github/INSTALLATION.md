@@ -64,8 +64,8 @@ First-Time Setup
 
 Support
 
-Discord
+Discord: https://discord.gg/PPzD2hTrXt
 
-Community Forums
+Community Forums: https://community.invoiceplane.com
 
-Documentation Wiki
+Documentation Wiki: https://wiki.invoiceplane.com
