@@ -1,3 +1,4 @@
+
 name: Quickstart Smoke Test
 
 on:
@@ -32,14 +33,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
 
-      - name: Install dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install PHP dependencies
         run: composer install --prefer-dist --no-interaction
 
-      - name: Prepare env
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend assets
+        run: yarn build
+
+      - name: Prepare Laravel environment
         run: |
           cp .env.testing.example .env
           php artisan key:generate
@@ -47,5 +61,5 @@ jobs:
       - name: Run migrations
         run: php artisan migrate --force
 
-      - name: Validate app boots
+      - name: Confirm Laravel boots
         run: php artisan about
