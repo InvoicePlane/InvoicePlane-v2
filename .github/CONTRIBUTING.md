@@ -1,52 +1,95 @@
-# Module Implementation Checklist
+Contributing to InvoicePlane V2
 
-This document tracks feature implementation and test coverage for each module in InvoicePlane V2.
-
-### Legend
-- ✅ = Done  
-- 🚧 = In progress  
-- ⬜ = Not started  
-- N/A = Not applicable
+Thank you for considering contributing to **InvoicePlane V2** — a Laravel + Filament modular rewrite of the original InvoicePlane. This guide outlines our project rules and contribution standards.
 
 ---
 
-| Module     | Submodule        | Index | Statuses | Specials | Create | Update | Delete | Translations |
-|------------|------------------|:-----:|:--------:|:--------:|:------:|:------:|:------:|:------------:|
-| customers  |                  |  ✅   |   ✅     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | user_customers   |  N/A  |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| core       | custom_fields    |  ⬜   |   ⬜     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | custom_values    |  ⬜   |   ⬜     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | dashboard        |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | email_templates  |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | guest            |  ⬜   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | import           |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| invoices   |                  |  ✅   |   ✅     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | invoice_groups   |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | tax_rates        |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| payments   |                  |  ✅   |   ⬜     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | payment_methods  |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| products   |                  |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | families         |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | units            |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| projects   |                  |  ✅   |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-|            | tasks            |  ✅   |   ⬜     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| quotes     |                  |  ✅   |   ✅     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| reports    |                  |  N/A  |   N/A    |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
-| users      |                  |  ✅   |   ⬜     |   ⬜     |   ⬜    |   ⬜    |   ⬜    |      ⬜       |
+## Structure & Standards
+
+- **Laravel 11+**, **PHP 8.3**
+- **Filament** used for all UI
+- **Livewire** used for reactive components
+- **Modular** folder structure only:
+  - `Modules/{Module}/Filament/Admin/Resources/`
+  - `Modules/{Module}/Services/`
+  - `Modules/{Module}/Tests/Feature/`
+- Use:
+  - `BelongsToCompany` trait for multi-tenancy
+  - `DTOs` + `Transformers` for all data
+  - `Services` for all business logic
 
 ---
 
-### Special Notes
+## Code Formatting
 
-#### Invoices
-- [ ] Add test for overdue scope: `DATEDIFF(NOW, invoice_date_due) > 0 AND status NOT IN (1, 4)`
-- [ ] Create special `overdue()` scope
-- [ ] Translate invoice group labels
+```bash
+vendor/bin/pint
+php artisan test
+```
 
-#### Quotes
-- [ ] Notes column skipped on index (not ported from CodeIgniter)
+- Follow PSR-12
+- No logic in Filament or Livewire pages
+- No inline DTO construction
+- No tight coupling — use DI and clear return types
 
 ---
 
-_This file is regularly updated. Contributions should reference specific rows in this table._
+Test Requirements
+
+All tests go in: Modules/{Module}/Tests/Feature/
+
+Extend: AbstractAdminPanelTestCase OR AbstractCompanyPanelTestCase OR AbstractTestCase (for Unit tests)
+
+Use: #[Test] and #[Group('crud')] or #[Group('smoke')]
+
+All tests should have:
+
+- @payload block (if input-based)
+- it_ prefix in the method
+
+```
+#[Test]
+#[Group('crud')]
+/**
+ * @payload missing: invoice_number
+ * {
+ *   "customer_id": 1,
+ *   "due_date": "2025-06-01"
+ * }
+ */
+public function it_fails_to_create_invoice_without_required_invoice_number(): void
+```
+
+---
+
+Pull Requests
+
+- One PR per feature or fix
+- Reference rows in CHECKLIST.md
+- Translate if needed
+- Add tests where you can
+
+
+
+---
+
+Translation
+
+All strings use trans('...')
+
+Translations managed via Crowdin:
+https://translations.invoiceplane.com
+
+
+
+---
+
+Community
+
+Discord
+
+Forums
+
+Issues
+
 
