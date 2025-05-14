@@ -11,7 +11,7 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('unit_name');
-            $table->string('unit_name_plrl');
+            $table->string('unit_name_plrl')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });

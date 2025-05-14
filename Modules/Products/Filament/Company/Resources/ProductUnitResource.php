@@ -56,8 +56,7 @@ class ProductUnitResource extends Resource
                                 ->autofocus(),
                             TextInput::make('unit_name_plrl')
                                 ->inlineLabel()
-                                ->label(trans('ip.unit_name_plrl'))
-                                ->required(),
+                                ->label(trans('ip.unit_name_plrl')),
                         ]),
                 ])->columns(1),
                 Forms\Components\Group::make()->schema([

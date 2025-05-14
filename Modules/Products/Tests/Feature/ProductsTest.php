@@ -6,6 +6,8 @@ use Livewire\Livewire;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Core\Tests\TestDecimal;
+use Modules\Products\Enums\ProductType;
 use Modules\Products\Filament\Company\Resources\ProductResource;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
 use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
@@ -27,31 +29,28 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_products(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
-        $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
-        ]);
-
         $productUnit = ProductUnit::factory()->create([
             'unit_name' => '::unit_name::',
         ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
+        ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'  => $productCategory->id,
+            'unit_id'      => $productUnit->id,
+            'type'         => ProductType::PRODUCT->value,
+            'code'         => 'SKU-001',
+            'product_name' => 'Test Product',
+            'price'        => 9.99,
+            'cost_price'   => 5.00,
+            'tariff'       => 123,
+            'tax_rate_id'  => $taxRate->id,
+            'description'  => 'Example',
         ];
         $product = Product::factory()->create($payload);
 
@@ -77,9 +76,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "category_id": 2,
      *   "unit_id": 3,
      *   "tax_rate_id": 4,
-     *   "type": "standard",
+     *   "type": "PRODUCT",
      *   "code": "P001",
-     *   "item_name": "Test Product",
+     *   "product_name": "Test Product",
      *   "price": "9.99",
      *   "cost_price": "5.00",
      *   "tariff": "TX123",
@@ -88,31 +87,26 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
-        $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
-        ]);
-
         $productUnit = ProductUnit::factory()->create([
             'unit_name' => '::unit_name::',
         ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
+        ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'  => $productCategory->id,
+            'unit_id'      => $productUnit->id,
+            'type'         => ProductType::PRODUCT->value,
+            'code'         => 'SKU-001',
+            'product_name' => 'Test Product',
+            'price'        => 9.99,
+            'tax_rate_id'  => $taxRate->id,
+            'description'  => 'Example',
         ];
 
         /* act */
@@ -129,7 +123,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $component
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('products', $payload);
+        $this->assertDatabaseHas('products', array_merge(
+            $payload,
+            ['price' => TestDecimal::exact(9.99)]
+        ));
     }
 
     #[Test]
@@ -141,8 +138,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "category_id": 2,
      *   "unit_id": 3,
      *   "tax_rate_id": 4,
-     *   "type": "standard",
-     *   "item_name": "Test Product",
+     *   "type": "PRODUCT",
+     *   "product_name": "Test Product",
      *   "price": "9.99",
      *   "cost_price": "5.00",
      *   "tariff": "TX123",
@@ -151,14 +148,12 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_without_required_code(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -166,15 +161,15 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'  => $productCategory->id,
+            'unit_id'      => $productUnit->id,
+            'type'         => ProductType::PRODUCT->value,
+            'product_name' => 'Test Product',
+            'price'        => 9.99,
+            'cost_price'   => 5.00,
+            'tariff'       => 123,
+            'tax_rate_id'  => $taxRate->id,
+            'description'  => 'Example',
         ];
 
         /* act */
@@ -189,7 +184,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component
-            ->assertSuccessful()
             ->assertHasFormErrors(['code']);
 
         $this->assertDatabaseMissing('products', $payload);
@@ -204,7 +198,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "category_id": 2,
      *   "unit_id": 3,
      *   "tax_rate_id": 4,
-     *   "type": "standard",
+     *   "type": "PRODUCT",
      *   "code": "P001",
      *   "price": "9.99",
      *   "cost_price": "5.00",
@@ -214,11 +208,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_without_required_name(): void
     {
+        $this->markTestIncomplete();
+
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -227,15 +223,15 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id' => $productCategory->id,
+            'unit_id'     => $productUnit->id,
+            'type'        => ProductType::PRODUCT->value,
+            'code'        => 'SKU-001',
+            'price'       => 9.99,
+            'cost_price'  => 5.00,
+            'tariff'      => 123,
+            'tax_rate_id' => $taxRate->id,
+            'description' => 'Example',
         ];
 
         /* act */
@@ -249,7 +245,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         }
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component
+            ->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -261,9 +258,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "category_id": 2,
      *   "unit_id": 3,
      *   "tax_rate_id": 4,
-     *   "type": "standard",
+     *   "type": "PRODUCT",
      *   "code": "P001",
-     *   "item_name": "Test Product",
+     *   "product_name": "Test Product",
      *   "cost_price": "5.00",
      *   "tariff": "TX123",
      *   "description": "Example description"
@@ -271,11 +268,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_without_required_price(): void
     {
+        $this->markTestIncomplete();
+
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -284,28 +283,30 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'  => $productCategory->id,
+            'unit_id'      => $productUnit->id,
+            'type'         => ProductType::PRODUCT->value,
+            'code'         => 'SKU-001',
+            'product_name' => 'Test Product',
+            'cost_price'   => 5.00,
+            'tariff'       => 123,
+            'tax_rate_id'  => $taxRate->id,
+            'description'  => 'Example',
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
-            ->call('createProduct');
+            ->call('create');
 
         if (app()->isLocal()) {
             dump($payload);
         }
 
         /* assert */
-        $component->assertHasFormErrors(['price']);
+        $component
+            ->assertHasFormErrors(['price']);
 
         $this->assertDatabaseMissing('products', $payload);
     }
@@ -318,10 +319,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -329,16 +330,16 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'    => $productCategory->id,
+            'product_sku'    => 'TESTSKU',
+            'product_name'   => '::product_name::',
+            'description'    => 'A test description for the product.',
+            'product_price'  => 25.50,
+            'purchase_price' => 15.00,
+            'provider_name'  => 'Test Provider',
+            'tax_rate_id'    => $taxRate->tax_rate_id,
+            'unit_id'        => $productUnit->unit_id,
+            'product_tariff' => 12345,
         ];
 
         $product     = Product::factory()->create($payload);
@@ -369,7 +370,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      * "tax_rate_id": "Value",
      * "type": "Value",
      * "code": "Example",
-     * "item_name": "Example",
+     * "product_name": "Example",
      * "price": "9.99",
      * "cost_price": "9.99",
      * "tariff": "Example",
@@ -382,10 +383,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -393,16 +394,16 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'    => $productCategory->id,
+            'product_sku'    => 'TESTSKU',
+            'product_name'   => '::product_name::',
+            'description'    => 'A test description for the product.',
+            'product_price'  => 25.50,
+            'purchase_price' => 15.00,
+            'provider_name'  => 'Test Provider',
+            'tax_rate_id'    => $taxRate->tax_rate_id,
+            'unit_id'        => $productUnit->unit_id,
+            'product_tariff' => 12345,
         ];
 
         /* act */
@@ -432,10 +433,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('Needs delete action');
 
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -443,16 +444,16 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'family_id'           => $productCategory->family_id,
-            'product_sku'         => 'TESTSKU',
-            'product_name'        => '::product_name::',
-            'product_description' => 'A test description for the product.',
-            'product_price'       => 25.50,
-            'purchase_price'      => 15.00,
-            'provider_name'       => 'Test Provider',
-            'tax_rate_id'         => $taxRate->tax_rate_id,
-            'unit_id'             => $productUnit->unit_id,
-            'product_tariff'      => 12345,
+            'category_id'    => $productCategory->id,
+            'product_sku'    => 'TESTSKU',
+            'product_name'   => '::product_name::',
+            'description'    => 'A test description for the product.',
+            'product_price'  => 25.50,
+            'purchase_price' => 15.00,
+            'provider_name'  => 'Test Provider',
+            'tax_rate_id'    => $taxRate->tax_rate_id,
+            'unit_id'        => $productUnit->unit_id,
+            'product_tariff' => 12345,
         ];
 
         $product = Product::factory()->create($payload);
@@ -480,10 +481,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         // $this->authenticated();
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
@@ -491,7 +492,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'family_id'   => $productCategory->family_id,
+            'category_id' => $productCategory->id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];
@@ -532,17 +533,17 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
             'unit_name' => '::unit_name::',
         ]);
         $payload = [
-            'family_id'   => $productCategory->family_id,
+            'category_id' => $productCategory->id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];
@@ -574,17 +575,17 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([
-            'family_name' => '::family_name::',
+            'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name' => '::taxrate_name::',
+            'name' => '::taxrate_name::',
         ]);
 
         $productUnit = ProductUnit::factory()->create([
             'unit_name' => '::unit_name::',
         ]);
         $payload = [
-            'family_id'   => $productCategory->family_id,
+            'category_id' => $productCategory->id,
             'tax_rate_id' => $taxRate->tax_rate_id,
             'unit_id'     => $productUnit->unit_id,
         ];

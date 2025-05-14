@@ -35,7 +35,7 @@ class ProductFactory extends Factory
             'unit_id'       => $unit->id,
             'type'          => $itemType->value,
             'code'          => mb_strtoupper($this->faker->bothify('??###')),
-            'item_name'     => $this->faker->word(),
+            'product_name'  => $this->faker->word(),
             'price'         => $price,
             'cost_price'    => $cost,
             'tariff'        => $tariff,

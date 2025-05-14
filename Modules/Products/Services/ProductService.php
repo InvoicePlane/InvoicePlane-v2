@@ -15,25 +15,38 @@ class ProductService extends BaseService
         //event(new ProductWasUpdated($productToUpdate));
     }
 
-    public function create(array $data): Product
+    public function createProduct(array $data): Model
     {
-        return Product::create([
-            'product_name' => $data['product_name'],
-            'product_sku'  => $data['product_sku'],
-            'price'        => $data['price'],
-            'description'  => $data['description'] ?? null,
-            'unit_id'      => $data['unit_id'] ?? null,
+        return $this->create([
+            'company_id'    => session('current_company_id'),
+            'category_id'   => $data['category_id'],
+            'unit_id'       => $data['unit_id'] ?? null,
+            'type'          => $data['type'],
+            'code'          => $data['code'],
+            'product_name'  => $data['product_name'],
+            'price'         => $data['price'],
+            'cost_price'    => $data['cost_price'] ?? null,
+            'tariff'        => $data['tariff'] ?? null,
+            'tax_rate_id'   => $data['tax_rate_id'] ?? null,
+            'tax_rate_2_id' => $data['tax_rate_2_id'] ?? null,
+            'description'   => $data['description'] ?? null,
         ]);
     }
 
-    public function update(array $data, $model): Model
+    public function updateProduct(Product $model, array $data): Product
     {
         $model->update([
-            'product_name' => $data['product_name'],
-            'product_sku'  => $data['product_sku'],
-            'price'        => $data['price'],
-            'description'  => $data['description'] ?? null,
-            'unit_id'      => $data['unit_id'] ?? null,
+            'category_id'   => $data['category_id'],
+            'unit_id'       => $data['unit_id'] ?? null,
+            'type'          => $data['type'],
+            'code'          => $data['code'],
+            'product_name'  => $data['product_name'],
+            'price'         => $data['price'],
+            'cost_price'    => $data['cost_price'] ?? null,
+            'tariff'        => $data['tariff'] ?? null,
+            'tax_rate_id'   => $data['tax_rate_id'] ?? null,
+            'tax_rate_2_id' => $data['tax_rate_2_id'] ?? null,
+            'description'   => $data['description'] ?? null,
         ]);
 
         return $model;

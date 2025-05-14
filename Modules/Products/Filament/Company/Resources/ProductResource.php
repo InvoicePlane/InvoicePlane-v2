@@ -65,13 +65,23 @@ class ProductResource extends Resource
                                     ->schema([
                                         TextInput::make('code')
                                             ->label(trans('ip.code'))
-                                            ->nullable()
-                                            ->maxLength(255),
-
-                                        TextInput::make('item_name')
-                                            ->label(trans('ip.item_name'))
                                             ->required()
                                             ->maxLength(255),
+
+                                        TextInput::make('product_name')
+                                            ->label(trans('ip.product_name'))
+                                            ->required()
+                                            ->maxLength(255),
+
+                                        Select::make('type')
+                                            ->label(trans('ip.product_type'))
+                                            ->options(
+                                                collect(ProductType::cases())
+                                                    ->mapWithKeys(fn (ProductType $type) => [$type->value => ucfirst($type->name)])
+                                                    ->toArray()
+                                            )
+                                            ->native(false)
+                                            ->required(),
                                     ]),
                             ]),
 
@@ -86,7 +96,7 @@ class ProductResource extends Resource
                                         Grid::make(2)->schema([
                                             Select::make('category_id')
                                                 ->label(trans('ip.family'))
-                                                ->relationship('category', 'category_name')
+                                                ->relationship('productCategory', 'category_name')
                                                 ->searchable()
                                                 ->preload()
                                                 ->required(),

@@ -19,16 +19,13 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
-    /**
-     * @payload ['name' => 'Box']
-     */
     public function it_lists_product_units(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-        $payload = ['name' => 'Box'];
+        $payload = ['unit_name' => 'Box'];
         $record  = ProductUnit::factory()->for($this->user->companies()->first())->create($payload);
 
         /* act */
@@ -39,14 +36,21 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('product_units', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *  'unit_name' => 'Box'
+     * }
+     */
     public function it_creates_a_product_unit(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-        $payload = ['name' => 'Pack'];
+        $payload = ['unit_name' => 'Pack'];
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -65,9 +69,14 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_product_unit_without_required_name(): void
+    /**
+     * @payload
+     * {
+     *  'unit_name' => null
+     * }
+     */
+    public function it_fails_to_create_product_unit_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
         $payload = [];
 
@@ -78,7 +87,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['unit_name']);
 
         $this->assertDatabaseMissing('product_units', $payload);
     }
@@ -90,8 +99,8 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'Old Unit']);
-        $payload = ['name' => 'Updated Unit'];
+        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'Old Unit']);
+        $payload = ['unit_name' => 'Updated Unit'];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
@@ -112,14 +121,14 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
         /* arrange */
 
-        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['name' => 'X']);
-        $payload = ['name' => null];
+        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
+        $payload = ['unit_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
 
         /* assert */
-        $component->assertHasFormErrors(['name']);
+        $component->assertHasFormErrors(['unit_name']);
     }
 
     #[Test]
@@ -156,4 +165,5 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
     }
+    # endregion
 }

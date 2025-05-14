@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('unit_id')->nullable();
             $table->string('type');
             $table->string('code');
-            $table->string('item_name');
+            $table->string('product_name');
             $table->decimal('price', 20, 4)->default(0.00);
             $table->decimal('cost_price', 20, 4)->nullable();
             $table->integer('tariff')->nullable();
