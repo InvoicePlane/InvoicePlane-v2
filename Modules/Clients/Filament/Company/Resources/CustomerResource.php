@@ -204,13 +204,11 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-
                 TextColumn::make('coc_number')
                     ->label(trans('ip.coc_number'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-
                 TextColumn::make('vat_number')
                     ->label(trans('ip.vat_id_short'))
                     ->hiddenFrom('sm')

@@ -203,18 +203,15 @@ class PaymentResource extends Resource
                     ->hiddenFrom('xl')
                     ->searchable()
                     ->toggleable(),
-
                 TextColumn::make('invoice.customer.company_name')
                     ->limit(10)
                     ->label(trans('ip.client'))
                     ->searchable()
                     ->toggleable(),
-
                 TextColumn::make('payment_amount')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-
                 TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
                     ->formatStateUsing(fn ($state) => trans('ip.' . $state))

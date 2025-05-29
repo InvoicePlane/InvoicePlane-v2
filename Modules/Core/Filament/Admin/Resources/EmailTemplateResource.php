@@ -69,7 +69,10 @@ class EmailTemplateResource extends Resource
                     ->schema([
                         Section::make(heading:null)
                             ->schema(components: [
-                                TextInput::make('type')->label(trans('ip.type')),
+                                Select::make('type')
+                                    ->label(trans('ip.type'))
+                                    ->options(EmailTemplateType::class)
+                                    ->default(null),
                                 TextInput::make('subject')->label(trans('ip.subject')),
                             ])->columns(1),
                     ]),

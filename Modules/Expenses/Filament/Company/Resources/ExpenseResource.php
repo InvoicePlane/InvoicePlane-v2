@@ -308,6 +308,9 @@ class ExpenseResource extends AbstractTenantResource
                     ->hiddenFrom('md'),
                 TextColumn::make('expense_number')->searchable()->sortable()->toggleable(),
                 TextColumn::make('vendor.company_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('expensed_at')
+                    ->date()
+                    ->searchable()->sortable()->toggleable(),
                 TextColumn::make('expense_amount')->searchable()->sortable()->toggleable(),
             ])
             ->filters([

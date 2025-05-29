@@ -44,6 +44,8 @@ class DocumentGroupResource extends Resource
                                     TextInput::make('document_group_name')
                                         ->label(trans('ip.document_group_name'))
                                         ->required(),
+					TextInput::make('group_identifier_format')
+					    ->required(),
                                 ])
                                 ->columnSpan(1),
 

@@ -148,7 +148,7 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('price')->searchable()->sortable()->toggleable(),
+                TextColumn::make('price')->money()->searchable()->sortable()->toggleable(),
                 TextColumn::make('productUnit.unit_name')->limit(5)->searchable()->sortable()->toggleable(),
                 TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
             ])
