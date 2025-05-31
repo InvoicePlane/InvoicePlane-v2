@@ -7,8 +7,8 @@ This guide explains everything you need to get InvoicePlane V2 running for local
 ## 1. Clone the Repo
 
 ```bash
-git clone https://github.com/InvoicePlane/InvoicePlane.git
-cd InvoicePlane
+git clone https://github.com/InvoicePlane/InvoicePlane-v2.git ivplv2
+cd ivplv2
 ```
 
 
