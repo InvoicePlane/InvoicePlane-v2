@@ -6,7 +6,7 @@ Thank you for considering contributing to **InvoicePlane V2** — a Laravel + Fi
 
 ## Structure & Standards
 
-- **Laravel 11+**, **PHP 8.3**
+- **Laravel 11+**, **PHP 8.2+**
 - **Filament** used for all UI
 - **Livewire** used for reactive components
 - **Modular** folder structure only:
