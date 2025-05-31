@@ -8,6 +8,9 @@ use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Models\QuoteItem;
 
+/**
+ * @extends Factory<\Modules\Quotes\Models\QuoteItem>
+ */
 class QuoteItemFactory extends Factory
 {
     protected $model = QuoteItem::class;

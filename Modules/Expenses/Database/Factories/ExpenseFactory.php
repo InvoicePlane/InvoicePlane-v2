@@ -11,6 +11,9 @@ use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 
+/**
+ * @extends Factory<\Modules\Expenses\Models\Expense>
+ */
 class ExpenseFactory extends Factory
 {
     protected $model = Expense::class;

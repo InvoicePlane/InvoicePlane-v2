@@ -9,6 +9,9 @@ use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
+/**
+ * @extends Factory<\Modules\Projects\Models\Project>
+ */
 class ProjectFactory extends Factory
 {
     protected $model = Project::class;
@@ -34,11 +37,11 @@ class ProjectFactory extends Factory
         return [
             'company_id'     => $company->id,
             'customer_id'    => $customer->id,
-            'description'    => null,
-            'end_at'         => $endDate?->format('Y-m-d'),
-            'project_name'   => $this->faker->sentence(),
             'project_status' => $status->value,
+            'project_name'   => $this->faker->sentence(),
             'start_at'       => $startDate?->format('Y-m-d'),
+            'end_at'         => $endDate?->format('Y-m-d'),
+            'description'    => null,
         ];
     }
 

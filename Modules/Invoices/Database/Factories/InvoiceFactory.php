@@ -11,6 +11,9 @@ use Modules\Core\Models\User;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 
+/**
+ * @extends Factory<\Modules\Invoices\Models\Invoice>
+ */
 class InvoiceFactory extends Factory
 {
     protected $model = Invoice::class;

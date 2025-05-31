@@ -45,16 +45,6 @@ class Contact extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function relation(): BelongsTo
-    {
-        return $this->belongsTo(Relation::class, 'relation_id');
-    }
-
-    public function communications(): MorphMany
-    {
-        return $this->morphMany(Communication::class, 'communicationable');
-    }
-
     public function addressables(): MorphMany
     {
         return $this->morphMany(Addressable::class, 'addressable');
@@ -70,6 +60,21 @@ class Contact extends Model
             'id',
             'address_id'
         );
+    }
+
+    public function communications(): MorphMany
+    {
+        return $this->morphMany(Communication::class, 'communicationable');
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->belongsTo(Relation::class, 'relation_id');
+    }
+
+    public function relations(): HasMany
+    {
+        return $this->hasMany(Relation::class, 'primary_contact_id');
     }
 
     /*

@@ -9,7 +9,7 @@ use Modules\Core\Models\User;
 use Modules\Core\Traits\HasCompanyFactoryState;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<\Modules\Core\Models\User>
  */
 class UserFactory extends Factory
 {

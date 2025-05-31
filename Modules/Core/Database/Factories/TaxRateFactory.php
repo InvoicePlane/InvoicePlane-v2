@@ -7,6 +7,9 @@ use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 
+/**
+ * @extends Factory<\Modules\Core\Models\TaxRate>
+ */
 class TaxRateFactory extends Factory
 {
     protected $model = TaxRate::class;
@@ -30,12 +33,12 @@ class TaxRateFactory extends Factory
         $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
 
         return [
+            'company_id'    => $company->id,
             'tax_rate_type' => $this->faker->randomElement(TaxRateType::cases())->value,
             'is_active'     => $this->faker->boolean(90),
-            'name'          => $selected['name'],
             'code'          => mb_strtoupper($this->faker->unique()->bothify('TAX#####')),
+            'name'          => $selected['name'],
             'rate'          => $selected['rate'],
-            'company_id'    => $company->id,
         ];
     }
 }

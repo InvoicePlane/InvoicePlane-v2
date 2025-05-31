@@ -12,6 +12,9 @@ use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 
+/**
+ * @extends Factory<\Modules\Projects\Models\Task>
+ */
 class TaskFactory extends Factory
 {
     protected $model = Task::class;
@@ -50,9 +53,9 @@ class TaskFactory extends Factory
             'tax_rate_id' => $taxRate->id,
             'assigned_to' => $this->faker->boolean(50) ? optional($user)->id : null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
-            'name'        => $this->faker->words(3, true),
+            'task_name'   => $this->faker->words(3, true),
+            'task_price'  => $this->faker->randomFloat(4, 0, 100),
             'due_at'      => $this->faker->dateTimeBetween('-3 year', '+2 year')->format('Y-m-d'),
-            'price'       => $this->faker->randomFloat(4, 0, 100),
             'description' => null,
         ];
     }

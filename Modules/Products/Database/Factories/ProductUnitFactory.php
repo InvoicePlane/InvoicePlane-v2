@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductUnit;
 
+/**
+ * @extends Factory<\Modules\Products\Models\ProductUnit>
+ */
 class ProductUnitFactory extends Factory
 {
     protected $model = ProductUnit::class;

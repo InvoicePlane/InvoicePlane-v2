@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
 
+/**
+ * @extends Factory<\Modules\Expenses\Models\ExpenseCategory>
+ */
 class ExpenseCategoryFactory extends Factory
 {
     protected $model = ExpenseCategory::class;

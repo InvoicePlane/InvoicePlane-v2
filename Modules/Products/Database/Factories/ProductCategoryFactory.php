@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductCategory;
 
+/**
+ * @extends Factory<\Modules\Products\Models\ProductCategory>
+ */
 class ProductCategoryFactory extends Factory
 {
     protected $model = ProductCategory::class;

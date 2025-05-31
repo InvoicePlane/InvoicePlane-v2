@@ -8,6 +8,9 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\Gender;
 use Modules\Core\Models\Company;
 
+/**
+ * @extends Factory<\Modules\Clients\Models\Contact>
+ */
 class ContactFactory extends Factory
 {
     protected $model = Contact::class;
@@ -16,9 +19,9 @@ class ContactFactory extends Factory
     {
         return [
             'company_id'  => Company::query()->inRandomOrder()->first()->id,
-            'relation_id' => Relation::query()->inRandomOrder()->first()->id,
-            'first_name'  => $this->faker->firstName,
-            'last_name'   => $this->faker->lastName,
+            'relation_id' => Relation::query()->where('relation_type', RelationType::CUSTOMER->value)->inRandomOrder()->first()->id,
+            'first_name'  => fake()->firstName,
+            'last_name'   => fake()->lastName,
             'gender'      => $this->faker->randomElement(Gender::cases())->value,
         ];
     }

@@ -10,6 +10,9 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 
+/**
+ * @extends Factory<\Modules\Expenses\Models\ExpenseItem>
+ */
 class ExpenseItemFactory extends Factory
 {
     protected $model = ExpenseItem::class;
@@ -51,7 +54,7 @@ class ExpenseItemFactory extends Factory
             'subtotal'      => $subtotal,
             'tax_1'         => $taxCalc1,
             'tax_2'         => $taxCalc2,
-            'tax'           => $taxCalcTotal,
+            'tax_total'     => $taxCalcTotal,
             'total'         => $total,
             'tax_rate_id'   => $taxRate->id,
             'tax_rate_2_id' => $taxRate2?->id,

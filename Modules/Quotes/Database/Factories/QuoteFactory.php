@@ -11,6 +11,9 @@ use Modules\Core\Models\User;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 
+/**
+ * @extends Factory<\Modules\Quotes\Models\Quote>
+ */
 class QuoteFactory extends Factory
 {
     protected $model = Quote::class;

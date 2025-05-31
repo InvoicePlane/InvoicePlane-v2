@@ -179,7 +179,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     // ——————————————————————————————————————————————————————————————
     // |                             FILAMENT PANEL INTEGRATION                           |
     // ——————————————————————————————————————————————————————————————
-
     public function getFilamentName(): string
     {
         return $this->getAttributeValue('name');
