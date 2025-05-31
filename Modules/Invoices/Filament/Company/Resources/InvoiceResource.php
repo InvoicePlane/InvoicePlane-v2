@@ -282,7 +282,7 @@ class InvoiceResource extends AbstractTenantResource
                     ->date()
                     ->since()
                     ->searchable()
-                    ->sortable()
+                    ->sortable(),
                 TextColumn::make('invoice_due_at')
                     ->date()
                     ->since()
