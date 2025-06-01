@@ -5,18 +5,21 @@ namespace Modules\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Core\Support\DateFormatter;
+use Illuminate\Support\Carbon;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
- * @property int    $id
- * @property int    $notable_id
- * @property string $notable_type
- * @property int    $user_id
- * @property string $title
- * @property string $content
- * @property bool   $is_private
- * @property User   $user
+ * @property int       $id
+ * @property int       $company_id
+ * @property int|null  $user_id
+ * @property Carbon    $noted_at
+ * @property string    $notable_type
+ * @property int       $notable_id
+ * @property bool      $is_private
+ * @property string    $title
+ * @property string    $content
+ * @property Company   $company
+ * @property User|null $user
  */
 class Note extends Model
 {
@@ -25,6 +28,8 @@ class Note extends Model
     public $timestamps = false;
 
     protected $casts = [
+        'noted_at'   => 'datetime',
+        'notable_id' => 'int',
         'is_private' => 'bool',
     ];
 
@@ -50,16 +55,6 @@ class Note extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-
-    public function getFormattedCreatedAtAttribute(): string
-    {
-        return DateFormatter::format($this->created_at, true);
-    }
-
-    public function getFormattedNoteAttribute(): string
-    {
-        return nl2br($this->note);
-    }
 
     /*
     |--------------------------------------------------------------------------

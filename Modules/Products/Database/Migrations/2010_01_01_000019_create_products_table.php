@@ -13,14 +13,14 @@ return new class () extends Migration {
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('unit_id')->nullable();
             $table->string('type');
-            $table->string('code');
-            $table->string('product_name');
-            $table->decimal('price', 20, 4)->default(0.00);
+            $table->string('code')->nullable();
+            $table->string('product_name')->nullable();
+            $table->decimal('price', 20, 4)->nullable();
             $table->decimal('cost_price', 20, 4)->nullable();
-            $table->integer('tariff')->nullable();
-            $table->unsignedBiginteger('tax_rate_id')->nullable()->default(0)->index('tax_rate_id');
-            $table->unsignedBiginteger('tax_rate_2_id')->nullable()->default(0)->index('tax_rate_2_id');
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('tax_rate_id')->nullable()->default(0)->index('tax_rate_id');
+            $table->unsignedBigInteger('tax_rate_2_id')->nullable()->default(0)->index('tax_rate_2_id');
+            $table->unsignedBigInteger('product_tariff')->nullable();
+            $table->longText('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');

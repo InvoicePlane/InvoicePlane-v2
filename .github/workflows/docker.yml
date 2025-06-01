@@ -6,6 +6,16 @@ name: Docker Compose Check (Disabled)
 # - Add triggers like `push` or `pull_request` as needed
 
 on:
+  push:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
+  pull_request:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
   workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
@@ -23,5 +33,7 @@ jobs:
       - name: Check running services
         run: docker-compose ps
 
-      - name: Optional: Run health checks or tests
-        run: echo "TODO: insert test commands after containers are up"
+      - name:
+          Optional: Run health checks or tests
+        run:
+          echo "TODO: insert test commands after containers are up"

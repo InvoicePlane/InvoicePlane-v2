@@ -6,10 +6,10 @@ use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\CreateCustomer;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\EditCustomer;
-use Modules\Clients\Filament\Company\Resources\CustomerResource\Pages\ListCustomers;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\EditRelation;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
+use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(CustomerResource::class)]
+#[CoversClass(RelationResource::class)]
 class CustomersTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
@@ -44,7 +44,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListCustomers::class);
+            ->test(ListRelations::class);
 
         /* assert */
         $component->assertSuccessful();
@@ -69,7 +69,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateCustomer::class)
+            ->test(CreateRelation::class)
             ->fillForm($payload)
             ->call('create');
 
@@ -95,7 +95,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateCustomer::class)
+            ->test(CreateRelation::class)
             ->fillForm($payload)
             ->call('create');
 
@@ -117,7 +117,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_type']);
@@ -136,7 +136,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateCustomer::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_status']);
@@ -155,7 +155,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateCustomer::class)
+            ->test(CreateRelation::class)
             ->fillForm($payload)
             ->call('create');
 
@@ -183,7 +183,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
 
         /* assert */
         $component
@@ -211,7 +211,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditCustomer::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['company_name']);
@@ -230,7 +230,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)->test(ListRelations::class)->callTableAction('delete', $customer);
 
         $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
     }
@@ -250,7 +250,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListCustomers::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)->test(ListRelations::class)->callTableAction('delete', $customer);
 
         /* assert */
         $component->assertHasErrors();

@@ -13,7 +13,6 @@ use Modules\Core\Database\Seeders\UsersSeeder;
 use Modules\Expenses\Database\Seeders\ExpenseCategoriesSeeder;
 use Modules\Expenses\Database\Seeders\ExpensesSeeder;
 use Modules\Invoices\Database\Seeders\InvoicesSeeder;
-use Modules\Payments\Database\Seeders\PaymentMethodsSeeder;
 use Modules\Payments\Database\Seeders\PaymentsSeeder;
 use Modules\Products\Database\Seeders\ProductCategoriesSeeder;
 use Modules\Products\Database\Seeders\ProductsSeeder;
@@ -21,8 +20,6 @@ use Modules\Products\Database\Seeders\ProductUnitsSeeder;
 use Modules\Projects\Database\Seeders\ProjectsSeeder;
 use Modules\Projects\Database\Seeders\TasksSeeder;
 use Modules\Quotes\Database\Seeders\QuotesSeeder;
-
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,7 +32,6 @@ class DatabaseSeeder extends Seeder
             ExpenseCategoriesSeeder::class,
             ProductUnitsSeeder::class,
             ProductCategoriesSeeder::class,
-            PaymentMethodsSeeder::class,
             DocumentGroupsSeeder::class,
             EmailTemplatesSeeder::class,
         ]);

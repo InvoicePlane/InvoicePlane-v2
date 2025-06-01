@@ -14,8 +14,10 @@ class CustomerFactory extends Factory
 
     public function definition(): array
     {
+        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+
         return [
-            'company_id'         => Company::query()->inRandomOrder()->first()->id,
+            'company_id'         => $company->id,
             'primary_contact_id' => null,
             'relation_type'      => $this->faker->randomElement(RelationType::cases())->value,
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,

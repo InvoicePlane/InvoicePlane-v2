@@ -12,7 +12,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('attachable_id')->unsigned();
             $table->string('attachable_type');
-            $table->unsignedBiginteger('client_visibility');
+            $table->boolean('client_visibility');
             $table->string('filename');
             $table->string('mimetype');
             $table->unsignedBiginteger('size');

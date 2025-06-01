@@ -15,10 +15,10 @@ return new class () extends Migration {
             $table->unsignedBigInteger('tax_rate_id')->nullable();
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->string('task_status');
-            $table->string('name');
-            $table->decimal('price', 20, 4)->default(0);
+            $table->string('task_name')->nullable();
+            $table->decimal('task_price', 20, 4)->nullable();
             $table->date('due_at')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');

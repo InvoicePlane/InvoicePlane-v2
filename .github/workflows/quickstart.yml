@@ -1,7 +1,17 @@
 name: Quickstart Smoke Test
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
+  pull_request:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
+  workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
   quickstart:

@@ -22,12 +22,7 @@ class MerchantClient extends Model
     protected $casts = [
     ];
 
-    protected $fillable = [
-        'customer_id',
-        'driver',
-        'merchant_key',
-        'merchant_value',
-    ];
+    protected $guarded = [];
 
     public static function getByKey($driver, $clientId, $key): static
     {

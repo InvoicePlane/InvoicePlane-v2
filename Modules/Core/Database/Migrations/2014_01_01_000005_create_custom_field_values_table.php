@@ -12,7 +12,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('custom_field_id');
             $table->morphs('fieldable');
-            $table->text('custom_field_value')->nullable();
+            $table->text('custom_field_value');
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('custom_field_id')->references('id')->on('custom_fields')->onDelete('cascade');
@@ -21,6 +21,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('custom_fields');
+        Schema::dropIfExists('custom_values');
     }
 };

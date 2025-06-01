@@ -8,10 +8,10 @@ use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Core\Tests\TestDecimal;
 use Modules\Products\Enums\ProductType;
-use Modules\Products\Filament\Company\Resources\ProductResource;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\CreateProduct;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\EditProduct;
-use Modules\Products\Filament\Company\Resources\ProductResource\Pages\ListProducts;
+use Modules\Products\Filament\Company\Resources\Products\Pages\CreateProduct;
+use Modules\Products\Filament\Company\Resources\Products\Pages\EditProduct;
+use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
+use Modules\Products\Filament\Company\Resources\Products\ProductResource;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
@@ -41,16 +41,16 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'category_id'  => $productCategory->id,
-            'unit_id'      => $productUnit->id,
-            'type'         => ProductType::PRODUCT->value,
-            'code'         => 'SKU-001',
-            'product_name' => 'Test Product',
-            'price'        => 9.99,
-            'cost_price'   => 5.00,
-            'tariff'       => 123,
-            'tax_rate_id'  => $taxRate->id,
-            'description'  => 'Example',
+            'category_id'    => $productCategory->id,
+            'unit_id'        => $productUnit->id,
+            'type'           => ProductType::PRODUCT->value,
+            'code'           => 'SKU-001',
+            'product_name'   => 'Test Product',
+            'price'          => 9.99,
+            'cost_price'     => 5.00,
+            'product_tariff' => 123,
+            'tax_rate_id'    => $taxRate->id,
+            'description'    => 'Example',
         ];
         $product = Product::factory()->create($payload);
 
@@ -161,15 +161,15 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'category_id'  => $productCategory->id,
-            'unit_id'      => $productUnit->id,
-            'type'         => ProductType::PRODUCT->value,
-            'product_name' => 'Test Product',
-            'price'        => 9.99,
-            'cost_price'   => 5.00,
-            'tariff'       => 123,
-            'tax_rate_id'  => $taxRate->id,
-            'description'  => 'Example',
+            'category_id'    => $productCategory->id,
+            'unit_id'        => $productUnit->id,
+            'type'           => ProductType::PRODUCT->value,
+            'product_name'   => 'Test Product',
+            'price'          => 9.99,
+            'cost_price'     => 5.00,
+            'product_tariff' => 123,
+            'tax_rate_id'    => $taxRate->id,
+            'description'    => 'Example',
         ];
 
         /* act */
@@ -223,15 +223,15 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $payload = [
-            'category_id' => $productCategory->id,
-            'unit_id'     => $productUnit->id,
-            'type'        => ProductType::PRODUCT->value,
-            'code'        => 'SKU-001',
-            'price'       => 9.99,
-            'cost_price'  => 5.00,
-            'tariff'      => 123,
-            'tax_rate_id' => $taxRate->id,
-            'description' => 'Example',
+            'category_id'    => $productCategory->id,
+            'unit_id'        => $productUnit->id,
+            'type'           => ProductType::PRODUCT->value,
+            'code'           => 'SKU-001',
+            'price'          => 9.99,
+            'cost_price'     => 5.00,
+            'product_tariff' => 123,
+            'tax_rate_id'    => $taxRate->id,
+            'description'    => 'Example',
         ];
 
         /* act */
@@ -283,15 +283,15 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $payload = [
-            'category_id'  => $productCategory->id,
-            'unit_id'      => $productUnit->id,
-            'type'         => ProductType::PRODUCT->value,
-            'code'         => 'SKU-001',
-            'product_name' => 'Test Product',
-            'cost_price'   => 5.00,
-            'tariff'       => 123,
-            'tax_rate_id'  => $taxRate->id,
-            'description'  => 'Example',
+            'category_id'    => $productCategory->id,
+            'unit_id'        => $productUnit->id,
+            'type'           => ProductType::PRODUCT->value,
+            'code'           => 'SKU-001',
+            'product_name'   => 'Test Product',
+            'cost_price'     => 5.00,
+            'product_tariff' => 123,
+            'tax_rate_id'    => $taxRate->id,
+            'description'    => 'Example',
         ];
 
         /* act */

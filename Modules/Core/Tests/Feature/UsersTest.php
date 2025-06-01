@@ -3,8 +3,8 @@
 namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\UserResource;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

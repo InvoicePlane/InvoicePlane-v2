@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\DocumentGroupFactory;
 use Modules\Core\Enums\DocumentGroupType;
@@ -16,19 +15,20 @@ use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * Class Group.
- *
  * @property int                           $id
- * @property string|null                   $name
+ * @property int                           $company_id
+ * @property string                        $type
+ * @property string                        $name
  * @property string                        $group_identifier_format
  * @property int                           $next_id
  * @property int                           $left_pad
- * @property string                        $format
+ * @property string|null                   $format
  * @property int                           $reset_number
  * @property int                           $last_id
  * @property int                           $last_year
  * @property int                           $last_month
  * @property int                           $last_week
+ * @property Company                       $company
  * @property Collection|Invoice[]          $invoices
  * @property Collection|Quote[]            $quotes
  * @property Collection|RecurringInvoice[] $recurring_invoices
@@ -52,7 +52,7 @@ class DocumentGroup extends Model
     |--------------------------------------------------------------------------
     */
     /**
-     * Return all of the “template–insertion” tags you want
+     * Return all the “template–insertion” tags you want
      * to offer in your form dropdown.
      */
     public static function availableTags(): array
@@ -135,11 +135,6 @@ class DocumentGroup extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(Company::class);
-    }
-
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'document_group_id');
@@ -157,7 +152,7 @@ class DocumentGroup extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | Relationships
+    | Factories
     |--------------------------------------------------------------------------
     */
     protected static function newFactory(): Factory

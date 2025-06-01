@@ -3,13 +3,14 @@
 namespace Modules\Projects\Tests\Feature;
 
 use Livewire\Livewire;
+use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Enums\ProjectStatus;
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\CreateProject;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\EditProject;
-use Modules\Projects\Filament\Company\Resources\ProjectResource\Pages\ListProjects;
+use Modules\Projects\Filament\Company\Resources\Projects\Pages\CreateProject;
+use Modules\Projects\Filament\Company\Resources\Projects\Pages\EditProject;
+use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
+use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

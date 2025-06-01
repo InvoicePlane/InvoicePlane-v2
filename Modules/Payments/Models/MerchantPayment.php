@@ -20,12 +20,7 @@ class MerchantPayment extends Model
     protected $casts = [
     ];
 
-    protected $fillable = [
-        'payment_id',
-        'driver',
-        'merchant_key',
-        'merchant_value',
-    ];
+    protected $guarded = [];
 
     public static function getByKey($driver, $paymentId, $key): static
     {

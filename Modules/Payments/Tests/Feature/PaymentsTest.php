@@ -11,10 +11,10 @@ use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\CreatePayment;
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\EditPayment;
-use Modules\Payments\Filament\Company\Resources\PaymentResource\Pages\ListPayments;
+use Modules\Payments\Filament\Company\Resources\Payments\Pages\CreatePayment;
+use Modules\Payments\Filament\Company\Resources\Payments\Pages\EditPayment;
+use Modules\Payments\Filament\Company\Resources\Payments\Pages\ListPayments;
+use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
 use Modules\Payments\Models\Payment;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -42,6 +42,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'payment_amount' => 250.00,
             'paid_at'        => '2024-11-01',
         ];
+
         Payment::factory()->for($company)->create($payload);
 
         /* act */
@@ -76,7 +77,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
+        $customer = Relation::factory()->customer()->for($company)->create();
         $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
 
         $payload = [
@@ -95,6 +96,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         if (app()->isLocal()) {
+            dd($component->errors());
             dd($payload);
         }
 

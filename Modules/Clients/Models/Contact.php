@@ -2,30 +2,33 @@
 
 namespace Modules\Clients\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Database\Factories\ContactFactory;
+use Modules\Clients\Enums\Gender;
 use Modules\Core\Enums\CommunicationType;
-use Modules\Core\Enums\Gender;
-use Modules\Core\Models\Address;
-use Modules\Core\Models\Addressable;
-use Modules\Core\Models\Communication;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
- * @property int        $id
- * @property string     $contact_first_name
- * @property string     $contact_last_name
- * @property bool       $default_to
- * @property bool       $default_cc
- * @property bool       $default_bcc
- * @property mixed      $gender
- * @property Relation[] $relations
+ * @property int                   $id
+ * @property int                   $company_id
+ * @property int                   $relation_id
+ * @property string                $first_name
+ * @property string                $last_name
+ * @property bool|null             $default_to
+ * @property bool|null             $default_cc
+ * @property bool|null             $default_bcc
+ * @property string|null           $gender
+ * @property Company               $company
+ * @property Relation              $relation
+ * @property Collection|Relation[] $relations
  */
 class Contact extends Model
 {

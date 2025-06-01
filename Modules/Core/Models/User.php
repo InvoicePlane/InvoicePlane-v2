@@ -5,12 +5,14 @@ namespace Modules\Core\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Expenses\Models\Expense;
@@ -37,6 +39,7 @@ use Modules\Quotes\Models\Quote;
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
+    use CanResetPassword;
     use HasFactory;
     use Notifiable;
 
@@ -62,18 +65,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     | Observer
     |--------------------------------------------------------------------------
     */
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::created(function ($user): void {
-            //event(new UserCreated($user));
-        });
-
-        static::deleted(function ($user): void {
-            //event(new UserDeleted($user));
-        });
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -143,17 +134,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     |--------------------------------------------------------------------------
     */
 
-    public function getUserTypeAttribute(): string
-    {
-        return ($this->customer_id) ? 'customer' : 'admin';
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Mutators
     |--------------------------------------------------------------------------
     */
-
     public function setPasswordAttribute($password): void
     {
         $this->attributes['password'] = Hash::make($password);
@@ -164,17 +149,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     | Scopes
     |--------------------------------------------------------------------------
     */
-
-    public function scopeUserType($query, $userType)
-    {
-        if ($userType == 'customer') {
-            $query->where('customer_id', '<>', 0);
-        } elseif ($userType == 'admin') {
-            $query->where('customer_id', 0);
-        }
-
-        return $query;
-    }
 
     // ——————————————————————————————————————————————————————————————
     // |                             FILAMENT PANEL INTEGRATION                           |

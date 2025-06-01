@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,38 +10,34 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
-use Modules\Core\Models\Address;
-use Modules\Core\Models\Addressable;
-use Modules\Core\Models\Communication;
-use Modules\Core\Models\Note;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
-use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
  * @property int                           $id
- * @property int                           $primary_contact_id
+ * @property int                           $company_id
+ * @property int|null                      $primary_contact_id
  * @property string                        $relation_type
  * @property string                        $relation_status
  * @property string                        $relation_number
  * @property string                        $company_name
- * @property string                        $trading_name
- * @property string                        $id_number
- * @property string                        $coc_number
- * @property string                        $vat_number
+ * @property string|null                   $trading_name
+ * @property string|null                   $unique_name
+ * @property string|null                   $id_number
+ * @property string|null                   $coc_number
+ * @property string|null                   $vat_number
  * @property Carbon                        $registered_at
  * @property mixed                         $created_at
  * @property mixed                         $updated_at
@@ -50,8 +47,10 @@ use Modules\Quotes\Models\Quote;
  * @property Contact                       $contact
  * @property string|null                   $currency_code
  * @property string|null                   $language
+ * @property Company                       $company
  * @property Collection|Contact[]          $contacts
  * @property Collection|Expense[]          $expenses
+ * @property Collection|Payment[]          $payments
  * @property Collection|RecurringInvoice[] $recurring_invoices
  * @property Collection|User[]             $users
  * @property Task[]                        $tasks
@@ -72,50 +71,11 @@ class Relation extends Model
 
     protected $guarded = [];
 
-    /**
-     * Observer.
-     */
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function ($client): void {
-            //event(new CustomerCreating($client));
-        });
-
-        static::created(function ($client): void {
-            //event(new CustomerCreated($client));
-        });
-
-        static::saving(function ($client): void {
-            //event(new CustomerSaving($client));
-        });
-
-        static::deleted(function ($client): void {
-            //event(new CustomerDeleted($client));
-        });
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Static Methods
     |--------------------------------------------------------------------------
     */
-    public static function firstOrCreateByUniqueName($uniqueName)
-    {
-        $client = self::firstOrNew([
-            'unique_name' => $uniqueName,
-        ]);
-
-        if ( ! $client->id) {
-            $client->name = $uniqueName;
-            $client->save();
-
-            return self::query()->find($client->id);
-        }
-
-        return $client;
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -151,7 +111,7 @@ class Relation extends Model
 
     public function contacts(): HasMany
     {
-        return $this->hasMany(Contact::class, 'relation_id');
+        return $this->hasMany(Contact::class);
     }
 
     public function contact(): BelongsTo
@@ -161,42 +121,42 @@ class Relation extends Model
 
     public function expenses(): HasMany
     {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Expense::class, 'vendor_id');
     }
 
     public function invoices(): HasMany
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasMany(Invoice::class, 'customer_id');
     }
 
-    public function merchant()
+    public function payments(): HasMany
     {
-        return $this->hasOne('Modules\Core\Models\MerchantCustomer');
+        return $this->hasMany(Payment::class, 'customer_id');
     }
 
-    public function notes()
+    public function primaryContact(): BelongsTo
     {
-        return $this->morphMany(Note::class, 'notable');
+        return $this->belongsTo(Contact::class, 'primary_contact_id');
     }
 
     public function projects(): HasMany
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Project::class, 'customer_id');
     }
 
     public function quotes(): HasMany
     {
-        return $this->hasMany(Quote::class);
+        return $this->hasMany(Quote::class, 'prospect_id');
     }
 
-    public function recurringInvoices(): HasMany
+    public function recurring_invoices(): HasMany
     {
-        return $this->hasMany(RecurringInvoice::class);
+        return $this->hasMany(RecurringInvoice::class, 'customer_id');
     }
 
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'customer_id');
     }
 
     public function users(): HasMany
@@ -209,36 +169,6 @@ class Relation extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getAttachmentPathAttribute()
-    {
-        return attachment_path('clients/' . $this->id);
-    }
-
-    public function getAttachmentPermissionOptionsAttribute()
-    {
-        return ['0' => trans('ip.not_visible')];
-    }
-
-    public function getFormattedBalanceAttribute()
-    {
-        return CurrencyFormatter::format($this->balance, $this->currency);
-    }
-
-    public function getFormattedPaidAttribute()
-    {
-        return CurrencyFormatter::format($this->paid, $this->currency);
-    }
-
-    public function getFormattedTotalAttribute()
-    {
-        return CurrencyFormatter::format($this->total, $this->currency);
-    }
-
-    public function getFormattedAddressAttribute()
-    {
-        return nl2br(formatAddress($this));
-    }
-
     public function getCustomerEmailAttribute()
     {
         return $this->email;
@@ -249,55 +179,6 @@ class Relation extends Model
     | Scopes
     |--------------------------------------------------------------------------
     */
-    public function scopeStatus(Builder $query, $status): Builder
-    {
-        switch ($status) {
-            case 'active':
-                return $query->where('client_active', true);
-            case 'inactive':
-                return $query->where('client_active', false);
-            default:
-                return $query;
-        }
-    }
-
-    public function scopeGetSelect()
-    {
-        return self::select(
-            'customers.*',
-            DB::raw('(' . $this->getBalanceSql() . ') as balance'),
-            DB::raw('(' . $this->getPaidSql() . ') AS paid'),
-            DB::raw('(' . $this->getTotalSql() . ') AS total')
-        );
-    }
-
-    /*public function scopeStatus($query, $status)
-    {
-        if ($status == 'is_active') {
-            $query->where('is_active', 1);
-        } elseif ($status == 'inactive') {
-            $query->where('is_active', 0);
-        }
-
-        return $query;
-    }*/
-
-    public function scopeKeywords($query, $keywords)
-    {
-        if ($keywords) {
-            $keywords = explode(' ', $keywords);
-
-            foreach ($keywords as $keyword) {
-                if ($keyword) {
-                    $keyword = mb_strtolower($keyword);
-
-                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name),LOWER(email),phone,fax,mobile)"), 'LIKE', "%{$keyword}%");
-                }
-            }
-        }
-
-        return $query;
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -309,32 +190,9 @@ class Relation extends Model
         return RelationFactory::new();
     }
 
-    private function getBalanceSql()
-    {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(balance)'))->whereIn('invoice_id', function ($q): void {
-            $q->select('id')
-                ->from('invoices')
-                ->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'))
-                ->where('invoices.invoice_status_id', '<>', DB::raw(InvoiceStatuses::getStatusId('canceled')));
-        })->toSql();
-    }
-
-    private function getPaidSql()
-    {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(paid)'))->whereIn('invoice_id', function ($q): void {
-            $q->select('id')->from('invoices')->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'));
-        })->toSql();
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Subqueries
     |--------------------------------------------------------------------------
     */
-    private function getTotalSql()
-    {
-        return DB::table('invoice_amounts')->select(DB::raw('sum(total)'))->whereIn('invoice_id', function ($q): void {
-            $q->select('id')->from('invoices')->where('invoices.customer_id', '=', DB::raw(DB::getTablePrefix() . 'customers.id'));
-        })->toSql();
-    }
 }

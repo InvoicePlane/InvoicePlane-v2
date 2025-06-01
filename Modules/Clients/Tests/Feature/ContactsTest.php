@@ -3,9 +3,9 @@
 namespace Modules\Clients\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\CreateContact;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\EditContact;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\ListContacts;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\CreateContact;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\EditContact;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\ListContacts;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;

@@ -25,7 +25,7 @@ class InvoiceService extends BaseService
             $invoiceTaxTotal = $this->calculateInvoiceTaxTotal($data);
             $invoiceTotal    = $this->calculateInvoiceTotal($data, $itemTaxTotal, $invoiceTaxTotal);
 
-            $invoice = Invoice::query()->create([
+            $invoice = Invoice::create([
                 'customer_id'              => $data['customer_id'],
                 'document_group_id'        => $data['document_group_id'] ?? null,
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
@@ -44,11 +44,10 @@ class InvoiceService extends BaseService
                 'invoice_password'         => $data['invoice_password'] ?? null,
                 'url_key'                  => $data['url_key'] ?? Str::random(32),
                 'is_read_only'             => $data['is_read_only'] ?? false,
-
-                'template' => $data['template'] ?? null,
-                'summary'  => $data['summary'] ?? null,
-                'terms'    => $data['terms'] ?? null,
-                'footer'   => $data['footer'] ?? null,
+                'template'                 => $data['template'] ?? null,
+                'summary'                  => $data['summary'] ?? null,
+                'terms'                    => $data['terms'] ?? null,
+                'footer'                   => $data['footer'] ?? null,
             ]);
 
             foreach ($data['invoiceItems'] ?? [] as $item) {
@@ -62,7 +61,7 @@ class InvoiceService extends BaseService
                     'subtotal'      => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
                     'tax_1'         => $item['tax_1'] ?? 0,
                     'tax_2'         => $item['tax_2'] ?? 0,
-                    'tax_total'     => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0), // ✅
+                    'tax_total'     => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0),
                     'total'         => $item['total'] ?? 0,
                     'description'   => $item['description'] ?? null,
                     'tax_rate_id'   => $item['tax_rate_id'] ?? null,
@@ -108,34 +107,65 @@ class InvoiceService extends BaseService
                 'invoice_password'         => $data['invoice_password'] ?? null,
                 'url_key'                  => $data['url_key'] ?? Str::random(32),
                 'is_read_only'             => $data['is_read_only'] ?? false,
-
-                'template' => $data['template'] ?? null,
-                'summary'  => $data['summary'] ?? null,
-                'terms'    => $data['terms'] ?? null,
-                'footer'   => $data['footer'] ?? null,
+                'template'                 => $data['template'] ?? null,
+                'summary'                  => $data['summary'] ?? null,
+                'terms'                    => $data['terms'] ?? null,
+                'footer'                   => $data['footer'] ?? null,
             ]);
 
-            $invoice->invoiceItems()->delete();
+            $existingItems = $invoice->invoiceItems()->get()->keyBy('id');
+            $incomingItems = collect($data['invoiceItems'] ?? []);
 
-            foreach ($data['invoiceItems'] ?? [] as $item) {
-                $invoice->invoiceItems()->create([
-                    'item_id'       => $item['item_id'] ?? null,
-                    'unit_id'       => $item['unit_id'] ?? null,
-                    'item_name'     => $item['item_name'] ?? null,
-                    'quantity'      => $item['quantity'],
-                    'price'         => $item['price'],
-                    'discount'      => $item['discount'] ?? 0,
-                    'subtotal'      => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
-                    'tax_1'         => $item['tax_1'] ?? 0,
-                    'tax_2'         => $item['tax_2'] ?? 0,
-                    'tax'           => $item['tax'] ?? 0,
-                    'total'         => $item['total'] ?? 0,
-                    'description'   => $item['description'] ?? null,
-                    'tax_rate_id'   => $item['tax_rate_id'] ?? null,
-                    'tax_rate_2_id' => $item['tax_rate_2_id'] ?? null,
-                    'display_order' => $item['display_order'] ?? null,
-                ]);
-            }
+            $incomingItems->each(function ($item) use ($existingItems, $invoice) {
+                if (isset($item['_delete']) && $item['_delete']) {
+                    if (isset($item['id']) && $existingItems->has($item['id'])) {
+                        $existingItems->get($item['id'])->delete();
+                    }
+
+                    return;
+                }
+
+                if (isset($item['id']) && $existingItems->has($item['id'])) {
+                    $existingItems->get($item['id'])->update([
+                        'item_id'       => $item['item_id'] ?? null,
+                        'unit_id'       => $item['unit_id'] ?? null,
+                        'item_name'     => $item['item_name'] ?? null,
+                        'quantity'      => $item['quantity'],
+                        'price'         => $item['price'],
+                        'discount'      => $item['discount'] ?? 0,
+                        'subtotal'      => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                        'tax_1'         => $item['tax_1'] ?? 0,
+                        'tax_2'         => $item['tax_2'] ?? 0,
+                        'tax_total'     => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0),
+                        'total'         => $item['total'] ?? 0,
+                        'description'   => $item['description'] ?? null,
+                        'tax_rate_id'   => $item['tax_rate_id'] ?? null,
+                        'tax_rate_2_id' => $item['tax_rate_2_id'] ?? null,
+                        'display_order' => $item['display_order'] ?? null,
+                    ]);
+                } else {
+                    $invoice->invoiceItems()->create([
+                        'item_id'       => $item['item_id'] ?? null,
+                        'unit_id'       => $item['unit_id'] ?? null,
+                        'item_name'     => $item['item_name'] ?? null,
+                        'quantity'      => $item['quantity'],
+                        'price'         => $item['price'],
+                        'discount'      => $item['discount'] ?? 0,
+                        'subtotal'      => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                        'tax_1'         => $item['tax_1'] ?? 0,
+                        'tax_2'         => $item['tax_2'] ?? 0,
+                        'tax_total'     => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0),
+                        'total'         => $item['total'] ?? 0,
+                        'description'   => $item['description'] ?? null,
+                        'tax_rate_id'   => $item['tax_rate_id'] ?? null,
+                        'tax_rate_2_id' => $item['tax_rate_2_id'] ?? null,
+                        'display_order' => $item['display_order'] ?? null,
+                    ]);
+                }
+            });
+
+            $incomingIds = $incomingItems->pluck('id')->filter()->all();
+            $existingItems->whereNotIn('id', $incomingIds)->each->delete();
 
             DB::commit();
 
@@ -148,14 +178,12 @@ class InvoiceService extends BaseService
 
     private function calculateItemTaxTotal(array $data): float
     {
-        return collect($data['invoiceItems'] ?? [])
-            ->sum(fn ($item) => $item['tax'] ?? 0);
+        return collect($data['invoiceItems'] ?? [])->sum(fn ($item) => $item['tax'] ?? 0);
     }
 
     private function calculateInvoiceTaxTotal(array $data): float
     {
-        return collect($data['invoiceItems'] ?? [])
-            ->sum(fn ($item) => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0));
+        return collect($data['invoiceItems'] ?? [])->sum(fn ($item) => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0));
     }
 
     private function calculateInvoiceTotal(array $data, float $itemTaxTotal, float $invoiceTaxTotal): float

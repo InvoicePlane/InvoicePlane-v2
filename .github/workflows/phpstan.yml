@@ -2,10 +2,16 @@ name: PHPStan Analysis
 
 on:
   push:
-    branches: [master, develop]
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
   pull_request:
-    branches: [develop]
-  workflow_dispatch:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
+  workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
   phpstan:
