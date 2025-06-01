@@ -21,6 +21,11 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
 

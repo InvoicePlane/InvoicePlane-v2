@@ -16,8 +16,8 @@ return new class () extends Migration {
             $table->string('id_number')->nullable();
             $table->string('coc_number')->nullable();
             $table->string('logo')->nullable();
-            $table->string('quote_template');
-            $table->string('invoice_template');
+            $table->string('quote_template')->nullable();
+            $table->string('invoice_template')->nullable();
         });
     }
 
