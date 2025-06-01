@@ -5,47 +5,23 @@ namespace Modules\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
-use Modules\Core\Events\SettingSaving;
-use PDOException;
 
 /**
- * Class Setting.
- *
  * @property int    $id
  * @property string $setting_key
  * @property string $setting_value
  */
 class Setting extends Model
 {
-    /**
-     * Guarded properties.
-     *
-     * @var array
-     */
     public $timestamps = false;
 
-    protected $table = 'settings';
-
-    protected $fillable = [
-        'setting_key',
-        'setting_value',
-    ];
-
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::saving(function ($setting): void {
-            event(new SettingSaving($setting));
-        });
-    }
+    protected $guarded = ['id'];
 
     /*
     |--------------------------------------------------------------------------
     | Static Methods
     |--------------------------------------------------------------------------
     */
-
     public static function deleteByKey($key): void
     {
         self::where('setting_key', $key)->delete();

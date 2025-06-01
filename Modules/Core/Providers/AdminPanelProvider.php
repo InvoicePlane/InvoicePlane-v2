@@ -21,18 +21,13 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
-use Modules\Core\Filament\Admin\Resources\TaxRateResource;
-use Modules\Core\Filament\Admin\Resources\UserResource;
+use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
-use Modules\Core\Models\ImportResource;
-use Modules\Core\Models\PaymentMethodResource;
-use Modules\Core\Models\PermissionResource;
-use Modules\Core\Models\RoleResource;
-use Modules\Core\Models\SystemSettingResource;
-use Modules\Core\Models\UserProfileResource;
+use Modules\Core\Filament\Pages\Auth\EditProfile;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -41,7 +36,9 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->default()
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
             ->font(
@@ -113,17 +110,17 @@ class AdminPanelProvider extends PanelProvider
                     ])
                     ->groups([
                         NavigationGroup::make('Companies')
-                            ->icon('heroicon-o-building-office')
+                            //->icon('heroicon-o-building-office')
                             ->items([
-                                ...CompanyResource::getNavigationItems(),
+                                //...CompanyResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('Email Templates')
-                            ->icon('heroicon-o-archive-box')
+                            //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...EmailTemplateResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('Document Groups')
-                            ->icon('heroicon-o-archive-box')
+                            //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...DocumentGroupResource::getNavigationItems(),
                             ]),
@@ -133,7 +130,7 @@ class AdminPanelProvider extends PanelProvider
                                 ...PaymentMethodResource::getNavigationItems(),
                             ]),*/
                         NavigationGroup::make('Tax Rates')
-                            ->icon('heroicon-o-receipt-percent')
+                            //->icon('heroicon-o-receipt-percent')
                             ->items([
                                 ...TaxRateResource::getNavigationItems(),
                             ]),
@@ -151,7 +148,7 @@ class AdminPanelProvider extends PanelProvider
                             ]),*/
 
                         NavigationGroup::make('Users & Roles')
-                            ->icon('heroicon-o-users')
+                            //->icon('heroicon-o-users')
                             ->items([
                                 ...UserResource::getNavigationItems(),
                                 //...RoleResource::getNavigationItems(),
@@ -162,18 +159,15 @@ class AdminPanelProvider extends PanelProvider
             })
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(
-                in: __DIR__ . '/../Filament/Admin/Resources',
-                for: 'Modules\\Core\\Filament\\Admin\\Resources'
-            )
-            ->discoverPages(
-                in: __DIR__ . '/../Filament/Admin/Pages',
-                for: 'Modules\\Core\\Filament\\Admin\\Pages'
-            )
-            ->discoverWidgets(
-                in: __DIR__ . '/../Filament/Admin/Widgets',
-                for: 'Modules\\Core\\Filament\\Admin\\Widgets'
-            )
+            ->resources([
+                CompanyResource::class,
+                DocumentGroupResource::class,
+                EmailTemplateResource::class,
+                TaxRateResource::class,
+                UserResource::class,
+            ])
+            ->discoverPages(in: app_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
+            ->discoverWidgets(in: app_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
             ->pages([
                 Dashboard::class,
             ])

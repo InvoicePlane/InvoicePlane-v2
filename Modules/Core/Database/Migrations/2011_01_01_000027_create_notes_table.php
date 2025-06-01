@@ -11,6 +11,7 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('user_id')->nullable()->index('fk_notes_user_id');
+            $table->date('noted_at');
             $table->morphs('notable');
             $table->boolean('is_private');
             $table->string('title');

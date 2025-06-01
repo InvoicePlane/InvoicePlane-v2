@@ -10,8 +10,8 @@ return new class () extends Migration {
         Schema::create('product_units', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('unit_name');
-            $table->string('unit_name_plrl')->nullable();
+            $table->string('unit_name', 50)->nullable();
+            $table->string('unit_name_plrl', 50)->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
@@ -19,6 +19,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('custom_fields');
+        Schema::dropIfExists('product_units');
     }
 };

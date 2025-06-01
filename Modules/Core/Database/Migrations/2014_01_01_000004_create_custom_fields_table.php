@@ -11,9 +11,9 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('fieldable_type');
-            $table->string('field_type'); // CustomFieldType Enum
-            $table->string('field_label');
-            $table->integer('field_order')->default(0);
+            $table->string('custom_field_label', 50)->nullable();
+            $table->string('field_type')->comment('CustomFieldType Enum!')->default('TEXT');
+            $table->unsignedMediumInteger('field_order')->default(0);
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });

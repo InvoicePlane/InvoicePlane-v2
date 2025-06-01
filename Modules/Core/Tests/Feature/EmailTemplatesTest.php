@@ -3,10 +3,10 @@
 namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\CreateEmailTemplate;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\EditEmailTemplate;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\ListEmailTemplates;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

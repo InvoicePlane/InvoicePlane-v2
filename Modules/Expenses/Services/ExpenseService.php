@@ -23,9 +23,7 @@ class ExpenseService extends BaseService
             $expense = Expense::create([
                 'expense_number' => $data['expense_number'],
                 'expense_amount' => $data['expense_amount'],
-                'expensed_at'    => isset($data['expensed_at'])
-                    ? Carbon::parse($data['expensed_at'])
-                    : now(),
+                'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
                 'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
                 'expense_type'   => $data['expense_type'],
@@ -69,20 +67,42 @@ class ExpenseService extends BaseService
                 'expense_status' => $data['expense_status'],
             ]);
 
-            $expense->expenseItems()->delete();
+            $existingItems = $expense->expenseItems()->get()->keyBy('id');
+            $incomingItems = collect($data['expenseItems'] ?? []);
 
-            foreach ($data['expenseItems'] ?? [] as $item) {
-                $expense->expenseItems()->create([
-                    'item_id'      => $item['item_id'] ?? null,
-                    'is_recurring' => $item['is_recurring'] ?? false,
-                    'quantity'     => $item['quantity'],
-                    'price'        => $item['price'],
-                    'discount'     => $item['discount'] ?? 0,
-                    'subtotal'     => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
-                    'tax_1'        => $item['tax_1'] ?? 0,
-                    'tax_2'        => $item['tax_2'] ?? 0,
-                ]);
-            }
+            $incomingItems->each(function ($item) use ($expense, $existingItems) {
+                if (isset($item['_delete']) && $item['_delete']) {
+                    if (isset($item['id']) && $existingItems->has($item['id'])) {
+                        $existingItems->get($item['id'])->delete();
+                    }
+
+                    return;
+                }
+
+                if (isset($item['id']) && $existingItems->has($item['id'])) {
+                    $existingItems->get($item['id'])->update([
+                        'item_id'      => $item['item_id'] ?? null,
+                        'is_recurring' => $item['is_recurring'] ?? false,
+                        'quantity'     => $item['quantity'],
+                        'price'        => $item['price'],
+                        'discount'     => $item['discount'] ?? 0,
+                        'subtotal'     => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                        'tax_1'        => $item['tax_1'] ?? 0,
+                        'tax_2'        => $item['tax_2'] ?? 0,
+                    ]);
+                } else {
+                    $expense->expenseItems()->create([
+                        'item_id'      => $item['item_id'] ?? null,
+                        'is_recurring' => $item['is_recurring'] ?? false,
+                        'quantity'     => $item['quantity'],
+                        'price'        => $item['price'],
+                        'discount'     => $item['discount'] ?? 0,
+                        'subtotal'     => $item['subtotal'] ?? ($item['quantity'] * $item['price']),
+                        'tax_1'        => $item['tax_1'] ?? 0,
+                        'tax_2'        => $item['tax_2'] ?? 0,
+                    ]);
+                }
+            });
 
             DB::commit();
 

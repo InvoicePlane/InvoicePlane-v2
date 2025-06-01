@@ -2,11 +2,8 @@
 
 namespace Modules\Core\Models;
 
-use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Foundation\Application;
-use Modules\Core\Support\DateFormatter;
 
 /**
  * @property int         $id
@@ -33,19 +30,7 @@ class MailQueue extends Model
         'is_sent'    => 'bool',
     ];
 
-    protected $fillable = [
-        'mailable_id',
-        'mailable_type',
-        'from',
-        'to',
-        'cc',
-        'bcc',
-        'subject',
-        'body',
-        'attach_pdf',
-        'is_sent',
-        'error',
-    ];
+    protected $guarded = [];
 
     /*
     |--------------------------------------------------------------------------
@@ -69,57 +54,9 @@ class MailQueue extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getFormattedCreatedAtAttribute(): string
-    {
-        return DateFormatter::format($this->attributes['created_at'], true);
-    }
-
-    public function getFormattedFromAttribute()
-    {
-        $from = json_decode($this->attributes['from']);
-
-        return $from->email;
-    }
-
-    public function getFormattedToAttribute(): string
-    {
-        return implode(', ', json_decode($this->attributes['to']));
-    }
-
-    public function getFormattedCcAttribute(): string
-    {
-        return implode(', ', json_decode($this->attributes['cc']));
-    }
-
-    public function getFormattedBccAttribute(): string
-    {
-        return implode(', ', json_decode($this->attributes['bcc']));
-    }
-
-    public function getFormattedSentAttribute(): Application|array|string|Translator
-    {
-        return ($this->attributes['is_sent']) ? trans('ip.yes') : trans('ip.no');
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
-
-    public function scopeKeywords($query, $keywords = null)
-    {
-        if ($keywords) {
-            $keywords = mb_strtolower($keywords);
-
-            $query->where('created_at', 'like', '%' . $keywords . '%')
-                ->orWhere('from', 'like', '%' . $keywords . '%')
-                ->orWhere('to', 'like', '%' . $keywords . '%')
-                ->orWhere('cc', 'like', '%' . $keywords . '%')
-                ->orWhere('bcc', 'like', '%' . $keywords . '%')
-                ->orWhere('subject', 'like', '%' . $keywords . '%');
-        }
-
-        return $query;
-    }
 }

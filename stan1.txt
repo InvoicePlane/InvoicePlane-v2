@@ -1,0 +1,122 @@
+Error: PHPDoc tag @extends has invalid value (Address>): Unexpected token ">", expected '<' at offset 23 on line 2
+Error: Constructor of class Modules\Clients\Events\RelationCreating has an unused parameter $client.
+Error: Class Modules\Core\Events\AttachmentCreating extends unknown class Modules\Core\Events\AbstractEvent.
+Error: Access to an undefined property Modules\Core\Events\AttachmentCreating::$attachment.
+Error: Class Modules\Core\Events\AttachmentDeleted extends unknown class Modules\Core\Events\AbstractEvent.
+Error: Access to an undefined property Modules\Core\Events\AttachmentDeleted::$attachment.
+Error: Class Modules\Core\Events\SettingSaving extends unknown class Modules\Core\Events\AbstractEvent.
+Error: Access to an undefined property Modules\Core\Events\SettingSaving::$setting.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model&object{pivot: Illuminate\Database\Eloquent\Relations\Pivot}::$id.
+Error: Method Modules\Core\Support\NumberFormatter::format() should return float but returns string.
+Error: PHPDoc tag @param for parameter $decimalPlaces with type int|null is not subtype of native type int.
+Error: PHPDoc tag @param references unknown parameter: $currency
+Error: Method Modules\Core\Support\NumberFormatter::unformat() should return float but returns list<string>|string.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Authenticatable::companies().
+Error: Access to an undefined property Illuminate\Contracts\Auth\Authenticatable::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Factory::user().
+Error: Call to an undefined method Illuminate\Contracts\Auth\Factory::user().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::customer().
+Error: Access to constant CUSTOMER on an unknown class Database\Factories\RelationType.
+Error: Call to static method query() on an unknown class Modules\Core\Models\Relation.
+Error: Call to an undefined method Illuminate\Database\Eloquent\Model::invoiceItems().
+Error: Cannot call method invoiceItems() on Illuminate\Database\Eloquent\Model|int<min, -1>|int<1, max>|string.
+Error: Call to an undefined static method Modules\Products\Models\Product::find().
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$product_id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$quantity.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$price.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$discount.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$subtotal.
+Error: Method Modules\Invoices\Models\Invoice::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Method Modules\Invoices\Models\RecurringInvoice::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Call to an undefined static method Modules\Invoices\Models\Invoice::create().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::customer().
+Error: Method Modules\Payments\Models\Payment::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::customer().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::customer().
+Error: Access to an undefined property Illuminate\Support\Optional::$id.
+Error: Method Modules\Projects\Models\Project::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Method Modules\Projects\Models\Task::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Model::$id.
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::approved().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::canceled().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::draft().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::sent().
+Error: Call to an undefined method Illuminate\Database\Eloquent\Factories\Factory::viewed().
+Error: Call to an undefined method Modules\Quotes\Services\QuoteService::createQuote().
+Error: Call to an undefined static method Modules\Products\Models\Product::find().
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$product.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$product_id.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$item_name.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$quantity.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$price.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$discount.
+Error: Access to an undefined property Illuminate\Database\Eloquent\Model::$subtotal.
+Error: Method Modules\Quotes\Models\Quote::customer() should return Illuminate\Database\Eloquent\Relations\BelongsTo but returns Illuminate\Database\Eloquent\Builder<Modules\Clients\Models\Relation>.
+Error: Ignored error pattern #^Call to an undefined method Illuminate\\Contracts\\Auth\\Factory\:\:id\(\)\.$# (method.notFound) in path /home/runner/work/filament-v4-baseline/filament-v4-baseline/Modules/Quotes/Services/QuoteService.php is expected to occur 1 time, but occurred 2 times.
+Error: Method Modules\Quotes\Services\QuoteService::create() should return Modules\Quotes\Models\Quote but returns Illuminate\Database\Eloquent\Model.
+Error: Call to an undefined method Illuminate\Contracts\Auth\Factory::id().

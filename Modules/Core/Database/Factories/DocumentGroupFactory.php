@@ -7,6 +7,9 @@ use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 
+/**
+ * @extends Factory<DocumentGroup>
+ */
 class DocumentGroupFactory extends Factory
 {
     protected $model = DocumentGroup::class;
@@ -17,10 +20,10 @@ class DocumentGroupFactory extends Factory
 
         return [
             'company_id'              => Company::query()->inRandomOrder()->first()->id,
-            'group_identifier_format' => $groupType->prefix() . '-' . $this->faker->numberBetween(100, 700),
             'type'                    => $groupType->value,
+            'group_identifier_format' => $groupType->prefix() . '-' . $this->faker->numberBetween(100, 700),
             'name'                    => $groupType->label(),
-            'left_pad'                => $groupType->prefix(),
+            'left_pad'                => 1,
             'format'                  => $this->faker->optional()->numerify($groupType->prefix() . '-#####'),
             'next_id'                 => 1,
             'reset_number'            => 1,

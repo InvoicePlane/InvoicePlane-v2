@@ -10,8 +10,6 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * Class AuditLog.
- *
  * @property int         $id
  * @property int         $audit_id
  * @property string      $audit_type
@@ -22,7 +20,9 @@ class AuditLog extends Model
 {
     public $timestamps = false;
 
-    protected $table = 'audit_log';
+    protected $casts = [
+        'audit_id' => 'int',
+    ];
 
     protected $fillable = [
         'audit_id',

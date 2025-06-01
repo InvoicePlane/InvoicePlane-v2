@@ -10,6 +10,9 @@ use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 
+/**
+ * @extends Factory<\Modules\Products\Models\Product>
+ */
 class ProductFactory extends Factory
 {
     protected $model = Product::class;
@@ -30,18 +33,18 @@ class ProductFactory extends Factory
         $tariff = $this->faker->optional()->numberBetween(1, 200);
 
         return [
-            'company_id'    => $company->id,
-            'category_id'   => $category->id,
-            'unit_id'       => $unit->id,
-            'type'          => $itemType->value,
-            'code'          => mb_strtoupper($this->faker->bothify('??###')),
-            'product_name'  => $this->faker->word(),
-            'price'         => $price,
-            'cost_price'    => $cost,
-            'tariff'        => $tariff,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => $taxRate2?->id,
-            'description'   => null,
+            'company_id'     => $company->id,
+            'category_id'    => $category->id,
+            'unit_id'        => $unit->id,
+            'type'           => $itemType->value,
+            'code'           => mb_strtoupper($this->faker->bothify('??###')),
+            'product_name'   => $this->faker->word(),
+            'price'          => $price,
+            'cost_price'     => $cost,
+            'product_tariff' => $tariff,
+            'tax_rate_id'    => $taxRate->id,
+            'tax_rate_2_id'  => $taxRate2?->id,
+            'description'    => null,
         ];
     }
 }

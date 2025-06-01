@@ -2,40 +2,42 @@
 
 namespace Modules\Products\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\NumberFormatter;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Products\Database\Factories\ProductFactory;
 use Modules\Products\Enums\ProductType;
+use Modules\Quotes\Models\QuoteItem;
 
 /**
- * @property int              $id
- * @property int              $company_id
- * @property int              $category_id
- * @property int|null         $unit_id
- * @property int|null         $tax_rate_id
- * @property ProductType      $type
- * @property string           $code
- * @property string           $item_name
- * @property float            $price
- * @property float|null       $cost_price
- * @property int|null         $tariff
- * @property string|null      $description
- * @property Carbon|null      $created_at
- * @property Carbon|null      $updated_at
- * @property Company          $company
- * @property ProductCategory  $category
- * @property ProductUnit|null $productUnit
- * @property TaxRate|null     $taxRate
+ * @property int                      $id
+ * @property int                      $company_id
+ * @property int                      $category_id
+ * @property int|null                 $unit_id
+ * @property string                   $type
+ * @property string|null              $code
+ * @property string|null              $product_name
+ * @property float|null               $price
+ * @property float|null               $cost_price
+ * @property int|null                 $tax_rate_id
+ * @property int|null                 $tax_rate_2_id
+ * @property int|null                 $product_tariff
+ * @property string|null              $description
+ * @property TaxRate|null             $tax_rate
+ * @property ProductCategory          $product_category
+ * @property Company                  $company
+ * @property ProductUnit|null         $product_unit
+ * @property Collection|ExpenseItem[] $expense_items
+ * @property Collection|InvoiceItem[] $invoice_items
+ * @property Collection|QuoteItem[]   $quote_items
  */
 class Product extends Model
 {
@@ -57,9 +59,9 @@ class Product extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function productCategory(): BelongsTo
+    public function expenseItems(): HasMany
     {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->hasMany(ExpenseItem::class, 'item_id');
     }
 
     public function invoiceItems(): HasMany
@@ -67,9 +69,19 @@ class Product extends Model
         return $this->hasMany(InvoiceItem::class, 'item_id');
     }
 
+    public function productCategory(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
     public function productUnit(): BelongsTo
     {
         return $this->belongsTo(ProductUnit::class, 'unit_id');
+    }
+
+    public function quoteItems(): HasMany
+    {
+        return $this->hasMany(QuoteItem::class, 'item_id');
     }
 
     public function taxRate(): BelongsTo
@@ -88,38 +100,11 @@ class Product extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getFormattedPriceAttribute(): string
-    {
-        return CurrencyFormatter::format($this->attributes['price']);
-    }
-
-    public function getFormattedNumericPriceAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['price']);
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
-
-    public function scopeKeywords($query, $keywords)
-    {
-        if ($keywords) {
-            $keywords = explode(' ', $keywords);
-
-            foreach ($keywords as $keyword) {
-                if ($keyword) {
-                    $keyword = mb_strtolower($keyword);
-
-                    $query->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(description),price)"), 'LIKE', "%{$keyword}%");
-                }
-            }
-        }
-
-        return $query;
-    }
 
     /*
     |--------------------------------------------------------------------------

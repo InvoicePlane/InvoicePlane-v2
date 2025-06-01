@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('settings', function (Blueprint $table): void {
             $table->id();
-            $table->string('setting_key', 50)->index('setting_key');
+            $table->string('setting_key', 50)->index();
             $table->longText('setting_value');
         });
     }

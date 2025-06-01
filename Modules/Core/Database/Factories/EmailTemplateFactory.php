@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Models\EmailTemplate;
 
+/**
+ * @extends Factory<\Modules\Core\Models\EmailTemplate>
+ */
 class EmailTemplateFactory extends Factory
 {
     protected $model = EmailTemplate::class;

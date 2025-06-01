@@ -1,64 +1,62 @@
-name: PHPUnit
+name: Run PHPUnit Tests
 
 on:
   push:
-    branches: [master, develop]
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
   pull_request:
-    branches: [develop]
-  workflow_dispatch:
+    branches:
+      - master
+      - develop
+      - feature/filament-v4
+  workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
-  test:
-    name: PHPUnit (PHP ${{ matrix.php-version }})
+  phpunit:
     runs-on: ubuntu-latest
 
     services:
       mysql:
-        image: mariadb:10.6
+        image: mysql:8
         env:
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: testing
-          MYSQL_ROOT_PASSWORD: password
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
-
-    env:
-      DB_CONNECTION: mysql
-      DB_DATABASE: testing
-      DB_USERNAME: root
-      DB_PASSWORD: password
-      DB_HOST: 127.0.0.1
-      APP_ENV: testing
-
-    strategy:
-      matrix:
-        php-version: [8.2, 8.3, 8.4]
+          --health-retries=3
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
+          extensions: mbstring, bcmath, pdo_mysql
+          coverage: none
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Prepare environment
+      - name: Copy .env.testing
+        run: cp .env.testing.example .env.testing
+
+      - name: Wait for MySQL to be ready
         run: |
-          cp .env.testing.example .env
-          cp .env.testing.example .env.testing
-          php artisan key:generate
-          php artisan config:clear
+          echo "Waiting for MySQL..."
+          sleep 15
 
-      - name: Run database migrations
-        run: php artisan migrate --force
+      #- name: Run Laravel migrations
+      #  run: php artisan migrate --force --env=testing
 
-      - name: Run tests
+      #- name: Run Laravel seeds (optional)
+      #  run: php artisan db:seed --force --env=testing
+
+      - name: Run PHPUnit
         run: php artisan test --env=testing

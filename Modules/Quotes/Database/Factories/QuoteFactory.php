@@ -3,6 +3,7 @@
 namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -11,14 +12,17 @@ use Modules\Core\Models\User;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 
+/**
+ * @extends Factory<\Modules\Quotes\Models\Quote>
+ */
 class QuoteFactory extends Factory
 {
     protected $model = Quote::class;
 
     public function definition(): array
     {
-        $company  = Company::factory()->create();
-        $prospect = Relation::factory()->create(['relation_type' => RelationType::PROSPECT->value]);
+        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $prospect = Relation::factory()->create(['company_id' => $company->id, 'relation_type' => RelationType::PROSPECT->value]);
         $user     = User::factory()->create();
         $group    = DocumentGroup::factory()->create();
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,30 +10,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\TaxRateFactory;
 use Modules\Core\Enums\TaxRateType;
-use Modules\Core\Support\NumberFormatter;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Invoices\Models\RecurringInvoiceItem;
 use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
 /**
- * Class TaxRate.
- *
  * @property int                               $id
- * @property string|null                       $name
- * @property float                             $percent
+ * @property int                               $company_id
+ * @property string                            $tax_rate_type
+ * @property bool                              $is_active
+ * @property string                            $code
+ * @property string                            $name
  * @property bool                              $is_compound
  * @property bool                              $calculate_vat
+ * @property float                             $rate
+ * @property Company                           $company
+ * @property Collection|ExpenseItem[]          $expense_items
  * @property Collection|InvoiceItem[]          $invoice_items
  * @property Collection|Invoice[]              $invoices
- * @property Collection|ItemLookup[]           $products
+ * @property Collection|Product[]              $products
  * @property Collection|QuoteItem[]            $quote_items
  * @property Collection|Quote[]                $quotes
  * @property Collection|RecurringInvoiceItem[] $recurring_invoice_items
+ * @property Collection|Task[]                 $tasks
  */
 class TaxRate extends Model
 {
@@ -55,48 +62,11 @@ class TaxRate extends Model
     |--------------------------------------------------------------------------
     */
 
-    public static function getList()
-    {
-        return ['0' => trans('ip.none')] + self::pluck('name', 'id')->all();
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Accessors
     |--------------------------------------------------------------------------
     */
-
-    public function getFormattedPercentAttribute()
-    {
-        return NumberFormatter::format($this->attributes['percent'], null, 3) . '%';
-    }
-
-    public function getFormattedNumericPercentAttribute()
-    {
-        return NumberFormatter::format($this->attributes['percent'], null, 3);
-    }
-
-    public function getFormattedIsCompoundAttribute()
-    {
-        return ($this->attributes['is_compound']) ? trans('ip.yes') : trans('ip.no');
-    }
-
-    public function getInUseAttribute()
-    {
-        if (InvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
-            return true;
-        }
-
-        if (RecurringInvoiceItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
-            return true;
-        }
-
-        if (QuoteItem::where('tax_rate_id', $this->id)->orWhere('tax_rate_2_id', $this->id)->count()) {
-            return true;
-        }
-
-        return (bool) (config('ip.itemTaxRate') == $this->id || config('ip.itemTax2Rate') == $this->id);
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -142,7 +112,7 @@ class TaxRate extends Model
 
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class, 'tax_rate_id');
+        return $this->hasMany(Task::class, 'task_id');
     }
 
     /*

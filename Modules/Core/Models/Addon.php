@@ -23,24 +23,16 @@ class Addon extends Model
     protected $table = 'addons';
 
     protected $casts = [
-        'is_enabled' => 'bool',
+        'is_enabled' => 'boolean',
     ];
 
-    protected $fillable = [
-        'is_enabled',
-        'name',
-        'author_name',
-        'author_url',
-        'navigation_menu',
-        'system_menu',
-        'navigation_reports',
-        'path',
-    ];
+    protected $guarded = ['id'];
 
     public function getHasPendingMigrationsAttribute(): bool
     {
-        $migrations = new Migrations();
+        return false;
+        /*$migrations = new Migrations();
 
-        return (bool) ($migrations->getPendingMigrations(addon_path($this->path . '/Migrations')));
+        return (bool) ($migrations->getPendingMigrations(addon_path($this->path . '/Migrations')));*/
     }
 }

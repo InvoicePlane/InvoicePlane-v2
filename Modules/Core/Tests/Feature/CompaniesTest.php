@@ -3,10 +3,10 @@
 namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\EditCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
+use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\CreateCompany;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\EditCompany;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
 use Modules\Core\Models\Company;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

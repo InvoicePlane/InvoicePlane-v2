@@ -10,6 +10,6 @@ class CustomerWasUpdatedListener
 
     public function handle(Relation $event): void
     {
-        $client = $event->client;
+        $client = $event->customer;
     }
 }

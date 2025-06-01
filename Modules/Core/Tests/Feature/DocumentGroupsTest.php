@@ -3,10 +3,10 @@
 namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\CreateDocumentGroup;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\EditDocumentGroup;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource\Pages\ListDocumentGroups;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\CreateDocumentGroup;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\EditDocumentGroup;
+use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\ListDocumentGroups;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

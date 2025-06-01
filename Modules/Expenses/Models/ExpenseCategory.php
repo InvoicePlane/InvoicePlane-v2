@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Database\Factories\ExpenseCategoryFactory;
 
 /**
  * @property int                  $id
- * @property string               $name
+ * @property int                  $company_id
+ * @property string               $category_name
+ * @property Company              $company
  * @property Collection|Expense[] $expenses
  */
 class ExpenseCategory extends Model
@@ -22,6 +25,9 @@ class ExpenseCategory extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+    ];
+
     protected $guarded = [];
 
     /*
@@ -29,30 +35,6 @@ class ExpenseCategory extends Model
     | Static Methods
     |--------------------------------------------------------------------------
     */
-    public static function firstOrCreateByName($categoryName)
-    {
-        $expenseCategory = self::firstOrNew([
-            'name' => $categoryName,
-        ]);
-
-        if ( ! $expenseCategory->id) {
-            $expenseCategory->name = $categoryName;
-            $expenseCategory->save();
-
-            return self::query()->find($expenseCategory->id);
-        }
-
-        return $expenseCategory;
-    }
-
-    public static function getList()
-    {
-        return self::whereIn('id', function ($query): void {
-            $query->select('category_id')->distinct()->from('expenses');
-        })->orderBy('name')
-            ->pluck('name', 'id')
-            ->all();
-    }
 
     /*
     |--------------------------------------------------------------------------

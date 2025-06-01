@@ -12,10 +12,10 @@ return new class () extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->string('type');
             $table->string('name');
-            $table->string('group_identifier_format', 191);
-            $table->string('left_pad')->nullable();
+            $table->string('group_identifier_format');
+            $table->unsignedBigInteger('next_id');
+            $table->unsignedBigInteger('left_pad')->default(0)->index();
             $table->string('format')->nullable();
-            $table->integer('next_id')->default(1);
             $table->unsignedBiginteger('reset_number');
             $table->unsignedBiginteger('last_id');
             $table->unsignedBiginteger('last_year');

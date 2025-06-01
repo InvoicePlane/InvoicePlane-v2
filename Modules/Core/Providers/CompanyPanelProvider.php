@@ -11,6 +11,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
@@ -20,24 +21,20 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\File;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Modules\Clients\Filament\Company\Resources\ContactResource;
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
-use Modules\Core\Filament\Company\Pages\Dashboard;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
-use Modules\Products\Filament\Company\Resources\ProductResource;
-use Modules\Products\Filament\Company\Resources\ProductUnitResource;
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-use Nwidart\Modules\Facades\Module;
+use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
+use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
+use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\RecurringInvoiceResource;
+use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
+use Modules\Products\Filament\Company\Resources\ProductCategories\ProductCategoryResource;
+use Modules\Products\Filament\Company\Resources\Products\ProductResource;
+use Modules\Products\Filament\Company\Resources\ProductUnits\ProductUnitResource;
+use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
+use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 
 class CompanyPanelProvider extends PanelProvider
 {
@@ -46,8 +43,7 @@ class CompanyPanelProvider extends PanelProvider
         /** @var Panel $companyPanel */
         $panel = $companyPanel
             ->id('company')
-            ->path('')
-            ->default()
+            ->path('company')
             ->login()
             ->passwordReset()
             ->emailVerification()
@@ -106,6 +102,28 @@ class CompanyPanelProvider extends PanelProvider
                     950 => '#0A2917',
                 ],
             ])
+            ->unsavedChangesAlerts()
+            ->sidebarCollapsibleOnDesktop()
+            ->resources([
+                ContactResource::class,
+                RelationResource::class,
+                ExpenseResource::class,
+                ExpenseCategoryResource::class,
+                InvoiceResource::class,
+                RecurringInvoiceResource::class,
+                PaymentResource::class,
+                ProductResource::class,
+                ProductUnitResource::class,
+                ProductCategoryResource::class,
+                ProjectResource::class,
+                TaskResource::class,
+                QuoteResource::class,
+            ])
+            ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
+            ->pages([
+                Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
@@ -116,41 +134,40 @@ class CompanyPanelProvider extends PanelProvider
                     ])
                     ->groups([
                         NavigationGroup::make('Customers')
-                            ->icon('heroicon-o-user-group')
+                            //->icon('heroicon-o-user-group')
                             ->items([
-                                ...CustomerResource::getNavigationItems(),
+                                ...RelationResource::getNavigationItems(),
                                 ...ContactResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Expenses')
-                            ->icon('heroicon-o-banknotes')
+                            //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...ExpenseResource::getNavigationItems(),
                                 ...ExpenseCategoryResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Quotes')
-                            ->icon('heroicon-o-document-text')
+                            //->icon('heroicon-o-document-text')
                             ->items([
                                 ...QuoteResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Invoices')
-                            ->icon('heroicon-o-banknotes')
+                            //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
                                 ...RecurringInvoiceResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Payments')
-                            ->icon('heroicon-o-currency-dollar')
+                            //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...PaymentResource::getNavigationItems(),
-                                ...PaymentMethodResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Resources')
-                            ->icon('heroicon-o-archive-box')
+                            //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...ProductResource::getNavigationItems(),
                                 ...ProductCategoryResource::getNavigationItems(),
@@ -163,21 +180,6 @@ class CompanyPanelProvider extends PanelProvider
             })
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(
-                in: app_path('Filament/Resources'),
-                for: 'Modules\Core\\Filament\\Resources'
-            )
-            ->discoverPages(
-                in: app_path('Filament/Pages'),
-                for: 'Modules\Core\\Filament\\Pages'
-            )
-            ->discoverWidgets(
-                in: app_path('Filament/Widgets'),
-                for: 'Modules\Core\\Filament\\Widgets'
-            )
-            ->pages([
-                Dashboard::class,
-            ])
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -202,25 +204,6 @@ class CompanyPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
 
-        foreach (Module::collections() as $module) {
-            $name = $module->getName();
-            $base = module_path($name, 'Filament');
-
-            if (File::isDirectory("{$base}/Company/Resources")) {
-                $panel = $panel->discoverResources(
-                    in: "{$base}/Company/Resources",
-                    for: "Modules\\{$name}\\Filament\\Company\\Resources"
-                );
-            }
-
-            if (File::isDirectory("{$base}/Company/Pages")) {
-                $panel = $panel->discoverPages(
-                    in: "{$base}/Company/Pages",
-                    for: "Modules\\{$name}\\Filament\\Company\\Pages"
-                );
-            }
-        }
-
-        return $panel;
+        return $companyPanel;
     }
 }

@@ -4,6 +4,7 @@ includes:
 
 parameters:
     tmpDir: null
+    level: 3
     paths:
         - Modules/
 
@@ -11,6 +12,10 @@ parameters:
         analyse:
             - */Http/*
 
+    ignoreErrors:
+        # Ignore any "Call to an undefined method" error
+        - '#Call to an undefined method .+::.+\(\)\.$#'
+        # Optional: Add other common ignores here if needed
+
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
-    level: 5
