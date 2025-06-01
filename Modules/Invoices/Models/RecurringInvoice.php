@@ -66,26 +66,6 @@ class RecurringInvoice extends Model
 
     protected $guarded = [];
 
-    /**
-     * Observer.
-     */
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function ($recurringInvoice): void {
-            event(new RecurringInvoiceCreating($recurringInvoice));
-        });
-
-        static::created(function ($recurringInvoice): void {
-            event(new RecurringInvoiceCreated($recurringInvoice));
-        });
-
-        static::deleted(function ($recurringInvoice): void {
-            event(new RecurringInvoiceDeleted($recurringInvoice));
-        });
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -133,117 +113,11 @@ class RecurringInvoice extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getFormattedFooterAttribute(): string
-    {
-        return nl2br($this->attributes['footer']);
-    }
-
-    public function getFormattedNextDateAttribute(): string
-    {
-        if ($this->attributes['next_recurring_at'] != '0000-00-00') {
-            return DateFormatter::format($this->attributes['next_recurring_at']);
-        }
-
-        return '';
-    }
-
-    public function getFormattedNumericDiscountAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['discount']);
-    }
-
-    public function getFormattedStopDateAttribute(): string
-    {
-        if ($this->attributes['stop_recurring_at'] != '0000-00-00') {
-            return DateFormatter::format($this->attributes['stop_recurring_at']);
-        }
-
-        return '';
-    }
-
-    public function getFormattedTermsAttribute(): string
-    {
-        return nl2br($this->attributes['terms']);
-    }
-
-    public function getIsForeignCurrencyAttribute(): bool
-    {
-        return ! ($this->attributes['currency_code'] == config('ip.baseCurrency'));
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
-
-    public function scopeActive($query)
-    {
-        return $query->where('stop_recurring_at', '0000-00-00')
-            ->orWhere('stop_recurring_at', '>', date('Y-m-d'));
-    }
-
-    public function scopeClientId($query, $clientId = null)
-    {
-        if ($clientId) {
-            $query->where('customer_id', $clientId);
-        }
-
-        return $query;
-    }
-
-    public function scopeCompanyProfileId($query, $companyProfileId = null)
-    {
-        if ($companyProfileId) {
-            $query->where('company_id', $companyProfileId);
-        }
-
-        return $query;
-    }
-
-    public function scopeInactive($query)
-    {
-        return $query->where('stop_recurring_at', '<>', '0000-00-00')
-            ->where('stop_recurring_at', '<=', date('Y-m-d'));
-    }
-
-    public function scopeKeywords($query, $keywords = null)
-    {
-        if ($keywords) {
-            $keywords = mb_strtolower($keywords);
-
-            $query->where('summary', 'like', '%' . $keywords . '%')
-                ->orWhereIn('customer_id', function ($query) use ($keywords): void {
-                    $query->select('id')->from('customers')->where(DB::raw("CONCAT_WS('^',LOWER(name),LOWER(unique_name))"), 'like', '%' . $keywords . '%');
-                });
-        }
-
-        return $query;
-    }
-
-    public function scopeRecurNow($query)
-    {
-        $query->where('next_recurring_at', '<>', '0000-00-00');
-        $query->where('next_recurring_at', '<=', date('Y-m-d'));
-        $query->where(function ($q): void {
-            $q->where('stop_recurring_at', '0000-00-00');
-            $q->orWhere('next_recurring_at', '<=', DB::raw('stop_recurring_at'));
-        });
-
-        return $query;
-    }
-
-    public function scopeStatus($query, $status)
-    {
-        switch ($status) {
-            case 'is_active':
-                return $query->active();
-            case 'inactive':
-                return $query->inactive();
-        }
-
-        return $query;
-    }
 
     /*
     |--------------------------------------------------------------------------

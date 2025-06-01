@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support\ProfileImage;
 
-use Modules\Core\Support\Directory;
-
 class ProfileImageFactory
 {
     public static function create()
@@ -11,19 +9,5 @@ class ProfileImageFactory
         $class = 'Modules\Core\Support\ProfileImage\Drivers\\' . config('ip.profileImageDriver', 'Gravatar');
 
         return new $class();
-    }
-
-    public static function getDrivers()
-    {
-        $driverFiles = Directory::listContents(app_path('Support/ProfileImage/MerchantDrivers'));
-        $drivers     = [];
-
-        foreach ($driverFiles as $driverFile) {
-            $driver = str_replace('.php', '', $driverFile);
-
-            $drivers[$driver] = $driver;
-        }
-
-        return $drivers;
     }
 }

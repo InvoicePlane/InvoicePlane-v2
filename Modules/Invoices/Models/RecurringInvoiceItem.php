@@ -4,9 +4,7 @@ namespace Modules\Invoices\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Models\RecurringInvoice;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
 
 /**
@@ -67,29 +65,6 @@ class RecurringInvoiceItem extends Model
         'description',
     ];
 
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::saving(function ($recurringInvoiceItem): void {
-            event(new RecurringInvoiceItemSaving($recurringInvoiceItem));
-        });
-
-        static::saved(function ($recurringInvoiceItem): void {
-            event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
-        });
-
-        static::deleting(function ($recurringInvoiceItem): void {
-            $recurringInvoiceItem->amount()->delete();
-        });
-
-        static::deleted(function ($recurringInvoiceItem): void {
-            if ($recurringInvoiceItem->recurringInvoice) {
-                event(new RecurringInvoiceModified($recurringInvoiceItem->recurringInvoice));
-            }
-        });
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -115,24 +90,4 @@ class RecurringInvoiceItem extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-
-    public function getFormattedQuantityAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['quantity']);
-    }
-
-    public function getFormattedNumericPriceAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['price']);
-    }
-
-    public function getFormattedPriceAttribute(): string
-    {
-        return CurrencyFormatter::format($this->attributes['price'], $this->recurringInvoice->currency);
-    }
-
-    public function getFormattedDescriptionAttribute(): string
-    {
-        return nl2br($this->attributes['description']);
-    }
 }

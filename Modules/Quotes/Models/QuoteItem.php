@@ -59,32 +59,6 @@ class QuoteItem extends Model
 
     protected $guarded = [];
 
-    /**
-     * Observer.
-     */
-    public static function boot(): void
-    {
-        parent::boot();
-
-        static::deleting(function ($quoteItem): void {
-            $quoteItem->amount()->delete();
-        });
-
-        static::deleted(function ($quoteItem): void {
-            if ($quoteItem->quote) {
-                //event(new QuoteModified($quoteItem->quote));
-            }
-        });
-
-        static::saving(function ($quoteItem): void {
-            //event(new QuoteItemSaving($quoteItem));
-        });
-
-        static::saved(function ($quoteItem): void {
-            //event(new QuoteModified($quoteItem->quote));
-        });
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -125,26 +99,6 @@ class QuoteItem extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-
-    public function getFormattedQuantityAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['quantity']);
-    }
-
-    public function getFormattedNumericPriceAttribute(): float
-    {
-        return NumberFormatter::format($this->attributes['price']);
-    }
-
-    public function getFormattedPriceAttribute(): string
-    {
-        return CurrencyFormatter::format($this->attributes['price'], $this->quote->currency);
-    }
-
-    public function getFormattedDescriptionAttribute(): string
-    {
-        return nl2br($this->attributes['description']);
-    }
 
     /*
     |--------------------------------------------------------------------------
