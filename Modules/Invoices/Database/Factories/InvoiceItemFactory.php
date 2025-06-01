@@ -11,7 +11,7 @@ use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 
 /**
- * @extends Factory<\Modules\Invoices\Models\InvoiceItem>
+ * @extends Factory<InvoiceItem>
  */
 class InvoiceItemFactory extends Factory
 {

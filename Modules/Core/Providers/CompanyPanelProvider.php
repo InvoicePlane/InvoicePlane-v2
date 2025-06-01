@@ -185,9 +185,9 @@ class CompanyPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label(__('change_password')),
-                MenuItem::make()->label(__('settings'))->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label(__('logout')),
+                'profile' => MenuItem::make()->label(trans('change_password')),
+                MenuItem::make()->label(trans('settings'))->icon('heroicon-o-cog-6-tooth'),
+                'logout' => MenuItem::make()->label(trans('logout')),
             ])
             ->middleware([
                 EncryptCookies::class,

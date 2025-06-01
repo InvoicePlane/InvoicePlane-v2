@@ -7,7 +7,7 @@ use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Models\EmailTemplate;
 
 /**
- * @extends Factory<\Modules\Core\Models\EmailTemplate>
+ * @extends Factory<EmailTemplate>
  */
 class EmailTemplateFactory extends Factory
 {

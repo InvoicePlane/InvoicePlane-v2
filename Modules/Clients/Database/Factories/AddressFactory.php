@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Clients\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Models\Address;
 use Modules\Core\Models\Company;
 
 /**
- * @extends Address>
+ * @extends <Address>
  */
 class AddressFactory extends Factory
 {

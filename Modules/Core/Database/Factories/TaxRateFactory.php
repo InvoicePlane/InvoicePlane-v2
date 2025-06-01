@@ -8,7 +8,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 
 /**
- * @extends Factory<\Modules\Core\Models\TaxRate>
+ * @extends Factory<TaxRate>
  */
 class TaxRateFactory extends Factory
 {

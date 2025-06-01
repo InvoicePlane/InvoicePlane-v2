@@ -12,7 +12,7 @@ use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 
 /**
- * @extends Factory<\Modules\Invoices\Models\Invoice>
+ * @extends Factory<Invoice>
  */
 class InvoiceFactory extends Factory
 {

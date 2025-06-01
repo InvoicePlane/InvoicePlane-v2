@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\CustomFieldValue;
 
 /**
- * @extends Factory<\Modules\Core\Models\CustomFieldValue>
+ * @extends Factory<CustomFieldValue>
  */
 class CustomFieldValueFactory extends Factory
 {

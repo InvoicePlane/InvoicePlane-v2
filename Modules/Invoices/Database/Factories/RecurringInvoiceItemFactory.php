@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Factories;
+namespace Modules\Invoices\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Invoices\Models\RecurringInvoiceItem;
 
 /**
- * @extends Factory<\Modules\Invoices\Models\RecurringInvoiceItem>
+ * @extends Factory<RecurringInvoiceItem>
  */
 class RecurringInvoiceItemFactory extends Factory
 {
