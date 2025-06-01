@@ -1,76 +1,82 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^PHPDoc tag @extends has invalid value \(\<Address\>\)\: Unexpected token "\<", expected type at offset 16 on line 2$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: Modules/Clients/Database/Factories/AddressFactory.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class Modules\\Core\\Enums\\Gender\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Clients/Database/Factories/ContactFactory.php
+
+		-
+			message: '#^Constructor of class Modules\\Clients\\Events\\RelationCreating has an unused parameter \$client\.$#'
+			identifier: constructor.unusedParameter
+			count: 1
+			path: Modules/Clients/Events/RelationCreating.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$communications\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/Clients/Filament/Company/Resources/ContactResource.php
+			path: Modules/Clients/Filament/Company/Resources/Contacts/Schemas/ContactForm.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Support\\Optional\:\:where\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: Modules/Clients/Filament/Company/Resources/ContactResource.php
-
-		-
-			message: '#^Parameter \#1 \$condition of method Filament\\Forms\\Components\\Field\:\:required\(\) expects bool\|Closure, array\|string given\.$#'
-			identifier: argument.type
+			message: '#^Class Modules\\Clients\\Filament\\Company\\Resources\\Contacts\\Tables\\Gender not found\.$#'
+			identifier: class.notFound
 			count: 1
-			path: Modules/Clients/Filament/Company/Resources/ContactResource.php
+			path: Modules/Clients/Filament/Company/Resources/Contacts/Tables/ContactsTable.php
 
 		-
-			message: '#^Using nullsafe property access "\?\-\>contactable_value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Clients/Filament/Company/Resources/ContactResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Importers\\ContactImporter\:\:\$messages\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Importers/ContactImporter.php
-
-		-
-			message: '#^Call to an undefined method Modules\\Clients\\Importers\\ContactImporter\:\:validateRecord\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Importers/ContactImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Contact\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Importers/ContactImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\CustomField\:\:forTable\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Importers/ContactImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Importers/CustomerImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\CustomField\:\:forTable\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Importers/CustomerImporter.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$client\.$#'
+			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$customer\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Clients/Listeners/CustomerWasCreatedListener.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$client\.$#'
+			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$customer\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Clients/Listeners/CustomerWasUpdatedListener.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Clients/Models/Address.php
+
+		-
+			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Address\:\:\$company contains unknown class Modules\\Clients\\Models\\Company\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Clients/Models/Address.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Clients/Models/Addressable.php
+
+		-
+			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Addressable\:\:\$company contains unknown class Modules\\Clients\\Models\\Company\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Clients/Models/Addressable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Clients/Models/Communication.php
+
+		-
+			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Communication\:\:\$company contains unknown class Modules\\Clients\\Models\\Company\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Clients/Models/Communication.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -85,25 +91,7 @@ parameters:
 			path: Modules/Clients/Models/Contact.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Contact.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$first_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$last_name\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Clients/Models/Contact.php
@@ -115,8 +103,8 @@ parameters:
 			path: Modules/Clients/Models/Contact.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Modules\\Core\\Models\\Company\:\:\$company_name\.$#'
+			identifier: property.notFound
 			count: 1
 			path: Modules/Clients/Models/Contact.php
 
@@ -127,298 +115,16 @@ parameters:
 			path: Modules/Clients/Models/Relation.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$balance\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$currency\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Clients/Models/Relation.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$email\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Clients/Models/Relation.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$paid\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:firstOrNew\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to method where\(\) on an unknown class Modules\\Clients\\Models\\Builder\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to static method getStatusId\(\) on an unknown class Modules\\Clients\\Models\\InvoiceStatuses\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to static method getTablePrefix\(\) on an unknown class Modules\\Clients\\Models\\DB\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to static method raw\(\) on an unknown class Modules\\Clients\\Models\\DB\.$#'
-			identifier: class.notFound
-			count: 11
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Call to static method table\(\) on an unknown class Modules\\Clients\\Models\\DB\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Function attachment_path not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Function formatAddress not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Instantiated class Modules\\Clients\\Models\\ClientCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Instantiated class Modules\\Clients\\Models\\ClientCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Instantiated class Modules\\Clients\\Models\\ClientDeleted not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Instantiated class Modules\\Clients\\Models\\ClientSaving not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Method Modules\\Clients\\Models\\Relation\:\:scopeStatus\(\) has invalid return type Modules\\Clients\\Models\\Builder\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$contacts contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$expenses contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$invoices contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$quotes contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$recurring_invoices contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Clients\\Models\\Relation\:\:\$users contains unknown class Modules\\Clients\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:hasOne\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Parameter \$query of method Modules\\Clients\\Models\\Relation\:\:scopeStatus\(\) has invalid type Modules\\Clients\\Models\\Builder\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Clients/Models/Relation.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Contact\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Observers/ContactObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Clients\\Models\\Relation\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Observers/RelationObserver.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Clients/Services/CustomerService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_birthdate\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$client_surname\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Call to static method actingAs\(\) on an unknown class Modules\\Clients\\Tests\\Api\\Sanctum\.$#'
-			identifier: class.notFound
 			count: 4
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Clients/Tests/Api/ClientsApiTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Clients/Tests/Feature/ContactsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 8
-			path: Modules/Clients/Tests/Feature/CustomersTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Clients/Tests/Unit/Importers/ContactImporterTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Clients/Tests/Unit/Importers/CustomerImporterTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Clients/Tests/Unit/Services/CustomerAssignmentServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Clients/Tests/Unit/Services/CustomerServiceTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:getAttribute\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: Modules/Core/Commands/MakeUserCommand.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Guard\:\:getProvider\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Commands/MakeUserCommand.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
@@ -427,10 +133,46 @@ parameters:
 			path: Modules/Core/Database/Factories/UserFactory.php
 
 		-
-			message: '#^Method Illuminate\\Database\\Eloquent\\Factories\\Factory\<Illuminate\\Database\\Eloquent\\Model\>\:\:has\(\) invoked with 0 parameters, 1\-2 required\.$#'
-			identifier: arguments.count
+			message: '#^Access to an undefined property Modules\\Core\\Events\\AttachmentCreating\:\:\$attachment\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Core/Database/Seeders/CompaniesSeeder.php
+			path: Modules/Core/Events/AttachmentCreating.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Core\\Events\\AttachmentDeleted\:\:\$attachment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Core/Events/AttachmentDeleted.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Core\\Events\\SettingSaving\:\:\$setting\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Core/Events/SettingSaving.php
+
+		-
+			message: '#^Call to method schema\(\) on an unknown class Filament\\Forms\\Form\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Core/Filament/Admin/Pages/Auth/EditProfile.php
+
+		-
+			message: '#^Method Modules\\Core\\Filament\\Admin\\Pages\\Auth\\EditProfile\:\:form\(\) has invalid return type Filament\\Forms\\Form\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Core/Filament/Admin/Pages/Auth/EditProfile.php
+
+		-
+			message: '#^Parameter \$form of method Modules\\Core\\Filament\\Admin\\Pages\\Auth\\EditProfile\:\:form\(\) has invalid type Filament\\Forms\\Form\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Core/Filament/Admin/Pages/Auth/EditProfile.php
+
+		-
+			message: '#^Call to static method slug\(\) on an unknown class Modules\\Core\\Filament\\Admin\\Resources\\Companies\\Schemas\\Str\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Core/Filament/Admin/Resources/Companies/Schemas/CompanyForm.php
 
 		-
 			message: '#^Call to an undefined static method UnitEnum\:\:tryFrom\(\)\.$#'
@@ -451,252 +193,6 @@ parameters:
 			path: Modules/Core/Helpers/TempFileCleanupHelper.php
 
 		-
-			message: '#^Method Modules\\Core\\Importers\\AbstractImporter\:\:getFileHandle\(\) has invalid return type Modules\\Core\\Importers\\Handle\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/AbstractImporter.php
-
-		-
-			message: '#^Method Modules\\Core\\Importers\\AbstractImporter\:\:getFileHandle\(\) should return Modules\\Core\\Importers\\Handle but returns resource\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Core/Importers/AbstractImporter.php
-
-		-
-			message: '#^PHPDoc tag @return has invalid value \(Validator;\)\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 113 on line 6$#'
-			identifier: phpDoc.parseError
-			count: 1
-			path: Modules/Core/Importers/AbstractImporter.php
-
-		-
-			message: '#^Parameter \#1 \$data of static method Illuminate\\Support\\Facades\\Validator\:\:make\(\) expects array, Modules\\Core\\Importers\\Input given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Importers/AbstractImporter.php
-
-		-
-			message: '#^Parameter \$input of method Modules\\Core\\Importers\\AbstractImporter\:\:validateMap\(\) has invalid type Modules\\Core\\Importers\\Input\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/AbstractImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\Expense\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/ExpenseImporter.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Factory\:\:user\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\Company\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Core\\Importers\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to static method get\(\) on an unknown class Modules\\Core\\Importers\\Group\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to static method select\(\) on an unknown class Modules\\Core\\Importers\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\TaxRate\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceItemImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceItemImporter.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Importers\\InvoiceModified not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/InvoiceItemImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/PaymentImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\Payment\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/PaymentImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\PaymentMethod\:\:firstOrCreate\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: Modules/Core/Importers/PaymentImporter.php
-
-		-
-			message: '#^Property Modules\\Core\\Importers\\PaymentImporter\:\:\$paymentValidator is unused\.$#'
-			identifier: property.unused
-			count: 1
-			path: Modules/Core/Importers/PaymentImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\TaxRate\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/ProductImporter.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Core\\Importers\\ItemLookup\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/ProductImporter.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Factory\:\:user\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\Company\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\Quote\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Core\\Importers\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to static method get\(\) on an unknown class Modules\\Core\\Importers\\Group\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to static method select\(\) on an unknown class Modules\\Core\\Importers\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\TaxRate\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteItemImporter.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\Quote\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteItemImporter.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Importers\\QuoteModified not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Importers/QuoteItemImporter.php
-
-		-
-			message: '#^Function addon_path not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Core/Models/Addon.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Address.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/Address.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Addressable.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/Addressable.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\Attachment\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
-			message: '#^Class Modules\\Users\\Models\\User not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Events\\AttachmentCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Events\\AttachmentDeleted not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\Attachment\:\:\$user contains unknown class Modules\\Users\\Models\\User\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Models/Attachment.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Core\\Models\\AuditLog\:\:\$audit\.$#'
 			identifier: property.notFound
 			count: 1
@@ -709,135 +205,15 @@ parameters:
 			path: Modules/Core/Models/AuditLog.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Core/Models/AuditLog.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Communication.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/Communication.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\Company\:\:orderBy\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\Expense\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\Quote\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Class Modules\\Core\\Models\\Invoice not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Class Modules\\Core\\Models\\Quote not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
 			message: '#^Function formatAddress not found\.$#'
 			identifier: function.notFound
 			count: 1
 			path: Modules/Core/Models/Company.php
 
 		-
-			message: '#^Instantiated class Modules\\Core\\Models\\CompanyProfileCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Models\\CompanyProfileCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Models\\CompanyProfileDeleted not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Models\\CompanyProfileSaving not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Company.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:hasMany\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: Modules/Core/Models/Company.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Binary operation "\+" between string and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\CustomField\:\:forTable\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 2
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\CustomField\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Call to static method hasColumn\(\) on an unknown class Modules\\Core\\Models\\Schema\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/CustomField.php
-
-		-
-			message: '#^Call to static method table\(\) on an unknown class Modules\\Core\\Models\\Schema\.$#'
-			identifier: class.notFound
-			count: 2
 			path: Modules/Core/Models/CustomField.php
 
 		-
@@ -847,20 +223,8 @@ parameters:
 			path: Modules/Core/Models/CustomFieldValue.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/CustomFieldValue.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/DocumentGroup.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
 			count: 1
 			path: Modules/Core/Models/DocumentGroup.php
 
@@ -877,20 +241,8 @@ parameters:
 			path: Modules/Core/Models/DocumentGroup.php
 
 		-
-			message: '#^Parameter \#1 \$string of function mb_str_pad expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Models/DocumentGroup.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/EmailTemplate.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
 			count: 1
 			path: Modules/Core/Models/EmailTemplate.php
 
@@ -901,44 +253,14 @@ parameters:
 			path: Modules/Core/Models/Import.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/Import.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Core/Models/ImportDetail.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/ImportDetail.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Note.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\Note\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Note.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\Note\:\:\$note\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Note.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
 			count: 1
 			path: Modules/Core/Models/Note.php
 
@@ -955,20 +277,8 @@ parameters:
 			path: Modules/Core/Models/Setting.php
 
 		-
-			message: '#^Instantiated class Modules\\Core\\Events\\SettingSaving not found\.$#'
+			message: '#^Caught class Modules\\Core\\Models\\PDOException not found\.$#'
 			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/Setting.php
-
-		-
-			message: '#^PHPDoc type array of property Modules\\Core\\Models\\Setting\:\:\$timestamps is not covariant with PHPDoc type bool of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$timestamps\.$#'
-			identifier: property.phpDocType
-			count: 1
-			path: Modules/Core/Models/Setting.php
-
-		-
-			message: '#^Property Modules\\Core\\Models\\Setting\:\:\$timestamps \(array\) does not accept default value of type false\.$#'
-			identifier: property.defaultValue
 			count: 1
 			path: Modules/Core/Models/Setting.php
 
@@ -979,104 +289,8 @@ parameters:
 			path: Modules/Core/Models/TaxRate.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\TaxRate\:\:pluck\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\InvoiceItem\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\QuoteItem\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Call to static method where\(\) on an unknown class Modules\\Core\\Models\\RecurringInvoiceItem\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Class Modules\\Core\\Models\\RecurringInvoiceItem not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$invoice_items contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$invoices contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$products contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$products contains unknown class Modules\\Core\\Models\\ItemLookup\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$quote_items contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$quotes contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$recurring_invoice_items contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\TaxRate\:\:\$recurring_invoice_items contains unknown class Modules\\Core\\Models\\RecurringInvoiceItem\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/TaxRate.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:hasMany\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: Modules/Core/Models/TaxRate.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/Upload.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
 			count: 1
 			path: Modules/Core/Models/Upload.php
 
@@ -1087,50 +301,8 @@ parameters:
 			path: Modules/Core/Models/UploadDetail.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/UploadDetail.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$customer_id\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model&object\{pivot\: Illuminate\\Database\\Eloquent\\Relations\\Pivot\}\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Models\\UserCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Models\\UserDeleted not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\User\:\:\$attachments contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\User\:\:\$expenses contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\User\:\:\$quotes contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Models/User.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Core\\Models\\User\:\:\$recurringInvoices contains unknown class Modules\\Core\\Models\\Collection\.$#'
-			identifier: class.notFound
 			count: 1
 			path: Modules/Core/Models/User.php
 
@@ -1141,19 +313,7 @@ parameters:
 			path: Modules/Core/Models/UserProfile.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Models/UserProfile.php
-
-		-
-			message: '#^Call to an undefined static method Nwidart\\Modules\\Facades\\Module\:\:collections\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Core/Providers/CompanyPanelProvider.php
-
-		-
-			message: '#^Call to static method where\(\) on an unknown class Modules\\Core\\Reports\\Customer\.$#'
+			message: '#^Call to static method where\(\) on an unknown class Modules\\Core\\Models\\Customer\.$#'
 			identifier: class.notFound
 			count: 1
 			path: Modules/Core/Reports/ClientStatementReport.php
@@ -1207,33 +367,15 @@ parameters:
 			path: Modules/Core/Reports/TaxSummaryReport.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Modules\\Invoices\\Models\\Invoice\>\:\:paid\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Reports/TaxSummaryReport.php
-
-		-
 			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\Expense\:\:where\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
 			path: Modules/Core/Reports/TaxSummaryReport.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\:\:paginate\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Services/BaseService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Core\\Support\\Contacts\:\:\$customer\.$#'
 			identifier: property.notFound
 			count: 10
-			path: Modules/Core/Support/Contacts.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Factory\:\:user\(\)\.$#'
-			identifier: method.notFound
-			count: 1
 			path: Modules/Core/Support/Contacts.php
 
 		-
@@ -1249,32 +391,8 @@ parameters:
 			path: Modules/Core/Support/Contacts.php
 
 		-
-			message: '#^Property Modules\\Core\\Support\\Contacts\:\:\$client is unused\.$#'
-			identifier: property.unused
-			count: 1
-			path: Modules/Core/Support/Contacts.php
-
-		-
-			message: '#^Parameter \#3 \$pad_string of function mb_str_pad expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Support/DashboardWidgets.php
-
-		-
 			message: '#^Method Modules\\Core\\Support\\DateFormatter\:\:unformat\(\) should return string but return statement is missing\.$#'
 			identifier: return.missing
-			count: 1
-			path: Modules/Core/Support/DateFormatter.php
-
-		-
-			message: '#^Parameter \#2 \$datetime of static method DateTime\:\:createFromFormat\(\) expects string, Modules\\Core\\Support\\date given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Core/Support/DateFormatter.php
-
-		-
-			message: '#^Parameter \#6 \$year of function mktime expects int\|null, string given\.$#'
-			identifier: argument.type
 			count: 1
 			path: Modules/Core/Support/DateFormatter.php
 
@@ -1345,8 +463,14 @@ parameters:
 			path: Modules/Core/Support/NumberFormatter.php
 
 		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, float given\.$#'
-			identifier: argument.type
+			message: '#^PHPDoc tag @param for parameter \$decimalPlaces with type int\|null is not subtype of native type int\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: Modules/Core/Support/NumberFormatter.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$currency$#'
+			identifier: parameter.notFound
 			count: 1
 			path: Modules/Core/Support/NumberFormatter.php
 
@@ -1447,13 +571,7 @@ parameters:
 			path: Modules/Core/Support/Parser.php
 
 		-
-			message: '#^Call to static method listContents\(\) on an unknown class Modules\\Core\\Support\\ProfileImage\\Directory\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Support/ProfileImage/ProfileImageFactory.php
-
-		-
-			message: '#^Call to static method orderBy\(\) on an unknown class Modules\\Core\\Support\\Results\\Customer\.$#'
+			message: '#^Call to static method orderBy\(\) on an unknown class Modules\\Core\\Models\\Customer\.$#'
 			identifier: class.notFound
 			count: 1
 			path: Modules/Core/Support/Results/Clients.php
@@ -1501,410 +619,32 @@ parameters:
 			path: Modules/Core/Support/Statuses/AbstractStatuses.php
 
 		-
-			message: '#^Call to function rtrim\(\) on a separate line has no effect\.$#'
-			identifier: function.resultUnused
+			message: '#^Access to an undefined property Modules\\Core\\Tests\\AbstractCompanyPanelTestCase\:\:\$user\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Core/Support/cURL.php
+			path: Modules/Core/Tests/AbstractCompanyPanelTestCase.php
 
 		-
-			message: '#^Parameter \#3 \$value of function curl_setopt expects bool, int\<0, max\> given\.$#'
-			identifier: argument.type
+			message: '#^Class Modules\\Core\\Filament\\Admin\\Resources\\UserProfiles\\UserProfileResource not found\.$#'
+			identifier: class.notFound
 			count: 1
-			path: Modules/Core/Support/cURL.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Core/Tests/Api/EmailTemplatesApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Core/Tests/Api/TaxRatesApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Core/Tests/Api/UsersApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Feature/AdminMiddlewareTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Core/Tests/Feature/CompaniesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/CurrenciesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/CurrenciesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Core/Tests/Feature/CurrenciesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 3
-			path: Modules/Core/Tests/Feature/CustomFieldValuesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 3
-			path: Modules/Core/Tests/Feature/CustomFieldsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 3
-			path: Modules/Core/Tests/Feature/CustomFieldsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Core/Tests/Feature/DashboardTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Core/Tests/Feature/DocumentGroupsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Core/Tests/Feature/EmailTemplatesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Feature/ImportTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Core/Tests/Feature/MailQueuesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/NotesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/NotesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Core/Tests/Feature/NotesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/SettingsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Core\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Core/Tests/Feature/SettingsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Core/Tests/Feature/SettingsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Core/Tests/Feature/TaxRatesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 3
 			path: Modules/Core/Tests/Feature/UserProfilesTest.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Core/Tests/Feature/UsersTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Core/Tests/Feature/WelcomeViewTest.php
+			path: Modules/Expenses/Database/Factories/ExpenseItemFactory.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasCreatedTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Core/Tests/Unit/Events/UserWasUpdatedTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Core/Tests/Unit/Exports/ModelExporterTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Helpers/AddressTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Importers/ModelImportFactoryTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/DocumentGroupServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/EmailTemplatePreviewServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/MailBuilderTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Core/Tests/Unit/Services/MailQueueServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 3
-			path: Modules/Core/Tests/Unit/Services/MailerServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/PdfGenerationServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/QrCodeGeneratorServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Services/TemplateParserServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Core/Tests/Unit/Support/Drivers/FixerIOCurrencyConverterTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Core/Tests/Unit/Support/MerchantFactoryTest.php
-
-		-
-			message: '#^Trait Modules\\Core\\Traits\\WithAdminUser is used zero times and is not analysed\.$#'
-			identifier: trait.unused
-			count: 1
-			path: Modules/Core/Traits/WithAdminUser.php
-
-		-
-			message: '#^Trait Modules\\Core\\Traits\\WithUserCompany is used zero times and is not analysed\.$#'
-			identifier: trait.unused
-			count: 1
-			path: Modules/Core/Traits/WithUserCompany.php
-
-		-
-			message: '#^Call to static method where\(\) on an unknown class Modules\\Activity\\Models\\Activity\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/ClientActivity/Composers/ClientActivityWidgetComposer.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\View\\Factory\:\:addLocation\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/ClientActivity/Providers/WidgetServiceProvider.php
-
-		-
-			message: '#^Function periods not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/InvoiceSummary/Composers/InvoiceSummarySettingComposer.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\Payment\:\:join\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Products\\Models\\Product\:\:pluck\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Core/Widgets/Dashboard/InvoiceSummary/Composers/InvoiceSummaryWidgetComposer.php
-
-		-
-			message: '#^Call to static method join\(\) on an unknown class Modules\\Invoices\\Models\\InvoiceAmount\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Core/Widgets/Dashboard/InvoiceSummary/Composers/InvoiceSummaryWidgetComposer.php
-
-		-
-			message: '#^Function periods not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/InvoiceSummary/Composers/InvoiceSummaryWidgetComposer.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\View\\Factory\:\:addLocation\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/InvoiceSummary/Providers/WidgetServiceProvider.php
-
-		-
-			message: '#^Function periods not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Composers/QuoteSummarySettingComposer.php
-
-		-
-			message: '#^Call to static method join\(\) on an unknown class Modules\\Quotes\\Models\\QuoteAmount\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Composers/QuoteSummaryWidgetComposer.php
-
-		-
-			message: '#^Function periods not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Composers/QuoteSummaryWidgetComposer.php
-
-		-
-			message: '#^Call to static method saveByKey\(\) on an unknown class Modules\\Settings\\Models\\Setting\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Controllers/WidgetController.php
-
-		-
-			message: '#^Call to static method setAll\(\) on an unknown class Modules\\Settings\\Models\\Setting\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Controllers/WidgetController.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\View\\Factory\:\:addLocation\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Core/Widgets/Dashboard/QuoteSummary/Providers/WidgetServiceProvider.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Expenses/Database/Factories/ExpenseFactory.php
+			path: Modules/Expenses/Filament/Company/Resources/Expenses/Schemas/ExpenseForm.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Expenses\\Models\\Expense\:\:\$tax\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Call to static method now\(\) on an unknown class Modules\\Expenses\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 8
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Function attachment_path not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Instantiated class Modules\\Expenses\\Models\\CheckAttachment not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Instantiated class Modules\\Expenses\\Models\\ExpenseCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Instantiated class Modules\\Expenses\\Models\\ExpenseDeleting not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Instantiated class Modules\\Expenses\\Models\\ExpenseSaving not found\.$#'
-			identifier: class.notFound
 			count: 1
 			path: Modules/Expenses/Models/Expense.php
 
@@ -1921,100 +661,82 @@ parameters:
 			path: Modules/Expenses/Models/Expense.php
 
 		-
-			message: '#^PHPDoc tag @property for property Modules\\Expenses\\Models\\Expense\:\:\$customer contains unknown class Modules\\Expenses\\Models\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Expenses\\Models\\Expense\:\:\$expense_vendor contains unknown class Modules\\Expenses\\Models\\ExpenseVendor\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Expenses\\Models\\Expense\:\:\$expensed_at contains unknown class Modules\\Expenses\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Parameter \#1 \$amount of static method Modules\\Core\\Support\\CurrencyFormatter\:\:format\(\) expects float, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Parameter \#1 \$date of static method Modules\\Core\\Support\\DateFormatter\:\:format\(\) expects string\|null, Modules\\Expenses\\Models\\Carbon given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
-			message: '#^Parameter \#1 \$number of static method Modules\\Core\\Support\\NumberFormatter\:\:format\(\) expects float, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Expenses/Models/Expense.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Expenses/Models/ExpenseCategory.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Expenses/Models/ExpenseCategory.php
+			path: Modules/Expenses/Models/ExpenseItem.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\ExpenseCategory\:\:firstOrNew\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\Expense\:\:create\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Expenses/Models/ExpenseCategory.php
+			path: Modules/Expenses/Services/ExpenseService.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Expenses\\Models\\ExpenseCategory\:\:whereIn\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Expenses/Models/ExpenseCategory.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Expenses/Tests/Feature/ExpenseCategoriesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Expenses/Tests/Feature/ExpenseVendorsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 16
 			path: Modules/Expenses/Tests/Feature/ExpensesTest.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to constant CUSTOMER on an unknown class Modules\\Invoices\\Database\\Factories\\RelationType\.$#'
+			identifier: class.notFound
 			count: 1
-			path: Modules/Invoices/Database/Factories/InvoiceFactory.php
+			path: Modules/Invoices/Database/Factories/RecurringInvoiceFactory.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:where\(\)\.$#'
+			message: '#^Call to static method query\(\) on an unknown class Modules\\Core\\Models\\Relation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Invoices/Database/Factories/RecurringInvoiceFactory.php
+
+		-
+			message: '#^Cannot call method invoiceItems\(\) on Illuminate\\Database\\Eloquent\\Model\|int\<min, \-1\>\|int\<1, max\>\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Pages/EditInvoice.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Products\\Models\\Product\:\:find\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Invoices/Database/Factories/InvoiceFactory.php
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Schemas/InvoiceForm.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:invoiceItems\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$discount\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Invoices/Database/Seeders/InvoicesSeeder.php
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Tables/InvoicesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Tables/InvoicesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Tables/InvoicesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Tables/InvoicesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Invoices/Filament/Company/Resources/Invoices/Tables/InvoicesTable.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -2053,12 +775,6 @@ parameters:
 			path: Modules/Invoices/Models/Invoice.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
 			message: '#^Call to static method invoice\(\) on an unknown class Modules\\Invoices\\Models\\FileNames\.$#'
 			identifier: class.notFound
 			count: 1
@@ -2071,26 +787,14 @@ parameters:
 			path: Modules/Invoices/Models/Invoice.php
 
 		-
+			message: '#^Class Modules\\Payments\\Models\\PaymentMethod not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Invoices/Models/Invoice.php
+
+		-
 			message: '#^Function attachment_path not found\.$#'
 			identifier: function.notFound
-			count: 1
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
-			message: '#^Instantiated class Modules\\Invoices\\Models\\InvoiceCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
-			message: '#^Instantiated class Modules\\Invoices\\Models\\InvoiceCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
-			message: '#^Instantiated class Modules\\Invoices\\Models\\InvoiceDeleted not found\.$#'
-			identifier: class.notFound
 			count: 1
 			path: Modules/Invoices/Models/Invoice.php
 
@@ -2107,46 +811,10 @@ parameters:
 			path: Modules/Invoices/Models/Invoice.php
 
 		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:morphMany\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$currency\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Invoices/Models/InvoiceItem.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\InvoiceItem\:\:\$item_date contains unknown class Modules\\Invoices\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/InvoiceItem.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\InvoiceItem\:\:\$item_lookup contains unknown class Modules\\Invoices\\Models\\ItemLookup\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/InvoiceItem.php
-
-		-
-			message: '#^Class Modules\\Core\\Models\\Invoice not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/InvoiceTransaction.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\InvoiceTransaction\:\:\$invoice contains unknown class Modules\\Core\\Models\\Invoice\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/InvoiceTransaction.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Invoices/Models/InvoiceTransaction.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -2155,27 +823,9 @@ parameters:
 			path: Modules/Invoices/Models/RecurringInvoice.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
 			message: '#^Call to static method raw\(\) on an unknown class Modules\\Invoices\\Models\\DB\.$#'
 			identifier: class.notFound
 			count: 2
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^Class Modules\\Invoices\\Models\\Customer not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^Class Modules\\Invoices\\Models\\Group not found\.$#'
-			identifier: class.notFound
-			count: 1
 			path: Modules/Invoices/Models/RecurringInvoice.php
 
 		-
@@ -2203,44 +853,14 @@ parameters:
 			path: Modules/Invoices/Models/RecurringInvoice.php
 
 		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoice\:\:\$customer contains unknown class Modules\\Invoices\\Models\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoice\:\:\$group contains unknown class Modules\\Invoices\\Models\\Group\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoice\:\:\$next_recurring_at contains unknown class Modules\\Invoices\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoice\:\:\$recurring_invoice_items contains unknown class Modules\\Invoices\\Models\\Collection\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoice\:\:\$stop_recurring_at contains unknown class Modules\\Invoices\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: Modules/Invoices/Models/RecurringInvoice.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Invoices\\Models\\RecurringInvoiceItem\:\:\$recurringInvoice\.$#'
 			identifier: property.notFound
+			count: 1
+			path: Modules/Invoices/Models/RecurringInvoiceItem.php
+
+		-
+			message: '#^Class Modules\\Core\\Models\\RecurringInvoice not found\.$#'
+			identifier: class.notFound
 			count: 1
 			path: Modules/Invoices/Models/RecurringInvoiceItem.php
 
@@ -2257,6 +877,12 @@ parameters:
 			path: Modules/Invoices/Models/RecurringInvoiceItem.php
 
 		-
+			message: '#^PHPDoc tag @property for property Modules\\Invoices\\Models\\RecurringInvoiceItem\:\:\$recurring_invoice contains unknown class Modules\\Core\\Models\\RecurringInvoice\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Invoices/Models/RecurringInvoiceItem.php
+
+		-
 			message: '#^PHPDoc type array of property Modules\\Invoices\\Models\\RecurringInvoiceItem\:\:\$timestamps is not covariant with PHPDoc type bool of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$timestamps\.$#'
 			identifier: property.phpDocType
 			count: 1
@@ -2269,268 +895,46 @@ parameters:
 			path: Modules/Invoices/Models/RecurringInvoiceItem.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:get\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:create\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Invoices/Support/InvoiceCalculate.php
+			path: Modules/Invoices/Services/InvoiceService.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\InvoiceItem\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Support/InvoiceCalculate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\Payment\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Support/InvoiceCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Invoices\\Support\\InvoiceAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Support/InvoiceCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Invoices\\Support\\InvoiceItemAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Support/InvoiceCalculate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\RecurringInvoice\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Support/RecurringInvoiceCalculate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\RecurringInvoiceItem\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Invoices/Support/RecurringInvoiceCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Invoices\\Support\\RecurringInvoiceAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Support/RecurringInvoiceCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Invoices\\Support\\RecurringInvoiceItemAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Invoices/Support/RecurringInvoiceCalculate.php
-
-		-
-			message: '#^Attribute class Modules\\Invoices\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Invoices/Tests/Feature/InvoiceTransactionsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Invoices\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Invoices/Tests/Feature/InvoiceTransactionsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Invoices/Tests/Feature/InvoiceTransactionsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 5
 			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 15
-			path: Modules/Invoices/Tests/Feature/InvoicesTest.php
-
-		-
-			message: '#^Attribute class Modules\\Invoices\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Invoices/Tests/Feature/RecurringInvoiceItemsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Invoices\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Invoices/Tests/Feature/RecurringInvoiceItemsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Invoices/Tests/Feature/RecurringInvoiceItemsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Invoices\\Tests\\Feature\\RecurringInvoicesTest\:\:\$user\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 9
-			path: Modules/Invoices/Tests/Feature/RecurringInvoicesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/CreditInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Importers/InvoiceImporterTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/CreditInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceCopyServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceCustomerSwitchServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceNumberServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceTaxRateServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/InvoiceTemplateServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/RecurringInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/Services/SumexServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Invoices/Tests/Unit/SumexServiceTest.php
-
-		-
-			message: '#^Match expression does not handle remaining value\: mixed$#'
-			identifier: match.unhandled
-			count: 1
-			path: Modules/Payments/Database/Factories/PaymentFactory.php
-
-		-
-			message: '#^Access to undefined constant Modules\\Payments\\Enums\\PaymentStatus\:\:REFUNDED_PARTIALLY\.$#'
-			identifier: classConstant.notFound
-			count: 2
-			path: Modules/Payments/Enums/PaymentStatus.php
-
-		-
-			message: '#^Match arm comparison between \$this\(Modules\\Payments\\Enums\\PaymentStatus\)&Modules\\Payments\\Enums\\PaymentStatus\:\:REFUNDED and Modules\\Payments\\Enums\\PaymentStatus\:\:REFUNDED is always true\.$#'
-			identifier: match.alwaysTrue
-			count: 1
-			path: Modules/Payments/Enums/PaymentStatus.php
-
-		-
-			message: '#^Match arm comparison between \*NEVER\* and mixed is always false\.$#'
-			identifier: match.alwaysFalse
-			count: 1
-			path: Modules/Payments/Enums/PaymentStatus.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Support\\Optional\:\:\$invoice_date_due\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$invoice_number\.$#'
 			identifier: property.notFound
-			count: 2
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Payments\\Models\\Payment\:\:\$invoice\.$#'
-			identifier: property.notFound
 			count: 1
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Payments\\Models\\Payment\:\:\$invoice_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Payments\\Models\\Payment\:\:\$payable\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
+			path: Modules/Payments/Filament/Company/Resources/Payments/Schemas/PaymentForm.php
 
 		-
 			message: '#^Access to property \$company_name on an unknown class Modules\\Invoices\\Models\\Customer\.$#'
 			identifier: class.notFound
 			count: 2
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
+			path: Modules/Payments/Filament/Company/Resources/Payments/Schemas/PaymentForm.php
 
 		-
-			message: '#^Using nullsafe property access on non\-nullable type Modules\\Invoices\\Models\\Customer\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Payments/Filament/Company/Resources/PaymentResource.php
+			message: '#^Access to an undefined property Illuminate\\Support\\Optional\:\:\$invoice_due_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Payments/Filament/Company/Resources/Payments/Tables/PaymentsTable.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$invoice_due_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Payments/Filament/Company/Resources/Payments/Tables/PaymentsTable.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$invoice_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Payments/Filament/Company/Resources/Payments/Tables/PaymentsTable.php
 
 		-
 			message: '#^Call to an undefined static method Modules\\Payments\\Models\\MerchantClient\:\:firstOrNew\(\)\.$#'
@@ -2551,22 +955,22 @@ parameters:
 			path: Modules/Payments/Models/MerchantClient.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\merchant_payment\:\:firstOrNew\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Payments\\Models\\MerchantPayment\:\:firstOrNew\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Payments/Models/merchant_payment.php
+			path: Modules/Payments/Models/MerchantPayment.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\merchant_payment\:\:where\(\)\.$#'
+			message: '#^Call to an undefined static method Modules\\Payments\\Models\\MerchantPayment\:\:where\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Payments/Models/merchant_payment.php
+			path: Modules/Payments/Models/MerchantPayment.php
 
 		-
-			message: '#^Method Modules\\Payments\\Models\\merchant_payment\:\:getByKey\(\) should return static\(Modules\\Payments\\Models\\merchant_payment\) but returns array\|float\|int\|string\|false\|null\.$#'
+			message: '#^Method Modules\\Payments\\Models\\MerchantPayment\:\:getByKey\(\) should return static\(Modules\\Payments\\Models\\MerchantPayment\) but returns array\|float\|int\|string\|false\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: Modules/Payments/Models/merchant_payment.php
+			path: Modules/Payments/Models/MerchantPayment.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -2575,470 +979,20 @@ parameters:
 			path: Modules/Payments/Models/Payment.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Payments\\Models\\Payment\:\:\$invoice\.$#'
+			message: '#^Method Modules\\Payments\\Models\\Payment\:\:customer\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Clients\\Models\\Relation\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Payments/Models/Payment.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 5
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Call to static method now\(\) on an unknown class Modules\\Payments\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Call to static method raw\(\) on an unknown class Modules\\Payments\\Models\\DB\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Models\\InvoiceModified not found\.$#'
-			identifier: class.notFound
-			count: 3
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Models\\PaymentCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Instantiated class Modules\\Payments\\Models\\PaymentCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Models/Payment.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:morphMany\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Payments/Models/Payment.php
+			count: 19
+			path: Modules/Payments/Tests/Feature/PaymentsTest.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Models/PaymentMethod.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Models/PaymentMethod.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\PaymentMethod\:\:orderBy\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Payments/Models/PaymentMethod.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Mollie.php
-
-		-
-			message: '#^Access to property \$payments on an unknown class Mollie_API_Client\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/Mollie.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\Payment\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Mollie.php
-
-		-
-			message: '#^Call to method setApiKey\(\) on an unknown class Mollie_API_Client\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/Mollie.php
-
-		-
-			message: '#^Instantiated class Mollie_API_Client not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/Mollie.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$amount\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method addTransaction\(\) on an unknown class PayPal\\Api\\PaymentExecution\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method create\(\) on an unknown class PayPal\\Api\\Payment\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method getApprovalLink\(\) on an unknown class PayPal\\Api\\Payment\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method getData\(\) on an unknown class PayPal\\Exception\\PayPalConnectionException\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setAmount\(\) on an unknown class PayPal\\Api\\Transaction\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setConfig\(\) on an unknown class PayPal\\Rest\\ApiContext\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setCurrency\(\) on an unknown class PayPal\\Api\\Amount\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setIntent\(\) on an unknown class PayPal\\Api\\Payment\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setItems\(\) on an unknown class PayPal\\Api\\ItemList\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setName\(\) on an unknown class PayPal\\Api\\Item\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setPayerId\(\) on an unknown class PayPal\\Api\\PaymentExecution\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setPaymentMethod\(\) on an unknown class PayPal\\Api\\Payer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to method setReturnUrl\(\) on an unknown class PayPal\\Api\\RedirectUrls\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Payments\\Support\\Drivers\\FIPayment\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to static method get\(\) on an unknown class PayPal\\Api\\Payment\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Call to static method info\(\) on an unknown class Modules\\Payments\\Support\\Drivers\\Log\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Caught class PayPal\\Exception\\PayPalConnectionException not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\Amount not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\Item not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\ItemList not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\Payer not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\Payment not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\PaymentExecution not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\RedirectUrls not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Api\\Transaction not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Auth\\OAuthTokenCredential not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Instantiated class PayPal\\Rest\\ApiContext not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/PayPal.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Invoices\\Models\\Invoice\:\:\$amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:retrieve\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Payments\\Models\\Payment\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Payments\\Support\\Drivers\\Charge\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Payments\\Support\\Drivers\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to static method setApiKey\(\) on an unknown class Stripe\\Stripe\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: Modules/Payments/Support/Drivers/Stripe.php
-
-		-
-			message: '#^Call to static method listContents\(\) on an unknown class Modules\\Payments\\Support\\Directory\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Payments/Support/MerchantFactory.php
-
-		-
-			message: '#^Left side of && is always true\.$#'
-			identifier: booleanAnd.leftAlwaysTrue
-			count: 1
-			path: Modules/Payments/Support/MerchantFactory.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Payments/Tests/Api/PaymentMethodApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Payments/Tests/Api/PaymentsApiTest.php
-
-		-
-			message: '#^Attribute class Modules\\Payments\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantClientsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Payments\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantClientsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantClientsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Payments\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantPaymentsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Payments\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantPaymentsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Payments/Tests/Feature/MerchantPaymentsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Payments/Tests/Feature/PaymentMethodsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 9
-			path: Modules/Payments/Tests/Feature/PaymentsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Payments/Tests/Unit/AddPaymentServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 4
-			path: Modules/Payments/Tests/Unit/PaymentValidationServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/AddPaymentServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/PaymentMethodServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Payments/Tests/Unit/Services/PaymentServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/PayPalTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Payments/Tests/Unit/Support/MerchantDrivers/StripeTest.php
-
-		-
-			message: '#^Call to static method make\(\) on an unknown class Modules\\Products\\Filament\\Company\\Resources\\Placeholder\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Products/Filament/Company/Resources/ProductUnitResource.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Products/Models/Product.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Products/Models/Product.php
-
-		-
-			message: '#^Call to static method raw\(\) on an unknown class Modules\\Products\\Models\\DB\.$#'
-			identifier: class.notFound
 			count: 1
 			path: Modules/Products/Models/Product.php
 
@@ -3049,112 +1003,16 @@ parameters:
 			path: Modules/Products/Models/ProductCategory.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Products/Models/ProductCategory.php
+			path: Modules/Products/Models/ProductUnit.php
 
 		-
-			message: '#^Call to an undefined static method Modules\\Products\\Models\\ProductCategory\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Products/Services/ProductCategoryService.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Core\\Models\\TaxRate\:\:findOrFail\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Products/Services/ProductService.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Products\\Models\\ProductCategory\:\:findOrFail\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Products/Services/ProductService.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Products\\Models\\ProductUnit\:\:findOrFail\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Products/Services/ProductService.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Products\\Models\\ProductUnit\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Products/Services/ProductUnitService.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Products/Tests/Api/ProductApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 9
-			path: Modules/Products/Tests/Api/ProductFamiliesApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 9
-			path: Modules/Products/Tests/Api/ProductUnitsApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Products/Tests/Feature/ProductCategoriesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 7
-			path: Modules/Products/Tests/Feature/ProductUnitsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
 			count: 9
 			path: Modules/Products/Tests/Feature/ProductsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Products/Tests/Unit/Services/ProductCategoryServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Products/Tests/Unit/Services/ProductLookupServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Products/Tests/Unit/Services/ProductServiceTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:customer\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Projects/Database/Factories/ProjectFactory.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Projects/Database/Factories/ProjectFactory.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Projects/Database/Factories/ProjectFactory.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Support\\Optional\:\:\$id\.$#'
@@ -3163,58 +1021,28 @@ parameters:
 			path: Modules/Projects/Database/Factories/TaskFactory.php
 
 		-
-			message: '#^Access to undefined constant Modules\\Projects\\Enums\\TaskStatus\:\:COMPLETE\.$#'
-			identifier: classConstant.notFound
-			count: 1
-			path: Modules/Projects/Enums/TaskStatus.php
-
-		-
-			message: '#^Access to undefined constant Modules\\Projects\\Enums\\TaskStatus\:\:NOT_STARTED\.$#'
-			identifier: classConstant.notFound
-			count: 2
-			path: Modules/Projects/Enums/TaskStatus.php
-
-		-
-			message: '#^Match expression does not handle remaining value\: Modules\\Projects\\Enums\\TaskStatus\:\:OPEN$#'
-			identifier: match.unhandled
-			count: 1
-			path: Modules/Projects/Enums/TaskStatus.php
-
-		-
-			message: '#^Match expression does not handle remaining values\: Modules\\Projects\\Enums\\TaskStatus\:\:COMPLETED\|Modules\\Projects\\Enums\\TaskStatus\:\:OPEN$#'
-			identifier: match.unhandled
-			count: 1
-			path: Modules/Projects/Enums/TaskStatus.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Support\\Optional\:\:\$company_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Projects/Filament/Company/Resources/TaskResource.php
+			path: Modules/Projects/Filament/Company/Resources/Tasks/Schemas/TaskForm.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Support\\Optional\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Projects/Filament/Company/Resources/TaskResource.php
+			path: Modules/Projects/Filament/Company/Resources/Tasks/Schemas/TaskForm.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Projects\\Models\\Task\:\:\$due_at\.$#'
+			message: '#^Access to an undefined property Modules\\Projects\\Models\\Project\:\:\$customer\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Projects/Filament/Company/Resources/TaskResource.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,stdClass\>\:\:mapWithKeys\(\) expects callable\(stdClass, int\)\: array\<int, non\-falsy\-string\>, Closure\(Modules\\Projects\\Models\\Project\)\: non\-empty\-array\<int, non\-falsy\-string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Projects/Filament/Company/Resources/TaskResource.php
-
-		-
-			message: '#^Using nullsafe property access on non\-nullable type Modules\\Clients\\Models\\Relation\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
 			count: 2
-			path: Modules/Projects/Filament/Company/Resources/TaskResource.php
+			path: Modules/Projects/Filament/Company/Resources/Tasks/Schemas/TaskForm.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Projects\\Models\\Project\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Projects/Filament/Company/Resources/Tasks/Schemas/TaskForm.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -3223,8 +1051,14 @@ parameters:
 			path: Modules/Projects/Models/Project.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Array has 2 duplicate keys with value ''project_status'' \(''project_status'', ''project_status''\)\.$#'
+			identifier: array.duplicateKey
+			count: 1
+			path: Modules/Projects/Models/Project.php
+
+		-
+			message: '#^Method Modules\\Projects\\Models\\Project\:\:customer\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Clients\\Models\\Relation\>\.$#'
+			identifier: return.type
 			count: 1
 			path: Modules/Projects/Models/Project.php
 
@@ -3235,112 +1069,76 @@ parameters:
 			path: Modules/Projects/Models/Task.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Method Modules\\Projects\\Models\\Task\:\:customer\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Clients\\Models\\Relation\>\.$#'
+			identifier: return.type
 			count: 1
 			path: Modules/Projects/Models/Task.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 8
-			path: Modules/Projects/Tests/Api/ProjectsApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 5
-			path: Modules/Projects/Tests/Api/TasksApiTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 10
+			message: '#^Access to an undefined property Modules\\Projects\\Tests\\Feature\\ProjectsTest\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 2
 			path: Modules/Projects/Tests/Feature/ProjectsTest.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 12
-			path: Modules/Projects/Tests/Feature/TasksTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/ProjectServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/TaskLookupServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Projects/Tests/Unit/Services/TaskServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Projects/Tests/Unit/Services/TaskToInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Projects/Tests/Unit/TaskLookupServiceTest.php
-
-		-
-			message: '#^Attribute class Modules\\Projects\\Tests\\Unit\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 2
-			path: Modules/Projects/Tests/Unit/TaskToInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Projects/Tests/Unit/TaskToInvoiceServiceTest.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Clients\\Models\\Relation\:\:where\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
 			path: Modules/Quotes/Database/Factories/QuoteFactory.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:approved\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Quotes/Database/Seeders/QuotesSeeder.php
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Quotes/Database/Factories/QuoteItemFactory.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:canceled\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Call to an undefined static method Modules\\Products\\Models\\Product\:\:find\(\)\.$#'
+			identifier: staticMethod.notFound
 			count: 1
-			path: Modules/Quotes/Database/Seeders/QuotesSeeder.php
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Schemas/QuoteForm.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:draft\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$discount\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Quotes/Database/Seeders/QuotesSeeder.php
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:sent\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$item_name\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Quotes/Database/Seeders/QuotesSeeder.php
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
 
 		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:viewed\(\)\.$#'
-			identifier: method.notFound
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$price\.$#'
+			identifier: property.notFound
 			count: 1
-			path: Modules/Quotes/Database/Seeders/QuotesSeeder.php
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Quotes/Filament/Company/Resources/Quotes/Tables/QuotesTable.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Contracts\\Auth\\Authenticatable\:\:\$id\.$#'
@@ -3349,146 +1147,14 @@ parameters:
 			path: Modules/Quotes/Models/Quote.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Quotes\\Models\\Quote\:\:\$currency\.$#'
-			identifier: property.notFound
+			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:customer\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Clients\\Models\\Relation\>\.$#'
+			identifier: return.type
 			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Quotes\\Models\\Quote\:\:\$formatted_quote_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Quotes\\Models\\Quote\:\:\$items\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Quotes\\Models\\Quote\:\:\$url_key\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to property \$name on an unknown class Modules\\Quotes\\Models\\stdClass\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to property \$percent on an unknown class Modules\\Quotes\\Models\\stdClass\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to property \$raw_percent on an unknown class Modules\\Quotes\\Models\\stdClass\.$#'
-			identifier: class.notFound
-			count: 4
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Access to property \$total on an unknown class Modules\\Quotes\\Models\\stdClass\.$#'
-			identifier: class.notFound
-			count: 9
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable\:\:companies\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Call to static method now\(\) on an unknown class Modules\\Quotes\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Call to static method quote\(\) on an unknown class Modules\\Quotes\\Models\\FileNames\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Call to static method raw\(\) on an unknown class Modules\\Quotes\\Models\\DB\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Class Modules\\Quotes\\Models\\Customer not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Function attachment_path not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Models\\QuoteCreated not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Models\\QuoteCreating not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Models\\QuoteDeleted not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Instantiated class Modules\\Quotes\\Models\\stdClass not found\.$#'
-			identifier: class.notFound
-			count: 2
 			path: Modules/Quotes/Models/Quote.php
 
 		-
 			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:prospect\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Clients\\Models\\Relation\>\.$#'
 			identifier: return.type
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:scopeClients\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:scopeGuest\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:scopeIsOpen\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Method Modules\\Quotes\\Models\\Quote\:\:scopeProspects\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Quotes/Models/Quote.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
 			count: 1
 			path: Modules/Quotes/Models/Quote.php
 
@@ -3499,157 +1165,7 @@ parameters:
 			path: Modules/Quotes/Models/QuoteItem.php
 
 		-
-			message: '#^Instantiated class Modules\\Core\\Events\\QuoteItemSaving not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/QuoteItem.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Events\\QuoteModified not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: Modules/Quotes/Models/QuoteItem.php
-
-		-
-			message: '#^PHPDoc tag @property for property Modules\\Quotes\\Models\\QuoteItem\:\:\$item_date_added contains unknown class Modules\\Quotes\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Models/QuoteItem.php
-
-		-
-			message: '#^Parameter \#1 \$related of method Illuminate\\Database\\Eloquent\\Model\:\:belongsTo\(\) expects class\-string\<Illuminate\\Database\\Eloquent\\Model\>, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Quotes/Models/QuoteItem.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\Quote\:\:get\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteCalculate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Quotes\\Models\\QuoteItem\:\:select\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Quotes\\Models\\QuoteAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteCalculate.php
-
-		-
-			message: '#^Call to static method firstOrNew\(\) on an unknown class Modules\\Quotes\\Models\\QuoteItemAmount\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteCalculate.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\Invoice\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteToInvoice.php
-
-		-
-			message: '#^Call to an undefined static method Modules\\Invoices\\Models\\InvoiceItem\:\:create\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteToInvoice.php
-
-		-
-			message: '#^Call to static method generateNumber\(\) on an unknown class Modules\\Quotes\\Support\\Group\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteToInvoice.php
-
-		-
-			message: '#^Instantiated class Modules\\Core\\Events\\InvoiceModified not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Quotes/Support/QuoteToInvoice.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 14
-			path: Modules/Quotes/Tests/Api/QuotesApiTest.php
-
-		-
-			message: '#^Attribute class Modules\\Quotes\\Tests\\Feature\\Group does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Quotes/Tests/Feature/QuoteItemsTest.php
-
-		-
-			message: '#^Attribute class Modules\\Quotes\\Tests\\Feature\\Test does not exist\.$#'
-			identifier: attribute.notFound
-			count: 6
-			path: Modules/Quotes/Tests/Feature/QuoteItemsTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 6
-			path: Modules/Quotes/Tests/Feature/QuoteItemsTest.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Core\\Models\\User\:\:\$company_id\.$#'
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Factories\\Factory\:\:withCompany\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 12
-			path: Modules/Quotes/Tests/Feature/QuotesTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Quotes/Tests/Unit/QuoteCopyServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Quotes/Tests/Unit/QuoteCustomerSwitchServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Quotes/Tests/Unit/QuoteNumberServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 2
-			path: Modules/Quotes/Tests/Unit/QuoteToInvoiceServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCopyServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteCustomerSwitchServiceTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: Modules/Quotes/Tests/Unit/Services/QuoteToInvoiceServiceTest.php

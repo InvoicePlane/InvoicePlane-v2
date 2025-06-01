@@ -1,6 +1,5 @@
 includes:
     - phpstan-baseline.neon
-    - class-not-found-baseline.neon
 
 parameters:
     tmpDir: null

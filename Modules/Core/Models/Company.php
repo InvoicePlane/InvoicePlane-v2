@@ -239,34 +239,6 @@ class Company extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getFormattedAddressAttribute()
-    {
-        return nl2br(formatAddress($this));
-    }
-
-    public function getLogoUrlAttribute()
-    {
-        if ($this->logo) {
-            return route('companyProfiles.logo', [$this->id]);
-        }
-    }
-
-    public function logo($width = null, $height = null)
-    {
-        if ($this->logo && file_exists(storage_path($this->logo))) {
-            $logo = base64_encode(file_get_contents(storage_path($this->logo)));
-
-            $style = '';
-
-            if ($width && ! $height) {
-                $style = 'width: ' . $width . 'px;';
-            } elseif ($width && $height) {
-                $style = 'width: ' . $width . 'px; height: ' . $height . 'px;';
-            }
-
-            return '<img id="cp-logo" src="data:image/png;base64,' . $logo . '" style="' . $style . '">';
-        }
-    }
 
     /*
     |--------------------------------------------------------------------------

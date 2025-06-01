@@ -5,6 +5,7 @@ namespace Modules\Core\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use League\CommonMark\Event\AbstractEvent;
 use Modules\Core\Models\Attachment;
 
 class AttachmentCreating extends AbstractEvent
