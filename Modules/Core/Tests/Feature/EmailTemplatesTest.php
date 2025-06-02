@@ -44,7 +44,6 @@ class EmailTemplatesTest extends AbstractTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
         $payload = ['subject' => 'Welcome', 'body' => 'Hello world'];
 
         /* act */

@@ -2,18 +2,19 @@
 
 namespace Modules\Core\Providers;
 
+use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,8 +44,9 @@ class CompanyPanelProvider extends PanelProvider
         /** @var Panel $companyPanel */
         $panel = $companyPanel
             ->id('company')
-            ->path('company')
+            ->path('')
             ->login()
+            ->default()
             ->passwordReset()
             ->emailVerification()
             ->font('Poppins', provider: GoogleFontProvider::class)
@@ -185,9 +187,15 @@ class CompanyPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label(trans('change_password')),
-                MenuItem::make()->label(trans('settings'))->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label(trans('logout')),
+                Action::make('profile')
+                    ->label(trans('change_password'))
+                    ->icon('heroicon-o-user'),
+                Action::make('settings')
+                    ->label(trans('settings'))
+                    ->icon('heroicon-o-cog-6-tooth'),
+                'logout' => fn (Action $action) => $action
+                    ->label(trans(trans('ip.logout')))
+                    ->icon(Heroicon::OutlinedArrowRightStartOnRectangle),
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -204,6 +212,6 @@ class CompanyPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
 
-        return $companyPanel;
+        return $panel;
     }
 }
