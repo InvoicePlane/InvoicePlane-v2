@@ -292,8 +292,6 @@ return [
     'item'                                         => 'Item',
     'item_discount'                                => 'Item Discount',
     'item_lookup_form'                             => 'Item Lookup Form',
-    'products'                                     => 'Item Lookups',
-    'item_name'                                    => 'Item Name',
     'item_tax'                                     => 'Item Tax',
     'item_tax_rate'                                => 'Item Tax Rate',
     'label'                                        => 'Label',

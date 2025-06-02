@@ -16,21 +16,33 @@ class ProductsTable
     {
         return $table
             ->columns([
-                TextColumn::make('category.category_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('productCategory.category_name')->limit(10)->searchable()->sortable()->toggleable(),
                 TextColumn::make('code')->searchable()->sortable()->toggleable(),
                 TextColumn::make('product_name')->limit(10)->searchable()->sortable()->toggleable(),
                 TextColumn::make('type')
                     ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('md'),
                 TextColumn::make('price')->money()->searchable()->sortable()->toggleable(),
-                TextColumn::make('productUnit.unit_name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('productUnit.unit_name')
+                    ->limit(5)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('md'),
                 TextColumn::make('cost_price')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->hiddenFrom('md'),
                 TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
-                TextColumn::make('taxRate2.name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('taxRate2.name')
+                    ->limit(5)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('lg'),
             ])
             ->filters([
             ])

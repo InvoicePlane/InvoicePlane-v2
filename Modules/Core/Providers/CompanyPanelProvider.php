@@ -25,6 +25,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Filament\Pages\Auth\EditProfile;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
@@ -46,6 +47,7 @@ class CompanyPanelProvider extends PanelProvider
             ->id('company')
             ->path('')
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->default()
             ->passwordReset()
             ->emailVerification()
@@ -187,9 +189,10 @@ class CompanyPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->userMenuItems([
-                Action::make('profile')
-                    ->label(trans('change_password'))
-                    ->icon('heroicon-o-user'),
+                'profile' => fn (Action $action) => $action
+                    ->label(trans('ip.edit_profile'))
+                    ->icon('heroicon-o-user')
+                    ->url(EditProfile::getUrl()),
                 Action::make('settings')
                     ->label(trans('settings'))
                     ->icon('heroicon-o-cog-6-tooth'),
