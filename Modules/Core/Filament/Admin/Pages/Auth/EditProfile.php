@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Filament\Admin\Pages\Auth;
 
+use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 use Filament\Forms\Components\TextInput;
-use \Filament\Auth\Pages\EditProfile as BaseEditProfile;
 use Filament\Schemas\Schema;
 
 class EditProfile extends BaseEditProfile

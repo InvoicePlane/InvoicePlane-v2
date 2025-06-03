@@ -11,7 +11,7 @@ use Filament\Tables\Table;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Invoices\Services\DocumentGroupService;
+use Modules\Core\Services\DocumentGroupService;
 
 class DocumentGroupsTable
 {

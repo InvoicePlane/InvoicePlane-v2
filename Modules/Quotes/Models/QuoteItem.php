@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Support\CurrencyFormatter;
-use Modules\Core\Support\NumberFormatter;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Database\Factories\QuoteItemFactory;
