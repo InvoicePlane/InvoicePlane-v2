@@ -26,6 +26,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
@@ -51,6 +52,7 @@ class CompanyPanelProvider extends PanelProvider
             ->default()
             ->passwordReset()
             ->emailVerification()
+            ->tenant(Company::class)
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->colors([
                 'primary' => [

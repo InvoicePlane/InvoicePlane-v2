@@ -139,7 +139,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
-    # region smoke
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_creates_an_email_template(): void

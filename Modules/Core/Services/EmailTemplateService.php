@@ -19,7 +19,7 @@ class EmailTemplateService extends BaseService
             'type'       => $data['type'],
             'title'      => $data['title'],
             'subject'    => $data['subject'],
-            'body'       => $data['body'] ?? null,
+            'body'       => $data['body'] ?? '',
             'from_name'  => $data['from_name'],
             'from_email' => $data['from_email'],
             'cc'         => $data['cc'] ?? null,
