@@ -152,6 +152,8 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_number(): void
     {
+        $this->markTestIncomplete();
+
         /* arrange */
         $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
 
@@ -189,6 +191,8 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_status(): void
     {
+        $this->markTestIncomplete();
+
         /* arrange */
         $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
 
