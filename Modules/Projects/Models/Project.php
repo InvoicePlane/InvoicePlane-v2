@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
@@ -40,7 +39,6 @@ class Project extends Model
         'project_status' => ProjectStatus::class,
         'start_at'       => 'date',
         'end_at'         => 'date',
-        'project_status' => ProjectStatus::class,
     ];
 
     protected $guarded = [];
@@ -51,8 +49,7 @@ class Project extends Model
     public function customer(): BelongsTo
     {
         return $this
-            ->belongsTo(Relation::class, 'customer_id')
-            ->where('relation_type', RelationType::CUSTOMER->value);
+            ->belongsTo(Relation::class, 'customer_id');
     }
 
     public function tasks(): HasMany

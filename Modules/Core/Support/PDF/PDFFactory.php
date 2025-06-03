@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support\PDF;
 
-use Modules\Core\Support\Directory;
-
 class PDFFactory
 {
     public static function create()
@@ -13,9 +11,10 @@ class PDFFactory
         return new $class();
     }
 
-    public static function getDrivers()
+    public static function getDrivers(): array
     {
-        $driverFiles = Directory::listContents(app_path('Support/PDF/MerchantDrivers'));
+        //Directory::listContents(app_path('Support/PDF/MerchantDrivers'))
+        $driverFiles = [];
         $drivers     = [];
 
         foreach ($driverFiles as $driverFile) {

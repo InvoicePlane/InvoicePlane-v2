@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Support\PDF\Drivers;
 
-use Dompdf\Dompdf as PDF;
-use Dompdf\Options;
 use Modules\Core\Support\PDF\PDFAbstract;
 
 class domPDF extends PDFAbstract

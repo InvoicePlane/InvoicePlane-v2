@@ -25,7 +25,7 @@ class InvoiceService extends BaseService
             $invoiceTaxTotal = $this->calculateInvoiceTaxTotal($data);
             $invoiceTotal    = $this->calculateInvoiceTotal($data, $itemTaxTotal, $invoiceTaxTotal);
 
-            $invoice = Invoice::create([
+            $invoice = Invoice::query()->create([
                 'customer_id'              => $data['customer_id'],
                 'document_group_id'        => $data['document_group_id'] ?? null,
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,

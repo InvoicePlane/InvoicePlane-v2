@@ -2,18 +2,15 @@
 
 namespace Modules\Core\Support;
 
-use Modules\Core\Events\InvoiceHTMLCreating;
-use Modules\Core\Events\QuoteHTMLCreating;
-
 class HTML
 {
-    public static function invoice($invoice)
+    public static function invoice($invoice): string
     {
         app()->setLocale($invoice->customer->language);
 
         config(['ip.baseCurrency' => $invoice->currency_code]);
 
-        event(new InvoiceHTMLCreating($invoice));
+        //event(new InvoiceHTMLCreating($invoice));
 
         $template = str_replace('.blade.php', '', $invoice->template);
 
@@ -28,13 +25,13 @@ class HTML
             ->with('logo', $invoice->companyProfile->logo())->render();
     }
 
-    public static function quote($quote)
+    public static function quote($quote): string
     {
         app()->setLocale($quote->customer->language);
 
         config(['ip.baseCurrency' => $quote->currency_code]);
 
-        event(new QuoteHTMLCreating($quote));
+        //event(new QuoteHTMLCreating($quote));
 
         $template = str_replace('.blade.php', '', $quote->template);
 

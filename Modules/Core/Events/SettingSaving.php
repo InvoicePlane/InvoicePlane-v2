@@ -14,8 +14,5 @@ class SettingSaving extends AbstractEvent
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(Setting $setting)
-    {
-        $this->setting = $setting;
-    }
+    public function __construct(Setting $setting) {}
 }

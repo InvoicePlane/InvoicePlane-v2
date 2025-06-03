@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Schemas;
 
-use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -121,7 +120,7 @@ class InvoiceForm
                                             ->dehydrated(),
 
                                         TextEntry::make('product_name')
-                                            ->state(fn ($get) => Product::find($get('product_id'))?->product_name)
+                                            ->state(fn ($get) => Product::query()->find($get('product_id'))?->product_name)
                                             ->disabled(),
 
                                         TextInput::make('quantity')

@@ -22,9 +22,9 @@ class MerchantPayment extends Model
 
     protected $guarded = [];
 
-    public static function getByKey($driver, $paymentId, $key): static
+    public static function getByKey($driver, $paymentId, $key): static | string
     {
-        $setting = self::where('driver', $driver)
+        $setting = self::query()->where('driver', $driver)
             ->where('payment_id', $paymentId)
             ->where('merchant_key', $key)
             ->first();
@@ -33,12 +33,12 @@ class MerchantPayment extends Model
             return $setting->merchant_value;
         }
 
-        return $setting;
+        return '';
     }
 
     public static function saveByKey($driver, $paymentId, $key, $value): void
     {
-        $setting = self::firstOrNew([
+        $setting = self::query()->firstOrNew([
             'driver'       => $driver,
             'payment_id'   => $paymentId,
             'merchant_key' => $key,

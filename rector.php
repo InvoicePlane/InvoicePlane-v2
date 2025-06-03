@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\ImportModelIfMissingRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()

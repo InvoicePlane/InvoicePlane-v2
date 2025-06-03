@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\AbstractDocumentModel;
 use Modules\Core\Models\Company;
@@ -87,8 +86,7 @@ class Expense extends AbstractDocumentModel
     public function customer(): BelongsTo
     {
         return $this
-            ->belongsTo(Relation::class, 'customer_id')
-            ->where('relation_type', RelationType::CUSTOMER->value);
+            ->belongsTo(Relation::class, 'customer_id');
     }
 
     public function expenseCategory(): BelongsTo
@@ -114,8 +112,7 @@ class Expense extends AbstractDocumentModel
     public function vendor(): BelongsTo
     {
         return $this
-            ->belongsTo(Relation::class, 'vendor_id')
-            ->where('relation_type', RelationType::VENDOR->value);
+            ->belongsTo(Relation::class, 'vendor_id');
     }
 
     /*

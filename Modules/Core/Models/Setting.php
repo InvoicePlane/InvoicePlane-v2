@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -50,7 +51,7 @@ class Setting extends Model
             return true;
         } catch (QueryException $e) {
             return false;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

@@ -51,7 +51,7 @@ class TaskFactory extends Factory
             'customer_id' => $customer->id,
             'project_id'  => $project->id,
             'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $this->faker->boolean(50) ? optional($user)->id : null,
+            'assigned_to' => $this->faker->boolean(50) ? $user->id : null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
             'task_name'   => $this->faker->words(3, true),
             'task_price'  => $this->faker->randomFloat(4, 0, 100),

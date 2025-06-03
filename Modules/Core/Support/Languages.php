@@ -9,9 +9,11 @@ class Languages
      *
      * @return array
      */
-    public static function listLanguages()
+    public static function listLanguages(): array
     {
-        $directories = Directory::listContents(base_path('resources/lang'));
+        //Directory::listContents(base_path('resources/lang'))
+
+        $directories = [];
 
         $languages = [];
 

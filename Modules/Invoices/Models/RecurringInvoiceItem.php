@@ -5,7 +5,6 @@ namespace Modules\Invoices\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Support\NumberFormatter;
 
 /**
  * @property int              $id
@@ -28,11 +27,6 @@ use Modules\Core\Support\NumberFormatter;
  */
 class RecurringInvoiceItem extends Model
 {
-    /**
-     * Guarded properties.
-     *
-     * @var array
-     */
     public $timestamps = false;
 
     protected $table = 'recurring_invoice_items';

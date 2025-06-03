@@ -2,13 +2,14 @@
 
 namespace Modules\Core\Support;
 
-use Collective\Html\FormFacade;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Modules\Clients\Models\Customer;
 
 class Contacts
 {
-    private $client;
+    private ?Authenticatable $user;
 
-    private $user;
+    private Customer $customer;
 
     public function __construct(Customer $client)
     {
@@ -16,28 +17,12 @@ class Contacts
         $this->user     = auth()->user();
     }
 
-    public function contactDropdownTo()
-    {
-        $allContacts      = $this->getAllContacts();
-        $selectedContacts = $this->getSelectedContactsTo();
-
-        return FormFacade::select('to', $allContacts, $selectedContacts, ['id' => 'to', 'multiple' => 'multiple', 'class' => 'form-control']);
-    }
-
     public function getSelectedContactsTo()
     {
         return $this->customer->contacts->where('default_to', 1)->pluck('email')->prepend($this->customer->email);
     }
 
-    public function contactDropdownCc()
-    {
-        $allContacts      = $this->getAllContacts();
-        $selectedContacts = $this->getSelectedContactsCc();
-
-        return FormFacade::select('cc', $allContacts, $selectedContacts, ['id' => 'cc', 'multiple' => 'multiple', 'class' => 'form-control']);
-    }
-
-    public function getSelectedContactsCc()
+    public function getSelectedContactsCc(): array
     {
         $contacts = $this->customer->contacts
             ->where('default_cc', 1)
@@ -59,7 +44,7 @@ class Contacts
         return FormFacade::select('bcc', $allContacts, $selectedContacts, ['id' => 'bcc', 'multiple' => 'multiple', 'class' => 'form-control']);
     }
 
-    public function getSelectedContactsBcc()
+    public function getSelectedContactsBcc(): array
     {
         $contacts = $this->customer->contacts
             ->where('default_bcc', 1)
@@ -73,7 +58,7 @@ class Contacts
         return $contacts;
     }
 
-    private function getAllContacts()
+    private function getAllContacts(): array
     {
         $contacts = ($this->customer->email) ? [$this->customer->email => $this->getFormattedContact($this->customer->name, $this->customer->email)] : [];
 
@@ -94,7 +79,7 @@ class Contacts
         return $contacts;
     }
 
-    private function getFormattedContact($name, $email)
+    private function getFormattedContact($name, $email): string
     {
         return $name . ' <' . $email . '>';
     }

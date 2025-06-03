@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Models\Address;
 use Modules\Core\Models\Company;
 
-/**
- * @extends <Address>
- */
 class AddressFactory extends Factory
 {
     protected $model = Address::class;

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Support\CurrencyFormatter;
 use Modules\Core\Support\NumberFormatter;
 use Modules\Invoices\Database\Factories\InvoiceItemFactory;
 use Modules\Products\Models\Product;
@@ -111,11 +110,6 @@ class InvoiceItem extends Model
     public function getFormattedNumericPriceAttribute(): float
     {
         return NumberFormatter::format($this->attributes['price']);
-    }
-
-    public function getFormattedPriceAttribute(): string
-    {
-        return CurrencyFormatter::format($this->attributes['price'], $this->invoice->currency);
     }
 
     public function getFormattedDescriptionAttribute(): string

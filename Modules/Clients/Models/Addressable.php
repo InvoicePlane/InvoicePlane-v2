@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Clients\Enums\AddressType;
+use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**

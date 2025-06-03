@@ -14,8 +14,5 @@ class AttachmentCreating extends AbstractEvent
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(Attachment $attachment)
-    {
-        $this->attachment = $attachment;
-    }
+    public function __construct(Attachment $attachment) {}
 }

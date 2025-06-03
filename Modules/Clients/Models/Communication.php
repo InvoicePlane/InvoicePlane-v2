@@ -5,6 +5,7 @@ namespace Modules\Clients\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Clients\Enums\CommunicationType;
+use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**

@@ -6,6 +6,7 @@ use Exception;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Invoices\Models\Invoice;
 
 class EditInvoice extends EditRecord
 {
@@ -14,8 +15,6 @@ class EditInvoice extends EditRecord
     public function mount($record): void
     {
         parent::mount($record);
-        // Debug
-        dd($this->record);
     }
 
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
@@ -27,19 +26,15 @@ class EditInvoice extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        if ( ! $this->record) {
-            throw new Exception('No record found when loading invoice.');
+        $invoice = $this->record;
+
+        if ( ! $invoice instanceof Invoice) {
+            throw new Exception('No valid Invoice record.');
         }
 
-        $data['invoiceItems'] = $this->record->invoiceItems()->get()->map(function ($item) {
-            return [
-                'product_id' => $item->product_id,
-                'quantity'   => $item->quantity,
-                'price'      => $item->price,
-                'discount'   => $item->discount,
-                'subtotal'   => $item->subtotal,
-            ];
-        })->toArray();
+        $data['invoiceItems'] = $invoice->invoiceItems()
+            ->get(['product_id', 'quantity', 'price', 'discount', 'subtotal'])
+            ->toArray();
 
         return $data;
     }

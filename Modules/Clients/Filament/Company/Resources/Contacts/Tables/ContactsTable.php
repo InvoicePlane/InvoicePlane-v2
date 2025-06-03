@@ -8,6 +8,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Helpers\EnumHelper;
 

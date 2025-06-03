@@ -16,6 +16,7 @@ use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\MailQueue;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
@@ -25,7 +26,6 @@ use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Payments\Models\Payment;
 use Modules\Quotes\Models\Quote;
-use stdClass;
 
 /**
  * @property int                             $id
@@ -164,11 +164,6 @@ class Invoice extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
-    }
-
-    public function paymentMethod(): BelongsTo
-    {
-        return $this->belongsTo(PaymentMethod::class, 'payment_method');
     }
 
     public function quote(): HasOne

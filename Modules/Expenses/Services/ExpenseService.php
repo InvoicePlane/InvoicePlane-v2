@@ -20,7 +20,7 @@ class ExpenseService extends BaseService
         DB::beginTransaction();
 
         try {
-            $expense = Expense::create([
+            $expense = Expense::query()->create([
                 'expense_number' => $data['expense_number'],
                 'expense_amount' => $data['expense_amount'],
                 'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),

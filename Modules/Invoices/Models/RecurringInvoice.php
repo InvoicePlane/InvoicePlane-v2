@@ -15,8 +15,6 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\User;
-use Modules\Core\Support\DateFormatter;
-use Modules\Core\Support\NumberFormatter;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Enums\RecurringFrequency;
 
@@ -98,8 +96,7 @@ class RecurringInvoice extends Model
     // and the fact that Laravel has a protected items property.
     public function recurringInvoiceItems(): HasMany
     {
-        return $this->hasMany(RecurringInvoiceItem::class)
-            ->orderBy('display_order');
+        return $this->hasMany(RecurringInvoiceItem::class)->orderBy('display_order');
     }
 
     public function user(): BelongsTo

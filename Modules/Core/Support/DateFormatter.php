@@ -98,7 +98,7 @@ class DateFormatter
      *
      * @return string The yyyy-mm-dd standardized date
      */
-    public static function unformat($userDate = null)
+    public static function unformat($userDate = null): string
     {
         if ($userDate) {
             $date = DateTime::createFromFormat(config('ip.dateFormat'), $userDate);
@@ -133,7 +133,7 @@ class DateFormatter
      *
      * @return string The yyyy-mm-dd standardized incremented date
      */
-    public static function incrementDate($date, $period, $numPeriods)
+    public static function incrementDate($date, $period, $numPeriods): string
     {
         $date = DateTime::createFromFormat('Y-m-d', $date);
 
