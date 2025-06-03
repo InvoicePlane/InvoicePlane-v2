@@ -6,13 +6,13 @@ use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(UserResource::class)]
-class UsersTest extends AbstractTestCase
+class UsersTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     #[Group('smoke')]
@@ -28,11 +28,8 @@ class UsersTest extends AbstractTestCase
     #[Group('crud')]
     public function it_lists_users(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $record = User::factory()->create(['email' => 'admin@example.com']);
+        $user = User::factory()->create(['email' => 'admin@example.com']);
 
         /* act */
         $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class);
@@ -40,7 +37,7 @@ class UsersTest extends AbstractTestCase
         /* assert */
         $component->assertSuccessful();
 
-        $this->assertDatabaseHas($record);
+        $this->assertDatabaseHas('users', $user->toArray());
     }
 
     #[Test]

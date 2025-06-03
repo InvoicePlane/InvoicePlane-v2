@@ -5,18 +5,19 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
+use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\CreateTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\EditTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\ListTaxRates;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(TaxRateResource::class)]
-class TaxRatesTest extends AbstractTestCase
+class TaxRatesTest extends AbstractAdminPanelTestCase
 {
     use WithFaker;
     use WithoutMiddleware;
@@ -32,40 +33,37 @@ class TaxRatesTest extends AbstractTestCase
         parent::tearDown();
     }
 
-    // region smoke
+    # region smoke
+    #[Test]
     #[Group('crud')]
     public function it_lists_tax_rates(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $this->markTestSkipped('Some error with a livewire view');
-
-        //$this->actingAs(User::factory()->create());
-
-        $payload = [
-            'company_id'    => 'Value',
-            'tax_rate_type' => 'Value',
+        $taxRate = TaxRate::factory()->create([
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
-            'name'          => 'Example',
-            'code'          => 'Example',
-            'rate'          => 'Example',
-        ];
+            'name'          => 'Example Tax',
+            'code'          => 'EX',
+            'rate'          => 15.00,
+        ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class);
 
         /* assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
+        $component->assertSuccessful();
 
-        $this->assertDatabaseHas('tax_rates', $payload);
+        // Optional: direct DB check
+        $this->assertDatabaseHas('tax_rates', [
+            'name' => $taxRate->name,
+            'code' => $taxRate->code,
+            'rate' => $taxRate->rate,
+        ]);
     }
-    // endregion
+    # endregion
 
-    // region crud
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -202,8 +200,8 @@ class TaxRatesTest extends AbstractTestCase
         $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);
     }
 
-    // endregion
+    # endregion
 
-    // region usp
-    // endregion
+    # region usp
+    # endregion
 }

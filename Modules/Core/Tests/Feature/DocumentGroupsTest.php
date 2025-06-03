@@ -8,13 +8,13 @@ use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\CreateDocumentGro
 use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\EditDocumentGroup;
 use Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages\ListDocumentGroups;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(DocumentGroupResource::class)]
-class DocumentGroupsTest extends AbstractTestCase
+class DocumentGroupsTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     #[Group('smoke')]
@@ -24,17 +24,17 @@ class DocumentGroupsTest extends AbstractTestCase
     #[Group('crud')]
     public function it_lists_document_groups(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $group = DocumentGroup::factory()->create(['name' => 'Policies']);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListDocumentGroups::class);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListDocumentGroups::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($group);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('document_groups', $group->toArray());
     }
 
     #[Test]

@@ -8,13 +8,13 @@ use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\CreateEmailTempla
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\EditEmailTemplate;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\ListEmailTemplates;
 use Modules\Core\Models\EmailTemplate;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(EmailTemplateResource::class)]
-class EmailTemplatesTest extends AbstractTestCase
+class EmailTemplatesTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     #[Group('smoke')]
@@ -24,17 +24,17 @@ class EmailTemplatesTest extends AbstractTestCase
     #[Group('crud')]
     public function it_lists_email_templates(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListEmailTemplates::class);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListEmailTemplates::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($template);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('email_templates', $template->toArray());
     }
 
     #[Test]

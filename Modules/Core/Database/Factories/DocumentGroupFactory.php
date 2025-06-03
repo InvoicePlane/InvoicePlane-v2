@@ -16,10 +16,11 @@ class DocumentGroupFactory extends Factory
 
     public function definition(): array
     {
+        $company   = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
         $groupType = $this->faker->randomElement(DocumentGroupType::cases());
 
         return [
-            'company_id'              => Company::query()->inRandomOrder()->first()->id,
+            'company_id'              => $company->id,
             'type'                    => $groupType->value,
             'group_identifier_format' => $groupType->prefix() . '-' . $this->faker->numberBetween(100, 700),
             'name'                    => $groupType->label(),

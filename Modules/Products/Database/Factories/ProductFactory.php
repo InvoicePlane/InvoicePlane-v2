@@ -11,7 +11,7 @@ use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 
 /**
- * @extends Factory<\Modules\Products\Models\Product>
+ * @extends Factory<Product>
  */
 class ProductFactory extends Factory
 {
