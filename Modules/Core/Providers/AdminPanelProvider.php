@@ -44,7 +44,6 @@ class AdminPanelProvider extends PanelProvider
                 'Poppins',
                 provider: GoogleFontProvider::class,
             )
-
             ->colors([
                 'primary' => [
                     50  => '#F2F7FD',

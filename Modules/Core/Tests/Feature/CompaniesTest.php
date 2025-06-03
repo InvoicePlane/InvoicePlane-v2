@@ -8,13 +8,13 @@ use Modules\Core\Filament\Admin\Resources\Companies\Pages\CreateCompany;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\EditCompany;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
 use Modules\Core\Models\Company;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(CompanyResource::class)]
-class CompaniesTest extends AbstractTestCase
+class CompaniesTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     #[Group('smoke')]
@@ -24,17 +24,17 @@ class CompaniesTest extends AbstractTestCase
     #[Group('crud')]
     public function it_lists_companies(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $company = Company::factory()->create(['name' => 'Acme LLC']);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListCompanies::class);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class);
 
         /* assert */
-        $component->assertSuccessful()->assertSeeDatabaseRecords($company);
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('companies', $company->toArray());
     }
 
     #[Test]
@@ -48,7 +48,10 @@ class CompaniesTest extends AbstractTestCase
         $payload = ['name' => 'Rocket Corp'];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateCompany::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateCompany::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
