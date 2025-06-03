@@ -12,22 +12,32 @@ class EmailTemplateService extends BaseService
         return EmailTemplate::class;
     }
 
-    public function create(array $validatedInput): EmailTemplate
+    public function createEmailTemplate(array $data): EmailTemplate
     {
-        $emailTemplate = new EmailTemplate(
-            $validatedInput
-        );
-
-        $emailTemplate->save();
-
-        return $emailTemplate;
+        return EmailTemplate::query()->create([
+            'company_id' => $this->getCompanyId() ?? 1,
+            'type'       => $data['type'],
+            'title'      => $data['title'],
+            'subject'    => $data['subject'],
+            'body'       => $data['body'] ?? null,
+            'from_name'  => $data['from_name'],
+            'from_email' => $data['from_email'],
+            'cc'         => $data['cc'] ?? null,
+            'bcc'        => $data['bcc'] ?? null,
+        ]);
     }
 
-    public function update(array $validatedInput, $emailTemplateToUpdate): Model
+    public function updateEmailTemplate(EmailTemplate $emailTemplateToUpdate, $data): Model
     {
-        $emailTemplateToUpdate->fill($validatedInput);
-
-        $emailTemplateToUpdate->save();
+        $emailTemplateToUpdate->update([
+            'type'       => $data['type'],
+            'subject'    => $data['subject'],
+            'body'       => $data['body'],
+            'from_name'  => $data['from_name'],
+            'from_email' => $data['from_email'],
+            'cc'         => $data['cc'] ?? null,
+            'bcc'        => $data['bcc'] ?? null,
+        ]);
 
         return $emailTemplateToUpdate;
     }

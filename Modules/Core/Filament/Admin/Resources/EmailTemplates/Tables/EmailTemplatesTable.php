@@ -8,6 +8,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Services\EmailTemplateService;
 
 class EmailTemplatesTable
 {
@@ -25,7 +27,14 @@ class EmailTemplatesTable
             ])
             ->actions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(function (array $data, EmailTemplate $record) {
+                            $data['body'] ??= '';
+
+                            return $data;
+                        })
+                        ->action(fn (EmailTemplate $record, array $data) => app(EmailTemplateService::class)->update($data, $record))
+                        ->modalWidth('full'),
                 ]),
             ])
             ->bulkActions([

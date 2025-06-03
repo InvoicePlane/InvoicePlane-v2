@@ -135,7 +135,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        if (app()->isLocal()) {
+        if (app()->runningUnitTests()) {
             dump($payload);
         }
 

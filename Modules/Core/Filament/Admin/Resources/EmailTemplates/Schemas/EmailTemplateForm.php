@@ -41,6 +41,7 @@ class EmailTemplateForm
                             ->schema(components: [
                                 Select::make('type')
                                     ->label(trans('ip.type'))
+                                    ->required()
                                     ->options(EmailTemplateType::class)
                                     ->default(null),
                                 TextInput::make('subject')->label(trans('ip.subject')),

@@ -10,6 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Invoices\Services\DocumentGroupService;
 
 class DocumentGroupsTable
 {
@@ -58,7 +60,16 @@ class DocumentGroupsTable
             ])
             ->actions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(function (array $data, DocumentGroup $record) {
+                            $data['name'] = $record->name;
+
+                            return $data;
+                        })
+                        ->action(function (DocumentGroup $record, array $data) {
+                            app(DocumentGroupService::class)->update($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->bulkActions([

@@ -5,6 +5,7 @@ namespace Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Services\EmailTemplateService;
 
 class ListEmailTemplates extends ListRecords
 {
@@ -13,7 +14,16 @@ class ListEmailTemplates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    $data['body'] ??= '';
+
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(EmailTemplateService::class)->createEmailTemplate($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

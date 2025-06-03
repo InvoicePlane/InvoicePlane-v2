@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Modules\Core\Models\Company;
 
 abstract class BaseService
 {
@@ -116,21 +117,19 @@ abstract class BaseService
 
     protected function determineCompanyId(): ?int
     {
-        // Check if the company_id is stored in the session
         if (session()?->has('current_company_id')) {
             return session('current_company_id');
         }
 
-        // Fallback: use the user's first associated company
         $user = Auth::user();
-        if ($user) {
-            $company = $user->companies()->first();
-            if ($company) {
-                return $company->id;
+        if ($user && method_exists($user, 'companies')) {
+            $userCompany = $user->companies()->first();
+            if ($userCompany) {
+                return $userCompany->id;
             }
         }
 
-        return null;  // No company available
+        return Company::query()->first()?->id;
     }
 
     private function getFieldsSearchable(): array
