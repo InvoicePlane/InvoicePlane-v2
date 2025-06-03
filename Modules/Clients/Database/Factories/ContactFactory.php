@@ -3,10 +3,10 @@
 namespace Modules\Clients\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Enums\Gender;
 use Modules\Core\Models\Company;
 
 /**

@@ -85,26 +85,6 @@ class Contact extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getFormattedContactAttribute()
-    {
-        return $this->name . ' <' . $this->email . '>';
-    }
-
-    public function getFormattedDefaultBccAttribute()
-    {
-        return ($this->default_bcc) ? trans('ip.yes') : trans('ip.no');
-    }
-
-    public function getFormattedDefaultCcAttribute()
-    {
-        return ($this->default_cc) ? trans('ip.yes') : trans('ip.no');
-    }
-
-    public function getFormattedDefaultToAttribute()
-    {
-        return ($this->default_to) ? trans('ip.yes') : trans('ip.no');
-    }
-
     public function getFullNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name);

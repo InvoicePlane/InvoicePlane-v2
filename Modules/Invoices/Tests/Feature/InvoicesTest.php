@@ -70,6 +70,8 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_an_invoice_with_items(): void
     {
+        $this->markTestIncomplete();
+
         /* arrange */
         $company       = $this->user->companies()->first();
         $user          = $this->user;

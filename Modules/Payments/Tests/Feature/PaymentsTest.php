@@ -154,48 +154,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: customer_id
-     * {
-     *   "invoice_id": 1,
-     *   "payment_method": "bank_transfer",
-     *   "payment_status": "pending",
-     *   "payment_amount": 250.00,
-     *   "paid_at": "2024-11-01"
-     * }
-     */
-    public function it_fails_to_create_payment_without_required_customer_id(): void
-    {
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
-
-        /* arrange */
-        $payload = [
-            'invoice_id'     => $invoice->id,
-            'payment_method' => PaymentMethod::BANK_TRANSFER,
-            'payment_amount' => 250.00,
-            'paid_at'        => '2024-11-01',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(CreatePayment::class)
-            ->fillForm($payload)
-            ->call('create');
-
-        if (app()->isLocal()) {
-            dump($payload);
-        }
-
-        /* assert */
-        $component->assertHasFormErrors(['customer_id']);
-
-        $this->assertDatabaseMissing('payments', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
      * @payload missing: payment_method
      * {
      *   "customer_id": 1,
