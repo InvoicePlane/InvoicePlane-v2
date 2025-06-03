@@ -105,6 +105,8 @@ class DateFormatter
 
             return $date->format('Y-m-d');
         }
+
+        return '';
     }
 
     /**
@@ -124,15 +126,6 @@ class DateFormatter
         return $date->format('Y-m-d');
     }
 
-    /**
-     * Adds a specified number of periods to a yyyy-mm-dd formatted date.
-     *
-     * @param date $date       The date
-     * @param int  $period     1 = Days, 2 = Weeks, 3 = Months, 4 = Years
-     * @param int  $numPeriods The number of periods to increment
-     *
-     * @return string The yyyy-mm-dd standardized incremented date
-     */
     public static function incrementDate($date, $period, $numPeriods): string
     {
         $date = DateTime::createFromFormat('Y-m-d', $date);

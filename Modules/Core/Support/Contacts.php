@@ -36,14 +36,6 @@ class Contacts
         return $contacts;
     }
 
-    public function contactDropdownBcc()
-    {
-        $allContacts      = $this->getAllContacts();
-        $selectedContacts = $this->getSelectedContactsBcc();
-
-        return FormFacade::select('bcc', $allContacts, $selectedContacts, ['id' => 'bcc', 'multiple' => 'multiple', 'class' => 'form-control']);
-    }
-
     public function getSelectedContactsBcc(): array
     {
         $contacts = $this->customer->contacts

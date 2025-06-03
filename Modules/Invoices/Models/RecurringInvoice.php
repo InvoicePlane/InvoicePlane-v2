@@ -96,7 +96,7 @@ class RecurringInvoice extends Model
     // and the fact that Laravel has a protected items property.
     public function recurringInvoiceItems(): HasMany
     {
-        return $this->hasMany(RecurringInvoiceItem::class)->orderBy('display_order');
+        return $this->hasMany(RecurringInvoiceItem::class);
     }
 
     public function user(): BelongsTo
