@@ -1,16 +1,6 @@
 name: Laravel Pint
 
 on:
-  push:
-    branches:
-      - master
-      - develop
-      - feature/filament-v4
-  pull_request:
-    branches:
-      - master
-      - develop
-      - feature/filament-v4
   workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
