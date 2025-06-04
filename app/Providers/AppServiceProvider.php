@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Modules\Invoices\Models\Invoice;
 
@@ -15,5 +16,8 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'invoice' => Invoice::class,
         ]);
+        /*DB::listen(function ($query) {
+            logger('SQL', [$query->sql, $query->bindings]);
+        });*/
     }
 }

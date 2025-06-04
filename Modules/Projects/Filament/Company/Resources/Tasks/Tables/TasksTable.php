@@ -30,8 +30,9 @@ class TasksTable
                         $status = $record->task_status instanceof TaskStatus ? $record->task_status : TaskStatus::tryFrom($record->task_status);
 
                         return $status?->color() ?? 'secondary';
-                    }),
-                TextColumn::make('name')
+                    })
+                    ->sortable(false),
+                TextColumn::make('task_name')
                     ->limit(10)
                     ->label(trans('ip.task_name'))
                     ->searchable()
@@ -49,7 +50,7 @@ class TasksTable
                         ? 'danger'
                         : null
                     ),
-                TextColumn::make('price')
+                TextColumn::make('task_price')
                     ->label(trans('ip.task_price'))
                     ->searchable()
                     ->sortable(),
@@ -76,7 +77,6 @@ class TasksTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('due_at', 'asc');
+            ]);
     }
 }

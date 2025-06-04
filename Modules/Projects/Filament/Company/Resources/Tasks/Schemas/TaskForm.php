@@ -32,7 +32,7 @@ class TaskForm
                             ->schema([
                                 Section::make(trans('ip.task'))
                                     ->schema([
-                                        TextInput::make('name')
+                                        TextInput::make('task_name')
                                             ->label(trans('ip.task_name'))
                                             ->required()
                                             ->maxLength(255)
@@ -70,7 +70,7 @@ class TaskForm
                                                             ->required()
                                                             ->maxLength(255),
                                                     ]),
-                                                TextInput::make('name')
+                                                TextInput::make('project_name')
                                                     ->label(trans('ip.project_name'))
                                                     ->required()
                                                     ->maxLength(255),
@@ -112,7 +112,7 @@ class TaskForm
                                             ->label(trans('ip.task_finish_date'))
                                             ->required(),
 
-                                        TextInput::make('price')
+                                        TextInput::make('task_price')
                                             ->label(trans('ip.task_price'))
                                             ->numeric(),
 
