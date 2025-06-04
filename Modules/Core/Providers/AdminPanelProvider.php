@@ -10,7 +10,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
@@ -21,12 +20,12 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
-use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
 
 class AdminPanelProvider extends PanelProvider
@@ -98,14 +97,11 @@ class AdminPanelProvider extends PanelProvider
                     950 => '#0A2917',
                 ],
             ])
+            ->pages([
+                Dashboard::class,
+            ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->items([
-                        NavigationItem::make('Dashboard')
-                            ->icon('heroicon-o-home')
-                            ->url(route('filament.admin.pages.dashboard'))
-                            ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard')),
-                    ])
                     ->groups([
                         NavigationGroup::make('Companies')
                             //->icon('heroicon-o-building-office')
@@ -166,9 +162,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverPages(in: app_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
             ->discoverWidgets(in: app_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
-            ->pages([
-                Dashboard::class,
-            ])
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,

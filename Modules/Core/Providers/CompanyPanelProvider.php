@@ -11,7 +11,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Icons\Heroicon;
@@ -25,8 +24,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
-use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
@@ -52,7 +51,6 @@ class CompanyPanelProvider extends PanelProvider
             ->default()
             ->passwordReset()
             ->emailVerification()
-            ->tenant(Company::class)
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->colors([
                 'primary' => [
@@ -126,10 +124,14 @@ class CompanyPanelProvider extends PanelProvider
                 QuoteResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
+            ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
+            ->widgets([
+                AccountWidget::class,
+                FilamentInfoWidget::class,
+            ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
@@ -186,10 +188,6 @@ class CompanyPanelProvider extends PanelProvider
             })
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
             ->userMenuItems([
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
