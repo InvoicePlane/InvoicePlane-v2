@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Models;
 
+use Filament\Models\Contracts\HasCurrentTenantLabel;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +33,7 @@ use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
-/**
+/*
  * @property int                           $id
  * @property string                        $search_code
  * @property string                        $name
@@ -71,7 +73,8 @@ use Modules\Quotes\Models\QuoteItem;
  * @property Collection|UploadDetail[]     $upload_details
  * @property Collection|Upload[]           $uploads
  */
-class Company extends Model
+
+class Company extends Model implements HasName, HasCurrentTenantLabel
 {
     use HasFactory;
 
@@ -232,6 +235,19 @@ class Company extends Model
     public function uploads(): HasMany
     {
         return $this->hasMany(Upload::class);
+    }
+
+    // ——————————————————————————————————————————————————————————————
+    // |                             FILAMENT PANEL INTEGRATION                           |
+    // ——————————————————————————————————————————————————————————————
+    public function getFilamentName(): string
+    {
+        return $this->name;
+    }
+
+    public function getCurrentTenantLabel(): string
+    {
+        return 'Active company';
     }
 
     /*
