@@ -17,7 +17,7 @@ class ProjectsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('project_name')
                     ->limit(10)
                     ->label(trans('ip.project_name'))
                     ->formatStateUsing(fn ($state) => $state)
