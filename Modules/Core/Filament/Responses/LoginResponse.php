@@ -3,21 +3,23 @@
 namespace Modules\Core\Filament\Responses;
 
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as BaseLoginResponse;
+use Modules\Core\Models\Company;
 
 class LoginResponse implements BaseLoginResponse
 {
     public function toResponse($request): mixed
     {
-        $user = auth()->user();
+        $tenant = Company::query()->find(1);
 
-        // If session is missing, fallback to first company
-        if ( ! session()?->has('current_company_id')) {
-            $company = $user?->companies()->first();
-            if ($company) {
-                session(['current_company_id' => $company->id]);
-            }
+        if ( ! $tenant) {
+            abort(500, 'Fallback company not found.');
         }
 
-        return redirect()->intended(filament()->getPanel('company')?->getUrl());
+        filament()->setTenant($tenant);
+        session(['current_company_id' => $tenant->id]);
+
+        return redirect()->route('filament.company.pages.dashboard', [
+            'tenant' => $tenant->getRouteKey(),
+        ]);
     }
 }
