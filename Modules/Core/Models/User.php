@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
@@ -139,10 +138,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     | Mutators
     |--------------------------------------------------------------------------
     */
-    public function setPasswordAttribute($password): void
-    {
-        $this->attributes['password'] = Hash::make($password);
-    }
 
     /*
     |--------------------------------------------------------------------------
