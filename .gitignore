@@ -1,4 +1,5 @@
 # Laravel – Core
+/public/fonts/
 /public/storage/
 /storage/framework/
 /storage/generated-json/
@@ -52,6 +53,8 @@ yarn-error.log
 
 # IDEs / Editors
 /.fleet/
+/.aider/
+/.aider.conf.yml
 /.idea/
 /.nova/
 /.phpactor.json
@@ -63,3 +66,4 @@ yarn-error.log
 /.php-cs-fixer.cache
 *.sqlite
 /stan.txt
+/yarnpack.txt
