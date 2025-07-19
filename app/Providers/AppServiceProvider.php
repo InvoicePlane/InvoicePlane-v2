@@ -23,18 +23,5 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'invoice' => Invoice::class,
         ]);
-
-        // Route model binding for company by search_code only
-        /*\Illuminate\Support\Facades\Route::bind('tenant', function ($value) {
-            // Use the new static method on the Company model to find the company
-            // This method includes the logic for case conversion and debugging.
-            return Company::findBySearchCode($value);
-        });*/
-
-        // Filament handles tenant model binding via ->tenant() in the panel provider.
-
-        /*DB::listen(function ($query) {
-            logger('SQL', [$query->sql, $query->bindings]);
-        });*/
     }
 }

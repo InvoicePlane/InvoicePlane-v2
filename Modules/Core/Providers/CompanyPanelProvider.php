@@ -2,9 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use App\Http\Middleware\ConfigureTenant;
-use App\Http\Middleware\EnsureUserCanAccessCompany;
-use App\Http\Middleware\SetTenantFromQueryString;
 use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
@@ -30,6 +27,9 @@ use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Http\Middleware\ConfigureTenant;
+use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
+use Modules\Core\Http\Middleware\SetTenantFromQueryString;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
