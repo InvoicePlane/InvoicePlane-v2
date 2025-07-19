@@ -184,4 +184,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s expense category.');
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

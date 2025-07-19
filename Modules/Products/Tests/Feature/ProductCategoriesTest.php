@@ -208,4 +208,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->assertForbidden();
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

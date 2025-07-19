@@ -554,10 +554,13 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    #[Group('crud')]
+    #[Group('multi-tenancy')]
     public function widget_shows_only_current_tenant_quotes(): void
     {
         $this->markTestIncomplete('Should assert widget only shows quotes for the current tenant.');
     }
+    # endregion
+
+    #region spicy
     # endregion
 }

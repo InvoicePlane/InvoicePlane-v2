@@ -489,4 +489,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $component->assertForbidden();
     }
     # endregion
+
+    #region spicy
+    # endregion
 }
