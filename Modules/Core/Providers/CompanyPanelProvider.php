@@ -76,9 +76,9 @@ class CompanyPanelProvider extends PanelProvider
             })
 
             ->tenantMiddleware([
-                SetTenantFromQueryString::class,  // Handle ?company= query param
-                ConfigureTenant::class,          // Set up tenant context
-                EnsureUserCanAccessCompany::class, // Verify access
+                SetTenantFromQueryString::class,
+                ConfigureTenant::class,
+                EnsureUserCanAccessCompany::class,
             ], isPersistent: true)
             // #endregion
 

@@ -3,6 +3,7 @@
 namespace Modules\Core\Filament\Responses;
 
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as BaseLoginResponse;
+use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 
 class LoginResponse implements BaseLoginResponse
@@ -19,7 +20,7 @@ class LoginResponse implements BaseLoginResponse
         session(['current_company_id' => $tenant->id]);
 
         return redirect()->route('filament.company.pages.dashboard', [
-            'tenant' => $tenant->getRouteKey(),
+            'tenant' => Str::lower($tenant->getRouteKey()),
         ]);
     }
 }

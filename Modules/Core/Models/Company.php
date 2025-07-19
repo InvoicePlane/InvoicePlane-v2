@@ -72,7 +72,6 @@ use Modules\Quotes\Models\QuoteItem;
  * @property Collection|UploadDetail[]     $upload_details
  * @property Collection|Upload[]           $uploads
  */
-
 class Company extends Model implements HasName, HasCurrentTenantLabel
 {
     use HasFactory;
