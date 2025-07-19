@@ -1,0 +1,17 @@
+<?php
+
+namespace Modules\Quotes\Filament\Company\Widgets;
+
+use Filament\Widgets\TableWidget;
+
+class FilamentInfoWidget extends TableWidget
+{
+    protected static ?int $sort = -2;
+
+    protected static bool $isLazy = false;
+
+    /**
+     * @var view-string
+     */
+    protected string $view = 'filament-panels::widgets.filament-info-widget';
+}

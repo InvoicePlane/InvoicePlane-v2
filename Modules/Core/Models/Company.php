@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Models\Address;
 use Modules\Clients\Models\Addressable;
 use Modules\Clients\Models\Communication;
@@ -87,6 +88,31 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Static Methods
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * Find a company by its search code, handling case sensitivity and debugging.
+     *
+     * @param string $searchCode The search code (e.g., from URL, can be lowercase).
+     *
+     * @return Company the found Company model instance
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException if no company is found
+     * @throws Exception                                            for other unexpected errors during the lookup
+     */
+    public static function findBySearchCode(string $searchCode): self
+    {
+        try {
+            $uppercaseSearchCode = mb_strtoupper($searchCode);
+
+            return self::query()->where('search_code', $uppercaseSearchCode)->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Company not found by search code: {$searchCode}", ['exception' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            throw $e; // Re-throw to maintain original behavior for route binding (e.g., 404)
+        } catch (Exception $e) {
+            Log::error("Error finding company by search code: {$searchCode}", ['exception' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            throw $e; // Re-throw for other unexpected errors
+        }
+    }
 
     /*
     |--------------------------------------------------------------------------
