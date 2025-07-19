@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Filament\Responses\LoginResponse;
 use Modules\Invoices\Models\Invoice;

@@ -22,17 +22,14 @@ class SetTenantFromQueryString
             return $next($request);
         }
 
-        // Check if user has access to this company
         if (
             /* @var User $user */
-            $user?->companies->contains('id', $company->id || $user?->hasAnyRole(UserRole::elevated()))
+            $user?->companies->contains('id', $company->id || $user->hasAnyRole(UserRole::elevated()))
         ) {
             session(['current_company_id' => $company->id]);
+            filament()->setTenant($company);
 
-            // Update the route parameter if it exists
-            if ($request->route() && $request->route()->hasParameter('tenant')) {
-                $request->route()->setParameter('tenant', Str::lower($company->search_code));
-            }
+            $request->route()?->setParameter('tenant', Str::lower($company->search_code));
         }
 
         return $next($request);
