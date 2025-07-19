@@ -152,6 +152,51 @@ class Quote extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for quote_expires_at.
+     *
+     * @return string
+     */
+    public function getExpiresIntensityAttribute(): string
+    {
+        if ( ! $this->quote_expires_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->quote_expires_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $quoteLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('quote_status', [QuoteStatus::DRAFT, QuoteStatus::REJECTED, QuoteStatus::APPROVED])
+            ->orderBy('quote_expires_at', 'desc')
+            ->orderBy('quote_status', 'asc')
+            ->limit($quoteLimit);
+    }
 
     /*
     |--------------------------------------------------------------------------

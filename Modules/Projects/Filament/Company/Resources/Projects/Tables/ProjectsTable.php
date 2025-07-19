@@ -42,12 +42,12 @@ class ProjectsTable
                 TextColumn::make('end_at')->date()->since()->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

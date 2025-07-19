@@ -17,13 +17,16 @@ class QuoteService extends BaseService
         return Quote::class;
     }
 
-    public function create(array $data): Model
+    public function createQuote(array $data): Model
     {
         DB::beginTransaction();
 
         try {
+            $itemTaxTotal  = $this->calculateItemTaxTotal($data);
+            $quoteTaxTotal = $this->calculateQuoteTaxTotal($data);
+            $quoteTotal    = $this->calculateQuoteTotal($data, $itemTaxTotal, $quoteTaxTotal);
+
             $quote = parent::create([
-                'company_id'             => $data['company_id'],
                 'prospect_id'            => $data['prospect_id'],
                 'document_group_id'      => $data['document_group_id'] ?? null,
                 'user_id'                => auth()->id(),
@@ -33,10 +36,10 @@ class QuoteService extends BaseService
                 'quote_expires_at'       => Carbon::parse($data['quote_expires_at']),
                 'quote_discount_amount'  => $data['quote_discount_amount'] ?? 0,
                 'quote_discount_percent' => $data['quote_discount_percent'] ?? 0,
-                'item_tax_total'         => $data['item_tax_total'] ?? 0,
-                'quote_item_subtotal'    => $data['quote_item_subtotal'],
-                'quote_tax_total'        => $data['quote_tax_total'],
-                'quote_total'            => $data['quote_total'],
+                'item_tax_total'         => $itemTaxTotal,
+                'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
+                'quote_tax_total'        => $quoteTaxTotal,
+                'quote_total'            => $quoteTotal,
                 'quote_password'         => $data['quote_password'] ?? null,
                 'url_key'                => $data['url_key'] ?? Str::random(32),
                 'template'               => $data['template'] ?? null,

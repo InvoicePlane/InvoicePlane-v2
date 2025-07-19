@@ -58,7 +58,7 @@ class DocumentGroupsTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateDataUsing(function (array $data, DocumentGroup $record) {
@@ -72,7 +72,7 @@ class DocumentGroupsTable
                         ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -21,30 +21,50 @@ class TaskFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first()
+        $company = Company::query()
+            ->inRandomOrder()
+            ->first()
             ?? Company::factory()->create();
 
+        // Create or get a customer that belongs to this company
         $customer = Relation::query()
+            ->where('company_id', $company->id)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first()
-            ?? Relation::factory()->create([
-                'relation_type' => RelationType::CUSTOMER->value,
-            ]);
+            ?? Relation::factory()
+                ->for($company)
+                ->customer()
+                ->create();
 
+        // Create or get a project that belongs to this company and customer
         $project = Project::query()
+            ->where('company_id', $company->id)
             ->where('customer_id', $customer->id)
             ->inRandomOrder()
             ->first()
-            ?? Project::factory()->create(['customer_id' => $customer->id]);
+            ?? Project::factory()
+                ->for($company)
+                ->for($customer)
+                ->create();
 
+        // Create or get a tax rate that belongs to this company
         $taxRate = TaxRate::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first()
-            ?? TaxRate::factory()->for($company)->create();
+            ?? TaxRate::factory()
+                ->for($company)
+                ->create();
 
-        $user = User::query()->inRandomOrder()->first();
+        // Get a user that belongs to this company
+        $user = User::query()
+            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
+            ->inRandomOrder()
+            ->first()
+            ?? User::factory()
+                ->hasAttached($company)
+                ->create();
 
         return [
             'company_id'  => $company->id,

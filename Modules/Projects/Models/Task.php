@@ -68,6 +68,11 @@ class Task extends Model
         return $this->belongsTo(TaxRate::class, 'tax_rate_id');
     }
 
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
+    }
+
     protected static function newFactory(): Factory
     {
         return TaskFactory::new();

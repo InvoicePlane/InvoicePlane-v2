@@ -25,7 +25,7 @@ class EmailTemplatesTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateDataUsing(function (array $data, EmailTemplate $record) {
@@ -37,7 +37,7 @@ class EmailTemplatesTable
                         ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

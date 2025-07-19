@@ -43,9 +43,11 @@ class Project extends Model
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function customer(): BelongsTo
     {
         return $this
@@ -57,10 +59,16 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    //
-    // Factory
-    //
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProjectFactory::new();

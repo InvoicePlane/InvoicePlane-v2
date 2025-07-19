@@ -36,4 +36,9 @@ class ProjectService extends BaseService
 
         return $model;
     }
+
+    public function getCustomer(int $project_id): int
+    {
+        return Project::query()->where('id', $project_id)->value('customer_id');
+    }
 }

@@ -7,12 +7,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
 use Modules\Projects\Filament\Company\Resources\Projects\Schemas\ProjectForm;
 use Modules\Projects\Filament\Company\Resources\Projects\Tables\ProjectsTable;
 use Modules\Projects\Models\Project;
 
-class ProjectResource extends Resource
+class ProjectResource extends BaseResource
 {
     protected static ?string $model = Project::class;
 
@@ -52,8 +53,7 @@ class ProjectResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

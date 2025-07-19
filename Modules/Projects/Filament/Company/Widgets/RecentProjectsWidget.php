@@ -1,0 +1,36 @@
+<?php
+
+namespace Modules\Projects\Filament\Company\Widgets;
+
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Projects\Enums\ProjectStatus;
+use Modules\Projects\Models\Project;
+use Modules\Quotes\Filament\Company\Widgets\TableWidget;
+
+class RecentProjectsWidget extends TableWidget
+{
+    protected static ?string $heading = 'Recent Projects';
+
+    protected static ?int $sort = 3;
+
+    protected function getTableQuery(): Builder|Relation|null
+    {
+        return Project::query()->latest()->limit(10);
+    }
+
+    protected function getTableColumns(): array
+    {
+        return [
+            TextColumn::make('project_name')->label(trans('ip.project_name')),
+            TextColumn::make('customer.company_name')->label(trans('ip.client_name')),
+            TextColumn::make('project_status')
+                ->label(trans('ip.project_status'))
+                ->badge()
+                ->formatStateUsing(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->label() ?? '-')
+                ->color(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->color() ?? 'secondary'),
+        ];
+    }
+}

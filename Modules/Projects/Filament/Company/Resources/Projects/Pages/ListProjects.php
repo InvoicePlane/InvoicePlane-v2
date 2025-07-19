@@ -13,7 +13,14 @@ class ListProjects extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Projects\Services\ProjectService::class)->createProject($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

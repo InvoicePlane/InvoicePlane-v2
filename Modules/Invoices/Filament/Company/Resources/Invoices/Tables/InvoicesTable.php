@@ -57,7 +57,7 @@ class InvoicesTable
                     ->toggleable(),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateRecordDataUsing(function (array $data, Invoice $record) {
@@ -88,7 +88,7 @@ class InvoicesTable
                         ->action(function (Invoice $record): void {}),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

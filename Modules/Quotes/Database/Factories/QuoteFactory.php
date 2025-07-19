@@ -21,10 +21,33 @@ class QuoteFactory extends Factory
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $prospect = Relation::factory()->create(['company_id' => $company->id, 'relation_type' => RelationType::PROSPECT->value]);
-        $user     = User::factory()->create();
-        $group    = DocumentGroup::factory()->create();
+        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+
+        // Create or get a prospect that belongs to this company
+        $prospect = Relation::query()
+            ->where('company_id', $company->id)
+            ->where('relation_type', RelationType::PROSPECT->value)
+            ->inRandomOrder()
+            ->first() ?? Relation::factory()
+            ->for($company)
+            ->prospect()
+            ->create();
+
+        // Create or get a user that belongs to this company
+        $user = User::query()
+            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
+            ->inRandomOrder()
+            ->first() ?? User::factory()
+            ->hasAttached($company)
+            ->create();
+
+        // Create or get a document group that belongs to this company
+        $group = DocumentGroup::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first() ?? DocumentGroup::factory()
+            ->for($company)
+            ->create();
 
         $subtotal        = 300;
         $itemTaxTotal    = 0;
@@ -33,15 +56,18 @@ class QuoteFactory extends Factory
         $discountPercent = 0;
         $total           = $subtotal + $taxTotal - $discountAmount;
 
+        $quotedAt  = fake()->dateTimeBetween('-1 year', 'now');
+        $expiresAt = (clone $quotedAt)->modify('+' . fake()->numberBetween(7, 180) . ' days');
+
         return [
             'company_id'             => $company->id,
             'prospect_id'            => $prospect->id,
             'document_group_id'      => $group->id,
             'user_id'                => $user->id,
-            'quote_number'           => 'Q-2025-001',
-            'quote_status'           => QuoteStatus::DRAFT->value,
-            'quoted_at'              => now()->format('Y-m-d'),
-            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_number'           => 'Q-' . now()->year . '-' . fake()->unique()->numberBetween(1, 9999),
+            'quote_status'           => fake()->randomElement(QuoteStatus::cases())->value,
+            'quoted_at'              => $quotedAt,
+            'quote_expires_at'       => $expiresAt,
             'quote_discount_amount'  => $discountAmount,
             'quote_discount_percent' => $discountPercent,
             'item_tax_total'         => $itemTaxTotal,
@@ -79,6 +105,6 @@ class QuoteFactory extends Factory
 
     public function canceled(): static
     {
-        return $this->state(fn () => ['quote_status' => QuoteStatus::CANCELED->value]);
+        return $this->state(fn () => ['quote_status' => QuoteStatus::REJECTED->value]);
     }
 }

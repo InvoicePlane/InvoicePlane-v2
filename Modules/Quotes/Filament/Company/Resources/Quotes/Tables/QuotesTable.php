@@ -43,7 +43,7 @@ class QuotesTable
                 TextColumn::make('quote_total')->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateDataUsing(function (array $data, Quote $record) {
@@ -81,7 +81,7 @@ class QuotesTable
                         ->action(function (Quote $record): void {}),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

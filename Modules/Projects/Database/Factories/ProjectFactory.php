@@ -21,13 +21,19 @@ class ProjectFactory extends Factory
         $company = Company::query()
             ->inRandomOrder()
             ->first()
-    ?: Company::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
+            ?? Company::factory()->create();
+
+        // Create or get a customer that belongs to this company
+        $customer = Relation::query()
+            ->where('company_id', $company->id)
+            ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first()
             ?? Relation::factory()
-                ->customer() // assume you have a customer() state on RelationFactory
+                ->for($company)
+                ->customer()
                 ->create();
+
         $status    = $this->faker->randomElement(ProjectStatus::cases());
         $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
         $endDate   = $startDate
