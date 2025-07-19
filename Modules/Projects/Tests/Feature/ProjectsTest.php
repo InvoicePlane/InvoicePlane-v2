@@ -11,7 +11,6 @@ use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\CreateProject;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\EditProject;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
-use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Models\Project;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

@@ -15,7 +15,6 @@ use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
-use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

@@ -14,7 +14,6 @@ use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\CreateTask;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\EditTask;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
-use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -898,5 +897,4 @@ class TasksTest extends AbstractCompanyPanelTestCase
         ]);
     }
     # endregion
-
 }

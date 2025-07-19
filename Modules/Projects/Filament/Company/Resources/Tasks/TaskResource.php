@@ -3,7 +3,6 @@
 namespace Modules\Projects\Filament\Company\Resources\Tasks;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -12,7 +11,6 @@ use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
 use Modules\Projects\Filament\Company\Resources\Tasks\Schemas\TaskForm;
 use Modules\Projects\Filament\Company\Resources\Tasks\Tables\TasksTable;
 use Modules\Projects\Models\Task;
-use UnitEnum;
 
 class TaskResource extends BaseResource
 {
