@@ -1,16 +1,17 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Modules\Core\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Modules\Core\Filament\Responses\LoginResponse;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(LoginResponse::class)]
 class LoginResponseTest extends AbstractTestCase
 {
     use RefreshDatabase;

@@ -9,9 +9,11 @@ use Modules\Core\Enums\UserRole;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
 use Modules\Core\Models\Company;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(SetTenantFromQueryString::class)]
 class SetTenantFromQueryStringTest extends AbstractTestCase
 {
     private SetTenantFromQueryString $middleware;
@@ -28,15 +30,12 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
         $this->middleware = new SetTenantFromQueryString();
 
-        // Create test companies
         $this->company1 = Company::factory()->create(['search_code' => 'comp1']);
         $this->company2 = Company::factory()->create(['search_code' => 'comp2']);
 
-        // Create a test user with elevated role
         $this->user = $this->createUserWithRole(UserRole::SUPER_ADMIN);
         $this->user->companies()->attach($this->company1->id);
 
-        // Authenticate the user
         $this->actingAs($this->user);
     }
 
@@ -78,7 +77,6 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
 
-        // Create a regular user with access only to company1
         $regularUser = $this->createUserWithRole(UserRole::CUSTOMER_USER);
         $regularUser->companies()->attach($this->company1->id);
         Auth::login($regularUser);

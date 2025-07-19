@@ -5,12 +5,15 @@ namespace Modules\Core\Tests\Unit\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mockery;
+use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ConfigureTenant::class)]
 class ConfigureTenantTest extends AbstractTestCase
 {
     #[Test]
@@ -19,18 +22,14 @@ class ConfigureTenantTest extends AbstractTestCase
     {
         $this->markTestIncomplete();
 
-        // Create a test request
         $request = \Illuminate\Http\Request::create('/test', 'GET');
 
-        // Create the middleware instance
         $middleware = new \Modules\Core\Http\Middleware\ConfigureTenant();
 
-        // Mock the Auth facade
         Auth::shouldReceive('check')
             ->once()
             ->andReturn(false);
 
-        // Mock the redirect response
         $redirect = Mockery::mock('Illuminate\Routing\Redirector');
         $redirect->shouldReceive('guest')
             ->once()
@@ -39,7 +38,6 @@ class ConfigureTenantTest extends AbstractTestCase
 
         $this->app->instance('redirect', $redirect);
 
-        // Handle the request
         $response = $middleware->handle($request, function ($req) {
             $this->fail('Next middleware should not be called for unauthenticated users');
         });
@@ -58,13 +56,10 @@ class ConfigureTenantTest extends AbstractTestCase
         // Create a test request
         $request = \Illuminate\Http\Request::create('/test', 'GET');
 
-        // Create the middleware instance
         $middleware = new \Modules\Core\Http\Middleware\ConfigureTenant();
 
-        // Create a user with no company assignments
         $user = User::factory()->create();
 
-        // Mock the Auth facade
         Auth::shouldReceive('check')
             ->once()
             ->andReturn(true);
@@ -73,7 +68,6 @@ class ConfigureTenantTest extends AbstractTestCase
             ->once()
             ->andReturn($user);
 
-        // Mock the redirect response
         $redirect = Mockery::mock('Illuminate\Routing\Redirector');
         $redirect->shouldReceive('route')
             ->once()
@@ -101,15 +95,12 @@ class ConfigureTenantTest extends AbstractTestCase
         // Create a test request
         $request = \Illuminate\Http\Request::create('/test', 'GET');
 
-        // Create the middleware instance
         $middleware = new \Modules\Core\Http\Middleware\ConfigureTenant();
 
-        // Create a super admin user
         $user    = User::factory()->create(['is_super_admin' => true]);
         $company = Company::factory()->create();
         $user->companies()->attach($company);
 
-        // Mock the Auth facade
         Auth::shouldReceive('check')
             ->once()
             ->andReturn(true);
@@ -130,8 +121,6 @@ class ConfigureTenantTest extends AbstractTestCase
 
         // Assert the response is successful
         $this->assertEquals('OK', $response->getContent());
-
-        // Verify the tenant was set in the session
         $this->assertTrue(Session::has('current_company_id'));
     }
 

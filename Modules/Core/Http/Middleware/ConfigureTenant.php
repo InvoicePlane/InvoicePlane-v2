@@ -19,30 +19,24 @@ class ConfigureTenant
             return $next($request);
         }
 
-        // Get the current tenant from the route or query string
         $company = $request->route('tenant');
 
-        // If company is a search_code, find the company
         if (is_string($company)) {
-            $company = Company::where('search_code', $company)->first();
+            $company = Company::query()->where('search_code', $company)->first();
         }
 
-        // If no company from route, check query string
         if ( ! $company && $request->has('tenant')) {
-            $company = Company::where('search_code', Str::upper($request->query('tenant')))->first();
+            $company = Company::query()->where('search_code', Str::upper($request->query('tenant')))->first();
         }
 
-        // If still no company, use the one from session
         if ( ! $company && session()->has('current_company_id')) {
             $company = Company::query()->find(session('current_company_id'));
         }
 
-        // Last resort: get user's first company or any company
         if ( ! $company) {
             $company = $user->companies->first() ?? Company::query()->first();
         }
 
-        // Set the company in session if we found one
         if ($company) {
             session(['current_company_id' => $company->id]);
             view()->share('currentCompany', $company);
