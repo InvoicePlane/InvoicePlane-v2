@@ -431,4 +431,13 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_projects_of_another_tenant(): void
+    {
+        $this->markTestSkipped('Should assert forbidden/404 when accessing another tenant\'s project.');
+    }
+    # endregion
 }

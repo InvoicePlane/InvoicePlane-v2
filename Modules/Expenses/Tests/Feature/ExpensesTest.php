@@ -464,4 +464,25 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('expenses', ['id' => $record->id]);
     }
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_expenses_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Arrange: create an expense for a different company
+        $otherUser    = User::factory()->create();
+        $otherCompany = $otherUser->companies()->first();
+        $expense      = Expense::factory()->for($otherCompany)->create();
+
+        // Act: try to access as this user (should be forbidden or 404)
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpense::class, ['record' => $expense->id]);
+
+        // Assert: should not be able to access (forbidden or not found)
+        $component->assertForbidden();
+    }
+    # endregion
 }

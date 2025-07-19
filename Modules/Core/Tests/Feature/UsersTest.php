@@ -62,4 +62,13 @@ class UsersTest extends AbstractAdminPanelTestCase
         /* @assert form error triggered */
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('crud')]
+    public function it_cannot_access_users_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s user.');
+    }
+    # endregion
 }

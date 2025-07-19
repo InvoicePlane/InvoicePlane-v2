@@ -202,6 +202,30 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
     # endregion
 
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_tax_rates_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a tax rate with a different tenant
+        $otherTaxRate = TaxRate::factory()->create([
+            'name' => 'Other Tenant Tax',
+            'code' => 'OTHER',
+            'rate' => 15.0,
+        ]);
+
+        // Try to access the other tenant's tax rate
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class)
+            ->mountAction('edit', ['record' => $otherTaxRate->id]);
+
+        // Should be forbidden or not found
+        $response->assertStatus(404);
+    }
+    # endregion
+
     # region usp
     # endregion
 }

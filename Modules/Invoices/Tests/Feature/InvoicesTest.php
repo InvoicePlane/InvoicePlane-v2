@@ -641,4 +641,20 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_invoices_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s invoice.');
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function widget_shows_only_current_tenant_invoices(): void
+    {
+        $this->markTestIncomplete('Should assert widget only shows invoices for the current tenant.');
+    }
+    # endregion
 }

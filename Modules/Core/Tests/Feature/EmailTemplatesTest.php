@@ -226,4 +226,104 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_list_email_templates_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a template with a different tenant
+        $otherTemplate = EmailTemplate::factory()->create([
+            'subject' => 'Other Tenant Template',
+            'title'   => 'Other Template',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        // Try to access the other tenant's templates
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListEmailTemplates::class);
+
+        // Should not see the other tenant's template
+        $response->assertDontSee($otherTemplate->title);
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_create_email_template_for_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a different company/tenant
+        $otherCompany = Company::factory()->create();
+
+        // Try to create a template for the other tenant
+        $payload = [
+            'title'      => 'Test Template',
+            'subject'    => 'Test Subject',
+            'body'       => 'Test Body',
+            'type'       => EmailTemplateType::TEXT->value,
+            'company_id' => $otherCompany->id,
+            'from_name'  => 'Test',
+            'from_email' => 'test@example.com',
+        ];
+
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListEmailTemplates::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        // Should not be able to create for another tenant
+        $response->assertForbidden();
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_update_email_template_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a template with a different tenant
+        $otherTemplate = EmailTemplate::factory()->create([
+            'subject' => 'Other Tenant Template',
+            'title'   => 'Other Template',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        // Try to update the other tenant's template
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListEmailTemplates::class)
+            ->mountAction('edit', ['record' => $otherTemplate->id])
+            ->fillForm(['title' => 'Updated Title'])
+            ->callMountedAction();
+
+        // Should be forbidden or not found
+        $response->assertStatus(404);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_cannot_delete_email_template_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a template with a different tenant
+        $otherTemplate = EmailTemplate::factory()->create([
+            'subject' => 'Other Tenant Template',
+            'title'   => 'Other Template',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        // Try to delete the other tenant's template
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListEmailTemplates::class)
+            ->callAction('delete', $otherTemplate);
+
+        // Should be forbidden or not found
+        $response->assertStatus(404);
+        $this->assertDatabaseHas('email_templates', ['id' => $otherTemplate->id]);
+    }
+    # endregion
 }

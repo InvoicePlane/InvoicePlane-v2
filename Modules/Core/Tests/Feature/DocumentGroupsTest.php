@@ -187,4 +187,13 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_document_groups_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s document group.');
+    }
+    # endregion
 }

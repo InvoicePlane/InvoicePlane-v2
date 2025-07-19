@@ -202,6 +202,40 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
+    #region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_contacts_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s contact.');
+
+        /* arrange */
+        // Create two different companies
+        $company1 = Company::factory()->create();
+        $company2 = Company::factory()->for($this->user)->create();
+
+        // Create a user in company1
+        $user1 = User::factory()->create();
+        $user1->companies()->attach($company1);
+
+        // Create a user in company2
+        $user2 = User::factory()->create();
+        $user2->companies()->attach($company2);
+
+        // Create a contact for user2's company
+        $contact = Contact::factory()->for($company2)->create();
+
+        /* act */
+        // Try to access the contact as user1 (different company)
+        $response = $this->actingAs($user1)
+            ->get(route('filament.company.resources.contacts.index'));
+
+        /* assert */
+        // Verify access is denied (403 Forbidden or 404 Not Found)
+        $response->assertStatus(403); // or 404, depending on your implementation
+    }
+    # endregion
+
     #region spicy
     # endregion
 }
