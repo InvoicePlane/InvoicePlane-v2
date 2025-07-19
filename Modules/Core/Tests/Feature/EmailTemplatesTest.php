@@ -226,4 +226,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

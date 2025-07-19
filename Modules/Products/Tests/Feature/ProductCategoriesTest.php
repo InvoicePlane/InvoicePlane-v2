@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProductCategoryResource::class)]
 class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 {
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -41,7 +42,9 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $this->assertDatabaseHas('product_categories', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -179,4 +182,33 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
     }
+    # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_product_categories_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Verify tenant isolation for product categories');
+
+        // Arrange
+        $company1 = Company::factory()->create();
+        $company2 = Company::factory()->create();
+
+        $user1 = User::factory()->create();
+        $user1->companies()->attach($company1);
+
+        $category = ProductCategory::factory()
+            ->for($company1)
+            ->create(['category_name' => 'Company 1 Category']);
+
+        // Act & Assert - User from company 2 tries to access company 1's category
+        $this->actingAs($user1->companies()->first()->pivot->switchCompany($company2))
+            ->get(route('filament.company.resources.product-categories.edit', $category))
+            ->assertForbidden();
+    }
+    # endregion
+
+    #region spicy
+    # endregion
 }

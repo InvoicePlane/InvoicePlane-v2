@@ -179,4 +179,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('companies', ['id' => $company->id]);
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

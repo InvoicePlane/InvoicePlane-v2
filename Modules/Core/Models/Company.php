@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Collection;
 use Modules\Clients\Models\Address;
 use Modules\Clients\Models\Addressable;
 use Modules\Clients\Models\Communication;
@@ -73,7 +72,6 @@ use Modules\Quotes\Models\QuoteItem;
  * @property Collection|UploadDetail[]     $upload_details
  * @property Collection|Upload[]           $uploads
  */
-
 class Company extends Model implements HasName, HasCurrentTenantLabel
 {
     use HasFactory;
@@ -87,7 +85,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Static Methods
     |--------------------------------------------------------------------------
     */
-
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -242,7 +239,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     // ——————————————————————————————————————————————————————————————
     public function getFilamentName(): string
     {
-        return $this->name;
+        return $this->company_name;
     }
 
     public function getCurrentTenantLabel(): string
@@ -253,6 +250,12 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     /*
     |--------------------------------------------------------------------------
     | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
     |--------------------------------------------------------------------------
     */
 

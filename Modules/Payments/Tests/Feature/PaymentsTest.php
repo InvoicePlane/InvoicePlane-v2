@@ -417,4 +417,16 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_payments_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s payment.');
+    }
+    # endregion
+
+    #region spicy
+    # endregion
 }

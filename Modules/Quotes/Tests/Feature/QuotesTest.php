@@ -25,6 +25,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -55,7 +56,9 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('quotes', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_creates_quote_with_items(): void
@@ -522,4 +525,42 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
+    # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_quotes_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a quote for a different company
+        $otherUser    = User::factory()->withCompany()->create();
+        $otherCompany = $otherUser->companies()->first();
+
+        $quote = Quote::factory()
+            ->for($otherCompany)
+            ->for(Relation::factory()->for($otherCompany)->prospect())
+            ->create();
+
+        // Try to access the quote with the current user
+        $response = $this->get(route('filament.company.resources.quotes.edit', [
+            'tenant' => $this->company->search_code,
+            'record' => $quote->id,
+        ]));
+
+        // Should be forbidden or not found
+        $response->assertStatus(403); // or 404, depending on your implementation
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function widget_shows_only_current_tenant_quotes(): void
+    {
+        $this->markTestIncomplete('Should assert widget only shows quotes for the current tenant.');
+    }
+    # endregion
+
+    #region spicy
+    # endregion
 }

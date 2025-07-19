@@ -335,6 +335,15 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     }
     // endregion
 
-    // region usp
-    // endregion
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_recurring_invoices_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s recurring invoice.');
+    }
+    # endregion
+
+    # region spicy
+    # endregion
 }

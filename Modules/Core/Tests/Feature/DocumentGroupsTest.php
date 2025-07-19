@@ -187,4 +187,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

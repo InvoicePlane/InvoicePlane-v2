@@ -175,4 +175,16 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_expense_categories_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s expense category.');
+    }
+    # endregion
+
+    #region spicy
+    # endregion
 }

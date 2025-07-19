@@ -25,7 +25,7 @@ class Setting extends Model
     */
     public static function deleteByKey($key): void
     {
-        self::where('setting_key', $key)->delete();
+        self::query()->where('setting_key', $key)->delete();
     }
 
     public static function saveByKey($key, $value): void
@@ -84,7 +84,7 @@ class Setting extends Model
 
     public static function getByKey($key)
     {
-        $setting = self::where('setting_key', $key)->first();
+        $setting = self::query()->where('setting_key', $key)->first();
 
         if ($setting) {
             return $setting->setting_value;

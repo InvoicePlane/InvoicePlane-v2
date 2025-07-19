@@ -259,6 +259,15 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_customers_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s customer.');
+    }
+    # endregion
+
     # region spicy
     # endregion
 }

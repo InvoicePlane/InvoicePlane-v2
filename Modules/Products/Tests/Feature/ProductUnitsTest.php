@@ -173,4 +173,32 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
     }
     # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_product_units_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Verify tenant isolation for product units');
+
+        // Arrange
+        $company1 = Company::factory()->create();
+        $company2 = Company::factory()->create();
+
+        $user1 = User::factory()->create();
+        $user1->companies()->attach($company1);
+
+        $unit = ProductUnit::factory()
+            ->for($company1)
+            ->create(['unit_name' => 'Company 1 Unit']);
+
+        // Act & Assert - User from company 2 tries to access company 1's unit
+        $this->actingAs($user1->companies()->first()->pivot->switchCompany($company2))
+            ->get(route('filament.company.resources.product-units.edit', $unit))
+            ->assertForbidden();
+    }
+    # endregion
+
+    #region spicy
+    # endregion
 }

@@ -13,6 +13,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -26,6 +27,10 @@ use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Http\Middleware\ConfigureTenant;
+use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
+use Modules\Core\Http\Middleware\SetTenantFromQueryString;
+use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
@@ -44,14 +49,39 @@ class CompanyPanelProvider extends PanelProvider
     {
         /** @var Panel $companyPanel */
         $panel = $companyPanel
+            // #region Panel Configuration
+
+            ->default()
             ->id('company')
             ->path('')
             ->login()
             ->profile(EditProfile::class, isSimple: false)
-            ->default()
             ->passwordReset()
             ->emailVerification()
+            ->maxContentWidth(Width::Full)
             ->font('Poppins', provider: GoogleFontProvider::class)
+
+            ->tenantMenu(false)
+            // #endregion
+
+            // #region Tenant Configuration
+            ->tenant(
+                Company::class,
+                slugAttribute: 'search_code',
+            )
+            ->homeUrl(function ($panel, $company) {
+                $tenant = request('tenant');
+
+                return route('filament.company.pages.dashboard', ['tenant' => $tenant]);
+            })
+
+            ->tenantMiddleware([
+                SetTenantFromQueryString::class,
+                ConfigureTenant::class,
+                EnsureUserCanAccessCompany::class,
+            ], isPersistent: true)
+            // #endregion
+
             ->colors([
                 'primary' => [
                     50  => '#F2F7FD',
@@ -133,11 +163,13 @@ class CompanyPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                $tenant = request('tenant');
+
                 return $builder
                     ->items([
                         NavigationItem::make('Dashboard')
                             ->icon('heroicon-o-home')
-                            ->url(route('filament.company.pages.dashboard'))
+                            ->url(route('filament.company.pages.dashboard', ['tenant' => $tenant]))
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.dashboard')),
                     ])
                     ->groups([

@@ -326,13 +326,22 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_projects_of_another_tenant(): void
+    {
+        $this->markTestSkipped('Should assert forbidden/404 when accessing another tenant\'s project.');
+    }
+    # endregion
+
     # region spicy
     /**
      * route('filament.ivpl.resources.filament.resources.projects.assign_client').
      *
      * @skip Not implemented yet
      */
-    #[Group('crud')]
+    #[Group('spicy')]
     public function it_projects_assign_client(): void
     {
         $this->markTestIncomplete();
@@ -357,7 +366,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ]);
     }
 
-    #[Group('crud')]
+    #[Group('spicy')]
     public function it_fails_to_assign_client_without_project_id(): void
     {
         $this->markTestIncomplete();
@@ -382,7 +391,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ]);
     }
 
-    #[Group('crud')]
+    #[Group('spicy')]
     public function it_projects_change_client(): void
     {
         $this->markTestIncomplete();
@@ -406,7 +415,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ]);
     }
 
-    #[Group('crud')]
+    #[Group('spicy')]
     public function it_fails_to_change_project_client_without_client_id(): void
     {
         $this->markTestIncomplete();

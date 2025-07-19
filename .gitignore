@@ -14,7 +14,6 @@
 Modules/**/Controllers/
 Modules/**/Http/Controllers/
 Modules/**/Http/Requests/
-Modules/**/Resources/
 
 # Vite / Filament / Livewire
 /.vite
@@ -55,15 +54,23 @@ yarn-error.log
 /.fleet/
 /.aider/
 /.aider.conf.yml
+/.aider.chat.history.md
+/.aider.input.history
+/.aider.*
 /.idea/
 /.nova/
 /.phpactor.json
 /.vscode/
+/.windsurf/
 /.zed/
 
 # Misc / Dev
 /.docker/
+/docs
+/olddocs
 /.php-cs-fixer.cache
 *.sqlite
+/failures.txt
+/phpunit.txt
 /stan.txt
 /yarnpack.txt
