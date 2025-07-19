@@ -68,7 +68,7 @@ class DocumentGroup extends Model
 
     public static function findIdByName($name)
     {
-        if ($group = self::where('name', $name)->first()) {
+        if ($group = self::query()->where('name', $name)->first()) {
             return $group->id;
         }
     }

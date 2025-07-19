@@ -25,7 +25,7 @@ class EnsureUserCanAccessCompany
 
         // If company is a search_code, find the company
         if (is_string($company)) {
-            $company = Company::where('search_code', $company)->first();
+            $company = Company::query()->where('search_code', $company)->first();
         }
 
         // If we have a company, verify access

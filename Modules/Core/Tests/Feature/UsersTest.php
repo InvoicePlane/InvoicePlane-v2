@@ -66,7 +66,6 @@ class UsersTest extends AbstractAdminPanelTestCase
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
     # endregion
-
     # region multi-tenancy
     #[Test]
     #[Group('crud')]
@@ -74,5 +73,9 @@ class UsersTest extends AbstractAdminPanelTestCase
     {
         $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s user.');
     }
+    # endregion
+
+
+    #region spicy
     # endregion
 }

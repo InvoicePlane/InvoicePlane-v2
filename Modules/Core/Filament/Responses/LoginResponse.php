@@ -25,12 +25,12 @@ class LoginResponse implements BaseLoginResponse
         if ($isElevated) {
             $tenant = Company::query()->first();
             if ( ! $tenant) {
-                abort(500, 'Fallback company not found.');
+                abort(500, trans('ip.fallback_company_not_found'));
             }
         } else {
             $tenant = $user->companies()->first();
             if ( ! $tenant) {
-                abort(500, 'No company found for this user.');
+                abort(500, trans('ip.no_company_found_for_this_user'));
             }
         }
 

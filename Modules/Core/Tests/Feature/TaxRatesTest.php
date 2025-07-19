@@ -226,6 +226,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
-    # region usp
+    # region spicy
     # endregion
 }

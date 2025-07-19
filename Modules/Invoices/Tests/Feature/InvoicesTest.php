@@ -654,10 +654,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    #[Group('crud')]
+    #[Group('multi-tenancy')]
     public function widget_shows_only_current_tenant_invoices(): void
     {
         $this->markTestIncomplete('Should assert widget only shows invoices for the current tenant.');
     }
+    # endregion
+
+    #region spicy
     # endregion
 }

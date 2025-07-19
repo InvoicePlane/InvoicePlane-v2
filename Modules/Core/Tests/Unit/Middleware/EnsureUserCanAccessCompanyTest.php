@@ -2,11 +2,13 @@
 
 namespace Modules\Core\Tests\Unit\Middleware;
 
+use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[Group('unit')]
+#[CoversClass(EnsureUserCanAccessCompany::class)]
 class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 {
     #[Test]
@@ -15,7 +17,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
     {
         $this->markTestIncomplete('Verify super admin can access any company');
 
-        // Arrange
+        /* arrange */
         $middleware = new \App\Http\Middleware\EnsureUserCanAccessCompany();
         $request    = new \Illuminate\Http\Request();
         $company    = \Modules\Core\Models\Company::factory()->create();

@@ -180,26 +180,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
-    # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_companies_of_another_tenant(): void
-    {
-        $this->markTestIncomplete();
-
-        // Create a company with a different tenant
-        $otherCompany = Company::factory()->create([
-            'search_code' => 'OTHER',
-            'name'        => 'Other Tenant',
-        ]);
-
-        // Try to access the other company's edit page
-        $response = Livewire::actingAs($this->superAdmin())
-            ->test(ListCompanies::class)
-            ->mountAction('edit', ['record' => $otherCompany->id]);
-
-        // Should either be forbidden or not found
-        $response->assertStatus(404);
-    }
+    #region spicy
     # endregion
 }

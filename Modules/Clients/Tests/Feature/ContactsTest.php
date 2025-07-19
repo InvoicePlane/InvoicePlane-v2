@@ -202,7 +202,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
-    #region multi-tenancy
+    # region multi-tenancy
     #[Test]
     #[Group('multi-tenancy')]
     public function it_cannot_access_contacts_of_another_tenant(): void

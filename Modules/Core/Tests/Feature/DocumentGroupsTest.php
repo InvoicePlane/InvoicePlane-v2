@@ -196,4 +196,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
         $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s document group.');
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

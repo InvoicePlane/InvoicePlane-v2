@@ -9,9 +9,11 @@ use Modules\Core\Enums\UserRole;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
 use Modules\Core\Models\Company;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(SetTenantFromQueryString::class)]
 class SetTenantFromQueryStringTest extends AbstractTestCase
 {
     private SetTenantFromQueryString $middleware;

@@ -198,4 +198,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             ->assertForbidden();
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

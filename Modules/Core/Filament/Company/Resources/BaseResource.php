@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Company\Resources;
 
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Core\Enums\UserRole;
 
 abstract class BaseResource extends Resource
 {
@@ -25,7 +26,7 @@ abstract class BaseResource extends Resource
 
         // Check if user has any elevated role
         $isElevated = false;
-        foreach (\Modules\Core\Enums\UserRole::elevated() as $role) {
+        foreach (UserRole::elevated() as $role) {
             if ($user->hasRole($role)) {
                 $isElevated = true;
                 break;

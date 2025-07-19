@@ -21,16 +21,17 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->withCompany([
+        $this->user = User::factory()->create();
+        $company    = Company::factory()->create([
             'search_code' => 'IVPLV2',
             'name'        => 'InvoicePlane Corporation',
             'slug'        => 'invoiceplane-corporation',
-        ])->create();
-
+        ]);
+        $this->user->companies()->attach($company);
         $this->company = Company::query()->where('search_code', 'IVPLV2')->first();
 
         /*
-         * quietly set tenant so it won't wine about user not being set yet.
+         * quietly set tenant so it won't whine about user not being set yet.
          */
         Filament::setTenant($this->company, true);
 

@@ -426,4 +426,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s payment.');
     }
     # endregion
+
+    #region spicy
+    # endregion
 }

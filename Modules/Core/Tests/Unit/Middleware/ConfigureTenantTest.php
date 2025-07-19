@@ -5,12 +5,15 @@ namespace Modules\Core\Tests\Unit\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Mockery;
+use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ConfigureTenant::class)]
 class ConfigureTenantTest extends AbstractTestCase
 {
     #[Test]
