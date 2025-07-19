@@ -335,9 +335,6 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     }
     // endregion
 
-    // region usp
-    // endregion
-
     # region multi-tenancy
     #[Test]
     #[Group('crud')]
@@ -345,5 +342,8 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s recurring invoice.');
     }
+    # endregion
+
+    # region spicy
     # endregion
 }

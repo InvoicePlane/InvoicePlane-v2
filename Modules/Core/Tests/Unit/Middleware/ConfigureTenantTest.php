@@ -8,12 +8,14 @@ use Mockery;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class ConfigureTenantTest extends AbstractTestCase
 {
     #[Test]
     #[Group('unit')]
-    public function it_redirects_unauthenticated_users_to_login()
+    public function it_redirects_unauthenticated_users_to_login(): void
     {
         $this->markTestIncomplete();
 
@@ -49,7 +51,7 @@ class ConfigureTenantTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_handles_customer_admin_without_company_assignment()
+    public function it_handles_customer_admin_without_company_assignment(): void
     {
         $this->markTestIncomplete();
 
@@ -92,7 +94,7 @@ class ConfigureTenantTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_configures_tenant_for_super_admin()
+    public function it_configures_tenant_for_super_admin(): void
     {
         $this->markTestIncomplete();
 
@@ -135,7 +137,7 @@ class ConfigureTenantTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_configures_tenant_for_regular_user_with_company()
+    public function it_configures_tenant_for_regular_user_with_company(): void
     {
         $this->markTestIncomplete();
 
@@ -178,7 +180,7 @@ class ConfigureTenantTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_handles_user_without_any_company_assignments()
+    public function it_handles_user_without_any_company_assignments(): void
     {
         $this->markTestIncomplete();
 
@@ -221,7 +223,7 @@ class ConfigureTenantTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_preserves_tenant_across_requests()
+    public function it_preserves_tenant_across_requests(): void
     {
         $this->markTestIncomplete();
 

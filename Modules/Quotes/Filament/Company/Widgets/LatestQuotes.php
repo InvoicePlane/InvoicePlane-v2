@@ -2,9 +2,9 @@
 
 namespace Modules\Quotes\Filament\Company\Widgets;
 
-use Modules\Quotes\Filament\Company\Widgets\TableWidget as BaseWidget;
+use Filament\Widgets\TableWidget;
 
-class LatestQuotes extends BaseWidget
+class LatestQuotes extends TableWidget
 {
     protected int | string | array $columnSpan = 'full';
 

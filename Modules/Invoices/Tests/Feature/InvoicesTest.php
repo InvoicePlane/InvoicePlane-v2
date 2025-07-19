@@ -23,12 +23,12 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
      * @payload ['invoice_date' => '2024-11-01', 'invoice_number' => 'INV-0001']
      */
-    #[Group('crud')]
     public function it_lists_invoices(): void
     {
         /* arrange */
@@ -65,7 +65,9 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertSuccessful();
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_creates_an_invoice_with_items(): void
@@ -641,6 +643,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]

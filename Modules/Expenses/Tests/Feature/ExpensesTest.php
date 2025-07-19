@@ -25,6 +25,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -57,7 +58,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('expenses', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_creates_an_expense_with_items(): void
@@ -464,6 +467,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('expenses', ['id' => $record->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]

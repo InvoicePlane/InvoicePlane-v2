@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProductCategoryResource::class)]
 class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 {
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -41,7 +42,9 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $this->assertDatabaseHas('product_categories', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -179,6 +182,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]

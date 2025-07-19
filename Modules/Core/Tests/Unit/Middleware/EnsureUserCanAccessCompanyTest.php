@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Tests\Unit\Middleware;
 
-use Modules\Core\Models\Company;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +11,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 {
     #[Test]
     #[Group('unit')]
-    public function it_allows_super_admin_to_access_any_company()
+    public function it_allows_super_admin_to_access_any_company(): void
     {
         $this->markTestIncomplete('Verify super admin can access any company');
 
@@ -48,7 +47,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_denies_access_to_unauthorized_company_for_regular_users()
+    public function it_denies_access_to_unauthorized_company_for_regular_users(): void
     {
         $this->markTestIncomplete('Verify regular users cannot access unauthorized companies');
 
@@ -77,7 +76,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_allows_access_to_authorized_company_for_regular_users()
+    public function it_allows_access_to_authorized_company_for_regular_users(): void
     {
         $this->markTestIncomplete('Verify regular users can access their authorized companies');
 
@@ -112,7 +111,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_denies_access_to_unauthenticated_users()
+    public function it_denies_access_to_unauthenticated_users(): void
     {
         $this->markTestIncomplete('Verify unauthenticated users are redirected to login');
 
@@ -144,7 +143,7 @@ class EnsureUserCanAccessCompanyTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_handles_nonexistent_company_gracefully()
+    public function it_handles_nonexistent_company_gracefully(): void
     {
         $this->markTestIncomplete('Verify handling of non-existent company access');
 

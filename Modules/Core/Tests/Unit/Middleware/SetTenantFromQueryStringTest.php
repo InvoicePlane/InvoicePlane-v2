@@ -2,13 +2,15 @@
 
 namespace Modules\Core\Tests\Unit\Middleware;
 
-use App\Http\Middleware\SetTenantFromQueryString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Modules\Core\Enums\UserRole;
+use Modules\Core\Http\Middleware\SetTenantFromQueryString;
 use Modules\Core\Models\Company;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class SetTenantFromQueryStringTest extends AbstractTestCase
 {
@@ -40,7 +42,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_sets_tenant_from_query_string_for_authenticated_user()
+    public function it_sets_tenant_from_query_string_for_authenticated_user(): void
     {
         $this->markTestIncomplete();
 
@@ -56,7 +58,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_allows_elevated_users_to_switch_to_any_company()
+    public function it_allows_elevated_users_to_switch_to_any_company(): void
     {
         $this->markTestIncomplete();
 
@@ -72,7 +74,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_denies_switching_to_unauthorized_company_for_regular_users()
+    public function it_denies_switching_to_unauthorized_company_for_regular_users(): void
     {
         $this->markTestIncomplete();
 
@@ -93,7 +95,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_ignores_invalid_company_codes()
+    public function it_ignores_invalid_company_codes(): void
     {
         $this->markTestIncomplete();
 
@@ -109,7 +111,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_does_nothing_when_no_company_parameter()
+    public function it_does_nothing_when_no_company_parameter(): void
     {
         $this->markTestIncomplete();
 
@@ -125,7 +127,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_does_nothing_for_unauthenticated_users()
+    public function it_does_nothing_for_unauthenticated_users(): void
     {
         $this->markTestIncomplete();
 
@@ -143,7 +145,7 @@ class SetTenantFromQueryStringTest extends AbstractTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_sets_tenant_parameter_in_route()
+    public function it_sets_tenant_parameter_in_route(): void
     {
         $this->markTestIncomplete();
 

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Session;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class WebRoutesTest extends AbstractTestCase
 {
@@ -19,7 +21,8 @@ class WebRoutesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_root_to_dashboard_with_current_company()
+    #[Group('unit')]
+    public function it_redirects_root_to_dashboard_with_current_company(): void
     {
         $this->markTestIncomplete();
 
@@ -36,7 +39,8 @@ class WebRoutesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_redirects_dashboard_to_dashboard_with_current_company()
+    #[Group('unit')]
+    public function it_redirects_dashboard_to_dashboard_with_current_company(): void
     {
         $this->markTestIncomplete();
 
@@ -53,7 +57,8 @@ class WebRoutesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_falls_back_to_first_company_if_no_current_company_in_session()
+    #[Group('unit')]
+    public function it_falls_back_to_first_company_if_no_current_company_in_session(): void
     {
         $this->markTestIncomplete();
 
@@ -69,7 +74,8 @@ class WebRoutesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_returns_404_if_user_has_no_companies()
+    #[Group('unit')]
+    public function it_returns_404_if_user_has_no_companies(): void
     {
         $this->markTestIncomplete();
 
@@ -81,7 +87,8 @@ class WebRoutesTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_handles_invalid_company_id_in_session()
+    #[Group('unit')]
+    public function it_handles_invalid_company_id_in_session(): void
     {
         $this->markTestIncomplete();
 

@@ -18,7 +18,7 @@ class CompanyAccessTest extends AbstractTestCase
         // Seed roles/permissions if needed
     }
 
-    public function test_elevated_roles_can_access_any_company()
+    public function test_elevated_roles_can_access_any_company(): void
     {
         $this->markTestIncomplete();
 
@@ -36,7 +36,7 @@ class CompanyAccessTest extends AbstractTestCase
         }
     }
 
-    public function test_non_elevated_user_cannot_access_other_companies()
+    public function test_non_elevated_user_cannot_access_other_companies(): void
     {
         $this->markTestIncomplete();
 
@@ -51,7 +51,7 @@ class CompanyAccessTest extends AbstractTestCase
         $response->assertStatus(403);
     }
 
-    public function test_non_elevated_user_can_access_own_company()
+    public function test_non_elevated_user_can_access_own_company(): void
     {
         $this->markTestIncomplete();
 

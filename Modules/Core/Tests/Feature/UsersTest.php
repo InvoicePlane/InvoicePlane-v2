@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(UserResource::class)]
 class UsersTest extends AbstractAdminPanelTestCase
 {
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -39,7 +40,9 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         $this->assertDatabaseHas('users', $user->toArray());
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_fails_to_delete_user_twice(): void
@@ -62,6 +65,7 @@ class UsersTest extends AbstractAdminPanelTestCase
         /* @assert form error triggered */
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]

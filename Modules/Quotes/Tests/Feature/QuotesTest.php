@@ -25,6 +25,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
 
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
@@ -55,7 +56,9 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('quotes', $payload);
     }
+    # endregion
 
+    # region crud
     #[Test]
     #[Group('crud')]
     public function it_creates_quote_with_items(): void
@@ -522,6 +525,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]

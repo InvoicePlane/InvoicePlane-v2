@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Support\NumberGenerator;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Repositories\DocumentGroupRepository;
 
