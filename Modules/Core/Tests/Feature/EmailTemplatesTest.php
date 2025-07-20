@@ -7,7 +7,6 @@ use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\CreateEmailTemplate;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\EditEmailTemplate;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\ListEmailTemplates;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

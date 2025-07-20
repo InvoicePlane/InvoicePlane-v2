@@ -27,7 +27,7 @@ class ProjectsTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.client_name'))
+                TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.customer_name'))
                     ->searchable()
                     ->sortable()->toggleable(),
                 TextColumn::make('project_status')

@@ -25,7 +25,7 @@ class RecentProjectsWidget extends TableWidget
     {
         return [
             TextColumn::make('project_name')->label(trans('ip.project_name')),
-            TextColumn::make('customer.company_name')->label(trans('ip.client_name')),
+            TextColumn::make('customer.company_name')->label(trans('ip.customer_name')),
             TextColumn::make('project_status')
                 ->label(trans('ip.project_status'))
                 ->badge()

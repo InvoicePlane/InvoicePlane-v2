@@ -193,14 +193,14 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: starts_at
+     * @payload missing: start_at
      * {
      *   "project_name": "Client Redesign",
      *   "description": "Modernizing UX",
      *   "ends_at": "2025-06-30"
      * }
      */
-    public function it_fails_to_create_project_through_a_modal_without_required_starts_at(): void
+    public function it_fails_to_create_project_through_a_modal_without_required_start_at(): void
     {
         $this->markTestIncomplete();
 
@@ -211,7 +211,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $payload = [
             'project_name' => 'Client Redesign',
             'description'  => 'Modernizing UX',
-            'ends_at'      => '2025-06-30',
+            'end_at'      => '2025-06-30',
         ];
 
         /* act */
@@ -222,7 +222,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasFormErrors(['starts_at']);
+        $component->assertHasFormErrors(['start_at']);
     }
 
     #[Test]
@@ -476,14 +476,14 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     }
 
     /**
-     * @payload missing: starts_at
+     * @payload missing: start_at
      * {
      *   "project_name": "Client Redesign",
      *   "description": "Modernizing UX",
      *   "ends_at": "2025-06-30"
      * }
      */
-    public function it_fails_to_create_project_without_required_starts_at(): void
+    public function it_fails_to_create_project_without_required_start_at(): void
     {
         /* arrange */
         $company  = $this->user->companies()->first();
@@ -492,7 +492,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $payload = [
             'project_name' => 'Client Redesign',
             'description'  => 'Modernizing UX',
-            'ends_at'      => '2025-06-30',
+            'end_at'      => '2025-06-30',
         ];
 
         /* act */
@@ -502,7 +502,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* assert */
-        $component->assertHasFormErrors(['starts_at']);
+        $component->assertHasFormErrors(['start_at']);
     }
 
     #[Test]

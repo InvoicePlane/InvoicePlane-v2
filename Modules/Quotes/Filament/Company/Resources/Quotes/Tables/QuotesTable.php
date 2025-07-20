@@ -9,7 +9,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Carbon;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
 use Modules\Quotes\Enums\QuoteStatus;
@@ -38,7 +37,7 @@ class QuotesTable
                 TextColumn::make('quote_number')->searchable()->sortable()->toggleable(),
                 TextColumn::make('prospect.company_name')
                     ->limit(10)
-                    ->label(trans('ip.client_name'))
+                    ->label(trans('ip.customer_name'))
                     ->searchable()->sortable()
                     ->toggleable(),
                 TextColumn::make('quote_expires_at')

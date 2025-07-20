@@ -205,6 +205,7 @@ return [
     'client_already_exists'   => 'Customer already exists!',
     'client_custom'           => 'Customer Custom',
     'client_form'             => 'Customer Form',
+    'customer_name'           => 'Customer Name',
     'company_name'            => 'Customer Name',
     'trading_name'            => 'Trading Name',
     'relation_number'         => 'Relation Number',

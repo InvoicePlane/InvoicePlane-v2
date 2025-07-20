@@ -73,7 +73,7 @@ class TaskForm
                                                     ->required()
                                                     ->createOptionForm([
                                                         TextInput::make('company_name')
-                                                            ->label(trans('ip.client_name'))
+                                                            ->label(trans('ip.customer_name'))
                                                             ->required()
                                                             ->maxLength(255),
                                                     ]),

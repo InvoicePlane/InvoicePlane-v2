@@ -37,14 +37,14 @@ class QuoteForm
                         Schemas\Components\Group::make()
                             ->schema([
                                 Select::make('prospect_id')
-                                    ->label(trans('ip.client_name'))
+                                    ->label(trans('ip.customer_name'))
                                     ->relationship('prospect', 'company_name')
                                     ->searchable()
                                     ->preload()
                                     ->required()
                                     ->createOptionForm([
                                         TextInput::make('company_name')
-                                            ->label(trans('ip.client_name'))
+                                            ->label(trans('ip.customer_name'))
                                             ->required(),
                                     ])
                                     ->reactive(),

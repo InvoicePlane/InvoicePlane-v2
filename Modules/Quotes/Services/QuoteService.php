@@ -26,7 +26,7 @@ class QuoteService extends BaseService
             $quoteTaxTotal = $this->calculateQuoteTaxTotal($data);
             $quoteTotal    = $this->calculateQuoteTotal($data, $itemTaxTotal, $quoteTaxTotal);
 
-            $quote = parent::create([
+            $quote = $this->create([
                 'prospect_id'            => $data['prospect_id'],
                 'document_group_id'      => $data['document_group_id'] ?? null,
                 'user_id'                => auth()->id(),

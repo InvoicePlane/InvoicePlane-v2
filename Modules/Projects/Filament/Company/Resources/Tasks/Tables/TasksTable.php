@@ -8,7 +8,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Carbon;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Task;
 
@@ -28,10 +27,7 @@ class TasksTable
                         fn (Task $record): string => static::getStatusColor($record->task_status) ?? 'secondary'
                     )
                     ->sortable()
-                    ->searchable(),
-
-                        return $status?->label() ?? trans('ip.tasks.unknown');
-                    })
+                    ->searchable()
                     ->color(function (Task $record) {
                         $status = $record->task_status instanceof TaskStatus ? $record->task_status : TaskStatus::tryFrom($record->task_status);
 
