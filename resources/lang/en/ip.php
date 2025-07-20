@@ -4,7 +4,6 @@ return [
     // General
     'balance' => 'Balance',
     'boolean' => 'Boolean',
-    'date'    => 'Date',
     'status'  => 'Status',
 
     // Errors
@@ -716,7 +715,6 @@ return [
     'sql_file'                                     => 'SQL File',
     'start_date'                                   => 'Start Date',
     'state'                                        => 'State',
-    'status'                                       => 'Status',
     'stop'                                         => 'Stop',
     'street_address'                               => 'Street Address',
     'street_address_2'                             => 'Street Address (cont.)',

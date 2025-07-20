@@ -26,17 +26,17 @@ class QuoteResource extends BaseResource
 
     public static function getModelLabel(): string
     {
-        return trans('crud.quotes.itemTitle');
+        return trans('ip.quote');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.quotes.collectionTitle');
+        return trans('ip.quotes');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.quotes.collectionTitle');
+        return trans('ip.quotes');
     }
 
     public static function form(Schema $schema): Schema
