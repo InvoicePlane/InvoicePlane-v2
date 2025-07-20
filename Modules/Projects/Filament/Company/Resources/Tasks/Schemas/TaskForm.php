@@ -117,6 +117,7 @@ class TaskForm
 
                                         DatePicker::make('due_at')
                                             ->date()
+                                            ->native(false)
                                             ->label(trans('ip.task_finish_date'))
                                             ->required(),
 
@@ -133,10 +134,10 @@ class TaskForm
                                     ]),
                             ]),
 
-                        Section::make(trans('ip.task_notes'))
+                        Section::make(trans('ip.task_description'))
                             ->schema([
                                 MarkdownEditor::make('description')
-                                    ->label(trans('ip.notes'))
+                                    ->label(trans('ip.task_description'))
                                     ->toolbarButtons(['bold', 'italic']),
                             ])
                             ->collapsed(true)

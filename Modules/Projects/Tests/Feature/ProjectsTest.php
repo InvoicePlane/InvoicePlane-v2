@@ -211,7 +211,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $payload = [
             'project_name' => 'Client Redesign',
             'description'  => 'Modernizing UX',
-            'end_at'      => '2025-06-30',
+            'end_at'       => '2025-06-30',
         ];
 
         /* act */
@@ -492,7 +492,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $payload = [
             'project_name' => 'Client Redesign',
             'description'  => 'Modernizing UX',
-            'end_at'      => '2025-06-30',
+            'end_at'       => '2025-06-30',
         ];
 
         /* act */

@@ -17,10 +17,16 @@ class ProductsTable
         return $table
             ->columns([
                 TextColumn::make('productCategory.category_name')->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('code')->searchable()->sortable()->toggleable(),
-                TextColumn::make('product_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('code')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('product_name')
+                    ->limit(10)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('type')
-                    ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
+                    ->formatStateUsing(fn($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
                     ->sortable()
                     ->toggleable()
@@ -36,16 +42,19 @@ class ProductsTable
                     ->numeric()
                     ->sortable()
                     ->hiddenFrom('md'),
-                TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('taxRate.name')->limit(5)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('lg'),
                 TextColumn::make('taxRate2.name')
                     ->limit(5)
                     ->searchable()
                     ->sortable()
                     ->toggleable()
-                    ->hiddenFrom('lg'),
+                    ->hiddenFrom('md'),
             ])
-            ->filters([
-            ])
+            ->filters([])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),

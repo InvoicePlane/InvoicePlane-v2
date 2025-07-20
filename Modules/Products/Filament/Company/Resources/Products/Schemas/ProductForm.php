@@ -29,7 +29,7 @@ class ProductForm
                                 Section::make(trans('ip.details'))
                                     ->schema([
                                         TextInput::make('code')
-                                            ->label(trans('ip.code'))
+                                            ->label(trans('ip.product_sku'))
                                             ->required()
                                             ->maxLength(255),
 
@@ -42,7 +42,7 @@ class ProductForm
                                             ->label(trans('ip.product_type'))
                                             ->options(
                                                 collect(ProductType::cases())
-                                                    ->mapWithKeys(fn (ProductType $type) => [$type->value => ucfirst($type->name)])
+                                                    ->mapWithKeys(fn(ProductType $type) => [$type->value => $type->label()])
                                                     ->toArray()
                                             )
                                             ->native(false)

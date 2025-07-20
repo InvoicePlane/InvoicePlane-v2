@@ -4,6 +4,7 @@ namespace Modules\Projects\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
+use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
 class ProjectService extends BaseService
@@ -18,22 +19,24 @@ class ProjectService extends BaseService
     public function createProject(array $data): Model
     {
         return $this->create([
-            'customer_id'  => $data['customer_id'],
-            'project_name' => $data['project_name'],
-            'description'  => $data['description'] ?? null,
-            'start_at'     => $data['start_at'],
-            'end_at'       => $data['end_at'] ?? null,
+            'customer_id'    => $data['customer_id'],
+            'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
+            'project_name'   => $data['project_name'],
+            'description'    => $data['description'] ?? null,
+            'start_at'       => $data['start_at'] ?? now(),
+            'end_at'         => $data['end_at'] ?? null,
         ]);
     }
 
     public function updateProject(Project $model, array $data): Project
     {
         $model->update([
-            'customer_id'  => $data['customer_id'],
-            'project_name' => $data['project_name'],
-            'description'  => $data['description'] ?? null,
-            'start_at'     => $data['start_at'],
-            'end_at'       => $data['end_at'] ?? null,
+            'customer_id'    => $data['customer_id'],
+            'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
+            'project_name'   => $data['project_name'],
+            'description'    => $data['description'] ?? null,
+            'start_at'       => $data['start_at'] ?? now(),
+            'end_at'         => $data['end_at'] ?? null,
         ]);
 
         return $model;
