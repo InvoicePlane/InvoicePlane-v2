@@ -5,9 +5,11 @@ namespace Modules\Expenses\Filament\Company\Widgets;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Models\Expense;
+use Modules\Quotes\Filament\Company\Widgets\TableWidget;
 
 class RecentExpensesWidget extends TableWidget
 {
@@ -15,7 +17,7 @@ class RecentExpensesWidget extends TableWidget
 
     protected static ?int $sort = 5;
 
-    protected function getTableQuery(): Builder|null
+    protected function getTableQuery(): Builder|Relation|null
     {
         return Expense::query()->latest()->limit(10);
     }

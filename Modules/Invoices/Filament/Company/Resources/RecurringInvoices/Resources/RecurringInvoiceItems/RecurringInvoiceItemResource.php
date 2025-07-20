@@ -3,10 +3,10 @@
 namespace Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Resources\RecurringInvoiceItems;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\RecurringInvoiceResource;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Resources\RecurringInvoiceItems\Pages\CreateRecurringInvoiceItem;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Resources\RecurringInvoiceItems\Pages\EditRecurringInvoiceItem;
@@ -14,7 +14,7 @@ use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Resources\Recu
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Resources\RecurringInvoiceItems\Tables\RecurringInvoiceItemsTable;
 use Modules\Invoices\Models\RecurringInvoiceItem;
 
-class RecurringInvoiceItemResource extends Resource
+class RecurringInvoiceItemResource extends BaseResource
 {
     protected static ?string $model = RecurringInvoiceItem::class;
 
@@ -34,8 +34,7 @@ class RecurringInvoiceItemResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

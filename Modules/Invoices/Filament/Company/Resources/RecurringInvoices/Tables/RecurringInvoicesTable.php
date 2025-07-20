@@ -42,7 +42,35 @@ class RecurringInvoicesTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(function (array $data, \Modules\Invoices\Models\RecurringInvoice $record) {
+                            $data['recurringInvoiceItems'] = $record->recurringInvoiceItems()->get()->map(function ($item) {
+                                $product = $item->product;
+
+                                return [
+                                    'id'            => $item->id,
+                                    'product_id'    => $item->product_id,
+                                    'product_name'  => $product?->product_name ?? '',
+                                    'item_name'     => $item->item_name,
+                                    'quantity'      => $item->quantity,
+                                    'price'         => $item->price,
+                                    'discount'      => $item->discount,
+                                    'subtotal'      => $item->subtotal,
+                                    'tax_1'         => $item->tax_1,
+                                    'tax_2'         => $item->tax_2,
+                                    'tax_rate_id'   => $item->tax_rate_id,
+                                    'tax_rate_2_id' => $item->tax_rate_2_id,
+                                    'description'   => $item->description,
+                                ];
+                            })->toArray();
+
+                            return $data;
+                        })
+                        ->action(function (\Modules\Invoices\Models\RecurringInvoice $record, array $data) {
+                            app(\Modules\Invoices\Services\RecurringInvoiceService::class)
+                                ->updateRecurringInvoice($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

@@ -72,7 +72,22 @@ class ExpenseItemsTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(
+                            fn (array $data, \Modules\Expenses\Models\ExpenseItem $record) => array_merge($data, [
+                                'product_name' => $record->product?->product_name ?? '',
+                            ])
+                        )
+                        ->action(function (\Modules\Expenses\Models\ExpenseItem $record, array $data) {
+                            $record->update($data);
+
+                            if ($expense = $record->expense) {
+                                $expense->update([
+                                    'expense_amount' => $expense->expenseItems()->sum('subtotal'),
+                                ]);
+                            }
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

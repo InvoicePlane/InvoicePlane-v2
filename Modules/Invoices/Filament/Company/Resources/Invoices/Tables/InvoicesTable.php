@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 
@@ -19,6 +20,7 @@ class InvoicesTable
         return $table
             ->columns([
                 TextColumn::make('invoice_status')
+                    ->badge()
                     ->formatStateUsing(function ($state) {
                         $status = $state instanceof InvoiceStatus ? $state : InvoiceStatus::tryFrom($state);
 
@@ -46,8 +48,19 @@ class InvoicesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('invoice_due_at')
-                    ->date()
-                    ->since()
+                    ->label(trans('ip.invoice_due_at'))
+                    ->color(fn ($state, $record) => $record?->due_intensity ?? 'secondary')
+                    ->formatStateUsing(function ($state) {
+                        if ( ! $state) {
+                            return '-';
+                        }
+                        $days = now()->diffInDays($state, false);
+                        if ($days < 0) {
+                            return DateHelpers::formatSince($state, 3600);
+                        }
+
+                        return DateHelpers::formatDate($state);
+                    })
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -60,18 +73,31 @@ class InvoicesTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->mutateRecordDataUsing(function (array $data, Invoice $record) {
+                        ->mutateDataUsing(function (array $data, Invoice $record) {
                             $data['invoiceItems'] = $record->invoiceItems()->get()->map(function ($item) {
+                                $product = $item->product;
+
                                 return [
-                                    'product_id' => $item->product_id,
-                                    'quantity'   => $item->quantity,
-                                    'price'      => $item->price,
-                                    'discount'   => $item->discount,
-                                    'subtotal'   => $item->subtotal,
+                                    'id'            => $item->id,
+                                    'product_id'    => $item->product_id,
+                                    'product_name'  => $product?->product_name ?? '',
+                                    'item_name'     => $item->item_name,
+                                    'quantity'      => $item->quantity,
+                                    'price'         => $item->price,
+                                    'discount'      => $item->discount,
+                                    'subtotal'      => $item->subtotal,
+                                    'tax_1'         => $item->tax_1,
+                                    'tax_2'         => $item->tax_2,
+                                    'tax_rate_id'   => $item->tax_rate_id,
+                                    'tax_rate_2_id' => $item->tax_rate_2_id,
+                                    'description'   => $item->description,
                                 ];
                             })->toArray();
 
                             return $data;
+                        })
+                        ->action(function (Invoice $record, array $data) {
+                            app(\Modules\Invoices\Services\InvoiceService::class)->updateInvoice($record, $data);
                         })
                         ->modalWidth('full'),
                     Action::make('download pdf')

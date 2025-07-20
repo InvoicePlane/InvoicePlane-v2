@@ -19,12 +19,42 @@ class ProductFactory extends Factory
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $category = ProductCategory::query()->inRandomOrder()->first() ?? ProductCategory::factory()->create();
-        $unit     = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate  = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create();
+        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
 
-        $taxRate2 = $this->faker->boolean(75) ? TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create() : null;
+        // Create or get a category that belongs to this company
+        $category = ProductCategory::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first() ?? ProductCategory::factory()
+            ->for($company)
+            ->create();
+
+        // Create or get a unit that belongs to this company
+        $unit = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first() ?? ProductUnit::factory()
+            ->for($company)
+            ->create();
+
+        // Create or get a tax rate that belongs to this company
+        $taxRate = TaxRate::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first() ?? TaxRate::factory()
+            ->for($company)
+            ->create();
+
+        // Create a second tax rate 25% of the time
+        $taxRate2 = $this->faker->boolean(25)
+            ? (TaxRate::query()
+                ->where('company_id', $company->id)
+                ->where('id', '!=', $taxRate->id)
+                ->inRandomOrder()
+                ->first() ?? TaxRate::factory()
+                ->for($company)
+                ->create())
+            : null;
 
         $itemType = $this->faker->randomElement(ProductType::cases());
 

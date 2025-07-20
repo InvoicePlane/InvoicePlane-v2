@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
@@ -58,10 +59,36 @@ class RelationForm
 
                                                 TextInput::make('company_name')
                                                     ->label(trans('ip.company_name'))
-                                                    ->required(),
+                                                    ->required()
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
+                                                        if ( ! $get('trading_name')) {
+                                                            $set('unique_name', \Illuminate\Support\Str::slug($state));
+                                                        }
+                                                    }),
 
                                                 TextInput::make('trading_name')
-                                                    ->label(trans('ip.trading_name')),
+                                                    ->label(trans('ip.trading_name'))
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
+                                                        $set('unique_name', \Illuminate\Support\Str::slug($state));
+                                                    }),
+
+                                                TextInput::make('unique_name')
+                                                    ->label(trans('ip.unique_name'))
+                                                    ->unique(\Modules\Clients\Models\Relation::class, 'unique_name', ignoreRecord: true)
+                                                    ->required()
+                                                    ->readOnly()
+                                                    ->dehydrated()
+                                                    ->helperText(trans('ip.unique_name_helper'))
+                                                    ->afterStateHydrated(function (Get $get, Set $set, ?string $state) {
+                                                        if (empty($state)) {
+                                                            $name = $get('trading_name') ?: $get('company_name');
+                                                            if ($name) {
+                                                                $set('unique_name', \Illuminate\Support\Str::slug($name));
+                                                            }
+                                                        }
+                                                    }),
 
                                                 TextInput::make('relation_number')
                                                     ->label(trans('ip.relation_number'))
@@ -72,9 +99,26 @@ class RelationForm
                                                         'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
                                                     ])
                                                     ->schema([
-                                                        Placeholder::make('customer_info')
-                                                            ->label(trans('ip.client'))
-                                                            ->content(fn (Get $get) => optional($get('customer'))->company_name ?? '-'),
+                                                        Placeholder::make('company_name_display')
+                                                            ->label(trans('ip.company_name'))
+                                                            ->content(fn (Get $get) => $get('company_name') ?: '-'),
+
+                                                        Placeholder::make('trading_name_display')
+                                                            ->label(trans('ip.trading_name'))
+                                                            ->content(fn (Get $get) => $get('trading_name') ?: '-'),
+
+                                                        Placeholder::make('relation_type_display')
+                                                            ->label(trans('ip.type'))
+                                                            ->content(function (Get $get) {
+                                                                $type = $get('relation_type');
+                                                                if ( ! $type) {
+                                                                    return '-';
+                                                                }
+
+                                                                $type = \Modules\Clients\Enums\RelationType::tryFrom($type);
+
+                                                                return $type ? $type->label() : '-';
+                                                            }),
                                                     ]),
                                             ]),
                                     ]),

@@ -51,7 +51,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region modals
-    # region crud
     #[Test]
     #[Group('crud')]
     /**

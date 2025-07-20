@@ -13,7 +13,14 @@ class ListExpenseCategories extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Expenses\Services\ExpenseCategoryService::class)->createExpenseCategory($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

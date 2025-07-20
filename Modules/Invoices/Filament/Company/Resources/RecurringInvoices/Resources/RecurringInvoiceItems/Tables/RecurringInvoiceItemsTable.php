@@ -55,7 +55,17 @@ class RecurringInvoiceItemsTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(fn (array $data, $record) => array_merge($data, [
+                            'product_name' => $record->product?->product_name ?? '',
+                        ]))
+                        ->action(function ($record, array $data) {
+                            $record->update($data);
+                            $record->recurringInvoice?->update([
+                                'amount' => $record->recurringInvoice->recurringInvoiceItems()->sum('subtotal'),
+                            ]);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

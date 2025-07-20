@@ -4,14 +4,13 @@ namespace Modules\Core\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
-use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(UserResource::class)]
+#[CoversClass(ListUsers::class)]
 class UsersTest extends AbstractAdminPanelTestCase
 {
     # region smoke
@@ -26,14 +25,14 @@ class UsersTest extends AbstractAdminPanelTestCase
      *
      * @assert email is visible
      */
-    #[Group('crud')]
     public function it_lists_users(): void
     {
         /* arrange */
         $user = User::factory()->create(['email' => 'admin@example.com']);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListUsers::class);
 
         /* assert */
         $component->assertSuccessful();
@@ -42,9 +41,17 @@ class UsersTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
+    # region modals
+    # endregion
+
     # region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload {
+     *   "id": 1
+     * }
+     */
     public function it_fails_to_delete_user_twice(): void
     {
         $this->markTestIncomplete();
@@ -57,7 +64,9 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         /* @act try to delete again */
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class)->callTableAction('delete', $user);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListUsers::class)
+            ->callAction('delete', $user);
 
         /* assert */
         $component->assertHasErrors();

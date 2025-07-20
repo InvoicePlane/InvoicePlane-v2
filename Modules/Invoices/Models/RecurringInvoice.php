@@ -16,6 +16,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Invoices\Database\Factories\RecurringInvoiceFactory;
 use Modules\Invoices\Enums\RecurringFrequency;
 
 /**
@@ -123,7 +124,6 @@ class RecurringInvoice extends Model
     */
     protected static function newFactory(): ?Factory
     {
-        //return RecurringInvoiceFactory::new();
-        return null;
+        return RecurringInvoiceFactory::new();
     }
 }

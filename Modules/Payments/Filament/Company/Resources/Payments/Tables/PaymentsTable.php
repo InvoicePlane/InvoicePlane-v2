@@ -67,7 +67,13 @@ class PaymentsTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(fn (array $data) => $data)
+                        ->action(
+                            fn (\Modules\Payments\Models\Payment $record, array $data) => app(\Modules\Payments\Services\PaymentService::class)
+                                ->updatePayment($record, $data)
+                        )
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

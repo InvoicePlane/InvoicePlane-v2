@@ -23,6 +23,11 @@ class QuoteForm
 {
     public static function configure(Schema $schema): Schema
     {
+        // Ensure we have a record or state set
+        if ( ! $schema->getRecord() && ! $schema->getState()) {
+            $schema->state([]);
+        }
+
         return $schema
             ->components([
                 Grid::make(5)
@@ -51,7 +56,7 @@ class QuoteForm
                                     ->schema([
                                         Placeholder::make('customer_info')
                                             ->label(trans('ip.client'))
-                                            ->content(fn (Get $get) => optional($get('client'))->client_name ?? '-'),
+                                            ->content(fn (Get $get) => optional($get('prospect'))->company_name ?? '-'),
                                     ])
                                     ->columns(1)
                                     ->visible(fn (Get $get) => filled($get('prospect_id'))),
@@ -78,8 +83,8 @@ class QuoteForm
                                             )
                                             ->getOptionLabelUsing(
                                                 fn ($value) => $value instanceof QuoteStatus
-                                                ? $value->label()
-                                                : QuoteStatus::tryFrom($value)?->label() ?? $value
+                                                    ? $value->label()
+                                                    : QuoteStatus::tryFrom($value)?->label() ?? $value
                                             )
                                             ->searchable()
                                             ->preload()
@@ -126,7 +131,7 @@ class QuoteForm
                                             ->placeholder(trans('ip.select_product'))  // Placeholder
                                             ->reactive()
                                             ->afterStateUpdated(function (callable $set, $state) {
-                                                $product = Product::find($state);
+                                                $product = Product::query()->find($state);
                                                 $set('product_name', $product?->product_name ?? '');
                                             }),
 

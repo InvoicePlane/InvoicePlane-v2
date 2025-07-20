@@ -30,15 +30,19 @@ class ExpenseForm
                         Section::make()
                             ->schema([
                                 Select::make('customer_id')
-                                    ->relationship('customer', 'company_name')
-                                    ->label(trans('ip.customer'))
+                                    ->relationship(
+                                        name: 'customer',
+                                        titleAttribute: 'company_name',
+                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                                    )
+                                    ->label(trans('ip.client'))
                                     ->required()
                                     ->searchable()
                                     ->preload()
                                     ->native(false),
 
                                 Placeholder::make('customer_info')
-                                    ->label(trans('ip.customer'))
+                                    ->label(trans('ip.client'))
                                     ->content(fn (Get $get) => optional($get('customer'))->company_name ?? '-')
                                     ->visible(fn (Get $get) => filled($get('customer_id'))),
                             ])
@@ -47,7 +51,11 @@ class ExpenseForm
                         Section::make()
                             ->schema([
                                 Select::make('vendor_id')
-                                    ->relationship('vendor', 'company_name')
+                                    ->relationship(
+                                        name: 'vendor',
+                                        titleAttribute: 'company_name',
+                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', \Modules\Clients\Enums\RelationType::VENDOR->value)
+                                    )
                                     ->label(trans('ip.vendor'))
                                     ->searchable()
                                     ->preload()
@@ -63,7 +71,48 @@ class ExpenseForm
                         Section::make(trans('ip.details'))
                             ->schema([
                                 TextInput::make('expense_number')
-                                    ->disabled()
+                                    ->required()
+                                    ->default(function (Get $get, string $operation) {
+                                        if ($operation !== 'create') {
+                                            return; // Don't generate number for edit operations
+                                        }
+
+                                        $user      = auth()->user();
+                                        $companyId = $user?->getCurrentCompanyId();
+
+                                        if (config('app.extreme_logging')) {
+                                            Log::debug('ExpenseForm: Initializing ExpenseNumberGenerator', [
+                                                'company_id'         => $companyId,
+                                                'expense_status'     => $get('expense_status'),
+                                                'user_id'            => $user?->id,
+                                                'session_company_id' => session('current_company_id'),
+                                                'trace'              => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
+                                            ]);
+                                        }
+
+                                        $generator = new \Modules\Expenses\Support\ExpenseNumberGenerator($companyId);
+
+                                        if (config('app.extreme_logging')) {
+                                            Log::debug('ExpenseForm: Generating number', [
+                                                'status'     => $get('expense_status'),
+                                                'is_draft'   => ($get('expense_status') ?? '') !== ExpenseStatus::COMPLETED->value,
+                                                'company_id' => auth()->user()?->company_id,
+                                                'trace'      => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
+                                            ]);
+                                        }
+
+                                        $number = $generator->generate();
+
+                                        if (config('app.extreme_logging')) {
+                                            Log::debug('ExpenseForm: Generated number', [
+                                                'number'     => $number,
+                                                'company_id' => auth()->user()?->company_id,
+                                            ]);
+                                        }
+
+                                        return $number;
+                                    })
+                                    ->dehydrated()
                                     ->required(),
                                 Select::make('expense_status')
                                     ->options(collect(ExpenseStatus::cases())->mapWithKeys(fn ($s) => [$s->value => trans($s->label())])->toArray())

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Feature;
+namespace Modules\Core\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Enums\UserRole;

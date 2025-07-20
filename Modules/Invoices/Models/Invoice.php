@@ -192,12 +192,51 @@ class Invoice extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for invoice_due_at.
+     *
+     * @return string
+     */
+    public function getDueIntensityAttribute(): string
+    {
+        if ( ! $this->invoice_due_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->invoice_due_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
 
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $invoiceLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('invoice_status', [InvoiceStatus::DRAFT, InvoiceStatus::PAID])
+            ->orderBy('invoice_due_at', 'desc')
+            ->orderBy('invoice_status', 'asc')
+            ->limit($invoiceLimit);
+    }
 
     /*
     |--------------------------------------------------------------------------

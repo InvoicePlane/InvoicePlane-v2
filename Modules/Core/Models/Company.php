@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Modules\Clients\Models\Address;
 use Modules\Clients\Models\Addressable;
 use Modules\Clients\Models\Communication;
@@ -85,6 +86,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Static Methods
     |--------------------------------------------------------------------------
     */
+
     /*
     |--------------------------------------------------------------------------
     | Relationships

@@ -26,6 +26,7 @@ class ExpenseService extends BaseService
                 'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
                 'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
+                'vendor_id'      => $data['vendor_id'] ?? null,
                 'expense_type'   => $data['expense_type'],
                 'expense_status' => $data['expense_status'],
             ]);
@@ -57,15 +58,24 @@ class ExpenseService extends BaseService
         DB::beginTransaction();
 
         try {
-            $expense->update([
+            // Only include valid fields that exist in the expenses table
+            $updateData = [
                 'expense_number' => $data['expense_number'],
                 'expense_amount' => $data['expense_amount'],
                 'expensed_at'    => Carbon::parse($data['expensed_at']),
                 'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
+                'vendor_id'      => $data['vendor_id'] ?? null,
                 'expense_type'   => $data['expense_type'],
                 'expense_status' => $data['expense_status'],
-            ]);
+            ];
+
+            // Filter out any null values to prevent overwriting with null
+            $updateData = array_filter($updateData, function ($value) {
+                return $value !== null;
+            });
+
+            $expense->update($updateData);
 
             $existingItems = $expense->expenseItems()->get()->keyBy('id');
             $incomingItems = collect($data['expenseItems'] ?? []);

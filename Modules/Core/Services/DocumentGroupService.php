@@ -15,7 +15,6 @@ class DocumentGroupService extends BaseService
     public function createDocumentGroup(array $data): DocumentGroup
     {
         return DocumentGroup::query()->create([
-            'company_id'              => $this->getCompanyId() ?? 1,
             'type'                    => $data['type'] ?? DocumentGroupType::CUSTOMERS->value,
             'group_identifier_format' => $data['group_identifier_format'],
             'name'                    => $data['name'],
@@ -33,7 +32,6 @@ class DocumentGroupService extends BaseService
     public function updateDocumentGroup(DocumentGroup $documentGroup, $data): DocumentGroup
     {
         $documentGroup->update([
-            'company_id'              => $data['company_id'],
             'type'                    => $data['type'],
             'group_identifier_format' => $data['group_identifier_format'],
             'name'                    => $data['name'],

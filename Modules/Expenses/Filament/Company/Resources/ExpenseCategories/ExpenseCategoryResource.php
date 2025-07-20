@@ -3,16 +3,16 @@
 namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategories;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Pages\ListExpenseCategories;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Schemas\ExpenseCategoryForm;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Tables\ExpenseCategoriesTable;
 use Modules\Expenses\Models\ExpenseCategory;
 
-class ExpenseCategoryResource extends Resource
+class ExpenseCategoryResource extends BaseResource
 {
     protected static ?string $model = ExpenseCategory::class;
 
@@ -52,8 +52,7 @@ class ExpenseCategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -391,53 +391,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->for(Relation::factory()->for($this->company)->prospect())
-            ->create([
-                'quote_number' => 'Q-ORIGINAL',
-                'quote_status' => QuoteStatus::DRAFT->value,
-                'quote_total'  => 100.00,
-            ]);
-
-        $updateData = [
-            'quote_number' => 'Q-UPDATED',
-            'quote_status' => QuoteStatus::SENT->value,
-            'quote_total'  => 150.00,
-            'notes'        => 'Updated quote',
-        ];
-
-        $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('edit', ['record' => $quote->id])
-            ->fillForm($updateData)
-            ->callMountedAction()
-            ->assertHasNoActionErrors();
-
-        $component->assertSuccessful();
-        $this->assertDatabaseHas('quotes', array_merge(
-            ['id' => $quote->id],
-            $updateData
-        ));
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload missing: quote_status
-     * {
-     *   "prospect_id": 1,
-     *   "quote_number": "Q-2025-01",
-     *   "quote_discount_percent": 5,
-     *   "quote_item_subtotal": 200,
-     *   "quote_tax_total": 40,
-     *   "quote_total": 240
-     * }
-     */
-    public function it_updates_a_quote_through_a_modal(): void
-    {
-        $this->markTestIncomplete();
-
         /* arrange */
         $quote = Quote::factory()
             ->for($this->company)
@@ -814,11 +767,22 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload missing: quote_status
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
     public function it_updates_a_quote(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
+        /* arrange */
         $quote = Quote::factory()->for($this->user->companies()->first())->create([
             'status' => QuoteStatus::DRAFT,
         ]);
@@ -839,12 +803,15 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_quote_with_missing_number(): void
+    public function it_fails_to_update_quote_without_required_quote_number(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
-        $quote = Quote::factory()->for($this->user->companies()->first())->create();
+        /* arrange */
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create();
 
         $payload = ['quote_number' => null];
 
@@ -860,15 +827,17 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_deletes_a_quote(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
-        $quote = Quote::factory()->for($this->user->companies()->first())->create();
+        /* arrange */
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create();
 
         /* act */
         Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->callTableAction('delete', $quote)
-            ->assertHasNoErrors();
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->callAction('delete', $quote);
 
         /* assert */
         $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
@@ -883,14 +852,17 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
 
         $quote = Quote::factory()
-            ->for($this->user->companies()->first())
-            ->create(['status' => QuoteStatus::APPROVED]);
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create(['quote_status' => QuoteStatus::APPROVED->value]);
 
+        /* act */
         Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->call('delete', $quote->id)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->callAction('delete', $quote)
             ->assertHasErrors(['delete']);
 
+        /* assert */
         $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
     }
 
@@ -901,20 +873,30 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create();
 
         $invoice = Invoice::factory()
-            ->for($this->user->companies()->first())
-            ->create(['status' => InvoiceStatus::PAID]);
+            ->for($this->company)
+            ->for($quote->prospect)
+            ->create([
+                'quote_id'       => $quote->id,
+                'invoice_status' => InvoiceStatus::PAID->value,
+            ]);
 
         $quote = Quote::factory()
             ->for($this->user->companies()->first())
             ->create(['invoice_id' => $invoice->id]);
 
+        /* act */
         Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->call('delete', $quote->id)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->callAction('delete', $quote)
             ->assertHasErrors(['delete']);
 
+        /* assert */
         $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
     }
 
@@ -925,20 +907,30 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create();
 
         $invoice = Invoice::factory()
-            ->for($this->user->companies()->first())
-            ->create(['status' => InvoiceStatus::PAID]);
+            ->for($this->company)
+            ->for($quote->prospect)
+            ->create([
+                'quote_id'       => $quote->id,
+                'invoice_status' => InvoiceStatus::PAID->value,
+            ]);
 
         $quote = Quote::factory()
             ->for($this->user->companies()->first())
             ->create(['invoice_id' => $invoice->id]);
 
+        /* act */
         Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->call('delete', $quote->id)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->callAction('delete', $quote)
             ->assertHasErrors(['delete']);
 
+        /* assert */
         $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
     }
 
@@ -947,19 +939,25 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_delete_quote_that_is_already_deleted(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
-        $quote = Quote::factory()->for($this->user->companies()->first())->create();
+        /* arrange */
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->for(Relation::factory()->for($this->company)->prospect())
+            ->create();
         $quote->delete();
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListQuotes::class)->callTableAction('delete', $quote);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->callAction('delete', $quote);
 
         /* assert */
         $component->assertHasErrors();
 
         $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
+    # endregion
 
     # region multi-tenancy
     #[Test]
@@ -993,5 +991,8 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('Should assert widget only shows quotes for the current tenant.');
     }
+    # endregion
+
+    # region spicy
     # endregion
 }

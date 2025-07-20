@@ -13,7 +13,14 @@ class ListProductUnits extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Products\Services\ProductUnitService::class)->createProductUnit($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

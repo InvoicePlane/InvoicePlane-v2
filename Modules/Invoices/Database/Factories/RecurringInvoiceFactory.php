@@ -7,7 +7,6 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\RecurringInvoice;
 
 /**
@@ -24,7 +23,7 @@ class RecurringInvoiceFactory extends Factory
         return [
             'company_id'        => $company->id,
             'customer_id'       => Relation::query()->where('relation_type', RelationType::CUSTOMER->value)->inRandomOrder()->first()->id,
-            'invoice_id'        => Invoice::query()->inRandomOrder()->first()->id,
+            'invoice_id'        => null,
             'document_group_id' => DocumentGroup::query()->inRandomOrder()->first()->id,
             'frequency'         => fake()->word,
             'start_at'          => fake()->date(),

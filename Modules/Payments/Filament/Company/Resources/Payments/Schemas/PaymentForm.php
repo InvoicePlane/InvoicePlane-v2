@@ -63,7 +63,7 @@ class PaymentForm
                                                     ->default(fn (?Payment $record) => $record?->invoice_id),
 
                                                 Placeholder::make('customer')
-                                                    ->label(trans('ip.customer'))
+                                                    ->label(trans('ip.client'))
                                                     ->content(fn (?Payment $record) => $record?->customer?->company_name ?? '-'),
                                             ]),
                                     ]),

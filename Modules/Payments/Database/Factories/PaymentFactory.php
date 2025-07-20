@@ -17,12 +17,27 @@ class PaymentFactory extends Factory
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()->customer()->create();
+        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
 
-        $invoice = Invoice::query()->inRandomOrder()->first() ?? Invoice::factory()->create();
+        // Create or get a customer that belongs to this company
+        $customer = Relation::query()
+            ->where('company_id', $company->id)
+            ->where('relation_type', RelationType::CUSTOMER->value)
+            ->inRandomOrder()
+            ->first() ?? Relation::factory()
+            ->for($company)
+            ->customer()
+            ->create();
+
+        // Create or get an invoice that belongs to this company and customer
+        $invoice = Invoice::query()
+            ->where('company_id', $company->id)
+            ->where('customer_id', $customer->id)
+            ->inRandomOrder()
+            ->first() ?? Invoice::factory()
+            ->for($company)
+            ->for($customer, 'customer')
+            ->create();
 
         return [
             'company_id'         => $company->id,

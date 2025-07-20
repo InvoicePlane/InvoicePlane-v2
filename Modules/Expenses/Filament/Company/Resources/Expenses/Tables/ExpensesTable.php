@@ -38,7 +38,8 @@ class ExpensesTable
                     ->placeholder('-')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('expense_type')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseType::class, $state);
@@ -48,19 +49,56 @@ class ExpensesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable()
-                    ->hiddenFrom('md'),
-                TextColumn::make('expense_number')->searchable()->sortable()->toggleable(),
-                TextColumn::make('vendor.company_name')->limit(10)->searchable()->sortable()->toggleable(),
+                    ->hiddenFrom('sm'),
+                TextColumn::make('expense_number')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
+                TextColumn::make('vendor.company_name')->limit(10)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('expensed_at')
                     ->date()
-                    ->searchable()->sortable()->toggleable(),
-                TextColumn::make('expense_amount')->searchable()->sortable()->toggleable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('expense_amount')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
             ])
-            ->filters([
-            ])
+            ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(function (array $data, Expense $record) {
+                            $data['expenseItems'] = $record->expenseItems()->get()->map(function ($item) {
+                                $product = $item->product;
+
+                                return [
+                                    'id'            => $item->id,
+                                    'item_id'       => $item->item_id,
+                                    'item_name'     => $item->item_name,
+                                    'quantity'      => $item->quantity,
+                                    'price'         => $item->price,
+                                    'discount'      => $item->discount,
+                                    'subtotal'      => $item->subtotal,
+                                    'tax_1'         => $item->tax_1,
+                                    'tax_2'         => $item->tax_2,
+                                    'tax_rate_id'   => $item->tax_rate_id,
+                                    'tax_rate_2_id' => $item->tax_rate_2_id,
+                                    'description'   => $item->description,
+                                ];
+                            })->toArray();
+
+                            return $data;
+                        })
+                        ->action(function (Expense $record, array $data) {
+                            app(ExpenseService::class)->updateExpense($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

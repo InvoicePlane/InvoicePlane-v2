@@ -28,7 +28,8 @@ class RelationsTable
                     ->badge()
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
 
                 TextColumn::make('relation_status')
                     ->label(trans('ip.status'))
@@ -57,26 +58,29 @@ class RelationsTable
                     ->limit(10)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('coc_number')
                     ->label(trans('ip.coc_number'))
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('vat_number')
                     ->label(trans('ip.vat_id_short'))
                     ->hiddenFrom('sm')
                     ->limit(10)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('language')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
             ])
-            ->filters([
-            ])
+            ->filters([])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),
@@ -86,6 +90,6 @@ class RelationsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('company_name', 'asc');
     }
 }

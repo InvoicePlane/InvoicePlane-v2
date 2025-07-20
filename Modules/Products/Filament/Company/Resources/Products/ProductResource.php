@@ -3,17 +3,17 @@
 namespace Modules\Products\Filament\Company\Resources\Products;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
 use Modules\Products\Filament\Company\Resources\Products\Schemas\ProductForm;
 use Modules\Products\Filament\Company\Resources\Products\Tables\ProductsTable;
 use Modules\Products\Models\Product;
 use UnitEnum;
 
-class ProductResource extends Resource
+class ProductResource extends BaseResource
 {
     protected static ?string $model = Product::class;
 
@@ -50,8 +50,7 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -752,7 +752,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      * "tax_rate_id": "Value",
      * "assigned_to": "Example",
      * "task_status": "Value",
-     * "name": "Example",
+     * "task_name": "Example",
      * "price": "9.99",
      * "due_at": "2025-04-30",
      * "description": "Example"

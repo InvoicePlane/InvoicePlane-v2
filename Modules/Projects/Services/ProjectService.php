@@ -18,20 +18,20 @@ class ProjectService extends BaseService
     public function createProject(array $data): Model
     {
         return $this->create([
-            'name'        => $data['name'],
-            'description' => $data['description'] ?? null,
-            'starts_at'   => $data['starts_at'],
-            'ends_at'     => $data['ends_at'] ?? null,
+            'project_name' => $data['project_name'],
+            'description'  => $data['description'] ?? null,
+            'starts_at'    => $data['starts_at'],
+            'ends_at'      => $data['ends_at'] ?? null,
         ]);
     }
 
     public function updateProject(Project $model, array $data): Project
     {
         $model->update([
-            'name'        => $data['name'],
-            'description' => $data['description'] ?? null,
-            'starts_at'   => $data['starts_at'],
-            'ends_at'     => $data['ends_at'] ?? null,
+            'project_name' => $data['project_name'],
+            'description'  => $data['description'] ?? null,
+            'starts_at'    => $data['starts_at'],
+            'ends_at'      => $data['ends_at'] ?? null,
         ]);
 
         return $model;

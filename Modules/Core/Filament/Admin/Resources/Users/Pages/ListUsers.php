@@ -13,7 +13,14 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Core\Services\UserService::class)->createUser($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

@@ -3,13 +3,13 @@
 namespace Modules\Expenses\Tests\Feature;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
-use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\CreateExpense;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\EditExpense;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ExpenseResource::class)]
+#[CoversClass(ListExpenses::class)]
 class ExpensesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
@@ -51,12 +51,415 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenses::class);
+            ->test(ListExpenses::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
 
         /* assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas('expenses', $payload);
+    }
+    # endregion
+
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_an_expense_with_items_trough_a_modal(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'    => $customer->id,
+            'expense_number' => 'EXP-4585487',
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'category_id'    => $category->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenses::class)
+            ->mountAction('create') // Mount the modal for CreateAction
+            ->fillForm($payload)    // Fill the form including expenseItems
+            ->callMountedAction();  // Submit the modal action
+
+        $component->assertHasNoFormErrors(); // Check for validation errors
+
+        $this->assertDatabaseHas('expenses', [
+            'expense_number' => $payload['expense_number'],
+            'expense_amount' => $payload['expense_amount'],
+        ]);
+
+        $this->assertDatabaseHas('expense_items', [
+            'item_id'  => $payload['expenseItems'][0]['item_id'],
+            'quantity' => $payload['expenseItems'][0]['quantity'],
+            'price'    => $payload['expenseItems'][0]['price'],
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_without_required_expense_number(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'category_id'    => $category->id,
+            'customer_id'    => $customer->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenses::class)
+            //            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expense_number' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_expensed_at(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expense_amount' => 120.00,
+            'category_id'    => $category->id,
+            'customer_id'    => $customer->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expensed_at' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_amount(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expensed_at'    => now()->format('Y-m-d'),
+            'category_id'    => $category->id,
+            'customer_id'    => $customer->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expense_amount' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_category_id(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'customer_id'    => $customer->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['category_id' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_customer_id(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'category_id'    => $category->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['customer_id' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_expense_type(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'category_id'    => $category->id,
+            'customer_id'    => $customer->id,
+            'expense_status' => ExpenseStatus::COMPLETED,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expense_type' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_trough_a_modal_expense_without_required_expense_status(): void
+    {
+        $this->markTestIncomplete();
+
+        $company  = $this->user->companies()->first();
+        $category = ExpenseCategory::factory()->for($company)->create();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $item     = Product::factory()->for($company)->create();
+
+        $payload = [
+            'expense_number' => 'EXP-4585487',
+            'expense_amount' => 120.00,
+            'expensed_at'    => now()->format('Y-m-d'),
+            'category_id'    => $category->id,
+            'customer_id'    => $customer->id,
+            'expense_type'   => ExpenseType::ONE_TIME,
+            'expenseItems'   => [
+                [
+                    'item_id'      => $item->id,
+                    'quantity'     => 2,
+                    'price'        => 10,
+                    'discount'     => 0,
+                    'subtotal'     => 20,
+                    'is_recurring' => false,
+                    'tax_1'        => 2,
+                    'tax_2'        => 1,
+                ],
+            ],
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateExpense::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expense_status' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_updates_an_expense_trough_a_modal(): void
+    {
+        $this->markTestIncomplete();
+        /* arrange */
+
+        $expense = Expense::factory()->for($this->user->companies()->first())->create([
+            'expense_type' => ExpenseType::FIXED,
+        ]);
+
+        $payload = ['expense_type' => ExpenseType::RECURRING];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpense::class, ['record' => $expense->id])
+            ->mountAction('edit', ['record' => $expense->id])
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        /* assert */
+        $this->assertDatabaseHas('expenses', [
+            'id'           => $expense->id,
+            'expense_type' => ExpenseType::RECURRING,
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_update_an_expense_trough_a_modal_without_required_type(): void
+    {
+        $this->markTestIncomplete();
+        /* arrange */
+
+        $expense = Expense::factory()->for($this->user->companies()->first())->create();
+
+        $payload = ['expense_type' => null];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpense::class, ['record' => $expense->id])
+            ->mountAction('edit', ['record' => $expense->id])
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['expense_type']);
     }
     # endregion
 
@@ -443,7 +846,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $record = Expense::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListExpenses::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenses::class)
+            ->callAction('delete', $record);
 
         /* assert */
         $this->assertDatabaseMissing('expenses', ['id' => $record->id]);
@@ -460,7 +865,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $record->delete();
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListExpenses::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenses::class)
+            ->callAction('delete', $record);
 
         /* assert */
         $component->assertHasErrors();

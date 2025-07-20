@@ -23,12 +23,33 @@ class InvoiceFactory extends Factory
         $company = Company::query()
             ->inRandomOrder()
             ->first()
-    ?: Company::factory()->create();
-        $user     = User::query()->inRandomOrder()->first() ?? User::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
+            ?: Company::factory()->create();
+
+        // Create or get a user that belongs to this company
+        $user = User::query()
+            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
             ->inRandomOrder()
-            ->first() ?? Relation::factory()->customer()->create();
-        $documentGroup = DocumentGroup::query()->inRandomOrder()->first() ?? DocumentGroup::factory()->create();
+            ->first() ?? User::factory()
+            ->hasAttached($company)
+            ->create();
+
+        // Create or get a customer that belongs to this company
+        $customer = Relation::query()
+            ->where('company_id', $company->id)
+            ->where('relation_type', RelationType::CUSTOMER->value)
+            ->inRandomOrder()
+            ->first() ?? Relation::factory()
+            ->for($company)
+            ->customer()
+            ->create();
+
+        // Create or get a document group that belongs to this company
+        $documentGroup = DocumentGroup::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first() ?? DocumentGroup::factory()
+            ->for($company)
+            ->create();
 
         $subtotal = $this->faker->randomFloat(4, 100, 1000);
         $taxRate  = 0.20;

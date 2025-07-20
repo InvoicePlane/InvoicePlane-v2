@@ -13,7 +13,14 @@ class ListMailQueues extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Core\Services\MailQueueService::class)->createMailQueue($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

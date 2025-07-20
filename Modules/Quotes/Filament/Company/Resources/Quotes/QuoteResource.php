@@ -3,16 +3,16 @@
 namespace Modules\Quotes\Filament\Company\Resources\Quotes;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Tables\QuotesTable;
 use Modules\Quotes\Models\Quote;
 
-class QuoteResource extends Resource
+class QuoteResource extends BaseResource
 {
     protected static ?string $model = Quote::class;
 
@@ -51,8 +51,7 @@ class QuoteResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

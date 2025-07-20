@@ -79,14 +79,42 @@ class QuoteService extends BaseService
 
     public function updateQuote(Quote $model, array $data): Quote
     {
+        $itemTaxTotal  = $this->calculateItemTaxTotal($data);
+        $quoteTaxTotal = $this->calculateQuoteTaxTotal($data);
+        $quoteTotal    = $this->calculateQuoteTotal($data, $itemTaxTotal, $quoteTaxTotal);
+
         $model->update([
-            'customer_id' => $data['customer_id'],
-            'quote_date'  => $data['quote_date'],
-            'expires_at'  => $data['expires_at'],
-            'status'      => $data['status'],
-            'summary'     => $data['summary'] ?? null,
+            'prospect_id'            => $data['prospect_id'],
+            'quoted_at'              => $data['quoted_at'],
+            'quote_expires_at'       => $data['quote_expires_at'],
+            'quote_status'           => $data['quote_status'],
+            'quote_discount_amount'  => $data['quote_discount_amount'] ?? 0,
+            'quote_discount_percent' => $data['quote_discount_percent'] ?? 0,
+            'item_tax_total'         => $itemTaxTotal,
+            'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
+            'quote_tax_total'        => $quoteTaxTotal,
+            'quote_total'            => $quoteTotal,
+            'summary'                => $data['summary'] ?? null,
         ]);
 
         return $model;
+    }
+
+    private function calculateItemTaxTotal(array $data): float
+    {
+        return collect($data['quoteItems'] ?? [])->sum(fn ($item) => $item['tax_total'] ?? 0);
+    }
+
+    private function calculateQuoteTaxTotal(array $data): float
+    {
+        return collect($data['quoteItems'] ?? [])->sum(fn ($item) => ($item['tax_1'] ?? 0) + ($item['tax_2'] ?? 0));
+    }
+
+    private function calculateQuoteTotal(array $data, float $itemTaxTotal, float $quoteTaxTotal): float
+    {
+        $subtotal       = $data['quote_item_subtotal'] ?? 0;
+        $discountAmount = $data['quote_discount_amount'] ?? 0;
+
+        return $subtotal + $itemTaxTotal + $quoteTaxTotal - $discountAmount;
     }
 }

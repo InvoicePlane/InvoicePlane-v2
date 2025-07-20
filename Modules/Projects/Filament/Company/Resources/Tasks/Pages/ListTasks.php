@@ -4,8 +4,10 @@ namespace Modules\Projects\Filament\Company\Resources\Tasks\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Projects\Models\Task;
+use Modules\Projects\Services\TaskService;
 
 class ListTasks extends ListRecords
 {
@@ -14,11 +16,17 @@ class ListTasks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(TaskService::class)->createTask($data);
+                })->modalWidth('full'),
         ];
     }
 
-    protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation|null
+    protected function getTableQuery(): ?Builder
     {
         return Task::query()
             ->orderByRaw("
@@ -26,7 +34,6 @@ class ListTasks extends ListRecords
                     'not_started',
                     'open',
                     'in_progress',
-                    'complete',
                     'completed',
                     'paid',
                     'cancelled'
