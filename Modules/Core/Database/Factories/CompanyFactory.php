@@ -32,7 +32,7 @@ class CompanyFactory extends Factory
         $companyName = $this->faker->unique()->company;
 
         return [
-            'search_code' => mb_strtoupper(Str::random(5)),
+            'search_code' => mb_strtolower(Str::random(5)),
             'name'        => $companyName,
             'slug'        => Str::slug($companyName),
             'vat_number'  => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),

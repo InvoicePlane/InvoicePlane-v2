@@ -24,12 +24,12 @@ class ConfigureTenant
 
         // If company is a search_code, find the company
         if (is_string($company)) {
-            $company = Company::query()->where('search_code', $company)->first();
+            $company = Company::query()->where('search_code', Str::lower($company))->first();
         }
 
         // If no company from route, check query string
         if ( ! $company && $request->has('tenant')) {
-            $company = Company::query()->where('search_code', Str::upper($request->query('tenant')))->first();
+            $company = Company::query()->where('search_code', Str::lower($request->query('tenant')))->first();
         }
 
         // If still no company, use the one from session
