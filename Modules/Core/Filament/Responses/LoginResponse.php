@@ -5,6 +5,7 @@ namespace Modules\Core\Filament\Responses;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as BaseLoginResponse;
 use Illuminate\Support\Str;
 use Modules\Core\Enums\UserRole;
+use Modules\Core\Models\Company;
 
 class LoginResponse implements BaseLoginResponse
 {

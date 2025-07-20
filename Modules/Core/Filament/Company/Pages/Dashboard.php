@@ -4,6 +4,8 @@ namespace Modules\Core\Filament\Company\Pages;
 
 use Filament\Pages\Page;
 use Filament\Panel;
+use Modules\Invoices\Filament\Company\Widgets\RecentInvoicesWidget;
+use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class Dashboard extends Page
 {

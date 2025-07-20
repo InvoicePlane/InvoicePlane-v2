@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -14,9 +13,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Width;
-use Filament\Support\Icons\Heroicon;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -35,6 +31,7 @@ use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategor
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\RecurringInvoiceResource;
+use Modules\Invoices\Filament\Company\Widgets\RecentInvoicesWidget;
 use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
 use Modules\Products\Filament\Company\Resources\ProductCategories\ProductCategoryResource;
 use Modules\Products\Filament\Company\Resources\Products\ProductResource;
@@ -42,6 +39,7 @@ use Modules\Products\Filament\Company\Resources\ProductUnits\ProductUnitResource
 use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
+use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class CompanyPanelProvider extends PanelProvider
 {
@@ -60,7 +58,8 @@ class CompanyPanelProvider extends PanelProvider
             ->emailVerification()
             ->maxContentWidth(Width::Full)
             ->font('Poppins', provider: GoogleFontProvider::class)
-
+            ->unsavedChangesAlerts()
+            ->sidebarCollapsibleOnDesktop()
             ->tenantMenu(false)
             // #endregion
 
@@ -71,6 +70,7 @@ class CompanyPanelProvider extends PanelProvider
             )
             ->homeUrl(function ($panel, $company) {
                 $tenant = request('tenant');
+                //\Filament\Facades\Filament::getTenant()?->search_code
 
                 return route('filament.company.pages.dashboard', ['tenant' => $tenant]);
             })
@@ -81,6 +81,21 @@ class CompanyPanelProvider extends PanelProvider
                 EnsureUserCanAccessCompany::class,
             ], isPersistent: true)
             // #endregion
+
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ])
 
             ->colors([
                 'primary' => [
@@ -159,11 +174,16 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                RecentQuotesWidget::class,
+                RecentInvoicesWidget::class,
+                //RecentProjectsWidget::class,
+                //RecentTasksWidget::class,
+                //RecentExpensesWidget::class,
+                //RecentPaymentsWidget::class,
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 $tenant = request('tenant');
+                //\Filament\Facades\Filament::getTenant()?->search_code
 
                 return $builder
                     ->items([
@@ -180,13 +200,6 @@ class CompanyPanelProvider extends PanelProvider
                                 ...ContactResource::getNavigationItems(),
                             ]),
 
-                        NavigationGroup::make('Expenses')
-                            //->icon('heroicon-o-banknotes')
-                            ->items([
-                                ...ExpenseResource::getNavigationItems(),
-                                ...ExpenseCategoryResource::getNavigationItems(),
-                            ]),
-
                         NavigationGroup::make('Quotes')
                             //->icon('heroicon-o-document-text')
                             ->items([
@@ -198,6 +211,13 @@ class CompanyPanelProvider extends PanelProvider
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
                                 ...RecurringInvoiceResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make('Expenses')
+                            //->icon('heroicon-o-banknotes')
+                            ->items([
+                                ...ExpenseResource::getNavigationItems(),
+                                ...ExpenseCategoryResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Payments')
@@ -217,35 +237,19 @@ class CompanyPanelProvider extends PanelProvider
                                 ...TaskResource::getNavigationItems(),
                             ]),
                     ]);
-            })
-            ->unsavedChangesAlerts()
-            ->sidebarCollapsibleOnDesktop()
-            ->userMenuItems([
+            });
+        /*->userMenuItems([
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
                     ->url(EditProfile::getUrl()),
                 Action::make('settings')
-                    ->label(trans('settings'))
+                    ->label(trans('ip.settings'))
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => fn (Action $action) => $action
                     ->label(trans(trans('ip.logout')))
                     ->icon(Heroicon::OutlinedArrowRightStartOnRectangle),
-            ])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
+            ])*/
 
         return $panel;
     }
