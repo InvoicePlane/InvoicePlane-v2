@@ -42,7 +42,7 @@ class ProductForm
                                             ->label(trans('ip.product_type'))
                                             ->options(
                                                 collect(ProductType::cases())
-                                                    ->mapWithKeys(fn(ProductType $type) => [$type->value => $type->label()])
+                                                    ->mapWithKeys(fn (ProductType $type) => [$type->value => $type->label()])
                                                     ->toArray()
                                             )
                                             ->native(false)

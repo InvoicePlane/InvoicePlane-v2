@@ -26,7 +26,7 @@ class ProductsTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('type')
-                    ->formatStateUsing(fn($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
+                    ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
                     ->sortable()
                     ->toggleable()

@@ -45,5 +45,7 @@ class LoginResponse implements BaseLoginResponse
         return redirect()->route('filament.company.pages.dashboard', [
             'tenant' => Str::lower($tenant->search_code),
         ]);
+
+        //return redirect()->intended(Filament::getUrl());
     }
 }

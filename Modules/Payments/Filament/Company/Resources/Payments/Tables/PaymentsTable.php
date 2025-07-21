@@ -20,7 +20,7 @@ class PaymentsTable
                     ->date('d-m-Y')
                     ->since()
                     ->color(
-                        fn(Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
+                        fn (Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
                             ? 'maroon'
                             : null
                     )
@@ -34,7 +34,7 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('invoice.invoice_number')
                     ->label(trans('ip.payment_reference'))
-                    ->state(fn(Payment $record) => $record->invoice?->invoice_number)
+                    ->state(fn (Payment $record) => $record->invoice?->invoice_number)
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('payment_status')
@@ -58,7 +58,7 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
-                    ->formatStateUsing(fn($state) => trans('ip.' . $state))
+                    ->formatStateUsing(fn ($state) => trans('ip.' . $state))
                     ->limit(10)
                     ->sortable()
                     ->searchable()
@@ -68,9 +68,9 @@ class PaymentsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->mutateDataUsing(fn(array $data) => $data)
+                        ->mutateDataUsing(fn (array $data) => $data)
                         ->action(
-                            fn(\Modules\Payments\Models\Payment $record, array $data) => app(\Modules\Payments\Services\PaymentService::class)
+                            fn (\Modules\Payments\Models\Payment $record, array $data) => app(\Modules\Payments\Services\PaymentService::class)
                                 ->updatePayment($record, $data)
                         )
                         ->modalWidth('full'),

@@ -40,17 +40,17 @@ class PaymentForm
                                                     ->getSearchResultsUsing(function (string $search): array {
                                                         return Invoice::with('customer')
                                                             ->where('invoice_number', 'like', "%{$search}%")
-                                                            ->orWhereHas('customer', fn($q) => $q->where('company_name', 'like', "%{$search}%"))
+                                                            ->orWhereHas('customer', fn ($q) => $q->where('company_name', 'like', "%{$search}%"))
                                                             ->limit(50)
                                                             ->get()
                                                             ->pluck('invoice_number', 'id')
-                                                            ->mapWithKeys(fn($number, $id) => [
+                                                            ->mapWithKeys(fn ($number, $id) => [
                                                                 $id => "{$number} – " . Invoice::query()->find($id)->customer?->company_name,
                                                             ])
                                                             ->toArray();
                                                     })
                                                     ->getOptionLabelUsing(
-                                                        fn(?int $value) => match (true) {
+                                                        fn (?int $value) => match (true) {
                                                             $value === null => '',
                                                             default         => ($invoice = Invoice::with('customer')->find($value))
                                                                 ? "{$invoice->invoice_number} – {$invoice->customer?->company_name}"
@@ -60,11 +60,11 @@ class PaymentForm
                                                     ->required()
                                                     ->searchable()
                                                     ->preload()
-                                                    ->default(fn(?Payment $record) => $record?->invoice_id),
+                                                    ->default(fn (?Payment $record) => $record?->invoice_id),
 
                                                 Placeholder::make('customer')
                                                     ->label(trans('ip.client'))
-                                                    ->content(fn(?Payment $record) => $record?->customer?->company_name ?? '-'),
+                                                    ->content(fn (?Payment $record) => $record?->customer?->company_name ?? '-'),
                                             ]),
                                     ]),
                             ]),
@@ -86,7 +86,7 @@ class PaymentForm
                                                     ->label(trans('ip.payment_method'))
                                                     ->options(
                                                         collect(PaymentMethod::cases())
-                                                            ->mapWithKeys(fn(PaymentMethod $method) => [
+                                                            ->mapWithKeys(fn (PaymentMethod $method) => [
                                                                 $method->value => $method->label(),
                                                             ])
                                                             ->toArray()
@@ -100,7 +100,7 @@ class PaymentForm
                                                     ->label(trans('ip.payment_status'))
                                                     ->options(
                                                         collect(PaymentStatus::cases())
-                                                            ->mapWithKeys(fn(PaymentStatus $s) => [
+                                                            ->mapWithKeys(fn (PaymentStatus $s) => [
                                                                 $s->value => trans($s->label()),
                                                             ])
                                                             ->toArray()
@@ -115,8 +115,8 @@ class PaymentForm
                                                     ->numeric()
                                                     ->required()
                                                     ->dehydrated(true)
-                                                    ->afterStateHydrated(fn($component, $state) => $component->state($state))
-                                                    ->default(fn(?Payment $record) => $record?->payment_amount),
+                                                    ->afterStateHydrated(fn ($component, $state) => $component->state($state))
+                                                    ->default(fn (?Payment $record) => $record?->payment_amount),
                                             ]),
                                     ]),
                             ]),
