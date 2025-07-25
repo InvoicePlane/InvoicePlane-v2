@@ -39,6 +39,7 @@
         "larastan/larastan": "^3.6",
         "laravel/pail": "^1.2.3",
         "laravel/pint": "^1.24.0",
+        "laravel/sail": "^1.44",
         "laravel/tinker": "^2.10.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
