@@ -60,24 +60,34 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         }
 
         $query->each(function (Company $company) {
-            $existingCount = TaxRate::query()->where('company_id', $company->id)->count();
-
-            if ($existingCount > 0) {
-                $this->command->info("Skipping tax rates for company {$company->name} - already has {$existingCount} tax rates.");
-
-                return;
-            }
-
             $this->command->info("Seeding tax rates for company: {$company->name}");
 
-            $bar = $this->command->getOutput()->createProgressBar(
-                count($this->europeanVatRates) +
-                count($this->usSalesTaxRates) +
-                count($this->otherTaxRates)
+            // Get existing tax rates for this company
+            $existingRates = TaxRate::query()
+                ->where('company_id', $company->id)
+                ->pluck('code')
+                ->toArray();
+
+            $allRates = array_merge(
+                $this->europeanVatRates,
+                $this->usSalesTaxRates,
+                $this->otherTaxRates
             );
 
-            // European VAT rates
+            $created = 0;
+            $skipped = 0;
+
+            $bar = $this->command->getOutput()->createProgressBar(count($allRates));
+            $bar->start();
+
+            // Process European VAT rates
             foreach ($this->europeanVatRates as $rate) {
+                if (in_array($rate['code'], $existingRates, true)) {
+                    $skipped++;
+                    $bar->advance();
+                    continue;
+                }
+
                 $this->createTaxRate([
                     'company_id'    => $company->id,
                     'name'          => $rate['name'],
@@ -88,11 +98,18 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                     'calculate_vat' => true,
                     'is_active'     => true,
                 ]);
+                $created++;
                 $bar->advance();
             }
 
-            // US Sales Tax rates
+            // Process US Sales Tax rates
             foreach ($this->usSalesTaxRates as $rate) {
+                if (in_array($rate['code'], $existingRates, true)) {
+                    $skipped++;
+                    $bar->advance();
+                    continue;
+                }
+
                 $this->createTaxRate([
                     'company_id'    => $company->id,
                     'name'          => $rate['name'],
@@ -103,11 +120,18 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                     'calculate_vat' => false,
                     'is_active'     => true,
                 ]);
+                $created++;
                 $bar->advance();
             }
 
-            // Other tax rates
+            // Process other tax rates
             foreach ($this->otherTaxRates as $rate) {
+                if (in_array($rate['code'], $existingRates, true)) {
+                    $skipped++;
+                    $bar->advance();
+                    continue;
+                }
+
                 $this->createTaxRate([
                     'company_id'    => $company->id,
                     'name'          => $rate['name'],
@@ -120,12 +144,18 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                     'calculate_vat' => str_contains($rate['code'], 'VAT') || str_contains($rate['code'], 'GST'),
                     'is_active'     => true,
                 ]);
+                $created++;
                 $bar->advance();
             }
 
             $bar->finish();
             $this->command->newLine(2);
-            $this->command->info("Tax rates seeded successfully for company: {$company->name}");
+            $this->command->info(sprintf(
+                'Tax rates for %s: %d created, %d already existed',
+                $company->name,
+                $created,
+                $skipped
+            ));
         });
     }
 

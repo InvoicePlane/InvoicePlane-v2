@@ -38,10 +38,16 @@ class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 ->toArray();
 
             $created = 0;
+            $skipped = 0;
+
+            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultUnits));
+            $bar->start();
 
             foreach ($this->defaultUnits as $unit) {
                 // Skip if this unit already exists for the company
                 if (in_array($unit['unit_name'], $existingUnits, true)) {
+                    $skipped++;
+                    $bar->advance();
                     continue;
                 }
 
@@ -55,13 +61,17 @@ class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                     ]
                 );
                 $created++;
+                $bar->advance();
             }
 
-            if ($created > 0) {
-                $this->command->info("Created {$created} product units for company: {$company->name}");
-            } else {
-                $this->command->info("All product units already exist for company: {$company->name}");
-            }
+            $bar->finish();
+            $this->command->newLine(2);
+            $this->command->info(sprintf(
+                'Product units for %s: %d created, %d already existed',
+                $company->name,
+                $created,
+                $skipped
+            ));
         });
     }
 }

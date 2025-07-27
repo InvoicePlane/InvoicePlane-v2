@@ -38,10 +38,16 @@ class ProductCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
                 ->toArray();
 
             $created = 0;
+            $skipped = 0;
+
+            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultCategories));
+            $bar->start();
 
             foreach ($this->defaultCategories as $categoryName) {
                 // Skip if this category already exists for the company
                 if (in_array($categoryName, $existingCategories, true)) {
+                    $skipped++;
+                    $bar->advance();
                     continue;
                 }
 
@@ -55,13 +61,17 @@ class ProductCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
                     ]
                 );
                 $created++;
+                $bar->advance();
             }
 
-            if ($created > 0) {
-                $this->command->info("Created {$created} product categories for company: {$company->name}");
-            } else {
-                $this->command->info("All product categories already exist for company: {$company->name}");
-            }
+            $bar->finish();
+            $this->command->newLine(2);
+            $this->command->info(sprintf(
+                'Product categories for %s: %d created, %d already existed',
+                $company->name,
+                $created,
+                $skipped
+            ));
         });
     }
 }

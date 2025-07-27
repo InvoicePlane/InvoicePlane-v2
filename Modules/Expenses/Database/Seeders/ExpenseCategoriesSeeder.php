@@ -2,7 +2,6 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
-use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
 
@@ -36,31 +35,47 @@ class ExpenseCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
         }
 
         $query->each(function (Company $company) {
-            $existingCount = ExpenseCategory::query()->where('company_id', $company->id)->count();
+            $this->command->info("Seeding expense categories for company: {$company->name}");
 
-            if ($existingCount > 0) {
-                $this->command->info("Skipping expense categories for company {$company->name} - already has {$existingCount} categories.");
+            $existingCategories = ExpenseCategory::query()
+                ->where('company_id', $company->id)
+                ->pluck('category_name')
+                ->toArray();
 
-                return;
+            $created = 0;
+            $skipped = 0;
+
+            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultCategories));
+            $bar->start();
+
+            foreach ($this->defaultCategories as $categoryName) {
+                // Skip if this category already exists for the company
+                if (in_array($categoryName, $existingCategories, true)) {
+                    $skipped++;
+                    $bar->advance();
+                    continue;
+                }
+
+                ExpenseCategory::updateOrCreate(
+                    [
+                        'company_id'    => $company->id,
+                        'category_name' => $categoryName,
+                    ],
+                    [
+                        // Any additional fields can go here
+                    ]
+                );
+                $created++;
+                $bar->advance();
             }
 
-            $this->command->info("Creating expense categories for company: {$company->name}");
-
-            $categories = [];
-
-            foreach ($this->defaultCategories as $category) {
-                $categories[] = [
-                    'company_id'    => $company->id,
-                    'category_name' => $category,
-                ];
-            }
-
-            DB::table('expense_categories')->insert($categories);
-
+            $bar->finish();
+            $this->command->newLine(2);
             $this->command->info(sprintf(
-                'Created %d expense categories for company: %s',
-                count($categories),
-                $company->name
+                'Expense categories for %s: %d created, %d already existed',
+                $company->name,
+                $created,
+                $skipped
             ));
         });
     }
