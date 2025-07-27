@@ -29,23 +29,38 @@ class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         }
 
         $query->each(function (Company $company) {
-            $existingCount = ProductUnit::query()->where('company_id', $company->id)->count();
+            $this->command->info("Seeding product units for company: {$company->name}");
 
-            if ($existingCount > 0) {
-                $this->command->info("Skipping product units for company {$company->name} - already has {$existingCount} units.");
+            // First, check if we already have units for this company
+            $existingUnits = ProductUnit::query()
+                ->where('company_id', $company->id)
+                ->pluck('unit_name')
+                ->toArray();
 
-                return;
-            }
-
-            $this->command->info("Creating product units for company: {$company->name}");
+            $created = 0;
 
             foreach ($this->defaultUnits as $unit) {
-                ProductUnit::factory()
-                    ->for($company)
-                    ->create([
-                        'unit_name'      => $unit['unit_name'],
+                // Skip if this unit already exists for the company
+                if (in_array($unit['unit_name'], $existingUnits, true)) {
+                    continue;
+                }
+
+                ProductUnit::updateOrCreate(
+                    [
+                        'company_id' => $company->id,
+                        'unit_name'  => $unit['unit_name'],
+                    ],
+                    [
                         'unit_name_plrl' => $unit['unit_name_plrl'],
-                    ]);
+                    ]
+                );
+                $created++;
+            }
+
+            if ($created > 0) {
+                $this->command->info("Created {$created} product units for company: {$company->name}");
+            } else {
+                $this->command->info("All product units already exist for company: {$company->name}");
             }
         });
     }

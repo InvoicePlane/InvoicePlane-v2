@@ -4,7 +4,49 @@ namespace Modules\Core\Database\Seeders;
 
 class DocumentGroupsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
-    public function run(): void {}
+    public function run(?int $companyId = null): void
+    {
+        $company = $companyId
+            ? \Modules\Core\Models\Company::find($companyId)
+            : \Modules\Core\Models\Company::first();
+
+        if ( ! $company) {
+            $this->command->warn('No company found. Please run CompaniesSeeder first.');
+
+            return;
+        }
+
+        $documentGroupTypes = \Modules\Core\Enums\DocumentGroupType::cases();
+        $created            = 0;
+        $now                = now();
+
+        foreach ($documentGroupTypes as $type) {
+            $name   = $this->getDefaultNameForType($type);
+            $format = $this->getDefaultFormatForType($type);
+
+            \Modules\Core\Models\DocumentGroup::firstOrCreate(
+                [
+                    'company_id' => $company->id,
+                    'name'       => $name,
+                ],
+                [
+                    'type'                    => $type->value,
+                    'group_identifier_format' => $format,
+                    'next_id'                 => 1,
+                    'left_pad'                => 0,
+                    'format'                  => $format,
+                    'reset_number'            => 0,
+                    'last_id'                 => 0,
+                    'last_year'               => $now->year,
+                    'last_month'              => $now->month,
+                    'last_week'               => $now->weekOfYear,
+                ]
+            );
+            $created++;
+        }
+
+        $this->command->info("Created {$created} document groups for company: {$company->name} (ID: {$company->id})");
+    }
 
     private function getDefaultNameForType(\Modules\Core\Enums\DocumentGroupType $type): string
     {

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Modules\Clients\Database\Seeders\AddressesSeeder;
 use Modules\Clients\Database\Seeders\ContactsSeeder;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
@@ -29,7 +30,7 @@ use Modules\Quotes\Database\Seeders\QuotesSeeder;
 
 class DevelopmentSeeder extends Seeder
 {
-    protected int $numberOfCompanies = 10;
+    protected int $numberOfCompanies = 3;
 
     protected int $adminCompanyId = 1;
 
@@ -39,11 +40,6 @@ class DevelopmentSeeder extends Seeder
 
         $this->truncateTables();
 
-        $this->command->info('Seeding global permissions and roles...');
-        $this->call(PermissionsSeeder::class);
-        $this->call(RolesSeeder::class);
-        $this->call(RoleHasPermissionsSeeder::class);
-
         $adminCompany = Company::query()->find($this->adminCompanyId) ?? Company::factory()->create(['id' => $this->adminCompanyId]);
 
         $this->command->info('Creating companies...');
@@ -52,6 +48,11 @@ class DevelopmentSeeder extends Seeder
         for ($i = 2; $i <= $this->numberOfCompanies; $i++) {
             $companies->push(Company::factory()->create(['id' => $i]));
         }
+
+        $this->command->info('Seeding global permissions and roles...');
+        $this->call(PermissionsSeeder::class);
+        $this->call(RolesSeeder::class);
+        $this->call(RoleHasPermissionsSeeder::class);
 
         $companies->each(function ($company) {
             $this->seedCompany($company->id);
@@ -68,16 +69,12 @@ class DevelopmentSeeder extends Seeder
         $this->command->info("Seeding data for company ID: {$companyId}");
 
         $this->callWith(DocumentGroupsSeeder::class, ['companyId' => $companyId]);
+
         $this->callWith(EmailTemplatesSeeder::class, ['companyId' => $companyId]);
         $this->callWith(TaxRatesSeeder::class, ['companyId' => $companyId]);
 
-        $this->command->info("Seeding permissions and roles for company ID: {$companyId}");
-        $this->callWith(PermissionsSeeder::class);
-        $this->callWith(RolesSeeder::class);
-        $this->callWith(RoleHasPermissionsSeeder::class);
-
         $this->command->info("Seeding users for company ID: {$companyId}");
-        $this->callWith(UsersSeeder::class);
+        $this->callWith(UsersSeeder::class, ['companyId' => $companyId]);
 
         $this->command->info("Seeding clients for company ID: {$companyId}");
         $this->callWith(CustomersSeeder::class, ['companyId' => $companyId]);
@@ -111,47 +108,16 @@ class DevelopmentSeeder extends Seeder
 
     protected function truncateTables(): void
     {
-        $this->command->info('Truncating tables...');
+        $tables = collect(DB::select('SHOW TABLES'))
+            ->map(fn ($row) => array_values((array) $row)[0])
+            ->reject(fn ($table) => in_array($table, ['migrations']));
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        $tables = [
-            'addresses',
-            'company_user',
-            'communications',
-            'contacts',
-            'document_groups',
-            'email_templates',
-            'expense_categories',
-            'expense_items',
-            'expenses',
-            'invoice_items',
-            'invoices',
-            'model_has_permissions',
-            'model_has_roles',
-            'payments',
-            'permissions',
-            'product_categories',
-            'product_units',
-            'products',
-            'projects',
-            'quote_items',
-            'quotes',
-            'recurring_invoice_items',
-            'recurring_invoices',
-            'relations',
-            'role_has_permissions',
-            'roles',
-            'tax_rates',
-            'tasks',
-            'users',
-        ];
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         foreach ($tables as $table) {
+            Schema::disableForeignKeyConstraints();
             DB::table($table)->truncate();
         }
-
-        DB::table('companies')->where('id', '>', $this->adminCompanyId)->delete();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

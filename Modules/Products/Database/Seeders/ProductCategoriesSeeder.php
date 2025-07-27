@@ -29,23 +29,38 @@ class ProductCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
         }
 
         $query->each(function (Company $company) {
-            $existingCount = ProductCategory::query()->where('company_id', $company->id)->count();
+            $this->command->info("Seeding product categories for company: {$company->name}");
 
-            if ($existingCount > 0) {
-                $this->command->info("Skipping product categories for company {$company->name} - already has {$existingCount} categories.");
+            // Get existing categories for this company
+            $existingCategories = ProductCategory::query()
+                ->where('company_id', $company->id)
+                ->pluck('category_name')
+                ->toArray();
 
-                return;
-            }
-
-            $this->command->info("Creating product categories for company: {$company->name}");
+            $created = 0;
 
             foreach ($this->defaultCategories as $categoryName) {
-                ProductCategory::factory()
-                    ->for($company)
-                    ->create([
+                // Skip if this category already exists for the company
+                if (in_array($categoryName, $existingCategories, true)) {
+                    continue;
+                }
+
+                ProductCategory::updateOrCreate(
+                    [
+                        'company_id'    => $company->id,
                         'category_name' => $categoryName,
-                        'description'   => "Default {$categoryName} category",
-                    ]);
+                    ],
+                    [
+                        'description' => "Default {$categoryName} category",
+                    ]
+                );
+                $created++;
+            }
+
+            if ($created > 0) {
+                $this->command->info("Created {$created} product categories for company: {$company->name}");
+            } else {
+                $this->command->info("All product categories already exist for company: {$company->name}");
             }
         });
     }

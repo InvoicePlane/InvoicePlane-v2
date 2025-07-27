@@ -95,6 +95,12 @@ class InvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $discountAmount = random_int(0, 1) ? random_int(5, 20) : 0;
         $discountType   = $discountAmount > 0 ? (random_int(0, 1) ? 'percentage' : 'fixed') : null;
 
+        // Get a document group from the same company if available
+        $documentGroup = \Modules\Core\Models\DocumentGroup::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
         return Invoice::factory()
             ->for($company)
             ->for($customer, 'customer')
@@ -104,6 +110,7 @@ class InvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 'invoice_sign'             => '1',
                 'invoiced_at'              => $invoiceDate->format('Y-m-d'),
                 'invoice_due_at'           => $dueDate->format('Y-m-d'),
+                'document_group_id'        => $documentGroup?->id,
                 'invoice_discount_amount'  => 0, // Will be updated by addInvoiceItems
                 'invoice_discount_percent' => $discountType === 'percentage' ? $discountAmount : 0,
                 'invoice_item_subtotal'    => 0, // Will be updated by addInvoiceItems

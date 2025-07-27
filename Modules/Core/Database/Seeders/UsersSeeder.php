@@ -2,16 +2,17 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Support\Facades\Hash;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
 class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
+    protected static ?string $hashedPassword = null;
+
     public function run(?int $companyId = null): void
     {
-        $company = $companyId ? Company::find($companyId) : Company::first();
+        $company = $companyId ? Company::query()->find($companyId) : Company::query()->first();
 
         if ( ! $company) {
             $this->command->warn('No company found. Please run CompaniesSeeder first.');
@@ -19,23 +20,21 @@ class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             return;
         }
 
-        $userCount  = rand(10, 20);
-        $adminCount = max(1, (int) ($userCount * 0.2));
+        $adminCount = 2;
+        $userCount  = 8;
 
-        $this->command->info("Creating {$userCount} users for company {$company->name} ({$company->id})");
-        $this->command->info("  - {$adminCount} will be customer admins");
-        $this->command->info('  - ' . ($userCount - $adminCount) . ' will be regular customers');
+        $this->command->info("Creating {$adminCount} customer admins and {$userCount} customers for company {$company->name} ({$company->id})");
 
         for ($i = 1; $i <= $adminCount; $i++) {
-            $email = "admin{$i}@company{$company->id}.com";
-            $name  = 'Admin ' . $i;
+            $email = "customeradmin{$i}@company{$company->id}.com";
+            $name  = 'Customer Admin ' . $i;
 
             $this->createUser($company, $email, $name, [UserRole::CUSTOMER_ADMIN->value]);
         }
 
-        for ($i = 1; $i <= ($userCount - $adminCount); $i++) {
-            $email = "user{$i}@company{$company->id}.com";
-            $name  = 'User ' . $i;
+        for ($i = 1; $i <= $userCount; $i++) {
+            $email = "customer{$i}@company{$company->id}.com";
+            $name  = 'Customer ' . $i;
 
             $this->createUser($company, $email, $name, [UserRole::CUSTOMER->value]);
         }
@@ -44,14 +43,23 @@ class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $this->command->info('All users have the password: password');
     }
 
+    protected function getPassword(): string
+    {
+        if (self::$hashedPassword === null) {
+            self::$hashedPassword = bcrypt('password');
+        }
+
+        return self::$hashedPassword;
+    }
+
     protected function createUser(Company $company, string $email, string $name, array $roles): void
     {
         $user = User::query()->firstOrNew(['email' => $email]);
 
         if ( ! $user->exists) {
             $user->fill([
-                'name'              => $name . ' ' . $company->id,
-                'password'          => Hash::make('password'),
+                'name'              => $name,
+                'password'          => $this->getPassword(),
                 'email_verified_at' => now(),
             ])->save();
 

@@ -67,12 +67,13 @@ class PaymentsSeeder extends AbstractSeeder
     protected function createPaymentForInvoice(Invoice $invoice): void
     {
         // Ensure invoice has a valid total
-        if (is_null($invoice->invoice_total) || $invoice->invoice_total <= 0) {
+        if (null === $invoice->invoice_total || $invoice->invoice_total <= 0) {
             $this->command->warn(sprintf(
                 'Skipping payment for invoice %s - invalid total: %s',
                 $invoice->invoice_number,
                 $invoice->invoice_total ?? 'null'
             ));
+
             return;
         }
 

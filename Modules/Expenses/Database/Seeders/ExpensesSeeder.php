@@ -10,6 +10,7 @@ use Modules\Core\Models\Company;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
+use RuntimeException;
 
 class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
@@ -149,17 +150,51 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $expenseDate   = now()->subDays(random_int(0, 365));
         $paymentMethod = array_rand($this->paymentMethods);
 
+        // Ensure we have a vendor for this company
+        $vendor = Relation::where('company_id', $company->id)
+            ->where('relation_type', RelationType::VENDOR->value)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $vendor) {
+            $vendor = Relation::factory()->for($company)->create([
+                'relation_type'   => RelationType::VENDOR->value,
+                'relation_status' => 'active',
+            ]);
+        }
+
+        // Ensure we have a customer for this company if needed
+        $customer = $customers->isNotEmpty()
+            ? $customers->random()
+            : null;
+
         $expense = Expense::factory()
             ->for($company)
             ->for($category, 'expenseCategory')
             ->for($user, 'user')
+            ->for($vendor, 'vendor')
+            ->when($customer, function ($factory) use ($customer) {
+                return $factory->for($customer, 'customer');
+            })
             ->create([
                 'expense_number' => $this->generatePaymentReference($paymentMethod, $company->id),
                 'expense_status' => $status->value,
                 'expensed_at'    => $expenseDate,
                 'expense_amount' => random_int(1000, 100000) / 100,
                 'description'    => $this->expenseDescriptions[array_rand($this->expenseDescriptions)],
+                'company_id'     => $company->id, // Explicitly set company_id
             ]);
+
+        // Ensure all related records belong to the same company
+        $expense->load(['vendor', 'customer']);
+
+        if ($expense->vendor && $expense->vendor->company_id !== $company->id) {
+            throw new RuntimeException('Vendor belongs to a different company!');
+        }
+
+        if ($expense->customer && $expense->customer->company_id !== $company->id) {
+            throw new RuntimeException('Customer belongs to a different company!');
+        }
     }
 
     protected function generatePaymentReference(string $paymentMethod, int $companyId): string
