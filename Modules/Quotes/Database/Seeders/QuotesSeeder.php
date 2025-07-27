@@ -2,7 +2,6 @@
 
 namespace Modules\Quotes\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -13,7 +12,7 @@ use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
-class QuotesSeeder extends Seeder
+class QuotesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(?int $companyId = null): void
     {
@@ -73,6 +72,8 @@ class QuotesSeeder extends Seeder
             for ($i = 0; $i < $quoteCount; $i++) {
                 $quote = $this->createQuote($company, $customers->random(), $products, $taxRates);
                 $this->addQuoteItems($quote, $products, $taxRates);
+                $calculator = new \Modules\Quotes\Support\QuoteCalculator();
+                $calculator->updateAndSave($quote);
             }
 
             $this->command->info("Created {$quoteCount} quotes for company: {$company->name}");
@@ -127,27 +128,21 @@ class QuotesSeeder extends Seeder
             $unitPrice = $product->price * (random_int(90, 110) / 100);
             $discount  = rand(0, 1) === 1 ? rand(5, 20) : 0;
 
-            $subtotal              = $unitPrice * $quantity;
-            $discountAmount        = $subtotal * ($discount / 100);
-            $subtotalAfterDiscount = $subtotal - $discountAmount;
-
+            // Get random tax rates if applicable
             $taxRate1   = null;
             $taxRate2   = null;
-            $tax1Amount = 0;
-            $tax2Amount = 0;
+            $taxRate1Id = null;
+            $taxRate2Id = null;
 
             if (random_int(0, 1) === 1 && $taxRates->isNotEmpty()) {
                 $taxRate1   = $taxRates->random();
-                $tax1Amount = $subtotalAfterDiscount * ($taxRate1->rate / 100);
+                $taxRate1Id = $taxRate1->id;
 
                 if (random_int(0, 1) === 1 && $taxRates->count() > 1) {
                     $taxRate2   = $taxRates->where('id', '!=', $taxRate1->id)->random();
-                    $tax2Amount = $subtotalAfterDiscount * ($taxRate2->rate / 100);
+                    $taxRate2Id = $taxRate2->id;
                 }
             }
-
-            $taxTotal = $tax1Amount + $tax2Amount;
-            $total    = $subtotalAfterDiscount + $taxTotal;
 
             $item = new QuoteItem([
                 'company_id'      => $quote->company_id,
@@ -158,19 +153,18 @@ class QuotesSeeder extends Seeder
                 'quantity'        => $quantity,
                 'price'           => $unitPrice,
                 'discount'        => $discount,
-                'subtotal'        => $subtotal,
-                'tax_1'           => $tax1Amount,
-                'tax_2'           => $tax2Amount,
-                'tax_total'       => $taxTotal,
-                'total'           => $total,
-                'tax_rate_id'     => $taxRate1 ? $taxRate1->id : null,
-                'tax_rate_2_id'   => $taxRate2 ? $taxRate2->id : null,
+                // Let QuoteCalculator handle all calculations
+                'subtotal'      => 0,
+                'tax_1'         => 0,
+                'tax_2'         => 0,
+                'tax_total'     => 0,
+                'total'         => 0,
+                'tax_rate_id'   => $taxRate1Id,
+                'tax_rate_2_id' => $taxRate2Id,
             ]);
 
-            $quote->items()->save($item);
+            $quote->quoteItems()->save($item);
         }
-
-        $quote->calculateTotals()->save();
     }
 
     protected function generateQuoteNumber(int $companyId): string

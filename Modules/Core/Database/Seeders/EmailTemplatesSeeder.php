@@ -2,10 +2,9 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Models\EmailTemplate;
 
-class EmailTemplatesSeeder extends Seeder
+class EmailTemplatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(?int $companyId = null): void
     {

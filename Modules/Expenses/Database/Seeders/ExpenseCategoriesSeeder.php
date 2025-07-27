@@ -2,12 +2,11 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
 
-class ExpenseCategoriesSeeder extends Seeder
+class ExpenseCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $defaultCategories = [
         'Bank Fees',

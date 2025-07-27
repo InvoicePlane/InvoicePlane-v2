@@ -2,11 +2,10 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
-class PermissionsSeeder extends Seeder
+class PermissionsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public array $basicActions = [
         'view', 'create', 'edit', 'delete',

@@ -2,13 +2,12 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 
-class ProductsSeeder extends Seeder
+class ProductsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(?int $companyId = null): void
     {

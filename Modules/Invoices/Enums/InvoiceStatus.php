@@ -9,7 +9,7 @@ enum InvoiceStatus: string implements LabeledEnum
     case DRAFT          = 'draft';
     case SENT           = 'sent';
     case VIEWED         = 'viewed';
-    case PARTIALLY_PAID = 'paid';
+    case PARTIALLY_PAID = 'partially_paid';
     case PAID           = 'paid';
     case OVERDUE        = 'overdue';
 

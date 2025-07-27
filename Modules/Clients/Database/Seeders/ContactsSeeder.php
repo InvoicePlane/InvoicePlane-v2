@@ -3,13 +3,12 @@
 namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 
-class ContactsSeeder extends Seeder
+class ContactsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $jobTitles = [
         'CEO', 'CFO', 'CTO', 'Director', 'Manager', 'Supervisor', 'Coordinator',

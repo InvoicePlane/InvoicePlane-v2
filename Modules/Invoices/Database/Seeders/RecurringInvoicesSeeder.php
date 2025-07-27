@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Database\Seeders;
 
 use Carbon\Carbon;
-use Illuminate\Database\Seeder;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\UsersSeeder;
@@ -15,7 +14,7 @@ use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Products\Database\Seeders\ProductsSeeder;
 use Modules\Products\Models\Product;
 
-class RecurringInvoicesSeeder extends Seeder
+class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $terms = [
         '50% deposit required',

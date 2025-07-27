@@ -44,7 +44,7 @@ class DevelopmentSeeder extends Seeder
         $this->call(RolesSeeder::class);
         $this->call(RoleHasPermissionsSeeder::class);
 
-        $adminCompany = Company::find($this->adminCompanyId) ?? Company::factory()->create(['id' => $this->adminCompanyId]);
+        $adminCompany = Company::query()->find($this->adminCompanyId) ?? Company::factory()->create(['id' => $this->adminCompanyId]);
 
         $this->command->info('Creating companies...');
         $companies = collect([$adminCompany]);
@@ -56,56 +56,11 @@ class DevelopmentSeeder extends Seeder
         $companies->each(function ($company) {
             $this->seedCompany($company->id);
         });
+
         $this->command->info('Creating admin user...');
         $this->callWith(AdminUserSeeder::class, ['companyId' => $adminCompany->id]);
 
         $this->command->info('Development data seeding completed successfully!');
-    }
-
-    protected function truncateTables(): void
-    {
-        $this->command->info('Truncating tables...');
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        $tables = [
-            'document_groups',
-            'email_templates',
-            'tax_rates',
-            'product_units',
-            'product_categories',
-            'users',
-            'relations',
-            'products',
-            'projects',
-            'tasks',
-            'invoices',
-            'recurring_invoices',
-            'quotes',
-            'payments',
-            'expense_categories',
-            'expenses',
-            'expense_items',
-            'invoice_items',
-            'quote_items',
-            'recurring_invoice_items',
-            'company_user',
-            'model_has_permissions',
-            'model_has_roles',
-            'role_has_permissions',
-            'permissions',
-            'roles',
-            'contacts',
-            'addresses',
-        ];
-
-        foreach ($tables as $table) {
-            DB::table($table)->truncate();
-        }
-
-        DB::table('companies')->where('id', '>', $this->adminCompanyId)->delete();
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 
     protected function seedCompany(int $companyId): void
@@ -152,5 +107,52 @@ class DevelopmentSeeder extends Seeder
         $this->callWith(PaymentsSeeder::class, ['companyId' => $companyId]);
 
         $this->command->info("Completed seeding for company ID: {$companyId}");
+    }
+
+    protected function truncateTables(): void
+    {
+        $this->command->info('Truncating tables...');
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        $tables = [
+            'addresses',
+            'company_user',
+            'communications',
+            'contacts',
+            'document_groups',
+            'email_templates',
+            'expense_categories',
+            'expense_items',
+            'expenses',
+            'invoice_items',
+            'invoices',
+            'model_has_permissions',
+            'model_has_roles',
+            'payments',
+            'permissions',
+            'product_categories',
+            'product_units',
+            'products',
+            'projects',
+            'quote_items',
+            'quotes',
+            'recurring_invoice_items',
+            'recurring_invoices',
+            'relations',
+            'role_has_permissions',
+            'roles',
+            'tax_rates',
+            'tasks',
+            'users',
+        ];
+
+        foreach ($tables as $table) {
+            DB::table($table)->truncate();
+        }
+
+        DB::table('companies')->where('id', '>', $this->adminCompanyId)->delete();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

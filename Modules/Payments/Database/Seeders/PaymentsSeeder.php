@@ -2,7 +2,7 @@
 
 namespace Modules\Payments\Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Core\Models\Company;
 use Modules\Invoices\Database\Seeders\InvoicesSeeder;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -10,7 +10,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 
-class PaymentsSeeder extends Seeder
+class PaymentsSeeder extends AbstractSeeder
 {
     protected array $paymentMethods = [
         'bank_transfer',
@@ -66,21 +66,31 @@ class PaymentsSeeder extends Seeder
 
     protected function createPaymentForInvoice(Invoice $invoice): void
     {
-        $paymentDate   = $invoice->invoice_date->addDays(random_int(0, 30));
+        // Ensure invoice has a valid total
+        if (is_null($invoice->invoice_total) || $invoice->invoice_total <= 0) {
+            $this->command->warn(sprintf(
+                'Skipping payment for invoice %s - invalid total: %s',
+                $invoice->invoice_number,
+                $invoice->invoice_total ?? 'null'
+            ));
+            return;
+        }
+
+        $paymentDate   = $invoice->invoiced_at->addDays(random_int(0, 30));
         $paymentMethod = $this->paymentMethods[array_rand($this->paymentMethods)];
         $reference     = mb_strtoupper(mb_substr($paymentMethod, 0, 3)) . '-' . rand(1000, 9999);
 
-        // 'reference'      => $reference,
         Payment::factory()
             ->for($invoice->company)
             ->for($invoice->customer, 'customer')
             ->for($invoice, 'invoice')
             ->create([
-                'payment_method' => $paymentMethod,
-                'payment_status' => PaymentStatus::COMPLETED->value,
-                'paid_at'        => $paymentDate,
-                'payment_amount' => $invoice->total,
-                'notes'          => $this->getRandomNotes(),
+                'payment_reference' => $reference,
+                'payment_method'    => $paymentMethod,
+                'payment_status'    => PaymentStatus::COMPLETED->value,
+                'paid_at'           => $paymentDate,
+                'payment_amount'    => $invoice->invoice_total,
+                'notes'             => $this->getRandomNotes(),
             ]);
     }
 
@@ -95,44 +105,49 @@ class PaymentsSeeder extends Seeder
 
         foreach ($invoices as $invoice) {
             $paymentCount    = rand(1, 3);
-            $remainingAmount = $invoice->total - $invoice->paid_amount;
+            $remainingAmount = $invoice->invoice_total - $invoice->paid_amount;
 
-            for ($i = 0; $i < $paymentCount && $remainingAmount > 0; $i++) {
-                $paymentAmount = min($remainingAmount, $remainingAmount * (random_int(20, 80) / 100));
-                $remainingAmount -= $paymentAmount;
+            for ($i = 0; $i < $paymentCount && $remainingAmount > 0.01; $i++) {
+                // Calculate payment amount as a percentage of remaining, but ensure it's at least 0.01
+                $paymentPercent = random_int(20, 80) / 100;
+                $paymentAmount  = round($remainingAmount * $paymentPercent, 2);
 
-                $paymentDate   = $invoice->invoice_date->addDays(random_int(0, 60));
+                // For the last payment, use the exact remaining amount to avoid rounding issues
+                if ($i === $paymentCount - 1 || $paymentAmount < 0.01) {
+                    $paymentAmount = $remainingAmount;
+                }
+
+                // Ensure we don't have a payment less than 0.01
+                $paymentAmount = max(0.01, round($paymentAmount, 2));
+
+                // Don't exceed the remaining amount
+                $paymentAmount   = min($paymentAmount, $remainingAmount);
+                $remainingAmount = $invoice->invoice_total - ($invoice->paid_amount + $paymentAmount);
+
+                $paymentDate   = $invoice->invoiced_at->addDays(random_int(0, 60));
                 $paymentMethod = $this->paymentMethods[array_rand($this->paymentMethods)];
                 $reference     = mb_strtoupper(mb_substr($paymentMethod, 0, 3)) . '-' . rand(1000, 9999);
+
+                // Debug log
+                $this->command->info(sprintf(
+                    'Creating payment for invoice %s: amount=%.2f, remaining=%.2f',
+                    $invoice->invoice_number,
+                    $paymentAmount,
+                    $remainingAmount
+                ));
 
                 Payment::factory()
                     ->for($invoice->company)
                     ->for($invoice->customer, 'customer')
                     ->for($invoice, 'invoice')
                     ->create([
-                        'payment_method' => $paymentMethod,
-                        'payment_status' => PaymentStatus::COMPLETED->value,
-                        'paid_at'        => $paymentDate,
-                        'payment_amount' => $paymentAmount,
-                        'reference'      => $reference,
-                        'notes'          => $this->getRandomNotes(),
+                        'payment_reference' => $reference,
+                        'payment_method'    => $paymentMethod,
+                        'payment_status'    => PaymentStatus::COMPLETED->value,
+                        'paid_at'           => $paymentDate,
+                        'payment_amount'    => $paymentAmount,
+                        'notes'             => $this->getRandomNotes(),
                     ]);
-
-                $invoice->increment('paid_amount', $paymentAmount);
-
-                if (abs($invoice->paid_amount - $invoice->total) < 0.01) {
-                    $invoice->update([
-                        'invoice_status' => InvoiceStatus::PAID->value,
-                        'paid_status'    => 'paid',
-                        'due_amount'     => 0,
-                    ]);
-                    break;
-                }
-                $invoice->update([
-                    'invoice_status' => InvoiceStatus::PARTIALLY_PAID->value,
-                    'paid_status'    => 'partially_paid',
-                    'due_amount'     => $invoice->total - $invoice->paid_amount,
-                ]);
             }
         }
     }

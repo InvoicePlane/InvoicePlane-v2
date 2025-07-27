@@ -3,17 +3,15 @@
 namespace Modules\Expenses\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Seeder;
-use Modules\Clients\Database\Seeders\CustomersSeeder;
+use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\UsersSeeder;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 
-class ExpensesSeeder extends Seeder
+class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $expenseDescriptions = [
         'Business insurance',
@@ -63,24 +61,28 @@ class ExpensesSeeder extends Seeder
 
             $categories = $this->getOrCreateExpenseCategories($company->id);
 
-            $users = User::query()->where('company_id', $company->id)->get();
+            $users = $company->users;
 
             if ($users->isEmpty()) {
                 $this->command->warn("No users found for company {$company->name}. Creating some...");
                 $this->call(UsersSeeder::class, ['companyId' => $company->id]);
-                $users = User::query()->where('company_id', $company->id)->get();
+                $users = $company->users->count() > 0
+                    ? $company->users
+                    : collect([User::factory()->for($company)->create()]);
             }
 
-            $customers = Relation::query()->where('company_id', $company->id)
-                ->where('relation_type', 'customer')
+            $customers = Relation::where('company_id', $company->id)
+                ->where('relation_type', RelationType::CUSTOMER->value)
+                ->where('relation_status', 'active')
                 ->get();
 
             if ($customers->isEmpty()) {
-                $this->command->warn("No customers found for company {$company->name}. Creating some...");
-                $this->call(CustomersSeeder::class, ['companyId' => $company->id]);
-                $customers = Relation::query()->where('company_id', $company->id)
-                    ->where('relation_type', 'customer')
-                    ->get();
+                $customers = collect([
+                    Relation::factory()->for($company)->create([
+                        'relation_type'   => RelationType::CUSTOMER->value,
+                        'relation_status' => 'active',
+                    ]),
+                ]);
             }
 
             $expenseCount = random_int(20, 50);
@@ -149,10 +151,10 @@ class ExpensesSeeder extends Seeder
 
         $expense = Expense::factory()
             ->for($company)
-            ->for($category, 'category')
-            ->for($user, 'submitter')
+            ->for($category, 'expenseCategory')
+            ->for($user, 'user')
             ->create([
-                'expense_number' => $this->generatePaymentReference($paymentMethod),
+                'expense_number' => $this->generatePaymentReference($paymentMethod, $company->id),
                 'expense_status' => $status->value,
                 'expensed_at'    => $expenseDate,
                 'expense_amount' => random_int(1000, 100000) / 100,
@@ -160,14 +162,28 @@ class ExpensesSeeder extends Seeder
             ]);
     }
 
-    protected function generatePaymentReference(string $paymentMethod): ?string
+    protected function generatePaymentReference(string $paymentMethod, int $companyId): string
     {
-        return match($paymentMethod) {
-            'bank_transfer' => 'BT-' . mb_strtoupper(mb_substr(md5(rand()), 0, 10)),
-            'check'         => 'CHK-' . mb_str_pad(random_int(1, 9999), 4, '0', STR_PAD_LEFT),
-            'credit_card'   => 'CC-' . mb_strtoupper(mb_substr(md5(rand()), 0, 8)),
-            'paypal'        => 'PP-' . mb_strtoupper(mb_substr(md5(rand()), 0, 12)),
-            default         => null,
-        };
+        $prefix = match($paymentMethod) {
+            'bank_transfer' => 'BT-',
+            'check'         => 'CHK-',
+            'credit_card'   => 'CC-',
+            'paypal'        => 'PP-',
+            default         => 'EXP-',
+        } . date('Y') . '-';
+
+        $lastExpense = Expense::query()
+            ->where('company_id', $companyId)
+            ->where('expense_number', 'like', $prefix . '%')
+            ->orderBy('expense_number', 'desc')
+            ->first();
+
+        if ($lastExpense) {
+            $lastNumber = (int) str_replace($prefix, '', $lastExpense->expense_number);
+
+            return $prefix . mb_str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        }
+
+        return $prefix . '00001';
     }
 }

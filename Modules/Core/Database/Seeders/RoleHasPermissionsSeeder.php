@@ -2,13 +2,12 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Enums\UserRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
-class RoleHasPermissionsSeeder extends Seeder
+class RoleHasPermissionsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(?int $companyId = null): void
     {

@@ -3,13 +3,12 @@
 namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Clients\Models\Address;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 
-class AddressesSeeder extends Seeder
+class AddressesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $usStates = [
         'AL' => 'Alabama', 'AK' => 'Alaska', 'AZ' => 'Arizona', 'AR' => 'Arkansas', 'CA' => 'California',

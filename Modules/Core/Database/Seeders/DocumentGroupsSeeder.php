@@ -2,9 +2,7 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-class DocumentGroupsSeeder extends Seeder
+class DocumentGroupsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(): void {}
 

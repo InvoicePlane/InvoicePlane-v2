@@ -2,12 +2,11 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\TaxRate;
 
-class TaxRatesSeeder extends Seeder
+class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $europeanVatRates = [
         // Austria

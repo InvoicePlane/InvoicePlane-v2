@@ -2,7 +2,6 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
@@ -10,7 +9,7 @@ use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
-class ProjectsSeeder extends Seeder
+class ProjectsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $projectNames = [
         'API Integration',

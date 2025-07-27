@@ -2,7 +2,6 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -11,7 +10,7 @@ use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 
-class TasksSeeder extends Seeder
+class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $taskTitles = [
         'Initial Planning',

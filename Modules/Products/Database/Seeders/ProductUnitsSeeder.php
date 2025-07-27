@@ -2,11 +2,10 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductUnit;
 
-class ProductUnitsSeeder extends Seeder
+class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $defaultUnits = [
         ['unit_name' => 'Piece', 'unit_name_plrl' => 'pcs'],

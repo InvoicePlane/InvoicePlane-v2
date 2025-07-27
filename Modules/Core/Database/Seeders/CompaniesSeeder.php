@@ -2,10 +2,9 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 
-class CompaniesSeeder extends Seeder
+class CompaniesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(int $count = 1): void
     {

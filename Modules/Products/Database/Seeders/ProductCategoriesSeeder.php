@@ -2,11 +2,10 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductCategory;
 
-class ProductCategoriesSeeder extends Seeder
+class ProductCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $defaultCategories = [
         'Automotive',

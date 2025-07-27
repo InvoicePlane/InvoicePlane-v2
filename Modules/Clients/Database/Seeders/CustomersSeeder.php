@@ -3,7 +3,6 @@
 namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\Gender;
@@ -14,7 +13,7 @@ use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 
-class CustomersSeeder extends Seeder
+class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     protected array $firstNames = [
         'John', 'Emma', 'Michael', 'Sophia', 'William', 'Olivia', 'James', 'Ava', 'Robert', 'Isabella',
