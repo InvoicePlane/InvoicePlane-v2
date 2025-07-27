@@ -30,7 +30,7 @@ class Setting extends Model
 
     public static function saveByKey($key, $value): void
     {
-        $setting = self::firstOrNew(['setting_key' => $key]);
+        $setting = self::query()->firstOrNew(['setting_key' => $key]);
 
         $setting->setting_value = $value;
 

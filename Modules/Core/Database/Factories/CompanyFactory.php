@@ -10,7 +10,6 @@ use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company as CompanyModel;
 
 /**
@@ -31,31 +30,32 @@ class CompanyFactory extends Factory
 
         $companyName = $this->faker->unique()->company;
 
-        return [
-            'search_code' => mb_strtolower(Str::random(5)),
-            'name'        => $companyName,
-            'slug'        => Str::slug($companyName),
-            'vat_number'  => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
-            'id_number'   => $this->faker->optional()->numerify('#########'),
-            'coc_number'  => $this->faker->optional()->numerify('#########'),
+        // Get a random logo from a set of sample company logos
+        $logos = [
+            'logos/company1.png',
+            'logos/company2.png',
+            'logos/company3.png',
+            null, // 25% chance of no logo
         ];
-    }
 
-    public function admin(): self
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_type' => UserRole::ADMIN->value,
-            ];
-        });
-    }
+        // Available templates in the system
+        $templates = [
+            'classic',
+            'default',
+            'minimal',
+            'modern',
+        ];
 
-    public function guestReadOnly(): self
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_type' => UserRole::CUSTOMER->value,
-            ];
-        });
+        return [
+            'search_code'      => mb_strtolower(Str::random(5)),
+            'name'             => $companyName,
+            'slug'             => Str::slug($companyName),
+            'vat_number'       => $this->faker->optional(0.8)->regexify('^(BE|NL|DE|FR|LU)\d{9}$'), // 80% chance of having a VAT number
+            'id_number'        => $this->faker->optional(0.7)->numerify('#########'), // 70% chance of having an ID number
+            'coc_number'       => $this->faker->optional(0.9)->numerify('#########'), // 90% chance of having a COC number
+            'logo'             => $this->faker->optional(0.75)->randomElement($logos), // 75% chance of having a logo
+            'quote_template'   => $this->faker->randomElement($templates),
+            'invoice_template' => $this->faker->randomElement($templates),
+        ];
     }
 }

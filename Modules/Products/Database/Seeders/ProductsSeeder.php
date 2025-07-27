@@ -5,15 +5,51 @@ namespace Modules\Products\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 
 class ProductsSeeder extends Seeder
 {
-    public function run(): void
+    public function run(?int $companyId = null): void
     {
-        Company::all()->each(function (Company $company): void {
-            Product::factory()->count(50)->create([
-                'company_id' => $company->id,
-            ]);
+        $query = Company::query();
+
+        if ($companyId) {
+            $query->where('id', $companyId);
+        }
+
+        $query->each(function (Company $company) {
+            $categories = ProductCategory::query()->where('company_id', $company->id)->get();
+
+            if ($categories->isEmpty()) {
+                $this->command->warn("No product categories found for company {$company->name}. Creating some...");
+                $categories = ProductCategory::factory()
+                    ->count(5)
+                    ->for($company)
+                    ->create();
+            }
+
+            $units = ProductUnit::query()->where('company_id', $company->id)->get();
+
+            if ($units->isEmpty()) {
+                $this->command->warn("No product units found for company {$company->name}. Creating some...");
+                $units = ProductUnit::factory()
+                    ->count(3)
+                    ->for($company)
+                    ->create();
+            }
+
+            $productCount = random_int(10, 30);
+            $this->command->info("Creating {$productCount} products for company: {$company->name}");
+
+            Product::factory()
+                ->count($productCount)
+                ->for($company)
+                ->state([
+                    'category_id' => fn () => $categories->random()->id,
+                    'unit_id'     => fn () => $units->random()->id,
+                ])
+                ->create();
         });
     }
 }

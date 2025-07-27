@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Models\Schedule;
 use Modules\Quotes\Providers\EventServiceProvider;
@@ -24,7 +23,6 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
-        $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
     }
 
@@ -45,19 +43,6 @@ class CoreServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom(module_path($this->name, 'resources/lang'), $this->nameLower);
             $this->loadJsonTranslationsFrom(module_path($this->name, 'resources/lang'));
         }
-    }
-
-    public function registerViews(): void
-    {
-        $viewPath   = resource_path('views/modules/' . $this->nameLower);
-        $sourcePath = module_path($this->name, 'resources/views');
-
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
-
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
-
-        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
-        Blade::componentNamespace($componentNamespace, $this->nameLower);
     }
 
     public function provides(): array

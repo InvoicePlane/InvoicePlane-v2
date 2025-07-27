@@ -11,6 +11,9 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('type'); // PHP Enum (billing, shipping, office)
+            $table->boolean('is_primary')->default(false)->after('type');
+            $table->string('addressable_type')->after('company_id')->nullable();
+            $table->unsignedBigInteger('addressable_id')->after('addressable_type')->nullable();
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('number')->nullable();
@@ -19,6 +22,7 @@ return new class () extends Migration {
             $table->string('state_or_province')->nullable();
             $table->string('country');
 
+            $table->index(['addressable_type', 'addressable_id']);
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }

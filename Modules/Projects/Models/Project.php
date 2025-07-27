@@ -66,6 +66,27 @@ class Project extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeBillable($query)
+    {
+        return $query->where('is_billable', true);
+    }
+
+    public function scopeOverdue($query)
+    {
+        return $query->where('end_at', '<', now())
+            ->where('project_status', '!=', ProjectStatus::COMPLETED);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Factory
     |--------------------------------------------------------------------------
     */

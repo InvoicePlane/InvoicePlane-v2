@@ -3,33 +3,219 @@
 namespace Modules\Quotes\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Clients\Database\Seeders\CustomersSeeder;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
+use Modules\Products\Database\Seeders\ProductsSeeder;
+use Modules\Products\Models\Product;
+use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
 class QuotesSeeder extends Seeder
 {
-    public function run(): void
+    public function run(?int $companyId = null): void
     {
-        Company::all()->each(function (Company $company): void {
-            foreach ([
-                ['quote_status' => 'draft', 'count' => 1],
-                ['quote_status' => 'sent', 'count' => 2],
-                ['quote_status' => 'viewed', 'count' => 2],
-                ['quote_status' => 'approved', 'count' => 3],
-                ['quote_status' => 'canceled', 'count' => 2],
-            ] as $config) {
-                Quote::factory()
-                    ->state(['company_id' => $company->id])
-                    ->{$config['quote_status']}()
-                    ->count($config['count'])
-                    ->create()
-                    ->each(function (Quote $quote): void {
-                        QuoteItem::factory()
-                            ->count(random_int(2, 3))
-                            ->create(['quote_id' => $quote->id]);
-                    });
+        $query = Company::query();
+
+        if ($companyId) {
+            $query->where('id', $companyId);
+        }
+
+        $query->each(function (Company $company) {
+            $existingCount = Quote::query()->where('company_id', $company->id)->count();
+
+            if ($existingCount > 0) {
+                $this->command->info("Skipping quotes for company {$company->name} - already has {$existingCount} quotes.");
+
+                return;
             }
+
+            $this->command->info("Creating quotes for company: {$company->name}");
+
+            $customers = Relation::query()->where('company_id', $company->id)
+                ->where('relation_type', 'customer')
+                ->get();
+
+            if ($customers->isEmpty()) {
+                $this->command->warn("No customers found for company {$company->name}. Creating some...");
+                $this->call(CustomersSeeder::class, ['companyId' => $company->id]);
+                $customers = Relation::query()->where('company_id', $company->id)
+                    ->where('relation_type', 'customer')
+                    ->get();
+            }
+
+            $products = Product::query()->where('company_id', $company->id)->get();
+
+            if ($products->isEmpty()) {
+                $this->command->warn("No products found for company {$company->name}. Creating some...");
+                $this->call(ProductsSeeder::class, ['companyId' => $company->id]);
+                $products = Product::query()->where('company_id', $company->id)->get();
+            }
+
+            $taxRates = TaxRate::query()->where('company_id', $company->id)->get();
+
+            if ($taxRates->isEmpty()) {
+                $this->command->warn("No tax rates found for company {$company->name}. Using default...");
+                $taxRates = collect([
+                    TaxRate::factory()->create([
+                        'company_id' => $company->id,
+                        'item_name'  => 'VAT',
+                        'rate'       => 21.0,
+                        'is_default' => true,
+                    ]),
+                ]);
+            }
+
+            $quoteCount = rand(10, 30);
+
+            for ($i = 0; $i < $quoteCount; $i++) {
+                $quote = $this->createQuote($company, $customers->random(), $products, $taxRates);
+                $this->addQuoteItems($quote, $products, $taxRates);
+            }
+
+            $this->command->info("Created {$quoteCount} quotes for company: {$company->name}");
         });
+    }
+
+    protected function createQuote(Company $company, Relation $customer): \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+    {
+        $statuses = [
+            QuoteStatus::DRAFT,
+            QuoteStatus::SENT,
+            QuoteStatus::VIEWED,
+            QuoteStatus::APPROVED,
+            QuoteStatus::REJECTED,
+        ];
+
+        $status     = $statuses[array_rand($statuses)];
+        $quoteDate  = now()->subDays(random_int(0, 90));
+        $expiryDate = $quoteDate->copy()->addDays(random_int(15, 60));
+
+        // Get a random user from the company to assign as the quote owner
+        $user = $company->users->random();
+
+        return Quote::factory()
+            ->for($company)
+            ->create([
+                'prospect_id'            => $customer->id,
+                'user_id'                => $user->id,
+                'quote_number'           => $this->generateQuoteNumber($company->id),
+                'quote_status'           => $status->value,
+                'quoted_at'              => $quoteDate,
+                'quote_expires_at'       => $expiryDate,
+                'quote_discount_amount'  => 0.00,
+                'quote_discount_percent' => 0.00,
+                'item_tax_total'         => 0.00,
+                'quote_item_subtotal'    => 0.00,
+                'quote_tax_total'        => 0.00,
+                'quote_total'            => 0.00,
+                'terms'                  => $this->getRandomTerms(),
+                'footer'                 => $this->getRandomFooter(),
+            ]);
+    }
+
+    protected function addQuoteItems(Quote $quote, $products, $taxRates): void
+    {
+        $itemCount   = rand(1, 10);
+        $productPool = $products->shuffle();
+
+        for ($i = 0; $i < min($itemCount, $productPool->count()); $i++) {
+            $product   = $productPool->get($i);
+            $quantity  = rand(1, 10);
+            $unitPrice = $product->price * (random_int(90, 110) / 100);
+            $discount  = rand(0, 1) === 1 ? rand(5, 20) : 0;
+
+            $subtotal              = $unitPrice * $quantity;
+            $discountAmount        = $subtotal * ($discount / 100);
+            $subtotalAfterDiscount = $subtotal - $discountAmount;
+
+            $taxRate1   = null;
+            $taxRate2   = null;
+            $tax1Amount = 0;
+            $tax2Amount = 0;
+
+            if (random_int(0, 1) === 1 && $taxRates->isNotEmpty()) {
+                $taxRate1   = $taxRates->random();
+                $tax1Amount = $subtotalAfterDiscount * ($taxRate1->rate / 100);
+
+                if (random_int(0, 1) === 1 && $taxRates->count() > 1) {
+                    $taxRate2   = $taxRates->where('id', '!=', $taxRate1->id)->random();
+                    $tax2Amount = $subtotalAfterDiscount * ($taxRate2->rate / 100);
+                }
+            }
+
+            $taxTotal = $tax1Amount + $tax2Amount;
+            $total    = $subtotalAfterDiscount + $taxTotal;
+
+            $item = new QuoteItem([
+                'company_id'      => $quote->company_id,
+                'product_id'      => $product->id,
+                'product_unit_id' => $product->product_unit_id,
+                'item_name'       => $product->product_name,
+                'description'     => $product->description,
+                'quantity'        => $quantity,
+                'price'           => $unitPrice,
+                'discount'        => $discount,
+                'subtotal'        => $subtotal,
+                'tax_1'           => $tax1Amount,
+                'tax_2'           => $tax2Amount,
+                'tax_total'       => $taxTotal,
+                'total'           => $total,
+                'tax_rate_id'     => $taxRate1 ? $taxRate1->id : null,
+                'tax_rate_2_id'   => $taxRate2 ? $taxRate2->id : null,
+            ]);
+
+            $quote->items()->save($item);
+        }
+
+        $quote->calculateTotals()->save();
+    }
+
+    protected function generateQuoteNumber(int $companyId): string
+    {
+        $prefix    = 'QUO-' . date('Y') . '-';
+        $lastQuote = Quote::query()->where('company_id', $companyId)
+            ->where('quote_number', 'like', $prefix . '%')
+            ->orderBy('quote_number', 'desc')
+            ->first();
+
+        if ($lastQuote) {
+            $lastNumber = (int) str_replace($prefix, '', $lastQuote->quote_number);
+
+            return $prefix . mb_str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        }
+
+        return $prefix . '00001';
+    }
+
+    protected function getRandomTerms(): string
+    {
+        $terms = [
+            'This quote is valid for 30 days from the date of issue.',
+            'Prices are subject to change without notice.',
+            'A 50% deposit is required to begin work.',
+            'Payment is due within 14 days of quote acceptance.',
+            'This quote includes all labor and materials.',
+            'Additional charges may apply for work outside the scope of this quote.',
+            'This quote is based on current market conditions.',
+            'Terms: Net 30 days.',
+        ];
+
+        return $terms[array_rand($terms)];
+    }
+
+    protected function getRandomFooter(): string
+    {
+        $footers = [
+            'Thank you for your business!',
+            'We look forward to working with you.',
+            'Please contact us with any questions.',
+            'This is a computer-generated quote. No signature required.',
+            'Prices are exclusive of applicable taxes.',
+        ];
+
+        return $footers[array_rand($footers)];
     }
 }

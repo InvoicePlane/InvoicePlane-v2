@@ -323,7 +323,14 @@ return [
     'current_version'                              => 'Current Version',
     'current_year'                                 => 'Current year',
     'current_yy'                                   => 'Current year (2-digit format)',
-    'database'                                     => 'Database',
+    'restore-database'                                => 'Restore Database',
+    
+    // Roles and Permissions
+    'all_companies'                                   => 'all companies',
+    'permissions_updated'                             => 'Created/updated :count permissions for company ID: :company',
+    'roles_updated'                                   => 'Created/updated :count roles for company ID: :company',
+    'role_permissions_updated'                        => 'Assigned :count permissions to role: :role',
+    'roles_sync_complete'                             => 'Finished syncing role permissions. Updated :updated out of :total roles.',
     'database_properly_configured'                 => 'The database is properly configured',
     'date'                                         => 'Date',
     'date_applied'                                 => 'Date Applied',

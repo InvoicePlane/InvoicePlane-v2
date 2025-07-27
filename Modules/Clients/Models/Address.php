@@ -4,7 +4,7 @@ namespace Modules\Clients\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Clients\Enums\AddressType;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
@@ -21,7 +21,7 @@ use Modules\Core\Traits\BelongsToCompany;
  * @property string|null              $state_or_province
  * @property string                   $country
  * @property Company                  $company
- * @property Collection|Addressable[] $addressables
+ * @property Collection|Addressable[] $addressable
  */
 class Address extends Model
 {
@@ -31,13 +31,28 @@ class Address extends Model
 
     protected $casts = [
         'type'       => AddressType::class,
-        'is_default' => 'boolean',
+        'is_primary' => 'boolean',
+    ];
+
+    protected $fillable = [
+        'company_id',
+        'type',
+        'address_1',
+        'address_2',
+        'number',
+        'postal_code',
+        'city',
+        'state_or_province',
+        'country',
+        'is_primary',
+        'addressable_type',
+        'addressable_id',
     ];
 
     protected $guarded = [];
 
-    public function addressables(): HasMany
+    public function addressable(): MorphTo
     {
-        return $this->hasMany(Addressable::class);
+        return $this->morphTo();
     }
 }

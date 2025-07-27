@@ -62,16 +62,6 @@ class QuoteItem extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function quote(): BelongsTo
-    {
-        return $this->belongsTo(Quote::class, 'quote_id');
-    }
-
-    public function taxRate(): BelongsTo
-    {
-        return $this->belongsTo(TaxRate::class, 'item_tax_rate_id');
-    }
-
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'item_product_id');
@@ -82,14 +72,19 @@ class QuoteItem extends Model
         return $this->belongsTo(ProductUnit::class, 'item_unit_id');
     }
 
-    /*public function taxRate(): BelongsTo
+    public function quote(): BelongsTo
+    {
+        return $this->belongsTo(Quote::class, 'quote_id');
+    }
+
+    public function taxRate(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class);
-    }*/
+    }
 
     public function taxRate2(): BelongsTo
     {
-        return $this->belongsTo('Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo(TaxRate::class, 'tax_rate_2_id');
     }
 
     /*

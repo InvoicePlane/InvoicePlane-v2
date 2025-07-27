@@ -144,16 +144,15 @@ class Invoice extends Model
         return $this->hasMany(Expense::class);
     }
 
-    // This and items() are the exact same. This is added to appease the IDE gods
-    // and the fact that Laravel has a protected items property.
     public function invoiceItems(): HasMany
     {
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): MorphMany
+    public function mailQueue(): HasMany
     {
-        return $this->morphMany(MailQueue::class, 'mailable');
+        return $this->hasMany(MailQueue::class, 'mailable_id')
+            ->where('mailable_type', self::class);
     }
 
     public function notes(): MorphMany

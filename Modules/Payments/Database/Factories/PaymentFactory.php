@@ -17,9 +17,10 @@ class PaymentFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        // Get the company from the factory state if provided, or create a new one
+        $company = $this->company ?? Company::factory()->create();
 
-        // Create or get a customer that belongs to this company
+        // Create or get a customer that belongs to the same company
         $customer = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::CUSTOMER->value)
@@ -29,7 +30,7 @@ class PaymentFactory extends Factory
             ->customer()
             ->create();
 
-        // Create or get an invoice that belongs to this company and customer
+        // Create or get an invoice that belongs to the same company and customer
         $invoice = Invoice::query()
             ->where('company_id', $company->id)
             ->where('customer_id', $customer->id)
@@ -40,14 +41,13 @@ class PaymentFactory extends Factory
             ->create();
 
         return [
-            'company_id'         => $company->id,
-            'customer_id'        => $customer->id,
-            'invoice_id'         => $invoice->id,
-            'merchant_client_id' => null,
-            'payment_method'     => PaymentMethod::BANK_TRANSFER->value,
-            'payment_status'     => $this->faker->randomElement(PaymentStatus::cases())->value,
-            'paid_at'            => $this->faker->dateTimeBetween('-3 years', '-2 days'),
-            'payment_amount'     => $this->faker->randomFloat(4, 0, 1000),
+            'company_id'     => $company->id,
+            'customer_id'    => $customer->id,
+            'invoice_id'     => $invoice->id,
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+            'payment_status' => $this->faker->randomElement(PaymentStatus::cases())->value,
+            'paid_at'        => $this->faker->dateTimeBetween('-3 years', '-2 days'),
+            'payment_amount' => $this->faker->randomFloat(4, 0, 1000),
         ];
     }
 

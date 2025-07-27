@@ -136,12 +136,6 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
-    public function taxRate(): void
-    {
-        /*return $this->belongsToMany(TaxRate::class, 'quote_tax_rates')
-            ->withPivot('id', 'include_item_tax', 'tax_total');*/
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

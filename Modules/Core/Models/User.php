@@ -62,6 +62,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
+        'is_admin'          => 'boolean',
+        'is_active'         => 'boolean',
+        'last_login'        => 'datetime',
+        'preferences'       => 'array',
     ];
 
     protected $guarded = [];
@@ -90,7 +94,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
             'company_user',
             'user_id',
             'company_id',
-        );
+        )
+            ->using(CompanyUser::class)
+            ->with('roles');
     }
 
     public function getCurrentCompanyId(): ?int
@@ -157,7 +163,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     // ——————————————————————————————————————————————————————————————
     public function getFilamentName(): string
     {
-        return $this->getAttributeValue('name');
+        return $this->name;
     }
 
     public function getFilamentAvatarUrl(): ?string
