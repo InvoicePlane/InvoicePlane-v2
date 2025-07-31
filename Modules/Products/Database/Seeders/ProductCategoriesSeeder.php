@@ -2,6 +2,8 @@
 
 namespace Modules\Products\Database\Seeders;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductCategory;
 
@@ -22,56 +24,53 @@ class ProductCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
 
     public function run(?int $companyId = null): void
     {
-        $query = Company::query();
+        if ( ! $companyId) {
+            $this->command->warn('No company ID provided to ProductCategoriesSeeder. Aborting.');
 
-        if ($companyId) {
-            $query->where('id', $companyId);
+            return;
         }
 
-        $query->each(function (Company $company) {
-            $this->command->info("Seeding product categories for company: {$company->name}");
+        $company = Company::query()->find($companyId);
+        if ( ! $company) {
+            $this->command->warn("Company with ID {$companyId} not found. Aborting ProductCategoriesSeeder.");
 
-            // Get existing categories for this company
-            $existingCategories = ProductCategory::query()
-                ->where('company_id', $company->id)
-                ->pluck('category_name')
-                ->toArray();
+            return;
+        }
 
-            $created = 0;
-            $skipped = 0;
+        Log::info("Seeding product categories for company: {$company->name} (ID: {$company->id})");
 
-            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultCategories));
-            $bar->start();
+        $existingCategories = ProductCategory::query()
+            ->where('company_id', $company->id)
+            ->pluck('category_name')
+            ->toArray();
 
-            foreach ($this->defaultCategories as $categoryName) {
-                // Skip if this category already exists for the company
-                if (in_array($categoryName, $existingCategories, true)) {
-                    $skipped++;
-                    $bar->advance();
-                    continue;
-                }
+        $created = 0;
+        $skipped = 0;
 
-                ProductCategory::updateOrCreate(
-                    [
-                        'company_id'    => $company->id,
-                        'category_name' => $categoryName,
-                    ],
-                    [
-                        'description' => "Default {$categoryName} category",
-                    ]
-                );
-                $created++;
-                $bar->advance();
+        foreach ($this->defaultCategories as $categoryName) {
+            if (in_array($categoryName, $existingCategories, true)) {
+                $skipped++;
+                continue;
             }
 
-            $bar->finish();
-            $this->command->newLine(2);
-            $this->command->info(sprintf(
-                'Product categories for %s: %d created, %d already existed',
-                $company->name,
-                $created,
-                $skipped
-            ));
-        });
+            try {
+                ProductCategory::create([
+                    'company_id'    => $company->id,
+                    'category_name' => $categoryName,
+                    'description'   => "Default {$categoryName} category",
+                ]);
+                $created++;
+            } catch (Exception $e) {
+                $this->command->warn("Failed to create product category '{$categoryName}': " . $e->getMessage());
+                $skipped++;
+            }
+        }
+
+        Log::info(sprintf(
+            'Product categories for %s: %d created, %d already existed',
+            $company->name,
+            $created,
+            $skipped
+        ));
     }
 }

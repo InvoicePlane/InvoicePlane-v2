@@ -3,7 +3,9 @@
 namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Schedule;
+use Modules\Core\Observers\CompanyObserver;
 use Modules\Quotes\Providers\EventServiceProvider;
 use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -24,6 +26,8 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
+
+        Company::observe(CompanyObserver::class);
     }
 
     public function register(): void

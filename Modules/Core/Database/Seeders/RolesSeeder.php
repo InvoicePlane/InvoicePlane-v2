@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Enums\UserRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -9,6 +10,52 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RolesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
+    public function run(): void
+    {
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $roles = $this->getDefaultRolePermissions();
+
+        foreach ($roles as $roleKey => $roleData) {
+            $role = Role::query()->firstOrCreate(
+                ['name' => $roleKey],
+                [
+                    'name'       => $roleKey,
+                    'guard_name' => 'web',
+                ]
+            );
+
+            if ($roleKey === UserRole::SUPER_ADMIN->value) {
+                $permissions = Permission::query()
+                    ->pluck('name')
+                    ->toArray();
+                $role->syncPermissions($permissions);
+                continue;
+            }
+
+            if (in_array('all', $roleData['permissions'])) {
+                $permissions = Permission::query()
+                    ->pluck('name')
+                    ->toArray();
+            } else {
+                $permissions = Permission::whereIn('name', $roleData['permissions'])
+                    ->pluck('name')
+                    ->toArray();
+            }
+
+            $role->syncPermissions($permissions);
+
+            Log::info(trans('ip.role_permissions_updated', [
+                'role'  => $roleData['name'],
+                'count' => count($permissions),
+            ]));
+        }
+
+        Log::info(trans('ip.roles_updated', [
+            'count' => count($roles),
+        ]));
+    }
+
     public function getDefaultRolePermissions(): array
     {
         $permissionsSeeder = new PermissionsSeeder();
@@ -62,50 +109,11 @@ class RolesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         ];
     }
 
-    public function run(): void
+    protected function getSystemPermissions(): array
     {
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
-
-        $roles = $this->getDefaultRolePermissions();
-
-        foreach ($roles as $roleKey => $roleData) {
-            $role = Role::query()->firstOrCreate(
-                ['name' => $roleKey],
-                [
-                    'name'       => $roleKey,
-                    'guard_name' => 'web',
-                ]
-            );
-
-            if ($roleKey === UserRole::SUPER_ADMIN->value) {
-                $permissions = Permission::query()
-                    ->pluck('name')
-                    ->toArray();
-                $role->syncPermissions($permissions);
-                continue;
-            }
-
-            if (in_array('all', $roleData['permissions'])) {
-                $permissions = Permission::query()
-                    ->pluck('name')
-                    ->toArray();
-            } else {
-                $permissions = Permission::whereIn('name', $roleData['permissions'])
-                    ->pluck('name')
-                    ->toArray();
-            }
-
-            $role->syncPermissions($permissions);
-
-            $this->command->info(trans('ip.role_permissions_updated', [
-                'role'  => $roleData['name'],
-                'count' => count($permissions),
-            ]));
-        }
-
-        $this->command->info(trans('ip.roles_updated', [
-            'count' => count($roles),
-        ]));
+        return [
+            'view-dashboard', 'manage-company-settings', 'import', 'export', 'backup', 'restore',
+        ];
     }
 
     protected function getAllCrudPermissions(array $resources, array $basicActions): array
@@ -130,12 +138,5 @@ class RolesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         }
 
         return $permissions;
-    }
-
-    protected function getSystemPermissions(): array
-    {
-        return [
-            'view-dashboard', 'manage-company-settings', 'import', 'export', 'backup', 'restore',
-        ];
     }
 }

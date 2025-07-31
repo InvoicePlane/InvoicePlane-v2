@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Schema;
 use Modules\Clients\Database\Seeders\AddressesSeeder;
 use Modules\Clients\Database\Seeders\ContactsSeeder;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
-use Modules\Core\Database\Seeders\AdminUserSeeder;
 use Modules\Core\Database\Seeders\DocumentGroupsSeeder;
 use Modules\Core\Database\Seeders\EmailTemplatesSeeder;
+use Modules\Core\Database\Seeders\OwnerUserSeeder;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RoleHasPermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
@@ -59,7 +59,7 @@ class DevelopmentSeeder extends Seeder
         });
 
         $this->command->info('Creating admin user...');
-        $this->callWith(AdminUserSeeder::class, ['companyId' => $adminCompany->id]);
+        $this->callWith(OwnerUserSeeder::class, ['companyId' => $adminCompany->id]);
 
         $this->command->info('Development data seeding completed successfully!');
     }

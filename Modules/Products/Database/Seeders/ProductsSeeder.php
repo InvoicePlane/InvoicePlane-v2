@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -39,7 +40,7 @@ class ProductsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             }
 
             $productCount = random_int(10, 30);
-            $this->command->info("Creating {$productCount} products for company: {$company->name}");
+            Log::info("Creating {$productCount} products for company: {$company->name}");
 
             Product::factory()
                 ->count($productCount)

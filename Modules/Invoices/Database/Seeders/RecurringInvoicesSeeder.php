@@ -2,7 +2,8 @@
 
 namespace Modules\Invoices\Database\Seeders;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\UsersSeeder;
@@ -44,19 +45,19 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
             $existingCount = RecurringInvoice::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping recurring invoices for company {$company->name} - already has {$existingCount} recurring invoices.");
+                Log::info("Skipping recurring invoices for company {$company->name} - already has {$existingCount} recurring invoices.");
 
                 return;
             }
 
-            $this->command->info("Creating recurring invoices for company: {$company->name}");
+            Log::info("Creating recurring invoices for company: {$company->name}");
 
             $customers = Relation::query()->where('company_id', $company->id)
                 ->where('relation_type', 'customer')
                 ->get();
 
             if ($customers->isEmpty()) {
-                $this->command->warn("No customers found for company {$company->name}. Creating some...");
+                Log::warn("No customers found for company {$company->name}. Creating some...");
                 $this->call(CustomersSeeder::class, ['companyId' => $company->id]);
                 $customers = Relation::query()->where('company_id', $company->id)
                     ->where('relation_type', 'customer')
@@ -66,7 +67,7 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
             $products = Product::query()->where('company_id', $company->id)->get();
 
             if ($products->isEmpty()) {
-                $this->command->warn("No products found for company {$company->name}. Creating some...");
+                Log::warn("No products found for company {$company->name}. Creating some...");
                 $this->call(ProductsSeeder::class, ['companyId' => $company->id]);
                 $products = Product::query()->where('company_id', $company->id)->get();
             }
@@ -74,7 +75,7 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
             $taxRates = TaxRate::query()->where('company_id', $company->id)->get();
 
             if ($taxRates->isEmpty()) {
-                $this->command->warn("No tax rates found for company {$company->name}. Using default...");
+                Log::warn("No tax rates found for company {$company->name}. Using default...");
                 $taxRates = collect([
                     TaxRate::factory()->create([
                         'company_id' => $company->id,
@@ -88,7 +89,7 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
             $users = User::query()->where('company_id', $company->id)->get();
 
             if ($users->isEmpty()) {
-                $this->command->warn("No users found for company {$company->name}. Creating some...");
+                Log::warn("No users found for company {$company->name}. Creating some...");
                 $this->call(UsersSeeder::class, ['companyId' => $company->id]);
                 $users = User::query()->where('company_id', $company->id)->get();
             }
@@ -99,7 +100,7 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
                 $this->createRecurringInvoice($company, $customers->random(), $products, $taxRates, $users->random());
             }
 
-            $this->command->info("Created {$recurringInvoiceCount} recurring invoices for company: {$company->name}");
+            Log::info("Created {$recurringInvoiceCount} recurring invoices for company: {$company->name}");
         });
     }
 

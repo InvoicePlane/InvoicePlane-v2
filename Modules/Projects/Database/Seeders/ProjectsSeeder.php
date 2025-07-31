@@ -2,13 +2,13 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Modules\Clients\Database\Seeders\CustomersSeeder;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
-use RuntimeException;
 
 class ProjectsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
@@ -50,76 +50,69 @@ class ProjectsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 
     public function run(?int $companyId = null): void
     {
-        $query = Company::query();
+        if ( ! $companyId) {
+            $this->command->warn('No company ID provided to ProjectsSeeder. Aborting.');
 
-        if ($companyId) {
-            $query->where('id', $companyId);
+            return;
         }
 
-        $query->each(function (Company $company) {
-            $this->command->info("Seeding projects for company: {$company->name}");
+        $company = Company::query()->find($companyId);
+        if ( ! $company) {
+            $this->command->warn("Company with ID {$companyId} not found. Aborting ProjectsSeeder.");
 
-            // Get existing project count for progress tracking
-            $existingCount = Project::query()->where('company_id', $company->id)->count();
+            return;
+        }
 
-            // Get customers for this company
-            $customers = Relation::query()
-                ->where('company_id', $company->id)
-                ->where('relation_type', RelationType::CUSTOMER)
-                ->get();
+        Log::info("Seeding projects for company: {$company->name} (ID: {$company->id})");
 
-            // If no customers, create some
-            if ($customers->isEmpty()) {
-                $this->command->warn("No customers found for company {$company->name}. Creating some...");
-                $this->call(CustomersSeeder::class, ['companyId' => $company->id]);
-                $customers = Relation::query()
-                    ->where('company_id', $company->id)
-                    ->where('relation_type', RelationType::CUSTOMER)
-                    ->get();
+        // Get existing project count for progress tracking
+        $existingCount = Project::query()
+            ->where('company_id', $company->id)
+            ->count();
 
-                // If still no customers after seeding, create a default one
-                if ($customers->isEmpty()) {
-                    $this->command->warn('Failed to create customers. Creating a default customer...');
-                    $customer = Relation::factory()
-                        ->for($company)
-                        ->create([
-                            'relation_type'   => RelationType::CUSTOMER,
-                            'relation_status' => 'active',
-                            'company_name'    => 'Default Customer',
-                        ]);
-                    $customers->push($customer);
-                }
-            }
+        // Get customers for this company
+        $customers = Relation::query()
+            ->where('company_id', $company->id)
+            ->where('relation_type', RelationType::CUSTOMER)
+            ->get();
 
-            // Determine how many projects to create (5-15, but fewer if we already have some)
-            $targetCount      = rand(5, 15);
-            $projectsToCreate = max(0, $targetCount - $existingCount);
+        // If no customers, log a warning and skip
+        if ($customers->isEmpty()) {
+            $this->command->warn("No customers found for company {$company->name}. Skipping project creation.");
 
-            if ($projectsToCreate <= 0) {
-                $this->command->info("Company {$company->name} already has {$existingCount} projects. No new projects needed.");
+            return;
+        }
 
-                return;
-            }
+        // Determine how many projects to create (5-15, but fewer if we already have some)
+        $targetCount      = rand(5, 15);
+        $projectsToCreate = max(0, $targetCount - $existingCount);
 
-            $bar = $this->command->getOutput()->createProgressBar($projectsToCreate);
-            $bar->start();
+        if ($projectsToCreate <= 0) {
+            Log::info("Company {$company->name} already has {$existingCount} projects. No new projects needed.");
 
-            for ($i = 0; $i < $projectsToCreate; $i++) {
-                $this->createProject($company, $customers->random());
-                $bar->advance();
-            }
+            return;
+        }
 
-            $bar->finish();
-            $this->command->newLine(2);
-            $this->command->info("Created {$projectsToCreate} projects for company: {$company->name}");
-        });
+        $bar = $this->command->getOutput()->createProgressBar($projectsToCreate);
+        $bar->start();
+
+        for ($i = 0; $i < $projectsToCreate; $i++) {
+            $this->createProject($company, $customers->random());
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->command->newLine(2);
+        Log::info("Created {$projectsToCreate} projects for company: {$company->name}");
     }
 
-    protected function createProject(Company $company, Relation $customer): void
+    protected function createProject(Company $company, Relation $customer): ?Project
     {
         // Verify the customer belongs to the same company
         if ($customer->company_id !== $company->id) {
-            throw new RuntimeException("Customer {$customer->id} does not belong to company {$company->id}");
+            $this->command->warn("Customer {$customer->id} does not belong to company {$company->id}");
+
+            return null;
         }
 
         $statuses = [
@@ -145,29 +138,27 @@ class ProjectsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             ->first();
 
         if ($existingProject) {
-            // Update the existing project instead of creating a new one
-            $existingProject->update([
-                'customer_id'    => $customer->id,
-                'project_status' => $status->value,
-                'start_at'       => $startDate,
-                'end_at'         => $endDate,
-                'description'    => $description,
-            ]);
-
-            return;
+            // Skip if project already exists for this company
+            return $existingProject;
         }
 
-        // Create a new project
-        Project::factory()
-            ->for($company)
-            ->for($customer, 'customer')
-            ->create([
-                'project_status' => $status->value,
-                'project_name'   => $name,
-                'start_at'       => $startDate,
-                'end_at'         => $endDate,
-                'description'    => $description,
-            ]);
+        try {
+            // Create a new project
+            return Project::factory()
+                ->for($company)
+                ->for($customer, 'customer')
+                ->create([
+                    'project_status' => $status->value,
+                    'project_name'   => $name,
+                    'start_at'       => $startDate,
+                    'end_at'         => $endDate,
+                    'description'    => $description,
+                ]);
+        } catch (Exception $e) {
+            $this->command->warn('Failed to create project: ' . $e->getMessage());
+
+            return null;
+        }
     }
 
     protected function calculateProgress(ProjectStatus $status): int

@@ -4,6 +4,7 @@ namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -38,12 +39,12 @@ class ContactsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $existingCount = Contact::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping contacts for company {$company->name} - already has {$existingCount} contacts.");
+                Log::info("Skipping contacts for company {$company->name} - already has {$existingCount} contacts.");
 
                 return;
             }
 
-            $this->command->info("Creating contacts for company: {$company->name}");
+            Log::info("Creating contacts for company: {$company->name}");
 
             $customers = Relation::query()->where('company_id', $company->id)
                 ->whereIn('relation_type', ['customer', 'both'])
@@ -86,7 +87,7 @@ class ContactsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 DB::table('contacts')->insert($chunk);
             }
 
-            $this->command->info(sprintf(
+            Log::info(sprintf(
                 'Created %d contacts for company: %s',
                 count($contacts),
                 $company->name

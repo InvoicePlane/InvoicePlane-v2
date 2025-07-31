@@ -2,6 +2,7 @@
 
 namespace Modules\Quotes\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -76,7 +77,7 @@ class QuotesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $calculator->updateAndSave($quote);
             }
 
-            $this->command->info("Created {$quoteCount} quotes for company: {$company->name}");
+            Log::info("Created {$quoteCount} quotes for company: {$company->name}");
         });
     }
 

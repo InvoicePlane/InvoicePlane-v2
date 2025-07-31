@@ -2,6 +2,8 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
 
@@ -28,55 +30,37 @@ class ExpenseCategoriesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
 
     public function run(?int $companyId = null): void
     {
-        $query = Company::query();
-
-        if ($companyId) {
-            $query->where('id', $companyId);
+        if (!$companyId) {
+            Log::debug('No company ID provided to ExpenseCategoriesSeeder. Aborting.');
+            return;
         }
 
-        $query->each(function (Company $company) {
-            $this->command->info("Seeding expense categories for company: {$company->name}");
+        $company = Company::query()->find($companyId);
+        if (!$company) {
+            Log::debug("Company with ID {$companyId} not found. Aborting ExpenseCategoriesSeeder.");
+            return;
+        }
 
-            $existingCategories = ExpenseCategory::query()
-                ->where('company_id', $company->id)
-                ->pluck('category_name')
-                ->toArray();
+        Log::info("Seeding expense categories for company: {$company->name}");
 
-            $created = 0;
-            $skipped = 0;
+        $categoriesToUpsert = array_map(
+            fn($name) => [
+                'company_id' => $company->id,
+                'category_name' => $name,
+            ],
+            array_values($this->defaultCategories)
+        );
 
-            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultCategories));
-            $bar->start();
+        ExpenseCategory::upsert(
+            $categoriesToUpsert,
+            ['company_id', 'category_name'],
+            []
+        );
 
-            foreach ($this->defaultCategories as $categoryName) {
-                // Skip if this category already exists for the company
-                if (in_array($categoryName, $existingCategories, true)) {
-                    $skipped++;
-                    $bar->advance();
-                    continue;
-                }
-
-                ExpenseCategory::updateOrCreate(
-                    [
-                        'company_id'    => $company->id,
-                        'category_name' => $categoryName,
-                    ],
-                    [
-                        // Any additional fields can go here
-                    ]
-                );
-                $created++;
-                $bar->advance();
-            }
-
-            $bar->finish();
-            $this->command->newLine(2);
-            $this->command->info(sprintf(
-                'Expense categories for %s: %d created, %d already existed',
-                $company->name,
-                $created,
-                $skipped
-            ));
-        });
+        Log::info(sprintf(
+            'Upserted %d expense categories for company: %s',
+            count($categoriesToUpsert),
+            $company->name
+        ));
     }
 }

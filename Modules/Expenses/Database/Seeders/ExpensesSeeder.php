@@ -3,6 +3,7 @@
 namespace Modules\Expenses\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\UsersSeeder;
@@ -53,12 +54,12 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $existingCount = Expense::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping expenses for company {$company->name} - already has {$existingCount} expenses.");
+                Log::info("Skipping expenses for company {$company->name} - already has {$existingCount} expenses.");
 
                 return;
             }
 
-            $this->command->info("Creating expenses for company: {$company->name}");
+            Log::info("Creating expenses for company: {$company->name}");
 
             $categories = $this->getOrCreateExpenseCategories($company->id);
 
@@ -92,7 +93,7 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $this->createExpense($company, $categories->random(), $users->random(), $customers);
             }
 
-            $this->command->info("Created {$expenseCount} expenses for company: {$company->name}");
+            Log::info("Created {$expenseCount} expenses for company: {$company->name}");
         });
     }
 

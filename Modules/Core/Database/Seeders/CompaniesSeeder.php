@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 
 class CompaniesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
@@ -28,6 +29,6 @@ class CompaniesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 ->create();
         }
 
-        $this->command->info("Created {$count} companies");
+        Log::info("Created {$count} companies");
     }
 }

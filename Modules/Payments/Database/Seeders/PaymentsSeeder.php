@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Core\Models\Company;
 use Modules\Invoices\Database\Seeders\InvoicesSeeder;
@@ -14,11 +15,11 @@ class PaymentsSeeder extends AbstractSeeder
 {
     protected array $paymentMethods = [
         'bank_transfer',
+        'cash',
+        'check',
         'credit_card',
         'paypal',
         'stripe',
-        'cash',
-        'check',
         'other',
     ];
 
@@ -34,12 +35,12 @@ class PaymentsSeeder extends AbstractSeeder
             $existingCount = Payment::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping payments for company {$company->name} - already has {$existingCount} payments.");
+                Log::info("Skipping payments for company {$company->name} - already has {$existingCount} payments.");
 
                 return;
             }
 
-            $this->command->info("Creating payments for company: {$company->name}");
+            Log::info("Creating payments for company: {$company->name}");
 
             $invoices = Invoice::query()->where('company_id', $company->id)
                 ->where('invoice_status', InvoiceStatus::PAID->value)
@@ -60,7 +61,7 @@ class PaymentsSeeder extends AbstractSeeder
             }
             $this->createPartialPayments($company);
 
-            $this->command->info('Created ' . Payment::query()->where('company_id', $company->id)->count() . " payments for company: {$company->name}");
+            Log::info('Created ' . Payment::query()->where('company_id', $company->id)->count() . " payments for company: {$company->name}");
         });
     }
 
@@ -130,7 +131,7 @@ class PaymentsSeeder extends AbstractSeeder
                 $reference     = mb_strtoupper(mb_substr($paymentMethod, 0, 3)) . '-' . rand(1000, 9999);
 
                 // Debug log
-                $this->command->info(sprintf(
+                Log::info(sprintf(
                     'Creating payment for invoice %s: amount=%.2f, remaining=%.2f',
                     $invoice->invoice_number,
                     $paymentAmount,

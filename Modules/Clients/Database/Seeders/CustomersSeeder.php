@@ -3,6 +3,7 @@
 namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\Gender;
@@ -51,12 +52,12 @@ class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 ->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping customers for company {$company->name} - already has {$existingCount} customers.");
+                Log::info("Skipping customers for company {$company->name} - already has {$existingCount} customers.");
 
                 return;
             }
 
-            $this->command->info("Creating customers for company: {$company->name}");
+            Log::info("Creating customers for company: {$company->name}");
 
             // Create 10-20 customers per company
             $customerCount = rand(10, 20);

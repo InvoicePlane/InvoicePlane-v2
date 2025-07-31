@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -23,7 +24,7 @@ class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $adminCount = 2;
         $userCount  = 8;
 
-        $this->command->info("Creating {$adminCount} customer admins and {$userCount} customers for company {$company->name} ({$company->id})");
+        Log::info("Creating {$adminCount} customer admins and {$userCount} customers for company {$company->name} ({$company->id})");
 
         for ($i = 1; $i <= $adminCount; $i++) {
             $email = "customeradmin{$i}@company{$company->id}.com";
@@ -39,8 +40,8 @@ class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $this->createUser($company, $email, $name, [UserRole::CUSTOMER->value]);
         }
 
-        $this->command->info('Users seeded successfully.');
-        $this->command->info('All users have the password: password');
+        Log::info('Users seeded successfully.');
+        Log::info('All users have the password: password');
     }
 
     protected function getPassword(): string
@@ -69,13 +70,13 @@ class UsersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $user->companies()->attach($company->id);
             }
 
-            $this->command->info(sprintf(
+            Log::info(sprintf(
                 'Created %s with email %s (Password: password)',
                 $name,
                 $email
             ));
         } else {
-            $this->command->info(sprintf('User %s already exists', $email));
+            Log::info(sprintf('User %s already exists', $email));
         }
     }
 }

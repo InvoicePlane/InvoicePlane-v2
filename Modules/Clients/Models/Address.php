@@ -3,8 +3,11 @@
 namespace Modules\Clients\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Clients\Database\Factories\AddressFactory;
 use Modules\Clients\Enums\AddressType;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
@@ -26,6 +29,7 @@ use Modules\Core\Traits\BelongsToCompany;
 class Address extends Model
 {
     use BelongsToCompany;
+    use HasFactory;
 
     public $timestamps = false;
 
@@ -54,5 +58,15 @@ class Address extends Model
     public function addressable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
+    protected static function newFactory(): Factory
+    {
+        return AddressFactory::new();
     }
 }

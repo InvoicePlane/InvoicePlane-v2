@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -70,7 +71,7 @@ class PermissionsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             ]);
         }
 
-        $this->command->info(trans('ip.permissions_updated', [
+        Log::info(trans('ip.permissions_updated', [
             'count' => count($permissions),
         ]));
     }

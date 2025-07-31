@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -70,12 +71,12 @@ class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $existingCount = Task::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping tasks for company {$company->name} - already has {$existingCount} tasks.");
+                Log::info("Skipping tasks for company {$company->name} - already has {$existingCount} tasks.");
 
                 return;
             }
 
-            $this->command->info("Creating tasks for company: {$company->name}");
+            Log::info("Creating tasks for company: {$company->name}");
 
             $projects = Project::query()->where('company_id', $company->id)->get();
 
@@ -90,7 +91,7 @@ class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             }
 
             $totalTasks = Task::query()->where('company_id', $company->id)->count();
-            $this->command->info("Created {$totalTasks} tasks for company: {$company->name}");
+            Log::info("Created {$totalTasks} tasks for company: {$company->name}");
         });
     }
 

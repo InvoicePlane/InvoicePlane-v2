@@ -4,6 +4,7 @@ namespace Modules\Clients\Database\Seeders;
 
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Models\Address;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -47,17 +48,17 @@ class AddressesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $existingCount = Address::query()->where('company_id', $company->id)->count();
 
             if ($existingCount > 0) {
-                $this->command->info("Skipping addresses for company {$company->name} - already has {$existingCount} addresses.");
+                Log::info("Skipping addresses for company {$company->name} - already has {$existingCount} addresses.");
 
                 return;
             }
 
-            $this->command->info("Creating addresses for company: {$company->name}");
+            Log::info("Creating addresses for company: {$company->name}");
 
             $customers = Relation::query()->where('company_id', $company->id)->get();
 
             if ($customers->isEmpty()) {
-                $this->command->warn("No customers found for company {$company->name}. Creating some...");
+                Log::debug("No customers found for company {$company->name}. Creating some...");
                 $this->call(CustomersSeeder::class, ['companyId' => $company->id]);
                 $customers = Relation::query()->where('company_id', $company->id)->get();
             }
@@ -97,7 +98,7 @@ class AddressesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 DB::table('addresses')->insert($chunk);
             }
 
-            $this->command->info(sprintf(
+            Log::info(sprintf(
                 'Created %d addresses for company: %s',
                 count($addresses),
                 $company->name

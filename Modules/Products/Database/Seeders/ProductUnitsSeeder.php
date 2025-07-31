@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Database\Seeders;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductUnit;
 
@@ -29,48 +30,26 @@ class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         }
 
         $query->each(function (Company $company) {
-            $this->command->info("Seeding product units for company: {$company->name}");
+            Log::info("Seeding product units for company: {$company->name}");
 
-            // First, check if we already have units for this company
-            $existingUnits = ProductUnit::query()
-                ->where('company_id', $company->id)
-                ->pluck('unit_name')
-                ->toArray();
+            $unitsToUpsert = array_map(function ($unit) use ($company) {
+                return [
+                    'company_id' => $company->id,
+                    'unit_name' => $unit['unit_name'],
+                    'unit_name_plrl' => $unit['unit_name_plrl'],
+                ];
+            }, $this->defaultUnits);
 
-            $created = 0;
-            $skipped = 0;
+            ProductUnit::upsert(
+                $unitsToUpsert,
+                ['company_id', 'unit_name'],
+                ['unit_name_plrl']
+            );
 
-            $bar = $this->command->getOutput()->createProgressBar(count($this->defaultUnits));
-            $bar->start();
-
-            foreach ($this->defaultUnits as $unit) {
-                // Skip if this unit already exists for the company
-                if (in_array($unit['unit_name'], $existingUnits, true)) {
-                    $skipped++;
-                    $bar->advance();
-                    continue;
-                }
-
-                ProductUnit::updateOrCreate(
-                    [
-                        'company_id' => $company->id,
-                        'unit_name'  => $unit['unit_name'],
-                    ],
-                    [
-                        'unit_name_plrl' => $unit['unit_name_plrl'],
-                    ]
-                );
-                $created++;
-                $bar->advance();
-            }
-
-            $bar->finish();
-            $this->command->newLine(2);
-            $this->command->info(sprintf(
-                'Product units for %s: %d created, %d already existed',
-                $company->name,
-                $created,
-                $skipped
+            Log::info(sprintf(
+                'Upserted %d product units for company: %s',
+                count($unitsToUpsert),
+                $company->name
             ));
         });
     }
