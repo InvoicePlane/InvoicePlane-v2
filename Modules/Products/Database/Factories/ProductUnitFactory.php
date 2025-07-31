@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductUnit;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Products\Models\ProductUnit>
@@ -16,10 +17,13 @@ class ProductUnitFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()
+        $company = $this->company ?? Company::query()
             ->inRandomOrder()
-            ->first()
-            ?: Company::factory()->create();
+            ->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for ProductUnit factory');
+        }
 
         $unitName = $this->faker->randomElement([
             'pc', 'box', 'kg', 'ltr', 'pack',

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
+use RuntimeException;
 
 /**
  * @extends Factory<TaxRate>
@@ -30,7 +31,11 @@ class TaxRateFactory extends Factory
         ];
 
         $selected = $this->faker->randomElement($rates);
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company  = $this->company ?? Company::query()->inRandomOrder()->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for TaxRate factory');
+        }
 
         return [
             'company_id'    => $company->id,

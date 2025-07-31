@@ -9,6 +9,7 @@ use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
+use RuntimeException;
 
 /**
  * @extends Factory<Product>
@@ -19,31 +20,42 @@ class ProductFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
 
-        // Create or get a category that belongs to this company
+        if ( ! $company) {
+            throw new RuntimeException('No company available for Product factory');
+        }
+
+        // Get a category that belongs to this company
         $category = ProductCategory::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
-            ->first() ?? ProductCategory::factory()
-            ->for($company)
-            ->create();
+            ->first();
 
-        // Create or get a unit that belongs to this company
+        if ( ! $category) {
+            dd('die early');
+        }
+
+        // Get a unit that belongs to this company
         $unit = ProductUnit::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
-            ->first() ?? ProductUnit::factory()
-            ->for($company)
-            ->create();
+            ->first();
 
-        // Create or get a tax rate that belongs to this company
+        if ( ! $unit) {
+            dd('die early');
+        }
+
+        // Get a tax rate that belongs to this company
         $taxRate = TaxRate::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
-            ->first() ?? TaxRate::factory()
-            ->for($company)
-            ->create();
+            ->first();
+
+        if ( ! $taxRate) {
+            $taxRate = TaxRate::factory()
+                ->create(['company_id' => $company->id]);
+        }
 
         // Create a second tax rate 25% of the time
         $taxRate2 = $this->faker->boolean(25)

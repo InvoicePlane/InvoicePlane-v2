@@ -10,6 +10,7 @@ use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Expenses\Models\Expense>
@@ -20,43 +21,53 @@ class ExpenseFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
 
-        // Create or get a customer that belongs to this company
+        if ( ! $company) {
+            throw new RuntimeException('No company available for Expense factory');
+        }
+
+        // Get a customer that belongs to this company
         $customer = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
-            ->first() ?? Relation::factory()
-            ->for($company)
-            ->customer()
-            ->create();
+            ->first();
 
-        // Create or get a vendor that belongs to this company
+        if ( ! $customer) {
+            dd('die early');
+        }
+
+        // Get a vendor that belongs to this company
         $vendor = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::VENDOR->value)
             ->inRandomOrder()
-            ->first() ?? Relation::factory()
-            ->for($company)
-            ->vendor()
-            ->create();
+            ->first();
 
-        // Create or get a category that belongs to this company
+        if ( ! $vendor) {
+            dd('die early');
+        }
+
+        // Get a category that belongs to this company
         $category = ExpenseCategory::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
-            ->first() ?? ExpenseCategory::factory()
-            ->for($company)
-            ->create();
+            ->first();
+
+        if ( ! $category) {
+            dd('die early');
+        }
 
         // Create or get a user that belongs to this company
         $user = \Modules\Core\Models\User::query()
             ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
             ->inRandomOrder()
-            ->first() ?? \Modules\Core\Models\User::factory()
-            ->hasAttached($company)
-            ->create();
+            ->first()
+            ??
+            \Modules\Core\Models\User::factory()
+                ->hasAttached($company)
+                ->create();
 
         return [
             'company_id'     => $company->id,

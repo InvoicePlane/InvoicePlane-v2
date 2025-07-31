@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 {
     protected int $adminCompanyId = 1;
 
-    protected int $numberOfCompanies = 3;
+    protected int $numberOfCompanies = 1;
 
     public function run(): void
     {
@@ -54,24 +54,43 @@ class DatabaseSeeder extends Seeder
     {
         $this->command->info('Creating companies and bootstrapping default data...');
 
-        $adminCompany = Company::create([
-            'search_code'      => 'ivplv2',
-            'name'             => 'InvoicePlane Corporation',
-            'slug'             => 'invoiceplane-corporation',
-            'vat_number'       => 'US0123456789',
-            'id_number'        => '1234567890',
-            'coc_number'       => '12345678',
-            'quote_template'   => 'default',
-            'invoice_template' => 'default',
-        ]);
+        // Create exactly 3 companies in total
+        $companies = [
+            [
+                'search_code'      => 'ivplv2',
+                'name'             => 'InvoicePlane Corporation',
+                'slug'             => 'invoiceplane-corporation',
+                'vat_number'       => 'US0123456789',
+                'id_number'        => '1234567890',
+                'coc_number'       => '12345678',
+                'quote_template'   => 'default',
+                'invoice_template' => 'default',
+            ],
+            [
+                'search_code' => 'ACME',
+                'name'        => 'Acme Inc.',
+                'slug'        => 'acme-inc',
+            ],
+            /*[
+                'search_code' => 'GLOBEX',
+                'name' => 'Globex Corporation',
+                'slug' => 'globex-corporation',
+            ],*/
+        ];
 
-        Company::factory()
-            ->count(2)
-            ->sequence(
-                ['name' => 'Acme Inc.'],
-                ['name' => 'Globex Corporation']
-            )
-            ->create();
+        foreach ($companies as $companyData) {
+            Company::firstOrCreate(
+                ['name' => $companyData['name']],
+                array_merge([
+                    'slug'             => mb_strtolower(str_replace(' ', '-', $companyData['name'])),
+                    'vat_number'       => 'US' . rand(100000000, 999999999),
+                    'id_number'        => (string) rand(1000000000, 9999999999),
+                    'coc_number'       => (string) rand(1000000, 9999999),
+                    'quote_template'   => 'default',
+                    'invoice_template' => 'default',
+                ], $companyData)
+            );
+        }
 
         $this->command->info('Creating super admin user...');
         $this->callWith(OwnerUserSeeder::class);
@@ -120,12 +139,13 @@ class DatabaseSeeder extends Seeder
     private function createCustomers(int $companyId): void
     {
         $company = Company::query()->findOrFail($companyId);
-        
+
         // For company 1, create 5-10 customers. For others, create exactly 1
         $customerCount = $companyId === 1 ? rand(5, 10) : 1;
 
         if (\Modules\Clients\Models\Customer::where('company_id', $companyId)->exists()) {
             $this->command->info("Customers already exist for company {$company->name}. Skipping.");
+
             return;
         }
 

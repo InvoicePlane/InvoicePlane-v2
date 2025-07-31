@@ -5,6 +5,7 @@ namespace Modules\Expenses\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Expenses\Models\ExpenseCategory>
@@ -15,7 +16,12 @@ class ExpenseCategoryFactory extends Factory
 
     public function definition(): array
     {
-        $company           = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for ExpenseCategory factory');
+        }
+
         static $categories = [
             'Travel', 'Accommodation', 'Meals and Entertainment', 'Office Supplies',
             'Professional Services', 'Utilities', 'Phone and Internet', 'Software Subscriptions',

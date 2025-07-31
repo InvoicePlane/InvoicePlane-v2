@@ -34,8 +34,8 @@ class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 
             $unitsToUpsert = array_map(function ($unit) use ($company) {
                 return [
-                    'company_id' => $company->id,
-                    'unit_name' => $unit['unit_name'],
+                    'company_id'     => $company->id,
+                    'unit_name'      => $unit['unit_name'],
                     'unit_name_plrl' => $unit['unit_name_plrl'],
                 ];
             }, $this->defaultUnits);

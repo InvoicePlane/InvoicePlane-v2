@@ -109,7 +109,7 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 ['name', 'rate', 'tax_rate_type', 'is_compound', 'calculate_vat', 'is_active']
             );
 
-            $totalCount = count($ratesToUpsert);
+            $totalCount   = count($ratesToUpsert);
             $createdCount = $totalCount - $existingCount;
 
             Log::info(sprintf(

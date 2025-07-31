@@ -25,8 +25,7 @@ class ProductsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $this->command->warn("No product categories found for company {$company->name}. Creating some...");
                 $categories = ProductCategory::factory()
                     ->count(5)
-                    ->for($company)
-                    ->create();
+                    ->create(['company_id' => $company->id]);
             }
 
             $units = ProductUnit::query()->where('company_id', $company->id)->get();
@@ -35,8 +34,7 @@ class ProductsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $this->command->warn("No product units found for company {$company->name}. Creating some...");
                 $units = ProductUnit::factory()
                     ->count(3)
-                    ->for($company)
-                    ->create();
+                    ->create(['company_id' => $company->id]);
             }
 
             $productCount = random_int(10, 30);

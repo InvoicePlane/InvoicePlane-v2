@@ -5,6 +5,7 @@ namespace Modules\Products\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductCategory;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Products\Models\ProductCategory>
@@ -15,10 +16,13 @@ class ProductCategoryFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()
+        $company = $this->company ?? Company::query()
             ->inRandomOrder()
-            ->first()
-            ?: Company::factory()->create();
+            ->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for ProductCategory factory');
+        }
 
         static $categories = [
             'Accounting Services',

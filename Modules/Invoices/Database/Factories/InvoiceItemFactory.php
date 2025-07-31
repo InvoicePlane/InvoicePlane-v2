@@ -19,24 +19,92 @@ class InvoiceItemFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
-        $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+        
+        if (!$company) {
+            throw new \RuntimeException('No company available for InvoiceItem factory');
+        }
 
-        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
+        // Get a product that belongs to this company
+        $item = Product::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+            
+        if (!$item) {
+            $item = Product::factory()
+                ->create(['company_id' => $company->id]);
+        }
+
+        // Get a unit that belongs to this company
+        $unit = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+            
+        if (!$unit) {
+            $unit = ProductUnit::factory()
+                ->create(['company_id' => $company->id]);
+        }
+
+        // Get a tax rate that belongs to this company
+        $taxRate = TaxRate::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+            
+        if (!$taxRate) {
+            $taxRate = TaxRate::factory()
+                ->create(['company_id' => $company->id]);
+        }
+
+        // Get a second tax rate 75% of the time that belongs to this company
+        $taxRate2 = null;
+        if ($this->faker->boolean(75)) {
+            $taxRate2 = TaxRate::query()
+                ->where('company_id', $company->id)
+                ->where('id', '!=', $taxRate->id)
+                ->inRandomOrder()
+                ->first();
+                
+            if (!$taxRate2) {
+                $taxRate2 = TaxRate::factory()
+                    ->create(['company_id' => $company->id]);
+            }
+        }
 
         $quantity = $this->faker->randomFloat(4, 1, 20);
         $price    = $this->faker->randomFloat(4, 10, 500);
         $discount = $this->faker->randomFloat(4, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
+        // Get an invoice that belongs to this company
+        $invoice = Invoice::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+            
+        if (!$invoice) {
+            $invoice = \Modules\Invoices\Models\Invoice::factory()
+                ->create(['company_id' => $company->id]);
+        }
+        
+        // Get a task that belongs to this company
+        $task = \Modules\Projects\Models\Task::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+            
+        if (!$task) {
+            $task = \Modules\Projects\Models\Task::factory()
+                ->create(['company_id' => $company->id]);
+        }
+
         return [
             'company_id'      => $company->id,
-            'invoice_id'      => Invoice::query()->inRandomOrder()->first()?->id,
+            'invoice_id'      => $invoice->id,
             'product_id'      => $item->id,
-            'task_id'         => \Modules\Projects\Models\Task::query()->inRandomOrder()->first()->id,
+            'task_id'         => $task->id,
             'product_unit_id' => $unit->id,
             'added_at'        => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
             'item_name'       => $item->item_name,
