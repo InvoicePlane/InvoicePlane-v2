@@ -8,6 +8,7 @@ use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use RuntimeException;
 
 /**
  * @extends Factory<Relation>
@@ -18,11 +19,16 @@ class RelationFactory extends Factory
 
     public function definition(): array
     {
-        $company     = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for Relation factory. A company must be provided.');
+        }
+
         $tradingName = $this->faker->optional(0.7)->companySuffix();
 
         return [
-            'company_id'      => $company->id,
+            'company_id'      => $company->getKey(),
             'relation_type'   => $this->faker->randomElement(RelationType::cases())->value,
             'relation_status' => $this->faker->randomElement(RelationStatus::cases())->value,
             'relation_number' => $this->faker->bothify('??######'),
@@ -45,17 +51,17 @@ class RelationFactory extends Factory
         ]);
     }
 
-    public function vendor(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'relation_type' => RelationType::VENDOR->value,
-        ]);
-    }
-
     public function prospect(): static
     {
         return $this->state(fn (array $attributes) => [
             'relation_type' => RelationType::PROSPECT->value,
+        ]);
+    }
+
+    public function vendor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'relation_type' => RelationType::VENDOR->value,
         ]);
     }
 }

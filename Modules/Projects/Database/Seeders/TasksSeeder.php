@@ -2,7 +2,6 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Illuminate\Support\Facades\Log;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -61,41 +60,59 @@ class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 
     public function run(?int $companyId = null): void
     {
-        $query = Company::query();
+        if ( ! $companyId) {
+            $this->command->error('No company ID provided to TasksSeeder. Aborting.');
 
-        if ($companyId) {
-            $query->where('id', $companyId);
+            return;
         }
 
-        $query->each(function (Company $company) {
-            $existingCount = Task::query()->where('company_id', $company->id)->count();
+        $company = Company::findOrFail($companyId);
+        if ( ! $company) {
+            $this->command->error("Company with ID {$companyId} not found. Aborting TasksSeeder.");
 
-            if ($existingCount > 0) {
-                Log::info("Skipping tasks for company {$company->name} - already has {$existingCount} tasks.");
+            return;
+        }
 
-                return;
+        $this->command->info("Seeding tasks for company: {$company->name} (ID: {$company->id})");
+
+        $projects = Project::query()
+            ->where('company_id', $company->id)
+            ->get();
+
+        if ($company->id != 1) {
+            dd('temp', $projects);
+        }
+
+        if ($projects->isEmpty()) {
+            dd('NO!');
+        }
+
+        $totalTasks = 0;
+        $bar        = $this->command->getOutput()->createProgressBar($projects->count());
+        $bar->start();
+
+        if ($companyId !== 1) {
+            dd('temp', $projects);
+        }
+
+        foreach ($projects as $project) {
+            if ( ! $project instanceof Project || ! isset($project->company)) {
+                dd('temp', $project);
             }
 
-            Log::info("Creating tasks for company: {$company->name}");
-
-            $projects = Project::query()->where('company_id', $company->id)->get();
-
-            if ($projects->isEmpty()) {
-                $this->command->warn("No projects found for company {$company->name}. Creating some...");
-                $this->call(ProjectsSeeder::class, ['companyId' => $company->id]);
-                $projects = Project::query()->where('company_id', $company->id)->get();
+            $tasksCreated = $this->createProjectTasks($project);
+            if ($companyId != 1) {
+                dd('temp', $tasksCreated);
             }
+            $bar->advance();
+        }
 
-            foreach ($projects as $project) {
-                $this->createProjectTasks($project);
-            }
-
-            $totalTasks = Task::query()->where('company_id', $company->id)->count();
-            Log::info("Created {$totalTasks} tasks for company: {$company->name}");
-        });
+        $bar->finish();
+        $this->command->newLine(2);
+        $this->command->info("Created {$totalTasks} tasks for company: {$company->name}");
     }
 
-    protected function createProjectTasks(Project $project): void
+    protected function createProjectTasks($project)
     {
         $taskCount   = rand(5, 15);
         $taskIndices = array_rand($this->taskTitles, min($taskCount, count($this->taskTitles)));
@@ -104,15 +121,17 @@ class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $taskIndices = [$taskIndices];
         }
 
+        /*
         $users = $project->company->users()
             ->whereDoesntHave('roles', function ($query) {
                 $query->whereIn('name', UserRole::elevated());
             })
             ->get();
+            */
 
-        if ($users->isEmpty()) {
-            $this->command->warn("No non-elevated users found for company {$project->company->name}. Tasks will be unassigned.");
-        }
+        /*if ($users->isEmpty()) {
+            dd("NO!");
+        }*/
 
         $startDate = $project->start_at;
         $endDate   = $project->end_at;
@@ -137,15 +156,23 @@ class TasksSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $taskEndDate = $endDate;
             }
 
-            $assignToUser = $users->isNotEmpty() && random_int(1, 10) <= 7;
-            $assignedToId = $assignToUser ? $users->random()->id : null;
+            if ( ! $project instanceof Project || ! isset($project->company)) {
+                dd('temp', $project);
+            }
+            if ($project->company->id != 1) {
+                dd('here');
+            }
+
+            //$assignToUser = $users->isNotEmpty() && random_int(1, 10) <= 7;
+            //$assignedToId = $assignToUser ? $users->random()->id : null;
 
             Task::factory()
                 ->for($project->company)
                 ->for($project)
+                /*
                 ->when($assignedToId, function ($factory) use ($assignedToId) {
                     return $factory->for(User::query()->where('id', $assignedToId)->first(), 'assignedTo');
-                })
+                })*/
                 ->create([
                     'task_status' => $status->value,
                     'task_name'   => $title,

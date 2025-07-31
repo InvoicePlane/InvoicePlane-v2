@@ -7,6 +7,7 @@ use Modules\Core\Models\Company;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Models\QuoteItem;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Quotes\Models\QuoteItem>
@@ -17,9 +18,52 @@ class QuoteItemFactory extends Factory
 
     public function definition(): array
     {
-        $company  = Company::factory()->create();
-        $product  = Product::factory()->create();
-        $unit     = ProductUnit::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for QuoteItem factory');
+        }
+
+        // Get a product that belongs to this company
+        $product = Product::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $product) {
+            dd('die early');
+        }
+
+        // Get a unit that belongs to this company
+        $unit = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $unit) {
+            dd('die early');
+        }
+
+        // Get a quote that belongs to this company
+        $quote = \Modules\Quotes\Models\Quote::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $quote) {
+            dd('die early');
+        }
+
+        // Get a task that belongs to this company
+        $task = \Modules\Projects\Models\Task::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $task) {
+            dd('die early');
+        }
+
         $quantity = 2;
         $price    = 150;
         $discount = 0;
@@ -27,9 +71,9 @@ class QuoteItemFactory extends Factory
 
         return [
             'company_id'      => $company->id,
-            'quote_id'        => \Modules\Quotes\Models\Quote::query()->inRandomOrder()->first()->id,
+            'quote_id'        => $quote->id,
             'product_id'      => $product->id,
-            'task_id'         => \Modules\Projects\Models\Task::query()->inRandomOrder()->first()->id,
+            'task_id'         => $task->id,
             'product_unit_id' => $unit->id,
             'added_at'        => fake()->optional()->date(),
             'item_name'       => 'Design',

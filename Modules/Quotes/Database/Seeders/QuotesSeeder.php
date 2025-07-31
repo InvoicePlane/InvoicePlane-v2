@@ -96,13 +96,13 @@ class QuotesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $expiryDate = $quoteDate->copy()->addDays(random_int(15, 60));
 
         // Get a random user from the company to assign as the quote owner
-        $user = $company->users->random();
+        //$user = $company->users->random();
 
         return Quote::factory()
             ->for($company)
             ->create([
                 'prospect_id'            => $customer->id,
-                'user_id'                => $user->id,
+                'user_id'                => null,
                 'quote_number'           => $this->generateQuoteNumber($company->id),
                 'quote_status'           => $status->value,
                 'quoted_at'              => $quoteDate,

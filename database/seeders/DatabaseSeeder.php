@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 {
     protected int $adminCompanyId = 1;
 
-    protected int $numberOfCompanies = 1;
+    protected int $numberOfCompanies = 2;
 
     public function run(): void
     {
@@ -36,6 +36,8 @@ class DatabaseSeeder extends Seeder
         $this->createCompanies();
 
         $this->seedCompaniesDependentData();
+
+        dd('here');
 
         $this->command->info('Database seeding completed successfully.');
     }
@@ -100,8 +102,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->command->info('Seeding dependent data for all companies...');
 
-        for ($i = 1; $i <= $this->numberOfCompanies; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $this->seedCompanyDependentData($i);
+
+            $this->command->warn('done with company ' . $i);
         }
     }
 
@@ -136,54 +140,53 @@ class DatabaseSeeder extends Seeder
         $this->command->info(sprintf('Created %d admin(s) for company %d', $users->count(), $companyId));
     }
 
-    private function createCustomers(int $companyId): void
+    private function createRelations(int $companyId): void
     {
-        $company = Company::query()->findOrFail($companyId);
+        $company       = Company::query()->findOrFail($companyId);
+        $relationTypes = \Modules\Clients\Enums\RelationType::cases();
 
-        // For company 1, create 5-10 customers. For others, create exactly 1
-        $customerCount = $companyId === 1 ? rand(5, 10) : 1;
-
-        if (\Modules\Clients\Models\Customer::where('company_id', $companyId)->exists()) {
-            $this->command->info("Customers already exist for company {$company->name}. Skipping.");
-
-            return;
-        }
-
-        $this->command->info(sprintf('Creating %d customers for company: %s', $customerCount, $company->name));
-
-        for ($i = 0; $i < $customerCount; $i++) {
-            $customer = \Modules\Clients\Models\Customer::factory()
-                ->create(['company_id' => $companyId]);
-
-            $primaryContact = \Modules\Clients\Models\Contact::factory()
-                ->create([
-                    'company_id'  => $companyId,
-                    'relation_id' => $customer->id,
-                ]);
-
-            $customer->update(['primary_contact_id' => $primaryContact->id]);
-
-            $additionalContacts = $companyId === 1 ? rand(1, 2) : 1;
-            for ($j = 0; $j < $additionalContacts; $j++) {
-                \Modules\Clients\Models\Contact::factory()
-                    ->create([
-                        'company_id'  => $companyId,
-                        'relation_id' => $customer->id,
-                    ]);
+        foreach ($relationTypes as $relationType) {
+            if (in_array($relationType->value, ['lead', 'partner'])) {
+                continue;
             }
 
-            $addressCount = rand(1, 2);
-            for ($k = 0; $k < $addressCount; $k++) {
-                \Modules\Clients\Models\Address::factory()
-                    ->create([
-                        'company_id'       => $companyId,
-                        'addressable_id'   => $customer->id,
-                        'addressable_type' => \Modules\Clients\Models\Customer::class,
-                        'type'             => \Modules\Clients\Enums\AddressType::BILLING->value,
-                        'is_primary'       => $k === 0,
-                    ]);
+            $typeName = mb_strtolower($relationType->name);
+
+            if ( ! \Modules\Clients\Models\Relation::where('company_id', $companyId)
+                ->where('relation_type', $relationType->value)
+                ->exists()) {
+                $this->command->info(sprintf('Creating %s for company: %s', $typeName, $company->name));
+                $this->createRelation($companyId, $typeName);
+            } else {
+                $this->command->info(sprintf('%s already exists for company: %s', ucfirst($typeName), $company->name));
             }
         }
+    }
+
+    private function createRelation(int $companyId, string $type): void
+    {
+        $company = \Modules\Core\Models\Company::findOrFail($companyId);
+
+        $relation = \Modules\Clients\Models\Relation::factory()
+            ->for($company)
+            ->{$type}()
+            ->create(['relation_status' => \Modules\Clients\Enums\RelationStatus::ACTIVE->value]);
+
+        \Modules\Clients\Models\Contact::factory()
+            ->for($company)
+            ->create([
+                'relation_id' => $relation->id,
+            ]);
+
+        \Modules\Clients\Models\Address::factory()
+            ->for($company)
+            ->create([
+                'addressable_id'   => $relation->id,
+                'addressable_type' => \Modules\Clients\Models\Relation::class,
+                'type'             => $type === 'vendor'
+                    ? \Modules\Clients\Enums\AddressType::SHIPPING->value
+                    : \Modules\Clients\Enums\AddressType::BILLING->value,
+            ]);
     }
 
     private function seedCompanyDependentData(int $companyId): void
@@ -191,16 +194,21 @@ class DatabaseSeeder extends Seeder
         $company = Company::query()->findOrFail($companyId);
         $this->command->info("Seeding dependent data for company: {$company->name} (ID: {$companyId})");
 
-        $this->createCustomerAdmins($companyId);
+        //$this->createCustomerAdmins($companyId);
 
-        $this->command->info('Creating customers...');
-        $this->createCustomers($companyId);
+        $this->command->info('Creating relations...');
+        $this->createRelations($companyId);
 
         $this->command->info('Seeding products...');
         $this->callWith(ProductsSeeder::class, ['companyId' => $companyId]);
 
+        if ($companyId != 1) {
+            dd('here');
+        }
+
         $this->command->info('Seeding projects and tasks...');
         $this->callWith(ProjectsSeeder::class, ['companyId' => $companyId]);
+
         $this->callWith(TasksSeeder::class, ['companyId' => $companyId]);
 
         $this->command->info('Seeding expenses...');

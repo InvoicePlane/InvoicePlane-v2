@@ -2,12 +2,12 @@
 
 namespace Modules\Projects\Database\Factories;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
@@ -23,55 +23,46 @@ class TaskFactory extends Factory
     {
         $company = Company::query()
             ->inRandomOrder()
-            ->first()
-            ?? Company::factory()->create();
+            ->firstOrFail();
 
-        // Create or get a customer that belongs to this company
+        // Get a customer that belongs to this company
         $customer = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
-            ->first()
-            ?? Relation::factory()
-                ->for($company)
-                ->customer()
-                ->create();
+            ->firstOrFail();
 
-        // Create or get a project that belongs to this company and customer
+        // Get or create a project for this company and customer
         $project = Project::query()
             ->where('company_id', $company->id)
             ->where('customer_id', $customer->id)
             ->inRandomOrder()
-            ->first()
-            ?? Project::factory()
-                ->for($company)
-                ->for($customer)
-                ->create();
+            ->first();
 
-        // Create or get a tax rate that belongs to this company
+        if (!$project) {
+            // If no project exists, create one
+            $project = Project::factory()->create([
+                'company_id' => $company->id,
+                'customer_id' => $customer->id,
+                'name' => 'Project for ' . $customer->name,
+                'status' => 'in_progress',
+                'start_date' => now()->subDays(rand(1, 30)),
+                'deadline' => now()->addDays(rand(30, 90)),
+            ]);
+        }
+
+        // Get a tax rate that belongs to this company
         $taxRate = TaxRate::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
-            ->first()
-            ?? TaxRate::factory()
-                ->for($company)
-                ->create();
-
-        // Get a user that belongs to this company
-        $user = User::query()
-            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
-            ->inRandomOrder()
-            ->first()
-            ?? User::factory()
-                ->hasAttached($company)
-                ->create();
+            ->firstOrFail();
 
         return [
             'company_id'  => $company->id,
             'customer_id' => $customer->id,
             'project_id'  => $project->id,
             'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $this->faker->boolean(50) ? $user->id : null,
+            'assigned_to' => null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
             'task_name'   => $this->faker->words(3, true),
             'task_price'  => $this->faker->randomFloat(4, 0, 100),

@@ -63,7 +63,7 @@ class ProjectsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             return;
         }
 
-        Log::info("Seeding projects for company: {$company->name} (ID: {$company->id})");
+        $this->command->info("Seeding projects for company: {$company->name} (ID: {$company->id})");
 
         // Get existing project count for progress tracking
         $existingCount = Project::query()

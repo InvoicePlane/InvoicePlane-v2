@@ -38,7 +38,7 @@ class ExpenseFactory extends Factory
             dd('die early');
         }
 
-        // Get a vendor that belongs to this company
+        // Get a vendor that belongs to this company, create one if none exists
         $vendor = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::VENDOR->value)
@@ -46,7 +46,28 @@ class ExpenseFactory extends Factory
             ->first();
 
         if ( ! $vendor) {
-            dd('die early');
+            // If no vendor exists, create one using the existing company
+            $vendor = \Modules\Clients\Models\Relation::factory()
+                ->for($company) // Use the existing company
+                ->vendor()
+                ->create();
+
+            // Create a primary contact for the vendor
+            \Modules\Clients\Models\Contact::factory()
+                ->for($company) // Use the existing company
+                ->create([
+                    'relation_id' => $vendor->id,
+                ]);
+
+            // Create an address for the vendor
+            \Modules\Clients\Models\Address::factory()
+                ->for($company) // Use the existing company
+                ->create([
+                    'addressable_id'   => $vendor->id,
+                    'addressable_type' => \Modules\Clients\Models\Relation::class,
+                    'type'             => \Modules\Clients\Enums\AddressType::SHIPPING->value,
+                    'is_primary'       => true,
+                ]);
         }
 
         // Get a category that belongs to this company
@@ -59,22 +80,23 @@ class ExpenseFactory extends Factory
             dd('die early');
         }
 
-        // Create or get a user that belongs to this company
+        // Get a user that belongs to this company, throw if none exists
+        /*
         $user = \Modules\Core\Models\User::query()
             ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
             ->inRandomOrder()
-            ->first()
-            ??
-            \Modules\Core\Models\User::factory()
-                ->hasAttached($company)
-                ->create();
+            ->first();
+
+        if ( ! $user) {
+            throw new RuntimeException("No users found for company {$company->id}. Please ensure users are created before expenses.");
+        }*/
 
         return [
             'company_id'     => $company->id,
             'customer_id'    => $customer->id,
             'vendor_id'      => $vendor->id,
             'category_id'    => $category->id,
-            'user_id'        => $user->id,
+            'user_id'        => null,
             'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'expense_status' => $this->faker->randomElement(ExpenseStatus::cases())->value,
             'expense_type'   => $this->faker->randomElement(ExpenseType::cases())->value,

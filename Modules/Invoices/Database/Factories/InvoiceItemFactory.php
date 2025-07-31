@@ -9,6 +9,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
+use RuntimeException;
 
 /**
  * @extends Factory<InvoiceItem>
@@ -20,9 +21,9 @@ class InvoiceItemFactory extends Factory
     public function definition(): array
     {
         $company = $this->company ?? Company::query()->inRandomOrder()->first();
-        
-        if (!$company) {
-            throw new \RuntimeException('No company available for InvoiceItem factory');
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for InvoiceItem factory');
         }
 
         // Get a product that belongs to this company
@@ -30,10 +31,9 @@ class InvoiceItemFactory extends Factory
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first();
-            
-        if (!$item) {
-            $item = Product::factory()
-                ->create(['company_id' => $company->id]);
+
+        if ( ! $item) {
+            dd('die early');
         }
 
         // Get a unit that belongs to this company
@@ -41,10 +41,9 @@ class InvoiceItemFactory extends Factory
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first();
-            
-        if (!$unit) {
-            $unit = ProductUnit::factory()
-                ->create(['company_id' => $company->id]);
+
+        if ( ! $unit) {
+            dd('die early');
         }
 
         // Get a tax rate that belongs to this company
@@ -52,10 +51,9 @@ class InvoiceItemFactory extends Factory
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first();
-            
-        if (!$taxRate) {
-            $taxRate = TaxRate::factory()
-                ->create(['company_id' => $company->id]);
+
+        if ( ! $taxRate) {
+            dd('die early');
         }
 
         // Get a second tax rate 75% of the time that belongs to this company
@@ -66,10 +64,9 @@ class InvoiceItemFactory extends Factory
                 ->where('id', '!=', $taxRate->id)
                 ->inRandomOrder()
                 ->first();
-                
-            if (!$taxRate2) {
-                $taxRate2 = TaxRate::factory()
-                    ->create(['company_id' => $company->id]);
+
+            if ( ! $taxRate2) {
+                dd('die early');
             }
         }
 
@@ -83,21 +80,19 @@ class InvoiceItemFactory extends Factory
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first();
-            
-        if (!$invoice) {
-            $invoice = \Modules\Invoices\Models\Invoice::factory()
-                ->create(['company_id' => $company->id]);
+
+        if ( ! $invoice) {
+            dd('die early');
         }
-        
+
         // Get a task that belongs to this company
         $task = \Modules\Projects\Models\Task::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
             ->first();
-            
-        if (!$task) {
-            $task = \Modules\Projects\Models\Task::factory()
-                ->create(['company_id' => $company->id]);
+
+        if ( ! $task) {
+            dd('die early');
         }
 
         return [

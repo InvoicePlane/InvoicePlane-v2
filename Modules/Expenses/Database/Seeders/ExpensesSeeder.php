@@ -63,6 +63,7 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 
             $categories = $this->getOrCreateExpenseCategories($company->id);
 
+            /*
             $users = $company->users;
 
             if ($users->isEmpty()) {
@@ -71,7 +72,7 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 $users = $company->users->count() > 0
                     ? $company->users
                     : collect([User::factory()->for($company)->create()]);
-            }
+            }*/
 
             $customers = Relation::where('company_id', $company->id)
                 ->where('relation_type', RelationType::CUSTOMER->value)
@@ -90,7 +91,7 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             $expenseCount = random_int(20, 50);
 
             for ($i = 0; $i < $expenseCount; $i++) {
-                $this->createExpense($company, $categories->random(), $users->random(), $customers);
+                $this->createExpense($company, $categories->random(), $customers);
             }
 
             Log::info("Created {$expenseCount} expenses for company: {$company->name}");
@@ -136,7 +137,7 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         return $categories;
     }
 
-    protected function createExpense(Company $company, $category, $user, $customers): void
+    protected function createExpense(Company $company, $category, $customers): void
     {
         $statuses = [
             ExpenseStatus::DRAFT,
@@ -172,7 +173,6 @@ class ExpensesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $expense = Expense::factory()
             ->for($company)
             ->for($category, 'expenseCategory')
-            ->for($user, 'user')
             ->for($vendor, 'vendor')
             ->when($customer, function ($factory) use ($customer) {
                 return $factory->for($customer, 'customer');

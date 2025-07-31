@@ -2,7 +2,7 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Support\Facades\Log;
+use Exception;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -12,42 +12,58 @@ class ProductsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
 {
     public function run(?int $companyId = null): void
     {
-        $query = Company::query();
+        if ( ! $companyId) {
+            $this->command->error('No company ID provided to ProductsSeeder. Aborting.');
 
-        if ($companyId) {
-            $query->where('id', $companyId);
+            return;
         }
 
-        $query->each(function (Company $company) {
-            $categories = ProductCategory::query()->where('company_id', $company->id)->get();
+        $company = Company::find($companyId);
+        if ( ! $company) {
+            $this->command->error("Company with ID {$companyId} not found. Aborting ProductsSeeder.");
 
-            if ($categories->isEmpty()) {
-                $this->command->warn("No product categories found for company {$company->name}. Creating some...");
-                $categories = ProductCategory::factory()
-                    ->count(5)
-                    ->create(['company_id' => $company->id]);
+            return;
+        }
+
+        $this->command->info("Seeding products for company: {$company->name} (ID: {$company->id})");
+
+        $units = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->get();
+
+        if ($units->isEmpty()) {
+            dd('NO!');
+        }
+
+        $categories = ProductCategory::query()
+            ->where('company_id', $company->id)
+            ->get();
+
+        if ($categories->isEmpty()) {
+            dd('NO!');
+        }
+
+        $productCount = random_int(1, 2);
+        $this->command->info("Creating {$productCount} products for company: {$company->name}");
+
+        $bar = $this->command->getOutput()->createProgressBar($productCount);
+        $bar->start();
+
+        for ($i = 0; $i < $productCount; $i++) {
+            try {
+                Product::factory()
+                    ->for($company)
+                    ->for($categories->random(), 'productCategory')
+                    ->for($units->random(), 'productUnit')
+                    ->create();
+            } catch (Exception $e) {
+                $this->command->error('Error creating product: ' . $e->getMessage());
+                continue;
             }
+            $bar->advance();
+        }
 
-            $units = ProductUnit::query()->where('company_id', $company->id)->get();
-
-            if ($units->isEmpty()) {
-                $this->command->warn("No product units found for company {$company->name}. Creating some...");
-                $units = ProductUnit::factory()
-                    ->count(3)
-                    ->create(['company_id' => $company->id]);
-            }
-
-            $productCount = random_int(10, 30);
-            Log::info("Creating {$productCount} products for company: {$company->name}");
-
-            Product::factory()
-                ->count($productCount)
-                ->for($company)
-                ->state([
-                    'category_id' => fn () => $categories->random()->id,
-                    'unit_id'     => fn () => $units->random()->id,
-                ])
-                ->create();
-        });
+        $bar->finish();
+        $this->command->newLine(2);
     }
 }

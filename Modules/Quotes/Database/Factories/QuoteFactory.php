@@ -34,12 +34,14 @@ class QuoteFactory extends Factory
             ->create();
 
         // Create or get a user that belongs to this company
+        /*
         $user = User::query()
             ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
             ->inRandomOrder()
             ->first() ?? User::factory()
             ->hasAttached($company)
             ->create();
+            */
 
         // Create or get a document group that belongs to this company
         $group = DocumentGroup::query()
@@ -63,7 +65,7 @@ class QuoteFactory extends Factory
             'company_id'             => $company->id,
             'prospect_id'            => $prospect->id,
             'document_group_id'      => $group->id,
-            'user_id'                => $user->id,
+            'user_id'                => null,
             'quote_number'           => 'Q-' . now()->year . '-' . fake()->unique()->numberBetween(1, 9999),
             'quote_status'           => fake()->randomElement(QuoteStatus::cases())->value,
             'quoted_at'              => $quotedAt,
