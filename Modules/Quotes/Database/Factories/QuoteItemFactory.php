@@ -3,60 +3,61 @@
 namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\Company;
-use Modules\Products\Models\Product;
+use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\QuoteItem;
 use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Quotes\Models\QuoteItem>
  */
-class QuoteItemFactory extends Factory
+class QuoteItemFactory extends AbstractFactory
 {
     protected $model = QuoteItem::class;
 
     public function definition(): array
     {
-        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
+        $company   = Company::query()->find($companyId);
 
         if ( ! $company) {
             throw new RuntimeException('No company available for QuoteItem factory');
         }
 
-        // Get a product that belongs to this company
-        $product = Product::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
+        $product = $this->findOrCreateRandomProduct($companyId);
 
-        if ( ! $product) {
-            dd('die early');
-        }
+        $query = ProductUnit::query()
+            ->where('company_id', $companyId)
+            ->inRandomOrder();
 
-        // Get a unit that belongs to this company
-        $unit = ProductUnit::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
+        $unit = $query->first();
 
         if ( ! $unit) {
-            dd('die early');
+            $sql = $query->toRawSql();
+            dd('[DEBUG] No unit found', [
+                'sql' => $sql,
+            ]);
         }
 
         // Get a quote that belongs to this company
-        $quote = \Modules\Quotes\Models\Quote::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
+        $quoteQuery = \Modules\Quotes\Models\Quote::query()
+            ->where('company_id', $companyId)
+            ->inRandomOrder();
+
+        $quote = $quoteQuery->first();
 
         if ( ! $quote) {
-            dd('die early');
+            $sql = $quoteQuery->toRawSql();
+            dd('[DEBUG] No unit found', [
+                'sql' => $sql,
+            ]);
         }
 
-        // Get a task that belongs to this company
-        $task = \Modules\Projects\Models\Task::query()
-            ->where('company_id', $company->id)
+        $task = Task::query()
+            ->where('company_id', $companyId)
             ->inRandomOrder()
             ->first();
 
@@ -70,7 +71,7 @@ class QuoteItemFactory extends Factory
         $subtotal = $quantity * $price - $discount;
 
         return [
-            'company_id'      => $company->id,
+            'company_id'      => $companyId,
             'quote_id'        => $quote->id,
             'product_id'      => $product->id,
             'task_id'         => $task->id,
@@ -87,8 +88,8 @@ class QuoteItemFactory extends Factory
             'tax_2'           => 0,
             'tax_total'       => 0,
             'total'           => $subtotal,
-            'tax_rate_id'     => \Modules\Core\Models\TaxRate::query()->inRandomOrder()->first()->id,
-            'tax_rate_2_id'   => \Modules\Core\Models\TaxRate::query()->inRandomOrder()->first()->id,
+            'tax_rate_id'     => TaxRate::query()->inRandomOrder()->first()->id,
+            'tax_rate_2_id'   => TaxRate::query()->inRandomOrder()->first()->id,
             'display_order'   => fake()->randomNumber(),
             'description'     => null,
         ];

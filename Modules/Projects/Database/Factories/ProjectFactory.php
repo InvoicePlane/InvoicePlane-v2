@@ -5,6 +5,7 @@ namespace Modules\Projects\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
@@ -12,27 +13,28 @@ use Modules\Projects\Models\Project;
 /**
  * @extends Factory<\Modules\Projects\Models\Project>
  */
-class ProjectFactory extends Factory
+class ProjectFactory extends AbstractFactory
 {
     protected $model = Project::class;
 
+    protected $company;
+
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-            ?? Company::factory()->create();
+        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
 
-        // Create or get a customer that belongs to this company
         $customer = Relation::query()
-            ->where('company_id', $company->id)
+            ->where('company_id', $companyId)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
-            ->first()
-            ?? Relation::factory()
-                ->for($company)
+            ->first();
+
+        if ( ! $customer) {
+            $customer = Relation::factory()
                 ->customer()
+                ->state(['company_id' => $companyId])
                 ->create();
+        }
 
         $status    = $this->faker->randomElement(ProjectStatus::cases());
         $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
@@ -41,7 +43,6 @@ class ProjectFactory extends Factory
             : null;
 
         return [
-            'company_id'     => $company->id,
             'customer_id'    => $customer->id,
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),

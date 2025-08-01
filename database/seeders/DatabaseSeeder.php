@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use function count;
-
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -29,12 +27,12 @@ class DatabaseSeeder extends Seeder
 {
     private array $companyConfigs = [
         ['id' => 1, 'search_code' => 'ivplv2', 'name' => 'InvoicePlane Corporation'],
-        ['id' => 2, 'search_code' => 'acme',    'name' => 'Acme Inc.'],
+        ['id' => 2, 'search_code' => 'acme',   'name' => 'Acme Inc.'],
     ];
 
     private array $volumes = [
         'users'     => 3,
-        'relations' => 5,
+        'relations' => 25,
         'products'  => 5,
         'expenses'  => 5,
         'projects'  => 3,
@@ -49,7 +47,7 @@ class DatabaseSeeder extends Seeder
         $this->truncateAll();
         $this->seedGlobal();
 
-        $bar = $this->command->getOutput()->createProgressBar(count($this->companyConfigs));
+        $bar = $this->command->getOutput()->createProgressBar(\count($this->companyConfigs));
         $bar->setMessage('Companies');
         $bar->start();
 
@@ -71,21 +69,53 @@ class DatabaseSeeder extends Seeder
         $bar->finish();
         $this->command->newLine(2);
 
-        Company::all()->each(function (Company $company): void {
+        // --- Per-company seeders with parameters, each with debug output ---
+        $totalCompanies = Company::count();
+        $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);
+        $companyBar->setMessage('Seeding company data');
+        $companyBar->start();
+
+        Company::all()->each(callback: function (Company $company) use ($companyBar) {
             $p = ['company' => $company->id];
-            $this->callWith(UsersSeeder::class, $p + ['count' => 10]);
-            dd('here?');
-            $this->callWith(RelationsSeeder::class, $p + ['count' => 10]);
-            $this->callWith(ProductsSeeder::class, $p + ['count' => 10]);
-            $this->callWith(ExpensesSeeder::class, $p + ['count' => 10]);
-            $this->callWith(ProjectsSeeder::class, $p + ['count' => 15]);
-            $this->callWith(TasksSeeder::class, $p + ['count' => 15]);
-            $this->callWith(QuotesSeeder::class, $p + ['count' => 20]);
-            $this->callWith(InvoicesSeeder::class, $p + ['count' => 20]);
-            $this->callWith(PaymentsSeeder::class, $p + ['count' => 5]);
+
+            $this->command->info("===== START Seeding company {$company->id} ({$company->name}) =====");
+
+            $this->command->info('[DEBUG] Calling UsersSeeder with: ' . json_encode($p + ['count' => $this->volumes['users']]));
+            $this->callWith(UsersSeeder::class, $p + ['count' => $this->volumes['users']]);
+
+            $this->command->info('[DEBUG] Calling RelationsSeeder with: ' . json_encode($p + ['count' => $this->volumes['relations']]));
+            $this->callWith(RelationsSeeder::class, $p + ['count' => $this->volumes['relations']]);
+
+            $this->command->info('[DEBUG] Calling ProductsSeeder with: ' . json_encode($p + ['count' => $this->volumes['products']]));
+            $this->callWith(ProductsSeeder::class, $p + ['count' => $this->volumes['products']]);
+
+            $this->command->info('[DEBUG] Calling ExpensesSeeder with: ' . json_encode($p + ['count' => $this->volumes['expenses']]));
+            $this->callWith(ExpensesSeeder::class, $p + ['count' => $this->volumes['expenses']]);
+
+            $this->command->info('[DEBUG] Calling ProjectsSeeder with: ' . json_encode($p + ['count' => $this->volumes['projects']]));
+            $this->callWith(ProjectsSeeder::class, $p + ['count' => $this->volumes['projects']]);
+
+            $this->command->info('[DEBUG] Calling TasksSeeder with: ' . json_encode($p + ['count' => $this->volumes['tasks']]));
+            $this->callWith(TasksSeeder::class, $p + ['count' => $this->volumes['tasks']]);
+
+            $this->command->info('[DEBUG] Calling QuotesSeeder with: ' . json_encode($p + ['count' => $this->volumes['quotes']]));
+            $this->callWith(QuotesSeeder::class, $p + ['count' => $this->volumes['quotes']]);
+
+            $this->command->info('[DEBUG] Calling InvoicesSeeder with: ' . json_encode($p + ['count' => $this->volumes['invoices']]));
+            $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
+
+            $this->command->info('[DEBUG] Calling PaymentsSeeder with: ' . json_encode($p + ['count' => $this->volumes['payments']]));
+            $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
+
+            $this->command->info("===== END   Seeding company {$company->id} ({$company->name}) =====");
+
+            $companyBar->advance();
         });
 
-        $style = new OutputFormatterStyle('blue', null, ['bold']);
+        $companyBar->finish();
+        $this->command->newLine(2);
+
+        $style = new OutputFormatterStyle('#429AE1', null, ['bold']);
         $this->command->getOutput()->getFormatter()->setStyle('brand', $style);
         $this->command->line('<brand>InvoicePlane</brand>');
         $this->command->newLine();

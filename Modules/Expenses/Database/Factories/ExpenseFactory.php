@@ -5,6 +5,7 @@ namespace Modules\Expenses\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\AddressType;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
@@ -27,18 +28,16 @@ class ExpenseFactory extends Factory
             throw new RuntimeException('No company available for Expense factory');
         }
 
-        // Get a customer that belongs to this company
         $customer = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
-            ->first();
+            ->firstOrNew();
 
         if ( ! $customer) {
             dd('die early');
         }
 
-        // Get a vendor that belongs to this company, create one if none exists
         $vendor = Relation::query()
             ->where('company_id', $company->id)
             ->where('relation_type', RelationType::VENDOR->value)
@@ -46,31 +45,26 @@ class ExpenseFactory extends Factory
             ->first();
 
         if ( ! $vendor) {
-            // If no vendor exists, create one using the existing company
-            $vendor = \Modules\Clients\Models\Relation::factory()
-                ->for($company) // Use the existing company
+            $vendor = Relation::factory()
+                ->for($company)
                 ->vendor()
                 ->create();
 
-            // Create a primary contact for the vendor
             \Modules\Clients\Models\Contact::factory()
-                ->for($company) // Use the existing company
+                ->for($company)
                 ->create([
                     'relation_id' => $vendor->id,
                 ]);
 
-            // Create an address for the vendor
             \Modules\Clients\Models\Address::factory()
-                ->for($company) // Use the existing company
+                ->for($company)
                 ->create([
                     'addressable_id'   => $vendor->id,
-                    'addressable_type' => \Modules\Clients\Models\Relation::class,
-                    'type'             => \Modules\Clients\Enums\AddressType::SHIPPING->value,
-                    'is_primary'       => true,
+                    'addressable_type' => Relation::class,
+                    'type'             => AddressType::SHIPPING->value,
                 ]);
         }
 
-        // Get a category that belongs to this company
         $category = ExpenseCategory::query()
             ->where('company_id', $company->id)
             ->inRandomOrder()
@@ -80,7 +74,6 @@ class ExpenseFactory extends Factory
             dd('die early');
         }
 
-        // Get a user that belongs to this company, throw if none exists
         /*
         $user = \Modules\Core\Models\User::query()
             ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))

@@ -4,7 +4,7 @@ namespace Modules\Clients\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Models\Address;
-use Modules\Core\Models\Company;
+use Modules\Core\Enums\AddressType;
 
 class AddressFactory extends Factory
 {
@@ -12,18 +12,20 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-
         return [
-            'company_id'        => $company->id,
-            'type'              => fake()->word,
-            'address_1'         => fake()->optional()->word,
-            'address_2'         => fake()->optional()->word,
-            'number'            => fake()->optional()->word,
+            'type'              => fake()->randomElement(AddressType::cases())->value,
+            'address_1'         => fake()->streetAddress,
+            'address_2'         => null,
+            'number'            => fake()->buildingNumber,
             'postal_code'       => fake()->postcode,
             'city'              => fake()->city,
-            'state_or_province' => fake()->optional()->word,
-            'country'           => fake()->country,
+            'state_or_province' => fake()->stateAbbr,
+            'country'           => fake()->countryCode,
         ];
+    }
+
+    public function ofType(AddressType $type): self
+    {
+        return $this->state(['type' => $type->value]);
     }
 }

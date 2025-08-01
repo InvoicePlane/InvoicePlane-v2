@@ -3,32 +3,30 @@
 namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 abstract class AbstractSeeder extends Seeder
 {
     protected ?int $companyId = null;
 
-    protected int  $count = 0;
+    protected int $count = 0;
 
-    /** Child classes must set these */
     protected string $label;
 
-    protected int    $defaultCount = 10;
-
-    private array $parameters;
+    protected int $defaultCount = 10;
 
     abstract protected function buildOne(): void;
 
-    public function run(array $parameters = []): void
+    public function run($company = null, $count = null): void
     {
-        $this->parameters = $parameters;
-        $this->resolveOptions();
+        $this->companyId = $company ? (int) $company : null;
+        $this->count     = $count !== null ? (int) $count : $this->defaultCount;
 
         if ( ! $this->companyId) {
-            $this->command->warn(static::class . ' skipped (no company id)');
+            $this->command->warn('[DEBUG] Skipped: ' . static::class . ' (no company id)');
 
             return;
         }
@@ -38,54 +36,65 @@ abstract class AbstractSeeder extends Seeder
         $this->afterSeed();
     }
 
-    /* --------------------------------------------------------------------- */
-    /*  Hooks                                                                */
-    /* --------------------------------------------------------------------- */
     protected function beforeSeed(): void {}
 
     protected function afterSeed(): void {}
 
-    /* --------------------------------------------------------------------- */
-
-    protected function company(): Company
+    protected function company(): ?Company
     {
         return Company::query()->findOrFail($this->companyId);
     }
 
-    /* --------------------------------------------------------------------- */
-    /*  Helpers                                                              */
-    /* --------------------------------------------------------------------- */
-    private function resolveOptions(): void
+    protected function findOrCreateProspect(int $companyId): Relation
     {
-        /** @var \Illuminate\Console\Command $cmd */
-        $cmd = $this->command;
+        $prospect = Relation::query()
+            ->where('company_id', $companyId)
+            ->where('relation_type', RelationType::PROSPECT->value)
+            ->inRandomOrder()
+            ->first();
 
-        $def = $cmd->getDefinition();
+        if ( ! $prospect) {
+            $prospect = Relation::factory()
+                ->prospect()
+                ->state(['company_id' => $companyId])
+                ->create();
+        }
 
-        $this->companyId = (int) ($this->parameters['company']
-            ?? ($def->hasOption('company') ? $cmd->option('company') : null)
-            ?? null);
+        return $prospect;
+    }
 
-        $this->count = (int) ($this->parameters['count']
-            ?? ($def->hasOption('count') ? $cmd->option('count') : null)
-            ?? $this->defaultCount);
+    protected function findOrCreateRelationOfType(int $companyId, RelationType $type): Relation
+    {
+        $relation = Relation::query()
+            ->where('company_id', $companyId)
+            ->where('relation_type', $type->value)
+            ->inRandomOrder()
+            ->first();
+
+        if ($relation) {
+            return $relation;
+        }
+
+        $factory = Relation::factory()->state(['company_id' => $companyId]);
+        $factory = match ($type) {
+            RelationType::CUSTOMER => $factory->customer(),
+            RelationType::PROSPECT => $factory->prospect(),
+            RelationType::VENDOR   => $factory->vendor(),
+            default                => $factory,
+        };
+
+        return $factory->create();
     }
 
     private function seedWithProgress(): void
     {
         $bar = $this->progressBar($this->count);
-
         for ($i = 0; $i < $this->count; $i++) {
             $this->buildOne();
             $bar->advance();
         }
-
         $bar->finish();
         $this->command->newLine(2);
-        $style = new OutputFormatterStyle('blue', null, ['bold']);
-        $this->command->getOutput()->getFormatter()->setStyle('brand', $style);
-        $this->command->line('<brand>InvoicePlane</brand>');
-        $this->command->newLine();
     }
 
     private function progressBar(int $max): ProgressBar

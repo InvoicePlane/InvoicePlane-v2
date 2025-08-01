@@ -5,47 +5,31 @@ namespace Modules\Quotes\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 
 /**
  * @extends Factory<\Modules\Quotes\Models\Quote>
  */
-class QuoteFactory extends Factory
+class QuoteFactory extends AbstractFactory
 {
     protected $model = Quote::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
+        $company   = Company::query()->find($companyId);
 
-        // Create or get a prospect that belongs to this company
-        $prospect = Relation::query()
-            ->where('company_id', $company->id)
-            ->where('relation_type', RelationType::PROSPECT->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()
-            ->for($company)
-            ->prospect()
-            ->create();
+        $prospect = $this->findOrCreateRelationOfType($companyId, RelationType::CUSTOMER);
 
-        // Create or get a user that belongs to this company
-        /*
-        $user = User::query()
-            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
-            ->inRandomOrder()
-            ->first() ?? User::factory()
-            ->hasAttached($company)
-            ->create();
-            */
+        $user = $this->findOrCreateRandomUser($companyId);
 
         // Create or get a document group that belongs to this company
         $group = DocumentGroup::query()
-            ->where('company_id', $company->id)
+            ->where('company_id', $companyId)
             ->inRandomOrder()
             ->first() ?? DocumentGroup::factory()
             ->for($company)
@@ -62,10 +46,9 @@ class QuoteFactory extends Factory
         $expiresAt = (clone $quotedAt)->modify('+' . fake()->numberBetween(7, 180) . ' days');
 
         return [
-            'company_id'             => $company->id,
             'prospect_id'            => $prospect->id,
             'document_group_id'      => $group->id,
-            'user_id'                => null,
+            'user_id'                => $user->id,
             'quote_number'           => 'Q-' . now()->year . '-' . fake()->unique()->numberBetween(1, 9999),
             'quote_status'           => fake()->randomElement(QuoteStatus::cases())->value,
             'quoted_at'              => $quotedAt,

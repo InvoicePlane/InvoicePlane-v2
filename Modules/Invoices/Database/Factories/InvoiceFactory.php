@@ -20,22 +20,18 @@ class InvoiceFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-            ?: Company::factory()->create();
+        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
+        $company   = Company::query()->find($companyId);
 
-        // Create or get a user that belongs to this company
         $user = User::query()
-            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
+            ->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
             ->inRandomOrder()
             ->first() ?? User::factory()
             ->hasAttached($company)
             ->create();
 
-        // Create or get a customer that belongs to this company
         $customer = Relation::query()
-            ->where('company_id', $company->id)
+            ->where('company_id', $companyId)
             ->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first() ?? Relation::factory()
@@ -43,9 +39,8 @@ class InvoiceFactory extends Factory
             ->customer()
             ->create();
 
-        // Create or get a document group that belongs to this company
         $documentGroup = DocumentGroup::query()
-            ->where('company_id', $company->id)
+            ->where('company_id', $companyId)
             ->inRandomOrder()
             ->first() ?? DocumentGroup::factory()
             ->for($company)
@@ -58,7 +53,6 @@ class InvoiceFactory extends Factory
         $total    = $subtotal + $taxTotal;
 
         return [
-            'company_id'               => $company->id,
             'user_id'                  => $user->id,
             'customer_id'              => $customer->id,
             'document_group_id'        => $documentGroup->id,

@@ -2,7 +2,6 @@
 
 namespace Modules\Quotes\Database\Seeders;
 
-use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Models\Quote;
@@ -16,22 +15,34 @@ class QuotesSeeder extends AbstractSeeder
 
     protected function buildOne(): void
     {
-        $client = Relation::query()
-            ->where('company_id', $this->companyId)
-            ->inRandomOrder()
-            ->firstOrFail();
-        $quote = Quote::factory()
-            ->state(['company_id' => $this->companyId, 'client_id' => $client->id])
-            ->create();
+        $prospect = $this->findOrCreateProspect($this->companyId);
+        if ( ! $prospect) {
+            $this->command->warn("[WARN] No prospect for company {$this->companyId}");
+
+            return;
+        }
+
         $product = Product::query()
             ->where('company_id', $this->companyId)
             ->inRandomOrder()
-            ->firstOrFail();
+            ->first();
+
+        if ( ! $product) {
+            $this->command->warn("[WARN] No product for company {$this->companyId}");
+
+            return;
+        }
+
+        $quote = Quote::factory()
+            ->state(['company_id' => $this->companyId, 'prospect_id' => $prospect->id])
+            ->create();
 
         QuoteItem::factory()
             ->count(random_int(2, 4))
             ->for($quote)
             ->state(['product_id' => $product->id])
             ->create();
+
+        $this->command->info("[DEBUG] Finished seeding Quote #{$quote->id} for company {$this->companyId}");
     }
 }
