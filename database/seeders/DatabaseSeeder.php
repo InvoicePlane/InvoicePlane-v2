@@ -63,33 +63,34 @@ class DatabaseSeeder extends Seeder
                     'coc_number'       => (string) random_int(1_000_000, 9_999_999),
                     'quote_template'   => 'default',
                     'invoice_template' => 'default',
-                ],
+                ]
             );
-
-            $p = ['company' => $company->id];
-
-            $this->callWith(UsersSeeder::class, $p + ['count' => $this->volumes['users']]);
-            $this->callWith(RelationsSeeder::class, $p + ['count' => $this->volumes['relations']]);
-            $this->callWith(ProductsSeeder::class, $p + ['count' => $this->volumes['products']]);
-            $this->callWith(ExpensesSeeder::class, $p + ['count' => $this->volumes['expenses']]);
-            $this->callWith(ProjectsSeeder::class, $p + ['count' => $this->volumes['projects']]);
-            $this->callWith(TasksSeeder::class, $p + ['count' => $this->volumes['tasks']]);
-            $this->callWith(QuotesSeeder::class, $p + ['count' => $this->volumes['quotes']]);
-            $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
-            $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
 
             $bar->advance();
         }
-
         $bar->finish();
         $this->command->newLine(2);
+
+        Company::all()->each(function (Company $company): void {
+            $p = ['company' => $company->id];
+            $this->callWith(UsersSeeder::class, $p + ['count' => 10]);
+            dd('here?');
+            $this->callWith(RelationsSeeder::class, $p + ['count' => 10]);
+            $this->callWith(ProductsSeeder::class, $p + ['count' => 10]);
+            $this->callWith(ExpensesSeeder::class, $p + ['count' => 10]);
+            $this->callWith(ProjectsSeeder::class, $p + ['count' => 15]);
+            $this->callWith(TasksSeeder::class, $p + ['count' => 15]);
+            $this->callWith(QuotesSeeder::class, $p + ['count' => 20]);
+            $this->callWith(InvoicesSeeder::class, $p + ['count' => 20]);
+            $this->callWith(PaymentsSeeder::class, $p + ['count' => 5]);
+        });
 
         $style = new OutputFormatterStyle('blue', null, ['bold']);
         $this->command->getOutput()->getFormatter()->setStyle('brand', $style);
         $this->command->line('<brand>InvoicePlane</brand>');
         $this->command->newLine();
 
-        if (Company::query()->count() !== 2) {
+        if (Company::query()->count() !== count($this->companyConfigs)) {
             throw new RuntimeException('Unexpected company count.');
         }
     }

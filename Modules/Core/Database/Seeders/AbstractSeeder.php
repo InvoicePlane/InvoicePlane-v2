@@ -18,10 +18,13 @@ abstract class AbstractSeeder extends Seeder
 
     protected int    $defaultCount = 10;
 
+    private array $parameters;
+
     abstract protected function buildOne(): void;
 
-    public function run(): void
+    public function run(array $parameters = []): void
     {
+        $this->parameters = $parameters;
         $this->resolveOptions();
 
         if ( ! $this->companyId) {
