@@ -8,7 +8,8 @@ use Modules\Projects\Models\Task;
 
 class TasksSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Tasks';
+    protected string $label = 'Tasks';
+
     protected int    $defaultCount = 15;
 
     protected function buildOne(): void

@@ -2,7 +2,6 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
@@ -39,15 +38,15 @@ class TaskFactory extends Factory
             ->inRandomOrder()
             ->first();
 
-        if (!$project) {
+        if ( ! $project) {
             // If no project exists, create one
             $project = Project::factory()->create([
-                'company_id' => $company->id,
+                'company_id'  => $company->id,
                 'customer_id' => $customer->id,
-                'name' => 'Project for ' . $customer->name,
-                'status' => 'in_progress',
-                'start_date' => now()->subDays(rand(1, 30)),
-                'deadline' => now()->addDays(rand(30, 90)),
+                'name'        => 'Project for ' . $customer->name,
+                'status'      => 'in_progress',
+                'start_date'  => now()->subDays(rand(1, 30)),
+                'deadline'    => now()->addDays(rand(30, 90)),
             ]);
         }
 

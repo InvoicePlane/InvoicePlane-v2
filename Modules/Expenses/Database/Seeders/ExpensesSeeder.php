@@ -7,7 +7,8 @@ use Modules\Expenses\Models\Expense;
 
 class ExpensesSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Expenses';
+    protected string $label = 'Expenses';
+
     protected int    $defaultCount = 10;
 
     protected function buildOne(): void

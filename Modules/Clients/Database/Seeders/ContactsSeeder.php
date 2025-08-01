@@ -8,7 +8,8 @@ use Modules\Core\Database\Seeders\AbstractSeeder;
 
 class ContactsSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Contacts';
+    protected string $label = 'Contacts';
+
     protected int    $defaultCount = 5;
 
     protected function buildOne(): void

@@ -2,12 +2,13 @@
 
 namespace Modules\Core\Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\User;
 use Spatie\Permission\Models\Role;
 
-class OwnerUserSeeder extends AbstractSeeder
+class OwnerUserSeeder extends Seeder
 {
     public function run(): void
     {

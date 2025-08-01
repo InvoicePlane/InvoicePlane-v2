@@ -7,7 +7,8 @@ use Modules\Projects\Models\Project;
 
 class ProjectsSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Projects';
+    protected string $label = 'Projects';
+
     protected int    $defaultCount = 5;
 
     protected function buildOne(): void

@@ -7,7 +7,8 @@ use Modules\Expenses\Models\ExpenseCategory;
 
 class ExpenseCategoriesSeeder extends AbstractSeeder
 {
-    protected string $label        = 'ExpenseCats';
+    protected string $label = 'ExpenseCats';
+
     protected int    $defaultCount = 3;
 
     protected function buildOne(): void

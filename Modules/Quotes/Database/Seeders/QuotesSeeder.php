@@ -10,16 +10,17 @@ use Modules\Quotes\Models\QuoteItem;
 
 class QuotesSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Quotes';
+    protected string $label = 'Quotes';
+
     protected int    $defaultCount = 10;
 
     protected function buildOne(): void
     {
-        $client  = Relation::query()
+        $client = Relation::query()
             ->where('company_id', $this->companyId)
             ->inRandomOrder()
             ->firstOrFail();
-        $quote   = Quote::factory()
+        $quote = Quote::factory()
             ->state(['company_id' => $this->companyId, 'client_id' => $client->id])
             ->create();
         $product = Product::query()

@@ -7,7 +7,8 @@ use Modules\Products\Models\ProductCategory;
 
 class ProductCategoriesSeeder extends AbstractSeeder
 {
-    protected string $label        = 'ProdCategories';
+    protected string $label = 'ProdCategories';
+
     protected int    $defaultCount = 5;
 
     protected function buildOne(): void

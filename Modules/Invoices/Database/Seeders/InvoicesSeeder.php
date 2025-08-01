@@ -10,12 +10,13 @@ use Modules\Products\Models\Product;
 
 class InvoicesSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Invoices';
+    protected string $label = 'Invoices';
+
     protected int    $defaultCount = 20;
 
     protected function buildOne(): void
     {
-        $client  = Relation::query()
+        $client = Relation::query()
             ->where('company_id', $this->companyId)
             ->inRandomOrder()
             ->firstOrFail();

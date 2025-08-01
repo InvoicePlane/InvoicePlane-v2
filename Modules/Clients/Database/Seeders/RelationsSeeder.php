@@ -9,7 +9,8 @@ use Modules\Core\Database\Seeders\AbstractSeeder;
 
 class RelationsSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Relations';
+    protected string $label = 'Relations';
+
     protected int    $defaultCount = 5;
 
     protected function buildOne(): void

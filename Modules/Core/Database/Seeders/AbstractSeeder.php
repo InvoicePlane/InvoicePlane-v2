@@ -2,26 +2,31 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Console\Command;
 use Illuminate\Database\Seeder;
 use Modules\Core\Models\Company;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 abstract class AbstractSeeder extends Seeder
 {
     protected ?int $companyId = null;
-    protected int  $count     = 0;
+
+    protected int  $count = 0;
 
     /** Child classes must set these */
     protected string $label;
+
     protected int    $defaultCount = 10;
+
+    abstract protected function buildOne(): void;
 
     public function run(): void
     {
         $this->resolveOptions();
 
-        if (! $this->companyId) {
+        if ( ! $this->companyId) {
             $this->command->warn(static::class . ' skipped (no company id)');
+
             return;
         }
 
@@ -31,19 +36,35 @@ abstract class AbstractSeeder extends Seeder
     }
 
     /* --------------------------------------------------------------------- */
+    /*  Hooks                                                                */
+    /* --------------------------------------------------------------------- */
+    protected function beforeSeed(): void {}
+
+    protected function afterSeed(): void {}
+
+    /* --------------------------------------------------------------------- */
+
+    protected function company(): Company
+    {
+        return Company::query()->findOrFail($this->companyId);
+    }
+
+    /* --------------------------------------------------------------------- */
     /*  Helpers                                                              */
     /* --------------------------------------------------------------------- */
     private function resolveOptions(): void
     {
-        /** @var Command $cmd */
+        /** @var \Illuminate\Console\Command $cmd */
         $cmd = $this->command;
 
+        $def = $cmd->getDefinition();
+
         $this->companyId = (int) ($this->parameters['company']
-            ?? $cmd->option('company')
+            ?? ($def->hasOption('company') ? $cmd->option('company') : null)
             ?? null);
 
         $this->count = (int) ($this->parameters['count']
-            ?? $cmd->option('count')
+            ?? ($def->hasOption('count') ? $cmd->option('count') : null)
             ?? $this->defaultCount);
     }
 
@@ -57,8 +78,11 @@ abstract class AbstractSeeder extends Seeder
         }
 
         $bar->finish();
+        $this->command->newLine(2);
+        $style = new OutputFormatterStyle('blue', null, ['bold']);
+        $this->command->getOutput()->getFormatter()->setStyle('brand', $style);
+        $this->command->line('<brand>InvoicePlane</brand>');
         $this->command->newLine();
-        $this->command->info("<fg=green>{$this->label}</>");
     }
 
     private function progressBar(int $max): ProgressBar
@@ -68,20 +92,5 @@ abstract class AbstractSeeder extends Seeder
         $bar->start();
 
         return $bar;
-    }
-
-    /* --------------------------------------------------------------------- */
-    /*  Hooks                                                                */
-    /* --------------------------------------------------------------------- */
-    protected function beforeSeed(): void {}
-    protected function afterSeed(): void {}
-
-    abstract protected function buildOne(): void;
-
-    /* --------------------------------------------------------------------- */
-
-    protected function company(): Company
-    {
-        return Company::query()->findOrFail($this->companyId);
     }
 }

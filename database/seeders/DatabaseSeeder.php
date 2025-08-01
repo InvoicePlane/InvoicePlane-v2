@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use function count;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +15,14 @@ use Modules\Core\Database\Seeders\RoleHasPermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Database\Seeders\UsersSeeder;
 use Modules\Core\Models\Company;
+use Modules\Expenses\Database\Seeders\ExpensesSeeder;
+use Modules\Invoices\Database\Seeders\InvoicesSeeder;
+use Modules\Payments\Database\Seeders\PaymentsSeeder;
 use Modules\Products\Database\Seeders\ProductsSeeder;
+use Modules\Projects\Database\Seeders\ProjectsSeeder;
+use Modules\Projects\Database\Seeders\TasksSeeder;
+use Modules\Quotes\Database\Seeders\QuotesSeeder;
+use RuntimeException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class DatabaseSeeder extends Seeder
@@ -23,12 +32,24 @@ class DatabaseSeeder extends Seeder
         ['id' => 2, 'search_code' => 'acme',    'name' => 'Acme Inc.'],
     ];
 
+    private array $volumes = [
+        'users'     => 3,
+        'relations' => 5,
+        'products'  => 5,
+        'expenses'  => 5,
+        'projects'  => 3,
+        'tasks'     => 10,
+        'quotes'    => 10,
+        'invoices'  => 20,
+        'payments'  => 8,
+    ];
+
     public function run(): void
     {
         $this->truncateAll();
         $this->seedGlobal();
 
-        $bar = $this->command->getOutput()->createProgressBar(\count($this->companyConfigs));
+        $bar = $this->command->getOutput()->createProgressBar(count($this->companyConfigs));
         $bar->setMessage('Companies');
         $bar->start();
 
@@ -45,10 +66,17 @@ class DatabaseSeeder extends Seeder
                 ],
             );
 
-            /* company-dependent minimal data */
-            $this->callWith(UsersSeeder::class,     ['company' => $company->id, 'count' => 3]);
-            $this->callWith(RelationsSeeder::class, ['company' => $company->id, 'count' => 5]);
-            $this->callWith(ProductsSeeder::class,  ['company' => $company->id, 'count' => 5]);
+            $p = ['company' => $company->id];
+
+            $this->callWith(UsersSeeder::class, $p + ['count' => $this->volumes['users']]);
+            $this->callWith(RelationsSeeder::class, $p + ['count' => $this->volumes['relations']]);
+            $this->callWith(ProductsSeeder::class, $p + ['count' => $this->volumes['products']]);
+            $this->callWith(ExpensesSeeder::class, $p + ['count' => $this->volumes['expenses']]);
+            $this->callWith(ProjectsSeeder::class, $p + ['count' => $this->volumes['projects']]);
+            $this->callWith(TasksSeeder::class, $p + ['count' => $this->volumes['tasks']]);
+            $this->callWith(QuotesSeeder::class, $p + ['count' => $this->volumes['quotes']]);
+            $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
+            $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
 
             $bar->advance();
         }
@@ -61,8 +89,8 @@ class DatabaseSeeder extends Seeder
         $this->command->line('<brand>InvoicePlane</brand>');
         $this->command->newLine();
 
-        if (Company::query()->count() !== \count($this->companyConfigs)) {
-            throw new \RuntimeException('Unexpected company count.');
+        if (Company::query()->count() !== 2) {
+            throw new RuntimeException('Unexpected company count.');
         }
     }
 

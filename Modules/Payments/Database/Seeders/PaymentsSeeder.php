@@ -8,7 +8,8 @@ use Modules\Payments\Models\Payment;
 
 class PaymentsSeeder extends AbstractSeeder
 {
-    protected string $label        = 'Payments';
+    protected string $label = 'Payments';
+
     protected int    $defaultCount = 8;
 
     protected function buildOne(): void
