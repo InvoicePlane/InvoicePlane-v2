@@ -2,55 +2,18 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Support\Facades\Log;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Products\Models\ProductUnit;
 
-class ProductUnitsSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class ProductUnitsSeeder extends AbstractSeeder
 {
-    protected array $defaultUnits = [
-        ['unit_name' => 'Piece', 'unit_name_plrl' => 'pcs'],
-        ['unit_name' => 'Kilogram', 'unit_name_plrl' => 'kgs'],
-        ['unit_name' => 'Gram', 'unit_name_plrl' => 'gms'],
-        ['unit_name' => 'Liter', 'unit_name_plrl' => 'Liters'],
-        ['unit_name' => 'Meter', 'unit_name_plrl' => 'mtrs'],
-        ['unit_name' => 'Box', 'unit_name_plrl' => 'boxes'],
-        ['unit_name' => 'Set', 'unit_name_plrl' => 'sets'],
-        ['unit_name' => 'Pair', 'unit_name_plrl' => 'pairs'],
-        ['unit_name' => 'Dozen', 'unit_name_plrl' => 'dozens'],
-        ['unit_name' => 'Hour', 'unit_name_plrl' => 'hrs'],
-    ];
+    protected string $label        = 'ProdUnits';
+    protected int    $defaultCount = 2;
 
-    public function run(?int $companyId = null): void
-    {
-        $query = Company::query();
-
-        if ($companyId) {
-            $query->where('id', $companyId);
-        }
-
-        $query->each(function (Company $company) {
-            Log::info("Seeding product units for company: {$company->name}");
-
-            $unitsToUpsert = array_map(function ($unit) use ($company) {
-                return [
-                    'company_id'     => $company->id,
-                    'unit_name'      => $unit['unit_name'],
-                    'unit_name_plrl' => $unit['unit_name_plrl'],
-                ];
-            }, $this->defaultUnits);
-
-            ProductUnit::upsert(
-                $unitsToUpsert,
-                ['company_id', 'unit_name'],
-                ['unit_name_plrl']
-            );
-
-            Log::info(sprintf(
-                'Upserted %d product units for company: %s',
-                count($unitsToUpsert),
-                $company->name
-            ));
-        });
-    }
+    protected function buildOne(): void
+{
+    ProductUnit::factory()
+        ->state(['company_id' => $this->companyId])
+        ->create();
+}
 }
