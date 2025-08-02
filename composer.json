@@ -19,7 +19,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "doctrine/dbal": ">=4.3.0",
+        "doctrine/dbal": ">=4.3.1",
         "filament/actions": "^4.0@alpha",
         "filament/filament": "^4.0",
         "filament/forms": "^4.0@alpha",
@@ -28,12 +28,12 @@
         "filament/schemas": "^4.0@alpha",
         "filament/tables": "^4.0@alpha",
         "filament/widgets": "^4.0@alpha",
-        "laravel/framework": "^12.20",
+        "laravel/framework": "^12.21",
         "nwidart/laravel-modules": "^12.0.4",
-        "spatie/laravel-permission": ">=6.20"
+        "spatie/laravel-permission": ">=6.21"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.15.4",
+        "barryvdh/laravel-debugbar": "^3.16.0",
         "driftingly/rector-laravel": "^2.0.5",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.6",
