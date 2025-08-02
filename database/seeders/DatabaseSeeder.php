@@ -31,15 +31,15 @@ class DatabaseSeeder extends Seeder
     ];
 
     private array $volumes = [
-        'users'     => 3,
+        'users'     => 15,
         'relations' => 25,
-        'products'  => 5,
-        'expenses'  => 5,
-        'projects'  => 3,
-        'tasks'     => 10,
-        'quotes'    => 10,
-        'invoices'  => 20,
-        'payments'  => 8,
+        'products'  => 15,
+        'expenses'  => 15,
+        'projects'  => 15,
+        'tasks'     => 25,
+        'quotes'    => 25,
+        'invoices'  => 25,
+        'payments'  => 15,
     ];
 
     public function run(): void
@@ -69,8 +69,7 @@ class DatabaseSeeder extends Seeder
         $bar->finish();
         $this->command->newLine(2);
 
-        // --- Per-company seeders with parameters, each with debug output ---
-        $totalCompanies = Company::count();
+        $totalCompanies = Company::query()->count();
         $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);
         $companyBar->setMessage('Seeding company data');
         $companyBar->start();

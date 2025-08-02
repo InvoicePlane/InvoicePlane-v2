@@ -3,10 +3,8 @@
 namespace Modules\Expenses\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Enums\AddressType;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
@@ -16,79 +14,29 @@ use RuntimeException;
 /**
  * @extends Factory<\Modules\Expenses\Models\Expense>
  */
-class ExpenseFactory extends Factory
+class ExpenseFactory extends AbstractFactory
 {
     protected $model = Expense::class;
 
     public function definition(): array
     {
-        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
 
         if ( ! $company) {
             throw new RuntimeException('No company available for Expense factory');
         }
 
-        $customer = Relation::query()
-            ->where('company_id', $company->id)
-            ->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->firstOrNew();
+        $customerId = $attributes['customer_id'] ?? $this->resolveForeignKey(Relation::class, $companyId);
 
-        if ( ! $customer) {
-            dd('die early');
-        }
+        $vendorId = $attributes['vendor_id'] ?? $this->resolveForeignKey(Relation::class, $companyId);
 
-        $vendor = Relation::query()
-            ->where('company_id', $company->id)
-            ->where('relation_type', RelationType::VENDOR->value)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $vendor) {
-            $vendor = Relation::factory()
-                ->for($company)
-                ->vendor()
-                ->create();
-
-            \Modules\Clients\Models\Contact::factory()
-                ->for($company)
-                ->create([
-                    'relation_id' => $vendor->id,
-                ]);
-
-            \Modules\Clients\Models\Address::factory()
-                ->for($company)
-                ->create([
-                    'addressable_id'   => $vendor->id,
-                    'addressable_type' => Relation::class,
-                    'type'             => AddressType::SHIPPING->value,
-                ]);
-        }
-
-        $category = ExpenseCategory::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $category) {
-            dd('die early');
-        }
-
-        /*
-        $user = \Modules\Core\Models\User::query()
-            ->whereHas('companies', fn ($q) => $q->where('companies.id', $company->id))
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $user) {
-            throw new RuntimeException("No users found for company {$company->id}. Please ensure users are created before expenses.");
-        }*/
+        $categoryId = $attributes['category_id'] ?? $this->resolveForeignKey(ExpenseCategory::class, $companyId);
 
         return [
-            'company_id'     => $company->id,
-            'customer_id'    => $customer->id,
-            'vendor_id'      => $vendor->id,
-            'category_id'    => $category->id,
+            'customer_id'    => $customerId,
+            'vendor_id'      => $vendorId,
+            'category_id'    => $categoryId,
             'user_id'        => null,
             'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'expense_status' => $this->faker->randomElement(ExpenseStatus::cases())->value,

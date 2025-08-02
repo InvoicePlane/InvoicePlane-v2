@@ -2,11 +2,11 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Models\Address;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Enums\AddressType;
 
-class AddressFactory extends Factory
+class AddressFactory extends AbstractFactory
 {
     protected $model = Address::class;
 
@@ -15,11 +15,11 @@ class AddressFactory extends Factory
         return [
             'type'              => fake()->randomElement(AddressType::cases())->value,
             'address_1'         => fake()->streetAddress,
-            'address_2'         => null,
+            'address_2'         => fake()->optional(0.7)->secondaryAddress,
             'number'            => fake()->buildingNumber,
             'postal_code'       => fake()->postcode,
             'city'              => fake()->city,
-            'state_or_province' => fake()->stateAbbr,
+            'state_or_province' => fake()->optional()->stateAbbr,
             'country'           => fake()->countryCode,
         ];
     }

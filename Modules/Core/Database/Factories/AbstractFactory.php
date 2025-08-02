@@ -3,56 +3,31 @@
 namespace Modules\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvalidArgumentException;
-use Modules\Core\Models\User;
-use Modules\Products\Models\Product;
+use Modules\Core\Models\Company;
 
-class AbstractFactory extends Factory
+abstract class AbstractFactory extends Factory
 {
-    public function definition() {}
-
-    protected function findOrCreateWithCompany(string $modelClass, array $where, array $attributes = [])
+    protected function resolveCompanyId(array $attributes = []): ?int
     {
-        if ( ! method_exists($modelClass, 'query')) {
-            throw new InvalidArgumentException("Class {$modelClass} must be an Eloquent model with a query() method.");
-        }
-
-        return $modelClass::query()
-            ->where($where)
-            ->inRandomOrder()
-            ->firstOrCreate($where, $attributes);
+        return $attributes['company_id']
+            ?? $this->company?->id
+            ?? null;
     }
 
-    protected function findOrCreateRandomUser(int $companyId): User
+    protected function resolveCompany()
     {
-        $user = User::query()
-            ->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
-            ->inRandomOrder()
-            ->first();
+        $companyId = $this->company?->id;
 
-        if ( ! $user) {
-            $user = User::factory()
-                ->create();
-
-            $user->companies()->attach($companyId);
-        }
-
-        return $user;
+        return $this->company ?? Company::query()->find($companyId);
     }
 
-    protected function findOrCreateRandomProduct(int $companyId): Product
+    protected function resolveForeignKey($relatedClass, $companyId = null)
     {
-        $product = Product::query()
-            ->where('company_id', $companyId)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $product) {
-            $product = Product::factory()
-                ->state(['company_id' => $companyId])
-                ->create();
+        if (app()->runningUnitTests()) {
+            return $relatedClass::query()->where('company_id', $companyId)
+                ->inRandomOrder()
+                ->first()?->id
+                ?? $relatedClass::factory();
         }
-
-        return $product;
     }
 }

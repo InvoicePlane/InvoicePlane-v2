@@ -8,13 +8,19 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Project;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 abstract class AbstractSeeder extends Seeder
 {
     protected ?int $companyId = null;
+
     protected int $count = 0;
+
     protected string $label;
+
     protected int $defaultCount = 10;
 
     abstract protected function buildOne(): void;
@@ -22,10 +28,11 @@ abstract class AbstractSeeder extends Seeder
     public function run($company = null, $count = null): void
     {
         $this->companyId = $company ? (int) $company : null;
-        $this->count = $count ? (int) $count : $this->defaultCount;
+        $this->count     = $count ? (int) $count : $this->defaultCount;
 
-        if (! $this->companyId) {
+        if ( ! $this->companyId) {
             $this->command->warn(static::class . ' skipped (no company id)');
+
             return;
         }
 
@@ -35,6 +42,7 @@ abstract class AbstractSeeder extends Seeder
     }
 
     protected function beforeSeed(): void {}
+
     protected function afterSeed(): void {}
 
     protected function company(): Company
@@ -51,12 +59,13 @@ abstract class AbstractSeeder extends Seeder
             ->inRandomOrder()
             ->first();
 
-        if (! $customer) {
+        if ( ! $customer) {
             $customer = Relation::factory()
                 ->customer()
                 ->state(['company_id' => $companyId])
                 ->create();
         }
+
         return $customer;
     }
 
@@ -67,25 +76,27 @@ abstract class AbstractSeeder extends Seeder
             ->inRandomOrder()
             ->first();
 
-        if (! $prospect) {
+        if ( ! $prospect) {
             $prospect = Relation::factory()
                 ->prospect()
                 ->state(['company_id' => $companyId])
                 ->create();
         }
+
         return $prospect;
     }
 
     protected function findOrCreateUser(int $companyId): User
     {
-        $user = User::query()->whereHas('companies', fn($q) => $q->where('companies.id', $companyId))
+        $user = User::query()->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
             ->inRandomOrder()
             ->first();
 
-        if (! $user) {
+        if ( ! $user) {
             $user = User::factory()->create();
             $user->companies()->attach($companyId);
         }
+
         return $user;
     }
 
@@ -115,10 +126,47 @@ abstract class AbstractSeeder extends Seeder
     protected function findOrCreateProduct(int $companyId): Product
     {
         $product = Product::query()->where('company_id', $companyId)->inRandomOrder()->first();
-        if (!$product) {
+        if ( ! $product) {
             $product = Product::factory()->state(['company_id' => $companyId])->create();
         }
+
         return $product;
+    }
+
+    protected function findOrCreateProductCategory(int $companyId): ProductCategory
+    {
+        $prodCat = ProductCategory::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()->first();
+
+        if ( ! $prodCat) {
+            $prodCat = ProductCategory::factory()->state(['company_id' => $companyId])->create();
+        }
+
+        return $prodCat;
+    }
+
+    protected function findOrCreateProductUnit(int $companyId): ProductUnit
+    {
+        $prodUnit = ProductUnit::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()->first();
+
+        if ( ! $prodUnit) {
+            $prodUnit = ProductUnit::factory()->state(['company_id' => $companyId])->create();
+        }
+
+        return $prodUnit;
+    }
+
+    protected function findOrCreateProject(int $companyId): Project
+    {
+        $project = Project::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()->first();
+
+        if ( ! $project) {
+            $project = Project::factory()->state(['company_id' => $companyId])->create();
+        }
+
+        return $project;
     }
 
     private function seedWithProgress(): void

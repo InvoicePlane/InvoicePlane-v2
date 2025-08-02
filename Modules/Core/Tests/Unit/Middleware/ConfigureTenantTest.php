@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit\Middleware;
+namespace Modules\Core\Tests\Feature\Middleware;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;

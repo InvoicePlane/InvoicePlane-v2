@@ -2,23 +2,22 @@
 
 namespace Modules\Payments\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 
-class PaymentFactory extends Factory
+class PaymentFactory extends AbstractFactory
 {
     protected $model = Payment::class;
 
     public function definition(): array
     {
-        // Get the company from the factory state if provided, or create a new one
-        $company = $this->company ?? Company::factory()->create();
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
 
         // Create or get a customer that belongs to the same company
         $customer = Relation::query()
@@ -41,7 +40,6 @@ class PaymentFactory extends Factory
             ->create();
 
         return [
-            'company_id'     => $company->id,
             'customer_id'    => $customer->id,
             'invoice_id'     => $invoice->id,
             'payment_method' => PaymentMethod::BANK_TRANSFER->value,

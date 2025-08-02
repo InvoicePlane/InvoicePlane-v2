@@ -7,11 +7,12 @@ use Illuminate\Support\Str;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Factories\AbstractFactory;
 
 /**
  * @extends Factory<Relation>
  */
-class RelationFactory extends Factory
+class RelationFactory extends AbstractFactory
 {
     protected $model = Relation::class;
 
@@ -19,9 +20,10 @@ class RelationFactory extends Factory
 
     public function definition(): array
     {
+        $companyId   = $this->resolveCompanyId();
         $companyName = $this->faker->company;
         $suffix      = $this->faker->optional(0.7)->companySuffix();
-        $tradingName = trim($companyName . ' ' . ($suffix ?? ''));
+        $tradingName = $companyName . ($suffix ? " {$suffix}" : '');
 
         $relationType = $this->faker->boolean(70)
             ? RelationType::CUSTOMER->value

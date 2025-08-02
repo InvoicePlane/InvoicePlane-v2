@@ -5,7 +5,7 @@ namespace Modules\Invoices\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\User;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -14,14 +14,14 @@ use Modules\Invoices\Models\Invoice;
 /**
  * @extends Factory<Invoice>
  */
-class InvoiceFactory extends Factory
+class InvoiceFactory extends AbstractFactory
 {
     protected $model = Invoice::class;
 
     public function definition(): array
     {
-        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
-        $company   = Company::query()->find($companyId);
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
 
         $user = User::query()
             ->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
@@ -53,10 +53,10 @@ class InvoiceFactory extends Factory
         $total    = $subtotal + $taxTotal;
 
         return [
-            'user_id'                  => $user->id,
             'customer_id'              => $customer->id,
             'document_group_id'        => $documentGroup->id,
             'creditinvoice_parent_id'  => null,
+            'user_id'                  => $user->id,
             'invoice_number'           => $this->faker->unique()->numerify('INV-###-####'),
             'invoice_status'           => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'invoice_sign'             => $sign,

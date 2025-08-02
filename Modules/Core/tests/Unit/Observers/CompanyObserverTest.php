@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit\Observers;
+namespace Modules\Core\tests\Unit\Observers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\Company;
@@ -10,7 +10,7 @@ class CompanyObserverTest extends AbstractTestCase
 {
     use RefreshDatabase;
 
-    public function it_bootstraps_default_data_when_company_is_created()
+    public function it_bootstraps_default_data_when_company_is_created(): void
     {
         $company = Company::create([
             'search_code' => 'IVPLV2',

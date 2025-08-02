@@ -8,7 +8,7 @@ use Modules\Core\Models\MailQueue;
 /**
  * @extends Factory<MailQueue>
  */
-class MailQueueFactory extends Factory
+class MailQueueFactory extends AbstractFactory
 {
     protected $model = MailQueue::class;
 

@@ -47,7 +47,7 @@ class CompanyFactory extends Factory
         ];
 
         return [
-            'search_code'      => mb_strtolower(Str::random(5)),
+            'search_code'      => mb_strtolower($this->faker->bothify('?????')),
             'name'             => $companyName,
             'slug'             => Str::slug($companyName),
             'vat_number'       => $this->faker->optional(0.8)->regexify('^(BE|NL|DE|FR|LU)\d{9}$'), // 80% chance of having a VAT number

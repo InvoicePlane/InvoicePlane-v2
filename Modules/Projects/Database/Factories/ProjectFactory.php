@@ -32,14 +32,16 @@ class ProjectFactory extends AbstractFactory
         if ( ! $customer) {
             $customer = Relation::factory()
                 ->customer()
-                ->state(['company_id' => $companyId])
+                ->state([
+                    'company_id' => $companyId
+                ])
                 ->create();
         }
 
         $status    = $this->faker->randomElement(ProjectStatus::cases());
         $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
         $endDate   = $startDate
-            ? $this->faker->optional()->dateTimeBetween($startDate, '+2 years')
+            ? $this->faker->optional(0.7)->dateTimeBetween($startDate, '+2 years')
             : null;
 
         return [

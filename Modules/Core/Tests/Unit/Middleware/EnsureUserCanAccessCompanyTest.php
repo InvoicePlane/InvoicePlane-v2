@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit\Middleware;
+namespace Modules\Core\Tests\Feature\Middleware;
 
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Tests\AbstractTestCase;

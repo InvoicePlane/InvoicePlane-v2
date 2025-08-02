@@ -5,6 +5,7 @@ namespace Modules\Invoices\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Invoices\Models\RecurringInvoice;
@@ -12,7 +13,7 @@ use Modules\Invoices\Models\RecurringInvoice;
 /**
  * @extends Factory<RecurringInvoice>
  */
-class RecurringInvoiceFactory extends Factory
+class RecurringInvoiceFactory extends AbstractFactory
 {
     protected $model = RecurringInvoice::class;
 

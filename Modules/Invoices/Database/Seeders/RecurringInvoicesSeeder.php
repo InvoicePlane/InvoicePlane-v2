@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Modules\Clients\Database\Seeders\CustomersSeeder;
@@ -15,7 +16,7 @@ use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Products\Database\Seeders\ProductsSeeder;
 use Modules\Products\Models\Product;
 
-class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class RecurringInvoicesSeeder extends Seeder
 {
     protected array $terms = [
         '50% deposit required',
@@ -78,7 +79,6 @@ class RecurringInvoicesSeeder extends \Modules\Core\Database\Seeders\AbstractSee
                 Log::warn("No tax rates found for company {$company->name}. Using default...");
                 $taxRates = collect([
                     TaxRate::factory()->create([
-                        'company_id' => $company->id,
                         'name'       => 'VAT',
                         'rate'       => 21.0,
                         'is_default' => true,

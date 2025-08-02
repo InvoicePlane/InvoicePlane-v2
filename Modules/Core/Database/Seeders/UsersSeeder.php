@@ -9,15 +9,14 @@ class UsersSeeder extends AbstractSeeder
 {
     protected string $label = 'Users';
 
-    protected int $defaultCount = 3;
+    protected int $defaultCount = 15;
 
     protected function buildOne(): void
     {
-        $this->command->info('[DEBUG] Seeding User for companyId: ' . $this->companyId);
         $user = User::factory()->create();
         $user->companies()->attach($this->companyId);
-        $roleName = collect(UserRole::nonAdmin())->random();
-
-        $user->assignRole($roleName);
+        // assign a random non-elevated role as needed
+        $role = collect(UserRole::nonAdmin())->random();
+        $user->assignRole($role);
     }
 }

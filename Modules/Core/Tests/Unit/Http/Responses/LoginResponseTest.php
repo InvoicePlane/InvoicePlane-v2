@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Tests\Unit\Http\Responses;
+namespace Modules\Core\Tests\Feature\Http\Responses;
 
 use Modules\Core\Tests\AbstractTestCase;
 

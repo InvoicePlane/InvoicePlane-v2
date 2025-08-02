@@ -11,12 +11,15 @@ use RuntimeException;
 /**
  * @extends Factory<TaxRate>
  */
-class TaxRateFactory extends Factory
+class TaxRateFactory extends AbstractFactory
 {
     protected $model = TaxRate::class;
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+
         $rates = [
             ['name' => 'VAT Standard', 'rate' => 21.00],
             ['name' => 'VAT Reduced', 'rate' => 9.00],

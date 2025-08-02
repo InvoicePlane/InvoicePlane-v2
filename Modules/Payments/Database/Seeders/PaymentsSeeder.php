@@ -10,18 +10,23 @@ class PaymentsSeeder extends AbstractSeeder
 {
     protected string $label = 'Payments';
 
-    protected int    $defaultCount = 8;
+    protected int $defaultCount = 8;
 
     protected function buildOne(): void
     {
-        $invoice = Invoice::query()
-            ->where('company_id', $this->companyId)
-            ->where('invoice_status', 'sent')
+        $invoice = Invoice::query()->where('company_id', $this->companyId)
             ->inRandomOrder()
-            ->firstOrFail();
+            ->first();
+
+        if ( ! $invoice) {
+            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
+        }
 
         Payment::factory()
-            ->state(['company_id' => $this->companyId, 'invoice_id' => $invoice->id])
+            ->state([
+                'company_id' => $this->companyId,
+                'invoice_id' => $invoice->id,
+            ])
             ->create();
     }
 }

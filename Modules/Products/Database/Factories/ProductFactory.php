@@ -3,64 +3,40 @@
 namespace Modules\Products\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
-use RuntimeException;
 
 /**
  * @extends Factory<Product>
  */
-class ProductFactory extends Factory
+class ProductFactory extends AbstractFactory
 {
     protected $model = Product::class;
 
     public function definition(): array
     {
-        $company = $this->company ?? Company::query()->inRandomOrder()->first();
+        $companyId         = $this->resolveCompanyId();
+        $company           = $this->resolveCompany();
+        $productCategoryId = $this->resolveForeignKey(ProductCategory::class, $companyId);
+        $productUnitId     = $this->resolveForeignKey(ProductUnit::class, $companyId);
 
-        if ( ! $company) {
-            throw new RuntimeException('No company available for Product factory');
-        }
-
-        // Get a category that belongs to this company
-        $category = ProductCategory::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $category) {
-            dd('die early');
-        }
-
-        // Get a unit that belongs to this company
-        $unit = ProductUnit::query()
-            ->where('company_id', $company->id)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $unit) {
-            dd('die early');
-        }
-
-        // Get a tax rate that belongs to this company
         $taxRate = TaxRate::query()
-            ->where('company_id', $company->id)
+            ->where('company_id', $companyId)
             ->inRandomOrder()
             ->first();
 
         if ( ! $taxRate) {
             $taxRate = TaxRate::factory()
-                ->create(['company_id' => $company->id]);
+                ->create(['company_id' => $companyId]);
         }
 
-        // Create a second tax rate 25% of the time
         $taxRate2 = $this->faker->boolean(25)
             ? (TaxRate::query()
-                ->where('company_id', $company->id)
+                ->where('company_id', $companyId)
                 ->where('id', '!=', $taxRate->id)
                 ->inRandomOrder()
                 ->first() ?? TaxRate::factory()
@@ -75,18 +51,17 @@ class ProductFactory extends Factory
         $tariff = $this->faker->optional()->numberBetween(1, 200);
 
         return [
-            'company_id'     => $company->id,
-            'category_id'    => $category->id,
-            'unit_id'        => $unit->id,
-            'type'           => $itemType->value,
-            'code'           => mb_strtoupper($this->faker->bothify('??###')),
-            'product_name'   => $this->faker->word(),
-            'price'          => $price,
-            'cost_price'     => $cost,
-            'product_tariff' => $tariff,
-            'tax_rate_id'    => $taxRate->id,
-            'tax_rate_2_id'  => $taxRate2?->id,
-            'description'    => null,
+            'product_category_id' => $productCategoryId,
+            'product_unit_id'     => $productUnitId,
+            'type'                => $itemType->value,
+            'code'                => mb_strtoupper($this->faker->bothify('??###')),
+            'product_name'        => $this->faker->word,
+            'price'               => $this->faker->randomFloat(2, 10, 1000),
+            'cost_price'          => $cost,
+            'product_tariff'      => $tariff,
+            'tax_rate_id'         => $taxRate->id,
+            'tax_rate_2_id'       => $taxRate2?->id,
+            'description'         => null,
         ];
     }
 }

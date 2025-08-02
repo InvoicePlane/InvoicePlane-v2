@@ -7,22 +7,21 @@ use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 
 /**
  * @extends Factory<\Modules\Clients\Models\Contact>
  */
-class ContactFactory extends Factory
+class ContactFactory extends AbstractFactory
 {
     protected $model = Contact::class;
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company  = $this->resolveCompany();
         $relation = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)->inRandomOrder()->first() ?? Relation::factory()->create();
 
         return [
-            'company_id'  => $company->id,
             'relation_id' => $relation->id,
             'first_name'  => fake()->firstName,
             'last_name'   => fake()->lastName,

@@ -11,7 +11,7 @@ use Modules\Core\Traits\HasCompanyFactoryState;
 /**
  * @extends Factory<User>
  */
-class UserFactory extends Factory
+class UserFactory extends AbstractFactory
 {
     use HasCompanyFactoryState;
 
