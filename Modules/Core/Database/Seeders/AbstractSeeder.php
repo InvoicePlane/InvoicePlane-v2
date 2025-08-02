@@ -6,16 +6,15 @@ use Illuminate\Database\Seeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\User;
+use Modules\Products\Models\Product;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 abstract class AbstractSeeder extends Seeder
 {
     protected ?int $companyId = null;
-
     protected int $count = 0;
-
     protected string $label;
-
     protected int $defaultCount = 10;
 
     abstract protected function buildOne(): void;
@@ -23,11 +22,10 @@ abstract class AbstractSeeder extends Seeder
     public function run($company = null, $count = null): void
     {
         $this->companyId = $company ? (int) $company : null;
-        $this->count     = $count !== null ? (int) $count : $this->defaultCount;
+        $this->count = $count ? (int) $count : $this->defaultCount;
 
-        if ( ! $this->companyId) {
-            $this->command->warn('[DEBUG] Skipped: ' . static::class . ' (no company id)');
-
+        if (! $this->companyId) {
+            $this->command->warn(static::class . ' skipped (no company id)');
             return;
         }
 
@@ -37,30 +35,58 @@ abstract class AbstractSeeder extends Seeder
     }
 
     protected function beforeSeed(): void {}
-
     protected function afterSeed(): void {}
 
-    protected function company(): ?Company
+    protected function company(): Company
     {
-        return Company::query()->findOrFail($this->companyId);
+        return Company::findOrFail($this->companyId);
+    }
+
+    // ---- Reusable Helpers ----
+
+    protected function findOrCreateCustomer(int $companyId): Relation
+    {
+        $customer = Relation::query()->where('company_id', $companyId)
+            ->where('relation_type', RelationType::CUSTOMER->value)
+            ->inRandomOrder()
+            ->first();
+
+        if (! $customer) {
+            $customer = Relation::factory()
+                ->customer()
+                ->state(['company_id' => $companyId])
+                ->create();
+        }
+        return $customer;
     }
 
     protected function findOrCreateProspect(int $companyId): Relation
     {
-        $prospect = Relation::query()
-            ->where('company_id', $companyId)
+        $prospect = Relation::query()->where('company_id', $companyId)
             ->where('relation_type', RelationType::PROSPECT->value)
             ->inRandomOrder()
             ->first();
 
-        if ( ! $prospect) {
+        if (! $prospect) {
             $prospect = Relation::factory()
                 ->prospect()
                 ->state(['company_id' => $companyId])
                 ->create();
         }
-
         return $prospect;
+    }
+
+    protected function findOrCreateUser(int $companyId): User
+    {
+        $user = User::query()->whereHas('companies', fn($q) => $q->where('companies.id', $companyId))
+            ->inRandomOrder()
+            ->first();
+
+        if (! $user) {
+            $user = User::factory()->create();
+            $user->companies()->attach($companyId);
+        }
+        return $user;
     }
 
     protected function findOrCreateRelationOfType(int $companyId, RelationType $type): Relation
@@ -86,13 +112,26 @@ abstract class AbstractSeeder extends Seeder
         return $factory->create();
     }
 
+    protected function findOrCreateProduct(int $companyId): Product
+    {
+        $product = Product::query()->where('company_id', $companyId)->inRandomOrder()->first();
+        if (!$product) {
+            $product = Product::factory()->state(['company_id' => $companyId])->create();
+        }
+        return $product;
+    }
+
     private function seedWithProgress(): void
     {
-        $bar = $this->progressBar($this->count);
+        $bar = $this->command->getOutput()->createProgressBar($this->count);
+        $bar->setFormat(" <comment>{$this->label}</comment> ▕%bar%▏ %current%/%max%");
+        $bar->start();
+
         for ($i = 0; $i < $this->count; $i++) {
             $this->buildOne();
             $bar->advance();
         }
+
         $bar->finish();
         $this->command->newLine(2);
     }
