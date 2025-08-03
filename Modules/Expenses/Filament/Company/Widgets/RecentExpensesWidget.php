@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Models\Expense;
-use Modules\Quotes\Filament\Company\Widgets\TableWidget;
 
 class RecentExpensesWidget extends TableWidget
 {
