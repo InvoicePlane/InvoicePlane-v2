@@ -3,12 +3,13 @@
 namespace Modules\Invoices\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Invoices\Models\InvoiceItem;
 
 /**
  * @extends Factory<InvoiceItem>
  */
-class InvoiceItemFactory extends Factory
+class InvoiceItemFactory extends AbstractFactory
 {
     protected $model = InvoiceItem::class;
 
