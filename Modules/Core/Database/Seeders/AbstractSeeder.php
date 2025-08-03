@@ -45,6 +45,19 @@ abstract class AbstractSeeder extends Seeder
         $this->afterSeed();
     }
 
+    public function findOrCreateInvoice(?int $companyId): Invoice
+    {
+        $invoice = Invoice::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $invoice) {
+            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
+        }
+
+        return $invoice;
+    }
+
     protected function beforeSeed(): void {}
 
     protected function afterSeed(): void {}
@@ -181,18 +194,6 @@ abstract class AbstractSeeder extends Seeder
         }
 
         return $taxRate;
-    }
-
-    public function findOrCreateInvoice(?int $companyId): Invoice
-    {
-        $invoice = Invoice::query()->where('company_id', $this->companyId)
-            ->inRandomOrder()
-            ->first();
-
-        if (!$invoice) {
-            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
-        }
-        return $invoice;
     }
 
     private function seedWithProgress(): void
