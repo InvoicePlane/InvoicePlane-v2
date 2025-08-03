@@ -16,12 +16,14 @@ class ExpensesSeeder extends AbstractSeeder
     {
         $customerId = $this->findOrCreateRelationOfType($this->companyId, RelationType::CUSTOMER)->id;
         $vendorId   = $this->findOrCreateRelationOfType($this->companyId, RelationType::VENDOR)->id;
+        $categoryId = $this->findOrCreateExpenseCategory($this->companyId)->id;
 
         Expense::factory()
             ->state([
                 'company_id'  => $this->companyId,
                 'customer_id' => $customerId,
                 'vendor_id'   => $vendorId,
+                'category_id' => $categoryId,
             ])
             ->create();
     }

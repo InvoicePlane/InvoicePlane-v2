@@ -9,6 +9,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
+use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -87,6 +88,22 @@ abstract class AbstractSeeder extends Seeder
         }
 
         return $documentGroup;
+    }
+
+    protected function findOrCreateExpenseCategory(?int $companyId): ExpenseCategory
+    {
+        $category = ExpenseCategory::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $category) {
+            $category = ExpenseCategory::factory()->state([
+                'company_id' => $companyId,
+            ])
+                ->create();
+        }
+
+        return $category;
     }
 
     protected function findOrCreateInvoice(?int $companyId): Invoice

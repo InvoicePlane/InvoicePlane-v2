@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use Modules\Clients\Database\Seeders\RelationsSeeder;
 use Modules\Core\Database\Seeders\OwnerUserSeeder;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
@@ -25,11 +24,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class DatabaseSeeder extends Seeder
 {
-    private array $companyConfigs = [
-        ['id' => 1, 'search_code' => 'ivplv2', 'name' => 'InvoicePlane Corporation'],
-        ['id' => 2, 'search_code' => 'acme',   'name' => 'Acme Inc.'],
-    ];
-
     private array $volumes = [
         'users'     => 15,
         'relations' => 25,
@@ -42,30 +36,27 @@ class DatabaseSeeder extends Seeder
         'payments'  => 15,
     ];
 
+    private array $companyConfigs;
+
     public function run(): void
     {
+        $this->companyConfigs = $this->generateCompanyConfigs(10);
+
         $this->truncateAll();
         $this->seedGlobal();
 
-        $bar = $this->command->getOutput()->createProgressBar(\count($this->companyConfigs));
+        $bar = $this->command->getOutput()->createProgressBar(count($this->companyConfigs));
         $bar->setMessage('Companies');
         $bar->start();
 
         foreach ($this->companyConfigs as $cfg) {
-            $company = Company::query()->updateOrCreate(
+            Company::query()->updateOrCreate(
                 ['id' => $cfg['id']],
-                $cfg + [
-                    'slug'             => Str::slug($cfg['name']),
-                    'vat_number'       => 'US' . random_int(100_000_000, 999_999_999),
-                    'id_number'        => (string) random_int(1_000_000_000, 9_999_999_999),
-                    'coc_number'       => (string) random_int(1_000_000, 9_999_999),
-                    'quote_template'   => 'default',
-                    'invoice_template' => 'default',
-                ]
+                $cfg
             );
-
             $bar->advance();
         }
+
         $bar->finish();
         $this->command->newLine(2);
 
@@ -137,5 +128,29 @@ class DatabaseSeeder extends Seeder
             DB::table($table)->truncate();
         }
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
+    }
+
+    private function generateCompanyConfigs(int $extraCompanyCount = 5): array
+    {
+        $invoicePlaneCorp = Company::factory()->make([
+            'id'          => 22,
+            'search_code' => 'ivplv2',
+            'name'        => 'InvoicePlane Corporation',
+            'slug'        => 'invoiceplane-corporation',
+        ])->toArray();
+
+        $usedIds = [22];
+        $extra   = [];
+        for ($n = 0; $n < $extraCompanyCount; $n++) {
+            do {
+                $id = random_int(1, 99);
+            } while (in_array($id, $usedIds, true) || $id === 22);
+            $usedIds[] = $id;
+
+            $company = Company::factory()->make(['id' => $id]);
+            $extra[] = $company->toArray();
+        }
+
+        return array_merge([$invoicePlaneCorp], $extra);
     }
 }

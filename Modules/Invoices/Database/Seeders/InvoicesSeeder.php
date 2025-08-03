@@ -13,15 +13,16 @@ class InvoicesSeeder extends AbstractSeeder
 
     protected function buildOne(): void
     {
-        $customer = $this->findOrCreateCustomer($this->companyId);
-        $user     = $this->findOrCreateUser($this->companyId);
+        $customer      = $this->findOrCreateCustomer($this->companyId);
+        $documentGroup = $this->findOrCreateDocumentGroup($this->companyId);
+        $user          = $this->findOrCreateUser($this->companyId);
 
         Invoice::factory()
             ->state([
                 'company_id'        => $this->companyId,
                 'customer_id'       => $customer->id,
+                'document_group_id' => $documentGroup->id,
                 'user_id'           => $user->id,
-                'document_group_id' => null,
             ])
             ->create();
     }
