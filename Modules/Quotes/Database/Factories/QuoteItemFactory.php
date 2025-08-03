@@ -16,27 +16,36 @@ class QuoteItemFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $quantity = 2;
-        $price    = 150;
-        $discount = 0;
-        $subtotal = $quantity * $price - $discount;
+        $taxRateId = $attributes['tax_rate_id'] ?? null;
+        $product   = $attributes['product'] ?? null;
+        $taxRate   = $taxRateId
+            ? TaxRate::query()->find($taxRateId)
+            : null;
+
+        $taxPercent = $taxRate?->rate ?? 0;
+
+        $quantity = $this->faker->randomFloat(4, 1, 20);
+        $price    = $this->faker->randomFloat(4, 10, 500);
+        $discount = $this->faker->randomFloat(4, 0, 50);
+
+        $subtotal = round(($quantity * $price) - $discount, 2);
+        $taxTotal = round($subtotal * ($taxPercent / 100), 2);
+        $total    = round($subtotal + $taxTotal, 2);
 
         return [
-            'added_at'      => fake()->optional()->date(),
-            'item_name'     => 'Design',
-            'product_unit'  => fake()->optional()->word,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
+            'item_name'     => $product->product_name,
+            'product_unit'  => $product->product_unit->unit_name,
             'is_recurring'  => fake()->boolean(75),
             'quantity'      => $quantity,
             'price'         => $price,
             'discount'      => $discount,
             'subtotal'      => $subtotal,
-            'tax_1'         => 0,
-            'tax_2'         => 0,
-            'tax_total'     => 0,
-            'total'         => $subtotal,
-            'tax_rate_id'   => TaxRate::query()->inRandomOrder()->first()->id,
-            'tax_rate_2_id' => TaxRate::query()->inRandomOrder()->first()->id,
-            'display_order' => fake()->randomNumber(),
+            'tax_1'         => $taxTotal,
+            'tax_2'         => null,
+            'tax_total'     => $taxTotal,
+            'total'         => $total,
+            'display_order' => $this->faker->numberBetween(1, 9999),
             'description'   => null,
         ];
     }

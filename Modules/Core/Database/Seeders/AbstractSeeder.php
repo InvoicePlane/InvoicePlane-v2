@@ -45,19 +45,6 @@ abstract class AbstractSeeder extends Seeder
         $this->afterSeed();
     }
 
-    public function findOrCreateInvoice(?int $companyId): Invoice
-    {
-        $invoice = Invoice::query()->where('company_id', $this->companyId)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $invoice) {
-            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
-        }
-
-        return $invoice;
-    }
-
     protected function beforeSeed(): void {}
 
     protected function afterSeed(): void {}
@@ -84,58 +71,17 @@ abstract class AbstractSeeder extends Seeder
         return $customer;
     }
 
-    protected function findOrCreateProspect(int $companyId): Relation
+    protected function findOrCreateInvoice(?int $companyId): Invoice
     {
-        $prospect = Relation::query()->where('company_id', $companyId)
-            ->where('relation_type', RelationType::PROSPECT->value)
+        $invoice = Invoice::query()->where('company_id', $this->companyId)
             ->inRandomOrder()
             ->first();
 
-        if ( ! $prospect) {
-            $prospect = Relation::factory()
-                ->prospect()
-                ->state(['company_id' => $companyId])
-                ->create();
+        if ( ! $invoice) {
+            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
         }
 
-        return $prospect;
-    }
-
-    protected function findOrCreateUser(int $companyId): User
-    {
-        $user = User::query()->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $user) {
-            $user = User::factory()->create();
-            $user->companies()->attach($companyId);
-        }
-
-        return $user;
-    }
-
-    protected function findOrCreateRelationOfType(int $companyId, RelationType $type): Relation
-    {
-        $relation = Relation::query()
-            ->where('company_id', $companyId)
-            ->where('relation_type', $type->value)
-            ->inRandomOrder()
-            ->first();
-
-        if ($relation) {
-            return $relation;
-        }
-
-        $factory = Relation::factory()->state(['company_id' => $companyId]);
-        $factory = match ($type) {
-            RelationType::CUSTOMER => $factory->customer(),
-            RelationType::PROSPECT => $factory->prospect(),
-            RelationType::VENDOR   => $factory->vendor(),
-            default                => $factory,
-        };
-
-        return $factory->create();
+        return $invoice;
     }
 
     protected function findOrCreateProduct(int $companyId): Product
@@ -184,6 +130,46 @@ abstract class AbstractSeeder extends Seeder
         return $project;
     }
 
+    protected function findOrCreateProspect(int $companyId): Relation
+    {
+        $prospect = Relation::query()->where('company_id', $companyId)
+            ->where('relation_type', RelationType::PROSPECT->value)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $prospect) {
+            $prospect = Relation::factory()
+                ->prospect()
+                ->state(['company_id' => $companyId])
+                ->create();
+        }
+
+        return $prospect;
+    }
+
+    protected function findOrCreateRelationOfType(int $companyId, RelationType $type): Relation
+    {
+        $relation = Relation::query()
+            ->where('company_id', $companyId)
+            ->where('relation_type', $type->value)
+            ->inRandomOrder()
+            ->first();
+
+        if ($relation) {
+            return $relation;
+        }
+
+        $factory = Relation::factory()->state(['company_id' => $companyId]);
+        $factory = match ($type) {
+            RelationType::CUSTOMER => $factory->customer(),
+            RelationType::PROSPECT => $factory->prospect(),
+            RelationType::VENDOR   => $factory->vendor(),
+            default                => $factory,
+        };
+
+        return $factory->create();
+    }
+
     protected function findOrCreateTaxRate(?int $companyId): TaxRate
     {
         $taxRate = TaxRate::query()->where('company_id', $this->companyId)
@@ -194,6 +180,20 @@ abstract class AbstractSeeder extends Seeder
         }
 
         return $taxRate;
+    }
+
+    protected function findOrCreateUser(int $companyId): User
+    {
+        $user = User::query()->whereHas('companies', fn ($q) => $q->where('companies.id', $companyId))
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $user) {
+            $user = User::factory()->create();
+            $user->companies()->attach($companyId);
+        }
+
+        return $user;
     }
 
     private function seedWithProgress(): void

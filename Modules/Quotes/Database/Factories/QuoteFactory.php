@@ -5,7 +5,9 @@ namespace Modules\Quotes\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
@@ -52,25 +54,52 @@ class QuoteFactory extends AbstractFactory
     public function configure(): static
     {
         return $this->afterCreating(function (Quote $quote) {
-            $product = Product::query()
+            $products = Product::query()
+                ->where('company_id', $quote->company_id)
+                ->take(random_int(2, 5));
+
+            if (empty($products)) {
+                $product = Product::factory()
+                    ->state(['company_id' => $quote->company_id])
+                    ->create();
+                $products = collect($product);
+            }
+
+            $productUnit = ProductUnit::query()
                 ->where('company_id', $quote->company_id)
                 ->inRandomOrder()
                 ->first();
 
-            if ( ! $product) {
-                $product = Product::factory()
+            if ( ! $productUnit) {
+                $productUnit = ProductUnit::factory()
                     ->state(['company_id' => $quote->company_id])
                     ->create();
             }
 
-            QuoteItem::factory()
-                ->count(random_int(2, 5))
-                ->state([
-                    'company_id' => $quote->company_id,
-                    'quote_id'   => $quote->id,
-                    'product_id' => $product->id,
-                ])
-                ->create();
+            $taxRate = TaxRate::query()
+                ->where('company_id', $quote->company_id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $taxRate) {
+                $taxRate = Product::factory()
+                    ->state(['company_id' => $quote->company_id])
+                    ->create();
+            }
+
+            $products->each(callback: function (Product $product) use ($productUnit, $quote, $taxRate) {
+                QuoteItem::factory()
+                    ->state([
+                        'company_id'      => $quote->company_id,
+                        'quote_id'        => $quote->id,
+                        'product_id'      => $product->id,
+                        'product_unit_id' => $productUnit->id,
+                        'item_name'       => $product->product_name ?? 'Item',
+                        'tax_rate_id'     => $taxRate->id,
+                        'tax_rate_2_id'   => null,
+                    ])
+                    ->create();
+            });
         });
     }
 

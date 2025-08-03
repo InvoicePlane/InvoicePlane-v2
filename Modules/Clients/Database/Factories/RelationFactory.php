@@ -53,22 +53,29 @@ class RelationFactory extends AbstractFactory
     public function configure(): static
     {
         return $this->afterCreating(function (Relation $relation) {
-            $contact = Contact::factory()->state([
-                'company_id'  => $relation->company_id,
-                'relation_id' => $relation->id,
-            ])->create();
-
-            Address::factory()
-                ->count(random_int(1, 3))
+            $contacts = Contact::factory()
+                ->count(random_int(3, 5))
+                ->for($relation->company, 'company')
+                ->for($relation, 'relation')
                 ->state([
-                'company_id'       => $relation->company_id,
-                'addressable_id'   => $relation->id,
-                'addressable_type' => Relation::class,
-                'type'             => $this->faker->randomElement(AddressType::cases())->value,
-            ])->create();
+                    'company_id'  => $relation->company_id,
+                    'relation_id' => $relation->id,
+                ])
+                ->create();
 
-            $relation->primary_contact_id = $contact->id;
-            $relation->save();
+            $addresses = Address::factory()
+                ->count(random_int(1, 3))
+                ->for($relation->company, 'company')
+                ->for($relation, 'addressable')
+                ->state([
+                    'company_id'       => $relation->company_id,
+                    'addressable_id'   => $relation->id,
+                    'addressable_type' => Relation::class,
+                    'type'             => $this->faker->randomElement(AddressType::cases())->value,
+                ])->create();
+
+            /*$relation->primary_contact_id = $contact->id;
+            $relation->save();*/
         });
     }
 
