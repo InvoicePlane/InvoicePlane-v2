@@ -9,6 +9,7 @@ use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
 
 /**
  * @extends Factory<Invoice>
@@ -61,6 +62,17 @@ class InvoiceFactory extends AbstractFactory
                     ->create();
             }
 
+            $productUnit = ProductUnit::query()
+                ->where('company_id', $invoice->company_id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $productUnit) {
+                $productUnit = ProductUnit::factory()
+                    ->state(['company_id' => $invoice->company_id])
+                    ->create();
+            }
+
             $taxRate = TaxRate::query()
                 ->where('company_id', $invoice->company_id)
                 ->inRandomOrder()
@@ -74,13 +86,15 @@ class InvoiceFactory extends AbstractFactory
 
             InvoiceItem::factory()
                 ->count(random_int(1, 4))
+                ->for($invoice)
                 ->state([
-                    'company_id'    => $invoice->company_id,
-                    'invoice_id'    => $invoice->id,
-                    'product_id'    => $product->id,
-                    'item_name'     => $product->product_name ?? 'Item',
-                    'tax_rate_id'   => $taxRate->id,
-                    'tax_rate_2_id' => null,
+                    'company_id'      => $invoice->company_id,
+                    'invoice_id'      => $invoice->id,
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => $product->product_name ?? 'Item',
+                    'tax_rate_id'     => $taxRate->id,
+                    'tax_rate_2_id'   => null,
                 ])
                 ->create();
         });

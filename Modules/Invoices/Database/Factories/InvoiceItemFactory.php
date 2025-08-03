@@ -4,6 +4,7 @@ namespace Modules\Invoices\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Models\InvoiceItem;
 
 /**
@@ -15,10 +16,20 @@ class InvoiceItemFactory extends AbstractFactory
 
     public function definition(): array
     {
+        $taxRateId = $attributes['tax_rate_id'] ?? null;
+        $taxRate = $taxRateId
+            ? TaxRate::query()->find($taxRateId)
+            : null;
+
+        $taxPercent = $taxRate?->rate ?? 0;
+
         $quantity = $this->faker->randomFloat(4, 1, 20);
         $price    = $this->faker->randomFloat(4, 10, 500);
         $discount = $this->faker->randomFloat(4, 0, 50);
-        $subtotal = ($quantity * $price) - $discount;
+
+        $subtotal = round(($quantity * $price) - $discount, 2);
+        $taxTotal = round($subtotal * ($taxPercent / 100), 2);
+        $total    = round($subtotal + $taxTotal, 2);
 
         return [
             'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
@@ -27,10 +38,10 @@ class InvoiceItemFactory extends AbstractFactory
             'price'         => $price,
             'discount'      => $discount,
             'subtotal'      => $subtotal,
-            'tax_1'         => $subtotal,
-            'tax_2'         => $subtotal,
-            'tax_total'     => $subtotal,
-            'total'         => fake()->optional()->randomFloat(4, 0, 9999999999999999),
+            'tax_1'         => $taxTotal,
+            'tax_2'         => null,
+            'tax_total'     => $taxTotal,
+            'total'         => $total,
             'display_order' => $this->faker->numberBetween(1, 9999),
             'description'   => null,
         ];

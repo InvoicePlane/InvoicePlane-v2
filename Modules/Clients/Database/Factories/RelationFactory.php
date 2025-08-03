@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Address;
+use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Enums\AddressType;
 
 /**
  * @extends Factory<Relation>
@@ -45,6 +48,26 @@ class RelationFactory extends AbstractFactory
             'language'        => fake()->optional()->languageCode,
             'registered_at'   => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Relation $relation) {
+            $contact = Contact::factory()->state([
+                'company_id'  => $relation->company_id,
+                'relation_id' => $relation->id,
+            ])->create();
+
+            Address::factory()->state([
+                'company_id'       => $relation->company_id,
+                'addressable_id'   => $relation->id,
+                'addressable_type' => Relation::class,
+                'type'             => $this->faker->randomElement(AddressType::cases())->value,
+            ])->create();
+
+            $relation->primary_contact_id = $contact->id;
+            $relation->save();
+        });
     }
 
     public function customer(): static

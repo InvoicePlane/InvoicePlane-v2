@@ -22,6 +22,8 @@ class PaymentsSeeder extends AbstractSeeder
             $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
         }
 
+        dd($invoice);
+
         Payment::factory()
             ->state([
                 'company_id' => $this->companyId,
