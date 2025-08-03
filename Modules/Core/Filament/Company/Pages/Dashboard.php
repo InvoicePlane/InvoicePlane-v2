@@ -17,8 +17,8 @@ class Dashboard extends Page
     public function getHeaderWidgets(): array
     {
         return [
-            //RecentQuotesWidget::class,
-            //RecentInvoicesWidget::class,
+            RecentQuotesWidget::class,
+            RecentInvoicesWidget::class,
             //RecentProjectsWidget::class,
             //RecentTasksWidget::class,
             //RecentExpensesWidget::class,

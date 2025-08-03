@@ -18,7 +18,7 @@ class RelationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('primaryContact.id')
+                TextColumn::make('primaryContact.fullName')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('relation_type')
@@ -28,8 +28,7 @@ class RelationsTable
                     ->badge()
                     ->searchable()
                     ->sortable()
-                    ->toggleable()
-                    ->hiddenFrom('sm'),
+                    ->toggleable(),
 
                 TextColumn::make('relation_status')
                     ->label(trans('ip.status'))
@@ -45,7 +44,8 @@ class RelationsTable
                     ->limit(30)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('md'),
 
                 TextColumn::make('company_name')
                     ->label(trans('ip.company_name'))
@@ -60,6 +60,7 @@ class RelationsTable
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('sm'),
+
                 TextColumn::make('coc_number')
                     ->label(trans('ip.coc_number'))
                     ->searchable()

@@ -197,7 +197,6 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-user-group')
                             ->items([
                                 ...RelationResource::getNavigationItems(),
-                                ...ContactResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Quotes')

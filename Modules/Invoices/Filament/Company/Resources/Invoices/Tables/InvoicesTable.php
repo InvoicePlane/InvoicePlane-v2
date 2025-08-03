@@ -46,7 +46,8 @@ class InvoicesTable
                     ->date()
                     ->since()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('invoice_due_at')
                     ->label(trans('ip.invoice_due_at'))
                     ->color(fn ($state, $record) => $record?->due_intensity ?? 'secondary')
