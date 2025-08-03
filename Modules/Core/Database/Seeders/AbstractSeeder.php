@@ -8,6 +8,7 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
+use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
@@ -34,7 +35,6 @@ abstract class AbstractSeeder extends Seeder
         $this->count     = $count ?? $this->defaultCount;
 
         if ( ! $this->companyId) {
-            dd('no company');
             $this->command->warn(static::class . ' skipped (no company id)');
 
             return;
@@ -181,6 +181,18 @@ abstract class AbstractSeeder extends Seeder
         }
 
         return $taxRate;
+    }
+
+    public function findOrCreateInvoice(?int $companyId): Invoice
+    {
+        $invoice = Invoice::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()
+            ->first();
+
+        if (!$invoice) {
+            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
+        }
+        return $invoice;
     }
 
     private function seedWithProgress(): void

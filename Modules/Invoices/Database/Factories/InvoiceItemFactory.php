@@ -17,7 +17,7 @@ class InvoiceItemFactory extends AbstractFactory
     public function definition(): array
     {
         $taxRateId = $attributes['tax_rate_id'] ?? null;
-        $taxRate = $taxRateId
+        $taxRate   = $taxRateId
             ? TaxRate::query()->find($taxRateId)
             : null;
 

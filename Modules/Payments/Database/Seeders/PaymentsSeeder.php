@@ -3,7 +3,6 @@
 namespace Modules\Payments\Database\Seeders;
 
 use Modules\Core\Database\Seeders\AbstractSeeder;
-use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
 
 class PaymentsSeeder extends AbstractSeeder
@@ -14,20 +13,13 @@ class PaymentsSeeder extends AbstractSeeder
 
     protected function buildOne(): void
     {
-        $invoice = Invoice::query()->where('company_id', $this->companyId)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $invoice) {
-            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
-        }
-
-        dd($invoice);
+        $invoice = $this->findOrCreateInvoice($this->companyId);
 
         Payment::factory()
             ->state([
-                'company_id' => $this->companyId,
-                'invoice_id' => $invoice->id,
+                'company_id'  => $this->companyId,
+                'customer_id' => $invoice->customer_id,
+                'invoice_id'  => $invoice->id,
             ])
             ->create();
     }
