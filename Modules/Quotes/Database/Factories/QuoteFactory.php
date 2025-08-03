@@ -64,7 +64,7 @@ class QuoteFactory extends AbstractFactory
             }
 
             QuoteItem::factory()
-                ->count(random_int(1, 3))
+                ->count(random_int(2, 5))
                 ->state([
                     'company_id' => $quote->company_id,
                     'quote_id'   => $quote->id,

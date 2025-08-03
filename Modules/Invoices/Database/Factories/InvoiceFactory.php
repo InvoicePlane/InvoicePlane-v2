@@ -85,8 +85,7 @@ class InvoiceFactory extends AbstractFactory
             }
 
             InvoiceItem::factory()
-                ->count(random_int(1, 4))
-                ->for($invoice)
+                ->count(random_int(2, 5))
                 ->state([
                     'company_id'      => $invoice->company_id,
                     'invoice_id'      => $invoice->id,

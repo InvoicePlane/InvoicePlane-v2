@@ -107,7 +107,7 @@ class DatabaseSeeder extends Seeder
 
         $style = new OutputFormatterStyle('#429AE1', null, ['bold']);
         $this->command->getOutput()->getFormatter()->setStyle('brand', $style);
-        $this->command->line('<brand>InvoicePlane</brand>');
+        $this->command->line('<brand>Done seeding the database</brand>');
         $this->command->newLine();
 
         if (Company::query()->count() !== count($this->companyConfigs)) {

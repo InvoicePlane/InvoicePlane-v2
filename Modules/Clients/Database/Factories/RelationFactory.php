@@ -58,7 +58,9 @@ class RelationFactory extends AbstractFactory
                 'relation_id' => $relation->id,
             ])->create();
 
-            Address::factory()->state([
+            Address::factory()
+                ->count(random_int(1, 3))
+                ->state([
                 'company_id'       => $relation->company_id,
                 'addressable_id'   => $relation->id,
                 'addressable_type' => Relation::class,
