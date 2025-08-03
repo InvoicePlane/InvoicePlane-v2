@@ -16,8 +16,8 @@ class TasksSeeder extends AbstractSeeder
     protected function buildOne(): void
     {
         $customer = $this->findOrCreateRelationOfType($this->companyId, RelationType::CUSTOMER);
-        $project = $this->findOrCreateProject($this->companyId);
-        $user = $this->findOrCreateUser($this->companyId);
+        $project  = $this->findOrCreateProject($this->companyId);
+        $user     = $this->findOrCreateUser($this->companyId);
 
         Task::factory()
             ->state([

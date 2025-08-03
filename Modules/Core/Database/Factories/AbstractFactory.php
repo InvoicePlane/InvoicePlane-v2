@@ -9,9 +9,13 @@ abstract class AbstractFactory extends Factory
 {
     protected function resolveCompanyId(array $attributes = []): ?int
     {
+        dump('attributes:', $attributes);
+        dump('$this->company:', $this->company ?? null);
+        dump('$this->attributes:', $this->attributes ?? null);
+
         return $attributes['company_id']
             ?? $this->company?->id
-            ?? null;
+            ?? $this->attributes['company_id'] ?? null;
     }
 
     protected function resolveCompany()

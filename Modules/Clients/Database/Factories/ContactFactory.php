@@ -3,11 +3,13 @@
 namespace Modules\Clients\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Log;
 use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Clients\Models\Contact>
@@ -18,7 +20,14 @@ class ContactFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $company  = $this->resolveCompany();
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+
+        if ($companyId === null) {
+            Log::channel('extreme_debug')->error('company_id missing in RelationFactory or ContactFactory!');
+            throw new RuntimeException('company_id is required.');
+        }
+
         $relation = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)->inRandomOrder()->first() ?? Relation::factory()->create();
 
         return [

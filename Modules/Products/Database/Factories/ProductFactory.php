@@ -3,6 +3,7 @@
 namespace Modules\Products\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use LogicException;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
 use Modules\Products\Enums\ProductType;
@@ -19,7 +20,11 @@ class ProductFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId         = $this->resolveCompanyId();
+        $companyId = $this->resolveCompanyId();
+        if ( ! $companyId) {
+            throw new LogicException('company_id is required for RelationFactory');
+        }
+
         $company           = $this->resolveCompany();
         $productCategoryId = $this->resolveForeignKey(ProductCategory::class, $companyId);
         $productUnitId     = $this->resolveForeignKey(ProductUnit::class, $companyId);

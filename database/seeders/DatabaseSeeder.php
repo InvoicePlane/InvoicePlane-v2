@@ -79,10 +79,7 @@ class DatabaseSeeder extends Seeder
 
             $this->command->info("===== START Seeding company {$company->id} ({$company->name}) =====");
 
-            $this->command->info('[DEBUG] Calling UsersSeeder with: ' . json_encode($p + ['count' => $this->volumes['users']]));
             $this->callWith(UsersSeeder::class, $p + ['count' => $this->volumes['users']]);
-
-            $this->command->info('[DEBUG] Calling RelationsSeeder with: ' . json_encode($p + ['count' => $this->volumes['relations']]));
             $this->callWith(RelationsSeeder::class, $p + ['count' => $this->volumes['relations']]);
 
             $this->command->info('[DEBUG] Calling ProductsSeeder with: ' . json_encode($p + ['count' => $this->volumes['products']]));

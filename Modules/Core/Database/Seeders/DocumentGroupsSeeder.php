@@ -9,13 +9,14 @@ use Modules\Core\Models\DocumentGroup;
 class DocumentGroupsSeeder extends AbstractSeeder
 {
     protected string $label = 'DocumentGroups';
+
     protected int $defaultCount = 8;
 
     protected function buildOne(): void
     {
         $company = Company::query()->find($this->companyId);
 
-        if (! $company) {
+        if ( ! $company) {
             return;
         }
 
@@ -30,7 +31,7 @@ class DocumentGroupsSeeder extends AbstractSeeder
                 ])
                 ->exists();
 
-            if (! $exists) {
+            if ( ! $exists) {
                 DocumentGroup::factory()
                     ->state([
                         'company_id'              => $company->id,

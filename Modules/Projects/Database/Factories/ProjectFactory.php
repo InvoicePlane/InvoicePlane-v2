@@ -33,7 +33,7 @@ class ProjectFactory extends AbstractFactory
             $customer = Relation::factory()
                 ->customer()
                 ->state([
-                    'company_id' => $companyId
+                    'company_id' => $companyId,
                 ])
                 ->create();
         }

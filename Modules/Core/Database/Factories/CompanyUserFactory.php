@@ -19,7 +19,7 @@ class CompanyUserFactory extends AbstractFactory
         $company   = $this->resolveCompany();
 
         return [
-            'user_id'    => User::query()->inRandomOrder()->first()->id,
+            'user_id' => User::query()->inRandomOrder()->first()->id,
         ];
     }
 }

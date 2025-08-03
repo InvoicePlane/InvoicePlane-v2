@@ -2,11 +2,8 @@
 
 namespace Modules\Clients\Database\Seeders;
 
-use Modules\Clients\Models\Address;
-use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\AbstractSeeder;
-use Modules\Core\Enums\AddressType;
 
 class RelationsSeeder extends AbstractSeeder
 {
@@ -16,22 +13,10 @@ class RelationsSeeder extends AbstractSeeder
 
     protected function buildOne(): void
     {
-        $relation = Relation::factory()
-            ->state(['company_id' => $this->companyId])
+        Relation::factory()
+            ->state([
+                'company_id' => $this->companyId,
+            ])
             ->create();
-
-        Contact::factory()
-            ->state([
-                'company_id'  => $this->companyId,
-                'relation_id' => $relation->id,
-            ])->create();
-
-        Address::factory()
-            ->state([
-                'company_id'       => $this->companyId,
-                'addressable_id'   => $relation->id,
-                'addressable_type' => Relation::class,
-                'type'             => fake()->randomElement(AddressType::cases())->value,
-            ])->create();
     }
 }
