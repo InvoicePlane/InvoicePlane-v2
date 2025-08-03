@@ -19,7 +19,7 @@ class ProjectFactory extends AbstractFactory
     public function definition(): array
     {
         $status    = $this->faker->randomElement(ProjectStatus::cases());
-        $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
+        $startDate = $this->faker->dateTimeBetween('-4 years', '+2 years');
         $endDate   = $startDate
             ? $this->faker->optional(0.7)->dateTimeBetween($startDate, '+2 years')
             : null;

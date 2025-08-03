@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
@@ -71,6 +72,23 @@ abstract class AbstractSeeder extends Seeder
         return $customer;
     }
 
+    protected function findOrCreateDocumentGroup(?int $companyId): DocumentGroup
+    {
+        $documentGroup = DocumentGroup::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $documentGroup) {
+            $documentGroup = DocumentGroup::factory()->state([
+                'company_id'        => $companyId,
+                'document_group_id' => $documentGroup->id,
+            ])
+                ->create();
+        }
+
+        return $documentGroup;
+    }
+
     protected function findOrCreateInvoice(?int $companyId): Invoice
     {
         $invoice = Invoice::query()->where('company_id', $this->companyId)
@@ -78,7 +96,13 @@ abstract class AbstractSeeder extends Seeder
             ->first();
 
         if ( ! $invoice) {
-            $invoice = Invoice::factory()->state(['company_id' => $this->companyId])->create();
+            $documentGroup = $this->findOrCreateDocumentGroup($companyId);
+
+            $invoice = Invoice::factory()->state([
+                'company_id'        => $this->companyId,
+                'document_group_id' => $documentGroup->id,
+            ])
+                ->create();
         }
 
         return $invoice;

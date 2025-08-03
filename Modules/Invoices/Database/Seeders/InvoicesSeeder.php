@@ -18,9 +18,10 @@ class InvoicesSeeder extends AbstractSeeder
 
         Invoice::factory()
             ->state([
-                'company_id'  => $this->companyId,
-                'customer_id' => $customer->id,
-                'user_id'     => $user->id,
+                'company_id'        => $this->companyId,
+                'customer_id'       => $customer->id,
+                'user_id'           => $user->id,
+                'document_group_id' => null,
             ])
             ->create();
     }

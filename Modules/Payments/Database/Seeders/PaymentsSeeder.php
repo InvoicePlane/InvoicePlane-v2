@@ -18,7 +18,7 @@ class PaymentsSeeder extends AbstractSeeder
         Payment::factory()
             ->state([
                 'company_id'  => $this->companyId,
-                'customer_id' => $invoice->customer_id,
+                'customer_id' => $invoice->customer->id,
                 'invoice_id'  => $invoice->id,
             ])
             ->create();
