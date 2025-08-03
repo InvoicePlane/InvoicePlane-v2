@@ -9,20 +9,16 @@ abstract class AbstractFactory extends Factory
 {
     protected function resolveCompanyId(array $attributes = []): ?int
     {
-        dump('attributes:', $attributes);
-        dump('$this->company:', $this->company ?? null);
-        dump('$this->attributes:', $this->attributes ?? null);
-
         return $attributes['company_id']
             ?? $this->company?->id
             ?? $this->attributes['company_id'] ?? null;
     }
 
-    protected function resolveCompany()
+    protected function resolveCompany(array $attributes = []): ?Company
     {
-        $companyId = $this->company?->id;
+        $companyId = $this->resolveCompanyId($attributes);
 
-        return $this->company ?? Company::query()->find($companyId);
+        return $companyId ? Company::query()->find($companyId) : null;
     }
 
     protected function resolveForeignKey($relatedClass, $companyId = null)

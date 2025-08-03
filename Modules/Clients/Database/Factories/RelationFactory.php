@@ -20,7 +20,6 @@ class RelationFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId   = $this->resolveCompanyId();
         $companyName = $this->faker->company;
         $suffix      = $this->faker->optional(0.7)->companySuffix();
         $tradingName = $companyName . ($suffix ? " {$suffix}" : '');

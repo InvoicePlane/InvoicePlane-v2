@@ -15,7 +15,6 @@ class UsersSeeder extends AbstractSeeder
     {
         $user = User::factory()->create();
         $user->companies()->attach($this->companyId);
-        // assign a random non-elevated role as needed
         $role = collect(UserRole::nonAdmin())->random();
         $user->assignRole($role);
     }

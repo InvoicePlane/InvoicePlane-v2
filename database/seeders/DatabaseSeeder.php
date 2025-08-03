@@ -85,22 +85,16 @@ class DatabaseSeeder extends Seeder
             $this->command->info('[DEBUG] Calling ProductsSeeder with: ' . json_encode($p + ['count' => $this->volumes['products']]));
             $this->callWith(ProductsSeeder::class, $p + ['count' => $this->volumes['products']]);
 
-            $this->command->info('[DEBUG] Calling ExpensesSeeder with: ' . json_encode($p + ['count' => $this->volumes['expenses']]));
             $this->callWith(ExpensesSeeder::class, $p + ['count' => $this->volumes['expenses']]);
 
-            $this->command->info('[DEBUG] Calling ProjectsSeeder with: ' . json_encode($p + ['count' => $this->volumes['projects']]));
             $this->callWith(ProjectsSeeder::class, $p + ['count' => $this->volumes['projects']]);
 
-            $this->command->info('[DEBUG] Calling TasksSeeder with: ' . json_encode($p + ['count' => $this->volumes['tasks']]));
             $this->callWith(TasksSeeder::class, $p + ['count' => $this->volumes['tasks']]);
 
-            $this->command->info('[DEBUG] Calling QuotesSeeder with: ' . json_encode($p + ['count' => $this->volumes['quotes']]));
             $this->callWith(QuotesSeeder::class, $p + ['count' => $this->volumes['quotes']]);
 
-            $this->command->info('[DEBUG] Calling InvoicesSeeder with: ' . json_encode($p + ['count' => $this->volumes['invoices']]));
             $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
 
-            $this->command->info('[DEBUG] Calling PaymentsSeeder with: ' . json_encode($p + ['count' => $this->volumes['payments']]));
             $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
 
             $this->command->info("===== END   Seeding company {$company->id} ({$company->name}) =====");

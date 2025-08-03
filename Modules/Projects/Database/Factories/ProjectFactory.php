@@ -3,10 +3,7 @@
 namespace Modules\Projects\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
-use Modules\Core\Models\Company;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
@@ -21,23 +18,6 @@ class ProjectFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
-
-        $customer = Relation::query()
-            ->where('company_id', $companyId)
-            ->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first();
-
-        if ( ! $customer) {
-            $customer = Relation::factory()
-                ->customer()
-                ->state([
-                    'company_id' => $companyId,
-                ])
-                ->create();
-        }
-
         $status    = $this->faker->randomElement(ProjectStatus::cases());
         $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
         $endDate   = $startDate
@@ -45,7 +25,6 @@ class ProjectFactory extends AbstractFactory
             : null;
 
         return [
-            'customer_id'    => $customer->id,
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),
             'start_at'       => $startDate?->format('Y-m-d'),

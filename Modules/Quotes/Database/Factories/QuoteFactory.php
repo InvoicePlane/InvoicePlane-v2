@@ -4,12 +4,11 @@ namespace Modules\Quotes\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Modules\Clients\Enums\RelationType;
 use Modules\Core\Database\Factories\AbstractFactory;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteItem;
 
 /**
  * @extends Factory<\Modules\Quotes\Models\Quote>
@@ -20,21 +19,6 @@ class QuoteFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
-        $company   = Company::query()->find($companyId);
-
-        $prospect = $this->findOrCreateRelationOfType($companyId, RelationType::CUSTOMER);
-
-        $user = $this->findOrCreateRandomUser($companyId);
-
-        // Create or get a document group that belongs to this company
-        $group = DocumentGroup::query()
-            ->where('company_id', $companyId)
-            ->inRandomOrder()
-            ->first() ?? DocumentGroup::factory()
-            ->for($company)
-            ->create();
-
         $subtotal        = 300;
         $itemTaxTotal    = 0;
         $taxTotal        = 60;
@@ -46,9 +30,6 @@ class QuoteFactory extends AbstractFactory
         $expiresAt = (clone $quotedAt)->modify('+' . fake()->numberBetween(7, 180) . ' days');
 
         return [
-            'prospect_id'            => $prospect->id,
-            'document_group_id'      => $group->id,
-            'user_id'                => $user->id,
             'quote_number'           => 'Q-' . now()->year . '-' . fake()->unique()->numberBetween(1, 9999),
             'quote_status'           => fake()->randomElement(QuoteStatus::cases())->value,
             'quoted_at'              => $quotedAt,
@@ -66,6 +47,31 @@ class QuoteFactory extends AbstractFactory
             'terms'                  => null,
             'footer'                 => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Quote $quote) {
+            $product = Product::query()
+                ->where('company_id', $quote->company_id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $product) {
+                $product = Product::factory()
+                    ->state(['company_id' => $quote->company_id])
+                    ->create();
+            }
+
+            QuoteItem::factory()
+                ->count(random_int(1, 3))
+                ->state([
+                    'company_id' => $quote->company_id,
+                    'quote_id'   => $quote->id,
+                    'product_id' => $product->id,
+                ])
+                ->create();
+        });
     }
 
     public function draft(): static
@@ -88,7 +94,7 @@ class QuoteFactory extends AbstractFactory
         return $this->state(fn () => ['quote_status' => QuoteStatus::APPROVED->value]);
     }
 
-    public function canceled(): static
+    public function rejected(): static
     {
         return $this->state(fn () => ['quote_status' => QuoteStatus::REJECTED->value]);
     }

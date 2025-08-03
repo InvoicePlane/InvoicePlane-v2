@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -23,14 +24,17 @@ abstract class AbstractSeeder extends Seeder
 
     protected int $defaultCount = 10;
 
+    protected array $parameters = [];
+
     abstract protected function buildOne(): void;
 
     public function run($company = null, $count = null): void
     {
-        $this->companyId = $company ? (int) $company : null;
-        $this->count     = $count ? (int) $count : $this->defaultCount;
+        $this->companyId = $company;
+        $this->count     = $count ?? $this->defaultCount;
 
         if ( ! $this->companyId) {
+            dd('no company');
             $this->command->warn(static::class . ' skipped (no company id)');
 
             return;
@@ -47,10 +51,8 @@ abstract class AbstractSeeder extends Seeder
 
     protected function company(): Company
     {
-        return Company::findOrFail($this->companyId);
+        return Company::query()->findOrFail($this->companyId);
     }
-
-    // ---- Reusable Helpers ----
 
     protected function findOrCreateCustomer(int $companyId): Relation
     {
@@ -167,6 +169,18 @@ abstract class AbstractSeeder extends Seeder
         }
 
         return $project;
+    }
+
+    protected function findOrCreateTaxRate(?int $companyId): TaxRate
+    {
+        $taxRate = TaxRate::query()->where('company_id', $this->companyId)
+            ->inRandomOrder()->first();
+
+        if ( ! $taxRate) {
+            $taxRate = TaxRate::factory()->state(['company_id' => $companyId])->create();
+        }
+
+        return $taxRate;
     }
 
     private function seedWithProgress(): void
