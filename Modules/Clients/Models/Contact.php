@@ -110,7 +110,7 @@ class Contact extends Model
     public function getPrimaryEmailAttribute(): ?string
     {
         return $this->communications
-            ->where('contactable_type', CommunicationType::EMAIL->value)
+            ->where('communication_type', CommunicationType::EMAIL->value)
             ->where('is_primary', true)
             ->first()?->contactable_value;
     }
@@ -118,7 +118,7 @@ class Contact extends Model
     public function getPrimaryPhoneAttribute(): ?string
     {
         return $this->communications
-            ->where('contactable_type', CommunicationType::PHONE->value)
+            ->where('communication_type', CommunicationType::PHONE->value)
             ->where('is_primary', true)
             ->first()?->contactable_value;
     }

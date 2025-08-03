@@ -51,15 +51,16 @@ class InvoiceFactory extends AbstractFactory
     public function configure(): static
     {
         return $this->afterCreating(function (Invoice $invoice) {
-            $product = Product::query()
+            $products = Product::query()
                 ->where('company_id', $invoice->company_id)
-                ->inRandomOrder()
-                ->first();
+                ->take(random_int(2, 5))
+                ->get();
 
-            if ( ! $product) {
+            if (empty($products)) {
                 $product = Product::factory()
                     ->state(['company_id' => $invoice->company_id])
                     ->create();
+                $products = collect($product);
             }
 
             $productUnit = ProductUnit::query()
@@ -84,22 +85,24 @@ class InvoiceFactory extends AbstractFactory
                     ->create();
             }
 
-            InvoiceItem::factory()
-                ->count(random_int(2, 5))
-                ->for($invoice, 'invoice')
-                ->for($product, 'product')
-                ->for($productUnit, 'productUnit')
-                ->for($taxRate, 'taxRate')
-                ->state([
-                    'company_id'      => $invoice->company_id,
-                    'invoice_id'      => $invoice->id,
-                    'product_id'      => $product->id,
-                    'product_unit_id' => $productUnit->id,
-                    'item_name'       => $product->product_name ?? 'Item',
-                    'tax_rate_id'     => $taxRate->id,
-                    'tax_rate_2_id'   => null,
-                ])
-                ->create();
+            $products->each(callback: function (Product $product) use ($invoice, $productUnit, $taxRate) {
+                InvoiceItem::factory()
+                    ->count(random_int(2, 5))
+                    ->for($invoice, 'invoice')
+                    ->for($product, 'product')
+                    ->for($productUnit, 'productUnit')
+                    ->for($taxRate, 'taxRate')
+                    ->state([
+                        'company_id'      => $invoice->company_id,
+                        'invoice_id'      => $invoice->id,
+                        'product_id'      => $product->id,
+                        'product_unit_id' => $productUnit->id,
+                        'item_name'       => $product->product_name ?? 'Item',
+                        'tax_rate_id'     => $taxRate->id,
+                        'tax_rate_2_id'   => null,
+                    ])
+                    ->create();
+            });
         });
     }
 

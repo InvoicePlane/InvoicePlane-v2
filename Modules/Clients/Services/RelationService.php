@@ -140,9 +140,9 @@ class RelationService extends BaseService
 
         foreach ($communications as $index => $communicationData) {
             $communicationsToSync[] = [
-                'contactable_type'  => $communicationData['type'],
-                'contactable_value' => $communicationData['value'],
-                'is_primary'        => $communicationData['is_primary'] ?? false,
+                'communication_type'  => $communicationData['type'],
+                'communication_value' => $communicationData['value'],
+                'is_primary'          => $communicationData['is_primary'] ?? false,
             ];
         }
 

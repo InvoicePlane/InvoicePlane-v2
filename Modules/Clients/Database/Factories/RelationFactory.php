@@ -4,9 +4,11 @@ namespace Modules\Clients\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Address;
+use Modules\Clients\Models\Communication;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
@@ -63,7 +65,7 @@ class RelationFactory extends AbstractFactory
                 ])
                 ->create();
 
-            $addresses = Address::factory()
+            Address::factory()
                 ->count(random_int(1, 3))
                 ->for($relation->company, 'company')
                 ->for($relation, 'addressable')
@@ -74,8 +76,24 @@ class RelationFactory extends AbstractFactory
                     'type'             => $this->faker->randomElement(AddressType::cases())->value,
                 ])->create();
 
-            /*$relation->primary_contact_id = $contact->id;
-            $relation->save();*/
+            $contacts->each(function (Contact $contact) {
+                $communications = Communication::factory()
+                    ->count(random_int(1, 3))
+                    ->for($contact, 'communicationable')
+                    ->state([
+                        'company_id'             => $contact->company_id,
+                        'communicationable_type' => Contact::class,
+                        'communicationable_id'   => $contact->id,
+                        'communication_type'     => CommunicationType::class,
+                    ])
+                    ->create();
+
+                $primaryCommunication = $communications->random();
+                $primaryCommunication->update(['is_primary' => true]);
+            });
+
+            $primaryContact = $contacts->random();
+            $relation->update(['primary_contact_id' => $primaryContact->id]);
         });
     }
 

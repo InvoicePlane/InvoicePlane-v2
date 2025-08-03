@@ -155,8 +155,8 @@ class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             'communicationable_type' => Contact::class,
             'communicationable_id'   => $contact->id,
             'is_primary'             => true,
-            'contactable_type'       => CommunicationType::EMAIL->value,
-            'contactable_value'      => $this->faker->unique()->safeEmail,
+            'communication_type'     => CommunicationType::EMAIL->value,
+            'communication_value'    => $this->faker->unique()->safeEmail,
         ]);
 
         // Create phone communication
@@ -165,8 +165,8 @@ class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
             'communicationable_type' => Contact::class,
             'communicationable_id'   => $contact->id,
             'is_primary'             => true,
-            'contactable_type'       => CommunicationType::PHONE->value,
-            'contactable_value'      => $this->faker->phoneNumber,
+            'communication_type'     => CommunicationType::PHONE->value,
+            'communication_value'    => $this->faker->phoneNumber,
         ]);
 
         // Update relation with primary contact
