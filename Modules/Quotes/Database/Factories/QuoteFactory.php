@@ -56,7 +56,8 @@ class QuoteFactory extends AbstractFactory
         return $this->afterCreating(function (Quote $quote) {
             $products = Product::query()
                 ->where('company_id', $quote->company_id)
-                ->take(random_int(2, 5));
+                ->take(random_int(2, 5))
+                ->get();
 
             if (empty($products)) {
                 $product = Product::factory()
@@ -89,6 +90,7 @@ class QuoteFactory extends AbstractFactory
 
             $products->each(callback: function (Product $product) use ($productUnit, $quote, $taxRate) {
                 QuoteItem::factory()
+                    ->for($product)
                     ->state([
                         'company_id'      => $quote->company_id,
                         'quote_id'        => $quote->id,

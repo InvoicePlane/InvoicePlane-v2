@@ -17,7 +17,6 @@ class QuoteItemFactory extends AbstractFactory
     public function definition(): array
     {
         $taxRateId = $attributes['tax_rate_id'] ?? null;
-        $product   = $attributes['product'] ?? null;
         $taxRate   = $taxRateId
             ? TaxRate::query()->find($taxRateId)
             : null;
@@ -34,8 +33,6 @@ class QuoteItemFactory extends AbstractFactory
 
         return [
             'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
-            'item_name'     => $product->product_name,
-            'product_unit'  => $product->product_unit->unit_name,
             'is_recurring'  => fake()->boolean(75),
             'quantity'      => $quantity,
             'price'         => $price,

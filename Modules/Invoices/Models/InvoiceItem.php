@@ -74,7 +74,7 @@ class InvoiceItem extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'item_product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function task(): BelongsTo
