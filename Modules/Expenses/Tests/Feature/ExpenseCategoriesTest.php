@@ -85,7 +85,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: name
+     * @payload missing: category_name
      * {}
      */
     public function it_fails_to_create_category_through_a_modal_without_required_name(): void
@@ -93,7 +93,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $payload = [];
+        $payload = ['category_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -191,13 +191,13 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: name
+     * @payload missing: category_name
      * {}
      */
     public function it_fails_to_create_category_without_required_name(): void
     {
         /* arrange */
-        $payload = [];
+        $payload = ['category_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)

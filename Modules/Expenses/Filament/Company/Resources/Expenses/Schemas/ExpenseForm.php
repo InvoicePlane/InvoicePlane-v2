@@ -145,7 +145,7 @@ class ExpenseForm
                             ->relationship('expenseItems')
                             ->label(trans('ip.expense_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
+                            ->addActionLabel(trans('ip.add_new_row'))
                             ->columns(6) // Adjust columns to control field widths
                             ->schema([
                                 Select::make('item_id')

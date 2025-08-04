@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Enums\ExpenseStatus;
@@ -16,6 +17,8 @@ use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -44,7 +47,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::FIXED,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
         ];
 
         Expense::factory()->for($this->user->companies()->first())->create($payload);
@@ -67,22 +70,30 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'    => $customer->id,
             'expense_number' => 'EXP-4585487',
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'category_id'    => $category->id,
             'expense_type'   => ExpenseType::ONE_TIME,
             'expense_amount' => 120.00,
             'expensed_at'    => now()->format('Y-m-d'),
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -120,10 +131,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_amount' => 120.00,
@@ -131,10 +150,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -162,10 +181,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -173,10 +200,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -204,10 +231,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -215,10 +250,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -246,10 +281,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -257,10 +300,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -288,10 +331,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -299,10 +350,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'category_id'    => $category->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -330,10 +381,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -341,10 +400,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -372,10 +431,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -386,7 +453,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expense_type'   => ExpenseType::ONE_TIME,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -470,22 +537,30 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'    => $customer->id,
             'expense_number' => 'EXP-4585487',
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'category_id'    => $category->id,
             'expense_type'   => ExpenseType::ONE_TIME,
             'expense_amount' => 120.00,
             'expensed_at'    => now()->format('Y-m-d'),
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -521,10 +596,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_without_required_expense_number(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_amount' => 120.00,
@@ -532,10 +615,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -560,10 +643,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_expensed_at(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -571,10 +662,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -599,10 +690,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_amount(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -610,10 +709,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -638,10 +737,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_category_id(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -649,10 +756,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'customer_id'    => $customer->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -677,10 +784,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_customer_id(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -688,10 +803,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'category_id'    => $category->id,
             'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -716,10 +831,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_expense_type(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -727,10 +850,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expensed_at'    => now()->format('Y-m-d'),
             'category_id'    => $category->id,
             'customer_id'    => $customer->id,
-            'expense_status' => ExpenseStatus::COMPLETED,
+            'expense_status' => ExpenseStatus::APPROVED,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
@@ -755,10 +878,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_without_required_expense_status(): void
     {
-        $company  = $this->user->companies()->first();
-        $category = ExpenseCategory::factory()->for($company)->create();
-        $customer = Relation::factory()->for($company)->customer()->create();
-        $item     = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $category        = ExpenseCategory::factory()->for($company)->create();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'expense_number' => 'EXP-4585487',
@@ -769,7 +900,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expense_type'   => ExpenseType::ONE_TIME,
             'expenseItems'   => [
                 [
-                    'item_id'      => $item->id,
+                    'item_id'      => $product->id,
                     'quantity'     => 2,
                     'price'        => 10,
                     'discount'     => 0,
