@@ -10,10 +10,10 @@ return new class () extends Migration {
         Schema::create('addresses', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('type'); // PHP Enum (billing, shipping, office)
-            $table->boolean('is_primary')->default(false)->after('type');
-            $table->string('addressable_type')->after('company_id')->nullable();
-            $table->unsignedBigInteger('addressable_id')->after('addressable_type')->nullable();
+            $table->string('address_type');
+            $table->boolean('is_primary')->default(false);
+            $table->string('addressable_type');
+            $table->unsignedBigInteger('addressable_id');
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('number')->nullable();

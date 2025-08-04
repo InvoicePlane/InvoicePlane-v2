@@ -115,9 +115,13 @@ class RelationForm
                                                                     return '-';
                                                                 }
 
-                                                                $type = \Modules\Clients\Enums\RelationType::tryFrom($type);
+                                                                if ($type instanceof RelationType) {
+                                                                    return $type->label();
+                                                                }
 
-                                                                return $type ? $type->label() : '-';
+                                                                $typeEnum = RelationType::tryFrom($type);
+
+                                                                return $typeEnum ? $typeEnum->label() : '-';
                                                             }),
                                                     ]),
                                             ]),

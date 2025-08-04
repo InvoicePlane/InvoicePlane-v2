@@ -73,7 +73,7 @@ class RelationFactory extends AbstractFactory
                     'company_id'       => $relation->company_id,
                     'addressable_id'   => $relation->id,
                     'addressable_type' => Relation::class,
-                    'type'             => $this->faker->randomElement(AddressType::cases())->value,
+                    'address_type'     => $this->faker->randomElement(AddressType::cases())->value,
                 ])->create();
 
             $contacts->each(function (Contact $contact) {

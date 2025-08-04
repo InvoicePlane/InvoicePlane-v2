@@ -25,7 +25,7 @@ class AddressFactory extends AbstractFactory
         $this->faker->addProvider(new Internet($this->faker));
 
         return [
-            'type'              => fake()->randomElement(AddressType::cases())->value,
+            'address_type'      => fake()->randomElement(AddressType::cases())->value,
             'address_1'         => fake()->streetAddress,
             'address_2'         => fake()->optional(0.7)->secondaryAddress,
             'number'            => fake()->buildingNumber,
@@ -38,6 +38,6 @@ class AddressFactory extends AbstractFactory
 
     public function ofType(AddressType $type): self
     {
-        return $this->state(['type' => $type->value]);
+        return $this->state(['address_type' => $type->value]);
     }
 }

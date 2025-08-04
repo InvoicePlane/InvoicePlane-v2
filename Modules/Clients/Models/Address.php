@@ -36,21 +36,6 @@ class Address extends Model
         'is_primary' => 'boolean',
     ];
 
-    protected $fillable = [
-        'company_id',
-        'type',
-        'address_1',
-        'address_2',
-        'number',
-        'postal_code',
-        'city',
-        'state_or_province',
-        'country',
-        'is_primary',
-        'addressable_type',
-        'addressable_id',
-    ];
-
     protected $guarded = [];
 
     public function addressable(): MorphTo
