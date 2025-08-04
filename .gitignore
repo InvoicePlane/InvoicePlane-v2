@@ -43,7 +43,7 @@ yarn-error.log
 /.phpunit.result.cache
 /depr.txt
 /htmloutput.txt
-/phpunit.txt
+/phpunit*.txt
 /pif.txt
 /puf.txt
 /test.txt
