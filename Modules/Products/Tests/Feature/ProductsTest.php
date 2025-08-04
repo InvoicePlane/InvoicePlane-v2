@@ -51,6 +51,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'cost_price'     => 5.00,
             'product_tariff' => 123,
             'tax_rate_id'    => $taxRate->id,
+            'tax_rate_2_id'  => null,
             'description'    => 'Example',
         ];
         $product = Product::factory()->create($payload);
