@@ -33,7 +33,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -312,7 +315,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -367,6 +373,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         /* act */
@@ -400,7 +413,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -448,7 +464,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'customer_id'    => $customer->id,
@@ -490,7 +509,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($this->user->companies()->first())->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -531,7 +553,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -576,7 +601,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -617,7 +645,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
