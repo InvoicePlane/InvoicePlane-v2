@@ -87,8 +87,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_task_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         $customer = Customer::factory()->create(['company_name' => '::client_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
@@ -102,10 +100,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'project_id'  => $project->id,
             'customer_id' => $customer->id,
             'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $this->user->id,
+            'assigned_to' => null,
             'task_status' => TaskStatus::OPEN->value,
             'task_name'   => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => now()->addDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
@@ -142,10 +140,8 @@ class TasksTest extends AbstractCompanyPanelTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
-    public function it_fails_to_create_task_through_a_modal_without_required_name(): void
+    public function it_fails_to_create_task_through_a_modal_without_required_task_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $customer = Customer::factory()->create(['company_name' => '::client_name::']);
         $project  = Project::factory()->create([
@@ -159,10 +155,9 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'project_id'  => $project->id,
             'customer_id' => $customer->id,
             'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $this->user->id,
+            'assigned_to' => null,
             'task_status' => TaskStatus::OPEN->value,
-            'task_name'   => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => now()->addDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
@@ -196,12 +191,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_through_a_modal_without_required_customer(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('customer_id cannot be null');
 
         /* arrange */
         $customer = Customer::factory()->create(['company_name' => '::client_name::']);
         $project  = Project::factory()->create([
-            'customer_id'  => $client->client_id,
+            'customer_id'  => $customer->client_id,
             'project_name' => '::project_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
@@ -209,13 +204,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'company_id'  => $company->id,
-            'project_id'  => 1,
-            'tax_rate_id' => 1,
-            'assigned_to' => $user->id,
+            'project_id'  => $project->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
             'task_status' => TaskStatus::OPEN,
             'task_name'   => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
@@ -265,7 +259,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'tax_rate_id' => $taxRate->id,
             'task_status' => TaskStatus::OPEN->value,
             'task_name'   => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => now()->addDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
@@ -314,7 +308,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $this->user->id,
             'task_status' => TaskStatus::OPEN->value,
             'task_name'   => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => now()->addDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
@@ -377,7 +371,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $this->user->id,
             'task_status' => TaskStatus::IN_PROGRESS->value,
             'task_name'   => 'Updated Task Name',
-            'price'       => 199.99,
+            'task_price'  => 199.99,
             'due_at'      => now()->addDays(10)->format('Y-m-d'),
             'description' => 'Updated description',
         ];
@@ -423,7 +417,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Customer::factory()->create(['client_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::company_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $client->client_id,
             'project_name' => '::project_name::',
@@ -440,7 +434,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $user->id,
             'task_status' => TaskStatus::OPEN,
             'name'        => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => now()->subDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
@@ -480,7 +474,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Customer::factory()->create(['client_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::company_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $client->client_id,
             'project_name' => '::project_name::',
@@ -495,7 +489,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'tax_rate_id' => 1,
             'assigned_to' => $user->id,
             'task_status' => TaskStatus::OPEN,
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
@@ -532,7 +526,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Customer::factory()->create(['client_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::company_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $client->client_id,
             'project_name' => '::project_name::',
@@ -548,7 +542,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $user->id,
             'task_status' => TaskStatus::OPEN,
             'name'        => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
@@ -595,7 +589,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'tax_rate_id' => 1,
             'task_status' => TaskStatus::OPEN,
             'name'        => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
@@ -632,7 +626,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Customer::factory()->create(['client_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::company_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $client->client_id,
             'project_name' => '::project_name::',
@@ -648,7 +642,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $user->id,
             'task_status' => TaskStatus::OPEN,
             'name'        => 'Design Landing Page',
-            'price'       => 150.00,
+            'task_price'  => 150.00,
             'due_at'      => '2025-06-01',
             'description' => 'Create a responsive landing page',
         ];
@@ -723,7 +717,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'assigned_to' => $user->id,
             'task_status' => TaskStatus::IN_PROGRESS,
             'name'        => 'Updated Task Name',
-            'price'       => 199.99,
+            'task_price'  => 199.99,
             'due_at'      => '2025-07-01',
             'description' => 'Updated description',
         ];
