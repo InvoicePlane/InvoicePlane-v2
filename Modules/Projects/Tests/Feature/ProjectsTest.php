@@ -67,8 +67,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_project_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
 
@@ -113,7 +111,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_through_a_modal_without_required_status(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Have to pass null as project_status and figure out how tryFrom reacts to that');
 
         /* arrange */
         $company  = $this->user->companies()->first();
@@ -121,8 +119,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'company_id'     => $company->id,
-            'customer_id'    => 2,
-            'project_status' => 'active',
+            'customer_id'    => $customer->id,
+            'project_status' => 'test',
             'project_name'   => 'Website Redesign',
             'start_at'       => '2025-05-01',
             'end_at'         => '2025-06-01',
@@ -160,7 +158,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_through_a_modal_without_required_project_name(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Need to validate emptyness of project_name where it can be null but still is required');
 
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->create(['company_name' => '::client_name::']);
@@ -168,7 +166,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $payload = [
             'company_id'     => $company->id,
-            'customer_id'    => 2,
+            'customer_id'    => $customer->id,
             'project_status' => 'active',
             'start_at'       => '2025-05-01',
             'end_at'         => '2025-06-01',
@@ -202,16 +200,15 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_through_a_modal_without_required_start_at(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['company_name' => '::client_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::client_name::']);
 
         $payload = [
-            'project_name' => 'Client Redesign',
-            'description'  => 'Modernizing UX',
-            'end_at'       => '2025-06-30',
+            'customer_id'    => $customer->id,
+            'project_name'   => 'Client Redesign',
+            'project_status' => ProjectStatus::ACTIVE->value,
+            'description'    => 'Modernizing UX',
+            'end_at'         => '2025-06-30',
         ];
 
         /* act */
@@ -223,30 +220,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertHasFormErrors(['start_at']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_project_through_a_modal_without_required_fields(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $payload = [];
-
-        /* act & assert */
-        Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction()
-            ->assertHasActionErrors([
-                'customer_id',
-                'project_name',
-                'project_status',
-            ]);
-
-        $this->assertDatabaseMissing('projects', $payload);
     }
 
     #[Test]
