@@ -283,8 +283,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
             'company_id',
             'user_id'
         )
-            ->using(CompanyUser::class)
-            ->with('roles');
+            ->using(CompanyUser::class);
     }
 
     // ——————————————————————————————————————————————————————————————

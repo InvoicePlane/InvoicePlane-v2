@@ -25,7 +25,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     public function it_lists_email_templates(): void
     {
         /* arrange */
-        $template = EmailTemplate::factory()->create(['subject' => 'Test Email']);
+        $template = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Test Email']);
 
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
@@ -201,13 +201,13 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $template = EmailTemplate::factory()->create([
+        $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Old Title',
             'subject' => 'Old Subject',
             'type'    => EmailTemplateType::TEXT->value,
         ]);
 
-        $template = EmailTemplate::factory()->create(['subject' => 'Old Subject']);
+        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
 
         $payload = ['subject' => 'Updated Subject'];
 
@@ -229,7 +229,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $template = EmailTemplate::factory()->create([
+        $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Template to Delete',
             'subject' => 'Delete Me',
             'type'    => EmailTemplateType::TEXT->value,

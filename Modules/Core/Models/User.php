@@ -95,8 +95,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
             'user_id',
             'company_id',
         )
-            ->using(CompanyUser::class)
-            ->with('roles');
+            ->using(CompanyUser::class);
     }
 
     public function getCurrentCompanyId(): ?int

@@ -2,6 +2,9 @@
 
 namespace Modules\Core\Support;
 
+use Illuminate\Support\Collection;
+use Modules\Quotes\Models\QuoteItem;
+
 class AbstractCalculator
 {
     public function updateItemTotals(callable $set, callable $get): void
@@ -178,10 +181,10 @@ class AbstractCalculator
      *
      * @return float
      */
-    protected function calculateDiscount(Quote $quote, float $subtotal): float
+    protected function calculateDiscount($document, float $subtotal): float
     {
-        $discountAmount  = (float) ($quote->quote_discount_amount ?? 0);
-        $discountPercent = (float) ($quote->quote_discount_percent ?? 0);
+        $discountAmount  = (float) ($document->quote_discount_amount ?? 0);
+        $discountPercent = (float) ($document->quote_discount_percent ?? 0);
 
         if ($discountPercent > 0) {
             $discountAmount += $subtotal * ($discountPercent / 100);
@@ -203,9 +206,9 @@ class AbstractCalculator
     protected function calculateGrandTotal(
         float $subtotal,
         float $itemTaxTotal,
-        float $quoteTaxTotal,
+        float $taxTotal,
         float $discountAmount
     ): float {
-        return $subtotal + $itemTaxTotal + $quoteTaxTotal - $discountAmount;
+        return $subtotal + $itemTaxTotal + $taxTotal - $discountAmount;
     }
 }

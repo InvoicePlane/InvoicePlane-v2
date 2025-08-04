@@ -27,7 +27,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     public function it_lists_document_groups(): void
     {
         /* arrange */
-        $group = DocumentGroup::factory()->create(['name' => 'Policies']);
+        $group = DocumentGroup::factory()->for($this->company)->create(['name' => 'Policies']);
 
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
@@ -177,13 +177,13 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
-        $group     = DocumentGroup::factory()->create([
+        $group     = DocumentGroup::factory()->for($this->company)->create([
             'type'                    => $groupType,
             'name'                    => 'Old Group',
             'group_identifier_format' => $groupType->prefix() . '-{ID}',
         ]);
 
-        $group = DocumentGroup::factory()->create(['name' => 'Old Group']);
+        $group = DocumentGroup::factory()->for($this->company)->create(['name' => 'Old Group']);
 
         $payload = [
             'name'                    => 'Updated Group',
@@ -216,7 +216,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
-        $group     = DocumentGroup::factory()->create([
+        $group     = DocumentGroup::factory()->for($this->company)->create([
             'type'                    => $groupType,
             'name'                    => 'Group to Delete',
             'group_identifier_format' => $groupType->prefix() . '-{ID}',
