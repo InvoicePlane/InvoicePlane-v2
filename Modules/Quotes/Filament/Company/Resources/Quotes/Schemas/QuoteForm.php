@@ -117,7 +117,7 @@ class QuoteForm
                             ->relationship('quoteItems')
                             ->label(trans('ip.quote_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
+                            ->addActionLabel(trans('ip.add_new_row'))
                             ->dehydrated()
                             ->schema([
                                 Grid::make(6)

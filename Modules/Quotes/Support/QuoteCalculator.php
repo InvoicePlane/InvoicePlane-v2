@@ -19,12 +19,11 @@ class QuoteCalculator extends AbstractCalculator
      */
     public function updateAndSave($document, string $itemsRelation = 'quoteItems', array $withRelations = ['taxRate', 'taxRate2']): Quote
     {
-        // Ensure we have a Quote instance and set default values if not provided
         if ( ! $document instanceof Quote) {
             throw new InvalidArgumentException('Expected an instance of ' . Quote::class);
         }
 
-        $totals = parent::calculateTotals($document, $document->{$itemsRelation}()->with($withRelations)->get());
+        $totals = $this->calculateTotals($document, $document->{$itemsRelation}()->with($withRelations)->get());
         $document->fill($this->mapDocumentTotals($totals));
         $document->save();
 

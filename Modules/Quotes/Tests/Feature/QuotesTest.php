@@ -37,6 +37,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
+            'user_id'      => $this->user->id,
             'quote_number' => 'Q-1001',
             'quoted_at'    => '2024-10-01',
             'prospect_id'  => $prospect->id,
