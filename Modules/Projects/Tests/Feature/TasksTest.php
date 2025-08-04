@@ -816,7 +816,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $this->markTestIncomplete('assignProject action not implemented');
         $client = Relation::factory()->create(['company_name' => '::client_name::']);
 
         $project = Project::factory()->create([
