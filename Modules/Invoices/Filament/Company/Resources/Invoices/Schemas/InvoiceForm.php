@@ -106,7 +106,7 @@ class InvoiceForm
                             ->relationship('invoiceItems')
                             ->label(trans('ip.invoice_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
+                            ->addActionLabel(trans('ip.add_new_row'))
                             ->dehydrated()
                             ->schema([
                                 Grid::make(6) // Adjust the number of columns as needed

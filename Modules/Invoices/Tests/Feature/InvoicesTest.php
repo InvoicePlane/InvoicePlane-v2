@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -14,6 +15,8 @@ use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -32,11 +35,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_lists_invoices(): void
     {
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -76,11 +87,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'invoice_number'           => 'INV-987654',
@@ -138,11 +157,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -178,11 +205,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -216,11 +251,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -254,11 +297,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -292,11 +343,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -330,11 +389,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -368,11 +435,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'document_group_id'        => $documentGroup->id,
@@ -408,11 +483,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -448,11 +531,16 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id' => $productCategory->id,
+            'unit_id'     => $productUnit->id,
+        ]);
 
         $payload = [
             'invoice_number'           => 'INV-987654',
@@ -608,11 +696,16 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id' => $productCategory->id,
+            'unit_id'     => $productUnit->id,
+        ]);
 
         $payload = [
             'invoice_number'           => 'INV-987654',
@@ -667,11 +760,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_invoice_without_required_invoice_number(): void
     {
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -704,11 +805,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_invoice_without_required_invoice_status(): void
     {
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'customer_id'              => $customer->id,
@@ -887,11 +996,19 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_invoice_without_customer(): void
     {
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'document_group_id'        => $documentGroup->id,

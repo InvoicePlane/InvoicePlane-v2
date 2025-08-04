@@ -17,7 +17,7 @@ class InvoiceCalculator extends AbstractCalculator
      *
      * @return array
      */
-    public function calculateTotals(Invoice $invoice, $items): array
+    public function calculateTotals($document, $items): array
     {
         $subtotal        = 0;
         $itemTaxTotal    = 0;
@@ -32,7 +32,7 @@ class InvoiceCalculator extends AbstractCalculator
             $invoiceTaxTotal += $itemTaxes['invoice_tax_total'];
         }
 
-        $discountAmount = $this->calculateDiscount($invoice, $subtotal);
+        $discountAmount = $this->calculateDiscount($document, $subtotal);
         $total          = $this->calculateGrandTotal($subtotal, $itemTaxTotal, $invoiceTaxTotal, $discountAmount);
 
         return [
@@ -48,19 +48,22 @@ class InvoiceCalculator extends AbstractCalculator
     /**
      * Update invoice totals and save.
      *
+     * @param mixed   $document
+     * @param string  $itemsRelation
+     * @param array   $withRelations
      * @param Invoice $invoice
      *
      * @return Invoice
      */
-    public function updateAndSave(Invoice $invoice): Invoice
+    public function updateAndSave($document, string $itemsRelation = 'items', array $withRelations = []): Invoice
     {
-        $items  = $invoice->invoiceItems;
-        $totals = $this->calculateTotals($invoice, $items);
+        $items  = $document->invoiceItems;
+        $totals = $this->calculateTotals($document, $items);
 
-        $invoice->fill($totals);
-        $invoice->save();
+        $document->fill($totals);
+        $document->save();
 
-        return $invoice;
+        return $document;
     }
 
     /**
@@ -112,7 +115,7 @@ class InvoiceCalculator extends AbstractCalculator
      *
      * @return float
      */
-    protected function calculateDiscount(Invoice $invoice, float $subtotal): float
+    protected function calculateDiscount($document, float $subtotal): float
     {
         $discountAmount  = (float) ($invoice->discount_amount ?? 0);
         $discountPercent = (float) ($invoice->discount_percent ?? 0);
@@ -129,7 +132,7 @@ class InvoiceCalculator extends AbstractCalculator
      *
      * @param float $subtotal
      * @param float $itemTaxTotal
-     * @param float $invoiceTaxTotal
+     * @param float $taxTotal
      * @param float $discountAmount
      *
      * @return float
@@ -137,9 +140,9 @@ class InvoiceCalculator extends AbstractCalculator
     protected function calculateGrandTotal(
         float $subtotal,
         float $itemTaxTotal,
-        float $invoiceTaxTotal,
+        float $taxTotal,
         float $discountAmount
     ): float {
-        return $subtotal + $itemTaxTotal + $invoiceTaxTotal - $discountAmount;
+        return $subtotal + $itemTaxTotal + $taxTotal - $discountAmount;
     }
 }
