@@ -331,21 +331,18 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_project(): void
     {
-        $this->markTestIncomplete();
         $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
 
         /* arrange */
         $payload = [
-            'company_id'     => $company->id,
-            'customer_id'    => 2,
-            'project_status' => 'active',
+            'customer_id'    => $customer->id,
+            'project_status' => ProjectStatus::ACTIVE->value,
             'project_name'   => 'Website Redesign',
             'start_at'       => '2025-05-01',
             'end_at'         => '2025-06-01',
             'description'    => 'Redesigning the corporate website',
         ];
-
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
@@ -375,11 +372,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_status(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Have to pass null as project_status and figure out how tryFrom reacts to that');
 
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+        $customer = Relation::factory()->create(['company_name' => '::company_name::']);
 
         $payload = [
             'company_id'     => $company->id,
@@ -421,10 +418,10 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_project_name(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Need to validate emptyness of project_name where it can be null but still is required');
 
         $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+        $customer = Relation::factory()->create(['company_name' => '::company_name::']);
 
         /* arrange */
         $payload = [
@@ -448,6 +445,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->assertHasFormErrors(['project_name' => 'required']);
     }
 
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload missing: start_at
      * {
@@ -459,13 +458,14 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_project_without_required_start_at(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::client_name::']);
 
         $payload = [
-            'project_name' => 'Client Redesign',
-            'description'  => 'Modernizing UX',
-            'end_at'       => '2025-06-30',
+            'customer_id'    => $customer->id,
+            'project_name'   => 'Website Redesign',
+            'project_status' => ProjectStatus::ON_HOLD->value,
+            'description'    => 'Modernizing UX',
+            'end_at'         => '2025-02-20',
         ];
 
         /* act */
@@ -494,7 +494,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         $this->markTestSkipped('Not implemented yet');
         // $this->authenticate();
-        $client = Relation::factory()->create(['client_name' => '::client_name::']);
+        $client = Relation::factory()->create(['company_name' => '::company_name::']);
 
         $project = Project::factory()->create([
             'client_id'    => $client->client_id,
@@ -551,7 +551,10 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProject::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors();
@@ -565,7 +568,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_project(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('DeleteAction missing on ProjectsTable');
 
         /* arrange */
         $company  = $this->user->companies()->first();
@@ -579,7 +582,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->callAction('delete', $project);
+            ->callAction('delete', ['record' => $project]);
 
         /* assert */
         $component->assertSuccessful();
@@ -597,18 +600,16 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region spicy
-
     #[Test]
     #[Group('crud')]
     /**
      * route('filament.ivpl.resources.filament.resources.projects.assign_client').
      */
-    public function it_projects_assign_client(): void
+    public function it_can_assign_clients_to_project(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
 
         /* arrange */
-        $this->markTestIncomplete('needs assignClient action');
         // $this->authenticate();
         $customer = Customer::factory()->create();
         $project  = Project::factory()->create(['client_id' => $client->client_id]);
@@ -633,11 +634,9 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_assign_client_without_project_id(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
 
         /* arrange */
-        $this->markTestSkipped('needs assignClient action');
-        // $this->authenticate();
         $customer = Customer::factory()->create();
         $project  = Project::factory()->create(['client_id' => $client->client_id]);
         $client2  = Relation::factory()->create();
@@ -661,10 +660,9 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_projects_change_client(): void
     {
-        $this->markTestSkipped('needs assignClient action');
+        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
 
         /* arrange */
-        // $this->authenticate();
         $customer = Customer::factory()->create();
         $project  = Project::factory()->create(['client_id' => $client->client_id]);
         $client2  = Relation::factory()->create();
@@ -688,10 +686,9 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_change_project_client_without_client_id(): void
     {
-        $this->markTestIncomplete('needs assignClient action');
+        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
 
         /* arrange */
-        // $this->authenticate();
         $customer = Customer::factory()->create();
         $project  = Project::factory()->create(['client_id' => $client->client_id]);
         $client2  = Relation::factory()->create();
