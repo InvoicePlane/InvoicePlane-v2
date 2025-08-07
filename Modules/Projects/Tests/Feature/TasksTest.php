@@ -168,7 +168,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['task_name' => 'required']);
+            ->assertHasFormErrors(['task_name' => 'required']);
 
         /* assert */
         $this->assertDatabaseMissing('tasks', $payload);
@@ -220,7 +220,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['customer_id' => 'required']);
+            ->assertHasFormErrors(['customer_id' => 'required']);
 
         /* assert */
         $this->assertDatabaseMissing('tasks', $payload);
@@ -270,7 +270,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['assigned_to' => 'required']);
+            ->assertHasFormErrors(['assigned_to' => 'required']);
 
         /* assert */
         $this->assertDatabaseMissing('tasks', $payload);
@@ -319,7 +319,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['tax_rate_id' => 'required']);
+            ->assertHasFormErrors(['tax_rate_id' => 'required']);
 
         /* assert */
         $this->assertDatabaseMissing('tasks', $payload);
