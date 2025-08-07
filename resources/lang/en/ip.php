@@ -1,8 +1,6 @@
 <?php
 
 return [
-    // Test
-
     // General
     'balance' => 'Balance',
     'boolean' => 'Boolean',
