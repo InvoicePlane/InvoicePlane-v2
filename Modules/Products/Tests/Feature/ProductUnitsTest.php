@@ -48,8 +48,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_product_unit_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'unit_name'      => 'Pack',
@@ -59,8 +57,9 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create')
+            ->callMountedAction()
             ->assertHasNoFormErrors();
 
         /* assert */
@@ -77,16 +76,17 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_unit_through_a_modal_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payload = [];
+        $payload = [
+            'unit_name' => null,
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasFormErrors(['unit_name']);
@@ -98,7 +98,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit_through_a_modal(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Service probably did not process the update');
 
         /* arrange */
         $record = ProductUnit::factory()
@@ -113,8 +113,9 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class, ['record' => $record->id])
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('save')
+            ->callMountedAction()
             ->assertHasNoFormErrors();
 
         /* assert */
@@ -158,19 +159,17 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_unit(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payload = ['unit_name' => 'Pack'];
+        $payload = [
+            'unit_name'      => 'Pack',
+            'unit_name_plrl' => 'Packs',
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateProductUnit::class, ['state' => $payload])  // Inject state on mount
-            ->call('handleCreate');
-
-        dd($component->instance()->getPublicMethods());
-        dd($component->instance()->getActions());
-        dd($component->instance());
+            ->test(CreateProductUnit::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -191,10 +190,10 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_unit_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payload = [];
+        $payload = [
+            'unit_name' => null,
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
