@@ -11,7 +11,7 @@
 
 ### Installation
 
-To install and run InvoicePlane V2 locally, see the [Installation Guide](INSTALLATION.md).
+To install and run InvoicePlane V2 locally, see the [Installation Guide](.github/INSTALLATION.md).
 
 Quick summary:
 
