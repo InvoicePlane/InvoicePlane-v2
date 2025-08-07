@@ -94,7 +94,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['category_name']);
+            ->assertHasFormErrors(['category_name']);
 
         $component->assertSuccessful();
     }
