@@ -141,7 +141,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasActionErrors(['prospect_id']);
+        $component->assertHasFormErrors(['prospect_id']);
     }
 
     #[Test]
@@ -180,7 +180,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasActionErrors(['quote_number']);
+        $component->assertHasFormErrors(['quote_number']);
     }
 
     #[Test]
