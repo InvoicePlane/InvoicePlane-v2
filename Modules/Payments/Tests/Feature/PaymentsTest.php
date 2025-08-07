@@ -52,9 +52,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertSuccessful();
@@ -78,12 +78,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_payment_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -101,10 +102,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dd($component->errors());
             dd($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasNoErrors();
@@ -129,12 +130,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_invoice_id(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'customer_id'    => $customer->id,
@@ -143,9 +145,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        if (app()->runningUnitTests()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -174,12 +176,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_method(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($this->user->companies()->first())->create();
+        $invoice  = Invoice::factory()->for($this->user->companies()->first())->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -188,9 +191,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -218,12 +221,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_status(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -241,9 +245,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasFormErrors(['payment_status']);
@@ -266,12 +270,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_paid_at(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create(['customer_id' => $customer->id]);
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
 
         $payload = [
             'invoice_id'     => $invoice->id,
@@ -287,9 +292,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasFormErrors(['paid_at']);
@@ -310,8 +315,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_amount(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create();
@@ -433,10 +436,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dd($component->errors());
             dd($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasNoErrors();
@@ -476,9 +479,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        if (app()->runningUnitTests()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -521,9 +524,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -573,9 +576,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasFormErrors(['payment_status']);
@@ -619,9 +622,9 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component->assertHasFormErrors(['paid_at']);
@@ -735,7 +738,11 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $invoice = Invoice::factory()
             ->for($this->user->companies()->first())
-            ->create(['status' => InvoiceStatus::PAID]);
+            ->create([
+                'customer_id' => $customer->id,
+                'user_id'     => $this->user->id,
+                'status'      => InvoiceStatus::PAID,
+            ]);
 
         $payment = Payment::factory()
             ->for($this->user->companies()->first())
