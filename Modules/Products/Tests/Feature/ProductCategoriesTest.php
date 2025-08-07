@@ -50,8 +50,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_product_category_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'category_name' => 'Office Supplies',
@@ -63,7 +61,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -83,20 +81,22 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_category_through_a_modal_without_required_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payload = [];
+        $payload = [
+            'category_name' => null,
+        ];
 
         /* act & assert */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
             ->mountAction('create')
             ->fillForm($payload)
-            ->callMountedAction()
+            ->callMountedAction();
+
+        $component
             ->assertHasFormErrors(['category_name']);
 
-        $component->assertSuccessful();
+        $this->assertDatabaseMissing('product_categories', $payload);
     }
 
     #[Test]
@@ -119,7 +119,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->mountAction('edit', ['record' => $record->id])
             ->fillForm($updateData)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -137,7 +137,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      *   "name": ""
      * }
      */
-    public function it_fails_to_update_category_through_a_modal_without_required_name(): void
+    public function it_fails_to_update_category_through_a_modal_without_required_category_name(): void
     {
         $this->markTestIncomplete();
 
@@ -169,8 +169,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_category(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'category_name' => 'Office Supplies',
@@ -199,12 +197,12 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      *   "category_description": "Missing required name"
      * }
      */
-    public function it_fails_to_create_product_category_without_name(): void
+    public function it_fails_to_create_product_category_without_required_category_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payload = [];
+        $payload = [
+            'category_name' => null,
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -214,6 +212,8 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertHasFormErrors(['category_name']);
+
+        $this->assertDatabaseMissing('product_categories', $payload);
     }
 
     #[Test]
@@ -246,7 +246,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      *   "name": ""
      * }
      */
-    public function it_fails_to_update_category_with_missing_name(): void
+    public function it_fails_to_update_category_without_required_category_name(): void
     {
         $this->markTestIncomplete();
         /* arrange */
