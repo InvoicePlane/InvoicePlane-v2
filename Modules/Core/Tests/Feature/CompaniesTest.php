@@ -85,7 +85,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['search_code' => 'required']);
+            ->assertHasFormErrors(['search_code' => 'required']);
 
         $this->assertDatabaseMissing('companies', $payload);
     }
@@ -114,7 +114,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['name' => 'required']);
+            ->assertHasFormErrors(['name' => 'required']);
 
         $this->assertDatabaseMissing('companies', $payload);
     }
