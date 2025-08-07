@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // Test
+
     // General
     'balance' => 'Balance',
     'boolean' => 'Boolean',
@@ -219,6 +221,9 @@ return [
     'clients'                 => 'Clients',
     'guest'                   => 'Guest',
     'user_clients'            => 'User Clients',
+    'id_number'               => 'ID Number',
+    'coc_number'              => 'COC Number',
+    'primary_contact'         => 'Primary Contact',
 
     // Core
     'custom_fields'      => 'Custom Fields',
