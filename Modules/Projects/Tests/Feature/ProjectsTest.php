@@ -86,7 +86,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -254,7 +254,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->mountAction('edit', ['record' => $project->id])
             ->fillForm($updateData)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -491,9 +491,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticate();
         $client = Relation::factory()->create(['company_name' => '::company_name::']);
 
         $project = Project::factory()->create([
@@ -595,7 +592,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('multi-tenancy')]
     public function it_cannot_access_projects_of_another_tenant(): void
     {
-        $this->markTestSkipped('Should assert forbidden/404 when accessing another tenant\'s project.');
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s project.');
     }
     # endregion
 
