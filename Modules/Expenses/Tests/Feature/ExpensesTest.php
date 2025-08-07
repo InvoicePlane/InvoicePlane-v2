@@ -92,10 +92,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expense_amount' => 120.00,
             'expensed_at'    => now()->format('Y-m-d'),
             'expenseItems'   => [
-                [
+                0 => [
                     'item_id'      => $product->id,
-                    'quantity'     => 2,
-                    'price'        => 10,
+                    'quantity'     => 2.0000,
+                    'price'        => 10.0000,
                     'discount'     => 0,
                     'subtotal'     => 20,
                     'is_recurring' => false,
@@ -107,9 +107,14 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('create') // Mount the modal for CreateAction
-            ->fillForm($payload)    // Fill the form including expenseItems
-            ->callMountedAction();  // Submit the modal action
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /*if (app()->runningUnitTests()) {
+            dd($component->errors());
+            dd($payload);
+        }*/
 
         $component->assertHasNoFormErrors(); // Check for validation errors
 
