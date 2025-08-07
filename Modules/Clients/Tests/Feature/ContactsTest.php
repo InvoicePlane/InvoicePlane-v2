@@ -121,7 +121,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['relation_id' => 'required']);
+            ->assertHasFormErrors(['relation_id' => 'required']);
     }
 
     #[Test]
@@ -154,7 +154,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['first_name' => 'required']);
+            ->assertHasFormErrors(['first_name' => 'required']);
     }
 
     #[Test]
@@ -187,7 +187,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['last_name' => 'required']);
+            ->assertHasFormErrors(['last_name' => 'required']);
     }
 
     #[Test]

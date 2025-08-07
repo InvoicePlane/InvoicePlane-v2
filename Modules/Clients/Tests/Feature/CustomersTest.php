@@ -119,7 +119,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['company_name' => 'required']);
+            ->assertHasFormErrors(['company_name' => 'required']);
     }
 
     #[Test]
@@ -151,7 +151,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['relation_type' => 'required']);
+            ->assertHasFormErrors(['relation_type' => 'required']);
     }
 
     #[Test]
@@ -182,7 +182,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['relation_status' => 'required']);
+            ->assertHasFormErrors(['relation_status' => 'required']);
     }
 
     #[Test]
@@ -211,7 +211,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['registered_at' => 'required']);
+            ->assertHasFormErrors(['registered_at' => 'required']);
     }
 
     #[Test]
@@ -273,7 +273,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('edit', ['record' => $customer->getKey()])
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasActionErrors(['company_name' => 'required']);
+            ->assertHasFormErrors(['company_name' => 'required']);
     }
     #endregion
 
