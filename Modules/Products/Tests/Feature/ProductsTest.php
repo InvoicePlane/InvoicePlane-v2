@@ -89,8 +89,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
@@ -116,12 +114,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
-        if (app()->isLocal()) {
-            dump($payload);
-        }
+        /*if (app()->runningUnitTests()) {
+            dd($payload);
+        }*/
 
         /* assert */
         $component
@@ -152,8 +151,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_through_a_modal_without_required_code(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
@@ -181,12 +178,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -212,10 +210,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "description": "Example description"
      * }
      */
-    public function it_fails_to_create_product_through_a_modal_without_required_name(): void
+    public function it_fails_to_create_product_through_a_modal_without_required_product_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
@@ -244,16 +240,17 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
-            ->assertHasFormErrors(['name']);
+            ->assertHasFormErrors(['product_name']);
     }
 
     #[Test]
@@ -275,8 +272,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_through_a_modal_without_required_price(): void
     {
-        $this->markTestIncomplete();
-
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -304,12 +299,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
+            ->mountAction('create')
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -417,12 +413,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
+            ->mountAction('edit', ['record' => $product->product_id])
             ->fillForm($payload)
-            ->call('create');
+            ->callMountedAction();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -480,9 +477,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -543,9 +540,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -571,10 +568,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *   "description": "Example description"
      * }
      */
-    public function it_fails_to_create_product_without_required_name(): void
+    public function it_fails_to_create_product_without_required_product_name(): void
     {
-        $this->markTestIncomplete();
-
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -605,13 +600,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
-            ->assertHasFormErrors(['name']);
+            ->assertHasFormErrors(['product_name']);
     }
 
     #[Test]
@@ -633,8 +628,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_without_required_price(): void
     {
-        $this->markTestIncomplete();
-
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -665,9 +658,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -773,13 +766,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProducts::class)
+            ->test(EditProduct::class, ['record' => $product->product_id])
             ->fillForm($payload)
-            ->call('create');
+            ->call('save');
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
