@@ -6,12 +6,18 @@ use Illuminate\Support\Facades\DB;
 use Modules\Clients\Events\ContactWasCreated;
 use Modules\Clients\Events\ContactWasUpdated;
 use Modules\Clients\Models\Contact;
+use Modules\Core\Services\BaseService;
 
-class ContactService
+class ContactService extends BaseService
 {
+    public function model(): string
+    {
+        return Contact::class;
+    }
+
     public function createContact(array $data): Contact
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(static function () use ($data) {
             $contact = Contact::query()->create([
                 'relation_id' => $data['relation_id'],
                 'first_name'  => $data['first_name'],
@@ -28,13 +34,13 @@ class ContactService
         });
     }
 
-    public function updateContact(array $data, $contact): Contact
+    public function updateContact($contact, array $data): Contact
     {
         if ( ! $contact instanceof Contact) {
             $contact = Contact::query()->findOrFail($contact);
         }
 
-        return DB::transaction(function () use ($contact, $data) {
+        return DB::transaction(static function () use ($contact, $data) {
             $contact->update([
                 'first_name'  => $data['first_name'] ?? $contact->first_name,
                 'last_name'   => $data['last_name'] ?? $contact->last_name,
