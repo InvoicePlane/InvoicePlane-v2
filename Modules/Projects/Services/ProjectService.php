@@ -3,9 +3,11 @@
 namespace Modules\Projects\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
+use Throwable;
 
 class ProjectService extends BaseService
 {
@@ -18,19 +20,29 @@ class ProjectService extends BaseService
 
     public function createProject(array $data): Model
     {
-        return $this->create([
-            'customer_id'    => $data['customer_id'],
-            'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
-            'project_name'   => $data['project_name'],
-            'description'    => $data['description'] ?? null,
-            'start_at'       => $data['start_at'] ?? now(),
-            'end_at'         => $data['end_at'] ?? null,
-        ]);
+        DB::beginTransaction();
+        try {
+            $project = Project::query()->create([
+                'customer_id'    => $data['customer_id'],
+                'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
+                'project_name'   => $data['project_name'],
+                'description'    => $data['description'] ?? null,
+                'start_at'       => $data['start_at'] ?? now(),
+                'end_at'         => $data['end_at'] ?? null,
+            ]);
+
+            DB::commit();
+
+            return $project;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public function updateProject(Project $model, array $data): Project
+    public function updateProject(Project $project, array $data): Project
     {
-        $model->update([
+        $project->update([
             'customer_id'    => $data['customer_id'],
             'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
             'project_name'   => $data['project_name'],
@@ -39,7 +51,7 @@ class ProjectService extends BaseService
             'end_at'         => $data['end_at'] ?? null,
         ]);
 
-        return $model;
+        return $project;
     }
 
     public function getCustomer(int $project_id): int
