@@ -22,7 +22,7 @@ class TaskService extends BaseService
         $customer_id = app(ProjectService::class)->getCustomer($data['project_id']);
 
         try {
-            $task = $this->create([
+            $task = Task::query()->create([
                 'task_name'   => $data['task_name'],
                 'task_status' => $data['task_status'] ?? 'not_started',
                 'project_id'  => $data['project_id'] ?? null,

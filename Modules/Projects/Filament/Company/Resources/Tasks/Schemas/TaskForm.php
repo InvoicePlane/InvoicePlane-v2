@@ -104,12 +104,7 @@ class TaskForm
                                     ->schema([
                                         Select::make('task_status')
                                             ->label(trans('ip.status'))
-                                            ->options(
-                                                collect(TaskStatus::cases())
-                                                    ->mapWithKeys(fn (TaskStatus $s) => [$s->value => trans($s->label())])
-                                                    ->toArray()
-                                            )
-                                            ->getOptionLabelUsing(fn (string $value) => trans(TaskStatus::tryFrom($value)?->label()))
+                                            ->options(TaskStatus::options())
                                             ->searchable()
                                             ->preload()
                                             ->native(false)

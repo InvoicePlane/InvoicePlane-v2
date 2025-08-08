@@ -3,9 +3,11 @@
 namespace Modules\Projects\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
+use Modules\Core\Traits\HasOptions;
 
 enum TaskStatus: string implements LabeledEnum
 {
+    use HasOptions;
     case CANCELLED   = 'cancelled';
     case COMPLETED   = 'completed';
     case IN_PROGRESS = 'in_progress';
