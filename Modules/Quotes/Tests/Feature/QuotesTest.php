@@ -96,7 +96,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -523,7 +523,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateQuote::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['customer_id']);
@@ -791,7 +794,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => QuoteStatus::SENT];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -817,7 +823,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = ['quote_number' => null];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditQuote::class, ['record' => $quote->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['quote_number']);

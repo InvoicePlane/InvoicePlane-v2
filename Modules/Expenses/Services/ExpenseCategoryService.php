@@ -22,7 +22,7 @@ class ExpenseCategoryService extends BaseService
             throw new RuntimeException('Cannot create Expense Category: No current company ID.');
         }
 
-        return $this->create([
+        return ExpenseCategory::query()->create([
             'company_id'    => $companyId,
             'category_name' => $data['category_name'],
         ]);

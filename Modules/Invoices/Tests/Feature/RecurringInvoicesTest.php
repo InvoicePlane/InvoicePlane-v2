@@ -198,9 +198,9 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertHasFormErrors();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
     }
 
     #[Test]
@@ -309,9 +309,9 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertHasFormErrors();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
     }
     # endregion
 
@@ -447,14 +447,17 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditRecurringInvoice::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors();
 
-        if (app()->isLocal()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
     }
 
     #[Test]

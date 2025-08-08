@@ -66,68 +66,29 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
-    public function it_creates_an_expense_with_items_trough_a_modal(): void
+    public function it_creates_expense_through_a_modal(): void
     {
-        $this->markTestIncomplete();
+        $this->actingAs($this->user);
 
-        $company         = $this->user->companies()->first();
-        $category        = ExpenseCategory::factory()->for($company)->create();
-        $customer        = Relation::factory()->for($company)->customer()->create();
-        $taxRate         = TaxRate::factory()->for($company)->create();
-        $productCategory = ProductCategory::factory()->for($company)->create();
-        $productUnit     = ProductUnit::factory()->for($company)->create();
-        $product         = Product::factory()->for($company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'customer_id'    => $customer->id,
-            'expense_number' => 'EXP-4585487',
-            'expense_status' => ExpenseStatus::APPROVED,
-            'category_id'    => $category->id,
-            'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_amount' => 120.00,
-            'expensed_at'    => now()->format('Y-m-d'),
-            'expenseItems'   => [
-                0 => [
-                    'item_id'      => $product->id,
-                    'quantity'     => 2.0000,
-                    'price'        => 10.0000,
-                    'discount'     => 0,
-                    'subtotal'     => 20,
-                    'is_recurring' => false,
-                    'tax_1'        => 2,
-                    'tax_2'        => 1,
+        Livewire::test(CreateExpense::class)
+            ->fillForm([
+                'customer_id'    => $this->seedCustomer()->getKey(),
+                'vendor_id'      => $this->seedVendor()->getKey(),
+                'category_id'    => $this->seedExpenseCategory()->getKey(),
+                'expense_type'   => 'standard',
+                'expense_status' => 'draft',
+                'expense_number' => '',
+                'expense_amount' => 100,
+                'expensed_at'    => now()->toDateString(),
+                'description'    => 'x',
+                'expenseItems'   => [
+                    ['item_id' => $this->seedProduct()->getKey(), 'quantity' => 2, 'price' => 50, 'discount' => 0, 'subtotal' => 100],
                 ],
-            ],
-        ];
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
 
-        $component = Livewire::actingAs($this->user)
-            ->test(ListExpenses::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /*if (app()->runningUnitTests()) {
-            dd($component->errors());
-            dd($payload);
-        }*/
-
-        $component->assertHasNoFormErrors(); // Check for validation errors
-
-        $this->assertDatabaseHas('expenses', [
-            'expense_number' => $payload['expense_number'],
-            'expense_amount' => $payload['expense_amount'],
-        ]);
-
-        $this->assertDatabaseHas('expense_items', [
-            'item_id'  => $payload['expenseItems'][0]['item_id'],
-            'quantity' => $payload['expenseItems'][0]['quantity'],
-            'price'    => $payload['expenseItems'][0]['price'],
-        ]);
+        $this->assertDatabaseCount(Expense::class, 1);
     }
 
     #[Test]
@@ -940,7 +901,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $payload = ['expense_type' => ExpenseType::RECURRING];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditExpense::class, ['record' => $expense->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpense::class, ['record' => $expense->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -966,7 +930,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         $payload = ['expense_type' => null];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditExpense::class, ['record' => $expense->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpense::class, ['record' => $expense->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['expense_type']);

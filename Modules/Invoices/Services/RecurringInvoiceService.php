@@ -15,7 +15,7 @@ class RecurringInvoiceService extends BaseService
 
     public function createRecurringInvoice(array $data): Model
     {
-        return parent::create($data);
+        return parent::createCustomer($data);
     }
 
     public function updateRecurringInvoice(RecurringInvoice $model, array $data): RecurringInvoice

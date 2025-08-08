@@ -1027,7 +1027,10 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['customer_id']);
@@ -1063,7 +1066,10 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['document_group']);
@@ -1121,7 +1127,10 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => InvoiceStatus::SENT];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -1206,7 +1215,10 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $payload = ['status' => null];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['status']);

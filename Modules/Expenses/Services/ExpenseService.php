@@ -21,14 +21,14 @@ class ExpenseService extends BaseService
 
         try {
             $expense = Expense::query()->create([
-                'expense_number' => $data['expense_number'],
-                'expense_amount' => $data['expense_amount'],
-                'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
-                'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
                 'vendor_id'      => $data['vendor_id'] ?? null,
+                'category_id'    => $data['category_id'],
+                'expense_number' => $data['expense_number'],
                 'expense_type'   => $data['expense_type'],
                 'expense_status' => $data['expense_status'],
+                'expense_amount' => $data['expense_amount'],
+                'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
             ]);
 
             foreach ($data['expenseItems'] ?? [] as $item) {
