@@ -218,7 +218,10 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $payload = ['unit_name' => 'Updated Unit'];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProductUnit::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -240,7 +243,10 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $payload = ['unit_name' => null];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductUnit::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProductUnit::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['unit_name']);

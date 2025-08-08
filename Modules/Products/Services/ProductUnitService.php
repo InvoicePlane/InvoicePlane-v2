@@ -15,7 +15,7 @@ class ProductUnitService extends BaseService
 
     public function createProductUnit(array $data): Model
     {
-        return $this->create([
+        return ProductUnit::query()->create([
             'unit_name'      => $data['unit_name'],
             'unit_name_plrl' => $data['unit_name_plrl'],
         ]);
