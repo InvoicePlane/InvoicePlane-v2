@@ -227,7 +227,10 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $payload = ['category_name' => 'Updated Category'];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProductCategory::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -255,7 +258,10 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $payload = ['category_name' => null];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProductCategory::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['category_name']);

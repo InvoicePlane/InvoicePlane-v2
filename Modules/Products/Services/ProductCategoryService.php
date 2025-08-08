@@ -15,7 +15,7 @@ class ProductCategoryService extends BaseService
 
     public function createProductCategory(array $data): Model
     {
-        return $this->create([
+        return ProductCategory::query()->create([
             'category_name' => $data['category_name'],
         ]);
     }
