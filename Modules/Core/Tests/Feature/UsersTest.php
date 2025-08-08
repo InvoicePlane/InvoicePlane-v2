@@ -76,6 +76,7 @@ class UsersTest extends AbstractAdminPanelTestCase
     }
 
     # endregion
+
     # region multi-tenancy
     #[Test]
     #[Group('crud')]
