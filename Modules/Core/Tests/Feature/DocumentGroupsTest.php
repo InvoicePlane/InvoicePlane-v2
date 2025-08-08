@@ -45,9 +45,9 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_a_document_group_through_a_modal(): void
     {
+        /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
 
-        /* arrange */
         $payload = [
             'type'                    => $groupType,
             'group_identifier_format' => $groupType->prefix() . '-656',
@@ -119,19 +119,28 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
      */
     public function it_creates_a_document_group(): void
     {
-        $this->markTestIncomplete();
-
         $groupType = DocumentGroupType::CUSTOMERS;
 
         /* arrange */
         $payload = [
             'type'                    => $groupType,
-            'name'                    => 'Customer Documents',
-            'group_identifier_format' => $groupType->prefix() . '-{Y}-{ID}',
+            'group_identifier_format' => $groupType->prefix() . '-656',
+            'name'                    => $groupType->label(),
+            'left_pad'                => 1,
+            'format'                  => $groupType->prefix() . '-4376656',
+            'next_id'                 => 1,
+            'reset_number'            => 34343,
+            'last_id'                 => 437843,
+            'last_year'               => 2025,
+            'last_month'              => 6,
+            'last_week'               => 23,
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateDocumentGroup::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -146,19 +155,21 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     /**
      * @payload {}
      */
-    public function it_fails_to_create_document_group_without_required_name(): void
+    public function it_fails_to_create_a_document_group_without_required_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
-        $payload   = [
+
+        $payload = [
             'type'                    => $groupType,
             'group_identifier_format' => $groupType->prefix() . '-{ID}',
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateDocumentGroup::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['name']);
@@ -182,8 +193,6 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
             'name'                    => 'Old Group',
             'group_identifier_format' => $groupType->prefix() . '-{ID}',
         ]);
-
-        $group = DocumentGroup::factory()->for($this->company)->create(['name' => 'Old Group']);
 
         $payload = [
             'name'                    => 'Updated Group',
