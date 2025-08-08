@@ -66,8 +66,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -80,19 +78,13 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      */
     public function it_creates_a_taxrate_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        //$this->actingAs(User::factory()->create());
-
         $payload = [
-            'company_id'    => 'Value',
-            'tax_rate_type' => 'Value',
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
-            'name'          => 'Example',
-            'code'          => 'Example',
-            'rate'          => 'Example',
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
         ];
 
         /* act */
@@ -113,8 +105,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -151,7 +141,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->mountAction('edit', ['record' => $record->getKey()])
             ->fillForm($updateData)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -166,7 +156,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
+     * TaxRateResource.
      *
      * @payload
      * {
@@ -181,25 +171,22 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_a_taxrate(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('works through modal but not stand-alone');
 
         /* arrange */
-
-        $this->markTestSkipped('Some error with a livewire view');
-
-        //$this->actingAs(User::factory()->create());
-
         $payload = [
-            'company_id'    => 'Value',
-            'tax_rate_type' => 'Value',
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
-            'name'          => 'Example',
-            'code'          => 'Example',
-            'rate'          => 'Example',
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateTaxRate::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -212,8 +199,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -257,7 +242,10 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditTaxRate::class, ['record' => $record->getKey()])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
