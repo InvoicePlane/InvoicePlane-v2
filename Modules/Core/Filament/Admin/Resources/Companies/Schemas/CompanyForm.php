@@ -5,6 +5,7 @@ namespace Modules\Core\Filament\Admin\Resources\Companies\Schemas;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -26,17 +27,14 @@ class CompanyForm
                                 TextInput::make('name')
                                     ->label(trans('ip.name'))
                                     ->required()
-                                    ->reactive() // so we can watch its changes
-                                    ->afterStateUpdated(function (callable $set, $state): void {
-                                        // whenever 'name' changes, regenerate 'slug'
-                                        $set('slug', Str::slug($state));
-                                    }),
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state, '_'))),
 
                                 TextInput::make('slug')
                                     ->label(trans('ip.slug'))
-                                    ->disabled() // can't manually edit
                                     ->required()
-                                    ->reactive(), // stays in sync
+                                    ->readOnly()
+                                    ->dehydrated(),
                             ]),
 
                         //

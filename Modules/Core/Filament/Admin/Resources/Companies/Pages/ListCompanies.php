@@ -5,6 +5,7 @@ namespace Modules\Core\Filament\Admin\Resources\Companies\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
+use Modules\Core\Services\CompaniesService;
 
 class ListCompanies extends ListRecords
 {
@@ -18,7 +19,7 @@ class ListCompanies extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Core\Services\CompanyService::class)->createCompany($data);
+                    app(CompaniesService::class)->createCompany($data);
                 })
                 ->modalWidth('full'),
         ];

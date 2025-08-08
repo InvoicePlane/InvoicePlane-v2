@@ -2,14 +2,12 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
 
-class CompaniesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class CompaniesSeeder extends AbstractSeeder
 {
-    public function run(int $count = 1): void
+    public function buildOne(int $count = 1): void
     {
-        // Create the default company
         Company::factory()
             ->create([
                 'search_code'      => 'ivplv2',
@@ -22,13 +20,10 @@ class CompaniesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
                 'invoice_template' => 'default',
             ]);
 
-        // Create additional companies if count > 1
         if ($count > 1) {
             Company::factory()
                 ->count($count - 1)
                 ->create();
         }
-
-        Log::info("Created {$count} companies");
     }
 }
