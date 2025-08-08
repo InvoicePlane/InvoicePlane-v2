@@ -67,8 +67,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_customer_trough_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'company_name'    => 'Beta LLC',
@@ -84,7 +82,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -103,8 +101,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_trough_a_modal_without_required_company_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             // 'company_name' => 'Missing Inc.',
@@ -134,8 +130,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_trough_a_modal_without_required_relation_type(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'company_name' => 'Zeta Ltd.',
@@ -166,8 +160,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_trough_a_modal_without_required_relation_status(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'company_name'    => 'Beta LLC',
@@ -196,8 +188,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_trough_a_modal_without_required_registered_at(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'company_name'    => 'Zeta Ltd.',
@@ -244,7 +234,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->mountAction('edit', ['record' => $customer->getKey()])
             ->fillForm($update)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -341,7 +331,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateRelation::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_type']);
@@ -360,7 +353,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateRelation::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_status']);
@@ -407,7 +403,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditRelation::class, ['record' => $customer->getKey()])
+            ->fillForm($update)
+            ->call('save');
 
         /* assert */
         $component
@@ -419,7 +418,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_if_company_name_missing(): void
+    public function it_fails_to_update_without_required_company_name(): void
     {
         $this->markTestIncomplete();
 
@@ -434,7 +433,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditRelation::class, ['record' => $customer->getKey()])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['company_name']);
