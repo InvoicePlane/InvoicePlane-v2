@@ -11,6 +11,7 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -66,8 +67,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_contact_trough_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
@@ -86,7 +85,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction()
-            ->assertHasNoActionErrors();
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component->assertSuccessful();
@@ -103,10 +102,8 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_when_relation_id_is_missing(): void
+    public function it_fails_trough_a_modal_without_required_relation_id(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             //'relation_id' => $relation->id,
@@ -133,10 +130,8 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_when_first_name_is_missing(): void
+    public function it_fails_trough_a_modal_without_required_first_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $relation = Relation::factory()
             ->for($this->user->companies()->first(), 'company')
@@ -166,10 +161,8 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_when_last_name_is_missing(): void
+    public function it_fails_trough_a_modal_without_required_last_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $relation = Relation::factory()
             ->for($this->user->companies()->first(), 'company')
@@ -356,7 +349,10 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditContact::class, ['record' => $contact->getKey()])
+            ->fillForm($update)
+            ->call('save');
 
         /* assert */
         $component
