@@ -33,7 +33,7 @@ class EmailTemplatesTable
 
                             return $data;
                         })
-                        ->action(fn (EmailTemplate $record, array $data) => app(EmailTemplateService::class)->update($data, $record))
+                        ->action(fn (EmailTemplate $record, array $data) => app(EmailTemplateService::class)->updateUser($data, $record))
                         ->modalWidth('full'),
                 ]),
             ])
