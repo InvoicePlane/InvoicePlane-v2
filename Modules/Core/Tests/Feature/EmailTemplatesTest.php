@@ -43,8 +43,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_an_email_template_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'title'      => 'Test Email',
@@ -62,9 +60,9 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->runningUnitTests()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -78,8 +76,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_email_template_through_a_modal_without_required_title(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'subject'    => 'Welcome',
@@ -96,9 +92,9 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->runningUnitTests()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -111,8 +107,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_an_email_template_trough_a_modal_without_required_type(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
             'title'      => 'Welcome',
@@ -129,9 +123,9 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        if (app()->runningUnitTests()) {
+        /*if (app()->runningUnitTests()) {
             dump($payload);
-        }
+        }*/
 
         /* assert */
         $component
@@ -139,20 +133,107 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
         $this->assertDatabaseMissing('email_templates', $payload);
     }
-    # endregion
 
-    # region crud
     #[Test]
     #[Group('crud')]
-    public function it_creates_an_email_template(): void
+    public function it_updates_an_email_template_through_a_modal(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
+        $template = EmailTemplate::factory()->for($this->company)->create([
+            'title'   => 'Old Title',
+            'subject' => 'Old Subject',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
+
+        $payload = ['subject' => 'Updated Subject'];
+
+        /* act */
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('email_templates', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_update_an_email_template_through_a_modal_without_required_title(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $template = EmailTemplate::factory()->for($this->company)->create([
+            'title'   => 'Old Title',
+            'subject' => 'Old Subject',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
+
+        $payload = ['subject' => 'Updated Subject'];
+
+        /* act */
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('email_templates', $payload);
+    }
+    #endregion
+
+    # region crud
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "title": "Test Email",
+     *   "subject": "Welcome",
+     *   "body": "",
+     *   "type": "text",
+     *   "from_name": "Acme Support",
+     *   "from_email": "support@acme.com"
+     * }
+     */
+    public function it_creates_an_email_template(): void
+    {
         $payload = [
-            'title'      => 'Welcome Email',
-            'subject'    => 'Welcome to Our Service',
-            'body'       => 'Hello {name}, welcome to our service!',
+            'title'      => 'Test Email',
+            'subject'    => 'Welcome',
+            'body'       => '',
+            'type'       => EmailTemplateType::TEXT->value,
+            'from_name'  => 'Acme Support',
+            'from_email' => 'support@acme.com',
+        ];
+
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateEmailTemplate::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertSuccessful()->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('email_templates', array_merge(
+            $payload,
+            ['company_id' => $this->company->getKey()]
+        ));
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_email_template_without_required_title(): void
+    {
+        /* arrange */
+        $payload = [
+            'subject'    => 'Welcome',
+            'body'       => '',
             'type'       => EmailTemplateType::TEXT->value,
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
@@ -165,32 +246,39 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->call('create');
 
         /* assert */
-        $component->assertSuccessful()->assertHasNoFormErrors();
-        $this->assertDatabaseHas('email_templates', [
-            'title'   => 'Welcome Email',
-            'subject' => 'Welcome to Our Service',
-            'type'    => EmailTemplateType::TEXT->value,
-        ]);
+        $component
+            ->assertHasFormErrors(['title']);
+
+        $this->assertDatabaseMissing('email_templates', $payload);
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_email_template_without_subject(): void
+    public function it_fails_to_create_an_email_template_without_required_type(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payload = [
-            'body' => 'This is missing required fields',
+            'title'      => 'Welcome',
+            'subject'    => 'Test Email',
+            'body'       => '',
+            'from_name'  => 'Acme Support',
+            'from_email' => 'support@acme.com',
         ];
 
-        $payload = ['body' => 'Missing subject'];
-
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateEmailTemplate::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateEmailTemplate::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
 
         /* assert */
-        $component->assertHasFormErrors(['subject']);
+        $component
+            ->assertHasFormErrors(['type']);
+
         $this->assertDatabaseMissing('email_templates', $payload);
     }
 
@@ -212,7 +300,10 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $payload = ['subject' => 'Updated Subject'];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(EditEmailTemplate::class, ['record' => $template->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditEmailTemplate::class, ['record' => $template->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
