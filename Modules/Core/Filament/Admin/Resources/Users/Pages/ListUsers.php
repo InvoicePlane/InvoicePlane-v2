@@ -5,6 +5,7 @@ namespace Modules\Core\Filament\Admin\Resources\Users\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
+use Modules\Core\Services\UserService;
 
 class ListUsers extends ListRecords
 {
@@ -18,7 +19,7 @@ class ListUsers extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Core\Services\UserService::class)->createUser($data);
+                    app(UserService::class)->createUser($data);
                 })
                 ->modalWidth('full'),
         ];
