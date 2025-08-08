@@ -17,7 +17,7 @@ class ProductService extends BaseService
 
     public function createProduct(array $data): Model
     {
-        return $this->create([
+        return Product::query()->create([
             'company_id'     => $this->getCompanyId(),
             'category_id'    => $data['category_id'],
             'unit_id'        => $data['unit_id'] ?? null,
