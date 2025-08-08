@@ -20,7 +20,7 @@ class PaymentService extends BaseService
     {
         $customerId = $data['customer_id'] ?? Invoice::query()->findOrFail($data['invoice_id'])->customer_id;
 
-        $payment = $this->create([
+        $payment = Payment::query()->create([
             'customer_id'        => $customerId,
             'invoice_id'         => $data['invoice_id'] ?? null,
             'merchant_client_id' => $data['merchant_client_id'] ?? null,

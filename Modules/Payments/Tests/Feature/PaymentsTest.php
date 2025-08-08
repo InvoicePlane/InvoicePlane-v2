@@ -683,7 +683,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $payload = ['payment_amount' => 888.00];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -704,7 +707,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditPayment::class, ['record' => $payment->id])->fillForm(['payment_amount' => null])->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_amount' => null])
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['payment_amount']);
