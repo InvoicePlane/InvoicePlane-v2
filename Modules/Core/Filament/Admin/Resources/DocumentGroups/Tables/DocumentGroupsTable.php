@@ -66,7 +66,7 @@ class DocumentGroupsTable
                             return $data;
                         })
                         ->action(function (DocumentGroup $record, array $data) {
-                            app(DocumentGroupService::class)->update($record, $data);
+                            app(DocumentGroupService::class)->updateUser($record, $data);
                         })
                         ->modalWidth('full'),
                 ]),
