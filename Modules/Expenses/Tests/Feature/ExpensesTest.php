@@ -121,8 +121,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_trough_a_modal_without_required_expense_number(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -157,9 +156,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            //            ->mountAction('create')
+            ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -171,8 +171,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_trough_a_modal_without_required_expensed_at(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -207,8 +206,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateExpense::class)
+            ->test(ListExpenses::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
@@ -221,8 +221,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_trough_a_modal_without_required_amount(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -257,8 +256,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateExpense::class)
+            ->test(ListExpenses::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
@@ -271,8 +271,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_trough_a_modal_without_required_category_id(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -307,8 +306,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateExpense::class)
+            ->test(ListExpenses::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
@@ -321,6 +321,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_expense_trough_a_modal_without_required_customer(): void
     {
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -355,6 +356,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
             ->mountAction('create')
@@ -367,7 +369,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_through_a_modal_without_required_type(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_type(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -418,10 +420,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_expense_without_required_expense_status(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_status(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -456,8 +457,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(CreateExpense::class)
+            ->test(ListExpenses::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
