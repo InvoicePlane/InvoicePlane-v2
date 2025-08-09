@@ -4,7 +4,7 @@ namespace Modules\Invoices\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
 
-enum RecurringFrequency: string implements LabeledEnum
+enum Frequency: string implements LabeledEnum
 {
     case DAILY     = 'daily';
     case WEEKLY    = 'weekly';

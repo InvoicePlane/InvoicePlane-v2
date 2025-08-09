@@ -30,7 +30,6 @@ use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
-use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\RecurringInvoiceResource;
 use Modules\Invoices\Filament\Company\Widgets\RecentInvoicesWidget;
 use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
 use Modules\Products\Filament\Company\Resources\ProductCategories\ProductCategoryResource;
@@ -159,7 +158,6 @@ class CompanyPanelProvider extends PanelProvider
                 ExpenseResource::class,
                 ExpenseCategoryResource::class,
                 InvoiceResource::class,
-                RecurringInvoiceResource::class,
                 PaymentResource::class,
                 ProductResource::class,
                 ProductUnitResource::class,
@@ -209,7 +207,6 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
-                                ...RecurringInvoiceResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Expenses')
