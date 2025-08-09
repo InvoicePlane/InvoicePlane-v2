@@ -727,7 +727,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class)->callTableAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
+            ->test(ListTasks::class)->callAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
 
         /* assert */
         $component->assertSuccessful()->assertHasNoErrors();
@@ -772,7 +772,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
-            ->callTableAction('assignProject', $task->task_id);
+            ->callAction('assignProject', $task->task_id);
 
         /* assert */
         $component->assertHasNoErrors();
