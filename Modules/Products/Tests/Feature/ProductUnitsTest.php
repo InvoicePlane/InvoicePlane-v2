@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
@@ -98,12 +99,12 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit_through_a_modal(): void
     {
-        $this->markTestIncomplete('Service probably did not process the update');
+        //$this->markTestIncomplete();
 
         /* arrange */
         $record = ProductUnit::factory()
             ->for($this->user->companies()->first())
-            ->create(['unit_name' => 'Old Unit']);
+            ->create(['unit_name' => 'Old Unit', 'unit_name_plrl' => 'kgs']);
 
         $payload = [
             'unit_name'      => 'Updated Unit',
@@ -111,12 +112,11 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProductUnits::class, ['record' => $record->id])
-            ->mountAction('create')
+        Livewire::actingAs($this->user)
+            ->test(ListProductUnits::class)
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
-            ->callMountedAction()
-            ->assertHasNoFormErrors();
+            ->callMountedAction();
 
         /* assert */
         $this->assertDatabaseHas('product_units', [
@@ -128,18 +128,21 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_product_unit_through_a_modal_with_null_name(): void
+    public function it_fails_to_update_product_unit_through_a_modal_without_required_unit_name(): void
     {
         $this->markTestIncomplete();
-
         /* arrange */
-        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
+        $record = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
+
+        $tenant  = Str::lower($this->user->companies()->first()->search_code);
         $payload = ['unit_name' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProductUnits::class, ['record' => $record->id])
-            ->mountAction('edit', ['record' => $record->id])
+            ->test(ListProductUnits::class, [
+                'tenant' => $tenant,
+            ])
+            ->mountAction('edit', ['record' => $record->getKey()])
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -211,9 +214,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
         $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'Old Unit']);
         $payload = ['unit_name' => 'Updated Unit'];
 
@@ -234,11 +235,9 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_product_unit_with_null_name(): void
+    public function it_fails_to_update_product_unit_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
         $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
         $payload = ['unit_name' => null];
 

@@ -25,7 +25,7 @@ class ProductUnitService extends BaseService
     {
         $model->update([
             'unit_name'      => $data['unit_name'],
-            'unit_name_plrl' => $data['unit_name_plrl'],
+            'unit_name_plrl' => $data['unit_name_plrl'] ?? $model->unit_name_plrl,
         ]);
 
         return $model;

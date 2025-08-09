@@ -8,6 +8,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Products\Models\ProductUnit;
+use Modules\Products\Services\ProductUnitService;
 
 class ProductUnitsTable
 {
@@ -22,7 +24,12 @@ class ProductUnitsTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (ProductUnit $record, array $data) {
+                            app(ProductUnitService::class)->updateProductUnit($record, $data);
+                        })
+                        ->modalWidth('full')
+                        ->tooltip(trans('filament-actions::edit.single.label')),
                 ]),
             ])
             ->toolbarActions([
