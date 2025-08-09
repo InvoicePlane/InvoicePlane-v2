@@ -174,7 +174,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertHasFormErrors(['prospect_id' => 'required']);
-        $this->assertDatabaseMissing('quotes', $payload);
+        $this->assertDatabaseMissing('quotes', Arr::except($payload, ['quoteItems']));
     }
 
     #[Test]
