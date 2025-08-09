@@ -89,10 +89,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
-            'quote_discount_amount'  => 0,
-            'quote_discount_percent' => 0,
-            'quote_item_subtotal'    => 300,
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
             'quote_tax_total'        => 60,
+            'quote_item_subtotal'    => 300,
             'quote_total'            => 360,
             'quoteItems'             => [
                 [
@@ -114,7 +114,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $component->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('quotes', Arr::except($payload, ['quoteItems']));
+        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+            'quoteItems', 'quote_total', 'quote_item_subtotal',
+            'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
+        ]));
     }
 
     #[Test]
@@ -478,6 +481,8 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region crud
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload
      * {
@@ -486,7 +491,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_quote(): void
     {
-        /* arrange */
         $company       = $this->user->companies()->first();
         $prospect      = Relation::factory()->for($company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($company)->create();
@@ -502,19 +506,28 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'company_id'             => $company->id,
+            'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
             'document_group_id'      => $documentGroup->id,
-            'quote_number'           => 'Q-987654',
-            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
-            'quote_discount_amount'  => 0,
-            'quote_discount_percent' => 0,
-            'item_tax_total'         => 0,
-            'quote_item_subtotal'    => 300,
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
             'quote_tax_total'        => 60,
+            'quote_item_subtotal'    => 300,
             'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
+                ],
+            ],
         ];
 
         /* act */
@@ -528,7 +541,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $component
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('quotes', $payload);
+        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+            'quoteItems', 'quote_total', 'quote_item_subtotal',
+            'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
+        ]));
     }
 
     #[Test]

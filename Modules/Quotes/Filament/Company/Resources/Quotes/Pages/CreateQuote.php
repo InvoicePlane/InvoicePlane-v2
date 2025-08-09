@@ -24,8 +24,6 @@ class CreateQuote extends CreateRecord
 
         $this->record = $this->handleRecordCreation($data);
 
-        $this->form->model($this->getRecord())->saveRelationships();
-
         $this->callHook('afterCreate');
         $this->rememberData();
 

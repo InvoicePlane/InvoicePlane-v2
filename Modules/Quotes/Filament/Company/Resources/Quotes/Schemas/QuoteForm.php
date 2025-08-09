@@ -158,6 +158,7 @@ class QuoteForm
 
                                         TextInput::make('subtotal')
                                             ->label(trans('ip.subtotal'))
+                                            ->dehydrated()
                                             ->disabled(),
                                     ])
                                     ->columns(5),
@@ -180,12 +181,14 @@ class QuoteForm
 
                                 Group::make()
                                     ->schema([
-                                        TextInput::make('quote_item_subtotal')
+                                        TextInput::make('quote_subtotal')
                                             ->label(trans('ip.subtotal'))
                                             ->disabled()
                                             ->dehydrated()
                                             ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal')),
+                                            ->afterStateUpdated(function (callable $set, callable $get) {
+                                                (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal');
+                                            }),
 
                                         TextInput::make('quote_discount_amount')
                                             ->label(trans('ip.discount_amount'))

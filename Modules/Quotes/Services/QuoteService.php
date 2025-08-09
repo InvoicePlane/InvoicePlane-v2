@@ -40,7 +40,7 @@ class QuoteService extends BaseService
                 'item_tax_total'         => $itemTaxTotal,
                 'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
                 'quote_tax_total'        => $quoteTaxTotal,
-                'quote_total'            => $quoteTotal,
+                'quote_total'            => $data['quote_total'] ?? 0,
                 'quote_password'         => $data['quote_password'] ?? null,
                 'url_key'                => $data['url_key'] ?? Str::random(32),
                 'template'               => $data['template'] ?? null,
@@ -50,6 +50,8 @@ class QuoteService extends BaseService
             ]);
 
             foreach ($data['quoteItems'] as $item) {
+                $calculateMySubtotal = $item['quantity'] * $item['price'];
+
                 $quote->quoteItems()->create([
                     'company_id'      => $this->getCompanyId(),
                     'product_id'      => $item['product_id'] ?? 1,
@@ -59,7 +61,6 @@ class QuoteService extends BaseService
                     'quantity'        => $item['quantity'],
                     'price'           => $item['price'],
                     'discount'        => $item['discount'] ?? 0,
-                    'subtotal'        => $item['subtotal'],
                     'tax_1'           => $item['tax_1'] ?? 0,
                     'tax_2'           => $item['tax_2'] ?? 0,
                     'tax_total'       => $item['tax_total'] ?? 0,
