@@ -96,12 +96,13 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'quote_total'            => 360,
             'quoteItems'             => [
                 [
-                    'product_id' => $product->id,
-                    'item_name'  => 'Design',
-                    'quantity'   => 2,
-                    'price'      => 150,
-                    'subtotal'   => 300,
-                    'total'      => 300,
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
                 ],
             ],
         ];
