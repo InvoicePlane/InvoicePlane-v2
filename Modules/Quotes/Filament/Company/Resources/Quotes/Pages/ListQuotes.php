@@ -15,21 +15,9 @@ class ListQuotes extends ListRecords
     {
         return [
             CreateAction::make()
-                ->mutateDataUsing(function (array $data) {
-                    $data['quoteItems'] = [
-                        [
-                            'product_id'   => null,  // Optional: Preselect a default or leave empty
-                            'product_name' => '',
-                            'item_name'    => '',
-                            'quantity'     => 1,
-                            'price'        => 0,
-                            'discount'     => 0,
-                            'subtotal'     => 0,
-                        ],
-                    ];
-
+                /*->mutateDataUsing(function (array $data) {
                     return $data;
-                })
+                })*/
                 ->action(function (array $data) {
                     app(QuoteService::class)->createQuote($data);
                 })

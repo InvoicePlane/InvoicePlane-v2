@@ -27,6 +27,7 @@ class QuoteService extends BaseService
             $quoteTotal    = $this->calculateQuoteTotal($data, $itemTaxTotal, $quoteTaxTotal);
 
             $quote = Quote::query()->create([
+                'company_id'             => $this->getCompanyId(),
                 'prospect_id'            => $data['prospect_id'],
                 'document_group_id'      => $data['document_group_id'] ?? null,
                 'user_id'                => auth()->id(),
@@ -48,23 +49,25 @@ class QuoteService extends BaseService
                 'footer'                 => $data['footer'] ?? null,
             ]);
 
-            foreach ($data['quoteItems'] ?? [] as $item) {
+            foreach ($data['quoteItems'] as $item) {
                 $quote->quoteItems()->create([
-                    'item_id'       => $item['item_id'] ?? null,
-                    'unit_id'       => $item['unit_id'] ?? null,
-                    'item_name'     => $item['item_name'] ?? null,
-                    'quantity'      => $item['quantity'],
-                    'price'         => $item['price'],
-                    'discount'      => $item['discount'] ?? 0,
-                    'subtotal'      => $item['subtotal'],
-                    'tax_1'         => $item['tax_1'] ?? 0,
-                    'tax_2'         => $item['tax_2'] ?? 0,
-                    'tax_total'     => $item['tax_total'] ?? 0,
-                    'total'         => $item['total'] ?? 0,
-                    'description'   => $item['description'] ?? null,
-                    'tax_rate_id'   => $item['tax_rate_id'] ?? null,
-                    'tax_rate_2_id' => $item['tax_rate_2_id'] ?? null,
-                    'display_order' => $item['display_order'] ?? null,
+                    'company_id'      => $this->getCompanyId(),
+                    'product_id'      => $item['product_id'] ?? 1,
+                    'product_unit_id' => $item['product_unit_id'] ?? 1,
+                    'added_at'        => Carbon::now()->toDateString(),
+                    'item_name'       => $item['item_name'] ?? null,
+                    'quantity'        => $item['quantity'],
+                    'price'           => $item['price'],
+                    'discount'        => $item['discount'] ?? 0,
+                    'subtotal'        => $item['subtotal'],
+                    'tax_1'           => $item['tax_1'] ?? 0,
+                    'tax_2'           => $item['tax_2'] ?? 0,
+                    'tax_total'       => $item['tax_total'] ?? 0,
+                    'total'           => $item['total'] ?? 0,
+                    'tax_rate_id'     => $item['tax_rate_id'] ?? null,
+                    'tax_rate_2_id'   => $item['tax_rate_2_id'] ?? null,
+                    'display_order'   => 1,
+                    'description'     => $item['description'] ?? null,
                 ]);
             }
 
