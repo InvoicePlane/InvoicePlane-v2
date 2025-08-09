@@ -5,6 +5,7 @@ namespace Modules\Expenses\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
+use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 use Throwable;
 
@@ -24,11 +25,12 @@ class ExpenseService extends BaseService
                 'customer_id'    => $data['customer_id'],
                 'vendor_id'      => $data['vendor_id'] ?? null,
                 'category_id'    => $data['category_id'],
-                'expense_number' => $data['expense_number'],
-                'expense_type'   => $data['expense_type'],
-                'expense_status' => $data['expense_status'],
-                'expense_amount' => $data['expense_amount'],
+                'expense_number' => $data['expense_number'] ?? null,
+                'expense_type'   => $data['expense_type'] ?? ExpenseType::ONE_TIME->value,
+                'expense_status' => $data['expense_status'] ?? null,
+                'expense_amount' => $data['expense_amount'] ?? null,
                 'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
+                'description'    => $data['description'] ?? null,
             ]);
 
             foreach ($data['expenseItems'] ?? [] as $item) {

@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Support\ExpenseCalculator;
@@ -95,7 +96,7 @@ class ExpenseForm
                                         if (config('app.extreme_logging')) {
                                             Log::debug('ExpenseForm: Generating number', [
                                                 'status'     => $get('expense_status'),
-                                                'is_draft'   => ($get('expense_status') ?? '') !== ExpenseStatus::COMPLETED->value,
+                                                'is_draft'   => ($get('expense_status') ?? '') !== ExpenseStatus::DRAFT->value,
                                                 'company_id' => auth()->user()?->company_id,
                                                 'trace'      => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
                                             ]);
@@ -142,6 +143,7 @@ class ExpenseForm
                 Section::make(trans('ip.expense_items'))
                     ->schema([
                         Repeater::make('expenseItems')
+                            ->defaultItems(0)
                             ->relationship('expenseItems')
                             ->label(trans('ip.expense_items'))
                             ->reorderable()
@@ -159,7 +161,14 @@ class ExpenseForm
                                 TextInput::make('discount')->numeric()->default(0),
                                 TextInput::make('subtotal')->numeric()->default(0)->disabled(),
                             ])
-                            ->collapsed(false) // Optional: expand by default
+                            ->collapsed(false)
+                            /*->afterStateHydrated(function ($component, $state) {
+                                // overwrite any stray default state with what the request provided
+                                if (is_array($state) && $state !== []) {
+                                    // Normalize to numeric keys so Livewire/Filament don’t try to merge by UUID
+                                    $component->rawState(array_values($state));
+                                }
+                            })*/
                             ->afterStateUpdated(fn ($set, $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
                     ])
                     ->columnSpanFull(),
