@@ -116,7 +116,7 @@ class ExpenseForm
                                     ->dehydrated()
                                     ->required(),
                                 Select::make('expense_status')
-                                    ->options(collect(ExpenseStatus::cases())->mapWithKeys(fn ($s) => [$s->value => trans($s->label())])->toArray())
+                                    ->options(ExpenseStatus::options())
                                     ->searchable()
                                     ->preload()
                                     ->required(),
@@ -127,7 +127,7 @@ class ExpenseForm
                                     ->searchable()
                                     ->preload(),
                                 Select::make('expense_type')
-                                    ->options(collect(ExpenseType::cases())->mapWithKeys(fn ($t) => [$t->value => trans($t->label())])->toArray())
+                                    ->options(ExpenseType::options())
                                     ->searchable()
                                     ->preload()
                                     ->required(),

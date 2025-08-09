@@ -3,9 +3,11 @@
 namespace Modules\Expenses\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
+use Modules\Core\Traits\HasOptions;
 
 enum ExpenseStatus: string implements LabeledEnum
 {
+    use HasOptions;
     case DRAFT      = 'draft';
     case SUBMITTED  = 'submitted';
     case APPROVED   = 'approved';

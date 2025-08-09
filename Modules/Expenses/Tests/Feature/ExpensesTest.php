@@ -119,7 +119,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_without_required_expense_number(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_expense_number(): void
     {
         $this->markTestIncomplete();
 
@@ -169,7 +169,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_expense_without_required_expensed_at(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_expensed_at(): void
     {
         $this->markTestIncomplete();
 
@@ -219,7 +219,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_expense_without_required_amount(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_amount(): void
     {
         $this->markTestIncomplete();
 
@@ -269,7 +269,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_expense_without_required_category_id(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_category_id(): void
     {
         $this->markTestIncomplete();
 
@@ -319,10 +319,8 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_trough_a_modal_expense_without_required_customer_id(): void
+    public function it_fails_to_create_expense_trough_a_modal_without_required_customer(): void
     {
-        $this->markTestIncomplete();
-
         $company         = $this->user->companies()->first();
         $category        = ExpenseCategory::factory()->for($company)->create();
         $customer        = Relation::factory()->for($company)->customer()->create();
@@ -341,8 +339,8 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expense_amount' => 120.00,
             'expensed_at'    => now()->format('Y-m-d'),
             'category_id'    => $category->id,
-            'expense_type'   => ExpenseType::ONE_TIME,
-            'expense_status' => ExpenseStatus::APPROVED,
+            'expense_type'   => ExpenseType::ONE_TIME->value,
+            'expense_status' => ExpenseStatus::APPROVED->value,
             'expenseItems'   => [
                 [
                     'item_id'      => $product->id,
@@ -358,7 +356,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
         ];
 
         $component = Livewire::actingAs($this->user)
-            ->test(CreateExpense::class)
+            ->test(ListExpenses::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
@@ -412,8 +410,10 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasFormErrors(['expense_type' => 'required']);
-        $this->assertDatabaseMissing('expenses', $payload);
+        $component
+            ->assertHasFormErrors(['expense_type' => 'required']);
+
+        $this->assertDatabaseMissing('expenses', Arr::except($payload, ['expenseItems']));
     }
 
     #[Test]
