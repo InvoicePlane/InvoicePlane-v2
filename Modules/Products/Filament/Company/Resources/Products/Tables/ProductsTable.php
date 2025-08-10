@@ -9,6 +9,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Products\Enums\ProductType;
+use Modules\Products\Models\Product;
+use Modules\Products\Services\ProductService;
 
 class ProductsTable
 {
@@ -57,7 +59,11 @@ class ProductsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Product $record, array $data) {
+                            app(ProductService::class)->updateProduct($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([

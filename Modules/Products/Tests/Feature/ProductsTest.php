@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Models\TaxRate;
@@ -318,48 +319,46 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
+        ]);
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
             'name' => '::taxrate_name::',
         ]);
 
-        $productUnit = ProductUnit::factory()->create([
-            'unit_name' => '::unit_name::',
+        $product = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'type'          => ProductType::PRODUCT->value,
+            'code'          => 'SKU-001',
+            'product_name'  => 'Test Product',
+            'price'         => 9.99,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+            'description'   => 'Example',
         ]);
 
         $payload = [
-            'category_id'    => $productCategory->id,
-            'product_sku'    => 'TESTSKU',
-            'product_name'   => '::product_name::',
-            'description'    => 'A test description for the product.',
-            'product_price'  => 25.50,
-            'purchase_price' => 15.00,
-            'provider_name'  => 'Test Provider',
-            'tax_rate_id'    => $taxRate->tax_rate_id,
-            'unit_id'        => $productUnit->unit_id,
-            'product_tariff' => 12345,
-        ];
-
-        $product     = Product::factory()->create($payload);
-        $updatedData = [
-            'product_name'  => 'Updated Product',
-            'product_price' => 70.00,
+            'product_name' => 'Updated Product',
+            'price'        => 70.00,
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProducts::class, ['record' => $product->product_id])
-            ->mountAction('edit', ['record' => $product->product_id])
-            ->fillForm($updatedData)
+            ->test(ListProducts::class)
+            ->mountAction(TestAction::make('edit')->table($product), $payload)
+            ->fillForm($payload)
             ->callMountedAction();
 
-        $this->assertDatabaseHas('products', array_merge($updatedData, [
-            'product_id' => $product->product_id,
+        $component
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('products', array_merge($payload, [
+            'id' => $product->id,
         ]));
     }
 
@@ -389,31 +388,34 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
+        ]);
         $taxRate = TaxRate::factory()->create([
             'name' => '::taxrate_name::',
         ]);
 
-        $productUnit = ProductUnit::factory()->create([
-            'unit_name' => '::unit_name::',
+        $product = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'type'          => ProductType::PRODUCT->value,
+            'code'          => 'SKU-001',
+            'product_name'  => 'Test Product',
+            'price'         => 9.99,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+            'description'   => 'Example',
         ]);
 
         $payload = [
-            'category_id'    => $productCategory->id,
-            'product_sku'    => 'TESTSKU',
-            'product_name'   => '::product_name::',
-            'description'    => 'A test description for the product.',
-            'product_price'  => 25.50,
-            'purchase_price' => 15.00,
-            'provider_name'  => 'Test Provider',
-            'tax_rate_id'    => $taxRate->tax_rate_id,
-            'unit_id'        => $productUnit->unit_id,
-            'product_tariff' => 12345,
+            'product_name' => 'Updated Product',
+            'price'        => 70.00,
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('edit', ['record' => $product->product_id])
+            ->mountAction(TestAction::make('edit')->table($product), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -424,6 +426,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component
             ->assertHasNoFormErrors();
+
         $this->assertDatabaseMissing('products', $payload);
     }
     # endregion
@@ -673,47 +676,42 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
+        ]);
+        $productUnit = ProductUnit::factory()->create([
+            'unit_name' => '::unit_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
             'name' => '::taxrate_name::',
         ]);
 
-        $productUnit = ProductUnit::factory()->create([
-            'unit_name' => '::unit_name::',
+        $product = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'type'          => ProductType::PRODUCT->value,
+            'code'          => 'SKU-001',
+            'product_name'  => 'Test Product',
+            'price'         => 9.99,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+            'description'   => 'Example',
         ]);
 
         $payload = [
-            'category_id'    => $productCategory->id,
-            'product_sku'    => 'TESTSKU',
-            'product_name'   => '::product_name::',
-            'description'    => 'A test description for the product.',
-            'product_price'  => 25.50,
-            'purchase_price' => 15.00,
-            'provider_name'  => 'Test Provider',
-            'tax_rate_id'    => $taxRate->tax_rate_id,
-            'unit_id'        => $productUnit->unit_id,
-            'product_tariff' => 12345,
-        ];
-
-        $product     = Product::factory()->create($payload);
-        $updatedData = [
-            'product_name'  => 'Updated Product',
-            'product_price' => 70.00,
+            'product_name' => 'Updated Product',
+            'price'        => 70.00,
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(EditProduct::class, ['record' => $product->product_id])
-            ->fillForm($updatedData)
+            ->test(EditProduct::class, ['record' => $product->id])
+            ->fillForm($payload)
             ->call('save');
 
-        $this->assertDatabaseHas('products', array_merge($updatedData, [
-            'product_id' => $product->product_id,
+        $this->assertDatabaseHas('products', array_merge($payload, [
+            'id' => $product->id,
         ]));
     }
 
@@ -766,7 +764,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(EditProduct::class, ['record' => $product->product_id])
+            ->test(EditProduct::class, ['record' => $product->id])
             ->fillForm($payload)
             ->call('save');
 
@@ -827,7 +825,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseMissing('products', [
-            'product_id' => $product->product_id,
+            'id' => $product->id,
         ]);
     }
 
@@ -871,7 +869,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         foreach ($products as $product) {
             $this->assertDatabaseMissing('products', [
-                'product_id' => $product->product_id,
+                'id' => $product->id,
             ]);
         }
     }

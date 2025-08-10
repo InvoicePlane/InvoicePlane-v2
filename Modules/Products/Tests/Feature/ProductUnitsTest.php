@@ -102,7 +102,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         //$this->markTestIncomplete();
 
         /* arrange */
-        $record = ProductUnit::factory()
+        $productUnit = ProductUnit::factory()
             ->for($this->user->companies()->first())
             ->create(['unit_name' => 'Old Unit', 'unit_name_plrl' => 'kgs']);
 
@@ -114,16 +114,14 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         /* act */
         Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
-            ->mountAction(TestAction::make('edit')->table($record), $payload)
+            ->mountAction(TestAction::make('edit')->table($productUnit), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
         /* assert */
-        $this->assertDatabaseHas('product_units', [
-            'id'             => $record->id,
-            'unit_name'      => 'Updated Unit',
-            'unit_name_plrl' => 'Updated Units',
-        ]);
+        $this->assertDatabaseHas('product_units', array_merge($payload, [
+            'id' => $productUnit->id,
+        ]));
     }
 
     #[Test]
