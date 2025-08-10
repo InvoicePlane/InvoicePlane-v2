@@ -2,13 +2,12 @@
 
 namespace Modules\Projects\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\CreateTask;
@@ -30,7 +29,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
             ->for($company)
@@ -92,7 +91,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
             ->for($company)
@@ -151,7 +150,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
             ->for($company)
@@ -250,7 +249,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
             ->for($company)
@@ -301,11 +300,9 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_task_through_a_modal(): void
     {
-        $this->markTestIncomplete('Service probably does not process the updated data');
-
         /* arrange */
         $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
             ->for($company)
@@ -333,7 +330,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class, ['record' => $task->getKey()])
-            ->mountAction('edit', ['record' => $task->getKey()])
+            ->mountAction(TestAction::make('edit')->table($task), $updatedData)
             ->fillForm($updatedData)
             ->callMountedAction();
 
@@ -369,7 +366,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_creates_a_task(): void
     {
         /* arrange */
-        $customer = Customer::factory()->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
@@ -423,7 +420,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_without_required_name(): void
     {
         /* arrange */
-        $customer = Customer::factory()->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
@@ -520,7 +517,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_without_required_tax_rate(): void
     {
         /* arrange */
-        $customer = Customer::factory()->create(['company_name' => '::client_name::']);
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
@@ -568,53 +565,43 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_task(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        $this->actingAs($user);
-
-        $client = Relation::factory()->create([
-            'client_name' => '::client_name::',
+        $customer = Relation::factory()->for($this->company)->create([
+            'company_name' => '::customer_name::',
         ]);
 
-        $tax_rate = TaxRate::factory()->create([
-            'tax_rate_name'    => '::tax_rate_name::',
-            'tax_rate_percent' => '9',
+        $tax_rate = TaxRate::factory()->for($this->company)->create([
+            'name' => '::tax_rate_name::',
+            'rate' => '9',
         ]);
 
-        $project = Project::factory()->create([
-            'customer_id'  => $client->client_id,
+        $project = Project::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
 
-        $taxRate = TaxRate::factory()->create(['company_id' => $company->id]);
+        $taxRate = TaxRate::factory()->for($this->company)->create();
 
-        $task = Task::factory()->create([
-            'company_id'  => $company->id,
-            'assigned_to' => $user->id,
+        $task = Task::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'project_id'  => $project->id,
             'tax_rate_id' => $taxRate->id,
-        ]);
-
-        $payload = [
-            'company_id'  => $company->id,
-            'customer_id' => $task->customer_id,
-            'project_id'  => $task->project_id,
-            'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $user->id,
+            'assigned_to' => $this->user->id,
             'task_status' => TaskStatus::IN_PROGRESS,
-            'name'        => 'Updated Task Name',
+            'task_name'   => 'Original Task Name',
             'task_price'  => 199.99,
             'due_at'      => '2025-07-01',
-            'description' => 'Updated description',
+            'description' => 'Original description',
+        ]);
+
+        $updatedData = [
+            'task_name' => 'Updated Task Name',
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(EditTask::class, ['record' => $task->getKey()])
-            ->fillForm($payload)
+            ->fillForm($updatedData)
             ->call('save');
 
         /* assert */
@@ -623,7 +610,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [
-            'task_id' => $task->task_id,
+            'id' => $task->id,
         ]));
     }
 
@@ -650,10 +637,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         // $this->authenticate();
-        $client = Relation::factory()->create(['company_name' => '::client_name::']);
+        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
 
         $project = Project::factory()->create([
-            'customer_id'  => $client->client_id,
+            'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
 
@@ -676,12 +663,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
-            ->callAction('delete', $task->task_id);
+            ->callAction('delete', $task->id);
 
         /* assert */
         $component->assertSuccessful()->assertHasNoErrors();
 
-        $this->assertDatabaseMissing('tasks', ['task_id' => $task->task_id]);
+        $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
     # endregion
 
@@ -702,10 +689,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $client = Relation::factory()->create(['company_name' => '::client_name::']);
+        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
 
         $project = Project::factory()->create([
-            'customer_id'  => $client->client_id,
+            'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
 
@@ -727,13 +714,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class)->callAction('assignProject', $task->task_id, ['project_id' => $project->project_id]);
+            ->test(ListTasks::class)->callAction('assignProject', $task->id, ['project_id' => $project->project_id]);
 
         /* assert */
         $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
-            'task_id'    => $task->task_id,
+            'id'         => $task->id,
             'project_id' => $project->project_id,
         ]);
     }
@@ -747,10 +734,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $this->markTestIncomplete('assignProject action not implemented');
         // $this->authenticate();
-        $client = Relation::factory()->create(['company_name' => '::client_name::']);
+        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
 
         $project = Project::factory()->create([
-            'customer_id'  => $client->client_id,
+            'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
 
@@ -772,13 +759,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
-            ->callAction('assignProject', $task->task_id);
+            ->callAction('assignProject', $task->id);
 
         /* assert */
         $component->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', [
-            'task_id' => $task->task_id,
+            'id' => $task->id,
         ]);
     }
     # endregion
