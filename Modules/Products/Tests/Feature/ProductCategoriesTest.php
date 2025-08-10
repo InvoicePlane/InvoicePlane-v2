@@ -149,7 +149,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class, ['record' => $record->id])
-            ->mountAction('edit', ['record' => $record->id])
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 

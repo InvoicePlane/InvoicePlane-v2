@@ -138,7 +138,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             ->test(ListProductUnits::class, [
                 'tenant' => $tenant,
             ])
-            ->mountAction('edit', ['record' => $record->getKey()])
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
