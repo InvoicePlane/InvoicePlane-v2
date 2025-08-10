@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Customer;
@@ -222,8 +223,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_project_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
@@ -241,7 +240,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $project->id])
+            ->mountAction(TestAction::make('edit')->table($project), $updateData)
             ->fillForm($updateData)
             ->callMountedAction()
             ->assertHasNoFormErrors();
@@ -480,13 +479,11 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_project(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $client = Relation::factory()->create(['company_name' => '::company_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
 
         $project = Project::factory()->create([
-            'client_id'    => $client->client_id,
+            'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
 
@@ -495,13 +492,18 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $project->project_id])->set('data.project_name', $updatedData['project_name'])->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProject::class, ['record' => $project->id])
+            ->fillForm($updatedData)
+            ->call('save');
 
         /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', array_merge($updatedData, [
-            'project_id' => $project->project_id,
+            'id' => $project->id,
         ]));
     }
 
@@ -615,7 +617,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
-            'project_id' => $project->project_id,
+            'project_id' => $project->id,
             'client_id'  => $client2->client_id,
         ]);
     }
@@ -642,7 +644,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
-            'project_id' => $project->project_id,
+            'project_id' => $project->id,
             'client_id'  => $client2->client_id,
         ]);
     }
@@ -668,7 +670,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful()->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
-            'project_id' => $project->project_id,
+            'project_id' => $project->id,
             'client_id'  => $client2->client_id,
         ]);
     }
@@ -694,7 +696,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $component->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', [
-            'project_id' => $project->project_id,
+            'project_id' => $project->id,
             'client_id'  => $client2->client_id,
         ]);
     }
