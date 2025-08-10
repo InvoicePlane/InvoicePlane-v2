@@ -2,7 +2,9 @@
 
 namespace Modules\Clients\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
+use Modules\Clients\Enums\Gender;
 use Modules\Clients\Filament\Company\Resources\Contacts\Pages\CreateContact;
 use Modules\Clients\Filament\Company\Resources\Contacts\Pages\EditContact;
 use Modules\Clients\Filament\Company\Resources\Contacts\Pages\ListContacts;
@@ -193,18 +195,23 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_contact_trough_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
+        $relation = Relation::factory()
+            ->for($this->company, 'company')
+            ->create();
+
         $payload = [
             'first_name' => 'Initial',
             'last_name'  => 'Contact',
-            'gender'     => 'male',
+            'gender'     => Gender::MALE,
         ];
 
-        $contact = Contact::factory()->for($this->user->companies()->first())->create($payload);
+        $contact = Contact::factory()
+            ->for($this->user->companies()->first())
+            ->for($relation)
+            ->create($payload);
 
-        $update = [
+        $updatedData = [
             'first_name' => 'Updated',
             'last_name'  => 'Contact',
         ];
@@ -212,8 +219,8 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
-            ->mountAction('edit', ['record' => $contact->getKey()])
-            ->fillForm($update)
+            ->mountAction(TestAction::make('edit')->table($contact), $updatedData)
+            ->fillForm($updatedData)
             ->callMountedAction();
 
         /* assert */
@@ -221,7 +228,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('contacts', $update);
+        $this->assertDatabaseHas('contacts', $updatedData);
     }
     # endregion
 
@@ -332,18 +339,23 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_contact(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
+        $relation = Relation::factory()
+            ->for($this->company, 'company')
+            ->create();
+
         $payload = [
             'first_name' => 'Initial',
             'last_name'  => 'Contact',
             'gender'     => 'male',
         ];
 
-        $contact = Contact::factory()->for($this->user->companies()->first())->create($payload);
+        $contact = Contact::factory()
+            ->for($this->user->companies()->first())
+            ->for($relation)
+            ->create($payload);
 
-        $update = [
+        $updatedData = [
             'first_name' => 'Updated',
             'last_name'  => 'Contact',
         ];
@@ -351,7 +363,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(EditContact::class, ['record' => $contact->getKey()])
-            ->fillForm($update)
+            ->fillForm($updatedData)
             ->call('save');
 
         /* assert */
@@ -359,7 +371,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('contacts', $update);
+        $this->assertDatabaseHas('contacts', $updatedData);
     }
 
     #[Test]

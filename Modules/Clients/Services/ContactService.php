@@ -34,12 +34,8 @@ class ContactService extends BaseService
         });
     }
 
-    public function updateContact($contact, array $data): Contact
+    public function updateContact(Contact $contact, array $data): Contact
     {
-        if ( ! $contact instanceof Contact) {
-            $contact = Contact::query()->findOrFail($contact);
-        }
-
         return DB::transaction(static function () use ($contact, $data) {
             $contact->update([
                 'first_name'  => $data['first_name'] ?? $contact->first_name,
