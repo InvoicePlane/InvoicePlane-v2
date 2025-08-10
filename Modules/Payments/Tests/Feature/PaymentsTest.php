@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
@@ -347,16 +348,33 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('modals')]
     public function it_updates_a_payment_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payment = Payment::factory()->for($this->user->companies()->first())->create(['payment_amount' => 123.00]);
-        $payload = ['payment_amount' => 888.00];
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->user->companies()->first())
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+            ]);
+
+        $payload = [
+            'payment_status' => PaymentStatus::COMPLETED->value,
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class, ['record' => $payment->id])
-            ->mountAction('edit', ['record' => $payment->id])
+            ->mountAction(TestAction::make('edit')->table($payment), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -366,7 +384,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         /* assert */
-        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_amount' => 888.00]);
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_status' => PaymentStatus::COMPLETED->value]);
     }
 
     #[Test]
@@ -376,9 +394,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -388,7 +405,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class, ['record' => $payment->id])
-            ->mountAction('edit', ['record' => $payment->id])
+            ->mountAction(TestAction::make('edit')->table($payment), $updatedData)
             ->fillForm(['payment_amount' => null])
             ->callMountedAction();
 
@@ -676,10 +693,25 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_payment(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $payment = Payment::factory()->for($this->user->companies()->first())->create(['payment_amount' => 123.00]);
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->user->companies()->first())
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+            ]);
+
         $payload = ['payment_amount' => 888.00];
 
         /* act */

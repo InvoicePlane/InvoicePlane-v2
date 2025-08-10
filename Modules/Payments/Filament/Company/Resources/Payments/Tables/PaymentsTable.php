@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Payments\Models\Payment;
+use Modules\Payments\Services\PaymentService;
 
 class PaymentsTable
 {
@@ -67,12 +68,10 @@ class PaymentsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->mutateDataUsing(fn (array $data) => $data)
-                        ->action(
-                            fn (\Modules\Payments\Models\Payment $record, array $data) => app(\Modules\Payments\Services\PaymentService::class)
-                                ->updatePayment($record, $data)
-                        )
+                    EditAction::make('edit')
+                        ->action(function (Payment $record, array $data) {
+                            app(PaymentService::class)->updatePayment($record, $data);
+                        })
                         ->modalWidth('full'),
                 ]),
             ])
