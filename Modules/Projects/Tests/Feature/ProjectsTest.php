@@ -289,7 +289,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $record->getKey()])
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -610,7 +610,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $project->getKey()])
+            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
             ->callMountedAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -636,7 +636,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $project->getKey()])
+            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
             ->callMountedAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -663,7 +663,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $project->getKey()])
+            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
             ->callMountedAction('assignClient', $client2->client_id);
 
         /* assert */
@@ -689,7 +689,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction('edit', ['record' => $project->getKey()])
+            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
             ->callMountedAction('assignClient', $client2->client_id);
 
         /* assert */
