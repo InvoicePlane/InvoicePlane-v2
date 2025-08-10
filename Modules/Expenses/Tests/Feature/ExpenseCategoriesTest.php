@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Models\User;
@@ -107,8 +108,6 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_category_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
@@ -116,7 +115,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class, ['record' => $record->id])
-            ->mountAction('edit')
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -142,7 +141,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class, ['record' => $record->id])
-            ->mountAction('edit')
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -208,9 +207,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_category(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
         $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
