@@ -99,8 +99,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit_through_a_modal(): void
     {
-        //$this->markTestIncomplete();
-
         /* arrange */
         $productUnit = ProductUnit::factory()
             ->for($this->user->companies()->first())
