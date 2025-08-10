@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
+use Modules\Expenses\Models\Expense;
+use Modules\Expenses\Services\ExpenseService;
 
 class ExpensesTable
 {
@@ -72,29 +74,7 @@ class ExpensesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->mutateDataUsing(function (array $data, Expense $record) {
-                            $data['expenseItems'] = $record->expenseItems()->get()->map(function ($item) {
-                                $product = $item->product;
-
-                                return [
-                                    'id'            => $item->id,
-                                    'item_id'       => $item->item_id,
-                                    'item_name'     => $item->item_name,
-                                    'quantity'      => $item->quantity,
-                                    'price'         => $item->price,
-                                    'discount'      => $item->discount,
-                                    'subtotal'      => $item->subtotal,
-                                    'tax_1'         => $item->tax_1,
-                                    'tax_2'         => $item->tax_2,
-                                    'tax_rate_id'   => $item->tax_rate_id,
-                                    'tax_rate_2_id' => $item->tax_rate_2_id,
-                                    'description'   => $item->description,
-                                ];
-                            })->toArray();
-
-                            return $data;
-                        })
+                    EditAction::make('edit')
                         ->action(function (Expense $record, array $data) {
                             app(ExpenseService::class)->updateExpense($record, $data);
                         })

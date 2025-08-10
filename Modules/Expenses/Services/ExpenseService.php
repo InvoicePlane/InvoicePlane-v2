@@ -26,10 +26,10 @@ class ExpenseService extends BaseService
                 'vendor_id'      => $data['vendor_id'] ?? null,
                 'category_id'    => $data['category_id'],
                 'expense_number' => $data['expense_number'] ?? null,
-                'expense_type'   => $data['expense_type'] ?? ExpenseType::ONE_TIME->value,
                 'expense_status' => $data['expense_status'] ?? null,
-                'expense_amount' => $data['expense_amount'] ?? null,
+                'expense_type'   => $data['expense_type'] ?? ExpenseType::ONE_TIME->value,
                 'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
+                'expense_amount' => $data['expense_amount'] ?? null,
                 'description'    => $data['description'] ?? null,
             ]);
 
@@ -60,20 +60,20 @@ class ExpenseService extends BaseService
         DB::beginTransaction();
 
         try {
-            // Only include valid fields that exist in the expenses table
             $updateData = [
-                'expense_number' => $data['expense_number'],
-                'expense_amount' => $data['expense_amount'],
-                'expensed_at'    => Carbon::parse($data['expensed_at']),
-                'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
-                'vendor_id'      => $data['vendor_id'] ?? null,
-                'expense_type'   => $data['expense_type'],
+                'vendor_id'      => $data['vendor_id'],
+                'category_id'    => $data['category_id'],
+                'expense_number' => $data['expense_number'],
                 'expense_status' => $data['expense_status'],
+                'expense_type'   => $data['expense_type'],
+                'expensed_at'    => Carbon::parse($data['expensed_at']),
+                'expense_amount' => $data['expense_amount'],
+                'description'    => $data['description'],
             ];
 
             // Filter out any null values to prevent overwriting with null
-            $updateData = array_filter($updateData, function ($value) {
+            $updateData = array_filter($updateData, static function ($value) {
                 return $value !== null;
             });
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -472,19 +473,24 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_trough_a_modal(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $category = ExpenseCategory::factory()->for($company)->create();
 
         $expense = Expense::factory()->for($this->user->companies()->first())->create([
-            'expense_type' => ExpenseType::FIXED,
+            'customer_id'    => $customer->id,
+            'category_id'    => $category->id,
+            'expense_type'   => ExpenseType::FIXED->value,
+            'expense_status' => ExpenseStatus::DRAFT->value,
         ]);
 
         $payload = ['expense_type' => ExpenseType::RECURRING];
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(EditExpense::class, ['record' => $expense->id])
-            ->mountAction('edit', ['record' => $expense->id])
+            ->test(ListExpenses::class, ['record' => $expense->id])
+            ->mountAction(TestAction::make('edit')->table($expense), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
@@ -505,21 +511,22 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_update_an_expense_trough_a_modal_without_required_type(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
+        /* arrange */
         $expense = Expense::factory()->for($this->user->companies()->first())->create();
 
-        $payload = ['expense_type' => null];
+        $payload = ['expense_status' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(EditExpense::class, ['record' => $expense->id])
-            ->mountAction('edit', ['record' => $expense->id])
+            ->mountAction(TestAction::make('edit')->table($expense), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasFormErrors(['expense_type']);
+        $component
+            ->assertHasFormErrors(['expense_status']);
     }
     # endregion
 
@@ -906,20 +913,36 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $company = $this->user->companies()->first();
-        $expense = Expense::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $category = ExpenseCategory::factory()->for($company)->create();
+
+        $expense = Expense::factory()->for($this->user->companies()->first())->create([
+            'customer_id'    => $customer->id,
+            'category_id'    => $category->id,
+            'expense_type'   => ExpenseType::FIXED->value,
+            'expense_status' => ExpenseStatus::REIMBURSED->value,
+        ]);
+
+        $payload = [
+            'expense_status' => ExpenseStatus::DRAFT->value,
+        ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(EditExpense::class, ['record' => $expense->id])
-            ->fillForm(['expense_status' => ExpenseStatus::DRAFT->value])
+            ->fillForm($payload)
             ->call('save');
 
         /* assert */
-        $component->assertSuccessful();
+        $component
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('expenses', [
+            'id'             => $expense->id,
+            'expense_status' => ExpenseStatus::DRAFT->value,
+        ]);
     }
 
     #[Test]
