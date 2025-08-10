@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -213,32 +214,44 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_customer_trough_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $original = [
-            'company_name'  => 'Old Name',
-            'relation_type' => RelationType::CUSTOMER,
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        $customer = Relation::factory()->for($this->user->companies()->first())->create($original);
+        $customer = Relation::factory()
+            ->for($this->user->companies()->first())
+            ->create($original);
 
-        $update = [
-            'company_name' => 'Updated Name',
+        $updatedData = [
+            'company_name' => 'InvoicePlane LLC Limited',
         ];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListRelations::class)
-            ->mountAction('edit', ['record' => $customer->getKey()])
-            ->fillForm($update)
+            ->mountAction(TestAction::make('edit')->table($customer), $updatedData)
+            ->fillForm($updatedData)
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
         /* assert */
-        $component->assertSuccessful();
-        $this->assertDatabaseHas('relations', array_merge(['id' => $customer->id], $update));
+        $component
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas(
+            'relations',
+            array_merge(
+                [
+                    'id' => $customer->id,
+                ],
+                $updatedData
+            )
+        );
     }
 
     #[Test]
@@ -260,10 +273,13 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         /* act & assert */
         Livewire::actingAs($this->user)
             ->test(ListRelations::class)
-            ->mountAction('edit', ['record' => $customer->getKey()])
+            ->mountAction(TestAction::make('edit')->table($customer), $payload)
             ->fillForm($payload)
             ->callMountedAction()
             ->assertHasFormErrors(['company_name' => 'required']);
+
+        /* assert */
+        $this->assertDatabaseMissing('relations', array_merge(['id' => $customer->id], $payload));
     }
     #endregion
 
@@ -387,19 +403,21 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_customer(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $original = [
-            'company_name'  => 'Old Name',
-            'relation_type' => RelationType::CUSTOMER,
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        $customer = Relation::factory()->for($this->user->companies()->first())->create($original);
+        $customer = Relation::factory()
+            ->for($this->user->companies()->first())
+            ->create($original);
 
         $update = [
-            'company_name' => 'Updated Name',
+            'company_name' => 'InvoicePlane Holding LLC',
         ];
 
         /* act */

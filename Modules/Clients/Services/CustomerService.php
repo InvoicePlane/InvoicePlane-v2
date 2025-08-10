@@ -17,20 +17,19 @@ class CustomerService extends BaseService
 
     public function createCustomer(array $validatedInput): Model
     {
-        $client = Relation::query()->create($validatedInput);
+        $customer = Relation::query()->create($validatedInput);
         event(new CustomerWasCreated());
 
-        return $client;
+        return $customer;
     }
 
-    public function updateUser(array $input, $client): Relation
+    public function updateCustomer($customer, array $input): Relation
     {
-        $client = Relation::query()->find($client);
-        $client->fill($input);
-        $client->save();
+        $customer->fill($input);
+        $customer->save();
 
         event(new CustomerWasUpdated());
 
-        return $client;
+        return $customer;
     }
 }

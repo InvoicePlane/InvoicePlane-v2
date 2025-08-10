@@ -62,12 +62,8 @@ class RelationService extends BaseService
         }
     }
 
-    public function updateRelation(array $data, $relation): Relation
+    public function updateRelation(Relation $relation, array $data): Relation
     {
-        if ( ! $relation instanceof Relation) {
-            $relation = Relation::query()->findOrFail($relation);
-        }
-
         DB::beginTransaction();
 
         try {

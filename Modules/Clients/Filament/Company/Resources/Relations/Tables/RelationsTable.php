@@ -10,6 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Clients\Services\CustomerService;
 use Modules\Core\Helpers\EnumHelper;
 
 class RelationsTable
@@ -84,7 +86,11 @@ class RelationsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Relation $record, array $data) {
+                            app(CustomerService::class)->updateCustomer($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
             ->toolbarActions([
