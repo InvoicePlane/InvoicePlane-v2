@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
@@ -103,29 +104,29 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_category_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $company = $this->user->companies()->first();
-        $record  = ProductCategory::factory()
+        $company         = $this->user->companies()->first();
+        $productCategory = ProductCategory::factory()
             ->for($company)
             ->create(['category_name' => 'Old Cat']);
 
-        $updateData = ['category_name' => 'Updated Category'];
+        $payload = ['category_name' => 'Updated Category'];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
-            ->mountAction('edit', ['record' => $record->id])
-            ->fillForm($updateData)
+            ->mountAction(TestAction::make('edit')->table($productCategory), $payload)
+            ->fillForm($payload)
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
         /* assert */
-        $component->assertSuccessful();
+        $component
+            ->assertSuccessful();
+
         $this->assertDatabaseHas('product_categories', array_merge(
-            ['id' => $record->id],
-            $updateData
+            ['id' => $productCategory->id],
+            $payload
         ));
     }
 
@@ -220,9 +221,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_category(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
         $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Old Cat']);
         $payload = ['category_name' => 'Updated Category'];
 
