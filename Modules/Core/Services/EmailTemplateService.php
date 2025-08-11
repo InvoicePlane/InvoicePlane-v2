@@ -33,7 +33,7 @@ class EmailTemplateService extends BaseService
             'company_id' => $this->getCompanyId() ?? 1,
             'type'       => $data['type'],
             'subject'    => $data['subject'],
-            'body'       => $data['body'],
+            'body'       => $data['body'] ?? '',
             'from_name'  => $data['from_name'],
             'from_email' => $data['from_email'],
             'cc'         => $data['cc'] ?? null,
