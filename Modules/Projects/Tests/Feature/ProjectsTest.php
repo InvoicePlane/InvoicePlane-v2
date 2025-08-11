@@ -232,7 +232,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'project_status' => ProjectStatus::ACTIVE->value,
         ]);
 
-        $updateData = [
+        $updatedData = [
             'project_name' => 'Updated Project Name',
             'description'  => 'Updated description',
         ];
@@ -240,8 +240,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->mountAction(TestAction::make('edit')->table($project), $updateData)
-            ->fillForm($updateData)
+            ->mountAction(TestAction::make('edit')->table($project), $updatedData)
+            ->fillForm($updatedData)
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
@@ -249,7 +249,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $this->assertDatabaseHas('projects', array_merge(
             ['id' => $project->id],
-            $updateData
+            $updatedData
         ));
     }
 
