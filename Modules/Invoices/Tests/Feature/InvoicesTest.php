@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -269,19 +270,36 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_invoice_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'status' => InvoiceStatus::DRAFT,
+        $company         = $this->user->companies()->first();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
         ]);
 
-        $payload = ['status' => InvoiceStatus::SENT];
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
+            'invoice_number'    => 'INV-987654',
+            'customer_id'       => $customer->getKey(),
+            'document_group_id' => $documentGroup->getKey(),
+            'user_id'           => $this->user->id,
+            'invoice_status'    => InvoiceStatus::DRAFT->value,
+            'invoiced_at'       => '2025-05-10',
+            'invoice_due_at'    => '2025-06-09',
+        ]);
+
+        $payload = ['invoice_status' => InvoiceStatus::SENT];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('edit', ['record' => $invoice->id])
+            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
             ->fillForm($payload)
             ->mountAction('save')
             ->callMountedAction();
@@ -293,19 +311,18 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $this->assertDatabaseHas('invoices', [
-            'id'     => $invoice->id,
-            'status' => InvoiceStatus::SENT,
+            'id'             => $invoice->id,
+            'invoice_status' => InvoiceStatus::SENT,
         ]);
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_edits_invoice_and_updates_total_through_a_modal(): void
+    public function it_updates_invoice_and_updates_total_through_a_modal(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'subtotal' => 100,
             'tax'      => 20,
@@ -313,7 +330,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'total'    => 120,
         ]);
 
-        /** @payload */
         $payload = [
             'subtotal' => 200,
             'tax'      => 40,
@@ -323,7 +339,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('edit', ['record' => $invoice->id])
+            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
             ->fillForm($payload)
             ->mountAction('save')
             ->callMountedAction()
@@ -339,7 +355,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
             'subtotal' => 200,
             'tax'      => 40,
@@ -347,7 +362,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'total'    => 230,
         ]);
 
-        /** @payload */
         $payload = [
             'subtotal' => 200,
             'tax'      => 40,
@@ -357,7 +371,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('edit', ['record' => $invoice->id])
+            ->mountAction(TestAction::make('edit')->table($invoice), $updatedData)
             ->fillForm($payload)
             ->callMountedAction()
             ->assertHasErrors(['discount']);
@@ -368,20 +382,20 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_update_invoice_with_invalid_status_through_a_modal(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
 
+        /* arrange */
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
-        $payload = ['status' => null];
+        $payload = ['invoice_status' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('edit', ['record' => $invoice->id])
+            ->mountAction(TestAction::make('edit')->table($invoice), $updatedData)
             ->fillForm($payload)
             ->callMountedAction();
 
         /* assert */
-        $component->assertHasFormErrors(['status']);
+        $component->assertHasFormErrors(['invoice_status']);
     }
     # endregion
 
@@ -571,14 +585,31 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_invoice(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
-
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'status' => InvoiceStatus::DRAFT,
+        $company         = $this->user->companies()->first();
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
         ]);
 
-        $payload = ['status' => InvoiceStatus::SENT];
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
+            'invoice_number'    => 'INV-987654',
+            'customer_id'       => $customer->getKey(),
+            'document_group_id' => $documentGroup->getKey(),
+            'user_id'           => $this->user->id,
+            'invoice_status'    => InvoiceStatus::DRAFT->value,
+            'invoiced_at'       => '2025-05-10',
+            'invoice_due_at'    => '2025-06-09',
+        ]);
+
+        $payload = ['invoice_status' => InvoiceStatus::SENT];
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -593,13 +624,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $this->assertDatabaseHas('invoices', [
-            'id'     => $invoice->id,
-            'status' => InvoiceStatus::SENT,
+            'id'             => $invoice->id,
+            'invoice_status' => InvoiceStatus::SENT,
         ]);
     }
 
     #[Test]
-    public function it_edits_invoice_and_updates_total(): void
+    public function it_updates_invoice_and_updates_total(): void
     {
         $this->markTestIncomplete();
 
@@ -666,7 +697,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* arrange */
 
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
-        $payload = ['status' => null];
+        $payload = ['invoice_status' => null];
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -675,7 +706,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->call('save');
 
         /* assert */
-        $component->assertHasFormErrors(['status']);
+        $component->assertHasFormErrors(['invoice_status']);
     }
 
     #[Test]
@@ -713,7 +744,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->for($this->user->companies()->first())
             ->hasPayments(1)
             ->create([
-                'status' => InvoiceStatus::PAID,
+                'invoice_status' => InvoiceStatus::PAID,
             ]);
 
         Livewire::actingAs($this->user)
