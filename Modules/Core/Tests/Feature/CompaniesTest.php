@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\CreateCompany;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\EditCompany;
@@ -70,7 +71,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      *   "name": "InvoicePlane Corp"
      * }
      */
-    public function it_fails_to_create_company_trough_a_modal_without_required_search_code(): void
+    public function it_fails_to_create_company_through_a_modal_without_required_search_code(): void
     {
         /* arrange */
         $payload = ['name' => 'InvoicePlane Corp'];
@@ -94,7 +95,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      *   "slug": "slug_should_be_generated"
      * }
      */
-    public function it_fails_to_create_company_trough_a_modal_without_required_name(): void
+    public function it_fails_to_create_company_through_a_modal_without_required_name(): void
     {
         /* arrange */
         $payload = [
@@ -120,17 +121,15 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      *   "name": "Updated Corp"
      * }
      */
-    public function it_updates_a_company_trough_a_modal(): void
+    public function it_updates_a_company_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company = Company::factory()->create([
             'search_code' => 'OLDCODE',
             'name'        => 'Old Name',
         ]);
 
-        $updateData = [
+        $updatedData = [
             'search_code' => 'NEWCODE',
             'name'        => 'Updated Corp',
         ];
@@ -138,8 +137,8 @@ class CompaniesTest extends AbstractAdminPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListCompanies::class)
-            ->mountAction('edit', ['record' => $company->id])
-            ->fillForm($updateData)
+            ->mountAction(TestAction::make('edit')->table($company), $updatedData)
+            ->fillForm($updatedData)
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
@@ -147,7 +146,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
         $component->assertSuccessful();
         $this->assertDatabaseHas('companies', array_merge(
             ['id' => $company->id],
-            $updateData
+            $updatedData
         ));
     }
 
@@ -239,13 +238,10 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_updates_a_company(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $company = Company::factory()->create(['name' => 'Old Name']);
 
-        $payload = ['name' => 'Updated Corp'];
+        $payload = ['name' => 'InvoicePlane Corp'];
 
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
@@ -305,7 +301,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
         // Try to access the other company's edit page
         $response = Livewire::actingAs($this->superAdmin())
             ->test(ListCompanies::class)
-            ->mountAction('edit', ['record' => $otherCompany->id]);
+            ->mountAction(TestAction::make('edit')->table($task), $updatedData);
 
         // Should either be forbidden or not found
         $response->assertStatus(404);
