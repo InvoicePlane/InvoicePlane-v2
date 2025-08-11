@@ -120,7 +120,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_expense_number(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_expense_number(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -170,7 +170,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_expensed_at(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_expensed_at(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -220,7 +220,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_amount(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_amount(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -270,7 +270,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_category_id(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_category_id(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -320,7 +320,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_customer(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_customer(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -370,7 +370,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_type(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_type(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -421,7 +421,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_expense_trough_a_modal_without_required_status(): void
+    public function it_fails_to_create_expense_through_a_modal_without_required_status(): void
     {
         /* arrange */
         $company         = $this->user->companies()->first();
@@ -471,7 +471,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_updates_an_expense_trough_a_modal(): void
+    public function it_updates_an_expense_through_a_modal(): void
     {
         /* arrange */
         $company  = $this->user->companies()->first();
@@ -508,7 +508,7 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_an_expense_trough_a_modal_without_required_type(): void
+    public function it_fails_to_update_an_expense_through_a_modal_without_required_type(): void
     {
         $this->markTestIncomplete();
 
