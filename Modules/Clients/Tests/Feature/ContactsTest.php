@@ -67,7 +67,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_creates_a_contact_trough_a_modal(): void
+    public function it_creates_a_contact_through_a_modal(): void
     {
         /* arrange */
         $relation = Relation::factory()
@@ -104,7 +104,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_relation_id(): void
+    public function it_fails_through_a_modal_without_required_relation_id(): void
     {
         /* arrange */
         $payload = [
@@ -132,7 +132,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_first_name(): void
+    public function it_fails_through_a_modal_without_required_first_name(): void
     {
         /* arrange */
         $relation = Relation::factory()
@@ -163,7 +163,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "gender": "female"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_last_name(): void
+    public function it_fails_through_a_modal_without_required_last_name(): void
     {
         /* arrange */
         $relation = Relation::factory()
@@ -193,7 +193,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      *   "last_name": "Contact"
      * }
      */
-    public function it_updates_a_contact_trough_a_modal(): void
+    public function it_updates_a_contact_through_a_modal(): void
     {
         /* arrange */
         $relation = Relation::factory()

@@ -66,7 +66,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "registered_at": "2025-01-01"
      * }
      */
-    public function it_creates_a_customer_trough_a_modal(): void
+    public function it_creates_a_customer_through_a_modal(): void
     {
         /* arrange */
         $payload = [
@@ -100,7 +100,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "relation_number": "C123"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_company_name(): void
+    public function it_fails_through_a_modal_without_required_company_name(): void
     {
         /* arrange */
         $payload = [
@@ -129,7 +129,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "registered_at": "2025-01-01"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_relation_type(): void
+    public function it_fails_through_a_modal_without_required_relation_type(): void
     {
         /* arrange */
         $payload = [
@@ -159,7 +159,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "registered_at": "2025-01-01"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_relation_status(): void
+    public function it_fails_through_a_modal_without_required_relation_status(): void
     {
         /* arrange */
         $payload = [
@@ -187,7 +187,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "relation_number": "C123"
      * }
      */
-    public function it_fails_trough_a_modal_without_required_registered_at(): void
+    public function it_fails_through_a_modal_without_required_registered_at(): void
     {
         /* arrange */
         $payload = [
@@ -212,7 +212,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
      *   "company_name": "Updated Name"
      * }
      */
-    public function it_updates_a_customer_trough_a_modal(): void
+    public function it_updates_a_customer_through_a_modal(): void
     {
         /* arrange */
         $original = [
@@ -256,7 +256,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_trough_a_modal_without_required_company_name(): void
+    public function it_fails_to_update_through_a_modal_without_required_company_name(): void
     {
         $this->markTestIncomplete();
 
