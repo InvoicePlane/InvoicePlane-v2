@@ -16,8 +16,9 @@ class AddressableFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $address = Address::query()->inRandomOrder()->first() ?? Address::query()->create();
+        $companyId = $attributes['company_id'] ?? (Company::query()->inRandomOrder()->first()?->id ?? null);
+        $company   = Company::query()->find($companyId);
+        $address   = Address::query()->inRandomOrder()->first() ?? Address::query()->create();
 
         return [
             'company_id'       => $company->id,

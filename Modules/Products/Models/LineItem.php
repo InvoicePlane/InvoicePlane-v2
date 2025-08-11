@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class LineItem extends Model
 {
-    protected $fillable = ['line_itemable_type', 'line_itemable_id', 'item_id', 'item_quantity', 'item_price', 'item_discount', 'item_subtotal', 'description', 'created_at', 'updated_at'];
+    protected $guarded = [];
 
     protected $casts = [
         'quantity' => 'decimal:4',

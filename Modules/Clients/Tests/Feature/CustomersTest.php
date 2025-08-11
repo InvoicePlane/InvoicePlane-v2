@@ -2,14 +2,15 @@
 
 namespace Modules\Clients\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\EditRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
-use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
@@ -17,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(RelationResource::class)]
+#[CoversClass(ListRelations::class)]
 class CustomersTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
@@ -44,12 +45,241 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListRelations::class);
+            ->test(ListRelations::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
 
         /* assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas('relations', $payload);
+    }
+    #endregion
+
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "company_name": "Beta LLC",
+     *   "relation_type": "CUSTOMER",
+     *   "relation_status": "ACTIVE",
+     *   "relation_number": "C123",
+     *   "registered_at": "2025-01-01"
+     * }
+     */
+    public function it_creates_a_customer_through_a_modal(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('relations', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "relation_type": "CUSTOMER",
+     *   "relation_status": "ACTIVE",
+     *   "relation_number": "C123"
+     * }
+     */
+    public function it_fails_through_a_modal_without_required_company_name(): void
+    {
+        /* arrange */
+        $payload = [
+            // 'company_name' => 'Missing Inc.',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['company_name' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "company_name": "Zeta Ltd.",
+     *   "relation_status": "ACTIVE",
+     *   "relation_number": "C123",
+     *   "registered_at": "2025-01-01"
+     * }
+     */
+    public function it_fails_through_a_modal_without_required_relation_type(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name' => 'Zeta Ltd.',
+            // 'relation_type' => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['relation_type' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "company_name": "Beta LLC",
+     *   "relation_type": "CUSTOMER",
+     *   "relation_number": "C123",
+     *   "registered_at": "2025-01-01"
+     * }
+     */
+    public function it_fails_through_a_modal_without_required_relation_status(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['relation_status' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "company_name": "Zeta Ltd.",
+     *   "relation_type": "CUSTOMER",
+     *   "relation_number": "C123"
+     * }
+     */
+    public function it_fails_through_a_modal_without_required_registered_at(): void
+    {
+        /* arrange */
+        $payload = [
+            'company_name'    => 'Zeta Ltd.',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_number' => 'C123',
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['registered_at' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "company_name": "Updated Name"
+     * }
+     */
+    public function it_updates_a_customer_through_a_modal(): void
+    {
+        /* arrange */
+        $original = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+        ];
+
+        $customer = Relation::factory()
+            ->for($this->user->companies()->first())
+            ->create($original);
+
+        $updatedData = [
+            'company_name' => 'InvoicePlane LLC Limited',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction(TestAction::make('edit')->table($customer), $updatedData)
+            ->fillForm($updatedData)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* assert */
+        $component
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas(
+            'relations',
+            array_merge(
+                [
+                    'id' => $customer->id,
+                ],
+                $updatedData
+            )
+        );
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_update_through_a_modal_without_required_company_name(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $customer = Relation::factory()->for($this->user->companies()->first())->create([
+            'company_name'  => 'Will Not Update',
+            'relation_type' => RelationType::CUSTOMER,
+        ]);
+
+        $payload = [
+            'company_name' => '',
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction(TestAction::make('edit')->table($customer), $payload)
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['company_name' => 'required']);
+
+        /* assert */
+        $this->assertDatabaseMissing('relations', array_merge(['id' => $customer->id], $payload));
     }
     #endregion
 
@@ -117,7 +347,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateRelation::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_type']);
@@ -136,7 +369,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(CreateRelation::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateRelation::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['relation_status']);
@@ -167,23 +403,28 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_customer(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
         $original = [
-            'company_name'  => 'Old Name',
-            'relation_type' => RelationType::CUSTOMER,
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        $customer = Relation::factory()->for($this->user->companies()->first())->create($original);
+        $customer = Relation::factory()
+            ->for($this->user->companies()->first())
+            ->create($original);
 
         $update = [
-            'company_name' => 'Updated Name',
+            'company_name' => 'InvoicePlane Holding LLC',
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($update)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditRelation::class, ['record' => $customer->getKey()])
+            ->fillForm($update)
+            ->call('save');
 
         /* assert */
         $component
@@ -195,12 +436,11 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_if_company_name_missing(): void
+    public function it_fails_to_update_without_required_company_name(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
         $customer = Relation::factory()->for($this->user->companies()->first())->create([
             'company_name'  => 'Will Not Update',
             'relation_type' => RelationType::CUSTOMER,
@@ -211,7 +451,10 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(EditRelation::class, ['record' => $customer->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->user)
+            ->test(EditRelation::class, ['record' => $customer->getKey()])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component->assertHasFormErrors(['company_name']);
@@ -230,7 +473,9 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListRelations::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->callAction('delete', $customer);
 
         $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
     }
@@ -250,7 +495,9 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->user)->test(ListRelations::class)->callTableAction('delete', $customer);
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->callAction('delete', $customer);
 
         /* assert */
         $component->assertHasErrors();

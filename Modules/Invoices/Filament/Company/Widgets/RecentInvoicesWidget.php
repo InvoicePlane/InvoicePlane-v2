@@ -45,7 +45,7 @@ class RecentInvoicesWidget extends TableWidget
                 ->formatStateUsing(fn ($state) => $state?->label() ?? '-')
                 ->color(fn ($state) => $state?->color() ?? 'secondary'),
             TextColumn::make('invoice_number')->label(trans('ip.invoice_number')),
-            TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.client_name')),
+            TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.customer_name')),
             TextColumn::make('invoice_due_at')
                 ->label(trans('ip.invoice_due_at'))
                 ->color(fn ($state, $record) => $record?->due_intensity ?? 'secondary')

@@ -3,9 +3,12 @@
 namespace Modules\Expenses\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
+use Modules\Core\Traits\HasOptions;
 
 enum ExpenseType: string implements LabeledEnum
 {
+    use HasOptions;
+
     case FIXED       = 'fixed';
     case ONE_TIME    = 'one_time';
     case RECURRING   = 'recurring';

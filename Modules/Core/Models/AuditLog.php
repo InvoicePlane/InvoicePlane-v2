@@ -24,12 +24,7 @@ class AuditLog extends Model
         'audit_id' => 'int',
     ];
 
-    protected $fillable = [
-        'audit_id',
-        'audit_type',
-        'activity',
-        'info',
-    ];
+    protected $guarded = [];
 
     public function audit(): MorphTo
     {

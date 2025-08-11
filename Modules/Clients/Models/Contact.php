@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Database\Factories\ContactFactory;
 use Modules\Clients\Enums\Gender;
@@ -48,21 +47,39 @@ class Contact extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function addressables(): MorphMany
+    /**
+     * Get all of the contact's addresses.
+     */
+    public function addresses(): MorphMany
     {
-        return $this->morphMany(Addressable::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
-    public function addresses(): HasManyThrough
+    /**
+     * Get the contact's primary address.
+     */
+    public function primaryAddress()
     {
-        return $this->hasManyThrough(
-            Address::class,
-            Addressable::class,
-            'addressable_id',
-            'id',
-            'id',
-            'address_id'
-        );
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('is_primary', true);
+    }
+
+    /**
+     * Get the contact's home address.
+     */
+    public function homeAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'home');
+    }
+
+    /**
+     * Get the contact's work address.
+     */
+    public function workAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'work');
     }
 
     public function communications(): MorphMany
@@ -93,7 +110,7 @@ class Contact extends Model
     public function getPrimaryEmailAttribute(): ?string
     {
         return $this->communications
-            ->where('contactable_type', CommunicationType::EMAIL->value)
+            ->where('communication_type', CommunicationType::EMAIL->value)
             ->where('is_primary', true)
             ->first()?->contactable_value;
     }
@@ -101,7 +118,7 @@ class Contact extends Model
     public function getPrimaryPhoneAttribute(): ?string
     {
         return $this->communications
-            ->where('contactable_type', CommunicationType::PHONE->value)
+            ->where('communication_type', CommunicationType::PHONE->value)
             ->where('is_primary', true)
             ->first()?->contactable_value;
     }

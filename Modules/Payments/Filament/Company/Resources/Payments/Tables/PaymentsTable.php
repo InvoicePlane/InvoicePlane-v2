@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Payments\Models\Payment;
+use Modules\Payments\Services\PaymentService;
 
 class PaymentsTable
 {
@@ -18,6 +19,7 @@ class PaymentsTable
             ->columns([
                 TextColumn::make('paid_at')
                     ->date('d-m-Y')
+                    ->since()
                     ->color(
                         fn (Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
                             ? 'maroon'
@@ -63,17 +65,20 @@ class PaymentsTable
                     ->searchable()
                     ->toggleable(),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Payment $record, array $data) {
+                            app(PaymentService::class)->updatePayment($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('paid_at', 'desc');
     }
 }

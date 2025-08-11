@@ -3,23 +3,23 @@
 namespace Modules\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\CompanyUser;
+use Modules\Core\Models\User;
 
 /**
  * @extends Factory<CompanyUser>
  */
-class CompanyUserFactory extends Factory
+class CompanyUserFactory extends AbstractFactory
 {
     protected $model = CompanyUser::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
 
         return [
-            'company_id' => $company->id,
-            'user_id'    => \Modules\Core\Models\User::query()->inRandomOrder()->first()->id,
+            'user_id' => User::query()->inRandomOrder()->first()->id,
         ];
     }
 }

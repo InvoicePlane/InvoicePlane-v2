@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rules\Enum;
 use Modules\Projects\Enums\ProjectStatus;
 
 class ProjectForm
@@ -38,7 +39,7 @@ class ProjectForm
                                             ->required()
                                             ->createOptionForm([
                                                 TextInput::make('company_name')
-                                                    ->label(trans('ip.client_name'))
+                                                    ->label(trans('ip.customer_name'))
                                                     ->required(),
                                             ])
                                             ->reactive(),
@@ -58,23 +59,17 @@ class ProjectForm
                                 Section::make(trans('ip.details'))
                                     ->columns(2)
                                     ->schema([
-                                        TextInput::make('name')
+                                        TextInput::make('project_name')
                                             ->label(trans('ip.project_name'))
                                             ->required()
                                             ->maxLength(255),
 
                                         Select::make('project_status')
                                             ->label(trans('ip.project_status'))
-                                            ->options(
-                                                collect(ProjectStatus::cases())
-                                                    ->mapWithKeys(fn ($s) => [$s->value => trans($s->label())])
-                                                    ->toArray()
-                                            )
-                                            ->getOptionLabelUsing(fn (string $value) => ProjectStatus::tryFrom($value)?->label())
-                                            ->searchable()
-                                            ->preload()
+                                            ->options(ProjectStatus::options())
+                                            ->required()
                                             ->native(false)
-                                            ->required(),
+                                            ->rule(new Enum(ProjectStatus::class)),
 
                                         DatePicker::make('start_at')
                                             ->label(trans('ip.start_at'))

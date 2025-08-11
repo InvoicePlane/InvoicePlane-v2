@@ -39,13 +39,20 @@ class Payment extends Model
 
     public $timestamps = false;
 
-    protected $casts = [
-        'payment_status' => PaymentStatus::class,
-        'paid_at'        => 'date',
-        'payment_amount' => 'float',
-    ];
-
     protected $guarded = [];
+
+    protected $casts = [
+        'payment_status'             => PaymentStatus::class,
+        'paid_at'                    => 'date',
+        'payment_amount'             => 'float',
+        'refunded_amount'            => 'float',
+        'exchange_rate'              => 'float',
+        'payment_gateway_fee'        => 'float',
+        'payment_gateway_percentage' => 'float',
+        'is_online'                  => 'boolean',
+        'is_manual'                  => 'boolean',
+        'is_refunded'                => 'boolean',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -88,12 +95,32 @@ class Payment extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    public function getFormattedAmountAttribute(): string
+    {
+        return number_format($this->payment_amount, 2, '.', ',');
+    }
+
+    public function getFormattedPaidAtAttribute(): ?string
+    {
+        return $this->paid_at?->format('Y-m-d H:i:s');
+    }
 
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
+    public function scopeRecent($query, $limit = 25)
+    {
+        return $query->orderBy('paid_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit($limit);
+    }
+
+    public function scopePaidBetween($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('paid_at', [$startDate, $endDate]);
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
@@ -9,14 +10,13 @@ use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\CreateTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\EditTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\ListTaxRates;
-use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(TaxRateResource::class)]
+#[CoversClass(ListTaxRates::class)]
 class TaxRatesTest extends AbstractAdminPanelTestCase
 {
     use WithFaker;
@@ -35,7 +35,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
     # region smoke
     #[Test]
-    #[Group('crud')]
+    #[Group('smoke')]
     public function it_lists_tax_rates(): void
     {
         /* arrange */
@@ -63,11 +63,97 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     * "company_id": "Value",
+     * "tax_rate_type": "Value",
+     * "is_active": "true",
+     * "name": "Example",
+     * "code": "Example",
+     * "rate": "Example"
+     * }
+     */
+    public function it_creates_a_taxrate_through_a_modal(): void
+    {
+        /* arrange */
+        $payload = [
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
+            'is_active'     => true,
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tax_rates', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     * "company_id": "Value",
+     * "tax_rate_type": "Value",
+     * "is_active": "true",
+     * "name": "Example",
+     * "code": "Example",
+     * "rate": "Example"
+     * }
+     */
+    public function it_updates_a_taxrate_through_a_modal(): void
+    {
+        $record = TaxRate::factory()->create([
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
+            'is_active'     => true,
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
+        ]);
+
+        $updatedData = [
+            'name' => 'Updated VAT Rate',
+            'rate' => 22.0,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class)
+            ->mountAction(TestAction::make('edit')->table($record), $updatedData)
+            ->fillForm($updatedData)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('tax_rates', array_merge(
+            ['id' => $record->id],
+            $updatedData
+        ));
+    }
+    # endregion
+
     # region crud
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
+     * TaxRateResource.
      *
      * @payload
      * {
@@ -82,25 +168,20 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_a_taxrate(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $this->markTestSkipped('Some error with a livewire view');
-
-        //$this->actingAs(User::factory()->create());
-
         $payload = [
-            'company_id'    => 'Value',
-            'tax_rate_type' => 'Value',
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
-            'name'          => 'Example',
-            'code'          => 'Example',
-            'rate'          => 'Example',
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateTaxRate::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateTaxRate::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -113,8 +194,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\TaxRateResource.
-     *
      * @payload
      * {
      * "company_id": "Value",
@@ -125,40 +204,27 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      * "rate": "Example"
      * }
      */
-    #[Group('crud')]
     public function it_updates_a_taxrate(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $this->markTestIncomplete('Needs full payload and assertions.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = TaxRate::factory()->create();
-
-        $payload = [
-            'company_id'    => 'Value',
-            'tax_rate_type' => 'Value',
-            'is_active'     => true,
-            'name'          => 'Example',
-            'code'          => 'Example',
-            'rate'          => 'Example',
-        ];
-
         $taxRate = TaxRate::factory()->create([
-            'tax_rate_name'    => '::original_tax_rate_name::',
-            'tax_rate_percent' => '15',
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
+            'is_active'     => true,
+            'code'          => 'EXCL21',
+            'name'          => '::taxrate_name::',
+            'rate'          => 21.0000,
         ]);
 
         $updatedData = [
-            'tax_rate_name'    => '::updated_tax_rate_name::',
-            'tax_rate_percent' => '20',
+            'name' => '::updated_tax_rate_name::',
+            'rate' => 21.0000,
         ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(EditTaxRate::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditTaxRate::class, ['record' => $taxRate->getKey()])
+            ->fillForm($updatedData)
+            ->call('save');
 
         /* assert */
         $component
@@ -166,7 +232,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
-            'tax_rate_id' => $taxRate->tax_rate_id,
+            'id' => $taxRate->id,
         ]));
     }
 
@@ -183,23 +249,52 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      * "rate": "Example"
      * }
      */
-    #[Group('crud')]
     public function it_deletes_a_taxrate(): void
     {
         $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
 
         /* arrange */
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = TaxRate::factory()->create();
+        $record = TaxRate::factory()->create([
+            'name'          => 'Tax to Delete',
+            'code'          => 'DELETEME',
+            'rate'          => 10.0,
+            'tax_rate_type' => 'percentage',
+        ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListTaxRates::class)->callTableAction('delete', $record);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class)
+            ->callAction('delete', $record);
 
-        $this->assertDatabaseMissing('tax_rates', ['id' => $record->id]);
+        /* assert */
+        $component->assertSuccessful();
+        $this->assertSoftDeleted('tax_rates', ['id' => $record->id]);
     }
 
+    # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_tax_rates_of_another_tenant(): void
+    {
+        $this->markTestIncomplete();
+
+        // Create a tax rate with a different tenant
+        $otherTaxRate = TaxRate::factory()->create([
+            'name' => 'Other Tenant Tax',
+            'code' => 'OTHER',
+            'rate' => 15.0,
+        ]);
+
+        // Try to access the other tenant's tax rate
+        $response = Livewire::actingAs($this->superAdmin())
+            ->test(ListTaxRates::class)
+            ->mountAction(TestAction::make('edit')->table($task), $updatedData);
+
+        // Should be forbidden or not found
+        $response->assertStatus(404);
+    }
     # endregion
 
     # region spicy

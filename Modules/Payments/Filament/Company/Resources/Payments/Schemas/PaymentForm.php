@@ -63,7 +63,7 @@ class PaymentForm
                                                     ->default(fn (?Payment $record) => $record?->invoice_id),
 
                                                 Placeholder::make('customer')
-                                                    ->label(trans('ip.customer'))
+                                                    ->label(trans('ip.client'))
                                                     ->content(fn (?Payment $record) => $record?->customer?->company_name ?? '-'),
                                             ]),
                                     ]),
@@ -86,8 +86,8 @@ class PaymentForm
                                                     ->label(trans('ip.payment_method'))
                                                     ->options(
                                                         collect(PaymentMethod::cases())
-                                                            ->mapWithKeys(fn (PaymentMethod $m) => [
-                                                                $m->value => trans('ip.' . $m->value),
+                                                            ->mapWithKeys(fn (PaymentMethod $method) => [
+                                                                $method->value => $method->label(),
                                                             ])
                                                             ->toArray()
                                                     )

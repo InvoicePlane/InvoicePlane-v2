@@ -3,33 +3,23 @@
 namespace Modules\Invoices\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Models\User;
+use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\InvoiceItem;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductUnit;
 
 /**
  * @extends Factory<Invoice>
  */
-class InvoiceFactory extends Factory
+class InvoiceFactory extends AbstractFactory
 {
     protected $model = Invoice::class;
 
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-    ?: Company::factory()->create();
-        $user     = User::query()->inRandomOrder()->first() ?? User::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()->customer()->create();
-        $documentGroup = DocumentGroup::query()->inRandomOrder()->first() ?? DocumentGroup::factory()->create();
-
         $subtotal = $this->faker->randomFloat(4, 100, 1000);
         $taxRate  = 0.20;
         $sign     = $this->faker->boolean(75) ? '1' : '-1';
@@ -37,11 +27,6 @@ class InvoiceFactory extends Factory
         $total    = $subtotal + $taxTotal;
 
         return [
-            'company_id'               => $company->id,
-            'user_id'                  => $user->id,
-            'customer_id'              => $customer->id,
-            'document_group_id'        => $documentGroup->id,
-            'creditinvoice_parent_id'  => null,
             'invoice_number'           => $this->faker->unique()->numerify('INV-###-####'),
             'invoice_status'           => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'invoice_sign'             => $sign,
@@ -61,6 +46,64 @@ class InvoiceFactory extends Factory
             'terms'                    => null,
             'footer'                   => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Invoice $invoice) {
+            $products = Product::query()
+                ->where('company_id', $invoice->company_id)
+                ->take(random_int(2, 5))
+                ->get();
+
+            if (empty($products)) {
+                $product = Product::factory()
+                    ->state(['company_id' => $invoice->company_id])
+                    ->create();
+                $products = collect($product);
+            }
+
+            $productUnit = ProductUnit::query()
+                ->where('company_id', $invoice->company_id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $productUnit) {
+                $productUnit = ProductUnit::factory()
+                    ->state(['company_id' => $invoice->company_id])
+                    ->create();
+            }
+
+            $taxRate = TaxRate::query()
+                ->where('company_id', $invoice->company_id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $taxRate) {
+                $taxRate = Product::factory()
+                    ->state(['company_id' => $invoice->company_id])
+                    ->create();
+            }
+
+            $products->each(callback: function (Product $product) use ($invoice, $productUnit, $taxRate) {
+                InvoiceItem::factory()
+                    ->count(random_int(2, 5))
+                    ->for($invoice, 'invoice')
+                    ->for($product, 'product')
+                    ->for($productUnit, 'productUnit')
+                    ->for($taxRate, 'taxRate')
+                    ->state([
+                        'company_id'      => $invoice->company_id,
+                        'invoice_id'      => $invoice->id,
+                        'product_id'      => $product->id,
+                        'product_unit_id' => $productUnit->id,
+                        'item_name'       => $product->product_name ?? 'Item',
+                        'tax_rate_id'     => $taxRate->id,
+                        'tax_rate_2_id'   => null,
+                    ])
+                    ->create();
+            });
+        });
     }
 
     public function draft(): static

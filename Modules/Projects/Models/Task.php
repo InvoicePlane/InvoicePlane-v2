@@ -47,7 +47,7 @@ class Task extends Model
 
     protected $guarded = [];
 
-    public function user(): BelongsTo
+    public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -66,6 +66,11 @@ class Task extends Model
     public function taxRate(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class, 'tax_rate_id');
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
     }
 
     protected static function newFactory(): Factory

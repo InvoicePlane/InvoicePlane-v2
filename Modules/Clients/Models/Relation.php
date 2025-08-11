@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Database\Factories\RelationFactory;
@@ -87,21 +86,27 @@ class Relation extends Model
         // return $this->morphMany(Attachment, 'attachable');
     }
 
-    public function addressables(): MorphMany
+    public function addresses(): MorphMany
     {
-        return $this->morphMany(Addressable::class, 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
-    public function addresses(): HasManyThrough
+    public function primaryAddress()
     {
-        return $this->hasManyThrough(
-            Address::class,
-            Addressable::class,
-            'addressable_id',
-            'id',
-            'id',
-            'address_id'
-        );
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('is_primary', true);
+    }
+
+    public function billingAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'billing');
+    }
+
+    public function shippingAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'shipping');
     }
 
     public function communications(): MorphMany

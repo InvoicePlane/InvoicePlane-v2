@@ -19,12 +19,12 @@ class ExpenseCategoriesTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

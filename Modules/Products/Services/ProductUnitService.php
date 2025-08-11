@@ -15,15 +15,17 @@ class ProductUnitService extends BaseService
 
     public function createProductUnit(array $data): Model
     {
-        return $this->create([
-            'unit_name' => $data['unit_name'],
+        return ProductUnit::query()->create([
+            'unit_name'      => $data['unit_name'],
+            'unit_name_plrl' => $data['unit_name_plrl'],
         ]);
     }
 
     public function updateProductUnit(ProductUnit $model, array $data): ProductUnit
     {
         $model->update([
-            'unit_name' => $data['unit_name'],
+            'unit_name'      => $data['unit_name'],
+            'unit_name_plrl' => $data['unit_name_plrl'] ?? $model->unit_name_plrl,
         ]);
 
         return $model;

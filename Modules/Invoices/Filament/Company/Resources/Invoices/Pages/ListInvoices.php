@@ -17,12 +17,6 @@ class ListInvoices extends ListRecords
             CreateAction::make()
                 ->modalWidth('full')
                 ->mutateDataUsing(function (array $data) {
-                    // Optionally set default values, e.g., invoice date
-                    $data['invoiced_at']  = now();
-                    $data['invoiceItems'] = [
-                        ['product_id' => null, 'quantity' => 1, 'price' => 0, 'discount' => 0, 'subtotal' => 0],
-                    ];
-
                     return $data;
                 })
                 ->action(function (array $data) {

@@ -10,6 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Contact;
+use Modules\Clients\Services\ContactService;
 use Modules\Core\Helpers\EnumHelper;
 
 class ContactsTable
@@ -61,12 +63,16 @@ class ContactsTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Contact $record, array $data) {
+                            app(ContactService::class)->updateContact($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

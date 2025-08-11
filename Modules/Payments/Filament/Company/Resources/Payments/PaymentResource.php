@@ -3,16 +3,16 @@
 namespace Modules\Payments\Filament\Company\Resources\Payments;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Payments\Filament\Company\Resources\Payments\Pages\ListPayments;
 use Modules\Payments\Filament\Company\Resources\Payments\Schemas\PaymentForm;
 use Modules\Payments\Filament\Company\Resources\Payments\Tables\PaymentsTable;
 use Modules\Payments\Models\Payment;
 
-class PaymentResource extends Resource
+class PaymentResource extends BaseResource
 {
     protected static ?string $model = Payment::class;
 
@@ -51,8 +51,7 @@ class PaymentResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

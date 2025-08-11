@@ -38,7 +38,7 @@ class ContactForm
                                     ->native(false)
                                     ->createOptionForm([
                                         TextInput::make('company_name')
-                                            ->label(trans('ip.client_name'))
+                                            ->label(trans('ip.customer_name'))
                                             ->required(),
                                     ])
                                     ->reactive(),
@@ -76,7 +76,7 @@ class ContactForm
                                     ->content(
                                         fn (?Contact $record = null) => $record ?
                                             optional($record->communications)
-                                                ->where('contactable_type', CommunicationType::EMAIL->value)
+                                                ->where('communication_type', CommunicationType::EMAIL->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'
                                             : '-'
@@ -87,7 +87,7 @@ class ContactForm
                                     ->content(
                                         fn (?Contact $record = null) => $record ?
                                             optional($record->communications)
-                                                ->where('contactable_type', CommunicationType::PHONE->value)
+                                                ->where('communication_type', CommunicationType::PHONE->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'
                                             : '-'

@@ -9,8 +9,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Carbon;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Support\DateHelpers;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Services\QuoteService;
@@ -33,36 +33,36 @@ class QuotesTable
                         $status = EnumHelper::safeEnum(QuoteStatus::class, $record->quote_status);
 
                         return $status?->color() ?? 'secondary';
+                    }),
+                TextColumn::make('quote_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('prospect.company_name')
+                    ->limit(10)
+                    ->label(trans('ip.customer_name'))
+                    ->searchable()->sortable()
+                    ->toggleable(),
+                TextColumn::make('quote_expires_at')
+                    ->label(trans('ip.expires_at'))
+                    ->color(fn ($state, $record) => $record?->expires_intensity ?? 'secondary')
+                    ->formatStateUsing(function ($state) {
+                        if ( ! $state) {
+                            return '-';
+                        }
+                        $days = now()->diffInDays($state, false);
+                        if ($days < 0) {
+                            return DateHelpers::formatSince($state, 3600);
+                        }
+
+                        return DateHelpers::formatDate($state);
                     })
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('quote_number')->searchable()->sortable()->toggleable(),
-                TextColumn::make('prospect.company_name')->limit(10)->label(trans('ip.client_name'))->searchable()->sortable()->toggleable(),
-                TextColumn::make('quote_expires_at')->date()->label(trans('ip.expires'))->color(fn (Quote $record) => Carbon::parse($record->quote_expires_at)->isPast() ? 'text-red-500' : null)->since()->searchable()->sortable()->toggleable(),
                 TextColumn::make('quote_total')->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->mutateDataUsing(function (array $data, Quote $record) {
-                            $data['quoteItems'] = $record->quoteItems()->get()->map(function ($item) {
-                                $product = $item->product;
-
-                                return [
-                                    'product_id'   => $item->product_id,
-                                    'product_name' => $product?->product_name ?? '', // Populate product_name
-                                    'item_name'    => $item->item_name,
-                                    'quantity'     => $item->quantity,
-                                    'price'        => $item->price,
-                                    'discount'     => $item->discount,
-                                    'subtotal'     => $item->subtotal,
-                                ];
-                            })->toArray();
-
-                            return $data;
-                        })
+                    EditAction::make('edit')
                         ->action(function (Quote $record, array $data) {
                             app(QuoteService::class)->updateQuote($record, $data);
                         })
@@ -81,7 +81,7 @@ class QuotesTable
                         ->action(function (Quote $record): void {}),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

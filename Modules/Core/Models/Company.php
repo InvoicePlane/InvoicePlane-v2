@@ -9,14 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Models\Address;
-use Modules\Clients\Models\Addressable;
 use Modules\Clients\Models\Communication;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\CompanyFactory;
+use Modules\Core\Enums\UserRole;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Expenses\Models\ExpenseItem;
@@ -85,30 +84,70 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Static Methods
     |--------------------------------------------------------------------------
     */
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function addressables(): MorphMany
+    /**
+     * Get all customer admin users associated with this company.
+     * Uses Spatie's role relationship to filter users with the client_admin role.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function customerAdmins(): BelongsToMany
     {
-        return $this->morphMany(Addressable::class, 'addressable');
+        return $this->users()
+            ->whereHas('roles', function ($query) {
+                $query->where('name', UserRole::CUSTOMER_ADMIN->value); // 'client_admin'
+            });
     }
 
-    public function addresses(): HasManyThrough
+    /**
+     * Get all of the company's addresses.
+     */
+    public function addresses(): MorphMany
     {
-        return $this->hasManyThrough(Address::class, Addressable::class, 'addressable_id', 'id', 'id', 'address_id');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
-    public function communications(): HasMany
+    /**
+     * Get the company's primary address.
+     */
+    public function primaryAddress()
     {
-        return $this->hasMany(Communication::class);
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('is_primary', true);
+    }
+
+    /**
+     * Get the company's billing address.
+     */
+    public function billingAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'billing');
+    }
+
+    /**
+     * Get the company's shipping address.
+     */
+    public function shippingAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('type', 'shipping');
+    }
+
+    public function communications(): MorphMany
+    {
+        return $this->morphMany(Communication::class, 'communicable');
     }
 
     public function companyUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)
-            ->withPivot('id');
+        return $this->belongsToMany(User::class, 'company_user')
+            ->withPivot('is_owner');
     }
 
     public function contacts(): HasMany
@@ -116,9 +155,9 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(Contact::class);
     }
 
-    public function custom_field_values(): HasMany
+    public function custom_field_values(): MorphMany
     {
-        return $this->hasMany(CustomFieldValue::class);
+        return $this->morphMany(CustomFieldValue::class, 'customizable');
     }
 
     public function custom_fields(): HasMany
@@ -161,9 +200,9 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(Invoice::class);
     }
 
-    public function notes(): HasMany
+    public function notes(): MorphMany
     {
-        return $this->hasMany(Note::class);
+        return $this->morphMany(Note::class, 'notable');
     }
 
     public function payments(): HasMany
@@ -206,9 +245,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(RecurringInvoice::class);
     }
 
-    /**
-     * Customers, Prospects, Relations.
-     */
     public function relations(): HasMany
     {
         return $this->hasMany(Relation::class);
@@ -234,17 +270,33 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(Upload::class);
     }
 
+    /**
+     * Get all users associated with this company.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'company_user',
+            'company_id',
+            'user_id'
+        )
+            ->using(CompanyUser::class);
+    }
+
     // ——————————————————————————————————————————————————————————————
     // |                             FILAMENT PANEL INTEGRATION                           |
     // ——————————————————————————————————————————————————————————————
     public function getFilamentName(): string
     {
-        return $this->company_name;
+        return $this->name;
     }
 
     public function getCurrentTenantLabel(): string
     {
-        return 'Active company';
+        return $this->name;
     }
 
     /*

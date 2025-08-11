@@ -15,7 +15,7 @@ class UserService extends BaseService
         return User::class;
     }
 
-    public function create(array $validatedInput): User
+    public function createUser(array $validatedInput): User
     {
         Arr::forget($validatedInput, 'user_password_confirmation');
 
@@ -30,7 +30,7 @@ class UserService extends BaseService
         return $user;
     }
 
-    public function update(array $validatedInput, $userToUpdate): Model
+    public function updateUser(array $validatedInput, $userToUpdate): Model
     {
         $userToUpdate->fill($validatedInput);
 

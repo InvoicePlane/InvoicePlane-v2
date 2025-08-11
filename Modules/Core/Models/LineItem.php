@@ -17,14 +17,10 @@ use Modules\Products\Models\Product;
  * @property float   $item_discount
  * @property float   $item_subtotal
  * @property string  $description
- * @property mixed   $created_at
- * @property mixed   $updated_at
  * @property Product $item
  */
 class LineItem extends Model
 {
-    protected $fillable = ['line_itemable_type', 'line_itemable_id', 'item_id', 'item_quantity', 'item_price', 'item_discount', 'item_subtotal', 'description', 'created_at', 'updated_at'];
-
     protected $casts = [
         'quantity' => 'decimal:4',
         'price'    => 'decimal:4',

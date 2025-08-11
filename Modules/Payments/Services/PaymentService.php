@@ -3,11 +3,13 @@
 namespace Modules\Payments\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\NumberFormatter;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
+use Throwable;
 
 class PaymentService extends BaseService
 {
@@ -20,12 +22,12 @@ class PaymentService extends BaseService
     {
         $customerId = $data['customer_id'] ?? Invoice::query()->findOrFail($data['invoice_id'])->customer_id;
 
-        $payment = $this->create([
+        $payment = Payment::query()->create([
             'customer_id'        => $customerId,
             'invoice_id'         => $data['invoice_id'] ?? null,
             'merchant_client_id' => $data['merchant_client_id'] ?? null,
             'payment_method'     => $data['payment_method'],
-            'payment_status'     => PaymentStatus::PENDING->value,
+            'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
             'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
             'paid_at'            => $data['paid_at'],
             'notes'              => $data['notes'] ?? null,
@@ -40,12 +42,28 @@ class PaymentService extends BaseService
 
     public function updatePayment(Payment $payment, array $data): Payment
     {
-        $payment->fill([
-            'payment_method' => $data['payment_method'],
-            'payment_amount' => $data['payment_amount'],
-            'paid_at'        => $data['paid_at'],
-        ])->save();
+        DB::beginTransaction();
 
-        return $payment;
+        try {
+            $customerId = $data['customer_id'] ?? Invoice::query()->findOrFail($data['invoice_id'])->customer_id;
+
+            $payment->update([
+                'customer_id'        => $customerId,
+                'invoice_id'         => $data['invoice_id'] ?? null,
+                'merchant_client_id' => $data['merchant_client_id'] ?? null,
+                'payment_method'     => $data['payment_method'],
+                'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
+                'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
+                'paid_at'            => $data['paid_at'],
+                'notes'              => $data['notes'] ?? null,
+            ]);
+
+            DB::commit();
+
+            return $payment;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

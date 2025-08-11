@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
+use Modules\Expenses\Models\Expense;
+use Modules\Expenses\Services\ExpenseService;
 
 class ExpensesTable
 {
@@ -38,7 +40,8 @@ class ExpensesTable
                     ->placeholder('-')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('expense_type')
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseType::class, $state);
@@ -48,22 +51,37 @@ class ExpensesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable()
-                    ->hiddenFrom('md'),
-                TextColumn::make('expense_number')->searchable()->sortable()->toggleable(),
-                TextColumn::make('vendor.company_name')->limit(10)->searchable()->sortable()->toggleable(),
+                    ->hiddenFrom('sm'),
+                TextColumn::make('expense_number')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
+                TextColumn::make('vendor.company_name')->limit(10)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('expensed_at')
                     ->date()
-                    ->searchable()->sortable()->toggleable(),
-                TextColumn::make('expense_amount')->searchable()->sortable()->toggleable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('expense_amount')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Expense $record, array $data) {
+                            app(ExpenseService::class)->updateExpense($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

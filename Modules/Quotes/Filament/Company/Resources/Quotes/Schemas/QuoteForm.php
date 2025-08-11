@@ -9,9 +9,9 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -23,23 +23,26 @@ class QuoteForm
 {
     public static function configure(Schema $schema): Schema
     {
+        if ( ! $schema->getRecord() && ! $schema->getState()) {
+            $schema->state([]);
+        }
+
         return $schema
             ->components([
                 Grid::make(5)
                     ->columnSpanFull()
                     ->schema([
-                        // Left side (Client selector + Info)
-                        Schemas\Components\Group::make()
+                        Group::make()
                             ->schema([
                                 Select::make('prospect_id')
-                                    ->label(trans('ip.client_name'))
+                                    ->label(trans('ip.customer_name'))
                                     ->relationship('prospect', 'company_name')
                                     ->searchable()
                                     ->preload()
                                     ->required()
                                     ->createOptionForm([
                                         TextInput::make('company_name')
-                                            ->label(trans('ip.client_name'))
+                                            ->label(trans('ip.customer_name'))
                                             ->required(),
                                     ])
                                     ->reactive(),
@@ -51,14 +54,14 @@ class QuoteForm
                                     ->schema([
                                         Placeholder::make('customer_info')
                                             ->label(trans('ip.client'))
-                                            ->content(fn (Get $get) => optional($get('client'))->client_name ?? '-'),
+                                            ->content(fn (Get $get) => optional($get('prospect'))->company_name ?? '-'),
                                     ])
                                     ->columns(1)
                                     ->visible(fn (Get $get) => filled($get('prospect_id'))),
                             ])
                             ->columnSpan(3),
 
-                        Schemas\Components\Group::make()
+                        Group::make()
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
@@ -78,8 +81,8 @@ class QuoteForm
                                             )
                                             ->getOptionLabelUsing(
                                                 fn ($value) => $value instanceof QuoteStatus
-                                                ? $value->label()
-                                                : QuoteStatus::tryFrom($value)?->label() ?? $value
+                                                    ? $value->label()
+                                                    : QuoteStatus::tryFrom($value)?->label() ?? $value
                                             )
                                             ->searchable()
                                             ->preload()
@@ -112,8 +115,7 @@ class QuoteForm
                             ->relationship('quoteItems')
                             ->label(trans('ip.quote_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
-                            ->dehydrated()
+                            ->addActionLabel(trans('ip.add_new_row'))
                             ->schema([
                                 Grid::make(6)
                                     ->schema([
@@ -123,10 +125,10 @@ class QuoteForm
                                             ->searchable()
                                             ->preload()
                                             ->required()
-                                            ->placeholder(trans('ip.select_product'))  // Placeholder
+                                            ->placeholder(trans('ip.select_product'))
                                             ->reactive()
                                             ->afterStateUpdated(function (callable $set, $state) {
-                                                $product = Product::find($state);
+                                                $product = Product::query()->find($state);
                                                 $set('product_name', $product?->product_name ?? '');
                                             }),
 
@@ -156,13 +158,16 @@ class QuoteForm
 
                                         TextInput::make('subtotal')
                                             ->label(trans('ip.subtotal'))
+                                            ->dehydrated()
                                             ->disabled(),
                                     ])
                                     ->columns(5),
                             ])
                             ->columns(1)
                             ->reactive()
-                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal')),
+                            ->dehydrated()
+                            ->defaultItems(0)
+                            ->afterStateUpdated(function (callable $set, $get, $state) {}),
                     ])
                     ->collapsed()
                     ->columnSpanFull(),
@@ -171,17 +176,19 @@ class QuoteForm
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Schemas\Components\Group::make()
-                                    ->schema([]), // Optional left column
+                                Group::make()
+                                    ->schema([]),
 
-                                Schemas\Components\Group::make()
+                                Group::make()
                                     ->schema([
-                                        TextInput::make('quote_item_subtotal')
+                                        TextInput::make('quote_subtotal')
                                             ->label(trans('ip.subtotal'))
                                             ->disabled()
                                             ->dehydrated()
                                             ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal')),
+                                            ->afterStateUpdated(function (callable $set, callable $get) {
+                                                (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal');
+                                            }),
 
                                         TextInput::make('quote_discount_amount')
                                             ->label(trans('ip.discount_amount'))

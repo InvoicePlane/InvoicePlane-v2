@@ -43,7 +43,7 @@ class InvoiceForm
                                             ->required()
                                             ->createOptionForm([
                                                 TextInput::make('company_name')
-                                                    ->label(trans('ip.client_name'))
+                                                    ->label(trans('ip.customer_name'))
                                                     ->required(),
                                             ])
                                             ->reactive(),
@@ -103,11 +103,12 @@ class InvoiceForm
                     ->collapsed()
                     ->schema([
                         Repeater::make('invoiceItems')
+                            ->defaultItems(0)
                             ->relationship('invoiceItems')
                             ->label(trans('ip.invoice_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
-                            ->dehydrated()
+                            ->addActionLabel(trans('ip.add_new_row'))
+                            //->dehydrated()
                             ->schema([
                                 Grid::make(6) // Adjust the number of columns as needed
                                     ->schema([
@@ -147,6 +148,13 @@ class InvoiceForm
                             ])
                             ->columns(1)
                             ->reactive()
+                            /*->afterStateHydrated(function ($component, $state) {
+                                // overwrite any stray default state with what the request provided
+                                if (is_array($state) && $state !== []) {
+                                    // Normalize to numeric keys so Livewire/Filament don’t try to merge by UUID
+                                    $component->rawState(array_values($state));
+                                }
+                            })*/
                             ->afterStateUpdated(fn (callable $set, callable $get) => (new InvoiceCalculator())->updateGrandTotal($set, $get, 'invoiceItems', 'subtotal', 'invoice_item_subtotal')),
                     ])
                     ->columnSpanFull(),

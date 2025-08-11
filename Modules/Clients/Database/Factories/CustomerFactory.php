@@ -2,22 +2,22 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 
-class CustomerFactory extends Factory
+class CustomerFactory extends AbstractFactory
 {
     protected $model = Relation::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
 
         return [
-            'company_id'         => $company->id,
+            'company_id'         => $companyId,
             'primary_contact_id' => null,
             'relation_type'      => $this->faker->randomElement(RelationType::cases())->value,
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,

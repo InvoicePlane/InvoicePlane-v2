@@ -56,9 +56,8 @@ class DocumentGroupsTable
                     ->numeric()
                     ->searchable()->sortable()->toggleable(),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateDataUsing(function (array $data, DocumentGroup $record) {
@@ -67,12 +66,12 @@ class DocumentGroupsTable
                             return $data;
                         })
                         ->action(function (DocumentGroup $record, array $data) {
-                            app(DocumentGroupService::class)->update($record, $data);
+                            app(DocumentGroupService::class)->updateUser($record, $data);
                         })
                         ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

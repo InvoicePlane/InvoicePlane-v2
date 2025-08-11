@@ -8,7 +8,7 @@ use Modules\Core\Models\AuditLog;
 /**
  * @extends Factory<AuditLog>
  */
-class AuditLogFactory extends Factory
+class AuditLogFactory extends AbstractFactory
 {
     protected $model = AuditLog::class;
 

@@ -3,23 +3,20 @@
 namespace Modules\Projects\Filament\Company\Resources\Tasks;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
 use Modules\Projects\Filament\Company\Resources\Tasks\Schemas\TaskForm;
 use Modules\Projects\Filament\Company\Resources\Tasks\Tables\TasksTable;
 use Modules\Projects\Models\Task;
-use UnitEnum;
 
-class TaskResource extends Resource
+class TaskResource extends BaseResource
 {
     protected static ?string $model = Task::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
-
-    protected static string|null|UnitEnum $navigationGroup = 'Projects';
 
     protected static ?int $navigationSort = 20;
 
@@ -54,8 +51,7 @@ class TaskResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

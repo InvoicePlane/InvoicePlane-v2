@@ -136,12 +136,6 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
-    public function taxRate(): void
-    {
-        /*return $this->belongsToMany(TaxRate::class, 'quote_tax_rates')
-            ->withPivot('id', 'include_item_tax', 'tax_total');*/
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -152,6 +146,51 @@ class Quote extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for quote_expires_at.
+     *
+     * @return string
+     */
+    public function getExpiresIntensityAttribute(): string
+    {
+        if ( ! $this->quote_expires_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->quote_expires_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $quoteLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('quote_status', [QuoteStatus::DRAFT, QuoteStatus::REJECTED, QuoteStatus::APPROVED])
+            ->orderBy('quote_expires_at', 'desc')
+            ->orderBy('quote_status', 'asc')
+            ->limit($quoteLimit);
+    }
 
     /*
     |--------------------------------------------------------------------------

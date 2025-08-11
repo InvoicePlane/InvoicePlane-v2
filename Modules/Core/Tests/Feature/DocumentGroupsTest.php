@@ -27,7 +27,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     public function it_lists_document_groups(): void
     {
         /* arrange */
-        $group = DocumentGroup::factory()->create(['name' => 'Policies']);
+        $group = DocumentGroup::factory()->for($this->company)->create(['name' => 'Policies']);
 
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
@@ -43,11 +43,11 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
-    public function it_creates_a_document_group_trough_a_modal(): void
+    public function it_creates_a_document_group_through_a_modal(): void
     {
+        /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
 
-        /* arrange */
         $payload = [
             'type'                    => $groupType,
             'group_identifier_format' => $groupType->prefix() . '-656',
@@ -77,7 +77,7 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_a_document_group_trough_a_modal_when_group_identifier_format_missing(): void
+    public function it_fails_to_create_a_document_group_through_a_modal_when_group_identifier_format_missing(): void
     {
         $groupType = DocumentGroupType::CUSTOMERS;
 
@@ -112,16 +112,35 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload {
+     *   "name": "Forms"
+     * }
+     */
     public function it_creates_a_document_group(): void
     {
-        $this->markTestIncomplete();
+        $groupType = DocumentGroupType::CUSTOMERS;
 
         /* arrange */
-
-        $payload = ['name' => 'Forms'];
+        $payload = [
+            'type'                    => $groupType,
+            'group_identifier_format' => $groupType->prefix() . '-656',
+            'name'                    => $groupType->label(),
+            'left_pad'                => 1,
+            'format'                  => $groupType->prefix() . '-4376656',
+            'next_id'                 => 1,
+            'reset_number'            => 34343,
+            'last_id'                 => 437843,
+            'last_year'               => 2025,
+            'last_month'              => 6,
+            'last_week'               => 23,
+        ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateDocumentGroup::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component
@@ -133,16 +152,24 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_document_group_when_name_missing(): void
+    /**
+     * @payload {}
+     */
+    public function it_fails_to_create_a_document_group_without_required_name(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
+        $groupType = DocumentGroupType::CUSTOMERS;
 
-        $payload = [];
+        $payload = [
+            'type'                    => $groupType,
+            'group_identifier_format' => $groupType->prefix() . '-{ID}',
+        ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(CreateDocumentGroup::class)->fillForm($payload)->call('create');
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateDocumentGroup::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* assert */
         $component->assertHasFormErrors(['name']);
@@ -150,18 +177,32 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload {
+     *   "name": "Updated Group"
+     * }
+     */
     public function it_updates_a_document_group(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
+        $groupType = DocumentGroupType::CUSTOMERS;
+        $group     = DocumentGroup::factory()->for($this->company)->create([
+            'type'                    => $groupType,
+            'name'                    => 'Old Group',
+            'group_identifier_format' => $groupType->prefix() . '-{ID}',
+        ]);
 
-        $group = DocumentGroup::factory()->create(['name' => 'Old Group']);
-
-        $payload = ['name' => 'Updated Group'];
+        $payload = [
+            'name'                    => 'Updated Group',
+            'group_identifier_format' => $groupType->prefix() . '-{Y}-{ID}',
+        ];
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(EditDocumentGroup::class, ['record' => $group->id])->fillForm($payload)->call('save');
+        $component = Livewire::actingAs($this->superAdmin())->test(EditDocumentGroup::class, ['record' => $group->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* assert */
         $component
@@ -173,18 +214,38 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    /**
+     * @payload {
+     *   "id": "<id>"
+     * }
+     */
     public function it_deletes_a_document_group(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
-
-        $group = DocumentGroup::factory()->create();
+        $groupType = DocumentGroupType::CUSTOMERS;
+        $group     = DocumentGroup::factory()->for($this->company)->create([
+            'type'                    => $groupType,
+            'name'                    => 'Group to Delete',
+            'group_identifier_format' => $groupType->prefix() . '-{ID}',
+        ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())->test(ListDocumentGroups::class)->callTableAction('delete', $group);
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListDocumentGroups::class)
+            ->callAction('delete', $group);
 
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
+    }
+    # endregion
+
+    # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_cannot_access_document_groups_of_another_tenant(): void
+    {
+        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s document group.');
     }
     # endregion
 

@@ -17,11 +17,11 @@ use Modules\Projects\Models\Task;
 /**
  * @property int         $id
  * @property int         $invoice_id
- * @property int         $item_id
+ * @property int         $product_id
  * @property int         $tax_rate_id
  * @property int         $tax_rate_2_id
- * @property string      $name
- * @property Carbon|null $item_date
+ * @property string      $item_name
+ * @property Carbon|null $added_at
  * @property float       $quantity
  * @property float       $price
  * @property float|null  $subtotal
@@ -69,22 +69,22 @@ class InvoiceItem extends Model
 
     public function taxRate(): BelongsTo
     {
-        return $this->belongsTo(TaxRate::class, 'item_tax_rate_id');
+        return $this->belongsTo(TaxRate::class, 'tax_rate_id');
     }
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'item_product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function task(): BelongsTo
     {
-        return $this->belongsTo(Task::class, 'item_task_id');
+        return $this->belongsTo(Task::class, 'task_id');
     }
 
     public function productUnit(): BelongsTo
     {
-        return $this->belongsTo(ProductUnit::class, 'item_unit_id');
+        return $this->belongsTo(ProductUnit::class, 'product_unit_id');
     }
 
     /*public function taxRate(): \Illuminate\Database\Eloquent\Relations\BelongsTo

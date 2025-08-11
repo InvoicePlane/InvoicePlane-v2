@@ -2,11 +2,11 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Pages;
 
-use Exception;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
-use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 
 class EditInvoice extends EditRecord
 {
@@ -19,24 +19,31 @@ class EditInvoice extends EditRecord
 
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
-        $this->form->fill();
+        $this->authorizeAccess();
 
-        parent::save();
-    }
+        $this->callHook('beforeValidate');
+        $data = $this->form->getState();
+        $this->callHook('afterValidate');
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $invoice = $this->record;
+        $data = $this->mutateFormDataBeforeSave($data);
+        $this->callHook('beforeSave');
 
-        if ( ! $invoice instanceof Invoice) {
-            throw new Exception('No valid Invoice record.');
+        $this->record = $this->handleRecordUpdate($this->getRecord(), $data);
+
+        $this->callHook('afterSave');
+
+        if ($shouldSendSavedNotification) {
+            $this->getSavedNotification()?->send();
         }
 
-        $data['invoiceItems'] = $invoice->invoiceItems()
-            ->get(['product_id', 'quantity', 'price', 'discount', 'subtotal'])
-            ->toArray();
+        if ($shouldRedirect) {
+            $this->redirect($this->getRedirectUrl());
+        }
+    }
 
-        return $data;
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        return app(InvoiceService::class)->updateInvoice($record, $data);
     }
 
     protected function getHeaderActions(): array

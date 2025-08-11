@@ -2,18 +2,29 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Clients\Enums\RelationType;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Expenses\Models\Expense;
 
-class ExpensesSeeder extends Seeder
+class ExpensesSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Expenses';
+
+    protected int $defaultCount = 15;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            Expense::factory()->count(random_int(2, 3))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        $customerId = $this->findOrCreateRelationOfType($this->companyId, RelationType::CUSTOMER)->id;
+        $vendorId   = $this->findOrCreateRelationOfType($this->companyId, RelationType::VENDOR)->id;
+        $categoryId = $this->findOrCreateExpenseCategory($this->companyId)->id;
+
+        Expense::factory()
+            ->state([
+                'company_id'  => $this->companyId,
+                'customer_id' => $customerId,
+                'vendor_id'   => $vendorId,
+                'category_id' => $categoryId,
+            ])
+            ->create();
     }
 }

@@ -3,11 +3,12 @@
 namespace Modules\Projects\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
+use Modules\Core\Traits\HasOptions;
 
 enum TaskStatus: string implements LabeledEnum
 {
+    use HasOptions;
     case CANCELLED   = 'cancelled';
-    case COMPLETE    = 'complete';
     case COMPLETED   = 'completed';
     case IN_PROGRESS = 'in_progress';
     case NOT_STARTED = 'not_started';
@@ -30,13 +31,12 @@ enum TaskStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::CANCELLED   => 'ip.cancelled',
-            self::COMPLETE    => 'ip.complete',
-            self::IN_PROGRESS => 'ip.in_progress',
-            self::NOT_STARTED => 'ip.not_started',
-            self::PAID        => 'ip.paid',
-            self::COMPLETED   => 'ip.completed',
-            self::OPEN        => 'ip.open',
+            self::CANCELLED   => trans('ip.task_status_cancelled'),
+            self::IN_PROGRESS => trans('ip.task_status_in_progress'),
+            self::NOT_STARTED => trans('ip.task_status_not_started'),
+            self::PAID        => trans('ip.task_status_paid'),
+            self::COMPLETED   => trans('ip.task_status_completed'),
+            self::OPEN        => trans('ip.task_status_open'),
         };
     }
 
@@ -48,7 +48,6 @@ enum TaskStatus: string implements LabeledEnum
             self::IN_PROGRESS => 'info',
             self::NOT_STARTED => 'gray',
             self::PAID        => 'emerald',
-            self::COMPLETE    => 'success',
             self::OPEN        => 'info',
         };
     }

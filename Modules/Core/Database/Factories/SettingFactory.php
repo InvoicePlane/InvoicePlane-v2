@@ -8,7 +8,7 @@ use Modules\Core\Models\Setting;
 /**
  * @extends Factory<Setting>
  */
-class SettingFactory extends Factory
+class SettingFactory extends AbstractFactory
 {
     protected $model = Setting::class;
 

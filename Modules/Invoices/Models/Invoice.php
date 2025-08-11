@@ -144,16 +144,15 @@ class Invoice extends Model
         return $this->hasMany(Expense::class);
     }
 
-    // This and items() are the exact same. This is added to appease the IDE gods
-    // and the fact that Laravel has a protected items property.
     public function invoiceItems(): HasMany
     {
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): MorphMany
+    public function mailQueue(): HasMany
     {
-        return $this->morphMany(MailQueue::class, 'mailable');
+        return $this->hasMany(MailQueue::class, 'mailable_id')
+            ->where('mailable_type', self::class);
     }
 
     public function notes(): MorphMany
@@ -192,12 +191,51 @@ class Invoice extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for invoice_due_at.
+     *
+     * @return string
+     */
+    public function getDueIntensityAttribute(): string
+    {
+        if ( ! $this->invoice_due_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->invoice_due_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
 
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $invoiceLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('invoice_status', [InvoiceStatus::DRAFT, InvoiceStatus::PAID])
+            ->orderBy('invoice_due_at', 'desc')
+            ->orderBy('invoice_status', 'asc')
+            ->limit($invoiceLimit);
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -50,14 +50,13 @@ class TaxRatesTable
                     ->numeric()
                     ->searchable()->sortable()->toggleable(),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

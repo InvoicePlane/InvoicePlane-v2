@@ -18,12 +18,12 @@ class ProductCategoriesTable
                 TextColumn::make('category_name')->label(trans('ip.family')),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

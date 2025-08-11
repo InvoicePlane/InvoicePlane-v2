@@ -13,7 +13,14 @@ class ListRelations extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Clients\Services\RelationService::class)->createRelation($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

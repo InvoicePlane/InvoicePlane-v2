@@ -27,7 +27,7 @@ class ProjectsTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.client_name'))
+                TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.customer_name'))
                     ->searchable()
                     ->sortable()->toggleable(),
                 TextColumn::make('project_status')
@@ -42,12 +42,12 @@ class ProjectsTable
                 TextColumn::make('end_at')->date()->since()->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

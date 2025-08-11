@@ -43,9 +43,11 @@ class Project extends Model
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function customer(): BelongsTo
     {
         return $this
@@ -57,10 +59,37 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    //
-    // Factory
-    //
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeBillable($query)
+    {
+        return $query->where('is_billable', true);
+    }
+
+    public function scopeOverdue($query)
+    {
+        return $query->where('end_at', '<', now())
+            ->where('project_status', '!=', ProjectStatus::COMPLETED);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProjectFactory::new();

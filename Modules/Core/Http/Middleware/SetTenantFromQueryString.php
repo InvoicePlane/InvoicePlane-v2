@@ -16,7 +16,7 @@ class SetTenantFromQueryString
     public function handle(Request $request, Closure $next): Response
     {
         $user    = Auth::user();
-        $company = Company::query()->where('search_code', Str::upper(request('tenant')))->first();
+        $company = Company::query()->where('search_code', Str::lower(request('tenant')))->first();
 
         if ( ! $company) {
             return $next($request);

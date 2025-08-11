@@ -44,7 +44,8 @@ class EmailTemplateForm
                                     ->required()
                                     ->options(EmailTemplateType::class)
                                     ->default(null),
-                                TextInput::make('subject')->label(trans('ip.subject')),
+                                TextInput::make('subject')
+                                    ->label(trans('ip.subject')),
                             ])->columns(1),
                     ]),
             ]);

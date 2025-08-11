@@ -2,37 +2,22 @@
 
 namespace Modules\Payments\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Invoices\Models\Invoice;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 
-class PaymentFactory extends Factory
+class PaymentFactory extends AbstractFactory
 {
     protected $model = Payment::class;
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()->customer()->create();
-
-        $invoice = Invoice::query()->inRandomOrder()->first() ?? Invoice::factory()->create();
-
         return [
-            'company_id'         => $company->id,
-            'customer_id'        => $customer->id,
-            'invoice_id'         => $invoice->id,
-            'merchant_client_id' => null,
-            'payment_method'     => PaymentMethod::BANK_TRANSFER->value,
-            'payment_status'     => $this->faker->randomElement(PaymentStatus::cases())->value,
-            'paid_at'            => $this->faker->dateTimeBetween('-3 years', '-2 days'),
-            'payment_amount'     => $this->faker->randomFloat(4, 0, 1000),
+            'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+            'payment_status' => $this->faker->randomElement(PaymentStatus::cases())->value,
+            'paid_at'        => $this->faker->dateTimeBetween('-3 years', '-2 days'),
+            'payment_amount' => $this->faker->randomFloat(4, 0, 1000),
         ];
     }
 

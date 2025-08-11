@@ -5,7 +5,6 @@ namespace Modules\Core\Filament\Responses;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as BaseLoginResponse;
 use Illuminate\Support\Str;
 use Modules\Core\Enums\UserRole;
-use Modules\Core\Models\Company;
 
 class LoginResponse implements BaseLoginResponse
 {
@@ -23,22 +22,30 @@ class LoginResponse implements BaseLoginResponse
         }
 
         if ($isElevated) {
-            $tenant = Company::query()->first();
+            $tenant = \Modules\Core\Models\Company::query()->first();
             if ( ! $tenant) {
-                abort(500, trans('ip.fallback_company_not_found'));
+                abort(500, 'Fallback company not found.');
             }
         } else {
             $tenant = $user->companies()->first();
             if ( ! $tenant) {
-                abort(500, trans('ip.no_company_found_for_this_user'));
+                abort(500, 'No company found for this user.');
             }
         }
 
-        session(['current_company_id' => $tenant->id]);
-        filament()->setTenant($tenant);
+        // For super_admins or Filament panel routes (with {tenant}), do not set session, only set Filament tenant
+        if ($isElevated) {
+            filament()->setTenant($tenant);
+        } else {
+            // For regular users, set both session and Filament tenant
+            session(['current_company_id' => $tenant->id]);
+            filament()->setTenant($tenant);
+        }
 
         return redirect()->route('filament.company.pages.dashboard', [
             'tenant' => Str::lower($tenant->search_code),
         ]);
+
+        //return redirect()->intended(Filament::getUrl());
     }
 }

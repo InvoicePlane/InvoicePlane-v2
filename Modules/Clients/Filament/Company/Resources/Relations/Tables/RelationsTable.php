@@ -10,6 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
+use Modules\Clients\Services\CustomerService;
 use Modules\Core\Helpers\EnumHelper;
 
 class RelationsTable
@@ -18,7 +20,7 @@ class RelationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('primaryContact.id')
+                TextColumn::make('primaryContact.fullName')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('relation_type')
@@ -44,7 +46,8 @@ class RelationsTable
                     ->limit(30)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('md'),
 
                 TextColumn::make('company_name')
                     ->label(trans('ip.company_name'))
@@ -57,35 +60,43 @@ class RelationsTable
                     ->limit(10)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
+
                 TextColumn::make('coc_number')
                     ->label(trans('ip.coc_number'))
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('vat_number')
                     ->label(trans('ip.vat_id_short'))
                     ->hiddenFrom('sm')
                     ->limit(10)
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
                 TextColumn::make('language')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->hiddenFrom('sm'),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Relation $record, array $data) {
+                            app(CustomerService::class)->updateCustomer($record, $data);
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('company_name', 'asc');
     }
 }
