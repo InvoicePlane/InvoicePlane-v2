@@ -28,11 +28,14 @@ class TaxRateService extends BaseService
 
     public function updateTaxRate($taxRate, array $data): Model
     {
-        $updateData = [
-            'name' => $data['name'],
-        ];
-
-        $taxRate->update($updateData);
+        $taxRate->update([
+            'company_id'    => $this->getCompanyId(),
+            'tax_rate_type' => $data['tax_rate_type'] ?? null,
+            'is_active'     => $data['is_active'] ?? false,
+            'code'          => $data['code'] ?? null,
+            'name'          => $data['name'],
+            'rate'          => $data['rate'] ?? null,
+        ]);
 
         return $taxRate;
     }
