@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\CreateEmailTemplate;
@@ -105,7 +106,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_an_email_template_trough_a_modal_without_required_type(): void
+    public function it_fails_to_create_an_email_template_through_a_modal_without_required_type(): void
     {
         /* arrange */
         $payload = [
@@ -138,8 +139,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_updates_an_email_template_through_a_modal(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Old Title',
@@ -147,11 +146,15 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             'type'    => EmailTemplateType::TEXT->value,
         ]);
 
-        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
-
         $payload = ['subject' => 'Updated Subject'];
 
         /* act */
+        $component = Livewire::actingAs($this->superAdmin)
+            ->test(ListEmailTemplates::class)
+            ->mountAction(TestAction::make('edit')->table($template), $payload)
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
 
         /* assert */
         $component
@@ -286,16 +289,12 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_updates_an_email_template(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Old Title',
             'subject' => 'Old Subject',
             'type'    => EmailTemplateType::TEXT->value,
         ]);
-
-        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
 
         $payload = ['subject' => 'Updated Subject'];
 
