@@ -30,7 +30,7 @@ class QuoteService extends BaseService
                 'company_id'             => $this->getCompanyId(),
                 'prospect_id'            => $data['prospect_id'],
                 'document_group_id'      => $data['document_group_id'] ?? null,
-                'user_id'                => auth()->id(),
+                'user_id'                => $data['user_id'] ?? auth()->id(),
                 'quote_number'           => $data['quote_number'],
                 'quote_status'           => $data['quote_status'],
                 'quoted_at'              => Carbon::parse($data['quoted_at']),
@@ -81,27 +81,36 @@ class QuoteService extends BaseService
         }
     }
 
-    public function updateQuote(Quote $model, array $data): Quote
+    public function updateQuote(Quote $quote, array $data): Quote
     {
         $itemTaxTotal  = $this->calculateItemTaxTotal($data);
         $quoteTaxTotal = $this->calculateQuoteTaxTotal($data);
         $quoteTotal    = $this->calculateQuoteTotal($data, $itemTaxTotal, $quoteTaxTotal);
 
-        $model->update([
-            'prospect_id'            => $data['prospect_id'],
-            'quoted_at'              => $data['quoted_at'],
-            'quote_expires_at'       => $data['quote_expires_at'],
-            'quote_status'           => $data['quote_status'],
-            'quote_discount_amount'  => $data['quote_discount_amount'] ?? 0,
-            'quote_discount_percent' => $data['quote_discount_percent'] ?? 0,
-            'item_tax_total'         => $itemTaxTotal,
-            'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
-            'quote_tax_total'        => $quoteTaxTotal,
-            'quote_total'            => $quoteTotal,
-            'summary'                => $data['summary'] ?? null,
-        ]);
+        DB::beginTransaction();
 
-        return $model;
+        try {
+            $quote->update([
+                'prospect_id'            => $data['prospect_id'],
+                'quoted_at'              => $data['quoted_at'],
+                'quote_expires_at'       => $data['quote_expires_at'],
+                'quote_status'           => $data['quote_status'],
+                'quote_discount_amount'  => $data['quote_discount_amount'] ?? 0,
+                'quote_discount_percent' => $data['quote_discount_percent'] ?? 0,
+                'item_tax_total'         => $itemTaxTotal,
+                'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
+                'quote_tax_total'        => $quoteTaxTotal,
+                'quote_total'            => $quoteTotal,
+                'summary'                => $data['summary'] ?? null,
+            ]);
+
+            DB::commit();
+
+            return $quote->refresh();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     private function calculateItemTaxTotal(array $data): float

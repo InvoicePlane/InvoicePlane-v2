@@ -5,8 +5,8 @@ namespace Modules\Quotes\Filament\Company\Resources\Quotes\Pages;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Payments\Services\PaymentService;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
+use Modules\Quotes\Services\QuoteService;
 
 class EditQuote extends EditRecord
 {
@@ -24,8 +24,6 @@ class EditQuote extends EditRecord
         $this->callHook('beforeSave');
 
         $this->record = $this->handleRecordUpdate($this->getRecord(), $data);
-
-        $this->form->model($this->getRecord())->saveRelationships();
 
         $this->callHook('afterSave');
 
@@ -47,6 +45,6 @@ class EditQuote extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return app(PaymentService::class)->updatePayment($this->getRecord(), $data);
+        return app(QuoteService::class)->updateQuote($record, $data);
     }
 }

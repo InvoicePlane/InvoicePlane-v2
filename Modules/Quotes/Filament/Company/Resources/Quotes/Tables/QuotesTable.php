@@ -62,24 +62,7 @@ class QuotesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->mutateDataUsing(function (array $data, Quote $record) {
-                            $data['quoteItems'] = $record->quoteItems()->get()->map(function ($item) {
-                                $product = $item->product;
-
-                                return [
-                                    'product_id'   => $item->product_id,
-                                    'product_name' => $product?->product_name ?? '', // Populate product_name
-                                    'item_name'    => $item->item_name,
-                                    'quantity'     => $item->quantity,
-                                    'price'        => $item->price,
-                                    'discount'     => $item->discount,
-                                    'subtotal'     => $item->subtotal,
-                                ];
-                            })->toArray();
-
-                            return $data;
-                        })
+                    EditAction::make('edit')
                         ->action(function (Quote $record, array $data) {
                             app(QuoteService::class)->updateQuote($record, $data);
                         })
