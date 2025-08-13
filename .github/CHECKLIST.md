@@ -46,12 +46,46 @@ This is the checklist:
 |          | tax_rates       |       X        |        -         |                  |                |                |                |              |
 | payments |                 |       X        |                  |                  |                |                |                |              |
 |          | payment_methods |       X        |        -         |                  |                |                |                |              |
-| products |                 |       X        |        -         |                  |                |                |                |              |
-|          | families        |       X        |        -         |                  |                |                |                |              |
-|          | units           |       X        |        -         |                  |                |                |                |              |
-| projects |                 |       X        |        -         |                  |                |                |                |              |
-|          | tasks           |       X        |                  |                  |                |                |                |              |
-| quotes   |                 |       X        |        X         |                  |                |                |                |              |
-| reports	 |                 |       -        |        -         |                  |                |                |                |              |
-| users	   |                 |       X        |                  |                  |                |                |                |              |
-| setup    |                 |                |                  |                  |                |                |                |
+| products |                 |      # ✅ InvoicePlane V2 – Feature Test Checklist (Detailed)
+
+> ✅ Create & Update (Happy Path): DONE  
+> ✅ Failing Create Tests: DONE  
+> 🚧 Failing Update Tests: NOT DONE  
+> 🚧 Delete Tests: NOT DONE  
+> ⚠️ Specials (Scopes, Flags, Exceptions): NOT DONE  
+> 📌 Index = Smoke Tests  
+> 📌 Status = enum / status badge coverage  
+> 📝 Translations: Ignored for now
+
+| Module    | Submodule        | Index (happy) | Statuses (happy) | Specials (happy) | Create (happy) | Update (happy) | Delete (happy) | Translations |
+|-----------|------------------|:-------------:|:----------------:|:----------------:|:--------------:|:--------------:|:--------------:|:------------:|
+| clients   |                  |       X       |        X         |                  |       X        |       X        |                |              |
+|           | user_clients     |       -       |        -         |                  |       X        |       X        |                |              |
+| core      |                  |       -       |        -         |                  |       X        |       X        |                |              |
+|           | custom_fields    |               |                  |                  |       X        |       X        |                |              |
+|           | custom_values    |               |                  |                  |       X        |       X        |                |              |
+|           | dashboard        |       X       |        -         |                  |       X        |       X        |                |              |
+|           | email_templates  |       X       |        -         |                  |       X        |       X        |                |              |
+|           | filter           |       -       |        -         |                  |       X        |       X        |                |              |
+|           | guest            | (view missing)|        -         |                  |       X        |       X        |                |              |
+|           | import           |       X       |        -         |                  |       X        |       X        |                |              |
+|           | layout           |       -       |        -         |                  |       X        |       X        |                |              |
+|           | mailer           |       -       |        -         |                  |       X        |       X        |                |              |
+|           | sessions         |       -       |        -         |                  |       X        |       X        |                |              |
+|           | settings         |       X       |        -         |                  |       X        |       X        |                |              |
+|           | upload           |       -       |        -         |                  |       X        |       X        |                |              |
+|           | welcome          |       X       |        -         |                  |       X        |       X        |                |              |
+| invoices  |                  |       X       |        X         |                  |       X        |       X        |                |              |
+|           | invoice_groups   |       X       |        -         |                  |       X        |       X        |                |              |
+|           | tax_rates        |       X       |        -         |                  |       X        |       X        |                |              |
+| payments  |                  |       X       |                  |                  |       X        |       X        |                |              |
+|           | payment_methods  |       X       |        -         |                  |       X        |       X        |                |              |
+| products  |                  |       X       |        -         |                  |       X        |       X        |                |              |
+|           | families         |       X       |        -         |                  |       X        |       X        |                |              |
+|           | units            |       X       |        -         |                  |       X        |       X        |                |              |
+| projects  |                  |       X       |        -         |                  |       X        |       X        |                |              |
+|           | tasks            |       X       |                  |                  |       X        |       X        |                |              |
+| quotes    |                  |       X       |        X         |                  |       X        |       X        |                |              |
+| reports   |                  |       -       |        -         |                  |       X        |       X        |                |              |
+| users     |                  |       X       |                  |                  |       X        |       X        |                |              |
+| setup     |                  |               |                  |                  |       X        |       X        |                |              |
