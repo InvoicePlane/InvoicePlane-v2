@@ -90,6 +90,6 @@ Discord: https://discord.gg/PPzD2hTrXt
 
 Community Forums: https://community.invoiceplane.com
 
-GitHub Issues: https://github.com/InvoicePlane/InvoicePlane/issues
+GitHub Issues: https://github.com/InvoicePlane/InvoicePlane-v2/issues
 
 
