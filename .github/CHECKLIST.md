@@ -18,29 +18,35 @@ Maybe I'll do the *settings* per module as a separate row in this checklist.
 
 ## Test Coverage
 
-| Module    | Submodule        | Index (happy) | Statuses (happy) | Specials (happy) | Create (happy) | Update (happy) | Delete (happy) | Translations |
-|-----------|------------------|:-------------:|:----------------:|:----------------:|:--------------:|:--------------:|:--------------:|:------------:|
-| clients   |                  | ✔️            | ✔️               |                  | ✔️             | ✔️             |                |              |
-|           | user_clients     | –             | –                |                  | ✔️             | ✔️             |                |              |
-| core      |                  | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | custom_fields    |               |                  |                  | ✔️             | ✔️             |                |              |
-|           | custom_values    |               |                  |                  | ✔️             | ✔️             |                |              |
-|           | dashboard        | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | email_templates  | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | filter           | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | guest            | (view missing)| –                |                  | ✔️             | ✔️             |                |              |
-|           | import           | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | layout           | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | mailer           | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | sessions         | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | settings         | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | upload           | –             | –                |                  | ✔️             | ✔️             |                |              |
-|           | welcome          | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-| invoices  |                  | ✔️            | ✔️               |                  | ✔️             | ✔️             |                |              |
-|           | invoice_groups   | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | tax_rates        | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-| payments  |                  | ✔️            |                  |                  | ✔️             | ✔️             |                |              |
-|           | payment_methods  | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-| products  |                  | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | families         | ✔️            | –                |                  | ✔️             | ✔️             |                |              |
-|           | units            | ✔️            | –
+| Module    | Submodule        | Index (happy) | Specials (happy) | Create (happy) | Update (happy) | Delete (happy) | Translations |
+|-----------|------------------|:-------------:|:----------------:|:--------------:|:--------------:|:--------------:|:------------:|
+| clients   |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | user_clients     |               |                  | ✔️             | ✔️             |                |              |
+| core      |                  |               |                  | ✔️             | ✔️             |                |              |
+|           | custom_fields    |               |                  | ✔️             | ✔️             |                |              |
+|           | custom_values    |               |                  | ✔️             | ✔️             |                |              |
+|           | dashboard        | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | email_templates  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | filter           |               |                  | ✔️             | ✔️             |                |              |
+|           | guest            | (view missing)|                  | ✔️             | ✔️             |                |              |
+|           | import           | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | layout           |               |                  | ✔️             | ✔️             |                |              |
+|           | mailer           |               |                  | ✔️             | ✔️             |                |              |
+|           | sessions         |               |                  | ✔️             | ✔️             |                |              |
+|           | settings         | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | upload           |               |                  | ✔️             | ✔️             |                |              |
+|           | welcome          | ✔️            |                  | ✔️             | ✔️             |                |              |
+| invoices  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | invoice_groups   | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | tax_rates        | ✔️            |                  | ✔️             | ✔️             |                |              |
+| payments  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | payment_methods  | ✔️            |                  | ✔️             | ✔️             |                |              |
+| products  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | families         | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | units            | ✔️            |                  | ✔️             | ✔️             |                |              |
+| projects  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | tasks            | ✔️            |                  | ✔️             | ✔️             |                |              |
+| quotes    |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+| reports   |                  |               |                  | ✔️             | ✔️             |                |              |
+| users     |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
+| setup     |                  |               |                  | ✔️             | ✔️             |                |              |
