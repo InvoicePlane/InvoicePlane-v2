@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->viteTheme('resources/css/filament/company/theme.css')
+            ->viteTheme('resources/css/filament/company/invoiceplane-blue.css')
             ->login()
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
