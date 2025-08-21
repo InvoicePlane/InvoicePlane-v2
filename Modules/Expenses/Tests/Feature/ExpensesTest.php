@@ -970,19 +970,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_an_expense(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company = $this->user->companies()->first();
         $expense = Expense::factory()->for($company)->create();
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenses::class)
-            ->callAction('delete', $expense);
+            ->test(ListExpenses::class);
+        $component->callAction('delete', $expense);
+        $component->assertSuccessful();
 
         /* assert */
-        $component->assertSuccessful();
+        $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
     }
 
     #[Test]

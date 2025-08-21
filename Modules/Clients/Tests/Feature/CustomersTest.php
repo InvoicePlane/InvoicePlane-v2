@@ -464,8 +464,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_customer(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $customer = Relation::factory()->for($this->user->companies()->first())->create([
             'company_name'  => 'Delete Me',

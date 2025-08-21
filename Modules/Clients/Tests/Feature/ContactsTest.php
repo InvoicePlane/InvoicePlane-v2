@@ -378,17 +378,21 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_contact(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $contact = Contact::factory()->for($this->user->companies()->first())->create();
+        $relation = Relation::factory()->for($this->company, 'company')->create();
+        $contact  = Contact::factory()->for($this->company)->create([
+            'relation_id' => $relation->id,
+            'first_name'  => 'DeleteMe',
+            'last_name'   => 'Contact',
+            'gender'      => 'female',
+        ]);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
             ->callAction('delete', $contact);
 
+        /* assert */
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
     }
     # endregion

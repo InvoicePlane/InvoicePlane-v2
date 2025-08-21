@@ -2,9 +2,11 @@
 
 namespace Modules\Products\Services;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Services\BaseService;
 use Modules\Products\Models\ProductUnit;
+use Throwable;
 
 class ProductUnitService extends BaseService
 {
@@ -29,5 +31,19 @@ class ProductUnitService extends BaseService
         ]);
 
         return $model;
+    }
+
+    public function deleteProductUnit(ProductUnit $productUnit): ProductUnit
+    {
+        DB::beginTransaction();
+        try {
+            $productUnit->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $productUnit;
     }
 }

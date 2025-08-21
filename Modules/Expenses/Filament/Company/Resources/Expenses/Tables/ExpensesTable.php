@@ -4,6 +4,7 @@ namespace Modules\Expenses\Filament\Company\Resources\Expenses\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -79,6 +80,10 @@ class ExpensesTable
                             app(ExpenseService::class)->updateExpense($record, $data);
                         })
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Expense $record, array $data) {
+                            app(ExpenseService::class)->deleteExpense($record, $data);
+                        }),
                 ]),
             ])
             ->toolbarActions([

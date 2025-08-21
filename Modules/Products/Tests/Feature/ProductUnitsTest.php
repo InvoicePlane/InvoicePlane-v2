@@ -251,8 +251,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product_unit(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $record = ProductUnit::factory()
             ->for($this->user->companies()->first())
@@ -272,8 +270,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_product_unit_twice(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
         $record->delete();

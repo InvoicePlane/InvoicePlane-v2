@@ -266,21 +266,17 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_company(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company = Company::factory()->create([
             'search_code' => 'TODELETE',
             'name'        => 'Company to Delete',
         ]);
-
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListCompanies::class)
-            ->callAction('delete', $company);
-
-        /* assert */
+            ->test(ListCompanies::class);
+        $component->callAction('delete', $company);
         $component->assertSuccessful();
+        /* assert */
         $this->assertSoftDeleted('companies', ['id' => $company->id]);
     }
     # endregion

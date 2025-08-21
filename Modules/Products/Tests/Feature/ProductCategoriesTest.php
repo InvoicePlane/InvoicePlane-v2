@@ -270,8 +270,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product_category(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company = $this->user->companies()->first();
         $record  = ProductCategory::factory()
@@ -281,7 +279,8 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($record))
+            ->callMountedAction();
 
         /* assert */
         $component->assertSuccessful();

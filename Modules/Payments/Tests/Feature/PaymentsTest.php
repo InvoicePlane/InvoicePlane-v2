@@ -752,16 +752,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $payment = Payment::factory()->for($this->user->companies()->first())->create();
 
         /* act */
-        Livewire::actingAs($this->user)
-            ->test(ListPayments::class)
-            ->call('delete', $payment->id)
-            ->assertHasNoErrors();
+        $component = Livewire::actingAs($this->user)
+            ->test(ListPayments::class);
+        $component->callAction('delete', $payment);
+        $component->assertHasNoErrors();
 
         /* assert */
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);

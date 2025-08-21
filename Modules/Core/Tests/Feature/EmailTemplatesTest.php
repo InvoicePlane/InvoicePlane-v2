@@ -316,8 +316,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Template to Delete',

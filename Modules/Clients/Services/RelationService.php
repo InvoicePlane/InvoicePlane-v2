@@ -103,6 +103,20 @@ class RelationService extends BaseService
         }
     }
 
+    public function deleteRelation(Relation $relation): Relation
+    {
+        DB::beginTransaction();
+        try {
+            $relation->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $relation;
+    }
+
     protected function generateRelationNumber(string $relationType): string
     {
         $prefix       = RelationType::from($relationType)->prefix();

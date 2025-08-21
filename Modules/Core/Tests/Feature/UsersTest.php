@@ -52,6 +52,28 @@ class UsersTest extends AbstractAdminPanelTestCase
      *   "id": 1
      * }
      */
+    public function it_deletes_a_user(): void
+    {
+        /* arrange */
+        $user = User::factory()->create();
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListUsers::class)
+            ->callAction('delete', $user);
+
+        /* assert */
+        $component->assertSuccessful();
+        $this->assertSoftDeleted('users', ['id' => $user->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "id": 1
+     * }
+     */
     public function it_fails_to_delete_user_twice(): void
     {
         $this->markTestIncomplete();

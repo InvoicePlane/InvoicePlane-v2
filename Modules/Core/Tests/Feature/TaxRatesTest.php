@@ -251,8 +251,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_taxrate(): void
     {
-        $this->markTestIncomplete('Needs delete table action, confirmation logic, failing tests');
-
         /* arrange */
         $record = TaxRate::factory()->create([
             'name'          => 'Tax to Delete',

@@ -176,6 +176,20 @@ class InvoiceService extends BaseService
         }
     }
 
+    public function deleteInvoice(Invoice $invoice): Invoice
+    {
+        DB::beginTransaction();
+        try {
+            $invoice->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $invoice;
+    }
+
     private function calculateItemTaxTotal(array $data): float
     {
         return collect($data['invoiceItems'] ?? [])->sum(fn ($item) => $item['tax'] ?? 0);

@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Admin\Resources\EmailTemplates\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -55,6 +56,10 @@ class EmailTemplatesTable
                     EditAction::make()
                         ->action(fn (EmailTemplate $record, array $data) => app(EmailTemplateService::class)->updateEmailTemplate($record, $data))
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (EmailTemplate $record, array $data) {
+                            app(EmailTemplateService::class)->deleteEmailTemplate($record, $data);
+                        }),
                 ]),
             ])
             ->toolbarActions([

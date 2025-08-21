@@ -633,21 +633,15 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_deletes_a_task(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        // $this->authenticate();
         $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
-
-        $project = Project::factory()->create([
+        $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
-
         $taxRate = TaxRate::factory()->create([
             'name' => '::taxrate_name::',
         ]);
-
         $payload = [
             'project_id'       => $project->project_id,
             'task_name'        => '::task_name::',
@@ -657,17 +651,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'task_status'      => true,
             'tax_rate_id'      => $taxRate->tax_rate_id,
         ];
-
         $task = Task::factory()->create($payload);
-
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class)
-            ->callAction('delete', $task->id);
-
-        /* assert */
+            ->test(ListTasks::class);
+        $component->callAction('delete', $task);
         $component->assertSuccessful()->assertHasNoErrors();
-
+        /* assert */
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
     # endregion

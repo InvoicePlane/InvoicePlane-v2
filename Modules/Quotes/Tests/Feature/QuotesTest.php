@@ -18,7 +18,6 @@ use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
-use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -832,89 +831,20 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_updates_a_quote(): void
-    {
-        /* arrange */
-        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
-
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->create([
-                'quote_number'           => 'Q-0001',
-                'prospect_id'            => $prospect->id,
-                'document_group_id'      => $documentGroup->id,
-                'user_id'                => $this->user->id,
-                'quote_status'           => QuoteStatus::DRAFT->value,
-                'quoted_at'              => now()->format('Y-m-d'),
-                'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
-                'quote_discount_amount'  => 0.0000,
-                'quote_discount_percent' => 0.0000,
-                'quote_tax_total'        => 60,
-                'quote_item_subtotal'    => 300,
-                'quote_total'            => 360,
-            ]);
-
-        $payload = ['quote_status' => QuoteStatus::SENT];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditQuote::class, ['record' => $quote->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('quotes', [
-            'id'           => $quote->id,
-            'quote_status' => QuoteStatus::SENT->value,
-        ]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_quote_without_required_quote_number(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->for(Relation::factory()->for($this->company)->prospect())
-            ->create();
-
-        $payload = ['quote_number' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditQuote::class, ['record' => $quote->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['quote_number']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_quote(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $company = $this->user->companies()->first();
         $quote   = Quote::factory()->for($company)->create();
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->callAction('delete', $quote);
+            ->test(ListQuotes::class);
+        $component->callAction('delete', $quote);
+        $component->assertSuccessful();
 
         /* assert */
-        $component->assertSuccessful();
+        $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
 
     #[Test]

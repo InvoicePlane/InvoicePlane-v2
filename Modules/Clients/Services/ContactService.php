@@ -51,4 +51,13 @@ class ContactService extends BaseService
             return $contact;
         });
     }
+
+    public function deleteContact(Contact $contact): Contact
+    {
+        return DB::transaction(static function () use ($contact) {
+            $contact->delete();
+
+            return $contact;
+        });
+    }
 }

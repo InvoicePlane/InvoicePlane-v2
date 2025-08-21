@@ -782,42 +782,35 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-
-        $this->markTestIncomplete('Needs delete action');
-
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
         $taxRate = TaxRate::factory()->create([
             'name' => '::taxrate_name::',
         ]);
-
         $productUnit = ProductUnit::factory()->create([
             'unit_name' => '::unit_name::',
         ]);
-
         $payload = [
             'category_id'    => $productCategory->id,
-            'product_sku'    => 'TESTSKU',
-            'product_name'   => '::product_name::',
-            'description'    => 'A test description for the product.',
-            'product_price'  => 25.50,
-            'purchase_price' => 15.00,
-            'provider_name'  => 'Test Provider',
-            'tax_rate_id'    => $taxRate->tax_rate_id,
-            'unit_id'        => $productUnit->unit_id,
-            'product_tariff' => 12345,
+            'unit_id'        => $productUnit->id,
+            'type'           => ProductType::PRODUCT->value,
+            'code'           => 'SKU-001',
+            'product_name'   => 'Test Product',
+            'price'          => 9.99,
+            'cost_price'     => 5.00,
+            'product_tariff' => 123,
+            'tax_rate_id'    => $taxRate->id,
+            'description'    => 'Example',
         ];
-
         $product = Product::factory()->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->callAction('delete', $product);
+            ->mountAction(TestAction::make('delete')->table($product))
+            ->callMountedAction();
 
         /* assert */
         $component

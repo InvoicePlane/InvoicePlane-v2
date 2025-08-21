@@ -79,6 +79,10 @@ class QuotesTable
                         ->modalDescription('todo: make sure we can email the Quote through an action,
                             so need for modal anymore')
                         ->action(function (Quote $record): void {}),
+                    EditAction::make('edit')
+                        ->action(function (Quote $record, array $data) {
+                            app(QuoteService::class)->deleteQuote($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

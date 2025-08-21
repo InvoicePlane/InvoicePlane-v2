@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Admin\Resources\TaxRates\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
@@ -11,6 +12,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Services\TaxRateService;
 
 class TaxRatesTable
 {
@@ -53,7 +56,13 @@ class TaxRatesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()->action(function (TaxRate $record, array $data) {
+                        app(TaxRateService::class)->updateTaxRate($record, $data);
+                    })->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (TaxRate $record, array $data) {
+                            app(TaxRateService::class)->deleteTaxRate($record, $data);
+                        }),
                 ]),
             ])
             ->toolbarActions([

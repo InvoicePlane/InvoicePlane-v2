@@ -560,9 +560,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_project(): void
     {
-        $this->markTestIncomplete('DeleteAction missing on ProjectsTable');
-
-        /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
         $project  = Project::factory()->for($company)->create([
@@ -574,11 +571,10 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->callAction('delete', ['record' => $project]);
+            ->callAction('delete', $project);
 
         /* assert */
-        $component->assertSuccessful();
-        $this->assertSoftDeleted('projects', ['id' => $project->id]);
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
     # endregion
 

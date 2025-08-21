@@ -221,8 +221,6 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_document_group(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
         $group     = DocumentGroup::factory()->for($this->company)->create([
@@ -230,12 +228,12 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
             'name'                    => 'Group to Delete',
             'group_identifier_format' => $groupType->prefix() . '-{ID}',
         ]);
-
         /* act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListDocumentGroups::class)
-            ->callAction('delete', $group);
-
+            ->test(ListDocumentGroups::class);
+        $component->callAction('delete', $group);
+        $component->assertSuccessful();
+        /* assert */
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
     }
     # endregion
