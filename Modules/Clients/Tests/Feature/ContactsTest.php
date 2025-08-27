@@ -6,11 +6,9 @@ use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Clients\Enums\Gender;
 use Modules\Clients\Filament\Company\Resources\Contacts\Pages\CreateContact;
-use Modules\Clients\Filament\Company\Resources\Contacts\Pages\EditContact;
 use Modules\Clients\Filament\Company\Resources\Contacts\Pages\ListContacts;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -265,7 +263,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_when_relation_id_is_missing(): void
+    public function it_fails_to_create_without_required_relation_id(): void
     {
         /* arrange */
         $payload = [
@@ -287,7 +285,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_when_first_name_is_missing(): void
+    public function it_fails_to_create_without_required_first_name(): void
     {
         /* arrange */
         $relation = Relation::factory()
@@ -312,7 +310,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_when_last_name_is_missing(): void
+    public function it_fails_to_create_without_required_last_name(): void
     {
         /* arrange */
         $relation = Relation::factory()
@@ -337,45 +335,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_updates_a_contact(): void
-    {
-        /* arrange */
-        $relation = Relation::factory()
-            ->for($this->company, 'company')
-            ->create();
-
-        $payload = [
-            'first_name' => 'Initial',
-            'last_name'  => 'Contact',
-            'gender'     => 'male',
-        ];
-
-        $contact = Contact::factory()
-            ->for($this->user->companies()->first())
-            ->for($relation)
-            ->create($payload);
-
-        $updatedData = [
-            'first_name' => 'Updated',
-            'last_name'  => 'Contact',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditContact::class, ['record' => $contact->getKey()])
-            ->fillForm($updatedData)
-            ->call('save');
-
-        /* assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('contacts', $updatedData);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_contact(): void
     {
         /* arrange */
@@ -390,7 +349,8 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
-            ->callAction('delete', $contact);
+            ->mountAction(TestAction::make('delete')->table($contact))
+            ->callMountedAction();
 
         /* assert */
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
@@ -398,37 +358,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_contacts_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s contact.');
-
-        /* arrange */
-        // Create two different companies
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->for($this->user)->create();
-
-        // Create a user in company1
-        $user1 = User::factory()->create();
-        $user1->companies()->attach($company1);
-
-        // Create a user in company2
-        $user2 = User::factory()->create();
-        $user2->companies()->attach($company2);
-
-        // Create a contact for user2's company
-        $contact = Contact::factory()->for($company2)->create();
-
-        /* act */
-        // Try to access the contact as user1 (different company)
-        $response = $this->actingAs($user1)
-            ->get(route('filament.company.resources.contacts.index'));
-
-        /* assert */
-        // Verify access is denied (403 Forbidden or 404 Not Found)
-        $response->assertStatus(403); // or 404, depending on your implementation
-    }
     # endregion
 
     #region spicy

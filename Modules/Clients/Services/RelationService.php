@@ -53,7 +53,7 @@ class RelationService extends BaseService
 
             DB::commit();
 
-            event(new CustomerWasCreated($relation));
+            event(new CustomerWasCreated());
 
             return $relation;
         } catch (Throwable $e) {
@@ -94,7 +94,7 @@ class RelationService extends BaseService
 
             DB::commit();
 
-            event(new CustomerWasUpdated($relation));
+            event(new CustomerWasUpdated());
 
             return $relation;
         } catch (Throwable $e) {

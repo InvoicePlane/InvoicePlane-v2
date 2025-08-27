@@ -73,7 +73,7 @@ class ContactsTable
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (Contact $record, array $data) {
-                            app(ContactService::class)->deleteContact($record, $data);
+                            app(ContactService::class)->deleteContact($record);
                         }),
                 ]),
             ])
