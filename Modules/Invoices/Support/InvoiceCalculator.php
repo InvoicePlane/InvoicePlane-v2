@@ -12,7 +12,7 @@ class InvoiceCalculator extends AbstractCalculator
     /**
      * Calculate invoice totals based on items.
      *
-     * @param Invoice          $invoice
+     * @param Invoice          $document
      * @param Collection|array $items
      *
      * @return array
@@ -41,17 +41,16 @@ class InvoiceCalculator extends AbstractCalculator
             'invoice_tax_total' => $invoiceTaxTotal,
             'total'             => $total,
             'discount_amount'   => $discountAmount,
-            'balance'           => $total - ($invoice->amount_paid ?? 0),
+            'balance'           => $total - ($document->amount_paid ?? 0),
         ];
     }
 
     /**
      * Update invoice totals and save.
      *
-     * @param mixed   $document
-     * @param string  $itemsRelation
-     * @param array   $withRelations
-     * @param Invoice $invoice
+     * @param mixed  $document
+     * @param string $itemsRelation
+     * @param array  $withRelations
      *
      * @return Invoice
      */
@@ -110,15 +109,15 @@ class InvoiceCalculator extends AbstractCalculator
     /**
      * Calculate discount amount.
      *
-     * @param Invoice $invoice
-     * @param float   $subtotal
+     * @param       $document
+     * @param float $subtotal
      *
      * @return float
      */
     protected function calculateDiscount($document, float $subtotal): float
     {
-        $discountAmount  = (float) ($invoice->discount_amount ?? 0);
-        $discountPercent = (float) ($invoice->discount_percent ?? 0);
+        $discountAmount  = (float) ($document->discount_amount ?? 0);
+        $discountPercent = (float) ($document->discount_percent ?? 0);
 
         if ($discountPercent > 0) {
             $discountAmount += $subtotal * ($discountPercent / 100);

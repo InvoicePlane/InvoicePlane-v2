@@ -123,7 +123,7 @@ class InvoicesTable
                         }),
                     DeleteAction::make('delete')
                         ->action(function (Invoice $record, array $data) {
-                            app(InvoiceService::class)->deleteInvoice($record, $data);
+                            app(InvoiceService::class)->deleteInvoice($record);
                         }),
                 ]),
             ])

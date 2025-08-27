@@ -180,6 +180,7 @@ class InvoiceService extends BaseService
     {
         DB::beginTransaction();
         try {
+            $invoice->invoiceItems()->delete();
             $invoice->delete();
             DB::commit();
         } catch (Throwable $e) {
