@@ -90,7 +90,7 @@ class TasksTable
                     DeleteAction::make('delete')
                         ->action(
                             fn (Task $record, array $data) => app(TaskService::class)
-                                ->deleteTask($record, $data)
+                                ->deleteTask($record)
                         ),
                 ]),
             ])

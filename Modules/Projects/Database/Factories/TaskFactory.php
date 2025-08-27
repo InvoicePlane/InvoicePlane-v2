@@ -2,14 +2,10 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Task;
 
-/**
- * @extends Factory<\Modules\Projects\Models\Task>
- */
 class TaskFactory extends AbstractFactory
 {
     protected $model = Task::class;

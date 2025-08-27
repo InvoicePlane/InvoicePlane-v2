@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Projects\Models\Task;
+use Throwable;
 
 class TaskService extends BaseService
 {
@@ -68,5 +69,19 @@ class TaskService extends BaseService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function deleteTask(Task $task): Task
+    {
+        DB::beginTransaction();
+        try {
+            $task->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $task;
     }
 }
