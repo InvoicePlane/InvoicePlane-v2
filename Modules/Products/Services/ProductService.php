@@ -2,8 +2,8 @@
 
 namespace Modules\Products\Services;
 
-use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Products\Models\Product;
 use Throwable;

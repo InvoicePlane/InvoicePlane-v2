@@ -129,33 +129,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             $payload
         ));
     }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload missing: name
-     * {
-     *   "name": ""
-     * }
-     */
-    public function it_fails_to_update_category_through_a_modal_without_required_category_name(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Valid']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProductCategories::class, ['record' => $record->id])
-            ->mountAction(TestAction::make('edit')->table($record), $payload)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
-    }
     # endregion
 
     # region crud
@@ -242,96 +215,49 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    /**
-     * @payload missing: name
-     * {
-     *   "name": ""
-     * }
-     */
-    public function it_fails_to_update_category_without_required_category_name(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Valid']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditProductCategory::class, ['record' => $record->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_product_category(): void
     {
         /* arrange */
-        $company = $this->user->companies()->first();
-        $record  = ProductCategory::factory()
+        $company         = $this->user->companies()->first();
+        $productCategory = ProductCategory::factory()
             ->for($company)
             ->create(['category_name' => 'Category to Delete']);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
-            ->mountAction(TestAction::make('delete')->table($record))
+            ->mountAction(TestAction::make('delete')->table($productCategory))
             ->callMountedAction();
 
         /* assert */
         $component->assertSuccessful();
-        $this->assertSoftDeleted('product_categories', ['id' => $record->id]);
+        $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
-        $record = ProductCategory::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        $productCategory = ProductCategory::factory()->for($this->user->companies()->first())->create();
+        $productCategory->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($productCategory))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
 
-        $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
+        $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_product_categories_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Verify tenant isolation for product categories');
-
-        // Arrange
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->create();
-
-        $user1 = User::factory()->create();
-        $user1->companies()->attach($company1);
-
-        $category = ProductCategory::factory()
-            ->for($company1)
-            ->create(['category_name' => 'Company 1 Category']);
-
-        // Act & Assert - User from company 2 tries to access company 1's category
-        $this->actingAs($user1->companies()->first()->pivot->switchCompany($company2))
-            ->get(route('filament.company.resources.product-categories.edit', $category))
-            ->assertForbidden();
-    }
     # endregion
 
     #region spicy

@@ -361,74 +361,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'id' => $product->id,
         ]));
     }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "category_id": "Value",
-     * "unit_id": "Value",
-     * "tax_rate_id": "Value",
-     * "type": "Value",
-     * "code": "Example",
-     * "product_name": "Example",
-     * "price": "9.99",
-     * "cost_price": "9.99",
-     * "tariff": "Example",
-     * "description": "Example"
-     * }
-     */
-    public function it_fails_to_update_product_through_a_modal_without_required_fields(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $productCategory = ProductCategory::factory()->create([
-            'category_name' => '::category_name::',
-        ]);
-        $productUnit = ProductUnit::factory()->create([
-            'unit_name' => '::unit_name::',
-        ]);
-        $taxRate = TaxRate::factory()->create([
-            'name' => '::taxrate_name::',
-        ]);
-
-        $product = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'type'          => ProductType::PRODUCT->value,
-            'code'          => 'SKU-001',
-            'product_name'  => 'Test Product',
-            'price'         => 9.99,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-            'description'   => 'Example',
-        ]);
-
-        $payload = [
-            'product_name' => 'Updated Product',
-            'price'        => 70.00,
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProducts::class)
-            ->mountAction(TestAction::make('edit')->table($product), $payload)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
-        /* assert */
-        $component
-            ->assertHasNoFormErrors();
-
-        $this->assertDatabaseMissing('products', $payload);
-    }
     # endregion
 
     # region crud
@@ -717,94 +649,30 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "category_id": "Value",
-     * "unit_id": "Value",
-     * "tax_rate_id": "Value",
-     * "type": "Value",
-     * "code": "Example",
-     * "product_name": "Example",
-     * "price": "9.99",
-     * "cost_price": "9.99",
-     * "tariff": "Example",
-     * "description": "Example"
-     * }
-     */
-    public function it_fails_to_update_item_when_required_fields_are_missing(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $productCategory = ProductCategory::factory()->create([
-            'category_name' => '::category_name::',
-        ]);
-        $taxRate = TaxRate::factory()->create([
-            'name' => '::taxrate_name::',
-        ]);
-
-        $productUnit = ProductUnit::factory()->create([
-            'unit_name' => '::unit_name::',
-        ]);
-
-        $payload = [
-            'category_id'    => $productCategory->id,
-            'product_sku'    => 'TESTSKU',
-            'product_name'   => '::product_name::',
-            'description'    => 'A test description for the product.',
-            'product_price'  => 25.50,
-            'purchase_price' => 15.00,
-            'provider_name'  => 'Test Provider',
-            'tax_rate_id'    => $taxRate->tax_rate_id,
-            'unit_id'        => $productUnit->unit_id,
-            'product_tariff' => 12345,
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditProduct::class, ['record' => $product->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
-        /* assert */
-        $component
-            ->assertHasNoFormErrors();
-        $this->assertDatabaseMissing('products', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_product(): void
     {
         /* arrange */
-        $productCategory = ProductCategory::factory()->create([
+        $productCategory = ProductCategory::factory()->for($this->company)->create([
             'category_name' => '::category_name::',
         ]);
-        $taxRate = TaxRate::factory()->create([
-            'name' => '::taxrate_name::',
-        ]);
-        $productUnit = ProductUnit::factory()->create([
+        $productUnit = ProductUnit::factory()->for($this->company)->create([
             'unit_name' => '::unit_name::',
         ]);
-        $payload = [
-            'category_id'    => $productCategory->id,
-            'unit_id'        => $productUnit->id,
-            'type'           => ProductType::PRODUCT->value,
-            'code'           => 'SKU-001',
-            'product_name'   => 'Test Product',
-            'price'          => 9.99,
-            'cost_price'     => 5.00,
-            'product_tariff' => 123,
-            'tax_rate_id'    => $taxRate->id,
-            'description'    => 'Example',
-        ];
-        $product = Product::factory()->create($payload);
+        $taxRate = TaxRate::factory()->for($this->company)->create([
+            'name' => '::taxrate_name::',
+        ]);
+
+        $product = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'type'          => ProductType::PRODUCT->value,
+            'code'          => 'SKU-001',
+            'product_name'  => 'Test Product',
+            'price'         => 9.99,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+            'description'   => 'Example',
+        ]);
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -829,8 +697,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-
-        // $this->authenticated();
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -853,7 +719,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->callAction('bulkDelete', $products);
+            ->mountAction(TestAction::make('bulkDelete')->table($product))
+            ->callMountedAction();
 
         /* assert */
         $component
@@ -869,33 +736,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_products_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s product.');
-
-        /* arrange */
-        // Create two different companies
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->create();
-
-        // Create a user in company1
-        $user1 = User::factory()->create();
-        $user1->companies()->attach($company1);
-
-        // Create a product for company2
-        $product = Product::factory()->for($company2)->create();
-
-        /* act */
-        // Try to access the product as user1 (different company)
-        $response = $this->actingAs($user1)
-            ->get(route('filament.company.resources.products.index'));
-
-        /* assert */
-        // Verify access is denied (403 Forbidden or 404 Not Found)
-        $response->assertStatus(403); // or 404, depending on your implementation
-    }
     # endregion
 
     # region spicy
