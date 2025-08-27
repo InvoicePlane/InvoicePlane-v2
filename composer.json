@@ -28,14 +28,14 @@
         "filament/schemas": "^4.0@alpha",
         "filament/tables": "^4.0@alpha",
         "filament/widgets": "^4.0@alpha",
-        "laravel/framework": "^12.21",
+        "laravel/framework": "^12.22.1",
         "nwidart/laravel-modules": "^12.0.4",
         "spatie/laravel-permission": ">=6.21"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16.0",
         "brianium/paratest": "^7.8.4",
-        "driftingly/rector-laravel": "^2.0.5",
+        "driftingly/rector-laravel": "^2.0.6",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.6",
         "laravel/pail": "^1.2.3",
@@ -44,7 +44,7 @@
         "laravel/tinker": "^2.10.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
-        "phpunit/phpunit": "^11.5.28",
+        "phpunit/phpunit": "^11.5.31",
         "rector/rector": "^2.1.2",
         "roave/security-advisories": "dev-latest"
     },
