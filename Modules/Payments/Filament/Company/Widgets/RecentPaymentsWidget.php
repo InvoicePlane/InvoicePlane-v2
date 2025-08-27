@@ -3,10 +3,10 @@
 namespace Modules\Payments\Filament\Company\Widgets;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Payments\Models\Payment;
-use Modules\Quotes\Filament\Company\Widgets\TableWidget;
 
 class RecentPaymentsWidget extends TableWidget
 {

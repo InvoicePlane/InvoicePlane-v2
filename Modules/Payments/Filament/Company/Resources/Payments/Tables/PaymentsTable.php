@@ -76,7 +76,7 @@ class PaymentsTable
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (Payment $record, array $data) {
-                            app(PaymentService::class)->deletePayment($record, $data);
+                            app(PaymentService::class)->deletePayment($record);
                         }),
                 ]),
             ])

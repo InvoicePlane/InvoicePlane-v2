@@ -386,32 +386,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         /* assert */
         $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_status' => PaymentStatus::COMPLETED->value]);
     }
-
-    #[Test]
-    #[Group('modals')]
-    public function it_fails_to_update_payment_through_a_modal_without_required_amount(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $customer = Relation::factory()->customer()->for($this->company)->create();
-        $invoice  = Invoice::factory()->for($this->company)->create([
-            'customer_id' => $customer->id,
-            'user_id'     => $this->user->id,
-        ]);
-
-        $payment = Payment::factory()->for($this->user->companies()->first())->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListPayments::class, ['record' => $payment->id])
-            ->mountAction(TestAction::make('edit')->table($payment), $updatedData)
-            ->fillForm(['payment_amount' => null])
-            ->callMountedAction();
-
-        /* assert */
-        $component->assertHasFormErrors(['payment_amount']);
-    }
     # endregion
 
     # region crud
@@ -731,34 +705,32 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_payment_with_null_amount(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $payment = Payment::factory()->for($this->user->companies()->first())->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditPayment::class, ['record' => $payment->id])
-            ->fillForm(['payment_amount' => null])
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['payment_amount']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
         /* arrange */
-        $payment = Payment::factory()->for($this->user->companies()->first())->create();
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->user->companies()->first())
+            ->for($invoice)
+            ->create([
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 250.00,
+                'paid_at'        => '2024-11-01',
+            ]);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListPayments::class);
-        $component->callAction('delete', $payment);
+            ->test(ListPayments::class)
+            ->mountAction(TestAction::make('delete')->table($payment))
+            ->callMountedAction();
         $component->assertHasNoErrors();
 
         /* assert */
@@ -769,25 +741,36 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Still can delete payment if invoice is paid');
 
         /* arrange */
-        $invoice = Invoice::factory()
-            ->for($this->user->companies()->first())
-            ->create([
-                'customer_id' => $customer->id,
-                'user_id'     => $this->user->id,
-                'status'      => InvoiceStatus::PAID,
-            ]);
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id'    => $customer->id,
+            'user_id'        => $this->user->id,
+            'invoice_status' => InvoiceStatus::PAID->value,
+        ]);
 
         $payment = Payment::factory()
             ->for($this->user->companies()->first())
             ->for($invoice)
-            ->create();
+            ->create([
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::COMPLETED->value,
+                'payment_amount' => 250.00,
+                'paid_at'        => '2024-11-01',
+            ]);
 
-        Livewire::actingAs($this->user)
+        /** act */
+        $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
-            ->call('delete', $payment->id)
+            ->mountAction(TestAction::make('delete')->table($payment))
+            ->callMountedAction();
+
+        /* assert */
+        $component
             ->assertHasErrors(['delete']);
 
         $this->assertDatabaseHas('payments', ['id' => $payment->id]);
@@ -797,16 +780,33 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_payment(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('record for delete action cannot be null');
 
         /* arrange */
-        $payment = Payment::factory()->for($this->user->companies()->first())->create();
+        $company  = $this->user->companies()->first();
+        $customer = Relation::factory()->customer()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->user->companies()->first())
+            ->for($invoice)
+            ->create([
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 250.00,
+                'paid_at'        => '2024-11-01',
+            ]);
         $payment->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
-            ->callAction('delete', $payment);
+            ->mountAction(TestAction::make('delete')->table($payment))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
@@ -816,12 +816,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_payments_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s payment.');
-    }
     # endregion
 
     #region spicy

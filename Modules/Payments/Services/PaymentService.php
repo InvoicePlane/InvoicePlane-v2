@@ -66,4 +66,18 @@ class PaymentService extends BaseService
             throw $e;
         }
     }
+
+    public function deletePayment(Payment $payment): Payment
+    {
+        DB::beginTransaction();
+        try {
+            $payment->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $payment;
+    }
 }
