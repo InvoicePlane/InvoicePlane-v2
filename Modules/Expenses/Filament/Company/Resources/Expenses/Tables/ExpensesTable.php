@@ -82,7 +82,7 @@ class ExpensesTable
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (Expense $record, array $data) {
-                            app(ExpenseService::class)->deleteExpense($record, $data);
+                            app(ExpenseService::class)->deleteExpense($record);
                         }),
                 ]),
             ])

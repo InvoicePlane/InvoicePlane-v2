@@ -505,29 +505,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
             'expense_type' => ExpenseType::RECURRING,
         ]);
     }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_an_expense_through_a_modal_without_required_type(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $expense = Expense::factory()->for($this->user->companies()->first())->create();
-
-        $payload = ['expense_status' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditExpense::class, ['record' => $expense->id])
-            ->mountAction(TestAction::make('edit')->table($expense), $payload)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* assert */
-        $component
-            ->assertHasFormErrors(['expense_status']);
-    }
     # endregion
 
     # region crud
@@ -947,27 +924,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_expense_with_empty_type(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $expense = Expense::factory()->for($this->user->companies()->first())->create();
-
-        $payload = ['expense_type' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditExpense::class, ['record' => $expense->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['expense_type']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_an_expense(): void
     {
         /* arrange */
@@ -976,9 +932,9 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenses::class);
-        $component->callAction('delete', $expense);
-        $component->assertSuccessful();
+            ->test(ListExpenses::class)
+            ->mountAction(TestAction::make('delete')->table($expense))
+            ->callMountedAction();
 
         /* assert */
         $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
@@ -988,43 +944,26 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_expense_twice(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
-        $record = Expense::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        /* arrange */
+        $expense = Expense::factory()->for($this->user->companies()->first())->create();
+        $expense->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($expense))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
 
-        $this->assertDatabaseMissing('expenses', ['id' => $record->id]);
+        $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_expenses_of_another_tenant(): void
-    {
-        $this->markTestIncomplete();
-
-        // Arrange: create an expense for a different company
-        $otherUser    = User::factory()->create();
-        $otherCompany = $otherUser->companies()->first();
-        $expense      = Expense::factory()->for($otherCompany)->create();
-
-        // Act: try to access as this user (should be forbidden or 404)
-        $component = Livewire::actingAs($this->user)
-            ->test(EditExpense::class, ['record' => $expense->id]);
-
-        // Assert: should not be able to access (forbidden or not found)
-        $component->assertForbidden();
-    }
     # endregion
 
     #region spicy

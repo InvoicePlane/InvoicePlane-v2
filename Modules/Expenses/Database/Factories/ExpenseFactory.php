@@ -2,15 +2,11 @@
 
 namespace Modules\Expenses\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 
-/**
- * @extends Factory<\Modules\Expenses\Models\Expense>
- */
 class ExpenseFactory extends AbstractFactory
 {
     protected $model = Expense::class;

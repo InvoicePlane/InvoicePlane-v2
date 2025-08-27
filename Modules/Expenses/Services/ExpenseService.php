@@ -124,4 +124,19 @@ class ExpenseService extends BaseService
             throw $e;
         }
     }
+
+    public function deleteExpense(Expense $expense): Expense
+    {
+        DB::beginTransaction();
+        try {
+            $expense->expenseItems()->delete();
+            $expense->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $expense;
+    }
 }
