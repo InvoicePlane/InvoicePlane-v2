@@ -21,26 +21,23 @@ use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Enums\UserRole;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Quotes\Models\Quote;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * @property int                           $id
- * @property string                        $name
- * @property string                        $email
- * @property mixed                         $email_verified_at
- * @property string                        $password
- * @property string                        $remember_token
- * @property mixed                         $created_at
- * @property mixed                         $updated_at
- * @property Invoice[]                     $invoices
- * @property Note[]                        $notes
- * @property Collection|Attachment[]       $attachments
- * @property Collection|Expense[]          $expenses
- * @property Collection|Quote[]            $quotes
- * @property Collection|RecurringInvoice[] $recurringInvoices
- * @property Upload[]                      $uploads
+ * @property int                     $id
+ * @property string                  $name
+ * @property string                  $email
+ * @property mixed                   $email_verified_at
+ * @property string                  $password
+ * @property string                  $remember_token
+ * @property mixed                   $created_at
+ * @property mixed                   $updated_at
+ * @property Invoice[]               $invoices
+ * @property Note[]                  $notes
+ * @property Collection|Attachment[] $attachments
+ * @property Collection|Expense[]    $expenses
+ * @property Collection|Quote[]      $quotes*           @property Upload[]                $uploads
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasTenants, HasDefaultTenant
 {
@@ -127,11 +124,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'user_id');
-    }
-
-    public function recurringInvoices(): HasMany
-    {
-        return $this->hasMany(RecurringInvoice::class);
     }
 
     public function uploads(): HasMany

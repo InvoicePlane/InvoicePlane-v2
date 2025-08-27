@@ -2,13 +2,9 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 
-/**
- * @extends Factory<Note>
- */
 class NoteFactory extends AbstractFactory
 {
     protected $model = Note::class;

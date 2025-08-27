@@ -61,7 +61,7 @@ class TaxRatesTable
                     })->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (TaxRate $record, array $data) {
-                            app(TaxRateService::class)->deleteTaxRate($record, $data);
+                            app(TaxRateService::class)->deleteTaxRate($record);
                         }),
                 ]),
             ])

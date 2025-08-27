@@ -252,47 +252,27 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     public function it_deletes_a_taxrate(): void
     {
         /* arrange */
-        $record = TaxRate::factory()->create([
+        $taxRate = TaxRate::factory()->create([
             'name'          => 'Tax to Delete',
             'code'          => 'DELETEME',
             'rate'          => 10.0,
-            'tax_rate_type' => 'percentage',
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())
+        $component = Livewire::actingAs($this->superAdmin)
             ->test(ListTaxRates::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($taxRate))
+            ->callMountedAction();
 
         /* assert */
         $component->assertSuccessful();
-        $this->assertSoftDeleted('tax_rates', ['id' => $record->id]);
+        $this->assertDatabaseMissing('tax_rates', ['id' => $taxRate->id]);
     }
 
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_tax_rates_of_another_tenant(): void
-    {
-        $this->markTestIncomplete();
-
-        // Create a tax rate with a different tenant
-        $otherTaxRate = TaxRate::factory()->create([
-            'name' => 'Other Tenant Tax',
-            'code' => 'OTHER',
-            'rate' => 15.0,
-        ]);
-
-        // Try to access the other tenant's tax rate
-        $response = Livewire::actingAs($this->superAdmin())
-            ->test(ListTaxRates::class)
-            ->mountAction(TestAction::make('edit')->table($task), $updatedData);
-
-        // Should be forbidden or not found
-        $response->assertStatus(404);
-    }
     # endregion
 
     # region spicy

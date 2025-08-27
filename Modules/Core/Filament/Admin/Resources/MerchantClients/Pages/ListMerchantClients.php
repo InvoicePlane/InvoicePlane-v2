@@ -18,7 +18,7 @@ class ListMerchantClients extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Core\Services\MerchantClientService::class)->createMerchantClient($data);
+                    //app(MerchantClientService::class)->createMerchantClient($data);
                 })
                 ->modalWidth('full'),
         ];

@@ -58,7 +58,7 @@ class EmailTemplatesTable
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (EmailTemplate $record, array $data) {
-                            app(EmailTemplateService::class)->deleteEmailTemplate($record, $data);
+                            app(EmailTemplateService::class)->deleteEmailTemplate($record);
                         }),
                 ]),
             ])

@@ -81,8 +81,7 @@ abstract class AbstractSeeder extends Seeder
 
         if ( ! $documentGroup) {
             $documentGroup = DocumentGroup::factory()->state([
-                'company_id'        => $companyId,
-                'document_group_id' => $documentGroup->id,
+                'company_id' => $companyId,
             ])
                 ->create();
         }

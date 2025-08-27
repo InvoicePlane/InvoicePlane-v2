@@ -47,7 +47,7 @@ class UsersTable
                     })->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (User $record, array $data) {
-                            app(UserService::class)->deleteUser($record, $data);
+                            app(UserService::class)->deleteUser($record);
                         }),
                 ]),
             ])
