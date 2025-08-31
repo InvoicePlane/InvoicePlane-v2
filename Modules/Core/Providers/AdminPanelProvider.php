@@ -162,8 +162,8 @@ class AdminPanelProvider extends PanelProvider
                 TaxRateResource::class,
                 UserResource::class,
             ])
-            ->discoverPages(in: app_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
-            ->discoverWidgets(in: app_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
+            ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
+            ->discoverWidgets(in: base_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
