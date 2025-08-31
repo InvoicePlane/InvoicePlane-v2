@@ -12,7 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Pages\Page;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 
 class Settings extends Page implements Forms\Contracts\HasForms
 {
@@ -47,6 +47,13 @@ class Settings extends Page implements Forms\Contracts\HasForms
         $this->settings['login_logo'] ??= null; // file upload → default leeg
         $this->settings['open_reports_new_tab'] ??= 'no';
         $this->settings['responsive_item_list'] ??= 'no';
+        $this->settings['disable_sidebar'] ??= 'no';
+        $this->settings['custom_title'] ??= '';
+        $this->settings['use_monospace_font_for_amounts'] ??= 'yes';
+        $this->settings['open_reports_in_new_tab'] ??= 'yes';
+        $this->settings['display_responsive_item_list'] ??= 'yes';
+        $this->settings['send_all_emails_bcc'] ??= 'no';
+        $this->settings['cron_key'] ??= 'R83fys4wWoNuUXtv';
     }
 
     protected function getFormSchema(): array
@@ -221,11 +228,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.disable_sidebar'))
                                         ->required(),
 
-                                    Select::make('settings.custom_title')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    TextInput::make('settings.custom_title')
                                         ->label(trans('ip.custom_title'))
                                         ->required(),
 
@@ -271,10 +274,17 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ])
                                         ->label(trans('ip.send_all_emails_bcc'))
                                         ->required(),
-
                                     TextInput::make('settings.cron_key')
                                         ->label(trans('ip.cron_key'))
                                         ->required()
+                                        ->suffixAction(
+                                            Action::make(trans('ip.generate'))
+                                            ->icon('heroicon-s-arrow-path')
+                                                ->label(trans('ip.generate'))
+                                                ->action(function ($set) {
+                                                    $set('settings.cron_key', Str::random(16));
+                                                })
+                                        ),
                                 ]),
                         ]),
 
