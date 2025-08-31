@@ -11,27 +11,25 @@ use Modules\Core\Database\Factories\DocumentGroupFactory;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                           $id
- * @property int                           $company_id
- * @property string                        $type
- * @property string                        $name
- * @property string                        $group_identifier_format
- * @property int                           $next_id
- * @property int                           $left_pad
- * @property string|null                   $format
- * @property int                           $reset_number
- * @property int                           $last_id
- * @property int                           $last_year
- * @property int                           $last_month
- * @property int                           $last_week
- * @property Company                       $company
- * @property Collection|Invoice[]          $invoices
- * @property Collection|Quote[]            $quotes
- * @property Collection|RecurringInvoice[] $recurring_invoices
+ * @property int                  $id
+ * @property int                  $company_id
+ * @property string               $type
+ * @property string               $name
+ * @property string               $group_identifier_format
+ * @property int                  $next_id
+ * @property int                  $left_pad
+ * @property string|null          $format
+ * @property int                  $reset_number
+ * @property int                  $last_id
+ * @property int                  $last_year
+ * @property int                  $last_month
+ * @property int                  $last_week
+ * @property Company              $company
+ * @property Collection|Invoice[] $invoices
+ * @property Collection|Quote[]   $quotes
  */
 class DocumentGroup extends Model
 {
@@ -91,11 +89,6 @@ class DocumentGroup extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'document_group_id');
-    }
-
-    public function recurringInvoices(): HasMany
-    {
-        return $this->hasMany(RecurringInvoice::class);
     }
 
     /*

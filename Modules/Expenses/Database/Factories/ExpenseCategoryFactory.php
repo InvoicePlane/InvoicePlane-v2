@@ -2,15 +2,11 @@
 
 namespace Modules\Expenses\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Models\ExpenseCategory;
 use RuntimeException;
 
-/**
- * @extends Factory<\Modules\Expenses\Models\ExpenseCategory>
- */
 class ExpenseCategoryFactory extends AbstractFactory
 {
     protected $model = ExpenseCategory::class;

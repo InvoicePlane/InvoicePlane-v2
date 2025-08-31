@@ -8,14 +8,10 @@ use Faker\Provider\en_US\Person;
 use Faker\Provider\en_US\PhoneNumber;
 use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\Gender;
 use Modules\Clients\Models\Contact;
 use Modules\Core\Database\Factories\AbstractFactory;
 
-/**
- * @extends Factory<\Modules\Clients\Models\Contact>
- */
 class ContactFactory extends AbstractFactory
 {
     protected $model = Contact::class;

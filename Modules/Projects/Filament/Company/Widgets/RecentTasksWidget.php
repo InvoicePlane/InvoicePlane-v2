@@ -3,11 +3,11 @@
 namespace Modules\Projects\Filament\Company\Widgets;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Task;
-use Modules\Quotes\Filament\Company\Widgets\TableWidget;
 
 class RecentTasksWidget extends TableWidget
 {

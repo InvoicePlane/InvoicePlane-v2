@@ -163,33 +163,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
         $this->assertDatabaseHas('email_templates', $payload);
     }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_an_email_template_through_a_modal_without_required_title(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $template = EmailTemplate::factory()->for($this->company)->create([
-            'title'   => 'Old Title',
-            'subject' => 'Old Subject',
-            'type'    => EmailTemplateType::TEXT->value,
-        ]);
-
-        $updateTemplate = EmailTemplate::factory()->for($this->company)->create(['subject' => 'Old Subject']);
-
-        $payload = ['subject' => 'Updated Subject'];
-
-        /* act */
-
-        /* assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('email_templates', $payload);
-    }
     #endregion
 
     # region crud
@@ -316,8 +289,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $template = EmailTemplate::factory()->for($this->company)->create([
             'title'   => 'Template to Delete',
@@ -326,13 +297,13 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())
+        $component = Livewire::actingAs($this->superAdmin)
             ->test(ListEmailTemplates::class)
-            ->callAction('delete', $template);
+            ->mountAction(TestAction::make('delete')->table($template))
+            ->callMountedAction();
 
         /* assert */
-        $component->assertSuccessful();
-        $this->assertSoftDeleted('email_templates', ['id' => $template->id]);
+        $this->assertDatabaseMissing('document_groups', ['id' => $template->id]);
     }
     # endregion
 

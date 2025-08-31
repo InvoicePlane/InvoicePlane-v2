@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
@@ -184,8 +185,6 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
      */
     public function it_updates_a_document_group(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
         $group     = DocumentGroup::factory()->for($this->company)->create([
@@ -221,8 +220,6 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_document_group(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
         $groupType = DocumentGroupType::CUSTOMERS;
         $group     = DocumentGroup::factory()->for($this->company)->create([
@@ -232,21 +229,17 @@ class DocumentGroupsTest extends AbstractAdminPanelTestCase
         ]);
 
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())
+        $component = Livewire::actingAs($this->superAdmin)
             ->test(ListDocumentGroups::class)
-            ->callAction('delete', $group);
+            ->mountAction(TestAction::make('delete')->table($group))
+            ->callMountedAction();
 
+        /* assert */
         $this->assertDatabaseMissing('document_groups', ['id' => $group->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_document_groups_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s document group.');
-    }
     # endregion
 
     #region spicy

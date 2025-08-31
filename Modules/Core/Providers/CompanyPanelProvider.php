@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Providers;
 
+use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -42,10 +43,10 @@ use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class CompanyPanelProvider extends PanelProvider
 {
-    public function panel(Panel $companyPanel): Panel
+    public function panel(Panel $panel): Panel
     {
         /** @var Panel $companyPanel */
-        $panel = $companyPanel
+        $companyPanel = $panel
             // #region Panel Configuration
 
             ->default()
@@ -233,8 +234,13 @@ class CompanyPanelProvider extends PanelProvider
                                 ...TaskResource::getNavigationItems(),
                             ]),
                     ]);
-            });
-        /*->userMenuItems([
+            })
+            ->userMenuItems([
+                Action::make('switch-company')
+                    ->label('Switch Company')
+                    ->icon('heroicon-o-building-office-2')
+                    ->modalHeading('Switch Company')
+                    ->modalContent(fn () => view('filament.company.widgets.switch-company-table')),
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
@@ -243,10 +249,10 @@ class CompanyPanelProvider extends PanelProvider
                     ->label(trans('ip.settings'))
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => fn (Action $action) => $action
-                    ->label(trans(trans('ip.logout')))
-                    ->icon(Heroicon::OutlinedArrowRightStartOnRectangle),
-            ])*/
+                    ->label(trans('ip.logout'))
+                    ->icon('heroicon-o-arrow-right-start-on-rectangle'),
+            ]);
 
-        return $panel;
+        return $companyPanel;
     }
 }

@@ -12,9 +12,10 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Communication;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Core\Models\Company;
 
-class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class CustomersSeeder extends AbstractSeeder
 {
     protected array $firstNames = [
         'John', 'Emma', 'Michael', 'Sophia', 'William', 'Olivia', 'James', 'Ava', 'Robert', 'Isabella',
@@ -37,7 +38,7 @@ class CustomersSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         $this->faker = Faker::create();
     }
 
-    public function run(?int $companyId = null): void
+    public function buildOne(?int $companyId = null): void
     {
         $query = Company::query();
 

@@ -2,7 +2,6 @@
 
 namespace Modules\Quotes\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
@@ -12,9 +11,6 @@ use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
-/**
- * @extends Factory<\Modules\Quotes\Models\Quote>
- */
 class QuoteFactory extends AbstractFactory
 {
     protected $model = Quote::class;

@@ -18,7 +18,7 @@ class ListMailQueues extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Core\Services\MailQueueService::class)->createMailQueue($data);
+                    //app(MailQueueService::class)->createMailQueue($data);
                 })
                 ->modalWidth('full'),
         ];

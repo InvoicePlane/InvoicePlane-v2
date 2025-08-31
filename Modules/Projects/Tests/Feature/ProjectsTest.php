@@ -5,7 +5,6 @@ namespace Modules\Projects\Tests\Feature;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Enums\ProjectStatus;
@@ -252,57 +251,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             $updatedData
         ));
     }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "customer_id": "Value",
-     * "project_status": "Value",
-     * "project_name": "Example",
-     * "start_at": "2025-04-30",
-     * "end_at": "2025-04-30",
-     * "description": "Example"
-     * }
-     */
-    public function it_fails_to_update_project_through_a_modal_when_required_fields_are_missing(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        //$this->actingAs(User::factory()->create());
-
-        $record = Project::factory()->create();
-
-        $payload = [
-            'company_id'     => 'Value',
-            'customer_id'    => 'Value',
-            'project_status' => 'Value',
-            'project_name'   => 'Example',
-            'start_at'       => '2025-04-30',
-            'end_at'         => '2025-04-30',
-            'description'    => 'Example',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction(TestAction::make('edit')->table($record), $payload)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
-        /* assert */
-        $component
-            ->assertHasFormErrors();
-
-        $this->assertDatabaseMissing('projects', $payload);
-    }
     # endregion
 
     # region crud
@@ -509,60 +457,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "customer_id": "Value",
-     * "project_status": "Value",
-     * "project_name": "Example",
-     * "start_at": "2025-04-30",
-     * "end_at": "2025-04-30",
-     * "description": "Example"
-     * }
-     */
-    public function it_fails_to_update_project_when_required_fields_are_missing(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = Project::factory()->create();
-
-        $payload = [
-            'company_id'     => 'Value',
-            'customer_id'    => 'Value',
-            'project_status' => 'Value',
-            'project_name'   => 'Example',
-            'start_at'       => '2025-04-30',
-            'end_at'         => '2025-04-30',
-            'description'    => 'Example',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditProject::class, ['record' => $record->getKey()])
-            ->fillForm($payload)
-            ->call('save');
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
-        /* assert */
-        $component
-            ->assertHasFormErrors();
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_project(): void
     {
-        $this->markTestIncomplete('DeleteAction missing on ProjectsTable');
-
-        /* arrange */
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
         $project  = Project::factory()->for($company)->create([
@@ -574,131 +470,17 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProjects::class)
-            ->callAction('delete', ['record' => $project]);
+            ->mountAction(TestAction::make('delete')->table($project))
+            ->callMountedAction();
 
         /* assert */
-        $component->assertSuccessful();
-        $this->assertSoftDeleted('projects', ['id' => $project->id]);
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_projects_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s project.');
-    }
     # endregion
 
     # region spicy
-    #[Test]
-    #[Group('crud')]
-    /**
-     * route('filament.ivpl.resources.filament.resources.projects.assign_client').
-     */
-    public function it_can_assign_clients_to_project(): void
-    {
-        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
-
-        /* arrange */
-        // $this->authenticate();
-        $customer = Customer::factory()->create();
-        $project  = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2  = Relation::factory()->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
-            ->callMountedAction('assignClient', $client2->client_id);
-
-        /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
-
-        $this->assertDatabaseHas('projects', [
-            'project_id' => $project->id,
-            'client_id'  => $client2->client_id,
-        ]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_assign_client_without_project_id(): void
-    {
-        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
-
-        /* arrange */
-        $customer = Customer::factory()->create();
-        $project  = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2  = Relation::factory()->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
-            ->callMountedAction('assignClient', $client2->client_id);
-
-        /* assert */
-        $component
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('projects', [
-            'project_id' => $project->id,
-            'client_id'  => $client2->client_id,
-        ]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_projects_change_client(): void
-    {
-        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
-
-        /* arrange */
-        $customer = Customer::factory()->create();
-        $project  = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2  = Relation::factory()->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
-            ->callMountedAction('assignClient', $client2->client_id);
-
-        /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
-
-        $this->assertDatabaseHas('projects', [
-            'project_id' => $project->id,
-            'client_id'  => $client2->client_id,
-        ]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_change_project_client_without_client_id(): void
-    {
-        $this->markTestIncomplete('needs assignClient action if still needed since it can be done on the project form');
-
-        /* arrange */
-        $customer = Customer::factory()->create();
-        $project  = Project::factory()->create(['client_id' => $client->client_id]);
-        $client2  = Relation::factory()->create();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class)
-            ->mountAction(TestAction::make('assignClient')->table($record), $payload)
-            ->callMountedAction('assignClient', $client2->client_id);
-
-        /* assert */
-        $component->assertHasNoErrors();
-
-        $this->assertDatabaseHas('projects', [
-            'project_id' => $project->id,
-            'client_id'  => $client2->client_id,
-        ]);
-    }
     # endregion
 }

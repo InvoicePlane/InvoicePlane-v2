@@ -2,15 +2,11 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use RuntimeException;
 
-/**
- * @extends Factory<TaxRate>
- */
 class TaxRateFactory extends AbstractFactory
 {
     protected $model = TaxRate::class;

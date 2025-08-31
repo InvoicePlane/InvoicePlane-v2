@@ -4,6 +4,7 @@ namespace Modules\Clients\Filament\Company\Resources\Relations\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -91,6 +92,10 @@ class RelationsTable
                             app(CustomerService::class)->updateCustomer($record, $data);
                         })
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Relation $record, array $data) {
+                            app(\Modules\Clients\Services\RelationService::class)->deleteRelation($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

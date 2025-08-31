@@ -4,12 +4,14 @@ namespace Modules\Projects\Filament\Company\Resources\Projects\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
+use Modules\Projects\Models\Project;
 
 class ProjectsTable
 {
@@ -44,7 +46,15 @@ class ProjectsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Project $record, array $data) {
+                            app(\Modules\Projects\Services\ProjectService::class)->updateProject($record, $data);
+                        })
+                        ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Project $record, array $data) {
+                            app(\Modules\Projects\Services\ProjectService::class)->deleteProject($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

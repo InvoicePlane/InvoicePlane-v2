@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
 use Modules\Core\Models\User;
@@ -52,21 +53,45 @@ class UsersTest extends AbstractAdminPanelTestCase
      *   "id": 1
      * }
      */
+    public function it_deletes_a_user(): void
+    {
+        /* arrange */
+        $user = User::factory()->create();
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin)
+            ->test(ListUsers::class)
+            ->mountAction(TestAction::make('delete')->table($user))
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "id": 1
+     * }
+     */
     public function it_fails_to_delete_user_twice(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
+        $user = User::factory()->create();
 
         /* @arrange deleted user */
-        $user = User::factory()->create();
         $user->delete();
 
         /* @act try to delete again */
         /* act */
-        $component = Livewire::actingAs($this->superAdmin())
+        $component = Livewire::actingAs($this->superAdmin)
             ->test(ListUsers::class)
-            ->callAction('delete', $user);
+            ->mountAction(TestAction::make('delete')->table($user))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
@@ -78,12 +103,6 @@ class UsersTest extends AbstractAdminPanelTestCase
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('crud')]
-    public function it_cannot_access_users_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s user.');
-    }
     # endregion
 
     #region spicy

@@ -7,7 +7,7 @@ use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 
-class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class TaxRatesSeeder extends AbstractSeeder
 {
     protected array $europeanVatRates = [
         ['name' => 'EU Standard VAT (20%)', 'code' => 'EU-VAT-STD-20', 'rate' => 20.00],
@@ -47,7 +47,7 @@ class TaxRatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
         ['name' => 'Environmental Tax', 'code' => 'ENV-TAX', 'rate' => 0.50],
     ];
 
-    public function run(?int $companyId = null): void
+    public function buildOne(?int $companyId = null): void
     {
         $query = Company::query();
 

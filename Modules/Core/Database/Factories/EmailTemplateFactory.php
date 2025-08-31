@@ -2,13 +2,9 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Models\EmailTemplate;
 
-/**
- * @extends Factory<EmailTemplate>
- */
 class EmailTemplateFactory extends AbstractFactory
 {
     protected $model = EmailTemplate::class;

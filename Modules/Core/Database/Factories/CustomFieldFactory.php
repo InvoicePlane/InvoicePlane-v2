@@ -2,12 +2,8 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\CustomField;
 
-/**
- * @extends Factory<CustomField>
- */
 class CustomFieldFactory extends AbstractFactory
 {
     protected $model = CustomField::class;

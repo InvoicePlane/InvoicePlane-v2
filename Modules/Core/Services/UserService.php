@@ -4,9 +4,11 @@ namespace Modules\Core\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Events\UserWasCreated;
 use Modules\Core\Events\UserWasUpdated;
 use Modules\Core\Models\User;
+use Throwable;
 
 class UserService extends BaseService
 {
@@ -39,5 +41,19 @@ class UserService extends BaseService
         event(new UserWasUpdated($userToUpdate));
 
         return $userToUpdate;
+    }
+
+    public function deleteUser(User $user): User
+    {
+        DB::beginTransaction();
+        try {
+            $user->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $user;
     }
 }

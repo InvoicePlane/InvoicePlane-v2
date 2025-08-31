@@ -2,13 +2,9 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Models\DocumentGroup;
 
-/**
- * @extends Factory<DocumentGroup>
- */
 class DocumentGroupFactory extends AbstractFactory
 {
     protected $model = DocumentGroup::class;

@@ -4,6 +4,7 @@ namespace Modules\Clients\Filament\Company\Resources\Contacts\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -70,6 +71,10 @@ class ContactsTable
                             app(ContactService::class)->updateContact($record, $data);
                         })
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Contact $record, array $data) {
+                            app(ContactService::class)->deleteContact($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

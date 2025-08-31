@@ -58,4 +58,18 @@ class ProjectService extends BaseService
     {
         return Project::query()->where('id', $project_id)->value('customer_id');
     }
+
+    public function deleteProject(Project $project): Project
+    {
+        DB::beginTransaction();
+        try {
+            $project->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $project;
+    }
 }

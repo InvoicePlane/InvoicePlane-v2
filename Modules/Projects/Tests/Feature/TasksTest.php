@@ -633,140 +633,41 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_deletes_a_task(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        // $this->authenticate();
-        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
-
-        $project = Project::factory()->create([
-            'customer_id'  => $customer->id,
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->for($this->company)->for($customer)->create([
             'project_name' => '::project_name::',
         ]);
-
-        $taxRate = TaxRate::factory()->create([
+        $taxRate = TaxRate::factory()->for($this->company)->create([
             'name' => '::taxrate_name::',
         ]);
 
         $payload = [
-            'project_id'       => $project->project_id,
-            'task_name'        => '::task_name::',
-            'task_description' => 'This is a task description.',
-            'task_price'       => 100.50,
-            'task_finish_date' => now()->subDays(5)->format('Y-m-d'),
-            'task_status'      => true,
-            'tax_rate_id'      => $taxRate->tax_rate_id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
         ];
 
-        $task = Task::factory()->create($payload);
+        $task = Task::factory()->for($project)->for($customer)->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
-            ->callAction('delete', $task->id);
+            ->mountAction(TestAction::make('delete')->table($task))
+            ->callMountedAction();
 
         /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
-
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_tasks_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s task.');
-    }
     # endregion
 
     # region spicy
-    #[Test]
-    #[Group('spicy')]
-    public function it_assigns_a_task_to_a_project(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
-
-        $project = Project::factory()->create([
-            'customer_id'  => $customer->id,
-            'project_name' => '::project_name::',
-        ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'name' => '::taxrate_name::',
-        ]);
-
-        $payload = [
-            'project_id'       => $project->project_id,
-            'task_name'        => '::task_name::',
-            'task_description' => 'This is a task description.',
-            'task_price'       => 100.50,
-            'task_finish_date' => now()->subDays(5)->format('Y-m-d'),
-            'task_status'      => true,
-            'tax_rate_id'      => $taxRate->tax_rate_id,
-        ];
-
-        $task = Task::factory()->create($payload);
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class)->callAction('assignProject', $task->id, ['project_id' => $project->project_id]);
-
-        /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
-
-        $this->assertDatabaseHas('tasks', [
-            'id'         => $task->id,
-            'project_id' => $project->project_id,
-        ]);
-    }
-
-    #[Test]
-    #[Group('spicy')]
-    public function it_fails_to_assign_project_without_project_id(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $this->markTestIncomplete('assignProject action not implemented');
-        // $this->authenticate();
-        $customer = Relation::factory()->create(['company_name' => '::customer_name::']);
-
-        $project = Project::factory()->create([
-            'customer_id'  => $customer->id,
-            'project_name' => '::project_name::',
-        ]);
-
-        $taxRate = TaxRate::factory()->create([
-            'name' => '::taxrate_name::',
-        ]);
-        $payload = [
-            'project_id'       => $project->project_id,
-            'task_name'        => '::task_name::',
-            'task_description' => 'This is a task description.',
-            'task_price'       => 100.50,
-            'task_finish_date' => now()->subDays(5)->format('Y-m-d'),
-            'task_status'      => true,
-            'tax_rate_id'      => $taxRate->tax_rate_id,
-        ];
-
-        $task = Task::factory()->create($payload);
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class)
-            ->callAction('assignProject', $task->id);
-
-        /* assert */
-        $component->assertHasNoErrors();
-
-        $this->assertDatabaseHas('tasks', [
-            'id' => $task->id,
-        ]);
-    }
     # endregion
 }

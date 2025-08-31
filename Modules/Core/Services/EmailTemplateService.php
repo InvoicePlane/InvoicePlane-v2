@@ -3,7 +3,9 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\EmailTemplate;
+use Throwable;
 
 class EmailTemplateService extends BaseService
 {
@@ -41,5 +43,19 @@ class EmailTemplateService extends BaseService
         ]);
 
         return $emailTemplateToUpdate;
+    }
+
+    public function deleteEmailTemplate(EmailTemplate $emailTemplate): EmailTemplate
+    {
+        DB::beginTransaction();
+        try {
+            $emailTemplate->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $emailTemplate;
     }
 }
