@@ -172,6 +172,7 @@ class AdminPanelProvider extends PanelProvider
                 'profile' => MenuItem::make()->label('Edit profile'),
                 MenuItem::make()
                     ->label('Settings')
+                    ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => MenuItem::make()->label('Translate Sign Out'),
             ])
