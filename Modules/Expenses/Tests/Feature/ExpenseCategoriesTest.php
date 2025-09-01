@@ -127,27 +127,6 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         /* assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_through_a_modal_category_with_empty_name(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'X']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListExpenseCategories::class, ['record' => $record->id])
-            ->mountAction(TestAction::make('edit')->table($record), $payload)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
-    }
     # endregion
 
     # region crud
@@ -228,73 +207,45 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_category_with_empty_name(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record = ExpenseCategory::factory()
-            ->for($this->user->companies()->first())
-            ->create(['category_name' => 'X']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditExpenseCategory::class, ['record' => $record->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_an_expense_category(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $expenseCategory = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($expenseCategory))
+            ->callMountedAction();
 
         /* assert */
-        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
+        $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
-        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        /* arrange */
+        $expenseCategory = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $expenseCategory->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($expenseCategory))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
 
-        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
+        $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_expense_categories_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s expense category.');
-    }
     # endregion
 
     #region spicy

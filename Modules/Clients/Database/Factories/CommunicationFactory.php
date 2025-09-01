@@ -12,9 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Models\Communication;
 
-/**
- * @extends Factory<Communication>
- */
 class CommunicationFactory extends Factory
 {
     protected $model = Communication::class;

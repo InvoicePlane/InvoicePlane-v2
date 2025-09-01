@@ -2,13 +2,9 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Attachment;
 use Modules\Core\Models\User;
 
-/**
- * @extends Factory<Attachment>
- */
 class AttachmentFactory extends AbstractFactory
 {
     protected $model = Attachment::class;

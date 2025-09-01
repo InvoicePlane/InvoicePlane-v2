@@ -5,6 +5,7 @@ namespace Modules\Invoices\Filament\Company\Resources\Invoices\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 
 class InvoicesTable
 {
@@ -110,9 +112,19 @@ class InvoicesTable
                         ->action(function (Invoice $record): void {}),
                     Action::make('send email')
                         ->label(trans('ip.send_email'))
-                        ->modalDescription('todo: make sure we can email the Invoice through an action,
-                            so need for modal anymore')
-                        ->action(function (Invoice $record): void {}),
+                        ->action(function (Invoice $record): void {
+                            app(InvoiceService::class)->sendInvoiceEmail($record);
+                            // Optionally, show a notification
+                            \Filament\Notifications\Notification::make()
+                                ->title(trans('ip.email_sent'))
+                                ->body(trans('ip.invoice_email_sent_successfully'))
+                                ->success()
+                                ->send();
+                        }),
+                    DeleteAction::make('delete')
+                        ->action(function (Invoice $record, array $data) {
+                            app(InvoiceService::class)->deleteInvoice($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

@@ -47,6 +47,14 @@ class DocumentGroupForm
                                         TextInput::make('left_pad')
                                             ->label(trans('ip.left_pad'))
                                             ->numeric(),
+
+                                        TextInput::make('last_month')
+                                            ->label('Last Month')
+                                            ->numeric(),
+
+                                        TextInput::make('last_week')
+                                            ->label('Last Week')
+                                            ->numeric(),
                                     ])
                                     ->columnSpan(1),
                             ]),

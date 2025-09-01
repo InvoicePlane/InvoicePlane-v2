@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
@@ -28,40 +29,39 @@ use Modules\Payments\Models\Payment;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                             $id
- * @property int                             $company_id
- * @property int                             $customer_id
- * @property int                             $group_id
- * @property int                             $user_id
- * @property string|null                     $number
- * @property Carbon                          $invoiced_at
- * @property int                             $invoice_status_id
- * @property Carbon                          $due_at
- * @property string                          $url_key
- * @property string|null                     $currency_code
- * @property float                           $exchange_rate
- * @property bool                            $is_viewed
- * @property string                          $sign
- * @property float                           $subtotal
- * @property float|null                      $item_tax_total
- * @property float                           $tax
- * @property float                           $total
- * @property float                           $paid
- * @property float                           $balance
- * @property float                           $discount
- * @property string|null                     $template
- * @property string|null                     $summary
- * @property string|null                     $terms
- * @property string|null                     $footer
- * @property Company                         $company
- * @property Customer                        $customer
- * @property DocumentGroup                   $group
- * @property User                            $user
- * @property Collection|Expense[]            $expenses
- * @property Collection|InvoiceItem[]        $invoice_items
- * @property Collection|TaxRate[]            $tax_rates
- * @property Collection|InvoiceTransaction[] $invoice_transactions
- * @property Collection|Payment[]            $payments
+ * @property int                      $id
+ * @property int                      $company_id
+ * @property int                      $customer_id
+ * @property int                      $group_id
+ * @property int                      $user_id
+ * @property string|null              $number
+ * @property Carbon                   $invoiced_at
+ * @property int                      $invoice_status_id
+ * @property Carbon                   $due_at
+ * @property string                   $url_key
+ * @property string|null              $currency_code
+ * @property float                    $exchange_rate
+ * @property bool                     $is_viewed
+ * @property string                   $sign
+ * @property float                    $subtotal
+ * @property float|null               $item_tax_total
+ * @property float                    $tax
+ * @property float                    $total
+ * @property float                    $paid
+ * @property float                    $balance
+ * @property float                    $discount
+ * @property string|null              $template
+ * @property string|null              $summary
+ * @property string|null              $terms
+ * @property string|null              $footer
+ * @property Company                  $company
+ * @property Customer                 $customer
+ * @property DocumentGroup            $group
+ * @property User                     $user
+ * @property Collection|Expense[]     $expenses
+ * @property Collection|InvoiceItem[] $invoice_items
+ * @property Collection|TaxRate[]     $tax_rates
+ * @property Collection|Payment[]     $payments
  */
 class Invoice extends Model
 {
@@ -149,7 +149,7 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): HasMany
+    public function mailQueue(): Builder
     {
         return $this->hasMany(MailQueue::class, 'mailable_id')
             ->where('mailable_type', self::class);
@@ -174,11 +174,6 @@ class Invoice extends Model
     {
         return $this->belongsToMany(TaxRate::class, 'invoice_tax_rates')
             ->withPivot('id', 'include_item_tax', 'tax_total');
-    }
-
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(InvoiceTransaction::class);
     }
 
     public function user(): BelongsTo

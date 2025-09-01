@@ -3,8 +3,10 @@
 namespace Modules\Products\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Products\Models\ProductCategory;
+use Throwable;
 
 class ProductCategoryService extends BaseService
 {
@@ -27,5 +29,19 @@ class ProductCategoryService extends BaseService
         ]);
 
         return $model;
+    }
+
+    public function deleteProductCategory(ProductCategory $category, array $data = []): ProductCategory
+    {
+        DB::beginTransaction();
+        try {
+            $category->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $category;
     }
 }

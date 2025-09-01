@@ -4,12 +4,14 @@ namespace Modules\Projects\Filament\Company\Resources\Tasks\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Task;
+use Modules\Projects\Services\TaskService;
 
 class TasksTable
 {
@@ -79,13 +81,17 @@ class TasksTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->mutateDataUsing(fn (array $data) => $data)
                         ->action(
-                            fn (\Modules\Projects\Models\Task $record, array $data) => app(\Modules\Projects\Services\TaskService::class)
+                            fn (Task $record, array $data) => app(TaskService::class)
                                 ->updateTask($record, $data)
                         )
                         ->modalWidth('full')
                         ->tooltip(trans('filament-actions::edit.single.label')),
+                    DeleteAction::make('delete')
+                        ->action(
+                            fn (Task $record, array $data) => app(TaskService::class)
+                                ->deleteTask($record)
+                        ),
                 ]),
             ])
             ->toolbarActions([

@@ -2,14 +2,10 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 
-/**
- * @extends Factory<Product>
- */
 class ProductFactory extends AbstractFactory
 {
     protected $model = Product::class;

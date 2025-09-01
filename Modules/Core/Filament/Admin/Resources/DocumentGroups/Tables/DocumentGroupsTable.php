@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Admin\Resources\DocumentGroups\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -60,15 +61,14 @@ class DocumentGroupsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->mutateDataUsing(function (array $data, DocumentGroup $record) {
-                            $data['name'] = $record->name;
-
-                            return $data;
-                        })
                         ->action(function (DocumentGroup $record, array $data) {
-                            app(DocumentGroupService::class)->updateUser($record, $data);
+                            app(DocumentGroupService::class)->updateDocumentGroup($record, $data);
                         })
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (DocumentGroup $record, array $data) {
+                            app(DocumentGroupService::class)->deleteDocumentGroup($record);
+                        }),
                 ]),
             ])
             ->toolbarActions([

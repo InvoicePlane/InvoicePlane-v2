@@ -4,6 +4,7 @@ namespace Modules\Products\Filament\Company\Resources\Products\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -64,6 +65,10 @@ class ProductsTable
                             app(ProductService::class)->updateProduct($record, $data);
                         })
                         ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Product $record, array $data) {
+                            app(ProductService::class)->deleteProduct($record, $data);
+                        }),
                 ]),
             ])
             ->toolbarActions([

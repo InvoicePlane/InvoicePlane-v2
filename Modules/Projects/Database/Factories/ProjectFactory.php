@@ -2,14 +2,10 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
-/**
- * @extends Factory<\Modules\Projects\Models\Project>
- */
 class ProjectFactory extends AbstractFactory
 {
     protected $model = Project::class;

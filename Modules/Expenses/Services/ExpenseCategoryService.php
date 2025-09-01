@@ -3,9 +3,11 @@
 namespace Modules\Expenses\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Expenses\Models\ExpenseCategory;
 use RuntimeException;
+use Throwable;
 
 class ExpenseCategoryService extends BaseService
 {
@@ -42,5 +44,19 @@ class ExpenseCategoryService extends BaseService
         ]);
 
         return $model;
+    }
+
+    public function deleteExpenseCategory(ExpenseCategory $expenseCategory): ExpenseCategory
+    {
+        DB::beginTransaction();
+        try {
+            $expenseCategory->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $expenseCategory;
     }
 }

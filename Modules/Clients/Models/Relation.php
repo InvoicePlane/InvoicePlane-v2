@@ -18,41 +18,39 @@ use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                           $id
- * @property int                           $company_id
- * @property int|null                      $primary_contact_id
- * @property string                        $relation_type
- * @property string                        $relation_status
- * @property string                        $relation_number
- * @property string                        $company_name
- * @property string|null                   $trading_name
- * @property string|null                   $unique_name
- * @property string|null                   $id_number
- * @property string|null                   $coc_number
- * @property string|null                   $vat_number
- * @property Carbon                        $registered_at
- * @property mixed                         $created_at
- * @property mixed                         $updated_at
- * @property Invoice[]                     $invoices
- * @property Quote[]                       $quotes
- * @property Project[]                     $projects
- * @property Contact                       $contact
- * @property string|null                   $currency_code
- * @property string|null                   $language
- * @property Company                       $company
- * @property Collection|Contact[]          $contacts
- * @property Collection|Expense[]          $expenses
- * @property Collection|Payment[]          $payments
- * @property Collection|RecurringInvoice[] $recurring_invoices
- * @property Collection|User[]             $users
- * @property Task[]                        $tasks
+ * @property int                  $id
+ * @property int                  $company_id
+ * @property int|null             $primary_contact_id
+ * @property string               $relation_type
+ * @property string               $relation_status
+ * @property string               $relation_number
+ * @property string               $company_name
+ * @property string|null          $trading_name
+ * @property string|null          $unique_name
+ * @property string|null          $id_number
+ * @property string|null          $coc_number
+ * @property string|null          $vat_number
+ * @property Carbon               $registered_at
+ * @property mixed                $created_at
+ * @property mixed                $updated_at
+ * @property Invoice[]            $invoices
+ * @property Quote[]              $quotes
+ * @property Project[]            $projects
+ * @property Contact              $contact
+ * @property string|null          $currency_code
+ * @property string|null          $language
+ * @property Company              $company
+ * @property Collection|Contact[] $contacts
+ * @property Collection|Expense[] $expenses
+ * @property Collection|Payment[] $payments
+ * @property Collection|User[]    $users
+ * @property Task[]               $tasks
  */
 class Relation extends Model
 {
@@ -152,11 +150,6 @@ class Relation extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'prospect_id');
-    }
-
-    public function recurring_invoices(): HasMany
-    {
-        return $this->hasMany(RecurringInvoice::class, 'customer_id');
     }
 
     public function tasks(): HasMany
