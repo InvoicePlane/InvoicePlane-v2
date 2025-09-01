@@ -698,4 +698,33 @@ return [
     'expenses'           => 'Expenses',
     'bill_this_expense'  => 'Bill This Expense',
     #endregion
+
+    # Settings
+    'yes' => 'Yes',
+    'first_day_of_the_week'          => '',
+    'number_of_items_in_list'        => '',
+    'default_decimals_for_items'     => '',
+    'disable_the_quickactions'       => '',
+    'use_monospace_font_for_amounts' => '',
+    'display_responsive_item_list'   => '',
+    'send_all_emails_bcc'            => 'Send all outgoing Emails as BCC to the admin account',
+    'einvoicing_enable'              => '',
+    'qr_code_settings'=> '',
+    'qr_code_settings_enable_hint' => 'Enables you to include a QR code in visitor and PDF invoices. To display it, you need to enter a beneficiary, an IBAN and a correct BIC.',
+    'qr_code_settings_enable'=> '',
+    'qr_code_settings_recipient'=> '',
+    'qr_code_settings_remittance_text' => 'Remittance Text Tags',
+    'einvoicing_enable_help' => 'This option activates the electronic invoice system to be sent to the customer. Examples to adapt to your needs are available in this repository:',
+
+    'online_payment' => 'Online Payment',
+    'online_payments' => 'Online Payments',
+    'enable_online_payments' => 'Enable Online Payments',
+    'add_payment_provider' => 'Add a Payment Provider',
+    'stripe' => 'Stripe',
+    'paypal' => 'PayPal',
+    'api_key' => 'Api Key',
+    'publishable_key' => 'Publishable Key',
+    'enable_the_projects_module' => 'Enable the Projects module',
+    'update_check' => 'Update check'
+    #end Settings
 ];
