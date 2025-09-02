@@ -2,28 +2,28 @@
 
 namespace Modules\Core\Filament\Admin\Pages;
 
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Components\Section;
-use Filament\Pages\Page;
-use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Str;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 
 class Settings extends Page implements Forms\Contracts\HasForms
 {
     use Forms\Concerns\InteractsWithForms;
 
-    protected string $view = 'core::filament.admin.pages.settings';
-
     public array $settings = [];
+
+    protected string $view = 'core::filament.admin.pages.settings';
 
     public function mount(): void
     {
@@ -84,7 +84,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.theme'))
                                         ->required(),
 
-                                   Select::make('settings.first_day_of_the_week')
+                                    Select::make('settings.first_day_of_the_week')
                                         ->options([
                                             'sun' => trans('ip.sunday'),
                                             'mon' => trans('ip.monday'),
@@ -93,35 +93,35 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->required(),
 
                                     Select::make('settings.date_format')
-                                          ->options([
-                                              'd/m/Y' => date('d/m/Y') . ' (d/m/Y)',
-                                              'd-m-Y' => date('d-m-Y') . ' (d-m-Y)',
-                                              'd-M-Y' => date('d-M-Y') . ' (d-M-Y)',
-                                              'd.m.Y' => date('d.m.Y') . ' (d.m.Y)',
-                                              'j.n.Y' => date('j.n.Y') . ' (j.n.Y)',
-                                              'd M,Y' => date('d M,Y') . ' (d M,Y)',
-                                              'm/d/Y' => date('m/d/Y') . ' (m/d/Y)',
-                                              'm-d-Y' => date('m-d-Y') . ' (m-d-Y)',
-                                              'm.d.Y' => date('m.d.Y') . ' (m.d.Y)',
-                                              'Y/m/d' => date('Y/m/d') . ' (Y/m/d)',
-                                              'Y-m-d' => date('Y-m-d') . ' (Y-m-d)',
-                                              'Y.m.d' => date('Y.m.d') . ' (Y.m.d)',
-                                          ])
+                                        ->options([
+                                            'd/m/Y' => date('d/m/Y') . ' (d/m/Y)',
+                                            'd-m-Y' => date('d-m-Y') . ' (d-m-Y)',
+                                            'd-M-Y' => date('d-M-Y') . ' (d-M-Y)',
+                                            'd.m.Y' => date('d.m.Y') . ' (d.m.Y)',
+                                            'j.n.Y' => date('j.n.Y') . ' (j.n.Y)',
+                                            'd M,Y' => date('d M,Y') . ' (d M,Y)',
+                                            'm/d/Y' => date('m/d/Y') . ' (m/d/Y)',
+                                            'm-d-Y' => date('m-d-Y') . ' (m-d-Y)',
+                                            'm.d.Y' => date('m.d.Y') . ' (m.d.Y)',
+                                            'Y/m/d' => date('Y/m/d') . ' (Y/m/d)',
+                                            'Y-m-d' => date('Y-m-d') . ' (Y-m-d)',
+                                            'Y.m.d' => date('Y.m.d') . ' (Y.m.d)',
+                                        ])
                                         ->label(trans('ip.date_format'))
                                         ->required(),
 
-                                Select::make('settings.default_country')
-                                    ->label(trans('ip.default_country'))
+                                    Select::make('settings.default_country')
+                                        ->label(trans('ip.default_country'))
                                         ->options(config('countries'))
-                                    ->required()
-                                    ->searchable(),
+                                        ->required()
+                                        ->searchable(),
 
-                                TextInput::make('settings.number_of_items_in_list')
-                                    ->label(trans('ip.number_of_items_in_list'))
-                                    ->numeric()
-                                    ->required()
-                                    ->minValue(0)
-                                    ->maxValue(100),
+                                    TextInput::make('settings.number_of_items_in_list')
+                                        ->label(trans('ip.number_of_items_in_list'))
+                                        ->numeric()
+                                        ->required()
+                                        ->minValue(0)
+                                        ->maxValue(100),
                                 ]),
 
                             Section::make('Amount')
@@ -132,22 +132,21 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->string()
                                         ->required(),
 
-                                   Select::make('settings.currency_symbol_placement')
+                                    Select::make('settings.currency_symbol_placement')
                                         ->options([
                                             'before'                   => trans('ip.before_amount'),
                                             'after'                    => trans('ip.after_amount'),
-                                            'after_non_breaking_space' => trans('ip.after_amount_with_nonbreaking_space')
-
+                                            'after_non_breaking_space' => trans('ip.after_amount_with_nonbreaking_space'),
                                         ])
                                         ->label(trans('ip.currency_symbol_placement'))
                                         ->required(),
 
-                                   Select::make('settings.currency_code')
+                                    Select::make('settings.currency_code')
                                         ->options(config('currencies'))
                                         ->label(trans('ip.currency_code'))
                                         ->required(),
 
-                                   Select::make('settings.tax_rate_decimal_places')
+                                    Select::make('settings.tax_rate_decimal_places')
                                         ->options([
                                             '2' => '2',
                                             '3' => '3',
@@ -155,7 +154,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.tax_rate_decimal_places'))
                                         ->required(),
 
-                                   Select::make('settings.number_format')
+                                    Select::make('settings.number_format')
                                         ->options([
                                             'number_format_us_uk'         => trans('ip.1_000_000_00_us_uk_format'),
                                             'number_format_european'      => trans('ip.1_000_000_00_european_format'),
@@ -167,7 +166,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.number_format'))
                                         ->required(),
 
-                                   Select::make('settings.default_decimals_for_items')
+                                    Select::make('settings.default_decimals_for_items')
                                         ->options([
                                             '1' => '1',
                                             '2' => '2',
@@ -187,12 +186,12 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ->schema([
                                     Select::make('settings.quote_overview_period')
                                         ->options([
-                                            'this-month'    => trans('ip.this_month'),
-                                            'last-month'    => trans('ip.last_month'),
-                                            'this-quarter'  => trans('ip.this_quarter'),
-                                            'last-quarter'  => trans('ip.last_quarter'),
-                                            'this-year'     => trans('ip.this_year'),
-                                            'last-year'     => trans('ip.last_year'),
+                                            'this-month'   => trans('ip.this_month'),
+                                            'last-month'   => trans('ip.last_month'),
+                                            'this-quarter' => trans('ip.this_quarter'),
+                                            'last-quarter' => trans('ip.last_quarter'),
+                                            'this-year'    => trans('ip.this_year'),
+                                            'last-year'    => trans('ip.last_year'),
                                         ])
 
                                         ->label(trans('ip.quote_overview_period'))
@@ -200,12 +199,12 @@ class Settings extends Page implements Forms\Contracts\HasForms
 
                                     Select::make('settings.invoice_overview_period.')
                                         ->options([
-                                            'this-month'    => trans('ip.this_month'),
-                                            'last-month'    => trans('ip.last_month'),
-                                            'this-quarter'  => trans('ip.this_quarter'),
-                                            'last-quarter'  => trans('ip.last_quarter'),
-                                            'this-year'     => trans('ip.this_year'),
-                                            'last-year'     => trans('ip.last_year'),
+                                            'this-month'   => trans('ip.this_month'),
+                                            'last-month'   => trans('ip.last_month'),
+                                            'this-quarter' => trans('ip.this_quarter'),
+                                            'last-quarter' => trans('ip.last_quarter'),
+                                            'this-year'    => trans('ip.this_year'),
+                                            'last-year'    => trans('ip.last_year'),
                                         ])
 
                                         ->label(trans('ip.invoice_overview_period'))
@@ -280,7 +279,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->required()
                                         ->suffixAction(
                                             Action::make(trans('ip.generate'))
-                                            ->icon('heroicon-s-arrow-path')
+                                                ->icon('heroicon-s-arrow-path')
                                                 ->label(trans('ip.generate'))
                                                 ->action(function ($set) {
                                                     $set('settings.cron_key', Str::random(16));
@@ -388,17 +387,17 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     Select::make('settings.email_invoice_template')
                                         ->label(trans('ip.default_email_template'))
                                         ->options([]),
-                                        //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
+                                    //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
 
                                     Select::make('settings.email_invoice_template_paid')
                                         ->label(trans('ip.email_template_paid'))
                                         ->options([]),
-                                        //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
+                                    //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
 
                                     Select::make('settings.email_invoice_template_overdue')
                                         ->label(trans('ip.email_template_overdue'))
                                         ->options([]),
-                                        //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
+                                    //->options(fn() => $email_templates_invoice->pluck('email_template_title', 'email_template_id')),
 
                                     RichEditor::make('settings.pdf_invoice_footer')
                                         ->label(trans('ip.pdf_invoice_footer'))
@@ -470,7 +469,6 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ]),
                         ]),
 
-
                     Tab::make(trans('ip.quotes'))
                         ->schema([
                             Section::make(trans('ip.quote'))
@@ -480,7 +478,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     Select::make('settings.default_quote_group')
                                         ->label(trans('ip.default_quote_group'))
                                         ->options([
-                                            ''   => trans('ip.none'),
+                                            '' => trans('ip.none'),
                                         ]),
 
                                     RichEditor::make('settings.default_quote_notes')
@@ -517,8 +515,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     Select::make('settings.mark_quotes_as_sent_when_pdf_is_generated')
                                         ->label(trans('ip.mark_quotes_as_sent_when_pdf_is_generated'))
                                         ->options([
-                                            'no'   => 'No',
-                                            'yes'     => 'Yes',
+                                            'no'  => 'No',
+                                            'yes' => 'Yes',
                                         ])
                                         ->default('dompdf'),
 
@@ -533,7 +531,6 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.quote_default_pdf_template'))
                                         // TODO: Make options dynamic
                                         ->options([
-
                                         ]),
 
                                     Select::make('settings.quote_default_public_pdf_template')
@@ -678,7 +675,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->searchable()
                                         // TODO: Make options dynamic
                                         ->options([
-                                            '' => ''
+                                            '' => '',
                                         ]),
                                 ]),
 
@@ -707,12 +704,12 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->searchable()
                                         // TODO: Make options dynamic
                                         ->options([
-                                            '' => ''
+                                            '' => '',
                                         ]),
 
                                     Checkbox::make('settings.paypal_test_mode')
-                                        ->label(trans('ip.test_mode'))
-                                ])
+                                        ->label(trans('ip.test_mode')),
+                                ]),
                         ]),
 
                     Tab::make(trans('ip.projects'))
@@ -750,8 +747,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->button()
                                         ->color('primary')
                                         ->disabled()
-                                        ->action(function () {
-                                        }),
+                                        ->action(function () {}),
                                 ]),
 
                             Section::make(trans('ip.invoiceplane_news'))
@@ -769,8 +765,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->iconColor('alert'),
                                 ]),
                         ]),
-                ])
+                ]),
         ];
     }
-
 }

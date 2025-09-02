@@ -228,5 +228,5 @@ return [
     'TV' => 'Tuvalu',
     'UG' => 'Uganda',
     'UA' => 'Ukraine',
-    'AE' => 'United Arab Emirates'
+    'AE' => 'United Arab Emirates',
 ];
