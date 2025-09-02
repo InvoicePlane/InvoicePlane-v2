@@ -2,65 +2,45 @@
 
 namespace Modules\Core\Filament\Admin\Pages;
 
-use Filament\Forms;
-use Filament\Forms\Components\Checkbox;
+use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Support\Str;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\TaxRate;
 
-class Settings extends Page implements Forms\Contracts\HasForms
+class Settings extends Page implements HasTable, HasForms
 {
-    use Forms\Concerns\InteractsWithForms;
+    use InteractsWithForms;
+    use InteractsWithTable;
 
-    public array $settings = [];
+    protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-server-stack';
 
     protected string $view = 'core::filament.admin.pages.settings';
 
+    public function boot(): void {}
+
     public function mount(): void
     {
-        // Setting default values for now (Do it with DB migration later?)
-        $this->settings['language'] ??= 'en';
-        $this->settings['theme'] ??= 'default';
-        $this->settings['first_day_of_the_week'] ??= 'mon';
-        $this->settings['date_format'] ??= 'Y-m-d';
-        $this->settings['default_country'] ??= 'US';
-        $this->settings['number_of_items_in_list'] ??= 20;
-        $this->settings['currency_symbol'] ??= '$';
-        $this->settings['currency_symbol_placement'] ??= 'before';
-        $this->settings['currency_code'] ??= 'USD';
-        $this->settings['tax_rate_decimal_places'] ??= '2';
-        $this->settings['number_format'] ??= 'number_format_european';
-        $this->settings['default_decimals_for_items'] ??= '2';
-        $this->settings['quote_overview_period'] ??= 'this-month';
-
-        $this->settings['invoice_overview_period'] ??= 'this-month';
-        $this->settings['disable_the_quickactions'] ??= 'no';
-        $this->settings['disable_sidebar'] ??= 'no';
-        $this->settings['custom_title'] ??= '';
-        $this->settings['use_monospace_amounts'] ??= 'no';
-        $this->settings['login_logo'] ??= null; // file upload → default null
-        $this->settings['open_reports_new_tab'] ??= 'no';
-        $this->settings['responsive_item_list'] ??= 'no';
-        $this->settings['disable_sidebar'] ??= 'no';
-        $this->settings['custom_title'] ??= '';
-        $this->settings['use_monospace_font_for_amounts'] ??= 'yes';
-        $this->settings['open_reports_in_new_tab'] ??= 'yes';
-        $this->settings['display_responsive_item_list'] ??= 'yes';
-        $this->settings['send_all_emails_bcc'] ??= 'no';
-        $this->settings['cron_key'] ??= 'R83fys4wWoNuUXtv';
+        //$this->refreshCacheData();
     }
 
     protected function getFormSchema(): array
     {
         return [
-            Tabs::make('Tabs')
+            Tabs::make('Cache Status Tabs')
                 ->tabs([
                     Tab::make('General')
                         ->schema([
@@ -68,7 +48,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ->columns(2)
                                 ->schema([
                                     Select::make('settings.language')
-                                        // TODO: Make it automaticly grab langauges from then lang dir.
+                                        // TODO: Make it automatically grab languages from then lang dir.
                                         ->options(config('languages'))
                                         ->searchable()
                                         ->label(trans('ip.language'))
@@ -194,7 +174,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.quote_overview_period'))
                                         ->required(),
 
-                                    Select::make('settings.invoice_overview_period.')
+                                    Select::make('settings.invoice_overview_period')
                                         ->options([
                                             'this-month'   => trans('ip.this_month'),
                                             'last-month'   => trans('ip.last_month'),
@@ -206,10 +186,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.invoice_overview_period'))
                                         ->required(),
 
-                                    Select::make('settings.disable_the_quickactions')
-                                        ->options([
-                                            'no' => 'No',
-                                        ])
+                                    Toggle::make('settings.disable_the_quickactions')
                                         ->label(trans('ip.disable_the_quickactions'))
                                         ->required(),
                                 ]),
@@ -217,11 +194,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make('Interface')
                                 ->columns(2)
                                 ->schema([
-                                    Select::make('settings.disable_sidebar')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    Toggle::make('settings.disable_sidebar')
                                         ->label(trans('ip.disable_sidebar'))
                                         ->required(),
 
@@ -229,11 +202,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->label(trans('ip.custom_title'))
                                         ->string(),
 
-                                    Select::make('settings.use_monospace_font_for_amounts')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    Toggle::make('settings.use_monospace_font_for_amounts')
                                         ->label(trans('ip.use_monospace_font_for_amounts'))
                                         ->required(),
 
@@ -243,19 +212,13 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->directory('logos')
                                         ->maxSize(2048),
 
-                                    Select::make('settings.open_reports_in_new_tab')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    Toggle::make('settings.open_reports_in_new_tab')
+                                        ->default(true)
                                         ->label(trans('ip.open_reports_in_new_tab'))
                                         ->required(),
 
-                                    Select::make('settings.display_responsive_item_list')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    Toggle::make('settings.display_responsive_item_list')
+                                        ->default(true)
                                         ->label(trans('ip.display_responsive_item_list'))
                                         ->required(),
                                 ]),
@@ -263,18 +226,15 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make('System')
                                 ->columns(2)
                                 ->schema([
-                                    Select::make('settings.send_all_emails_bcc')
-                                        ->options([
-                                            'no'  => trans('ip.no'),
-                                            'yes' => trans('ip.yes'),
-                                        ])
+                                    Toggle::make('settings.send_all_emails_bcc')
+                                        ->default(true)
                                         ->label(trans('ip.send_all_emails_bcc'))
                                         ->required(),
                                     TextInput::make('settings.cron_key')
                                         ->label(trans('ip.cron_key'))
                                         ->required()
                                         ->suffixAction(
-                                            Action::make(trans('ip.generate'))
+                                            Action::make(trans('ip.generate_cron_key'))
                                                 ->icon('heroicon-s-arrow-path')
                                                 ->label(trans('ip.generate'))
                                                 ->action(function ($set) {
@@ -292,37 +252,32 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ->schema([
                                     Select::make('settings.default_invoice_group')
                                         ->label(trans('ip.default_invoice_group'))
-                                        ->options([])
-                                        //->options(fn() => \App\Models\InvoiceGroup::pluck('invoice_group_name', 'invoice_group_id'))
+                                        //->options([])
+                                        ->options(fn () => DocumentGroup::pluck('name', 'id'))
                                         ->placeholder(trans('ip.none')),
 
-                                    Textarea::make('settings.default_invoice_terms')
+                                    RichEditor::make('settings.default_invoice_terms')
                                         ->label(trans('ip.default_terms'))
-                                        ->rows(4),
+                                        ->toolbarButtons([
+                                            'bold',
+                                            'italic',
+                                        ]),
 
                                     Select::make('settings.invoice_default_payment_method')
                                         ->label(trans('ip.default_payment_method'))
                                         ->options([])
-                                        //->options(fn() => \App\Models\PaymentMethod::pluck('payment_method_name', 'payment_method_id'))
+                                        //->options(fn () => PaymentMethod::cases())
                                         ->placeholder(trans('ip.none')),
 
                                     TextInput::make('settings.invoices_due_after')
                                         ->label(trans('ip.invoices_due_after'))
                                         ->numeric(),
 
-                                    Select::make('settings.generate_invoice_number_for_draft')
-                                        ->label(trans('ip.generate_invoice_number_for_draft'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ]),
+                                    Toggle::make('settings.generate_invoice_number_for_draft')
+                                        ->label(trans('ip.generate_invoice_number_for_draft')),
 
-                                    Select::make('settings.einvoicing')
+                                    Toggle::make('settings.einvoicing')
                                         ->label(trans('ip.einvoicing_enable'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ])
                                         ->helperText(trans('ip.einvoicing_enable_help')),
                                 ]),
 
@@ -398,22 +353,15 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     RichEditor::make('settings.pdf_invoice_footer')
                                         ->label(trans('ip.pdf_invoice_footer'))
                                         ->toolbarButtons([
-                                            'blockquote',
                                             'bold',
-                                            'codeBlock',
                                             'italic',
-                                            'link',
-                                            'redo',
-                                            'strike',
-                                            'underline',
-                                            'undo',
                                         ]),
                                 ]),
 
                             Section::make(trans('ip.qr_code_settings'))
                                 ->columns(2)
                                 ->schema([
-                                    Checkbox::make('settings.qr_code')
+                                    Toggle::make('settings.qr_code')
                                         ->label(trans('ip.qr_code_settings_enable'))
                                         ->helperText(trans('ip.qr_code_settings_enable_hint')),
 
@@ -437,12 +385,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make(trans('ip.email_settings'))
                                 ->columns(2)
                                 ->schema([
-                                    Select::make('settings.automatic_email_on_recur')
-                                        ->label(trans('ip.automatic_email_on_recur'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ]),
+                                    Toggle::make('settings.automatic_email_on_recur')
+                                        ->label(trans('ip.automatic_email_on_recur')),
                                 ]),
 
                             Section::make(trans('ip.other_settings'))
@@ -456,12 +400,9 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                             '4' => trans('ip.paid'),
                                         ]),
 
-                                    Select::make('settings.no_update_invoice_due_date_mail')
-                                        ->label(trans('ip.no_update_invoice_due_date_mail'))
-                                        ->options([
-                                            '1' => trans('ip.yes'),
-                                            '0' => trans('ip.no'),
-                                        ]),
+                                    Toggle::make('settings.no_update_invoice_due_date_mail')
+                                        ->default(true)
+                                        ->label(trans('ip.no_update_invoice_due_date_mail')),
                                 ]),
                         ]),
 
@@ -508,12 +449,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make(trans('ip.pdf_settings'))
                                 ->columns(2)
                                 ->schema([
-                                    Select::make('settings.mark_quotes_as_sent_when_pdf_is_generated')
+                                    Toggle::make('settings.mark_quotes_as_sent_when_pdf_is_generated')
                                         ->label(trans('ip.mark_quotes_as_sent_when_pdf_is_generated'))
-                                        ->options([
-                                            'no'  => 'No',
-                                            'yes' => 'Yes',
-                                        ])
                                         ->default('dompdf'),
 
                                     TextInput::make('settings.quote_standard_password')
@@ -565,14 +502,12 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     Select::make('settings.default_invoice_tax_rate')
                                         ->label(trans('ip.default_invoice_tax_rate'))
                                         // TODO: Make options dynamic
-                                        ->options([
-                                        ]),
+                                        ->options(fn () => TaxRate::pluck('name', 'id')),
 
                                     Select::make('settings.default_item_tax_rate')
                                         ->label(trans('ip.default_item_tax_rate'))
                                         // TODO: Make options dynamic
-                                        ->options([
-                                        ]),
+                                        ->options(fn () => TaxRate::pluck('name', 'id')),
                                 ]),
                         ]),
 
@@ -582,12 +517,9 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ->columns(2)
                                 ->schema([
                                     // TODO: Make options dynamic
-                                    Select::make('settings.email_pdf_attachment')
-                                        ->label(trans('ip.attach_quote_invoice_email'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ]),
+                                    Toggle::make('settings.email_pdf_attachment')
+                                        ->default(true)
+                                        ->label(trans('ip.attach_quote_invoice_email')),
 
                                     Select::make('settings.email_send_method')
                                         ->label(trans('ip.email_send_method'))
@@ -607,12 +539,9 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->email()
                                         ->placeholder('no-reply@example.com'),
 
-                                    Select::make('settings.smtp_authentication')
-                                        ->label(trans('ip.requires_authentication'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ]),
+                                    Toggle::make('settings.smtp_authentication')
+                                        ->default(true)
+                                        ->label(trans('ip.requires_authentication')),
 
                                     TextInput::make('settings.smtp_username')
                                         ->label(trans('ip.smtp_username'))
@@ -635,12 +564,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                             'tls' => 'TLS',
                                         ]),
 
-                                    Select::make('settings.smtp_verify_certs')
-                                        ->label(trans('ip.verify_smtp_certs'))
-                                        ->options([
-                                            '1' => trans('ip.yes'),
-                                            '0' => trans('ip.no'),
-                                        ]),
+                                    Toggle::make('settings.smtp_verify_certs')
+                                        ->label(trans('ip.verify_smtp_certs')),
                                 ]),
                         ]),
 
@@ -649,6 +574,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make(trans('ip.stripe'))
                                 ->afterHeader([
                                     Toggle::make('settings.stripe_enabled')
+                                        ->default(true)
                                         ->label(trans('ip.enabled'))
                                         ->inline(true)
                                         ->reactive(),
@@ -679,6 +605,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                 ->afterHeader([
                                     Toggle::make('settings.paypal_enabled')
                                         ->label(trans('ip.enabled'))
+                                        ->default(true)
                                         ->inline(true)
                                         ->reactive(),
                                 ])
@@ -703,7 +630,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                             '' => '',
                                         ]),
 
-                                    Checkbox::make('settings.paypal_test_mode')
+                                    Toggle::make('settings.paypal_test_mode')
+                                        ->default(true)
                                         ->label(trans('ip.test_mode')),
                                 ]),
                         ]),
@@ -713,12 +641,9 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make(trans('ip.projects'))
                                 ->columns(2)
                                 ->schema([
-                                    Select::make('settings.enable_the_projects_module')
-                                        ->label(trans('ip.enable_the_projects_module'))
-                                        ->options([
-                                            '1' => trans('ip.yes'),
-                                            '0' => trans('ip.no'),
-                                        ]),
+                                    Toggle::make('settings.enable_the_projects_module')
+                                        ->default(true)
+                                        ->label(trans('ip.enable_the_projects_module')),
 
                                     // TODO: Display current currency symbol
                                     TextInput::make('settings.default_hourly_rate')
@@ -761,7 +686,8 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->iconColor('alert'),
                                 ]),
                         ]),
-                ]),
+                ])
+                ->vertical(true),
         ];
     }
 }
