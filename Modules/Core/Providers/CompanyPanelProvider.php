@@ -182,7 +182,6 @@ class CompanyPanelProvider extends PanelProvider
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 $tenant = request('tenant');
-                //\Filament\Facades\Filament::getTenant()?->search_code
 
                 return $builder
                     ->items([
@@ -247,6 +246,7 @@ class CompanyPanelProvider extends PanelProvider
                     ->url(EditProfile::getUrl()),
                 Action::make('settings')
                     ->label(trans('ip.settings'))
+                    ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => fn (Action $action) => $action
                     ->label(trans('ip.logout'))
