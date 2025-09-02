@@ -62,7 +62,7 @@ class TaskForm
                                                 }
                                                 $project = Project::with('customer')->find($value);
 
-                                                return $project ? "{$project->name} – {$project->customer?->company_name}" : '';
+                                                return $project ? "{$project->project_name} – {$project->customer?->company_name}" : '';
                                             })
                                             ->createOptionForm([
                                                 Select::make('customer_id')
