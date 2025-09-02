@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Pages;
 
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -15,7 +14,6 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Illuminate\Support\Str;
 
 class Settings extends Page implements Forms\Contracts\HasForms
 {
@@ -47,7 +45,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
         $this->settings['disable_sidebar'] ??= 'no';
         $this->settings['custom_title'] ??= '';
         $this->settings['use_monospace_amounts'] ??= 'no';
-        $this->settings['login_logo'] ??= null; // file upload → default leeg
+        $this->settings['login_logo'] ??= null; // file upload → default null
         $this->settings['open_reports_new_tab'] ??= 'no';
         $this->settings['responsive_item_list'] ??= 'no';
         $this->settings['disable_sidebar'] ??= 'no';
@@ -77,7 +75,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                         ->required(),
 
                                     Select::make('settings.theme')
-                                        // TODO: Make it automaticly grab themes from themes dir.
+                                        // TODO: Make it automatically grab themes from themes dir.
                                         ->options([
                                             'default' => 'Default',
                                         ])
@@ -193,7 +191,6 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                             'this-year'    => trans('ip.this_year'),
                                             'last-year'    => trans('ip.last_year'),
                                         ])
-
                                         ->label(trans('ip.quote_overview_period'))
                                         ->required(),
 
@@ -206,7 +203,6 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                             'this-year'    => trans('ip.this_year'),
                                             'last-year'    => trans('ip.last_year'),
                                         ])
-
                                         ->label(trans('ip.invoice_overview_period'))
                                         ->required(),
 
@@ -431,7 +427,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                                     TextInput::make('settings.qr_code_bic')
                                         ->label(trans('ip.qr_code_settings_bic')),
 
-                                    // TODO: Make to select and fill in info dynamicly
+                                    // TODO: Make to select and fill in info dynamically
                                     TextInput::make('settings.qr_code_remittance_text')
                                         ->label(trans('ip.qr_code_settings_remittance_text'))
                                         ->placeholder('{{{invoice_number}}}')
@@ -474,7 +470,7 @@ class Settings extends Page implements Forms\Contracts\HasForms
                             Section::make(trans('ip.quote'))
                                 ->columns(2)
                                 ->schema([
-                                    // TODO: Make options dynamicly
+                                    // TODO: Make options dynamically
                                     Select::make('settings.default_quote_group')
                                         ->label(trans('ip.default_quote_group'))
                                         ->options([
