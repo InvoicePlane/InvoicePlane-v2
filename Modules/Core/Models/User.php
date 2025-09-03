@@ -59,7 +59,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
-        'is_admin'          => 'boolean',
         'is_active'         => 'boolean',
         'last_login'        => 'datetime',
         'preferences'       => 'array',

@@ -832,4 +832,11 @@ return [
     'yearly'                                    => 'Yearly',
     'years'                                     => 'Years',
     #endregion
+
+    #region AUTHENTICATION
+    'account_inactive'              => 'Your account is inactive. Please contact the administrator.',
+    'account_inactive_login_denied' => 'Login denied: Your account has been deactivated.',
+    'login_failed'                  => 'Login failed. Please check your credentials.',
+    'authentication_failed'         => 'Authentication failed.',
+    #endregion
 ];
