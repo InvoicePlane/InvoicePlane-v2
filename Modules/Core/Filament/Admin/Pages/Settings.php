@@ -34,7 +34,35 @@ class Settings extends Page implements HasTable, HasForms
 
     public function mount(): void
     {
-        //$this->refreshCacheData();
+        // Setting default values for now (Do it with DB migration later?)
+        $this->settings['cron_key'] ??= 'R83fys4wWoNuUXtv';
+        $this->settings['currency_code'] ??= 'USD';
+        $this->settings['currency_symbol'] ??= '$';
+        $this->settings['currency_symbol_placement'] ??= 'before';
+        $this->settings['custom_title'] ??= '';
+        $this->settings['custom_title'] ??= '';
+        $this->settings['date_format'] ??= 'Y-m-d';
+        $this->settings['default_country'] ??= 'US';
+        $this->settings['default_decimals_for_items'] ??= '2';
+        $this->settings['disable_sidebar'] ??= false;
+        $this->settings['disable_sidebar'] ??= false;
+        $this->settings['disable_the_quickactions'] ??= false;
+        $this->settings['display_responsive_item_list'] ??= true;
+        $this->settings['first_day_of_the_week'] ??= 'mon';
+        $this->settings['invoice_overview_period'] ??= 'this-month';
+        $this->settings['language'] ??= 'en';
+        $this->settings['login_logo'] ??= null; // file upload → default null
+        $this->settings['number_format'] ??= 'number_format_european';
+        $this->settings['number_of_items_in_list'] ??= 25;
+        $this->settings['open_reports_in_new_tab'] ??= true;
+        $this->settings['open_reports_new_tab'] ??= false;
+        $this->settings['quote_overview_period'] ??= 'this-month';
+        $this->settings['responsive_item_list'] ??= false;
+        $this->settings['send_all_emails_bcc'] ??= false;
+        $this->settings['tax_rate_decimal_places'] ??= '2';
+        $this->settings['theme'] ??= 'default';
+        $this->settings['use_monospace_amounts'] ??= false;
+        $this->settings['use_monospace_font_for_amounts'] ??= true;
     }
 
     protected function getFormSchema(): array
@@ -71,20 +99,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
 
                                     Select::make('settings.date_format')
-                                        ->options([
-                                            'd/m/Y' => date('d/m/Y') . ' (d/m/Y)',
-                                            'd-m-Y' => date('d-m-Y') . ' (d-m-Y)',
-                                            'd-M-Y' => date('d-M-Y') . ' (d-M-Y)',
-                                            'd.m.Y' => date('d.m.Y') . ' (d.m.Y)',
-                                            'j.n.Y' => date('j.n.Y') . ' (j.n.Y)',
-                                            'd M,Y' => date('d M,Y') . ' (d M,Y)',
-                                            'm/d/Y' => date('m/d/Y') . ' (m/d/Y)',
-                                            'm-d-Y' => date('m-d-Y') . ' (m-d-Y)',
-                                            'm.d.Y' => date('m.d.Y') . ' (m.d.Y)',
-                                            'Y/m/d' => date('Y/m/d') . ' (Y/m/d)',
-                                            'Y-m-d' => date('Y-m-d') . ' (Y-m-d)',
-                                            'Y.m.d' => date('Y.m.d') . ' (Y.m.d)',
-                                        ])
+                                        ->options(config('ip.date_formats'))
                                         ->label(trans('ip.date_format'))
                                         ->required(),
 
@@ -94,12 +109,9 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required()
                                         ->searchable(),
 
-                                    TextInput::make('settings.number_of_items_in_list')
+                                    Select::make('settings.number_of_items_in_list')
                                         ->label(trans('ip.number_of_items_in_list'))
-                                        ->numeric()
-                                        ->required()
-                                        ->minValue(0)
-                                        ->maxValue(100),
+                                        ->options(config('ip.number_of_items_in_list')),
                                 ]),
 
                             Section::make('Amount')
@@ -120,19 +132,17 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
 
                                     Select::make('settings.currency_code')
-                                        ->options(config('currencies'))
                                         ->label(trans('ip.currency_code'))
+                                        ->options(config('currencies'))
                                         ->required(),
 
                                     Select::make('settings.tax_rate_decimal_places')
-                                        ->options([
-                                            '2' => '2',
-                                            '3' => '3',
-                                        ])
                                         ->label(trans('ip.tax_rate_decimal_places'))
+                                        ->options(config('ip.tax_rate_decimal_places'))
                                         ->required(),
 
                                     Select::make('settings.number_format')
+                                        ->label(trans('ip.number_format'))
                                         ->options([
                                             'number_format_us_uk'         => trans('ip.1_000_000_00_us_uk_format'),
                                             'number_format_european'      => trans('ip.1_000_000_00_european_format'),
@@ -141,21 +151,11 @@ class Settings extends Page implements HasTable, HasForms
                                             'number_format_compact_point' => trans('ip.1000000_00_compact_point'),
                                             'number_format_compact_comma' => trans('ip.1000000_00_compact_comma'),
                                         ])
-                                        ->label(trans('ip.number_format'))
                                         ->required(),
 
                                     Select::make('settings.default_decimals_for_items')
-                                        ->options([
-                                            '1' => '1',
-                                            '2' => '2',
-                                            '3' => '3',
-                                            '4' => '4',
-                                            '5' => '5',
-                                            '6' => '6',
-                                            '7' => '7',
-                                            '8' => '8',
-                                        ])
                                         ->label(trans('ip.default_decimals_for_items'))
+                                        ->options(config('ip.default_decimals_for_items'))
                                         ->required(),
                                 ]),
 
@@ -163,6 +163,7 @@ class Settings extends Page implements HasTable, HasForms
                                 ->columns(2)
                                 ->schema([
                                     Select::make('settings.quote_overview_period')
+                                        ->label(trans('ip.quote_overview_period'))
                                         ->options([
                                             'this-month'   => trans('ip.this_month'),
                                             'last-month'   => trans('ip.last_month'),
@@ -171,10 +172,10 @@ class Settings extends Page implements HasTable, HasForms
                                             'this-year'    => trans('ip.this_year'),
                                             'last-year'    => trans('ip.last_year'),
                                         ])
-                                        ->label(trans('ip.quote_overview_period'))
                                         ->required(),
 
                                     Select::make('settings.invoice_overview_period')
+                                        ->label(trans('ip.invoice_overview_period'))
                                         ->options([
                                             'this-month'   => trans('ip.this_month'),
                                             'last-month'   => trans('ip.last_month'),
@@ -183,7 +184,6 @@ class Settings extends Page implements HasTable, HasForms
                                             'this-year'    => trans('ip.this_year'),
                                             'last-year'    => trans('ip.last_year'),
                                         ])
-                                        ->label(trans('ip.invoice_overview_period'))
                                         ->required(),
 
                                     Toggle::make('settings.disable_the_quickactions')
