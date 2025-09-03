@@ -27,6 +27,7 @@ class ListTasks extends ListRecords
         ];
     }
 
+    # phpstan-ignore-next-line
     protected function getTableQuery(): Builder|Relation|null
     {
         return Task::query()

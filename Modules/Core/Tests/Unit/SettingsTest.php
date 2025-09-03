@@ -15,9 +15,9 @@ class SettingsTest extends AbstractAdminPanelTestCase
 {
     use RefreshDatabase;
 
-    private Company $company1;
+    private $company1;
 
-    private Company $company2;
+    private $company2;
 
     protected function setUp(): void
     {
