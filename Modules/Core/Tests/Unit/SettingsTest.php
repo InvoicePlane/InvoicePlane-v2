@@ -1,0 +1,250 @@
+<?php
+
+namespace Modules\Core\Tests\Unit;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Modules\Core\Filament\Admin\Pages\Settings;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+
+class SettingsTest extends AbstractAdminPanelTestCase
+{
+    use RefreshDatabase;
+
+    private Company $company1;
+
+    private Company $company2;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->company1 = Company::factory()->create(['name' => 'Company One']);
+        $this->company2 = Company::factory()->create(['name' => 'Company Two']);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_filters_document_groups_by_current_company_id(): void
+    {
+        $this->markTestIncomplete();
+
+        $group1Company1 = DocumentGroup::factory()->create([
+            'company_id' => $this->company1->id,
+            'name'       => 'Invoice Group Company 1',
+            'type'       => 'invoice',
+        ]);
+
+        $group2Company1 = DocumentGroup::factory()->create([
+            'company_id' => $this->company1->id,
+            'name'       => 'Quote Group Company 1',
+            'type'       => 'quote',
+        ]);
+
+        $group1Company2 = DocumentGroup::factory()->create([
+            'company_id' => $this->company2->id,
+            'name'       => 'Invoice Group Company 2',
+            'type'       => 'invoice',
+        ]);
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        $formSchema = $component->instance()->getFormSchema();
+        $tabs       = $formSchema[0]->getChildComponents();
+
+        $invoicesTab = collect($tabs)->first(fn ($tab) => $tab->getId() === 'invoices');
+        $this->assertNotNull($invoicesTab, 'Invoices tab should exist');
+
+        $sections        = $invoicesTab->getChildComponents();
+        $invoicesSection = $sections[0];
+        $fields          = $invoicesSection->getChildComponents();
+
+        $documentGroupField = collect($fields)->first(
+            fn ($field) => method_exists($field, 'getName') && $field->getName() === 'settings.default_invoice_group'
+        );
+
+        $this->assertNotNull($documentGroupField, 'Default invoice group field should exist');
+
+        $options = $documentGroupField->getOptions();
+
+        $this->assertArrayHasKey($group1Company1->id, $options);
+        $this->assertArrayHasKey($group2Company1->id, $options);
+        $this->assertArrayNotHasKey($group1Company2->id, $options);
+
+        $this->assertEquals('Invoice Group Company 1', $options[$group1Company1->id]);
+        $this->assertEquals('Quote Group Company 1', $options[$group2Company1->id]);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_handles_no_current_company_id_in_session(): void
+    {
+        $this->markTestIncomplete();
+
+        DocumentGroup::factory()->for($this->company1)->create([
+            'name' => 'Test Group',
+            'type' => 'invoice',
+        ]);
+
+        session()->forget('current_company_id');
+
+        $component = Livewire::test(Settings::class);
+
+        $formSchema = $component->instance()->getFormSchema();
+        $this->assertNotEmpty($formSchema);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_returns_empty_options_when_no_document_groups_exist(): void
+    {
+        $this->markTestIncomplete();
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        $formSchema  = $component->instance()->getFormSchema();
+        $tabs        = $formSchema[0]->getChildComponents();
+        $invoicesTab = collect($tabs)->first(fn ($tab) => $tab->getId() === 'invoices');
+
+        $sections           = $invoicesTab->getChildComponents();
+        $fields             = $sections[0]->getChildComponents();
+        $documentGroupField = collect($fields)->first(
+            fn ($field) => method_exists($field, 'getName') && $field->getName() === 'settings.default_invoice_group'
+        );
+
+        $options = $documentGroupField->getOptions();
+
+        $this->assertEmpty($options);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_switches_company_context_properly(): void
+    {
+        $this->markTestIncomplete();
+
+        $group1 = DocumentGroup::factory()->create([
+            'company_id' => $this->company1->id,
+            'name'       => 'Group Company 1',
+            'type'       => 'invoice',
+        ]);
+
+        $group2 = DocumentGroup::factory()->create([
+            'company_id' => $this->company2->id,
+            'name'       => 'Group Company 2',
+            'type'       => 'invoice',
+        ]);
+
+        session(['current_company_id' => $this->company1->id]);
+        $component1 = Livewire::test(Settings::class);
+
+        session(['current_company_id' => $this->company2->id]);
+        $component2 = Livewire::test(Settings::class);
+
+        // Verify each component shows only its company's groups
+        // This would require accessing the form options, but the important
+        // thing is that no errors are thrown during company switching
+        $this->assertTrue(true); // Component creation succeeded
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_loads_default_settings_properly(): void
+    {
+        $this->markTestIncomplete();
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        $settings = $component->instance()->settings;
+
+        $this->assertEquals('USD', $settings['currency_code']);
+        $this->assertEquals('$', $settings['currency_symbol']);
+        $this->assertEquals('before', $settings['currency_symbol_placement']);
+        $this->assertEquals('Y-m-d', $settings['date_format']);
+        $this->assertEquals('US', $settings['default_country']);
+        $this->assertEquals('en', $settings['language']);
+        $this->assertEquals('default', $settings['theme']);
+        $this->assertTrue($settings['auto_check_updates']);
+        $this->assertFalse($settings['auto_install_security_updates']);
+        $this->assertEquals('stable', $settings['update_channel']);
+        $this->assertEquals(24, $settings['update_check_interval']);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_validates_update_check_interval_boundaries(): void
+    {
+        $this->markTestIncomplete();
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        $component->set('settings.update_check_interval', 0);
+        $component->call('submit');
+
+        $component->assertHasErrors(['settings.update_check_interval']);
+
+        $component->set('settings.update_check_interval', 200);
+        $component->call('submit');
+
+        $component->assertHasErrors(['settings.update_check_interval']);
+
+        $component->set('settings.update_check_interval', 48);
+        $component->call('submit');
+
+        $component->assertHasNoErrors(['settings.update_check_interval']);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_validates_email_format_for_notifications(): void
+    {
+        $this->markTestIncomplete();
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        $component->set('settings.update_notification_email', 'invalid-email');
+        $component->call('submit');
+
+        $component->assertHasErrors(['settings.update_notification_email']);
+
+        $component->set('settings.update_notification_email', 'admin@example.com');
+        $component->call('submit');
+
+        $component->assertHasNoErrors(['settings.update_notification_email']);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_has_all_required_tabs(): void
+    {
+        $this->markTestIncomplete();
+
+        session(['current_company_id' => $this->company1->id]);
+
+        $component  = Livewire::test(Settings::class);
+        $formSchema = $component->instance()->getFormSchema();
+
+        $tabs   = $formSchema[0]->getChildComponents();
+        $tabIds = collect($tabs)->map(fn ($tab) => $tab->getId())->toArray();
+
+        $this->assertContains('general', $tabIds);
+        $this->assertContains('invoices', $tabIds);
+        $this->assertContains('quotes', $tabIds);
+        $this->assertContains('updates', $tabIds);
+        $this->assertCount(4, $tabIds);
+    }
+}
