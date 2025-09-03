@@ -30,6 +30,8 @@ class Settings extends Page implements HasTable, HasForms
 
     protected string $view = 'core::filament.admin.pages.settings';
 
+    protected array $settings = [];
+
     public function boot(): void {}
 
     public function mount(): void
