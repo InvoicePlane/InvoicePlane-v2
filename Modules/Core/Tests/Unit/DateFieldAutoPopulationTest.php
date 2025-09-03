@@ -44,20 +44,20 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
 
         $expectedDate = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         // Get the form data after mounting
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         $this->assertArrayHasKey('invoiced_at', $formData, 'Invoice date field should exist in form data');
         $this->assertArrayHasKey('invoice_due_at', $formData, 'Invoice due date field should exist in form data');
 
@@ -84,17 +84,17 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $project      = Project::factory()->for($this->company)->create();
         $expectedDate = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateTask::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         $this->assertArrayHasKey('task_start_date', $formData, 'Task start date field should exist');
 
         if ( ! empty($formData['task_start_date'])) {
@@ -112,18 +112,18 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateQuote::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         $this->assertArrayHasKey('quoted_at', $formData, 'Quote date field should exist');
 
         if ( ! empty($formData['quoted_at'])) {
@@ -141,17 +141,17 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $invoice      = Invoice::factory()->for($this->company)->create();
         $expectedDate = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         $this->assertArrayHasKey('paid_at', $formData, 'Payment date field should exist');
 
         if ( ! empty($formData['paid_at'])) {
@@ -170,7 +170,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $originalTimezone = config('app.timezone');
         config(['app.timezone' => 'America/New_York']);
 
@@ -178,13 +178,13 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now('America/New_York');
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
             $this->assertTrue(
@@ -204,18 +204,18 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert that multiple date fields are populated consistently
+        /* assert */
         $dateFields     = ['invoiced_at', 'invoice_due_at'];
         $populatedDates = [];
 
@@ -245,13 +245,13 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
         $components    = [];
         $startTime     = Carbon::now();
 
-        // Act - Simulate multiple form loads in quick succession
+        /* act */
         for ($i = 0; $i < 5; $i++) {
             $components[] = Livewire::actingAs($this->user)
                 ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
@@ -259,7 +259,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         $endTime = Carbon::now();
 
-        // Assert
+        /* assert */
         foreach ($components as $index => $component) {
             $formData = $component->get('data');
 
@@ -280,18 +280,18 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
 
@@ -320,7 +320,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup = DocumentGroup::factory()->for($this->company)->create();
 
@@ -330,13 +330,13 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         $expectedDate = Carbon::now();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         $formData = $component->get('data');
 
-        // Assert - Date auto-population should still work despite invalid session data
+        /* assert */
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
             $this->assertTrue(
@@ -352,21 +352,21 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        // Arrange
+        /* arrange */
         $otherCompany           = Company::factory()->create();
         $currentCompanyDocGroup = DocumentGroup::factory()->for($this->company)->create(['name' => 'Current Company Group']);
         $otherCompanyDocGroup   = DocumentGroup::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
 
         $customer = Relation::factory()->for($this->company)->customer()->create();
 
-        // Act
+        /* act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
         // Get the available document groups from the form component
         $formData = $component->get('data');
 
-        // Assert
+        /* assert */
         // The form should only show document groups belonging to the current company
         $availableDocumentGroups = DocumentGroup::where('company_id', $this->company->id)->get();
         $this->assertCount(1, $availableDocumentGroups, 'Should only have document groups for current company');
