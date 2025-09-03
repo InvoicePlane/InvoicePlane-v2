@@ -26,11 +26,11 @@ class Settings extends Page implements HasTable, HasForms
     use InteractsWithForms;
     use InteractsWithTable;
 
+    public array $settings = [];
+
     protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-server-stack';
 
     protected string $view = 'core::filament.admin.pages.settings';
-
-    protected array $settings = [];
 
     public function boot(): void {}
 
@@ -43,7 +43,7 @@ class Settings extends Page implements HasTable, HasForms
         $this->settings['currency_symbol_placement'] ??= 'before';
         $this->settings['custom_title'] ??= '';
         $this->settings['custom_title'] ??= '';
-        $this->settings['date_format'] ??= 'Y-m-d';
+        $this->settings['date_format'] ??= 'd-M-Y';
         $this->settings['default_country'] ??= 'US';
         $this->settings['default_decimals_for_items'] ??= '2';
         $this->settings['disable_sidebar'] ??= false;
@@ -79,9 +79,9 @@ class Settings extends Page implements HasTable, HasForms
                                 ->schema([
                                     Select::make('settings.language')
                                         // TODO: Make it automatically grab languages from then lang dir.
+                                        ->label(trans('ip.language'))
                                         ->options(config('languages'))
                                         ->searchable()
-                                        ->label(trans('ip.language'))
                                         ->required(),
 
                                     Select::make('settings.theme')
