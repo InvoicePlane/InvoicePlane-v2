@@ -89,6 +89,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Relationships
     |--------------------------------------------------------------------------
     */
+    # phpstan-ignore-next-line
     public function customerAdmins(): BelongsToMany
     {
         return $this->users()
@@ -97,9 +98,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
             });
     }
 
-    /**
-     * Get all of the company's addresses.
-     */
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');

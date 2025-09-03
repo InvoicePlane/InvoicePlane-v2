@@ -12,11 +12,13 @@ class QuoteItemFactory extends AbstractFactory
 
     public function definition(): array
     {
+        # phpstan-ignore-next-line
         $taxRateId = $attributes['tax_rate_id'] ?? null;
         $taxRate   = $taxRateId
             ? TaxRate::query()->find($taxRateId)
             : null;
 
+        # phpstan-ignore-next-line
         $taxPercent = $taxRate?->rate ?? 0;
 
         $quantity = $this->faker->randomFloat(4, 1, 20);

@@ -25,12 +25,6 @@ parameters:
 			path: Modules/Invoices/Database/Factories/InvoiceItemFactory.php
 
 		-
-			message: '#^Method Modules\\Invoices\\Models\\Invoice\:\:mailQueue\(\) should return Illuminate\\Database\\Query\\Builder but returns Illuminate\\Database\\Eloquent\\Builder\<Modules\\Core\\Models\\MailQueue\>\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Invoices/Models/Invoice.php
-
-		-
 			message: '#^Method Modules\\Payments\\Filament\\Company\\Widgets\\RecentPaymentsWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
 			identifier: return.type
 			count: 1
