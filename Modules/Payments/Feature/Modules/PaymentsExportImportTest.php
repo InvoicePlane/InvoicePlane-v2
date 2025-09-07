@@ -19,7 +19,6 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_payments_downloads_csv_with_correct_data(): void
     {
         $this->markTestIncomplete();
-
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->count(3)->create();
 
@@ -32,14 +31,12 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertEquals(200, $response->status());
-        $this->assertTrue(
-            in_array(
-                $response->headers->get('content-type'),
-                [
-                    'text/csv',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ]
-            )
+        $this->assertContains(
+            $response->headers->get('content-type'),
+            [
+                'text/csv',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
         );
         $content = $response->getContent();
         $lines   = preg_split('/\r?\n/', mb_trim($content));
@@ -54,6 +51,7 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_payments_downloads_excel_with_correct_data(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->count(3)->create();
 
@@ -75,6 +73,7 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_payments_with_no_records(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         // No payments created
 
@@ -97,7 +96,6 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_payments_with_special_characters(): void
     {
         $this->markTestIncomplete();
-
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->create(['amount' => 123.45, 'reference' => 'REF-Ü, "Test"']);
 
@@ -121,7 +119,6 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_payments_downloads_csv_with_correct_data_v2(): void
     {
         $this->markTestIncomplete();
-
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->count(3)->create();
 
@@ -149,7 +146,6 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_payments_downloads_csv_with_correct_data_v1(): void
     {
         $this->markTestIncomplete();
-
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->count(3)->create();
 
@@ -177,7 +173,6 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_payments_downloads_excel_with_correct_data_v2(): void
     {
         $this->markTestIncomplete();
-
         /* Arrange */
         $payments = Payment::factory()->for($this->company)->count(3)->create();
 

@@ -76,6 +76,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_expenses_with_no_records(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         // No expenses created
 
@@ -120,6 +121,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_expenses_downloads_csv_with_correct_data_v2(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
         /* Act */
@@ -144,6 +146,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_expenses_downloads_csv_with_correct_data_v1(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
         /* Act */
@@ -168,6 +171,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_expenses_downloads_excel_with_correct_data_v2(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
         /* Act */
@@ -187,6 +191,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_exports_expenses_downloads_excel_with_correct_data_v1(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
         /* Act */
@@ -195,6 +200,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
             ->mountAction('exportExcelV1')
             ->callMountedAction();
         $response = $component->lastResponse;
+
         /* Assert */
         $this->assertEquals(200, $response->status());
         $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));

@@ -25,6 +25,7 @@ class ListProjects extends ListRecords
                     app(\Modules\Projects\Services\ProjectService::class)->createProject($data);
                 })
                 ->modalWidth('full'),
+
             ActionGroup::make([
                 Action::make('exportCsvV2')
                     ->label('Export as CSV (v2)')
