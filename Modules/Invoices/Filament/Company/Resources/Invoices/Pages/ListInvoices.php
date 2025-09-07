@@ -27,18 +27,22 @@ class ListInvoices extends ListRecords
                     app(InvoiceService::class)->createInvoice($data);
                 }),
             ActionGroup::make([
-                Action::make('exportCsv')
-                    ->label('Export as CSV')
+                Action::make('exportCsvV2')
+                    ->label('Export as CSV (v2)')
                     ->icon('heroicon-o-document-text')
-                    ->action(function () {
-                        return app(InvoiceExportService::class)->export('csv');
-                    }),
-                Action::make('exportExcel')
-                    ->label('Export as Excel')
+                    ->action(fn () => app(InvoiceExportService::class)->export('csv')),
+                Action::make('exportCsvV1')
+                    ->label('Export as CSV (v1, Legacy)')
+                    ->icon('heroicon-o-document-text')
+                    ->action(fn () => app(InvoiceExportService::class)->exportWithVersion('csv', 1)),
+                Action::make('exportExcelV2')
+                    ->label('Export as Excel (v2)')
                     ->icon('heroicon-o-document')
-                    ->action(function () {
-                        return app(InvoiceExportService::class)->export('xlsx');
-                    }),
+                    ->action(fn () => app(InvoiceExportService::class)->export('xlsx')),
+                Action::make('exportExcelV1')
+                    ->label('Export as Excel (v1, Legacy)')
+                    ->icon('heroicon-o-document')
+                    ->action(fn () => app(InvoiceExportService::class)->exportWithVersion('xlsx', 1)),
             ])
                 ->label('Export')
                 ->icon(Heroicon::OutlinedFolderArrowDown)
