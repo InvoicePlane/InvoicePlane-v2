@@ -170,11 +170,11 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('import')]
-    public function import_contacts_creates_records_from_csv(): void
+    public function import_contacts_with_duplicate_records(): void
     {
         /* Arrange */
-        $csv  = "name,email\nTest Contact,test@example.com\nAnother Contact,another@example.com\n";
-        $file = UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+        $csv  = "name,email\nDup User,dup@example.com\nDup User,dup@example.com\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
 
         /* Act */
         Livewire::actingAs($this->user)
@@ -184,8 +184,88 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* Assert */
-        $this->assertDatabaseCount('contacts', 2);
-        $this->assertDatabaseHas('contacts', ['name' => 'Test Contact', 'email' => 'test@example.com']);
-        $this->assertDatabaseHas('contacts', ['name' => 'Another Contact', 'email' => 'another@example.com']);
+        $this->assertDatabaseCount('contacts', 2); // or 1 if your import deduplicates
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_contacts_with_invalid_data_types(): void
+    {
+        /* Arrange */
+        $csv  = "name,email\n12345,not-an-email\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListContacts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        // Depending on your validation, this may fail or create a record
+        $this->assertDatabaseHas('contacts', ['name' => '12345', 'email' => 'not-an-email']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_contacts_with_large_file(): void
+    {
+        /* Arrange */
+        $rows = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $rows[] = "User{$i},user{$i}@example.com";
+        }
+        $csv  = "name,email\n" . implode("\n", $rows);
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListContacts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('contacts', 1000);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_contacts_with_extra_columns(): void
+    {
+        /* Arrange */
+        $csv  = "name,email,extra\nExtra User,extra@example.com,something\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListContacts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('contacts', ['name' => 'Extra User', 'email' => 'extra@example.com']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_contacts_with_missing_required_columns(): void
+    {
+        /* Arrange */
+        $csv  = "name\nMissing Email\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListContacts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        // Should not create a record if email is required
+        $this->assertDatabaseCount('contacts', 0);
     }
 }

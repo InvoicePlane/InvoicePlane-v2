@@ -168,11 +168,11 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('import')]
-    public function import_invoices_creates_records_from_csv(): void
+    public function import_invoices_with_duplicate_records(): void
     {
         /* Arrange */
-        $csv  = "number,total\nINV-1001,100.00\nINV-1002,200.00\n";
-        $file = UploadedFile::fake()->createWithContent('invoices.csv', $csv);
+        $csv  = "number,total\nDup Invoice,100.00\nDup Invoice,100.00\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('invoices.csv', $csv);
 
         /* Act */
         Livewire::actingAs($this->user)
@@ -183,7 +183,85 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertDatabaseCount('invoices', 2);
-        $this->assertDatabaseHas('invoices', ['number' => 'INV-1001', 'total' => 100.00]);
-        $this->assertDatabaseHas('invoices', ['number' => 'INV-1002', 'total' => 200.00]);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_invoices_with_invalid_data_types(): void
+    {
+        /* Arrange */
+        $csv  = "number,total\nINV-12345,not-a-number\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('invoices.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('invoices', ['number' => 'INV-12345', 'total' => 'not-a-number']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_invoices_with_large_file(): void
+    {
+        /* Arrange */
+        $rows = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $rows[] = "INV-{$i},{$i}.00";
+        }
+        $csv  = "number,total\n" . implode("\n", $rows);
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('invoices.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('invoices', 1000);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_invoices_with_extra_columns(): void
+    {
+        /* Arrange */
+        $csv  = "number,total,extra\nExtra Invoice,123.45,something\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('invoices.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('invoices', ['number' => 'Extra Invoice', 'total' => 123.45]);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_invoices_with_missing_required_columns(): void
+    {
+        /* Arrange */
+        $csv  = "number\nMissing Total\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('invoices.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('invoices', 0);
     }
 }

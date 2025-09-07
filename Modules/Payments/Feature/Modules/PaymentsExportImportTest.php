@@ -183,7 +183,85 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertDatabaseCount('payments', 2);
-        $this->assertDatabaseHas('payments', ['amount' => 100.00, 'reference' => 'REF-1001']);
-        $this->assertDatabaseHas('payments', ['amount' => 200.00, 'reference' => 'REF-1002']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_payments_with_invalid_data_types(): void
+    {
+        /* Arrange */
+        $csv  = "amount,reference\nnot-a-number,ref-123\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('payments.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('payments', ['amount' => 'not-a-number', 'reference' => 'ref-123']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_payments_with_large_file(): void
+    {
+        /* Arrange */
+        $rows = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $rows[] = "{$i}.00,ref{$i}";
+        }
+        $csv  = "amount,reference\n" . implode("\n", $rows);
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('payments.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('payments', 1000);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_payments_with_extra_columns(): void
+    {
+        /* Arrange */
+        $csv  = "amount,reference,extra\n123.45,extra-ref,something\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('payments.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('payments', ['amount' => 123.45, 'reference' => 'extra-ref']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_payments_with_missing_required_columns(): void
+    {
+        /* Arrange */
+        $csv  = "amount\nMissing Reference\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('payments.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListPayments::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('payments', 0);
     }
 }

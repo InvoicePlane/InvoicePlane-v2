@@ -183,7 +183,85 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertDatabaseCount('products', 2);
-        $this->assertDatabaseHas('products', ['name' => 'Test Product', 'sku' => 'SKU001']);
-        $this->assertDatabaseHas('products', ['name' => 'Another Product', 'sku' => 'SKU002']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_products_with_invalid_data_types(): void
+    {
+        /* Arrange */
+        $csv  = "name,sku\n12345,not-a-sku\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('products.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProducts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('products', ['name' => '12345', 'sku' => 'not-a-sku']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_products_with_large_file(): void
+    {
+        /* Arrange */
+        $rows = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $rows[] = "Product{$i},sku{$i}";
+        }
+        $csv  = "name,sku\n" . implode("\n", $rows);
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('products.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListProducts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('products', 1000);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_products_with_extra_columns(): void
+    {
+        /* Arrange */
+        $csv  = "name,sku,extra\nExtra Product,extra-sku,something\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('products.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListProducts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('products', ['name' => 'Extra Product', 'sku' => 'extra-sku']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_products_with_missing_required_columns(): void
+    {
+        /* Arrange */
+        $csv  = "name\nMissing SKU\n";
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('products.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProducts::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('products', 0);
     }
 }

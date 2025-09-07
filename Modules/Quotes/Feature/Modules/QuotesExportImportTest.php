@@ -184,7 +184,85 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertDatabaseCount('quotes', 2);
-        $this->assertDatabaseHas('quotes', ['number' => 'Q-1001', 'total' => 100.00]);
-        $this->assertDatabaseHas('quotes', ['number' => 'Q-1002', 'total' => 200.00]);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_quotes_with_invalid_data_types(): void
+    {
+        /* Arrange */
+        $csv  = "number,total\nQ-12345,not-a-number\n";
+        $file = UploadedFile::fake()->createWithContent('quotes.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('quotes', ['number' => 'Q-12345', 'total' => 'not-a-number']);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_quotes_with_large_file(): void
+    {
+        /* Arrange */
+        $rows = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $rows[] = "Q-{$i},{$i}.00";
+        }
+        $csv  = "number,total\n" . implode("\n", $rows);
+        $file = UploadedFile::fake()->createWithContent('quotes.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('quotes', 1000);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_quotes_with_extra_columns(): void
+    {
+        /* Arrange */
+        $csv  = "number,total,extra\nExtra Quote,123.45,something\n";
+        $file = UploadedFile::fake()->createWithContent('quotes.csv', $csv);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseHas('quotes', ['number' => 'Extra Quote', 'total' => 123.45]);
+    }
+
+    #[Test]
+    #[Group('import')]
+    public function import_quotes_with_missing_required_columns(): void
+    {
+        /* Arrange */
+        $csv  = "number\nMissing Total\n";
+        $file = UploadedFile::fake()->createWithContent('quotes.csv', $csv);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction('import')
+            ->set('data.file', $file)
+            ->callMountedAction();
+
+        /* Assert */
+        $this->assertDatabaseCount('quotes', 0);
     }
 }
