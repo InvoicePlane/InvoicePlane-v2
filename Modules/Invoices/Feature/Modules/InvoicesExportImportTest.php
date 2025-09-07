@@ -25,7 +25,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('export')
+            ->mountAction('exportCsv')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -60,7 +60,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('export', ['format' => 'xlsx'])
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -82,7 +82,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('export')
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -104,7 +104,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction('export')
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 

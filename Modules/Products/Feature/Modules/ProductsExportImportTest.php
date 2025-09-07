@@ -26,20 +26,18 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('export')
+            ->mountAction('exportCsv')
             ->callMountedAction();
         $response = $component->lastResponse;
 
         /* Assert */
         $this->assertEquals(200, $response->status());
-        $this->assertTrue(
-            in_array(
-                $response->headers->get('content-type'),
-                [
-                    'text/csv',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ]
-            )
+        $this->assertContains(
+            $response->headers->get('content-type'),
+            [
+                'text/csv',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
         );
         $content = $response->getContent();
         $lines   = preg_split('/\r?\n/', mb_trim($content));
@@ -62,7 +60,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('export', ['format' => 'xlsx'])
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -85,7 +83,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('export')
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -108,7 +106,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('export')
+            ->mountAction('exportExcel')
             ->callMountedAction();
         $response = $component->lastResponse;
 
