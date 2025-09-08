@@ -24,22 +24,24 @@ class QuotesLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.number'),
-            trans('ip.client'),
-            trans('ip.amount'),
-            trans('ip.status'),
+            trans('ip.quote_status'),
+            trans('ip.quote_number'),
+            trans('ip.prospect_name'),
+            trans('ip.quoted_at'),
+            trans('ip.quote_expires_at'),
+            trans('ip.quote_total'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
+            $row->quote_status?->label() ?? '',
             $row->quote_number,
-            $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
+            $row->prospect?->trading_name ?? $row->prospect?->company_name ?? '',
+            $row->quoted_at,
+            $row->quote_expires_at,
             $row->quote_total,
-            $row->quote_status,
         ];
     }
 }

@@ -24,22 +24,20 @@ class InvoicesLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.number'),
-            trans('ip.client'),
-            trans('ip.amount'),
-            trans('ip.status'),
+            trans('ip.invoice_status'),
+            trans('ip.invoice_number'),
+            trans('ip.customer_name'),
+            trans('ip.invoice_total'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->number,
+            $row->invoice_status?->label() ?? '',
+            $row->invoice_number,
             $row->customer?->trading_name ?? $row->customer?->company_name ?? '',
-            $row->total,
-            $row->invoice_status_id, // Consider mapping to a label if available
+            $row->invoice_total,
         ];
     }
 }

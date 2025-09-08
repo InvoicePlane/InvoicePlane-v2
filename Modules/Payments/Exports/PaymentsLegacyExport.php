@@ -24,22 +24,20 @@ class PaymentsLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.reference'),
-            trans('ip.amount'),
-            trans('ip.date'),
-            trans('ip.status'),
+            trans('ip.payment_method'),
+            trans('ip.payment_status'),
+            trans('ip.payment_amount'),
+            trans('ip.paid_at'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->payment_method,
+            $row->payment_method?->label() ?? '',
+            $row->payment_status?->label() ?? '',
             $row->payment_amount,
             $row->paid_at,
-            $row->payment_status,
         ];
     }
 }

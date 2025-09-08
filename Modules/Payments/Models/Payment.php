@@ -15,6 +15,7 @@ use Modules\Core\Models\Note;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Database\Factories\PaymentFactory;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 
 /**
@@ -42,16 +43,9 @@ class Payment extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'payment_status'             => PaymentStatus::class,
-        'paid_at'                    => 'date',
-        'payment_amount'             => 'float',
-        'refunded_amount'            => 'float',
-        'exchange_rate'              => 'float',
-        'payment_gateway_fee'        => 'float',
-        'payment_gateway_percentage' => 'float',
-        'is_online'                  => 'boolean',
-        'is_manual'                  => 'boolean',
-        'is_refunded'                => 'boolean',
+        'payment_method' => PaymentMethod::class,
+        'payment_status' => PaymentStatus::class,
+        'paid_at'        => 'date',
     ];
 
     /*

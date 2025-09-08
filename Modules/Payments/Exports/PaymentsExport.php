@@ -24,32 +24,22 @@ class PaymentsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.company_id'),
-            trans('ip.customer_id'),
-            trans('ip.invoice_id'),
-            trans('ip.merchant_client_id'),
             trans('ip.payment_method'),
             trans('ip.payment_status'),
-            trans('ip.paid_at'),
+            trans('ip.customer_name'),
             trans('ip.payment_amount'),
-            trans('ip.notes'),
+            trans('ip.paid_at'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->company_id,
-            $row->customer_id,
-            $row->invoice_id,
-            $row->merchant_client_id,
-            $row->payment_method,
-            $row->payment_status,
-            $row->paid_at,
+            $row->payment_method?->label() ?? '',
+            $row->payment_status?->label() ?? '',
+            $row->customer?->trading_name ?? $row->customer?->company_name ?? '',
             $row->payment_amount,
-            $row->notes,
+            $row->paid_at,
         ];
     }
 }

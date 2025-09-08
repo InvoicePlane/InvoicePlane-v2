@@ -24,30 +24,24 @@ class TasksExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.task_name'),
-            trans('ip.client'),
-            trans('ip.project'),
-            trans('ip.assigned_to'),
             trans('ip.task_status'),
+            trans('ip.task_name'),
+            trans('ip.task_finish_date'),
             trans('ip.task_price'),
-            trans('ip.due_at'),
-            trans('ip.description'),
+            trans('ip.project_name'),
+            trans('ip.customer_name'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
+            $row->task_status?->label() ?? '',
             $row->task_name,
-            $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
-            $row->project?->project_name ?? '',
-            $row->user?->name ?? '',
-            $row->task_status,
-            $row->task_price,
             $row->due_at,
-            $row->description,
+            $row->task_price,
+            $row->project?->project_name ?? '',
+            $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
         ];
     }
 }

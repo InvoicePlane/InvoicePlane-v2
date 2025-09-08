@@ -24,22 +24,18 @@ class ExpensesLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.description'),
+            trans('ip.expense_category'),
+            trans('ip.expensed_at'),
             trans('ip.amount'),
-            trans('ip.date'),
-            trans('ip.category'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->description,
-            $row->expense_amount,
+            $row->expenseCategory?->category_name,
             $row->expensed_at,
-            $row->expense_category?->name,
+            $row->expense_amount,
         ];
     }
 }

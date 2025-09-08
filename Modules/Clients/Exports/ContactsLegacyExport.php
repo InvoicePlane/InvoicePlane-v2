@@ -24,35 +24,24 @@ class ContactsLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.company_id'),
             trans('ip.relation_id'),
-            trans('ip.first_name'),
-            trans('ip.last_name'),
-            trans('ip.gender'),
-            trans('ip.default_to'),
-            trans('ip.default_cc'),
-            trans('ip.default_bcc'),
+            trans('ip.type'),
+            trans('ip.contact_name'),
             trans('ip.email'),
             trans('ip.phone'),
+            trans('ip.gender'),
         ];
     }
 
     public function map($row): array
     {
-        // Legacy mapping (example, adjust as needed)
         return [
-            $row->id,
-            $row->company_id,
-            $row->relation_id,
-            $row->first_name,
-            $row->last_name,
+            $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
+            $row->relation?->relation_type ?? '', // <<== It's an enum so figure out how to export it properly
+            $row->full_name,
+            $row->email ?? null,
+            $row->phone ?? null,
             $row->gender,
-            $row->default_to,
-            $row->default_cc,
-            $row->default_bcc,
-            $row->email ?? null, // Only if available, else null
-            $row->phone ?? null, // Only if available, else null
         ];
     }
 }

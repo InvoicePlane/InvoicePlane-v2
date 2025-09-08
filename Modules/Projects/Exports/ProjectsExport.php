@@ -24,26 +24,22 @@ class ProjectsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
             trans('ip.project_name'),
             trans('ip.client'),
             trans('ip.project_status'),
             trans('ip.start_at'),
             trans('ip.end_at'),
-            trans('ip.description'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
             $row->project_name,
             $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
-            $row->project_status,
+            $row->project_status->label() ?? '',
             $row->start_at,
             $row->end_at,
-            $row->description,
         ];
     }
 }

@@ -172,6 +172,10 @@ class Relation extends Model
         return $this->email;
     }
 
+    /*public function getPrimaryContactAttribute(): string
+    {
+        return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
+    }*/
     /*
     |--------------------------------------------------------------------------
     | Scopes

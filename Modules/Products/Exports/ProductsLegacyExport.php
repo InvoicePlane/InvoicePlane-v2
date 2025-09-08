@@ -24,22 +24,18 @@ class ProductsLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.name'),
-            trans('ip.sku'),
-            trans('ip.price'),
-            trans('ip.description'),
+            trans('ip.product_sku'),
+            trans('ip.product_name'),
+            trans('ip.product_price'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->product_name,
             $row->code,
+            $row->product_name,
             $row->price,
-            $row->description,
         ];
     }
 }

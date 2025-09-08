@@ -24,38 +24,26 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.id'),
-            trans('ip.company_id'),
-            trans('ip.category_id'),
-            trans('ip.unit_id'),
-            trans('ip.type'),
-            trans('ip.code'),
+            trans('ip.category_name'),
+            trans('ip.product_unit'),
+            trans('ip.product_sku'),
             trans('ip.product_name'),
-            trans('ip.price'),
+            trans('ip.product_type'),
+            trans('ip.product_price'),
             trans('ip.cost_price'),
-            trans('ip.tax_rate_id'),
-            trans('ip.tax_rate_2_id'),
-            trans('ip.product_tariff'),
-            trans('ip.description'),
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->id,
-            $row->company_id,
-            $row->category_id,
-            $row->unit_id,
-            $row->type,
+            $row->productCategory?->category_name,
+            $row->productUnit?->unit_name,
             $row->code,
             $row->product_name,
+            $row->type?->label() ?? '',
             $row->price,
             $row->cost_price,
-            $row->tax_rate_id,
-            $row->tax_rate_2_id,
-            $row->product_tariff,
-            $row->description,
         ];
     }
 }
