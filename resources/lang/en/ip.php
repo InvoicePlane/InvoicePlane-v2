@@ -839,4 +839,14 @@ return [
     'login_failed'                  => 'Login failed. Please check your credentials.',
     'authentication_failed'         => 'Authentication failed.',
     #endregion
+
+    #region PEPPOL
+    'customer_peppol_id'        => 'Customer Peppol ID',
+    'customer_peppol_id_helper' => 'The Peppol participant identifier of the customer (e.g., BE:0123456789 for Belgian companies)',
+    'peppol_error_body'         => 'Failed to send invoice to Peppol: :error',
+    'peppol_error_title'        => 'Peppol Transmission Failed',
+    'peppol_success_body'       => 'Invoice successfully sent to Peppol network. Document ID: :document_id',
+    'peppol_success_title'      => 'Sent to Peppol',
+    'send_to_peppol'            => 'Send to Peppol',
+    #endregion
 ];

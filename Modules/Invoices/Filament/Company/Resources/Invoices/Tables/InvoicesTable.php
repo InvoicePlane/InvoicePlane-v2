@@ -8,9 +8,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Support\DateHelpers;
+use Modules\Invoices\Actions\SendInvoiceToPeppolAction;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Services\InvoiceService;
@@ -120,6 +122,38 @@ class InvoicesTable
                                 ->body(trans('ip.invoice_email_sent_successfully'))
                                 ->success()
                                 ->send();
+                        }),
+                    Action::make('send_to_peppol')
+                        ->label(trans('ip.send_to_peppol'))
+                        ->icon('heroicon-o-paper-airplane')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->form([
+                            TextInput::make('customer_peppol_id')
+                                ->label(trans('ip.customer_peppol_id'))
+                                ->helperText(trans('ip.customer_peppol_id_helper'))
+                                ->placeholder('BE:0123456789')
+                                ->required(),
+                        ])
+                        ->action(function (Invoice $record, array $data): void {
+                            try {
+                                $action = app(SendInvoiceToPeppolAction::class);
+                                $result = $action->execute($record, $data);
+                                
+                                \Filament\Notifications\Notification::make()
+                                    ->title(trans('ip.peppol_success_title'))
+                                    ->body(trans('ip.peppol_success_body', [
+                                        'document_id' => $result['document_id'] ?? 'N/A',
+                                    ]))
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title(trans('ip.peppol_error_title'))
+                                    ->body(trans('ip.peppol_error_body', ['error' => $e->getMessage()]))
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
                     DeleteAction::make('delete')
                         ->action(function (Invoice $record, array $data) {
