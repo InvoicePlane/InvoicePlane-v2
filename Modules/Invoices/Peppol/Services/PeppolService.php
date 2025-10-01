@@ -3,21 +3,27 @@
 namespace Modules\Invoices\Peppol\Services;
 
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\Log;
+use Modules\Invoices\Http\Traits\LogsApiRequests;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
+use Modules\Invoices\Peppol\FormatHandlers\FormatHandlerFactory;
 
 /**
  * PeppolService - Service for managing Peppol document transmission.
  *
  * This service handles the business logic for sending invoices through the
- * Peppol network. It coordinates between the invoice data, the Peppol client,
- * and provides a clean interface for the application to interact with Peppol.
+ * Peppol network. It coordinates between the invoice data, format handlers,
+ * the Peppol client, and provides a clean interface for the application.
+ *
+ * Uses the Strategy Pattern to select appropriate format handlers based on
+ * customer requirements and country-specific regulations.
  *
  * @package Modules\Invoices\Peppol\Services
  */
 class PeppolService
 {
+    use LogsApiRequests;
+
     /**
      * The Peppol documents client.
      *
@@ -38,35 +44,43 @@ class PeppolService
     /**
      * Send an invoice to the Peppol network.
      *
-     * This method takes an invoice, prepares it for transmission, and sends it
-     * through the Peppol network via the configured provider.
+     * This method takes an invoice, prepares it using the appropriate format handler,
+     * and sends it through the Peppol network via the configured provider.
      *
      * @param Invoice $invoice The invoice to send
-     * @param array<string, mixed> $additionalData Optional additional data for the transmission
+     * @param array<string, mixed> $options Optional options for the transmission
      * @return array<string, mixed> Response data including document ID and status
      *
      * @throws RequestException If the Peppol API request fails
      * @throws \InvalidArgumentException If the invoice data is invalid
+     * @throws \RuntimeException If no format handler is available
      */
-    public function sendInvoiceToPeppol(Invoice $invoice, array $additionalData = []): array
+    public function sendInvoiceToPeppol(Invoice $invoice, array $options = []): array
     {
+        // Get the appropriate format handler for this invoice
+        $formatHandler = FormatHandlerFactory::createForInvoice($invoice);
+
         // Validate invoice before sending
-        $this->validateInvoice($invoice);
+        $validationErrors = $formatHandler->validate($invoice);
+        if (!empty($validationErrors)) {
+            throw new \InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));
+        }
 
-        // Prepare document data for Peppol
-        $documentData = $this->prepareDocumentData($invoice, $additionalData);
+        // Transform invoice using the format handler
+        $documentData = $formatHandler->transform($invoice, $options);
 
-        Log::info('Sending invoice to Peppol', [
+        $this->logRequest('Peppol', 'POST /documents', [
             'invoice_id' => $invoice->id,
             'invoice_number' => $invoice->invoice_number,
+            'format' => $formatHandler->getFormat()->value,
+            'customer_country' => $invoice->customer->country_code,
         ]);
 
         try {
             $response = $this->documentsClient->submitDocument($documentData);
-
             $responseData = $response->json();
 
-            Log::info('Invoice sent to Peppol successfully', [
+            $this->logResponse('Peppol', 'POST /documents', $responseData, [
                 'invoice_id' => $invoice->id,
                 'document_id' => $responseData['document_id'] ?? null,
             ]);
@@ -75,14 +89,14 @@ class PeppolService
                 'success' => true,
                 'document_id' => $responseData['document_id'] ?? null,
                 'status' => $responseData['status'] ?? 'submitted',
+                'format' => $formatHandler->getFormat()->value,
                 'message' => 'Invoice successfully submitted to Peppol network',
                 'response' => $responseData,
             ];
         } catch (RequestException $e) {
-            Log::error('Failed to send invoice to Peppol', [
+            $this->logError('Peppol', 'POST /documents', $e, [
                 'invoice_id' => $invoice->id,
-                'error' => $e->getMessage(),
-                'response' => $e->response?->json(),
+                'format' => $formatHandler->getFormat()->value,
             ]);
 
             throw $e;
@@ -101,9 +115,24 @@ class PeppolService
      */
     public function getDocumentStatus(string $documentId): array
     {
-        $response = $this->documentsClient->getDocumentStatus($documentId);
+        $this->logRequest('Peppol', "GET /documents/{$documentId}/status", [
+            'document_id' => $documentId,
+        ]);
 
-        return $response->json();
+        try {
+            $response = $this->documentsClient->getDocumentStatus($documentId);
+            $responseData = $response->json();
+
+            $this->logResponse('Peppol', "GET /documents/{$documentId}/status", $responseData);
+
+            return $responseData;
+        } catch (RequestException $e) {
+            $this->logError('Peppol', "GET /documents/{$documentId}/status", $e, [
+                'document_id' => $documentId,
+            ]);
+
+            throw $e;
+        }
     }
 
     /**
@@ -118,10 +147,28 @@ class PeppolService
      */
     public function cancelDocument(string $documentId): bool
     {
-        $response = $this->documentsClient->cancelDocument($documentId);
+        $this->logRequest('Peppol', "DELETE /documents/{$documentId}", [
+            'document_id' => $documentId,
+        ]);
 
-        return $response->successful();
+        try {
+            $response = $this->documentsClient->cancelDocument($documentId);
+            $success = $response->successful();
+
+            $this->logResponse('Peppol', "DELETE /documents/{$documentId}", [
+                'success' => $success,
+            ]);
+
+            return $success;
+        } catch (RequestException $e) {
+            $this->logError('Peppol', "DELETE /documents/{$documentId}", $e, [
+                'document_id' => $documentId,
+            ]);
+
+            throw $e;
+        }
     }
+}
 
     /**
      * Validate that an invoice is ready for Peppol transmission.
