@@ -54,11 +54,11 @@ class InvoicesServiceProvider extends ServiceProvider
      */
     protected function registerPeppolServices(): void
     {
-        // Register ExternalClient
+        // Register ApiClient
         $this->app->bind(
-            \Modules\Invoices\Http\Clients\ExternalClient::class,
+            \Modules\Invoices\Http\Clients\ApiClient::class,
             function ($app) {
-                return new \Modules\Invoices\Http\Clients\ExternalClient();
+                return new \Modules\Invoices\Http\Clients\ApiClient();
             }
         );
 
@@ -66,8 +66,8 @@ class InvoicesServiceProvider extends ServiceProvider
         $this->app->bind(
             \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler::class,
             function ($app) {
-                $externalClient = $app->make(\Modules\Invoices\Http\Clients\ExternalClient::class);
-                $handler = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($externalClient);
+                $apiClient = $app->make(\Modules\Invoices\Http\Clients\ApiClient::class);
+                $handler = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($apiClient);
                 
                 // Enable logging in non-production environments
                 if (!$app->environment('production')) {

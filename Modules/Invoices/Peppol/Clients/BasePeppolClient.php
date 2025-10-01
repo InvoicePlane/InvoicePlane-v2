@@ -38,6 +38,13 @@ abstract class BasePeppolClient
     protected string $baseUrl;
 
     /**
+     * Request timeout in seconds.
+     *
+     * @var int
+     */
+    protected int $timeout = 60;
+
+    /**
      * Constructor.
      *
      * @param HttpClientExceptionHandler $client The HTTP client
@@ -48,24 +55,31 @@ abstract class BasePeppolClient
     {
         $this->client = $client;
         $this->apiKey = $apiKey;
-        $this->baseUrl = $baseUrl;
-
-        $this->configureClient();
+        $this->baseUrl = rtrim($baseUrl, '/');
     }
 
     /**
-     * Configure the HTTP client with base URL and authentication.
+     * Build the full URL from the base URL and path.
      *
-     * This method sets up the client with the necessary configuration
-     * including base URL, authentication headers, and any provider-specific settings.
-     *
-     * @return void
+     * @param string $path The API path
+     * @return string The full URL
      */
-    protected function configureClient(): void
+    protected function buildUrl(string $path): string
     {
-        $this->client->setBaseUrl($this->baseUrl);
-        $this->client->setHeaders($this->getAuthenticationHeaders());
-        $this->client->setTimeout($this->getTimeout());
+        return $this->baseUrl . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Get default request options including authentication.
+     *
+     * @return array<string, mixed>
+     */
+    protected function getRequestOptions(): array
+    {
+        return [
+            'headers' => $this->getAuthenticationHeaders(),
+            'timeout' => $this->getTimeout(),
+        ];
     }
 
     /**
@@ -87,7 +101,7 @@ abstract class BasePeppolClient
      */
     protected function getTimeout(): int
     {
-        return 60; // Default 60 seconds for Peppol operations
+        return $this->timeout;
     }
 
     /**
