@@ -3,9 +3,10 @@
 namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
 use Illuminate\Support\Facades\Http;
-use Modules\Invoices\Http\Clients\ExternalClient;
+use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -17,6 +18,7 @@ use Tests\TestCase;
  *
  * @package Modules\Invoices\Tests\Unit\Peppol\Clients
  */
+#[Group('peppol')]
 class DocumentsClientTest extends TestCase
 {
     protected DocumentsClient $client;
@@ -27,8 +29,8 @@ class DocumentsClientTest extends TestCase
 
         Http::fake();
 
-        $externalClient = new ExternalClient();
-        $exceptionHandler = new HttpClientExceptionHandler($externalClient);
+        $apiClient = new ApiClient();
+        $exceptionHandler = new HttpClientExceptionHandler($apiClient);
         
         $this->client = new DocumentsClient(
             $exceptionHandler,

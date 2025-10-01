@@ -26,11 +26,15 @@ class FormatHandlerFactory
         'peppol_bis_3.0' => PeppolBisHandler::class,
         'ubl_2.1' => UblHandler::class,
         'ubl_2.4' => UblHandler::class,
-        // Additional handlers would be registered here
+        'cii' => CiiHandler::class,
+        // Additional handlers will be registered here as implemented
         // 'fatturapa_1.2' => FatturapaHandler::class,
         // 'facturae_3.2' => FacturaeHandler::class,
-        // 'cii' => CiiHandler::class,
-        // etc.
+        // 'factur-x' => FacturXHandler::class,
+        // 'zugferd_1.0' => ZugferdV1Handler::class,
+        // 'zugferd_2.0' => ZugferdV2Handler::class,
+        // 'oioubl' => OioublHandler::class,
+        // 'ehf_3.0' => EhfHandler::class,
     ];
 
     /**

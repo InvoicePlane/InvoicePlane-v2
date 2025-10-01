@@ -4,19 +4,21 @@ namespace Modules\Invoices\Tests\Unit\Http\Decorators;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Modules\Invoices\Http\Clients\ExternalClient;
+use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * HttpClientExceptionHandlerTest - Unit tests for HttpClientExceptionHandler.
  *
- * Tests the decorator that adds exception handling and logging to the ExternalClient.
+ * Tests the decorator that adds exception handling and logging to the ApiClient.
  * Uses HTTP fakes to simulate various scenarios.
  *
  * @package Modules\Invoices\Tests\Unit\Http\Decorators
  */
+#[Group('peppol')]
 class HttpClientExceptionHandlerTest extends TestCase
 {
     protected HttpClientExceptionHandler $handler;
@@ -25,9 +27,8 @@ class HttpClientExceptionHandlerTest extends TestCase
     {
         parent::setUp();
 
-        $externalClient = new ExternalClient();
-        $this->handler = new HttpClientExceptionHandler($externalClient);
-        $this->handler->setBaseUrl('https://api.example.com');
+        $apiClient = new ApiClient();
+        $this->handler = new HttpClientExceptionHandler($apiClient);
     }
 
     #[Test]

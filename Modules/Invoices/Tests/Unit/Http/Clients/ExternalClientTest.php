@@ -3,26 +3,26 @@
 namespace Modules\Invoices\Tests\Unit\Http\Clients;
 
 use Illuminate\Support\Facades\Http;
-use Modules\Invoices\Http\Clients\ExternalClient;
+use Modules\Invoices\Http\Clients\ApiClient;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
- * ExternalClientTest - Unit tests for ExternalClient.
+ * ApiClientTest - Unit tests for ApiClient.
  *
- * Tests the ExternalClient HTTP wrapper using Laravel's HTTP fake.
+ * Tests the ApiClient HTTP wrapper using Laravel's HTTP fake.
  * Demonstrates preference for fakes over mocks as requested.
  *
  * @package Modules\Invoices\Tests\Unit\Http\Clients
  */
 class ExternalClientTest extends TestCase
 {
-    protected ExternalClient $client;
+    protected ApiClient $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = new ExternalClient();
+        $this->client = new ApiClient();
     }
 
     #[Test]
