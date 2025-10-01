@@ -36,6 +36,9 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $id_number
  * @property string|null          $coc_number
  * @property string|null          $vat_number
+ * @property string|null          $peppol_id
+ * @property string|null          $peppol_format
+ * @property bool                 $enable_e_invoicing
  * @property Carbon               $registered_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
@@ -62,8 +65,9 @@ class Relation extends Model
     protected $table = 'relations';
 
     protected $casts = [
-        'relation_type'   => RelationType::class,
-        'relation_status' => RelationStatus::class,
+        'relation_type'      => RelationType::class,
+        'relation_status'    => RelationStatus::class,
+        'enable_e_invoicing' => 'boolean',
     ];
 
     protected $guarded = [];
