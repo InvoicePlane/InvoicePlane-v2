@@ -85,8 +85,8 @@ class InvoicesServiceProvider extends ServiceProvider
                 $handler = $app->make(\Modules\Invoices\Http\Decorators\HttpClientExceptionHandler::class);
                 
                 // Get configuration from environment or config
-                $apiKey = config('invoices.peppol.e_invoice_be.api_key', env('PEPPOL_API_KEY', ''));
-                $baseUrl = config('invoices.peppol.e_invoice_be.base_url', env('PEPPOL_BASE_URL', 'https://api.e-invoice.be'));
+                $apiKey = config('invoices.peppol.e_invoice_be.api_key');
+                $baseUrl = config('invoices.peppol.e_invoice_be.base_url');
                 
                 return new \Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient(
                     $handler,
