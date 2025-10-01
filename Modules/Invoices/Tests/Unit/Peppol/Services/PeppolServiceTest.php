@@ -40,7 +40,7 @@ class PeppolServiceTest extends TestCase
         ]);
 
         // Create a real DocumentsClient with mocked dependencies
-        $externalClient = new \Modules\Invoices\Http\Clients\ExternalClient();
+        $externalClient = new \Modules\Invoices\Http\Clients\ApiClient();
         $exceptionHandler = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($externalClient);
         
         $this->documentsClient = new DocumentsClient(
