@@ -38,7 +38,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
         ]);
 
         // Create real dependencies
-        $externalClient = new \Modules\Invoices\Http\Clients\ExternalClient();
+        $externalClient = new \Modules\Invoices\Http\Clients\ApiClient();
         $exceptionHandler = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($externalClient);
         $documentsClient = new DocumentsClient(
             $exceptionHandler,
