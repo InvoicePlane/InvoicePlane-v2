@@ -15,9 +15,8 @@ return new class extends Migration
             $table->string('peppol_id', 100)->nullable()->after('vat_number')
                 ->comment('Peppol participant identifier (e.g., BE:0123456789)');
             
-            $table->string('peppol_format', 20)->nullable()->after('peppol_id')
-                ->default('ubl')
-                ->comment('Preferred Peppol document format (ubl or cii)');
+            $table->string('peppol_format', 50)->nullable()->after('peppol_id')
+                ->comment('Preferred Peppol document format (matches PeppolDocumentFormat values)');
             
             $table->boolean('enable_e_invoicing')->default(false)->after('peppol_format')
                 ->comment('Whether e-invoicing via Peppol is enabled for this customer');
