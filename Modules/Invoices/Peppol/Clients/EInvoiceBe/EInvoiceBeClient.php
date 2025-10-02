@@ -35,12 +35,8 @@ class EInvoiceBeClient extends BasePeppolClient
     /**
      * Get the request timeout for e-invoice.be operations.
      *
-     * Document submission can take longer, so we use a 90-second timeout.
-     *
-     * @return int Timeout in seconds
-     */
     protected function getTimeout(): int
     {
-        return 90;
+        return (int) config('invoices.peppol.e_invoice_be.timeout', 90);
     }
 }
