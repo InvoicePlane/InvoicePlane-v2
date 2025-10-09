@@ -42,7 +42,12 @@ class PeppolTransformerService
     }
 
     /**
-     * Get invoice type code (380 for standard invoice, 381 for credit note)
+     * Determine the Peppol invoice type code for the given invoice.
+     *
+     * Maps invoice kinds to the Peppol code: '380' for a standard commercial invoice and '381' for a credit note.
+     *
+     * @param Invoice $invoice The invoice to inspect when determining the type code.
+     * @return string The Peppol invoice type code (e.g., '380' or '381').
      */
     protected function getInvoiceTypeCode(Invoice $invoice): string
     {
@@ -51,8 +56,19 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform supplier (company) information
-     */
+     * Build an array representing the supplier (company) information for Peppol output.
+     *
+     * @param Invoice $invoice The invoice used to source supplier data; company name will fall back to $invoice->company->name when not configured.
+     * @return array{
+     *     name: string,
+     *     vat_number: null|string,
+     *     address: array{
+     *         street: null|string,
+     *         city: null|string,
+     *         postal_code: null|string,
+     *         country_code: null|string
+     *     }
+     * } Supplier structure with address fields mapped for Peppol.
     protected function transformSupplier(Invoice $invoice): array
     {
         return [
@@ -68,7 +84,16 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform customer information
+     * Build a Peppol-compatible representation of the invoice customer.
+     *
+     * @param Invoice $invoice The invoice containing the customer and address data to transform.
+     * @return array{
+     *   name: mixed,
+     *   vat_number: mixed,
+     *   endpoint_id: mixed,
+     *   endpoint_scheme: mixed,
+     *   address: array{street: mixed, city: mixed, postal_code: mixed, country_code: mixed}|null
+     * } An associative array with customer fields; `address` is an address array when available or `null`.
      */
     protected function transformCustomer(Invoice $invoice): array
     {
@@ -90,7 +115,10 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform invoice line items
+     * Build an array of Peppol-compatible invoice line representations from the given invoice.
+     *
+     * @param Invoice $invoice The invoice whose line items will be transformed.
+     * @return array An indexed array of line item arrays; each element contains keys: `id`, `quantity`, `unit_code`, `line_extension_amount`, `price_amount`, `item` (with `name` and `description`), and `tax` (with `category_code`, `percent`, and `amount`).
      */
     protected function transformInvoiceLines(Invoice $invoice): array
     {
@@ -115,8 +143,16 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform tax totals
-     */
+         * Builds a structured array of tax totals and subtotals for the given invoice.
+         *
+         * @param Invoice $invoice The invoice to extract tax totals from.
+         * @return array An array of tax total entries. Each entry contains:
+         *               - `tax_amount`: total tax amount for the invoice.
+         *               - `tax_subtotals`: array of subtotals, each with:
+         *                 - `taxable_amount`: amount subject to tax,
+         *                 - `tax_amount`: tax amount for the subtotal,
+         *                 - `tax_category`: object with `code` and `percent`.
+         */
     protected function transformTaxTotals(Invoice $invoice): array
     {
         return [
@@ -137,8 +173,15 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform monetary totals
-     */
+         * Builds the invoice monetary totals.
+         *
+         * @return array{
+         *     line_extension_amount: float|int,    // total of invoice lines before tax (subtotal or 0)
+         *     tax_exclusive_amount: float|int,    // amount excluding tax (subtotal or 0)
+         *     tax_inclusive_amount: float|int,    // total including tax (total or 0)
+         *     payable_amount: float|int           // amount due (balance if set, otherwise total, or 0)
+         * }
+         */
     protected function transformMonetaryTotals(Invoice $invoice): array
     {
         return [
@@ -150,7 +193,10 @@ class PeppolTransformerService
     }
 
     /**
-     * Transform payment terms
+     * Produce payment terms when the invoice has a due date.
+     *
+     * @param Invoice $invoice The invoice to extract the due date from.
+     * @return array|null An array with a `note` key containing "Payment due by YYYY-MM-DD", or `null` if the invoice has no due date.
      */
     protected function transformPaymentTerms(Invoice $invoice): ?array
     {

@@ -13,6 +13,11 @@ enum PeppolConnectionStatus: string implements LabeledEnum
     case SUCCESS = 'success';
     case FAILED = 'failed';
 
+    /**
+     * Returns a human-readable label for the connection status.
+     *
+     * @return string The label for the enum case: 'Untested', 'Success', or 'Failed'.
+     */
     public function label(): string
     {
         return match ($this) {
@@ -22,6 +27,11 @@ enum PeppolConnectionStatus: string implements LabeledEnum
         };
     }
 
+    /**
+     * The display color name for the Peppol connection status.
+     *
+     * @return string The color name for the status: 'gray' for UNTESTED, 'green' for SUCCESS, 'red' for FAILED.
+     */
     public function color(): string
     {
         return match ($this) {
@@ -31,6 +41,11 @@ enum PeppolConnectionStatus: string implements LabeledEnum
         };
     }
 
+    /**
+     * Get the icon identifier associated with the current status.
+     *
+     * @return string The icon identifier corresponding to the enum case.
+     */
     public function icon(): string
     {
         return match ($this) {

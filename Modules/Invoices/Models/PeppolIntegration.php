@@ -38,18 +38,30 @@ class PeppolIntegration extends Model
         'test_connection_at' => 'datetime',
     ];
 
+    /**
+     * Get the transmissions associated with this integration.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany A has-many relation for PeppolTransmission models keyed by `integration_id`.
+     */
     public function transmissions(): HasMany
     {
         return $this->hasMany(PeppolTransmission::class, 'integration_id');
     }
 
+    /**
+     * Get the Eloquent relation for this integration's configuration entries.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany Relation to PeppolIntegrationConfig models keyed by `integration_id`.
+     */
     public function configurations(): HasMany
     {
         return $this->hasMany(PeppolIntegrationConfig::class, 'integration_id');
     }
 
     /**
-     * Get decrypted API token
+     * Return the decrypted API token for the integration.
+     *
+     * @return string|null The decrypted API token, or null if no token is stored.
      */
     public function getApiTokenAttribute(): ?string
     {
@@ -57,7 +69,11 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Set encrypted API token
+     * Store the API token on the model in encrypted form.
+     *
+     * If `$value` is null the stored encrypted token will be set to null.
+     *
+     * @param string|null $value The plaintext API token to encrypt and store, or null to clear it.
      */
     public function setApiTokenAttribute(?string $value): void
     {
@@ -65,7 +81,9 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Get configuration as array
+     * Provide integration configurations as an associative array keyed by configuration keys.
+     *
+     * @return array Associative array mapping configuration keys (`config_key`) to their values (`config_value`).
      */
     public function getConfigAttribute(): array
     {
@@ -73,7 +91,12 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Set configuration from array
+     * Upserts integration configuration entries from an associative array.
+     *
+     * Each array key is saved as `config_key` and its corresponding value as `config_value`
+     * on the related configurations; existing entries are updated and missing ones created.
+     *
+     * @param array $config Associative array of configuration entries where keys are configuration keys and values are configuration values.
      */
     public function setConfig(array $config): void
     {
@@ -86,7 +109,11 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Get a single configuration value
+     * Retrieve a configuration value for the given key from this integration's configurations.
+     *
+     * @param string $key The configuration key to look up.
+     * @param mixed $default Value to return if the configuration key does not exist.
+     * @return mixed The configuration value if found, otherwise the provided default.
      */
     public function getConfigValue(string $key, $default = null)
     {
@@ -95,7 +122,9 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Check if connection test was successful
+     * Determine whether the last connection test succeeded.
+     *
+     * @return bool `true` if `test_connection_status` equals PeppolConnectionStatus::SUCCESS, `false` otherwise.
      */
     public function isConnectionSuccessful(): bool
     {
@@ -103,7 +132,11 @@ class PeppolIntegration extends Model
     }
 
     /**
-     * Check if integration is ready to use
+     * Determine whether the integration is ready for use.
+     *
+     * Integration is considered ready when it is enabled and the connection check is successful.
+     *
+     * @return bool `true` if the integration is enabled and the connection is successful, `false` otherwise.
      */
     public function isReady(): bool
     {

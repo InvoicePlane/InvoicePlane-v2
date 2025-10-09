@@ -20,6 +20,11 @@ class PeppolIntegrationConfig extends Model
 
     protected $guarded = [];
 
+    /**
+     * Get the PeppolIntegration that this configuration belongs to.
+     *
+     * @return BelongsTo The parent PeppolIntegration relation.
+     */
     public function integration(): BelongsTo
     {
         return $this->belongsTo(PeppolIntegration::class, 'integration_id');

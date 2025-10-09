@@ -19,6 +19,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
     case RETRYING = 'retrying';
     case DEAD = 'dead';
 
+    / **
+     * Get the human-readable label for the current transmission status.
+     *
+     * @return string The label corresponding to the enum case (e.g., 'Pending', 'Sent', 'Accepted').
+     */
     public function label(): string
     {
         return match ($this) {
@@ -34,6 +39,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
         };
     }
 
+    /**
+     * Get the UI color name associated with the transmission status.
+     *
+     * @return string The color name (CSS/tailwind-style) representing this status, e.g. 'gray', 'blue', 'green', 'red'.
+     */
     public function color(): string
     {
         return match ($this) {
@@ -49,6 +59,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
         };
     }
 
+    /**
+     * Get the Heroicon identifier representing the transmission status.
+     *
+     * @return string The Heroicon identifier corresponding to the enum case.
+     */
     public function icon(): string
     {
         return match ($this) {
@@ -64,6 +79,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
         };
     }
 
+    / **
+     * Determine whether the transmission status is final.
+     *
+     * @return bool `true` if the status is `ACCEPTED`, `REJECTED`, or `DEAD`, `false` otherwise.
+     */
     public function isFinal(): bool
     {
         return in_array($this, [
@@ -73,6 +93,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
         ]);
     }
 
+    /**
+     * Determines whether the transmission status permits a retry.
+     *
+     * @return bool `true` if the status is FAILED or RETRYING, `false` otherwise.
+     */
     public function canRetry(): bool
     {
         return in_array($this, [
@@ -81,6 +106,11 @@ enum PeppolTransmissionStatus: string implements LabeledEnum
         ]);
     }
 
+    /**
+     * Indicates the status is awaiting acknowledgment.
+     *
+     * @return bool `true` if the status is awaiting acknowledgment (SENT), `false` otherwise.
+     */
     public function isAwaitingAck(): bool
     {
         return $this === self::SENT;

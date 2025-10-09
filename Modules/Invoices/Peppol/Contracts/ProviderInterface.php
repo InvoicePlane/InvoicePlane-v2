@@ -30,11 +30,11 @@ interface ProviderInterface
     public function validatePeppolId(string $scheme, string $id): array;
 
     /**
-     * Send an invoice to the Peppol network
-     *
-     * @param array $transmissionData Data transfer object containing invoice data
-     * @return array{accepted: bool, external_id: string|null, status_code: int, message: string, response: array|null}
-     */
+ * Transmit an invoice to the Peppol network.
+ *
+ * @param array $transmissionData Data transfer object containing the invoice payload, recipient identifiers, and transmission metadata.
+ * @return array{accepted: bool, external_id: string|null, status_code: int, message: string, response: array|null} Associative array with keys: `accepted` is `true` if the provider accepted the submission, `external_id` the provider's transaction/document ID or `null`, `status_code` the provider HTTP/status code, `message` a human-readable status, and `response` the raw provider response or `null`.
+ */
     public function sendInvoice(array $transmissionData): array;
 
     /**
@@ -46,48 +46,48 @@ interface ProviderInterface
     public function getTransmissionStatus(string $externalId): array;
 
     /**
-     * Register a webhook callback URL (optional - not all providers support this)
-     *
-     * @param string $url Webhook endpoint URL
-     * @param string $secret Webhook signing secret
-     * @return array{success: bool, message: string}
-     */
+ * Register or update a webhook callback URL with the provider (optional — not all providers support this).
+ *
+ * @param string $url The webhook endpoint URL to register.
+ * @param string $secret The webhook signing secret used to verify callbacks.
+ * @return array{success: bool, message: string} `success` is `true` if registration succeeded, `false` otherwise; `message` contains a human-readable result or error.
+ */
     public function registerWebhookCallback(string $url, string $secret): array;
 
     /**
-     * Fetch acknowledgements from provider (for providers that don't support webhooks)
-     *
-     * @param \Carbon\Carbon|null $since Fetch acknowledgements since this timestamp
-     * @return array List of acknowledgements
-     */
+ * Retrieve acknowledgements from the provider for polling-based integrations.
+ *
+ * @param \Carbon\Carbon|null $since Optional timestamp to limit results to acknowledgements received at or after this time.
+ * @return array An array of acknowledgement records; each record is an associative array representing the provider's acknowledgement payload.
+ */
     public function fetchAcknowledgements(?\Carbon\Carbon $since = null): array;
 
     /**
-     * Cancel a pending or sent document
-     *
-     * @param string $externalId Provider's transaction/document ID
-     * @return array{success: bool, message: string}
-     */
+ * Cancel a pending or sent document identified by the provider's external ID.
+ *
+ * @param string $externalId Provider's transaction or document ID.
+ * @return array{success: bool, message: string} `success` is true when the cancellation was accepted, `message` contains provider response or error details.
+ */
     public function cancelDocument(string $externalId): array;
 
     /**
-     * Classify an error response from the provider
-     *
-     * Maps provider-specific error codes to generic categories:
-     * - TRANSIENT: Retryable errors (5xx, timeouts, rate limits)
-     * - PERMANENT: Non-retryable errors (invalid data, unauthorized, not found)
-     * - UNKNOWN: Ambiguous errors that need investigation
-     *
-     * @param int $statusCode HTTP status code
-     * @param array|null $responseBody Response body from provider
-     * @return string ERROR_TRANSIENT, ERROR_PERMANENT, or ERROR_UNKNOWN
-     */
+ * Classify a provider error into a generic category.
+ *
+ * Maps provider responses to one of three categories to guide retry or handling:
+ * - `ERROR_TRANSIENT`: retryable conditions such as server errors, timeouts, or rate limits.
+ * - `ERROR_PERMANENT`: non-retryable conditions such as invalid data, unauthorized, or not found.
+ * - `ERROR_UNKNOWN`: ambiguous or unclassified conditions that require investigation.
+ *
+ * @param int $statusCode HTTP status code returned by the provider.
+ * @param array|null $responseBody Optional response body returned by the provider to aid classification.
+ * @return string `ERROR_TRANSIENT` if the error is retryable, `ERROR_PERMANENT` if it is not retryable, `ERROR_UNKNOWN` otherwise.
+ */
     public function classifyError(int $statusCode, ?array $responseBody = null): string;
 
     /**
-     * Get provider name
-     *
-     * @return string
-     */
+ * Retrieve the provider's canonical name.
+ *
+ * @return string The provider's identifier (human-readable name, e.g. "Storecove").
+ */
     public function getProviderName(): string;
 }

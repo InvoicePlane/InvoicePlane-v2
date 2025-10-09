@@ -16,6 +16,11 @@ class PollPeppolStatusCommand extends Command
     protected $signature = 'peppol:poll-status';
     protected $description = 'Poll Peppol provider for transmission status updates';
 
+    /**
+     * Triggers a background job to poll Peppol transmission statuses and reports the result.
+     *
+     * @return int Exit code: `self::SUCCESS` if the polling job was dispatched successfully, `self::FAILURE` if dispatch failed.
+     */
     public function handle(): int
     {
         $this->info('Starting Peppol status polling...');

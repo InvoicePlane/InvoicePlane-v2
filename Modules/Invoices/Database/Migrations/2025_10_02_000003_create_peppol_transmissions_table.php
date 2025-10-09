@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the `peppol_transmissions` table with its columns, indexes, and foreign key constraints.
+     *
+     * The table stores transmission records for Peppol/UBL documents, including references to
+     * invoices, customers, and integrations; format and status metadata; retry and error tracking;
+     * idempotency and external provider identifiers; paths to stored files; and relevant timestamps.
+     */
     public function up(): void
     {
         Schema::create('peppol_transmissions', function (Blueprint $table): void {
@@ -39,6 +46,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverses the migration by dropping the `peppol_transmissions` table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('peppol_transmissions');

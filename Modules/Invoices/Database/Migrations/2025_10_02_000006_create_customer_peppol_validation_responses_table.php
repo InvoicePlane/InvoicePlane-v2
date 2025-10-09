@@ -6,6 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the customer_peppol_validation_responses table.
+     *
+     * The table contains an auto-incrementing primary key `id`, `validation_history_id` (unsigned big integer)
+     * referencing `customer_peppol_validation_history.id` with cascade on delete (constraint name `fk_peppol_validation_responses`),
+     * `response_key` (string, max 100), and `response_value` (text). An index on `validation_history_id` and `response_key`
+     * is created named `idx_validation_responses`.
+     */
     public function up(): void
     {
         Schema::create('customer_peppol_validation_responses', function (Blueprint $table): void {
@@ -20,6 +28,11 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Remove the customer_peppol_validation_responses table from the database.
+     *
+     * Drops the table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('customer_peppol_validation_responses');

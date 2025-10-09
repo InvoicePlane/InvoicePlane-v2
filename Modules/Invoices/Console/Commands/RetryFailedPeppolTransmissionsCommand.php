@@ -16,6 +16,13 @@ class RetryFailedPeppolTransmissionsCommand extends Command
     protected $signature = 'peppol:retry-failed';
     protected $description = 'Retry failed Peppol transmissions that are ready for retry';
 
+    /**
+     * Dispatches a job to retry failed Peppol transmissions and reports the outcome.
+     *
+     * Dispatches the RetryFailedTransmissions job; on success it emits informational output and returns a success exit code, on failure it emits an error message and returns a failure exit code.
+     *
+     * @return int self::SUCCESS if the job was dispatched successfully, self::FAILURE if an exception occurred while dispatching.
+     */
     public function handle(): int
     {
         $this->info('Starting retry of failed Peppol transmissions...');

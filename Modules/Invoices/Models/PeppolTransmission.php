@@ -52,28 +52,50 @@ class PeppolTransmission extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Get the invoice associated with the transmission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The relation to the Invoice model.
+     */
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
     }
 
+    /**
+     * Defines the customer relationship for this transmission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The relation linking the transmission to its customer Relation via the `customer_id` foreign key.
+     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Relation::class, 'customer_id');
     }
 
+    /**
+     * Get the Peppol integration associated with this transmission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The relationship to the PeppolIntegration model using the `integration_id` foreign key.
+     */
     public function integration(): BelongsTo
     {
         return $this->belongsTo(PeppolIntegration::class, 'integration_id');
     }
 
+    /**
+     * Get the HasMany relation for provider responses associated with this transmission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany Relation of PeppolTransmissionResponse models keyed by `transmission_id`.
+     */
     public function responses(): HasMany
     {
         return $this->hasMany(PeppolTransmissionResponse::class, 'transmission_id');
     }
 
     /**
-     * Get provider response as array
+     * Return provider response entries indexed by response key.
+     *
+     * @return array<string,mixed> Associative array where keys are response keys and values are the corresponding response values.
      */
     public function getProviderResponseAttribute(): array
     {
@@ -81,7 +103,13 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Set provider response from array
+     * Persist provider response key-value pairs to the transmission's related responses.
+     *
+     * For each entry in the provided associative array, creates or updates a related
+     * PeppolTransmissionResponse record. If a value is an array, it is JSON-encoded
+     * before being stored.
+     *
+     * @param array $response Associative array of response keys to values; array values will be JSON-encoded.
      */
     public function setProviderResponse(array $response): void
     {
@@ -94,7 +122,9 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Check if transmission is in a final state
+     * Determine whether the transmission's status represents a final state.
+     *
+     * @return bool `true` if the status indicates a final state, `false` otherwise.
      */
     public function isFinal(): bool
     {
@@ -102,15 +132,19 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Check if transmission can be retried
-     */
+         * Determine whether the transmission is eligible for a retry.
+         *
+         * @return bool `true` if the transmission's status allows retry and its error type is `PeppolErrorType::TRANSIENT`, `false` otherwise.
+         */
     public function canRetry(): bool
     {
         return $this->status->canRetry() && $this->error_type === PeppolErrorType::TRANSIENT;
     }
 
     /**
-     * Check if transmission is awaiting acknowledgement
+     * Determine whether the transmission is awaiting acknowledgement.
+     *
+     * @return bool `true` if the transmission's status indicates awaiting acknowledgement and `acknowledged_at` is null, `false` otherwise.
      */
     public function isAwaitingAck(): bool
     {
@@ -118,7 +152,9 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Mark transmission as sent
+     * Mark the transmission as sent and record the send timestamp.
+     *
+     * @param string|null $externalId The provider-assigned external identifier to store, or null to leave empty.
      */
     public function markAsSent(?string $externalId = null): void
     {
@@ -130,7 +166,9 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Mark transmission as accepted
+     * Mark the transmission as accepted and record the acknowledgement time.
+     *
+     * Updates the model's status to PeppolTransmissionStatus::ACCEPTED and sets `acknowledged_at` to the current time.
      */
     public function markAsAccepted(): void
     {
@@ -141,7 +179,11 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Mark transmission as rejected
+     * Mark the transmission as rejected and record the acknowledgement time.
+     *
+     * Sets the transmission status to REJECTED, records the current acknowledgement timestamp, and stores an optional rejection reason.
+     *
+     * @param string|null $reason Optional human-readable rejection reason to store in `last_error`.
      */
     public function markAsRejected(string $reason = null): void
     {
@@ -153,7 +195,14 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Mark transmission as failed
+     * Mark the transmission as failed and record the error and error type.
+     *
+     * Increments the attempt counter, sets the transmission status to FAILED,
+     * stores the provided error message as `last_error`, and sets `error_type`
+     * (defaults to `PeppolErrorType::UNKNOWN` when not provided).
+     *
+     * @param string $error Human-readable error message describing the failure.
+     * @param PeppolErrorType|null $errorType Classification of the error; when omitted `PeppolErrorType::UNKNOWN` is used.
      */
     public function markAsFailed(string $error, PeppolErrorType $errorType = null): void
     {
@@ -166,8 +215,10 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Schedule retry
-     */
+         * Set the transmission to retrying and schedule the next retry time.
+         *
+         * @param \Carbon\Carbon $nextRetryAt The timestamp when the next retry should be attempted.
+         */
     public function scheduleRetry(\Carbon\Carbon $nextRetryAt): void
     {
         $this->update([
@@ -177,7 +228,12 @@ class PeppolTransmission extends Model
     }
 
     /**
-     * Mark transmission as dead (max retries exceeded)
+     * Mark the transmission as dead and record a final error reason.
+     *
+     * Sets the transmission status to DEAD and updates `last_error` with the provided
+     * reason. If no reason is supplied, the existing `last_error` is preserved.
+     *
+     * @param string|null $reason Optional final error message to store.
      */
     public function markAsDead(string $reason = null): void
     {

@@ -20,6 +20,11 @@ class PeppolTransmissionResponse extends Model
 
     protected $guarded = [];
 
+    /**
+     * Get the PeppolTransmission associated with this response.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The relationship to the associated PeppolTransmission model.
+     */
     public function transmission(): BelongsTo
     {
         return $this->belongsTo(PeppolTransmission::class, 'transmission_id');

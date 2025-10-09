@@ -169,11 +169,21 @@ class Relation extends Model
         return $this->hasMany(Task::class, 'customer_id');
     }
 
+    /**
+     * Define a one-to-many relationship to User models.
+     *
+     * @return HasMany The has-many relationship for User models.
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
+    /**
+     * Get the Peppol validation history records for this relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany Collection of CustomerPeppolValidationHistory models related by `customer_id`.
+     */
     public function peppolValidationHistory(): HasMany
     {
         return $this->hasMany(CustomerPeppolValidationHistory::class, 'customer_id');
@@ -195,7 +205,9 @@ class Relation extends Model
     }*/
     
     /**
-     * Check if customer has valid Peppol ID
+     * Determines whether the relation's Peppol ID has been validated and e-invoicing is enabled.
+     *
+     * @return bool `true` if e-invoicing is enabled, the Peppol validation status is `PeppolValidationStatus::VALID`, and `peppol_id` is not null; `false` otherwise.
      */
     public function hasPeppolIdValidated(): bool
     {

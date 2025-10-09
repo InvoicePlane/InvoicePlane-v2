@@ -29,7 +29,16 @@ class PeppolManagementService
 {
     use LogsPeppolActivity;
     /**
-     * Create and test a new Peppol integration
+     * Create a new Peppol integration for a company, persist its configuration, and emit a creation event.
+     *
+     * The integration is created disabled (awaiting testing) and its configuration is stored via the integration's
+     * key-value configuration relationship.
+     *
+     * @param int $companyId The ID of the company that will own the integration.
+     * @param string $providerName The provider identifier/name for the Peppol integration.
+     * @param array $config Associative configuration values to attach to the integration.
+     * @param string|null $apiToken Optional provider API token; stored on the model (encrypted by the model accessor).
+     * @return PeppolIntegration The newly created PeppolIntegration model (initially disabled until tested).
      */
     public function createIntegration(int $companyId, string $providerName, array $config, ?string $apiToken = null): PeppolIntegration
     {
@@ -58,7 +67,15 @@ class PeppolManagementService
     }
 
     /**
-     * Test connection to a Peppol provider
+     * Test connectivity for the given Peppol integration and record the result.
+     *
+     * Updates the integration's test_connection_status, test_connection_message, and test_connection_at, saves the integration,
+     * and dispatches a PeppolIntegrationTested event reflecting success or failure.
+     *
+     * @param PeppolIntegration $integration The integration to test.
+     * @return array An array containing:
+     *               - `ok` (bool): `true` if the connection succeeded, `false` otherwise.
+     *               - `message` (string): A human-readable result or error message.
      */
     public function testConnection(PeppolIntegration $integration): array
     {
@@ -97,7 +114,24 @@ class PeppolManagementService
     }
 
     /**
-     * Validate a customer's Peppol ID with the provider
+     * Validate a customer's Peppol identifier against the provider and record the validation history.
+     *
+     * Performs provider-based validation of the customer's Peppol scheme and ID, persists a
+     * CustomerPeppolValidationHistory record (including provider response when available), updates
+     * the customer's quick-lookup validation fields, emits a PeppolIdValidationCompleted event,
+     * and returns the validation outcome.
+     *
+     * @param Relation $customer The customer relation containing `peppol_scheme` and `peppol_id`.
+     * @param PeppolIntegration $integration The Peppol integration used to perform validation.
+     * @param int|null $validatedBy Optional user ID who initiated the validation.
+     * @return array{
+     *   valid: bool,
+     *   status: string,
+     *   message: string|null,
+     *   details: mixed|null
+     * } `valid` is `true` when the participant was found; `status` is the validation status value;
+     * `message` contains a human-readable validation message or error text; `details` contains
+     * optional provider response data when available.
      */
     public function validatePeppolId(
         Relation $customer, 
@@ -187,7 +221,11 @@ class PeppolManagementService
     }
 
     /**
-     * Send an invoice to Peppol (queues the job)
+     * Queue an invoice to be sent to Peppol.
+     *
+     * @param Invoice $invoice The invoice to send.
+     * @param PeppolIntegration $integration The Peppol integration to use for sending.
+     * @param bool $force When true, force sending even if the invoice was previously sent or flagged.
      */
     public function sendInvoice(Invoice $invoice, PeppolIntegration $integration, bool $force = false): void
     {
@@ -201,7 +239,10 @@ class PeppolManagementService
     }
 
     /**
-     * Get the default/active integration for a company
+     * Retrieve the company's active Peppol integration that is enabled and has a successful connection test.
+     *
+     * @param int $companyId The company identifier.
+     * @return PeppolIntegration|null The matching integration, or `null` if none exists.
      */
     public function getActiveIntegration(int $companyId): ?PeppolIntegration
     {
@@ -212,7 +253,10 @@ class PeppolManagementService
     }
 
     /**
-     * Auto-suggest Peppol scheme based on customer country
+     * Suggests a Peppol identifier scheme for the given country code.
+     *
+     * @param string $countryCode The country code (ISO 3166-1 alpha-2).
+     * @return string|null The Peppol scheme mapped to the country, or `null` if no mapping exists.
      */
     public function suggestPeppolScheme(string $countryCode): ?string
     {

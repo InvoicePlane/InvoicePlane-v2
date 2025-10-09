@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the peppol_integrations table to store PEPPOL integration settings and connection test metadata.
+     *
+     * The table includes company association (foreign key to companies.id with cascade delete), provider identifier,
+     * encrypted API token, last test connection status/message/timestamp, an enabled flag, and indexes for
+     * (company_id, enabled) and provider_name.
+     */
     public function up(): void
     {
         Schema::create('peppol_integrations', function (Blueprint $table): void {
@@ -24,6 +31,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Drop the `peppol_integrations` table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('peppol_integrations');

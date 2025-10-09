@@ -15,7 +15,14 @@ use Modules\Invoices\Events\Peppol\PeppolEvent;
 class LogPeppolEventToAudit
 {
     /**
-     * Handle the event
+     * Create an audit log entry for the given Peppol event.
+     *
+     * Creates an AuditLog record using an audit identifier extracted from the event payload,
+     * an audit type inferred from the event name, the event name as activity, and the event's
+     * audit payload JSON-encoded into the info field. Errors during audit logging are recorded
+     * and not rethrown.
+     *
+     * @param PeppolEvent $event The event to record in the audit log.
      */
     public function handle(PeppolEvent $event): void
     {
@@ -47,8 +54,14 @@ class LogPeppolEventToAudit
     }
 
     /**
-     * Determine the audit ID from the event
-     */
+         * Extracts an audit identifier from the given Peppol event payload.
+         *
+         * Checks the payload for `transmission_id`, `integration_id`, then `customer_id`
+         * and returns the first value found.
+         *
+         * @param PeppolEvent $event Event whose payload is inspected for an audit id.
+         * @return int|null The audit identifier if present, otherwise `null`.
+         */
     protected function getAuditId(PeppolEvent $event): ?int
     {
         // Try common payload keys
@@ -59,8 +72,11 @@ class LogPeppolEventToAudit
     }
 
     /**
-     * Determine the audit type from the event
-     */
+         * Derives an audit type string based on the event's name.
+         *
+         * @param PeppolEvent $event Event whose name is inspected to determine the audit type.
+         * @return string `'peppol_transmission'` if the event name contains "transmission", `'peppol_integration'` if it contains "integration", `'peppol_validation'` if it contains "validation", otherwise `'peppol_event'`.
+         */
     protected function getAuditType(PeppolEvent $event): string
     {
         $eventName = $event->getEventName();
