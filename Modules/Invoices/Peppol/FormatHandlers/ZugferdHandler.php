@@ -17,9 +17,11 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class ZugferdHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Create a ZugferdHandler for the specified Peppol document format.
      *
-     * @param PeppolDocumentFormat|null $format Defaults to ZUGFeRD 2.0
+     * If null, the handler defaults to ZUGFERD 2.0 (Factur‑X compatible).
+     *
+     * @param PeppolDocumentFormat|null $format The target ZUGFeRD/Factur‑X format or null to use the default.
      */
     public function __construct(?PeppolDocumentFormat $format = null)
     {
@@ -27,7 +29,11 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Builds a ZUGFeRD (CII) document structure for the provided invoice using the handler's configured format.
+     *
+     * @param Invoice $invoice The invoice to transform into a ZUGFeRD payload.
+     * @param array $options Optional transformation options (unused by default; implementation-specific).
+     * @return array An associative array representing the ZUGFeRD (CII) document structure conforming to either ZUGFeRD 1.0 or 2.0 depending on the handler configuration.
      */
     public function transform(Invoice $invoice, array $options = []): array
     {
@@ -86,10 +92,10 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build header exchanged document (ZUGFeRD 1.0).
+     * Create the HeaderExchangedDocument structure for ZUGFeRD 1.0 using invoice data.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice whose number and issue date populate the header.
+     * @return array<string, mixed> Associative array representing the HeaderExchangedDocument (ID, Name, TypeCode, IssueDateTime).
      */
     protected function buildHeaderExchangedDocument(Invoice $invoice): array
     {
@@ -107,9 +113,9 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build document context (ZUGFeRD 2.0).
+     * Builds the ZUGFeRD 2.0 document context identifying the basic-compliance guideline.
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed> Associative array containing `ram:GuidelineSpecifiedDocumentContextParameter` with `ram:ID` set to the ZUGFeRD 2.0 basic-profile URN.
      */
     protected function buildDocumentContext20(): array
     {
@@ -121,11 +127,14 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build exchanged document (ZUGFeRD 2.0).
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Constructs the ZUGFeRD 2.0 ExchangedDocument block from the invoice metadata.
+         *
+         * @param Invoice $invoice Invoice providing the document ID and issue date.
+         * @return array<string,mixed> Associative array with keys:
+         *                             - `ram:ID` (invoice number),
+         *                             - `ram:TypeCode` (invoice type code, "380"),
+         *                             - `ram:IssueDateTime` containing `udt:DateTimeString` with `@format` "102" and the issue date in `Ymd` format.
+         */
     protected function buildExchangedDocument20(Invoice $invoice): array
     {
         return [
@@ -141,11 +150,13 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build supply chain trade transaction (ZUGFeRD 1.0).
+     * Assembles the ApplicableSupplyChainTradeTransaction structure for ZUGFeRD 1.0.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param string $currencyCode ISO 4217 currency code used for monetary amount fields.
+     * @return array<string,mixed> Nested array with keys:
+     *                             - 'ApplicableSupplyChainTradeAgreement' => seller/buyer trade party blocks,
+     *                             - 'ApplicableSupplyChainTradeDelivery' => delivery event block,
+     *                             - 'ApplicableSupplyChainTradeSettlement' => settlement and monetary summation block.
      */
     protected function buildSupplyChainTradeTransaction10(Invoice $invoice, string $currencyCode): array
     {
@@ -173,10 +184,13 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build trade agreement (ZUGFeRD 1.0).
+     * Builds the ZUGFeRD 1.0 trade agreement section containing seller and buyer party information.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * The returned array contains keyed blocks for `SellerTradeParty` and `BuyerTradeParty`, including
+     * postal address fields and, for the seller, a tax registration entry with VAT scheme ID.
+     *
+     * @param Invoice $invoice Invoice object used to source buyer details.
+     * @return array<string, mixed> Associative array representing the ApplicableSupplyChainTradeTransaction trade agreement portion for ZUGFeRD 1.0.
      */
     protected function buildTradeAgreement10(Invoice $invoice): array
     {
@@ -249,10 +263,10 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build trade delivery (ZUGFeRD 1.0).
+     * Builds the ZUGFeRD 1.0 ActualDeliverySupplyChainEvent using the invoice's issue date.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice whose invoiced_at date is used for the occurrence date.
+     * @return array<string, mixed> Array representing the ActualDeliverySupplyChainEvent with a `DateTimeString` in format `102` (YYYYMMDD).
      */
     protected function buildTradeDelivery10(Invoice $invoice): array
     {
@@ -269,10 +283,10 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build trade delivery (ZUGFeRD 2.0).
+     * Builds the trade delivery block for ZUGFeRD 2.0 with the delivery occurrence date.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice whose `invoiced_at` date is used as the occurrence date.
+     * @return array<string,mixed> Associative array representing `ram:ActualDeliverySupplyChainEvent` with `ram:OccurrenceDateTime` containing `udt:DateTimeString` (format `102`) set to the invoice's `invoiced_at` in `Ymd` format.
      */
     protected function buildTradeDelivery20(Invoice $invoice): array
     {
@@ -289,11 +303,15 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build trade settlement (ZUGFeRD 1.0).
+     * Constructs the trade settlement section for a ZUGFeRD 1.0 invoice.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * The resulting array contains invoice currency, payment means (SEPA), applicable tax totals,
+     * payment terms with due date, and the monetary summation (line total, tax basis, tax total,
+     * grand total, and due payable amounts).
+     *
+     * @param Invoice $invoice The invoice to derive settlement values from.
+     * @param string $currencyCode ISO 4217 currency code used for monetary amounts.
+     * @return array<string, mixed> Array representing the SpecifiedTradeSettlement structure for ZUGFeRD 1.0.
      */
     protected function buildTradeSettlement10(Invoice $invoice, string $currencyCode): array
     {
@@ -339,11 +357,18 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build trade settlement (ZUGFeRD 2.0).
+     * Build the ZUGFeRD 2.0 trade settlement section for the given invoice.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * Returns an associative array containing the settlement information:
+     * - `ram:InvoiceCurrencyCode`
+     * - `ram:SpecifiedTradeSettlementPaymentMeans` (TypeCode "58" for SEPA)
+     * - `ram:ApplicableTradeTax` (per-rate tax totals)
+     * - `ram:SpecifiedTradePaymentTerms` (due date as `udt:DateTimeString` format 102)
+     * - `ram:SpecifiedTradeSettlementHeaderMonetarySummation` (line, tax, grand and due payable amounts)
+     *
+     * @param Invoice $invoice Invoice model providing amounts and dates.
+     * @param string $currencyCode ISO 4217 currency code used for monetary elements.
+     * @return array<string, mixed> Associative array representing the ZUGFeRD 2.0 settlement structure.
      */
     protected function buildTradeSettlement20(Invoice $invoice, string $currencyCode): array
     {
@@ -376,11 +401,18 @@ class ZugferdHandler extends BaseFormatHandler
         ];
     }
 
-    /**
-     * Build tax totals (ZUGFeRD 1.0).
+    /****
+     * Builds tax total entries for ZUGFeRD 1.0 grouped by tax rate.
      *
-     * @param Invoice $invoice
-     * @return array<array<string, mixed>>
+     * Each entry contains:
+     * - `CalculatedAmount`: array with `@currencyID` and numeric string value (`#`).
+     * - `TypeCode`: tax type (always `'VAT'`).
+     * - `BasisAmount`: array with `@currencyID` and numeric string value (`#`).
+     * - `CategoryCode`: `'S'` for taxable rates greater than zero, `'Z'` for zero rate.
+     * - `ApplicablePercent`: tax rate as a numeric string.
+     *
+     * @param Invoice $invoice Invoice used to compute tax groups.
+     * @return array<int,array{CalculatedAmount:array{'@currencyID':string,'#':string},TypeCode:string,BasisAmount:array{'@currencyID':string,'#':string},CategoryCode:string,ApplicablePercent:string}> Array of tax total entries suitable for ZUGFeRD 1.0.
      */
     protected function buildTaxTotals10(Invoice $invoice): array
     {
@@ -407,11 +439,15 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Build tax totals (ZUGFeRD 2.0).
-     *
-     * @param Invoice $invoice
-     * @return array<array<string, mixed>>
-     */
+         * Build the ZUGFeRD 2.0 tax total entries grouped by tax rate.
+         *
+         * Produces an array of RAM tax nodes where each entry contains formatted strings for
+         * `ram:CalculatedAmount`, `ram:BasisAmount`, and `ram:RateApplicablePercent`, plus
+         * `ram:TypeCode` and `ram:CategoryCode` (\"S\" for taxable rates > 0, \"Z\" for zero rate).
+         *
+         * @param Invoice $invoice Invoice to derive tax groups from.
+         * @return array<array<string, mixed>> List of tax entries suitable for inclusion in a ZUGFeRD 2.0 payload.
+         */
     protected function buildTaxTotals20(Invoice $invoice): array
     {
         $taxGroups = $this->groupTaxesByRate($invoice);
@@ -431,10 +467,14 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Group taxes by rate.
+     * Groups invoice tax bases and tax amounts by tax rate.
      *
-     * @param Invoice $invoice
-     * @return array<float, array<string, float>>
+     * Builds an associative array keyed by tax rate (percentage) where each value contains
+     * the cumulative 'base' (taxable amount) and 'amount' (calculated tax) for that rate,
+     * using the invoice currency values.
+     *
+     * @param Invoice $invoice The invoice whose items will be grouped.
+     * @return array<float, array<string, float>> Associative array keyed by tax rate with keys 'base' and 'amount' holding totals as floats.
      */
     protected function groupTaxesByRate(Invoice $invoice): array
     {
@@ -458,7 +498,13 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Generate a string representation of the invoice's ZUGFeRD data.
+     *
+     * Converts the given invoice into the format-specific ZUGFeRD structure and returns it as a string.
+     *
+     * @param Invoice $invoice The invoice to convert into ZUGFeRD format.
+     * @param array $options Optional format-specific options.
+     * @return string The pretty-printed JSON representation of the transformed ZUGFeRD data (placeholder for the actual XML embedding).
      */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
@@ -469,7 +515,10 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Perform ZUGFeRD-specific validation on an invoice.
+     *
+     * @param Invoice $invoice The invoice to validate.
+     * @return string[] Array of validation error messages; empty if the invoice passes ZUGFeRD-specific checks.
      */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
@@ -484,11 +533,11 @@ class ZugferdHandler extends BaseFormatHandler
     }
 
     /**
-     * Get tax rate from invoice item.
-     *
-     * @param mixed $item
-     * @return float
-     */
+         * Retrieve the tax rate percent from an invoice item.
+         *
+         * @param mixed $item Invoice line item object or array expected to contain a `tax_rate` value.
+         * @return float The tax rate as a percentage (e.g., 19.0). Returns 19.0 if the item has no `tax_rate`.
+         */
     protected function getTaxRate($item): float
     {
         return $item->tax_rate ?? 19.0; // Default German VAT rate

@@ -17,7 +17,7 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class FacturaeHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Initialize the handler and register the Facturae 3.2 document format.
      */
     public function __construct()
     {
@@ -25,7 +25,14 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Transform an Invoice model into a Facturae 3.2 structured array payload.
+     *
+     * Builds the top-level Facturae structure containing `FileHeader`, `Parties` and `Invoices`
+     * suitable for downstream encoding to the Facturae 3.2 representation.
+     *
+     * @param Invoice $invoice The invoice to transform.
+     * @param array $options Optional transformation options.
+     * @return array The Facturae-structured payload with keys `FileHeader`, `Parties` and `Invoices`.
      */
     public function transform(Invoice $invoice, array $options = []): array
     {
@@ -41,10 +48,10 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build file header section.
+     * Create the Facturae 3.2 file header containing schema and batch metadata.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice used to populate the batch identifier and total amount.
+     * @return array<string, mixed> Array with keys `SchemaVersion`, `Modality`, `InvoiceIssuerType`, and `Batch` (where `Batch` contains `BatchIdentifier`, `InvoicesCount`, and `TotalInvoicesAmount` with `TotalAmount`).
      */
     protected function buildFileHeader(Invoice $invoice): array
     {
@@ -63,10 +70,10 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build parties section.
+     * Assembles the seller and buyer party structures for the given invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice to extract seller and buyer information from.
+     * @return array<string, mixed> Array with 'SellerParty' and 'BuyerParty' keys containing their respective structured data.
      */
     protected function buildParties(Invoice $invoice): array
     {
@@ -77,10 +84,14 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build seller party data.
+     * Create the seller (supplier) party structure for the Facturae 3.2 payload.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * The structure is populated from supplier configuration and contains the
+     * TaxIdentification, PartyIdentification, AdministrativeCentres, and LegalEntity
+     * sections required by the Facturae schema.
+     *
+     * @param Invoice $invoice Invoice model (unused for most fields; provided for context).
+     * @return array<string,mixed> Seller party data matching Facturae 3.2 structure.
      */
     protected function buildSellerParty(Invoice $invoice): array
     {
@@ -119,10 +130,16 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build buyer party data.
+     * Constructs the buyer party structure for the Facturae payload using the invoice's customer data.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * Populates tax identification, administrative centre, and legal entity sections. Address fields are
+     * provided as `AddressInSpain` for Spanish customers or `OverseasAddress` for foreign customers.
+     *
+     * @param Invoice $invoice The invoice whose customer information is used to build the buyer party.
+     * @return array<string,mixed> Array with keys:
+     *   - `TaxIdentification`: contains `PersonTypeCode`, `ResidenceTypeCode`, and `TaxIdentificationNumber`.
+     *   - `AdministrativeCentres`: contains `AdministrativeCentre` with `CentreCode`, `RoleTypeCode`, `Name` and an address block (`AddressInSpain` or `OverseasAddress`).
+     *   - `LegalEntity`: contains `CorporateName` and the same address block used in `AdministrativeCentres`.
      */
     protected function buildBuyerParty(Invoice $invoice): array
     {
@@ -172,11 +189,12 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice data.
+     * Assembles the invoice sections required for the Facturae 3.2 invoice payload.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * Returns an associative array containing the invoice parts used in the payload:
+     * `InvoiceHeader`, `InvoiceIssueData`, `TaxesOutputs`, `InvoiceTotals`, `Items`, and `PaymentDetails`.
+     *
+     * @return array<string, mixed> Associative array keyed by Facturae element names with their corresponding data.
      */
     protected function buildInvoice(Invoice $invoice, string $currencyCode): array
     {
@@ -208,11 +226,18 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice issue data.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Builds the invoice issuance metadata required by the Facturae payload.
+         *
+         * Returns an associative array containing the issue date, invoice and tax currency codes,
+         * and the language code used for the invoice.
+         *
+         * @param Invoice $invoice The invoice model from which dates and currency are derived.
+         * @return array<string, mixed> An array with keys:
+         *                              - `IssueDate`: the invoice issue date in Y-m-d format,
+         *                              - `InvoiceCurrencyCode`: the invoice currency code,
+         *                              - `TaxCurrencyCode`: the tax currency code,
+         *                              - `LanguageName`: the language code (e.g., 'es').
+         */
     protected function buildInvoiceIssueData(Invoice $invoice): array
     {
         return [
@@ -224,11 +249,11 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build taxes outputs section.
+     * Assemble tax output entries grouped by tax rate for the Facturae payload.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice whose items will be grouped by tax rate to produce tax entries.
+     * @param string $currencyCode The currency code used when formatting monetary amounts.
+     * @return array<string, mixed> An array with a `Tax` key containing a list of tax group entries. Each entry includes a `Tax` structure with `TaxTypeCode`, `TaxRate`, `TaxableBase['TotalAmount']`, and `TaxAmount['TotalAmount']` formatted as strings with two decimal places.
      */
     protected function buildTaxesOutputs(Invoice $invoice, string $currencyCode): array
     {
@@ -270,11 +295,18 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice totals.
+     * Assembles invoice total amounts formatted for the Facturae payload.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice model providing subtotal and total amounts.
+     * @param string $currencyCode The invoice currency code (used for context; amounts are formatted to two decimals).
+     * @return array<string, mixed> An associative array with the following keys:
+     *                              - `TotalGrossAmount`: subtotal formatted with 2 decimals.
+     *                              - `TotalGrossAmountBeforeTaxes`: subtotal formatted with 2 decimals.
+     *                              - `TotalTaxOutputs`: tax amount (invoice total minus subtotal) formatted with 2 decimals.
+     *                              - `TotalTaxesWithheld`: taxes withheld, represented as `'0.00'`.
+     *                              - `InvoiceTotal`: invoice total formatted with 2 decimals.
+     *                              - `TotalOutstandingAmount`: outstanding amount formatted with 2 decimals.
+     *                              - `TotalExecutableAmount`: executable amount formatted with 2 decimals.
      */
     protected function buildInvoiceTotals(Invoice $invoice, string $currencyCode): array
     {
@@ -292,11 +324,11 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice items.
+     * Map invoice items to Facturae 3.2 `InvoiceLine` structures.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice whose items will be converted into line entries.
+     * @param string $currencyCode Currency ISO code used for monetary formatting.
+     * @return array<string, mixed> An array with the key `InvoiceLine` containing a list of line entries formatted for Facturae (each entry includes quantities, unit price, totals and tax breakdowns).
      */
     protected function buildItems(Invoice $invoice, string $currencyCode): array
     {
@@ -332,11 +364,14 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment details.
+     * Constructs the payment details structure containing a single installment.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice used to populate the installment due date and amount.
+     * @param string $currencyCode The currency code (ISO 4217) associated with the installment amount.
+     * @return array<string,mixed> An array with an 'Installment' entry containing:
+     *                              - 'InstallmentDueDate' (string, Y-m-d),
+     *                              - 'InstallmentAmount' (string, formatted with two decimals),
+     *                              - 'PaymentMeans' (string, payment method code, e.g. '04' for transfer).
      */
     protected function buildPaymentDetails(Invoice $invoice, string $currencyCode): array
     {
@@ -350,7 +385,11 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Produce a Facturae 3.2 XML representation for the given invoice.
+     *
+     * @param Invoice $invoice The invoice to convert.
+     * @param array $options Optional transform options.
+     * @return string A string containing the Facturae 3.2 XML payload for the invoice. Current implementation returns a pretty-printed JSON representation of the prepared payload as a placeholder.
      */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
@@ -361,8 +400,11 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Validate Facturae-specific requirements for the given invoice.
+         *
+         * @param Invoice $invoice The invoice to validate.
+         * @return string[] An array of validation error messages; empty if no errors.
+         */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
         $errors = [];
@@ -376,10 +418,10 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Extract series code from invoice number.
+     * Extracts the leading alphabetic series code from an invoice number.
      *
-     * @param string $invoiceNumber
-     * @return string
+     * @param string $invoiceNumber Invoice identifier that may start with a letter-based series.
+     * @return string The extracted series code (leading uppercase letters), or 'A' if none are present.
      */
     protected function extractSeriesCode(string $invoiceNumber): string
     {
@@ -392,10 +434,10 @@ class FacturaeHandler extends BaseFormatHandler
     }
 
     /**
-     * Get tax rate from invoice item.
+     * Retrieve the tax rate for an invoice item.
      *
-     * @param mixed $item
-     * @return float
+     * @param mixed $item Invoice item expected to contain a `tax_rate` property or key.
+     * @return float The tax rate to apply; `21.0` if the item does not specify one.
      */
     protected function getTaxRate($item): float
     {

@@ -17,7 +17,9 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class FacturXHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Initialize the handler for the Factur-X 1.0 (Cross Industry Invoice) Peppol document format.
+     *
+     * Sets the format identifier to PeppolDocumentFormat::FACTURX_10 via the parent constructor.
      */
     public function __construct()
     {
@@ -34,11 +36,11 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build CII structure for Factur-X.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Constructs the Cross Industry Invoice (CII) array representation for a Factur‑X 1.0 invoice.
+         *
+         * @param Invoice $invoice The invoice to convert into the CII structure.
+         * @return array<string, mixed> An associative array representing the CII payload with the root key `rsm:CrossIndustryInvoice`.
+         */
     protected function buildCiiStructure(Invoice $invoice): array
     {
         $customer = $invoice->customer;
@@ -57,9 +59,9 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build document context section.
+     * Constructs the document context parameters required by the Factur‑X (CII) envelope.
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed> Array containing `ram:GuidelineSpecifiedDocumentContextParameter` with `ram:ID` set to the Factur‑X guideline URN.
      */
     protected function buildDocumentContext(): array
     {
@@ -71,10 +73,13 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build exchanged document section.
+     * Builds the ExchangedDocument section of the CII (Factur‑X) payload for the given invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice whose identifying and date information will populate the section.
+     * @return array<string,mixed> Associative array with keys:
+     *                              - `ram:ID`: invoice number,
+     *                              - `ram:TypeCode`: document type code ('380' for commercial invoice),
+     *                              - `ram:IssueDateTime`: contains `udt:DateTimeString` with `@format` '102' and the invoice date formatted as `Ymd`.
      */
     protected function buildExchangedDocument(Invoice $invoice): array
     {
@@ -91,11 +96,11 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build supply chain trade transaction section.
+     * Builds the Supply Chain Trade Transaction section of the CII payload.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice to extract trade data from.
+     * @param string $currencyCode ISO 4217 currency code used for monetary elements.
+     * @return array<string,mixed> Array containing keys for 'ram:ApplicableHeaderTradeAgreement', 'ram:ApplicableHeaderTradeDelivery', and 'ram:ApplicableHeaderTradeSettlement' representing their respective CII subsections.
      */
     protected function buildSupplyChainTradeTransaction(Invoice $invoice, string $currencyCode): array
     {
@@ -107,10 +112,13 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build header trade agreement section.
+     * Constructs seller and buyer party data for the CII header trade agreement.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * Seller values are sourced from configuration; buyer values are populated from the
+     * invoice's customer (company/name and postal address).
+     *
+     * @param Invoice $invoice The invoice whose customer and address data populate the buyer party.
+     * @return array<string,mixed> An array containing `ram:SellerTradeParty` and `ram:BuyerTradeParty` structures suitable for the CII header trade agreement.
      */
     protected function buildHeaderTradeAgreement(Invoice $invoice): array
     {
@@ -145,10 +153,10 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build header trade delivery section.
+     * Builds the header trade delivery section containing the actual delivery event date.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice model whose invoiced_at date is used for the delivery occurrence.
+     * @return array<string, mixed> Array representing `ram:ActualDeliverySupplyChainEvent` with `ram:OccurrenceDateTime` containing a `udt:DateTimeString` using format '102' and the invoice date formatted as `Ymd`.
      */
     protected function buildHeaderTradeDelivery(Invoice $invoice): array
     {
@@ -165,11 +173,10 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build header trade settlement section.
+     * Construct the header trade settlement block for the invoice's CII payload, including currency, payment means, tax totals, payment terms, monetary summation, and line items.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param string $currencyCode ISO 4217 currency code used for monetary amounts.
+     * @return array<string, mixed> The `ram:ApplicableHeaderTradeSettlement` structure ready for inclusion in the CII document.
      */
     protected function buildHeaderTradeSettlement(Invoice $invoice, string $currencyCode): array
     {
@@ -202,12 +209,16 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build tax totals.
-     *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<array<string, mixed>>
-     */
+         * Aggregate invoice item taxes by tax rate and format them for the CII tax totals section.
+         *
+         * Each returned entry represents a tax group for a specific rate and includes the calculated tax amount,
+         * the taxable basis, the VAT category code, and the applicable rate percent. Monetary and percent values
+         * are formatted as strings with two decimal places and a dot decimal separator.
+         *
+         * @param Invoice $invoice The invoice whose items will be grouped by tax rate.
+         * @param string $currencyCode ISO 4217 currency code used for the tax totals (included for context).
+         * @return array<int, array<string, mixed>> Array of tax entries suitable for embedding under `ram:ApplicableTradeTax`.
+         */
     protected function buildTaxTotals(Invoice $invoice, string $currencyCode): array
     {
         // Group items by tax rate
@@ -243,11 +254,14 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Build line items.
+     * Constructs the CII-formatted line items for the given invoice.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<array<string, mixed>>
+     * Each entry contains product details, net price, billed quantity (with unit code),
+     * applicable tax information, and the line total amount formatted for Factur‑X CII.
+     *
+     * @param Invoice $invoice The invoice containing items to convert.
+     * @param string $currencyCode ISO 4217 currency code used for monetary formatting.
+     * @return array<int, array<string, mixed>> Array of associative arrays representing CII line-item entries.
      */
     protected function buildLineItems(Invoice $invoice, string $currencyCode): array
     {
@@ -288,7 +302,11 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Generate the Factur‑X (CII) representation for an invoice and, in a full implementation, embed it into a PDF/A‑3 container.
+     *
+     * @param Invoice $invoice The invoice to convert into Factur‑X (CII) format.
+     * @param array $options Optional generation options that may alter output formatting or embedding behavior.
+     * @return string The generated output. Currently returns a pretty-printed JSON string of the internal CII structure (placeholder for the eventual PDF/A‑3 with embedded XML).
      */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
@@ -303,7 +321,12 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Validate format-specific requirements for Factur-X invoices.
+     *
+     * Ensures the invoice meets constraints required by the Factur-X (CII) format.
+     *
+     * @param Invoice $invoice The invoice to validate.
+     * @return string[] An array of validation error messages; empty if there are no format-specific errors.
      */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
@@ -318,11 +341,11 @@ class FacturXHandler extends BaseFormatHandler
     }
 
     /**
-     * Get tax rate from invoice item.
-     *
-     * @param mixed $item
-     * @return float
-     */
+         * Retrieve the tax rate percentage for an invoice item.
+         *
+         * @param mixed $item Invoice item (object or array) that may provide a `tax_rate` property or key.
+         * @return float The tax rate percentage for the item; defaults to 20.0 if not present.
+         */
     protected function getTaxRate($item): float
     {
         return $item->tax_rate ?? 20.0; // Default French VAT rate
