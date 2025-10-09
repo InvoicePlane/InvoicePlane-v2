@@ -133,4 +133,21 @@ class FormatHandlerFactory
     {
         return self::$handlers;
     }
+
+    /**
+     * Create a handler by format string (convenience method for jobs/services)
+     *
+     * @param string $formatString Format string like 'peppol_bis_3.0'
+     * @return InvoiceFormatHandlerInterface
+     * @throws \RuntimeException If format is invalid
+     */
+    public static function make(string $formatString): InvoiceFormatHandlerInterface
+    {
+        try {
+            $format = PeppolDocumentFormat::from($formatString);
+            return self::create($format);
+        } catch (\ValueError $e) {
+            throw new \RuntimeException("Invalid format: {$formatString}");
+        }
+    }
 }
