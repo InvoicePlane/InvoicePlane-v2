@@ -64,7 +64,18 @@ class CustomerPeppolValidationHistory extends Model
      */
     public function getProviderResponseAttribute(): array
     {
-        return $this->responses->pluck('response_value', 'response_key')->toArray();
+        return $this->responses
+            ->mapWithKeys(function (CustomerPeppolValidationResponse $response) {
+                $value   = $response->response_value;
+                $decoded = json_decode($value, true);
+
+                return [
+                    $response->response_key => json_last_error() === JSON_ERROR_NONE
+                        ? $decoded
+                        : $value,
+                ];
+            })
+            ->toArray();
     }
 
     /**
@@ -74,8 +85,12 @@ class CustomerPeppolValidationHistory extends Model
     {
         foreach ($response as $key => $value) {
             $this->responses()->updateOrCreate(
-                ['response_key' => $key],
-                ['response_value' => is_array($value) ? json_encode($value) : $value]
+                ['response_key'   => $key],
+                [
+                    'response_value' => is_array($value)
+                        ? json_encode($value, JSON_THROW_ON_ERROR)
+                        : $value,
+                ]
             );
         }
     }
