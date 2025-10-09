@@ -17,7 +17,7 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class FatturaPaHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Initialize the handler configured for the FatturaPA 1.2 Peppol document format.
      */
     public function __construct()
     {
@@ -25,8 +25,16 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Convert an Invoice into the FatturaPA 1.2 data structure.
+         *
+         * Builds the top-level array expected for a FatturaElettronica document containing header and body sections.
+         *
+         * @param Invoice $invoice The invoice to transform.
+         * @param array $options Optional transformation flags and overrides.
+         * @return array An associative array with keys:
+         *               - `FatturaElettronicaHeader`: header data for the electronic invoice.
+         *               - `FatturaElettronicaBody`: body data for the electronic invoice.
+         */
     public function transform(Invoice $invoice, array $options = []): array
     {
         $customer = $invoice->customer;
@@ -39,10 +47,10 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build FatturaPA header section.
+     * Build the FatturaPA electronic invoice header for the given invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice used to populate header sections.
+     * @return array<string,mixed> Array with 'DatiTrasmissione', 'CedentePrestatore' and 'CessionarioCommittente' entries.
      */
     protected function buildHeader(Invoice $invoice): array
     {
@@ -54,10 +62,10 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build transmission data section.
+     * Constructs the FatturaPA DatiTrasmissione (transmission data) for the given invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice used to populate transmission fields.
+     * @return array<string, mixed> Array containing `IdTrasmittente` (with `IdPaese` and `IdCodice`), `ProgressivoInvio`, `FormatoTrasmissione`, and `CodiceDestinatario`.
      */
     protected function buildTransmissionData(Invoice $invoice): array
     {
@@ -73,11 +81,25 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build supplier data section.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Constructs the supplier (CedentePrestatore) data structure required by FatturaPA header.
+         *
+         * The returned array contains the supplier fiscal and registry information under `DatiAnagrafici`
+         * and the supplier address under `Sede`.
+         *
+         * @param Invoice $invoice Invoice instance (unused directly; kept for interface consistency).
+         * @return array<string, mixed> Array with keys:
+         *                              - `DatiAnagrafici`: [
+         *                                  `IdFiscaleIVA` => ['IdPaese' => string, 'IdCodice' => string],
+         *                                  `Anagrafica` => ['Denominazione' => string|null],
+         *                                  `RegimeFiscale` => string
+         *                                ]
+         *                              - `Sede`: [
+         *                                  `Indirizzo` => string|null,
+         *                                  `CAP` => string|null,
+         *                                  `Comune` => string|null,
+         *                                  `Nazione` => string
+         *                                ]
+         */
     protected function buildSupplierData(Invoice $invoice): array
     {
         return [
@@ -101,10 +123,14 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build customer data section.
+     * Constructs the customer data structure used in the FatturaPA header.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice containing the customer information.
+     * @return array<string, mixed> Array with keys:
+     *   - `DatiAnagrafici`: contains `CodiceFiscale` (customer tax code or empty string)
+     *     and `Anagrafica` with `Denominazione` (company name or customer name).
+     *   - `Sede`: contains address fields `Indirizzo`, `CAP`, `Comune`, and `Nazione`
+     *     (country code, defaults to "IT" when absent).
      */
     protected function buildCustomerData(Invoice $invoice): array
     {
@@ -127,11 +153,14 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build FatturaPA body section.
+     * Assembles the body section of a FatturaPA 1.2 document.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice to convert into FatturaPA body data.
+     * @param string $currencyCode ISO 4217 currency code to format monetary fields.
+     * @return array<string,mixed> Associative array with keys:
+     *                             - `DatiGenerali`: general document data,
+     *                             - `DatiBeniServizi`: line items and tax summary,
+     *                             - `DatiPagamento`: payment terms and details.
      */
     protected function buildBody(Invoice $invoice, string $currencyCode): array
     {
@@ -143,10 +172,14 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build general invoice data.
+     * Builds the 'DatiGeneraliDocumento' section for a FatturaPA invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice to extract general document fields from.
+     * @return array<string, mixed> Array with a single key 'DatiGeneraliDocumento' containing:
+     *                              - 'TipoDocumento' (document type code),
+     *                              - 'Divisa' (currency code),
+     *                              - 'Data' (invoice date in 'Y-m-d' format),
+     *                              - 'Numero' (invoice number).
      */
     protected function buildGeneralData(Invoice $invoice): array
     {
@@ -161,11 +194,21 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build items data section.
+     * Construct the items section with detailed line entries and the aggregated tax summary.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * Each line in `DettaglioLinee` contains numeric and descriptive fields for a single invoice item.
+     *
+     * @param Invoice $invoice The invoice whose items will be converted into line entries.
+     * @param string $currencyCode ISO 4217 currency code used for the line amounts.
+     * @return array<string, mixed> An array with two keys:
+     *                              - `DettaglioLinee`: array of line entries, each containing:
+     *                                  - `NumeroLinea`: line number (1-based).
+     *                                  - `Descrizione`: item description.
+     *                                  - `Quantita`: quantity formatted with two decimals.
+     *                                  - `PrezzoUnitario`: unit price formatted with two decimals.
+     *                                  - `PrezzoTotale`: total price for the line formatted with two decimals.
+     *                                  - `AliquotaIVA`: VAT rate for the line formatted with two decimals.
+     *                              - `DatiRiepilogo`: tax summary grouped by VAT rate (base and tax amounts).
      */
     protected function buildItemsData(Invoice $invoice, string $currencyCode): array
     {
@@ -187,11 +230,17 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build tax summary.
-     *
-     * @param Invoice $invoice
-     * @return array<array<string, mixed>>
-     */
+         * Builds the VAT summary grouped by VAT rate.
+         *
+         * Groups invoice items by their VAT rate and returns an array of summary entries.
+         * Each entry contains:
+         * - `AliquotaIVA`: VAT rate as a string formatted with two decimals.
+         * - `ImponibileImporto`: taxable base amount as a string formatted with two decimals.
+         * - `Imposta`: tax amount as a string formatted with two decimals.
+         *
+         * @param Invoice $invoice The invoice to summarize.
+         * @return array<int, array<string, mixed>> Array of summary entries keyed numerically.
+         */
     protected function buildTaxSummary(Invoice $invoice): array
     {
         // Group items by tax rate
@@ -225,10 +274,12 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment data section.
+     * Assemble the payment section for the FatturaPA body.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice used to obtain the payment due date and amount.
+     * @return array<string,mixed> Payment data with keys:
+     *                             - 'CondizioniPagamento': payment condition code,
+     *                             - 'DettaglioPagamento': array of payment entries each containing 'ModalitaPagamento', 'DataScadenzaPagamento', and 'ImportoPagamento'.
      */
     protected function buildPaymentData(Invoice $invoice): array
     {
@@ -245,8 +296,12 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Generate the FatturaPA-compliant XML representation for the given invoice.
+         *
+         * @param Invoice $invoice The invoice to convert.
+         * @param array $options Optional transformation options.
+         * @return string The FatturaPA XML as a string; currently returns a JSON-formatted string of the transformed data as a placeholder.
+         */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
         $data = $this->transform($invoice, $options);
@@ -256,8 +311,11 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Validate FatturaPA-specific requirements for the given invoice.
+         *
+         * @param Invoice $invoice The invoice to validate.
+         * @return string[] List of validation error messages; empty array if there are no validation errors.
+         */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
         $errors = [];
@@ -276,10 +334,10 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Extract ID code from VAT number (remove country prefix).
+     * Return the VAT identifier without the country prefix.
      *
-     * @param string|null $vatNumber
-     * @return string
+     * @param string|null $vatNumber VAT number possibly prefixed with a country code (e.g., "IT12345678901").
+     * @return string The VAT identifier with any leading "IT" removed; returns an empty string when the input is null or empty.
      */
     protected function extractIdCodice(?string $vatNumber): string
     {
@@ -292,11 +350,11 @@ class FatturaPaHandler extends BaseFormatHandler
     }
 
     /**
-     * Get VAT rate from invoice item.
-     *
-     * @param mixed $item
-     * @return float
-     */
+         * Obtain the VAT rate percentage for an invoice item.
+         *
+         * @param mixed $item Invoice item expected to expose a numeric `tax_rate` property (percentage).
+         * @return float The VAT percentage to apply (uses the item's `tax_rate` if present, otherwise 22.0).
+         */
     protected function getVatRate($item): float
     {
         // Assuming the item has a tax_rate or we use default Italian VAT rate

@@ -17,7 +17,7 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class OioublHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Initialize the handler for the OIOUBL Peppol document format.
      */
     public function __construct()
     {
@@ -25,8 +25,18 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Builds an OIOUBL 2.0 representation of the given invoice as an associative array.
+         *
+         * The returned array contains the core OIOUBL document fields and nested sections:
+         * ubl_version_id, customization_id, profile_id, id, issue_date, invoice_type_code,
+         * document_currency_code, accounting_cost, accounting_supplier_party,
+         * accounting_customer_party, payment_means, payment_terms, tax_total,
+         * legal_monetary_total, and invoice_line.
+         *
+         * @param Invoice $invoice The invoice to transform.
+         * @param array $options Optional transform options.
+         * @return array The invoice represented as an OIOUBL-structured associative array.
+         */
     public function transform(Invoice $invoice, array $options = []): array
     {
         $customer = $invoice->customer;
@@ -67,11 +77,11 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build supplier party.
+     * Construct the supplier party block for the OIOUBL document using configured supplier data and the provided endpoint scheme.
      *
-     * @param Invoice $invoice
-     * @param mixed $endpointScheme
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice being transformed (unused except for context).
+     * @param mixed $endpointScheme Endpoint scheme object whose `value` property is used as the endpoint scheme identifier.
+     * @return array<string,mixed> Array representing the supplier `party` structure for the OIOUBL document.
      */
     protected function buildSupplierParty(Invoice $invoice, $endpointScheme): array
     {
@@ -121,11 +131,14 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build customer party.
+     * Construct the OIOUBL customer party block for the invoice.
      *
-     * @param Invoice $invoice
-     * @param mixed $endpointScheme
-     * @return array<string, mixed>
+     * Builds a nested array representing the customer party including endpoint identification,
+     * party identification (DK:CVR), party name, postal address, legal entity, and contact details.
+     *
+     * @param Invoice $invoice The invoice containing customer information.
+     * @param mixed $endpointScheme An object with a `value` property used as the endpoint scheme identifier.
+     * @return array<string, mixed> Nested array representing the customer party section of the OIOUBL document.
      */
     protected function buildCustomerParty(Invoice $invoice, $endpointScheme): array
     {
@@ -168,10 +181,15 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment means.
+     * Constructs the payment means section for the given invoice.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice to build payment means for.
+     * @return array<string, mixed> An associative array with keys:
+     *                             - `payment_means_code`: string, code '31' for international bank transfer.
+     *                             - `payment_due_date`: string, due date in `YYYY-MM-DD` format.
+     *                             - `payment_id`: string, the invoice number.
+     *                             - `payee_financial_account`: array with `id` (account identifier) and
+     *                               `financial_institution_branch` containing `id` (bank SWIFT/BIC).
      */
     protected function buildPaymentMeans(Invoice $invoice): array
     {
@@ -189,11 +207,13 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment terms.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Build payment terms for the invoice, including a human-readable note and settlement period.
+         *
+         * @param Invoice $invoice The invoice to derive payment terms from.
+         * @return array<string, mixed> An array containing:
+         *                              - `note` (string): A message like "Payment due within X days".
+         *                              - `settlement_period` (array): Contains `end_date` (string, YYYY-MM-DD) for the settlement end.
+         */
     protected function buildPaymentTerms(Invoice $invoice): array
     {
         $daysUntilDue = $invoice->invoiced_at->diffInDays($invoice->invoice_due_at);
@@ -207,12 +227,20 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build tax total.
-     *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
-     */
+         * Builds the invoice-level tax total and per-rate tax subtotals.
+         *
+         * Computes the total tax (invoice total minus invoice subtotal), groups invoice items by tax rate,
+         * and produces a list of tax subtotals for each rate with taxable base and tax amount.
+         *
+         * @param Invoice $invoice The invoice used to compute tax bases and amounts.
+         * @param string $currencyCode ISO currency code to attach to monetary values.
+         * @return array<string, mixed> An array containing:
+         *     - `tax_amount`: ['value' => string (formatted to 2 decimals), 'currency_id' => string]
+         *     - `tax_subtotal`: array of entries each with:
+         *         - `taxable_amount`: ['value' => string (2 decimals), 'currency_id' => string]
+         *         - `tax_amount`: ['value' => string (2 decimals), 'currency_id' => string]
+         *         - `tax_category`: ['id' => 'S'|'Z', 'percent' => float, 'tax_scheme' => ['id' => 'VAT']]
+         */
     protected function buildTaxTotal(Invoice $invoice, string $currencyCode): array
     {
         $taxAmount = $invoice->invoice_total - $invoice->invoice_subtotal;
@@ -266,11 +294,15 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build monetary total.
+     * Construct the monetary totals section for the given invoice.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice to derive totals from.
+     * @param string $currencyCode Currency code used for all returned amounts.
+     * @return array<string, mixed> An associative array with keys:
+     *                             - `line_extension_amount`: array with `value` (subtotal as string formatted to 2 decimals) and `currency_id`.
+     *                             - `tax_exclusive_amount`: array with `value` (subtotal) and `currency_id`.
+     *                             - `tax_inclusive_amount`: array with `value` (total amount) and `currency_id`.
+     *                             - `payable_amount`: array with `value` (total amount) and `currency_id`.
      */
     protected function buildMonetaryTotal(Invoice $invoice, string $currencyCode): array
     {
@@ -297,11 +329,16 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice lines.
+     * Convert invoice items into an array of OIOUBL invoice line entries.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<int, array<string, mixed>>
+     * Each line entry contains: sequential `id`; `invoiced_quantity` with value and unit code; `line_extension_amount`
+     * and `price` values annotated with the provided currency; `accounting_cost`; and an `item` block including
+     * description, name, seller item id and a `classified_tax_category` (id 'S' for taxed lines, 'Z' for zero rate)
+     * with the tax percent and tax scheme.
+     *
+     * @param Invoice $invoice The invoice whose items will be converted into lines.
+     * @param string $currencyCode ISO currency code used for monetary values in each line.
+     * @return array<int, array<string, mixed>> Array of invoice line structures suitable for OIOUBL output.
      */
     protected function buildInvoiceLines(Invoice $invoice, string $currencyCode): array
     {
@@ -345,7 +382,14 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Generate an OIOUBL XML representation of the given invoice.
+     *
+     * Converts the invoice into the OIOUBL structure and returns it as an XML string.
+     * Currently this method returns a JSON-formatted placeholder of the transformed data.
+     *
+     * @param Invoice $invoice The invoice to convert.
+     * @param array $options Additional options forwarded to the transform step.
+     * @return string The OIOUBL XML string, or a JSON-formatted placeholder of the transformed data.
      */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
@@ -356,7 +400,12 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Validate OIOUBL-specific invoice requirements.
+     *
+     * Checks that a supplier CVR (VAT number) is configured and that the invoice's customer has a Peppol ID.
+     *
+     * @param Invoice $invoice The invoice to validate.
+     * @return array Array of validation error messages; empty if there are no violations.
      */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
@@ -375,11 +424,11 @@ class OioublHandler extends BaseFormatHandler
         return $errors;
     }
 
-    /**
-     * Get accounting cost code.
+    / **
+     * Uses the invoice reference as the OIOUBL accounting cost code.
      *
-     * @param Invoice $invoice
-     * @return string
+     * @param Invoice $invoice The invoice to read the reference from.
+     * @return string The invoice reference used as accounting cost, or an empty string if none.
      */
     protected function getAccountingCost(Invoice $invoice): string
     {
@@ -388,22 +437,22 @@ class OioublHandler extends BaseFormatHandler
     }
 
     /**
-     * Get line accounting cost code.
-     *
-     * @param mixed $item
-     * @return string
-     */
+         * Retrieve the accounting cost code for a single invoice line.
+         *
+         * @param mixed $item Invoice line item object; expected to have an `accounting_cost` property.
+         * @return string The line's accounting cost code, or an empty string if none is set.
+         */
     protected function getLineAccountingCost($item): string
     {
         return $item->accounting_cost ?? '';
     }
 
     /**
-     * Get tax rate from invoice item.
-     *
-     * @param mixed $item
-     * @return float
-     */
+         * Return the tax rate for an invoice item, defaulting to 25.0 if the item does not specify one.
+         *
+         * @param mixed $item Invoice line item object; may provide a `tax_rate` property.
+         * @return float The tax rate as a percentage (e.g., 25.0).
+         */
     protected function getTaxRate($item): float
     {
         return $item->tax_rate ?? 25.0; // Standard Danish VAT rate

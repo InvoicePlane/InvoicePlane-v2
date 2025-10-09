@@ -17,7 +17,7 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 class EhfHandler extends BaseFormatHandler
 {
     /**
-     * Constructor.
+     * Initialize the handler and set the Peppol document format to EHF.
      */
     public function __construct()
     {
@@ -25,7 +25,11 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Builds a Peppol EHF-compliant invoice payload as an associative array from the given Invoice.
+     *
+     * @param Invoice $invoice The invoice model used to populate the payload.
+     * @param array $options Optional transform options (reserved for future use).
+     * @return array An associative array representing the EHF/Peppol invoice with top-level keys such as `ubl_version_id`, `customization_id`, `profile_id`, `id`, `issue_date`, `due_date`, `invoice_type_code`, `document_currency_code`, `buyer_reference`, `accounting_supplier_party`, `accounting_customer_party`, `delivery`, `payment_means`, `payment_terms`, `tax_total`, `legal_monetary_total`, and `invoice_line`.
      */
     public function transform(Invoice $invoice, array $options = []): array
     {
@@ -71,11 +75,15 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build supplier party.
+     * Builds the supplier party structure for the EHF (Peppol) invoice payload.
      *
-     * @param Invoice $invoice
-     * @param mixed $endpointScheme
-     * @return array<string, mixed>
+     * Returns a nested array under the `party` key containing the supplier's Peppol endpoint ID, party identification
+     * (organization number), company name, postal address (street, city, postal zone, country), tax scheme (VAT),
+     * legal entity details (registration name and address) and contact details (name, phone, email).
+     *
+     * @param Invoice $invoice Invoice model (source of contextual invoice data; supplier values are taken from config).
+     * @param mixed $endpointScheme Enum-like object providing the Peppol endpoint scheme identifier via `$endpointScheme->value`.
+     * @return array<string,mixed> Structured supplier party data for inclusion in the transformed EHF payload.
      */
     protected function buildSupplierParty(Invoice $invoice, $endpointScheme): array
     {
@@ -131,11 +139,14 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build customer party.
+     * Constructs the customer party section for an EHF invoice payload.
      *
-     * @param Invoice $invoice
-     * @param mixed $endpointScheme
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice containing customer data used to populate party fields.
+     * @param mixed $endpointScheme Object providing a `value` property used as the endpoint identification scheme.
+     * @return array<string,mixed> Array representing the customer party with keys: `party` => [
+     *     'endpoint_id', 'party_identification', 'party_name', 'postal_address',
+     *     'party_legal_entity', 'contact'
+     * ].
      */
     protected function buildCustomerParty(Invoice $invoice, $endpointScheme): array
     {
@@ -182,11 +193,13 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build delivery information.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Constructs the delivery information array using the invoice date and the customer's address.
+         *
+         * @param Invoice $invoice The invoice from which to derive the delivery date and customer address.
+         * @return array<string,mixed> Array with keys:
+         *                             - `actual_delivery_date`: date string in `YYYY-MM-DD` format,
+         *                             - `delivery_location`: array containing `address` with `street_name`, `city_name`, `postal_zone`, and `country` (`identification_code`).
+         */
     protected function buildDelivery(Invoice $invoice): array
     {
         return [
@@ -205,11 +218,17 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment means.
-     *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
-     */
+         * Builds the payment means section for the given invoice.
+         *
+         * @param Invoice $invoice Invoice used to populate the payment identifier (`payment_id`).
+         * @return array<string, mixed> An associative array containing:
+         *                              - `payment_means_code`: code representing the payment method (credit transfer).
+         *                              - `payment_id`: invoice number used as the payment identifier.
+         *                              - `payee_financial_account`: account information with keys:
+         *                                  - `id`: supplier bank account number,
+         *                                  - `name`: supplier company name,
+         *                                  - `financial_institution_branch`: bank branch info with `id` (BIC) and `name` (bank name).
+         */
     protected function buildPaymentMeans(Invoice $invoice): array
     {
         return [
@@ -227,10 +246,10 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build payment terms.
+     * Constructs payment terms with a Norwegian note stating the number of days until the invoice is due.
      *
-     * @param Invoice $invoice
-     * @return array<string, mixed>
+     * @param Invoice $invoice The invoice used to calculate days until due.
+     * @return array<string, mixed> An array containing a 'note' key with value like "Forfall X dager" where X is the number of days until due.
      */
     protected function buildPaymentTerms(Invoice $invoice): array
     {
@@ -242,12 +261,19 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build tax total.
-     *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
-     */
+         * Constructs the invoice tax total including per-rate subtotals.
+         *
+         * Builds the overall tax amount and an array of tax subtotals grouped by tax rate;
+         * each subtotal contains the taxable amount, tax amount (both formatted with the provided currency),
+         * and a tax category (id, percent and tax scheme).
+         *
+         * @param Invoice $invoice The invoice to compute taxes for.
+         * @param string $currencyCode ISO 4217 currency code used for all monetary values.
+         * @return array<string,mixed> An array with keys:
+         *                             - `tax_amount`: array with `value` and `currency_id` for the total tax,
+         *                             - `tax_subtotal`: list of per-rate subtotals each containing `taxable_amount`,
+         *                               `tax_amount`, and `tax_category`.
+         */
     protected function buildTaxTotal(Invoice $invoice, string $currencyCode): array
     {
         $taxAmount = $invoice->invoice_total - $invoice->invoice_subtotal;
@@ -301,11 +327,15 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build monetary total.
+     * Construct the invoice monetary totals section for the EHF payload.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<string, mixed>
+     * @param Invoice $invoice Invoice model containing subtotal and total amounts.
+     * @param string $currencyCode ISO 4217 currency code used for all monetary values.
+     * @return array<string, mixed> Associative array with these keys:
+     *     - `line_extension_amount`: array with `value` (amount before taxes as a string with two decimals) and `currency_id`.
+     *     - `tax_exclusive_amount`: array with `value` (amount excluding tax as a string with two decimals) and `currency_id`.
+     *     - `tax_inclusive_amount`: array with `value` (amount including tax as a string with two decimals) and `currency_id`.
+     *     - `payable_amount`: array with `value` (final payable amount as a string with two decimals) and `currency_id`.
      */
     protected function buildMonetaryTotal(Invoice $invoice, string $currencyCode): array
     {
@@ -330,11 +360,15 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Build invoice lines.
+     * Create an array of invoice line entries for the EHF Peppol document.
      *
-     * @param Invoice $invoice
-     * @param string $currencyCode
-     * @return array<int, array<string, mixed>>
+     * Each entry corresponds to an invoice item and includes identifiers, quantity,
+     * line extension amount, item details (description, name, seller item id, tax
+     * classification) and price information.
+     *
+     * @param Invoice $invoice Invoice model containing `invoiceItems` to convert into lines.
+     * @param string $currencyCode ISO 4217 currency code applied to monetary fields.
+     * @return array<int, array<string, mixed>> Array of invoice line structures ready for transformation. 
      */
     protected function buildInvoiceLines(Invoice $invoice, string $currencyCode): array
     {
@@ -380,7 +414,15 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
+     * Generate the EHF-formatted document for an invoice as a string.
+     *
+     * Converts the given Invoice into the EHF document representation and returns it
+     * as a string. Note: the current implementation returns a JSON-encoded
+     * representation of the transformed data as a placeholder for the final XML.
+     *
+     * @param Invoice $invoice The invoice to convert.
+     * @param array $options Optional transformation options.
+     * @return string The EHF-formatted document as a string; currently a JSON-encoded representation of the transformed data (placeholder for proper XML).
      */
     public function generateXml(Invoice $invoice, array $options = []): string
     {
@@ -391,8 +433,13 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * {@inheritdoc}
-     */
+         * Validate invoice fields required by the EHF (Norwegian Peppol) format.
+         *
+         * Performs format-specific checks and returns any validation error messages.
+         *
+         * @param Invoice $invoice The invoice to validate.
+         * @return string[] An array of validation error messages; empty if the invoice meets EHF requirements.
+         */
     protected function validateFormatSpecific(Invoice $invoice): array
     {
         $errors = [];
@@ -411,10 +458,10 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Get buyer reference.
+     * Selects the buyer reference used for EHF routing.
      *
-     * @param Invoice $invoice
-     * @return string
+     * @param Invoice $invoice Invoice to extract the buyer reference from.
+     * @return string The buyer reference from the invoice's customer if present, otherwise the invoice reference, or an empty string if neither is set.
      */
     protected function getBuyerReference(Invoice $invoice): string
     {
@@ -423,11 +470,11 @@ class EhfHandler extends BaseFormatHandler
     }
 
     /**
-     * Get tax rate from invoice item.
-     *
-     * @param mixed $item
-     * @return float
-     */
+         * Return the tax rate percentage for an invoice item.
+         *
+         * @param mixed $item Invoice item (object or array) that may contain a `tax_rate` value.
+         * @return float The tax rate as a percentage (e.g., 25.0). Defaults to 25.0 when not present.
+         */
     protected function getTaxRate($item): float
     {
         return $item->tax_rate ?? 25.0; // Standard Norwegian VAT rate
