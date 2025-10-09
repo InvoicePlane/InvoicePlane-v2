@@ -17,6 +17,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Models\CustomerPeppolValidationHistory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
@@ -37,8 +38,12 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $coc_number
  * @property string|null          $vat_number
  * @property string|null          $peppol_id
+ * @property string|null          $peppol_scheme
  * @property string|null          $peppol_format
  * @property bool                 $enable_e_invoicing
+ * @property string|null          $peppol_validation_status
+ * @property string|null          $peppol_validation_message
+ * @property Carbon|null          $peppol_validated_at
  * @property Carbon               $registered_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
@@ -68,6 +73,7 @@ class Relation extends Model
         'relation_type'      => RelationType::class,
         'relation_status'    => RelationStatus::class,
         'enable_e_invoicing' => 'boolean',
+        'peppol_validated_at' => 'datetime',
     ];
 
     protected $guarded = [];
@@ -166,6 +172,11 @@ class Relation extends Model
         return $this->hasMany(User::class);
     }
 
+    public function peppolValidationHistory(): HasMany
+    {
+        return $this->hasMany(CustomerPeppolValidationHistory::class, 'customer_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Accessors
@@ -180,6 +191,17 @@ class Relation extends Model
     {
         return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
     }*/
+    
+    /**
+     * Check if customer has valid Peppol ID
+     */
+    public function hasPeppolIdValidated(): bool
+    {
+        return $this->enable_e_invoicing 
+            && $this->peppol_validation_status === 'valid'
+            && $this->peppol_id !== null;
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | Scopes
