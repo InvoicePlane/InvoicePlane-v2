@@ -3,16 +3,18 @@
 namespace Modules\Invoices\Peppol\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Modules\Clients\Models\Relation;
+use Modules\Invoices\Enums\PeppolConnectionStatus;
+use Modules\Invoices\Enums\PeppolValidationStatus;
 use Modules\Invoices\Events\Peppol\PeppolIdValidationCompleted;
 use Modules\Invoices\Events\Peppol\PeppolIntegrationCreated;
 use Modules\Invoices\Events\Peppol\PeppolIntegrationTested;
+use Modules\Invoices\Jobs\Peppol\SendInvoiceToPeppolJob;
 use Modules\Invoices\Models\CustomerPeppolValidationHistory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Providers\ProviderFactory;
-use Modules\Invoices\Jobs\Peppol\SendInvoiceToPeppolJob;
+use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
  * Comprehensive Peppol Management Service
@@ -25,6 +27,7 @@ use Modules\Invoices\Jobs\Peppol\SendInvoiceToPeppolJob;
  */
 class PeppolManagementService
 {
+    use LogsPeppolActivity;
     /**
      * Create and test a new Peppol integration
      */
@@ -33,13 +36,15 @@ class PeppolManagementService
         DB::beginTransaction();
         
         try {
-            $integration = PeppolIntegration::create([
-                'company_id' => $companyId,
-                'provider_name' => $providerName,
-                'config' => $config,
-                'api_token' => $apiToken, // Will be encrypted automatically by model accessor
-                'enabled' => false, // Start disabled until tested
-            ]);
+            $integration = new PeppolIntegration();
+            $integration->company_id = $companyId;
+            $integration->provider_name = $providerName;
+            $integration->api_token = $apiToken; // Will be encrypted automatically by model accessor
+            $integration->enabled = false; // Start disabled until tested
+            $integration->save();
+
+            // Set configuration using the key-value relationship
+            $integration->setConfig($config);
 
             event(new PeppolIntegrationCreated($integration));
 
@@ -60,29 +65,27 @@ class PeppolManagementService
         try {
             $provider = ProviderFactory::make($integration);
             
-            $result = $provider->testConnection($integration->config ?? []);
+            $result = $provider->testConnection($integration->config);
 
             // Update integration with test result
-            $integration->update([
-                'test_connection_status' => $result['ok'] ? 'success' : 'failed',
-                'test_connection_message' => $result['message'],
-                'test_connection_at' => now(),
-            ]);
+            $integration->test_connection_status = $result['ok'] ? PeppolConnectionStatus::SUCCESS : PeppolConnectionStatus::FAILED;
+            $integration->test_connection_message = $result['message'];
+            $integration->test_connection_at = now();
+            $integration->save();
 
             event(new PeppolIntegrationTested($integration, $result['ok'], $result['message']));
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Peppol connection test failed', [
+            $this->logPeppolError('Peppol connection test failed', [
                 'integration_id' => $integration->id,
                 'error' => $e->getMessage(),
             ]);
 
-            $integration->update([
-                'test_connection_status' => 'failed',
-                'test_connection_message' => 'Exception: ' . $e->getMessage(),
-                'test_connection_at' => now(),
-            ]);
+            $integration->test_connection_status = PeppolConnectionStatus::FAILED;
+            $integration->test_connection_message = 'Exception: ' . $e->getMessage();
+            $integration->test_connection_at = now();
+            $integration->save();
 
             event(new PeppolIntegrationTested($integration, false, $e->getMessage()));
 
@@ -112,35 +115,34 @@ class PeppolManagementService
 
             // Determine validation status
             $validationStatus = $result['present'] 
-                ? CustomerPeppolValidationHistory::STATUS_VALID
-                : CustomerPeppolValidationHistory::STATUS_NOT_FOUND;
+                ? PeppolValidationStatus::VALID
+                : PeppolValidationStatus::NOT_FOUND;
 
             DB::beginTransaction();
 
             // Save to history
-            $history = CustomerPeppolValidationHistory::create([
-                'customer_id' => $customer->id,
-                'integration_id' => $integration->id,
-                'validated_by' => $validatedBy,
-                'peppol_scheme' => $customer->peppol_scheme,
-                'peppol_id' => $customer->peppol_id,
-                'validation_status' => $validationStatus,
-                'validation_message' => $result['present'] ? 'Participant found in network' : 'Participant not found',
-                'provider_response' => $result['details'],
-                'request_payload' => [
-                    'scheme' => $customer->peppol_scheme,
-                    'id' => $customer->peppol_id,
-                ],
-            ]);
+            $history = new CustomerPeppolValidationHistory();
+            $history->customer_id = $customer->id;
+            $history->integration_id = $integration->id;
+            $history->validated_by = $validatedBy;
+            $history->peppol_scheme = $customer->peppol_scheme;
+            $history->peppol_id = $customer->peppol_id;
+            $history->validation_status = $validationStatus;
+            $history->validation_message = $result['present'] ? 'Participant found in network' : 'Participant not found';
+            $history->save();
+
+            // Set provider response using the key-value relationship
+            if (isset($result['details'])) {
+                $history->setProviderResponse($result['details']);
+            }
 
             // Update customer quick-lookup fields
-            $customer->update([
-                'peppol_validation_status' => $validationStatus,
-                'peppol_validation_message' => $history->validation_message,
-                'peppol_validated_at' => now(),
-            ]);
+            $customer->peppol_validation_status = $validationStatus;
+            $customer->peppol_validation_message = $history->validation_message;
+            $customer->peppol_validated_at = now();
+            $customer->save();
 
-            event(new PeppolIdValidationCompleted($customer, $validationStatus, [
+            event(new PeppolIdValidationCompleted($customer, $validationStatus->value, [
                 'history_id' => $history->id,
                 'present' => $result['present'],
             ]));
@@ -148,8 +150,8 @@ class PeppolManagementService
             DB::commit();
 
             return [
-                'valid' => $validationStatus === CustomerPeppolValidationHistory::STATUS_VALID,
-                'status' => $validationStatus,
+                'valid' => $validationStatus === PeppolValidationStatus::VALID,
+                'status' => $validationStatus->value,
                 'message' => $history->validation_message,
                 'details' => $result['details'],
             ];
@@ -158,31 +160,26 @@ class PeppolManagementService
                 DB::rollBack();
             }
 
-            Log::error('Peppol ID validation failed', [
+            $this->logPeppolError('Peppol ID validation failed', [
                 'customer_id' => $customer->id,
                 'peppol_id' => $customer->peppol_id,
                 'error' => $e->getMessage(),
             ]);
 
             // Save error to history
-            CustomerPeppolValidationHistory::create([
-                'customer_id' => $customer->id,
-                'integration_id' => $integration->id,
-                'validated_by' => $validatedBy,
-                'peppol_scheme' => $customer->peppol_scheme,
-                'peppol_id' => $customer->peppol_id,
-                'validation_status' => CustomerPeppolValidationHistory::STATUS_ERROR,
-                'validation_message' => 'Validation error: ' . $e->getMessage(),
-                'provider_response' => ['error' => $e->getMessage()],
-                'request_payload' => [
-                    'scheme' => $customer->peppol_scheme,
-                    'id' => $customer->peppol_id,
-                ],
-            ]);
+            $errorHistory = new CustomerPeppolValidationHistory();
+            $errorHistory->customer_id = $customer->id;
+            $errorHistory->integration_id = $integration->id;
+            $errorHistory->validated_by = $validatedBy;
+            $errorHistory->peppol_scheme = $customer->peppol_scheme;
+            $errorHistory->peppol_id = $customer->peppol_id;
+            $errorHistory->validation_status = PeppolValidationStatus::ERROR;
+            $errorHistory->validation_message = 'Validation error: ' . $e->getMessage();
+            $errorHistory->save();
 
             return [
                 'valid' => false,
-                'status' => CustomerPeppolValidationHistory::STATUS_ERROR,
+                'status' => PeppolValidationStatus::ERROR->value,
                 'message' => $e->getMessage(),
                 'details' => null,
             ];
@@ -197,7 +194,7 @@ class PeppolManagementService
         // Queue the sending job
         SendInvoiceToPeppolJob::dispatch($invoice, $integration, $force);
 
-        Log::info('Queued invoice for Peppol sending', [
+        $this->logPeppolInfo('Queued invoice for Peppol sending', [
             'invoice_id' => $invoice->id,
             'integration_id' => $integration->id,
         ]);
@@ -210,7 +207,7 @@ class PeppolManagementService
     {
         return PeppolIntegration::where('company_id', $companyId)
             ->where('enabled', true)
-            ->where('test_connection_status', 'success')
+            ->where('test_connection_status', PeppolConnectionStatus::SUCCESS)
             ->first();
     }
 

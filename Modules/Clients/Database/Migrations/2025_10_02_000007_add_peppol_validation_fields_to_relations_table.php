@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('relations', function (Blueprint $table) {
+        Schema::table('relations', function (Blueprint $table): void {
             $table->string('peppol_scheme', 50)->nullable()->after('peppol_id')
                 ->comment('Peppol endpoint scheme (e.g., BE:CBE, DE:VAT)');
             
@@ -26,12 +23,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('relations', function (Blueprint $table) {
+        Schema::table('relations', function (Blueprint $table): void {
             $table->dropColumn(['peppol_scheme', 'peppol_validation_status', 'peppol_validation_message', 'peppol_validated_at']);
         });
     }

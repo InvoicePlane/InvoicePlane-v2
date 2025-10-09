@@ -2,15 +2,18 @@
 
 namespace Modules\Invoices\Peppol\Providers;
 
+use Modules\Invoices\Enums\PeppolErrorType;
 use Modules\Invoices\Models\PeppolIntegration;
-use Modules\Invoices\Models\PeppolTransmission;
 use Modules\Invoices\Peppol\Contracts\ProviderInterface;
+use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
  * Base abstract provider implementation with common functionality
  */
 abstract class BaseProvider implements ProviderInterface
 {
+    use LogsPeppolActivity;
+
     protected ?PeppolIntegration $integration;
     protected array $config;
 
@@ -71,21 +74,13 @@ abstract class BaseProvider implements ProviderInterface
     public function classifyError(int $statusCode, ?array $responseBody = null): string
     {
         return match(true) {
-            $statusCode >= 500 => PeppolTransmission::ERROR_TRANSIENT, // Server errors
-            $statusCode === 429 => PeppolTransmission::ERROR_TRANSIENT, // Rate limit
-            $statusCode === 408 => PeppolTransmission::ERROR_TRANSIENT, // Timeout
-            $statusCode === 401 || $statusCode === 403 => PeppolTransmission::ERROR_PERMANENT, // Auth errors
-            $statusCode === 404 => PeppolTransmission::ERROR_PERMANENT, // Not found
-            $statusCode === 400 || $statusCode === 422 => PeppolTransmission::ERROR_PERMANENT, // Validation errors
-            default => PeppolTransmission::ERROR_UNKNOWN,
+            $statusCode >= 500 => PeppolErrorType::TRANSIENT->value, // Server errors
+            $statusCode === 429 => PeppolErrorType::TRANSIENT->value, // Rate limit
+            $statusCode === 408 => PeppolErrorType::TRANSIENT->value, // Timeout
+            $statusCode === 401 || $statusCode === 403 => PeppolErrorType::PERMANENT->value, // Auth errors
+            $statusCode === 404 => PeppolErrorType::PERMANENT->value, // Not found
+            $statusCode === 400 || $statusCode === 422 => PeppolErrorType::PERMANENT->value, // Validation errors
+            default => PeppolErrorType::UNKNOWN->value,
         };
-    }
-
-    /**
-     * Log provider activity
-     */
-    protected function log(string $level, string $message, array $context = []): void
-    {
-        \Log::{$level}("[Peppol:{$this->getProviderName()}] {$message}", $context);
     }
 }

@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Peppol\Providers\EInvoiceBe;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\HealthClient;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\ParticipantsClient;
@@ -63,7 +62,7 @@ class EInvoiceBeProvider extends BaseProvider
                 'message' => "Connection failed with status: {$response->status()}",
             ];
         } catch (\Exception $e) {
-            Log::error('e-invoice.be connection test failed', [
+            $this->logPeppolError('e-invoice.be connection test failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -103,7 +102,7 @@ class EInvoiceBeProvider extends BaseProvider
                 'details' => ['error' => $response->body()],
             ];
         } catch (\Exception $e) {
-            Log::error('Peppol ID validation failed', [
+            $this->logPeppolError('Peppol ID validation failed', [
                 'scheme' => $scheme,
                 'id' => $id,
                 'error' => $e->getMessage(),
@@ -141,7 +140,7 @@ class EInvoiceBeProvider extends BaseProvider
                 'response' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('Invoice submission to e-invoice.be failed', [
+            $this->logPeppolError('Invoice submission to e-invoice.be failed', [
                 'invoice_id' => $transmissionData['invoice_id'] ?? null,
                 'error' => $e->getMessage(),
             ]);
@@ -175,7 +174,7 @@ class EInvoiceBeProvider extends BaseProvider
                 'ack_payload' => null,
             ];
         } catch (\Exception $e) {
-            Log::error('Status check failed for e-invoice.be', [
+            $this->logPeppolError('Status check failed for e-invoice.be', [
                 'external_id' => $externalId,
                 'error' => $e->getMessage(),
             ]);
@@ -204,7 +203,7 @@ class EInvoiceBeProvider extends BaseProvider
                 'message' => "Cancellation failed: {$response->body()}",
             ];
         } catch (\Exception $e) {
-            Log::error('Document cancellation failed', [
+            $this->logPeppolError('Document cancellation failed', [
                 'external_id' => $externalId,
                 'error' => $e->getMessage(),
             ]);
@@ -236,7 +235,7 @@ class EInvoiceBeProvider extends BaseProvider
 
             return [];
         } catch (\Exception $e) {
-            Log::error('Failed to fetch acknowledgements from e-invoice.be', [
+            $this->logPeppolError('Failed to fetch acknowledgements from e-invoice.be', [
                 'since' => $since,
                 'error' => $e->getMessage(),
             ]);

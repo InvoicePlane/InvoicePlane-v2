@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('customer_peppol_validation_history', function (Blueprint $table) {
+        Schema::create('customer_peppol_validation_history', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('integration_id')->nullable()->comment('Which integration was used for validation');
@@ -20,9 +17,8 @@ return new class extends Migration
             $table->string('peppol_id', 100);
             $table->string('validation_status', 20)->comment('valid, invalid, not_found, error');
             $table->text('validation_message')->nullable();
-            $table->json('provider_response')->nullable()->comment('Full provider response for audit');
-            $table->json('request_payload')->nullable()->comment('Request sent to provider');
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
             
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
             $table->foreign('integration_id')->references('id')->on('peppol_integrations')->onDelete('set null');
@@ -33,9 +29,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('customer_peppol_validation_history');

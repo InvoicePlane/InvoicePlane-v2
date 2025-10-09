@@ -4,8 +4,10 @@ namespace Modules\Invoices\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
+use Modules\Invoices\Enums\PeppolValidationStatus;
 
 /**
  * @property int $id
@@ -14,44 +16,28 @@ use Modules\Core\Models\User;
  * @property int|null $validated_by
  * @property string $peppol_scheme
  * @property string $peppol_id
- * @property string $validation_status
+ * @property PeppolValidationStatus $validation_status
  * @property string|null $validation_message
- * @property array|null $provider_response
- * @property array|null $request_payload
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * @property Relation $customer
  * @property PeppolIntegration|null $integration
  * @property User|null $validator
+ * @property CustomerPeppolValidationResponse[] $responses
  */
 class CustomerPeppolValidationHistory extends Model
 {
+    public $timestamps = true;
+
     protected $table = 'customer_peppol_validation_history';
 
-    protected $fillable = [
-        'customer_id',
-        'integration_id',
-        'validated_by',
-        'peppol_scheme',
-        'peppol_id',
-        'validation_status',
-        'validation_message',
-        'provider_response',
-        'request_payload',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
-        'provider_response' => 'array',
-        'request_payload' => 'array',
+        'validation_status' => PeppolValidationStatus::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    // Validation status constants
-    public const STATUS_VALID = 'valid';
-    public const STATUS_INVALID = 'invalid';
-    public const STATUS_NOT_FOUND = 'not_found';
-    public const STATUS_ERROR = 'error';
 
     public function customer(): BelongsTo
     {
@@ -68,11 +54,38 @@ class CustomerPeppolValidationHistory extends Model
         return $this->belongsTo(User::class, 'validated_by');
     }
 
+    public function responses(): HasMany
+    {
+        return $this->hasMany(CustomerPeppolValidationResponse::class, 'validation_history_id');
+    }
+
+    /**
+     * Get provider response as array
+     */
+    public function getProviderResponseAttribute(): array
+    {
+        return $this->responses->pluck('response_value', 'response_key')->toArray();
+    }
+
+    /**
+     * Set provider response from array
+     */
+    public function setProviderResponse(array $response): void
+    {
+        foreach ($response as $key => $value) {
+            $this->responses()->updateOrCreate(
+                ['response_key' => $key],
+                ['response_value' => is_array($value) ? json_encode($value) : $value]
+            );
+        }
+    }
+
     /**
      * Check if validation was successful
      */
     public function isValid(): bool
     {
-        return $this->validation_status === self::STATUS_VALID;
+        return $this->validation_status === PeppolValidationStatus::VALID;
     }
 }
+

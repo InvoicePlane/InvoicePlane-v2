@@ -7,9 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
+use Modules\Invoices\Enums\PeppolTransmissionStatus;
 use Modules\Invoices\Events\Peppol\PeppolTransmissionDead;
 use Modules\Invoices\Models\PeppolTransmission;
+use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
  * Retry failed transmissions with exponential backoff
@@ -19,16 +20,16 @@ use Modules\Invoices\Models\PeppolTransmission;
  */
 class RetryFailedTransmissions implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LogsPeppolActivity;
 
     public int $tries = 3;
 
     public function handle(): void
     {
-        Log::info('Starting retry failed transmissions job');
+        $this->logPeppolInfo('Starting retry failed transmissions job');
 
         // Get transmissions ready for retry
-        $transmissions = PeppolTransmission::where('status', PeppolTransmission::STATUS_RETRYING)
+        $transmissions = PeppolTransmission::where('status', PeppolTransmissionStatus::RETRYING)
             ->where('next_retry_at', '<=', now())
             ->limit(50) // Process in batches
             ->get();
@@ -37,14 +38,14 @@ class RetryFailedTransmissions implements ShouldQueue
             try {
                 $this->retryTransmission($transmission);
             } catch (\Exception $e) {
-                Log::error('Failed to retry transmission', [
+                $this->logPeppolError('Failed to retry transmission', [
                     'transmission_id' => $transmission->id,
                     'error' => $e->getMessage(),
                 ]);
             }
         }
 
-        Log::info('Completed retry failed transmissions', [
+        $this->logPeppolInfo('Completed retry failed transmissions', [
             'retried' => $transmissions->count(),
         ]);
     }
@@ -60,7 +61,7 @@ class RetryFailedTransmissions implements ShouldQueue
             $transmission->markAsDead('Maximum retry attempts exceeded');
             event(new PeppolTransmissionDead($transmission, 'Maximum retry attempts exceeded'));
             
-            Log::warning('Transmission marked as dead', [
+            $this->logPeppolWarning('Transmission marked as dead', [
                 'transmission_id' => $transmission->id,
                 'attempts' => $transmission->attempts,
             ]);
@@ -76,7 +77,7 @@ class RetryFailedTransmissions implements ShouldQueue
             $transmission->id
         );
 
-        Log::info('Retrying transmission', [
+        $this->logPeppolInfo('Retrying transmission', [
             'transmission_id' => $transmission->id,
             'attempt' => $transmission->attempts + 1,
         ]);

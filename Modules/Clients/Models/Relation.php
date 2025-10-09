@@ -17,6 +17,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Enums\PeppolValidationStatus;
 use Modules\Invoices\Models\CustomerPeppolValidationHistory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
@@ -41,7 +42,7 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $peppol_scheme
  * @property string|null          $peppol_format
  * @property bool                 $enable_e_invoicing
- * @property string|null          $peppol_validation_status
+ * @property PeppolValidationStatus|null $peppol_validation_status
  * @property string|null          $peppol_validation_message
  * @property Carbon|null          $peppol_validated_at
  * @property Carbon               $registered_at
@@ -73,6 +74,7 @@ class Relation extends Model
         'relation_type'      => RelationType::class,
         'relation_status'    => RelationStatus::class,
         'enable_e_invoicing' => 'boolean',
+        'peppol_validation_status' => PeppolValidationStatus::class,
         'peppol_validated_at' => 'datetime',
     ];
 
@@ -198,7 +200,7 @@ class Relation extends Model
     public function hasPeppolIdValidated(): bool
     {
         return $this->enable_e_invoicing 
-            && $this->peppol_validation_status === 'valid'
+            && $this->peppol_validation_status === PeppolValidationStatus::VALID
             && $this->peppol_id !== null;
     }
     

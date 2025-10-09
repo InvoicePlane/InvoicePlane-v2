@@ -7,10 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
+use Modules\Invoices\Enums\PeppolTransmissionStatus;
 use Modules\Invoices\Events\Peppol\PeppolAcknowledgementReceived;
 use Modules\Invoices\Models\PeppolTransmission;
 use Modules\Invoices\Peppol\Providers\ProviderFactory;
+use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
  * Poll provider for status updates on sent transmissions
@@ -20,16 +21,16 @@ use Modules\Invoices\Peppol\Providers\ProviderFactory;
  */
 class PeppolStatusPoller implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LogsPeppolActivity;
 
     public int $tries = 3;
 
     public function handle(): void
     {
-        Log::info('Starting Peppol status polling job');
+        $this->logPeppolInfo('Starting Peppol status polling job');
 
         // Get all transmissions awaiting acknowledgement
-        $transmissions = PeppolTransmission::where('status', PeppolTransmission::STATUS_SENT)
+        $transmissions = PeppolTransmission::where('status', PeppolTransmissionStatus::SENT)
             ->whereNotNull('external_id')
             ->whereNull('acknowledged_at')
             ->where('sent_at', '<', now()->subMinutes(5)) // Allow 5 min grace period
@@ -40,14 +41,14 @@ class PeppolStatusPoller implements ShouldQueue
             try {
                 $this->checkStatus($transmission);
             } catch (\Exception $e) {
-                Log::error('Failed to check transmission status', [
+                $this->logPeppolError('Failed to check transmission status', [
                     'transmission_id' => $transmission->id,
                     'error' => $e->getMessage(),
                 ]);
             }
         }
 
-        Log::info('Completed Peppol status polling', [
+        $this->logPeppolInfo('Completed Peppol status polling', [
             'checked' => $transmissions->count(),
         ]);
     }
@@ -68,14 +69,14 @@ class PeppolStatusPoller implements ShouldQueue
             $transmission->markAsAccepted();
             event(new PeppolAcknowledgementReceived($transmission, $result['ack_payload'] ?? []));
             
-            Log::info('Transmission accepted', [
+            $this->logPeppolInfo('Transmission accepted', [
                 'transmission_id' => $transmission->id,
                 'external_id' => $transmission->external_id,
             ]);
         } elseif (in_array($status, ['rejected', 'failed'])) {
             $transmission->markAsRejected($result['ack_payload']['message'] ?? 'Rejected by recipient');
             
-            Log::warning('Transmission rejected', [
+            $this->logPeppolWarning('Transmission rejected', [
                 'transmission_id' => $transmission->id,
                 'external_id' => $transmission->external_id,
             ]);
@@ -83,7 +84,7 @@ class PeppolStatusPoller implements ShouldQueue
 
         // Update provider response
         if (isset($result['ack_payload'])) {
-            $transmission->update(['provider_response' => $result['ack_payload']]);
+            $transmission->setProviderResponse($result['ack_payload']);
         }
     }
 }

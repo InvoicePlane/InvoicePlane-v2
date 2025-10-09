@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('peppol_transmissions', function (Blueprint $table) {
+        Schema::create('peppol_transmissions', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('customer_id');
@@ -25,11 +22,11 @@ return new class extends Migration
             $table->string('stored_pdf_path')->nullable()->comment('Path to stored PDF file');
             $table->text('last_error')->nullable()->comment('Last error message if failed');
             $table->string('error_type', 20)->nullable()->comment('TRANSIENT, PERMANENT, UNKNOWN');
-            $table->json('provider_response')->nullable()->comment('Last provider response data');
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('acknowledged_at')->nullable();
             $table->timestamp('next_retry_at')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
             
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
@@ -42,9 +39,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('peppol_transmissions');

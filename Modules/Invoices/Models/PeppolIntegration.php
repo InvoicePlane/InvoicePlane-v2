@@ -7,50 +7,45 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Invoices\Enums\PeppolConnectionStatus;
 
 /**
  * @property int $id
  * @property int $company_id
  * @property string $provider_name
  * @property string|null $encrypted_api_token
- * @property array|null $config
- * @property string $test_connection_status
+ * @property PeppolConnectionStatus $test_connection_status
  * @property string|null $test_connection_message
  * @property \Carbon\Carbon|null $test_connection_at
  * @property bool $enabled
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
  * @property Company $company
  * @property PeppolTransmission[] $transmissions
+ * @property PeppolIntegrationConfig[] $configurations
  */
 class PeppolIntegration extends Model
 {
     use BelongsToCompany;
 
+    public $timestamps = false;
+
     protected $table = 'peppol_integrations';
 
-    protected $fillable = [
-        'company_id',
-        'provider_name',
-        'encrypted_api_token',
-        'config',
-        'test_connection_status',
-        'test_connection_message',
-        'test_connection_at',
-        'enabled',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
-        'config' => 'array',
+        'test_connection_status' => PeppolConnectionStatus::class,
         'enabled' => 'boolean',
         'test_connection_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function transmissions(): HasMany
     {
         return $this->hasMany(PeppolTransmission::class, 'integration_id');
+    }
+
+    public function configurations(): HasMany
+    {
+        return $this->hasMany(PeppolIntegrationConfig::class, 'integration_id');
     }
 
     /**
@@ -70,11 +65,41 @@ class PeppolIntegration extends Model
     }
 
     /**
+     * Get configuration as array
+     */
+    public function getConfigAttribute(): array
+    {
+        return $this->configurations->pluck('config_value', 'config_key')->toArray();
+    }
+
+    /**
+     * Set configuration from array
+     */
+    public function setConfig(array $config): void
+    {
+        foreach ($config as $key => $value) {
+            $this->configurations()->updateOrCreate(
+                ['config_key' => $key],
+                ['config_value' => $value]
+            );
+        }
+    }
+
+    /**
+     * Get a single configuration value
+     */
+    public function getConfigValue(string $key, $default = null)
+    {
+        $config = $this->configurations()->where('config_key', $key)->first();
+        return $config ? $config->config_value : $default;
+    }
+
+    /**
      * Check if connection test was successful
      */
     public function isConnectionSuccessful(): bool
     {
-        return $this->test_connection_status === 'success';
+        return $this->test_connection_status === PeppolConnectionStatus::SUCCESS;
     }
 
     /**
