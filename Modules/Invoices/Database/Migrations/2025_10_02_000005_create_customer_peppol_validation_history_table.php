@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the customer_peppol_validation_history table to record Peppol identifier validation events for customers.
+     *
+     * The table stores customer, integration and user references, the Peppol scheme and identifier, validation status and message, timestamps, foreign key constraints, and indexes for efficient lookups.
+     */
     public function up(): void
     {
         Schema::create('customer_peppol_validation_history', function (Blueprint $table): void {
@@ -29,6 +34,11 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverts the migration by removing the customer_peppol_validation_history table.
+     *
+     * Drops the table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('customer_peppol_validation_history');

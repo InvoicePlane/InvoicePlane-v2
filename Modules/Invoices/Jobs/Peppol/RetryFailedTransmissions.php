@@ -24,6 +24,13 @@ class RetryFailedTransmissions implements ShouldQueue
 
     public int $tries = 3;
 
+    /**
+     * Process due Peppol transmissions marked for retry and schedule retry attempts.
+     *
+     * Retrieves up to 50 transmissions with status RETRYING whose next retry time is due,
+     * attempts to retry each by delegating to retryTransmission(), logs per-transmission
+     * failures without bubbling exceptions, and logs summary information when finished.
+     */
     public function handle(): void
     {
         $this->logPeppolInfo('Starting retry failed transmissions job');
@@ -51,7 +58,9 @@ class RetryFailedTransmissions implements ShouldQueue
     }
 
     /**
-     * Retry a single transmission
+     * Process a Peppol transmission scheduled for retry, re-dispatching its send job or marking it dead when the retry limit is reached.
+     *
+     * @param PeppolTransmission $transmission The transmission to evaluate and retry; if its attempts are greater than or equal to the configured `invoices.peppol.max_retry_attempts` it will be marked as dead and a PeppolTransmissionDead event will be fired.
      */
     protected function retryTransmission(PeppolTransmission $transmission): void
     {

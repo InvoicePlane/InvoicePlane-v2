@@ -8,6 +8,14 @@ class PeppolAcknowledgementReceived extends PeppolEvent
 {
     public PeppolTransmission $transmission;
 
+    /**
+     * Create a PeppolAcknowledgementReceived event for a given transmission with an optional acknowledgement payload.
+     *
+     * Initializes the event and prepares the base payload using the transmission's identifiers and status, plus the provided acknowledgement payload.
+     *
+     * @param PeppolTransmission $transmission The transmission associated with this acknowledgement.
+     * @param array $ackPayload Optional acknowledgement payload to include in the event payload.
+     */
     public function __construct(PeppolTransmission $transmission, array $ackPayload = [])
     {
         $this->transmission = $transmission;
@@ -21,6 +29,11 @@ class PeppolAcknowledgementReceived extends PeppolEvent
         ]);
     }
 
+    /**
+     * Event name for a received Peppol acknowledgement.
+     *
+     * @return string The event name "peppol.acknowledgement.received".
+     */
     public function getEventName(): string
     {
         return 'peppol.acknowledgement.received';

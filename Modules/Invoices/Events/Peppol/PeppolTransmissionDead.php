@@ -8,6 +8,12 @@ class PeppolTransmissionDead extends PeppolEvent
 {
     public PeppolTransmission $transmission;
 
+    /**
+     * Create a PeppolTransmissionDead event for the given transmission and optional reason.
+     *
+     * @param PeppolTransmission $transmission The transmission associated with this event.
+     * @param string|null $reason Optional human-readable reason why the transmission is considered dead.
+     */
     public function __construct(PeppolTransmission $transmission, ?string $reason = null)
     {
         $this->transmission = $transmission;
@@ -21,6 +27,11 @@ class PeppolTransmissionDead extends PeppolEvent
         ]);
     }
 
+    /**
+     * Event name for a Peppol transmission that has reached the dead state.
+     *
+     * @return string The event name 'peppol.transmission.dead'.
+     */
     public function getEventName(): string
     {
         return 'peppol.transmission.dead';

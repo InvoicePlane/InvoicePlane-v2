@@ -8,6 +8,16 @@ class PeppolTransmissionFailed extends PeppolEvent
 {
     public PeppolTransmission $transmission;
 
+    /**
+     * Create a PeppolTransmissionFailed event for a specific transmission.
+     *
+     * Sets the event's associated transmission and prepares the event payload
+     * containing transmission id, invoice id, status, error message, error type,
+     * and attempt count.
+     *
+     * @param PeppolTransmission $transmission The transmission associated with this failure.
+     * @param string|null $error Optional error message to use instead of the transmission's last error.
+     */
     public function __construct(PeppolTransmission $transmission, ?string $error = null)
     {
         $this->transmission = $transmission;
@@ -22,6 +32,11 @@ class PeppolTransmissionFailed extends PeppolEvent
         ]);
     }
 
+    /**
+     * Retrieve the canonical event name for a failed Peppol transmission.
+     *
+     * @return string The event name 'peppol.transmission.failed'.
+     */
     public function getEventName(): string
     {
         return 'peppol.transmission.failed';

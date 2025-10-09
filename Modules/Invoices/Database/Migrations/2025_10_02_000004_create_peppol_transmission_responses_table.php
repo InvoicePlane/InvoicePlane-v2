@@ -6,6 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Create the peppol_transmission_responses database table.
+     *
+     * The table contains an auto-incrementing primary key `id`, an unsigned big integer
+     * `transmission_id` referencing `peppol_transmissions.id` with cascade on delete,
+     * a `response_key` string (maximum 100 characters), and a `response_value` text column.
+     * Also adds a composite index on (`transmission_id`, `response_key`).
+     */
     public function up(): void
     {
         Schema::create('peppol_transmission_responses', function (Blueprint $table): void {
@@ -19,6 +27,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverts the migration by dropping the `peppol_transmission_responses` table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('peppol_transmission_responses');

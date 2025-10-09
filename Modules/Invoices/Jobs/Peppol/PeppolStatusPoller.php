@@ -25,6 +25,15 @@ class PeppolStatusPoller implements ShouldQueue
 
     public int $tries = 3;
 
+    / **
+     * Polls providers for status updates of recently sent Peppol transmissions and updates local records.
+     *
+     * Retrieves up to 100 transmissions that are marked SENT, have an external ID, are not yet acknowledged,
+     * and were sent more than five minutes ago. For each transmission it checks the provider status, updates
+     * the transmission state accordingly, and logs per-transmission errors without aborting the batch.
+     *
+     * Logs the start and completion of the polling job and includes the number of transmissions checked.
+     * /
     public function handle(): void
     {
         $this->logPeppolInfo('Starting Peppol status polling job');
@@ -54,7 +63,12 @@ class PeppolStatusPoller implements ShouldQueue
     }
 
     /**
-     * Check status for a single transmission
+     * Polls the external provider for a transmission's delivery status and updates the local record accordingly.
+     *
+     * Marks the transmission as accepted or rejected based on the provider status, fires a PeppolAcknowledgementReceived
+     * event when an acknowledgement payload exists, and persists any provider acknowledgement payload to the transmission.
+     *
+     * @param PeppolTransmission $transmission The transmission to check and update.
      */
     protected function checkStatus(PeppolTransmission $transmission): void
     {

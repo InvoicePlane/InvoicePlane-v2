@@ -8,6 +8,11 @@ class PeppolTransmissionPrepared extends PeppolEvent
 {
     public PeppolTransmission $transmission;
 
+    /**
+     * Create a PeppolTransmissionPrepared event for a specific transmission.
+     *
+     * @param PeppolTransmission $transmission The prepared transmission whose key fields (transmission id, invoice id, format, XML and PDF stored paths) are attached to the event payload.
+     */
     public function __construct(PeppolTransmission $transmission)
     {
         $this->transmission = $transmission;
@@ -21,6 +26,11 @@ class PeppolTransmissionPrepared extends PeppolEvent
         ]);
     }
 
+    /**
+     * Event name for a prepared Peppol transmission.
+     *
+     * @return string The event name 'peppol.transmission.prepared'.
+     */
     public function getEventName(): string
     {
         return 'peppol.transmission.prepared';

@@ -15,6 +15,11 @@ abstract class PeppolEvent
     public array $payload;
     public \Carbon\Carbon $occurredAt;
 
+    /**
+     * Initialize the event with an optional payload and record the current occurrence time.
+     *
+     * @param array $payload Optional event data to store in the event's payload.
+     */
     public function __construct(array $payload = [])
     {
         $this->payload = $payload;
@@ -22,12 +27,16 @@ abstract class PeppolEvent
     }
 
     /**
-     * Get event name for audit logging
-     */
+ * Provide the event name used for audit logging.
+ *
+ * @return string The event name to include in the audit payload.
+ */
     abstract public function getEventName(): string;
 
     /**
-     * Get payload for audit logging
+     * Build a payload suitable for audit logging by merging the event payload with metadata.
+     *
+     * @return array The original payload merged with `event` (event name) and `occurred_at` (ISO 8601 timestamp).
      */
     public function getAuditPayload(): array
     {

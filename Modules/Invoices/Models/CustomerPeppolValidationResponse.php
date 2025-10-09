@@ -20,6 +20,11 @@ class CustomerPeppolValidationResponse extends Model
 
     protected $guarded = [];
 
+    /**
+     * Defines the BelongsTo relationship to a CustomerPeppolValidationHistory record.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo Relationship to the related Modules\Invoices\Models\CustomerPeppolValidationHistory model via `validation_history_id`.
+     */
     public function validationHistory(): BelongsTo
     {
         return $this->belongsTo(CustomerPeppolValidationHistory::class, 'validation_history_id');

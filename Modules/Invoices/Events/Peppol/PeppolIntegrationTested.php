@@ -9,6 +9,16 @@ class PeppolIntegrationTested extends PeppolEvent
     public PeppolIntegration $integration;
     public bool $success;
 
+    /**
+     * Create a PeppolIntegrationTested event for a given Peppol integration attempt.
+     *
+     * Sets the public properties and populates the event payload with `integration_id`,
+     * `provider_name`, `success`, and `message`.
+     *
+     * @param \Modules\Invoices\Models\PeppolIntegration $integration The integration instance that was tested.
+     * @param bool $success True if the integration test succeeded, false otherwise.
+     * @param string|null $message Optional human-readable message describing the test result.
+     */
     public function __construct(PeppolIntegration $integration, bool $success, ?string $message = null)
     {
         $this->integration = $integration;
@@ -22,6 +32,11 @@ class PeppolIntegrationTested extends PeppolEvent
         ]);
     }
 
+    /**
+     * Returns the canonical name of this event.
+     *
+     * @return string The event name "peppol.integration.tested".
+     */
     public function getEventName(): string
     {
         return 'peppol.integration.tested';

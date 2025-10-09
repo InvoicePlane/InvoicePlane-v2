@@ -6,6 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Add Peppol validation columns to the relations table.
+     *
+     * Adds nullable columns: `peppol_scheme` (string(50)) for Peppol endpoint scheme,
+     * `peppol_validation_status` (string(20)) for quick lookup of validation state,
+     * `peppol_validation_message` (text) for the last validation message, and
+     * `peppol_validated_at` (timestamp) for when the Peppol ID was last validated.
+     */
     public function up(): void
     {
         Schema::table('relations', function (Blueprint $table): void {
@@ -23,6 +31,11 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Removes Peppol-related columns from the `relations` table.
+     *
+     * Drops the columns: `peppol_scheme`, `peppol_validation_status`, `peppol_validation_message`, and `peppol_validated_at`.
+     */
     public function down(): void
     {
         Schema::table('relations', function (Blueprint $table): void {
