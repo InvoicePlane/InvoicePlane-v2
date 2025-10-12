@@ -1,0 +1,148 @@
+# =======================================================
+#  CodeRabbit AI Review Configuration
+#  For Laravel + JS projects
+#  Reference: https://docs.coderabbit.ai/config
+# =======================================================
+
+language: en-US
+
+reviews:
+  # Review tone — defines style of feedback
+  # Options: assertive | chill | friendly | strict | concise | detailed
+  profile: assertive
+
+  # Require resolution before merge
+  request_changes_workflow: true
+
+  # Include an AI summary of the PR
+  high_level_summary: false
+
+  # Report check status to GitHub UI
+  review_status: false
+  commit_status: false
+  fail_commit_status: false
+
+  # --- collapsible: UI / Fun / Optional ------------------------------------------------
+  collapse_walkthrough: false
+  sequence_diagrams: false
+  estimate_code_review_effort: true
+  in_progress_fortune: false
+  poem: false
+  # ------------------------------------------------------------------------------------
+
+  auto_review:
+    enabled: false
+    auto_incremental_review: true
+    # --- collapsible: customization ----------------------------------------------------
+    ignore_title_keywords: ['WIP', 'draft']
+    labels: ['needs-review']
+    drafts: false
+    base_branches: ['master', 'development']
+    ignore_usernames: ['dependabot', 'renovate']
+    # ------------------------------------------------------------------------------------
+
+  # --- collapsible: doc/test auto-suggestions ------------------------------------------
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+  # ------------------------------------------------------------------------------------
+
+  # --- collapsible: pre-merge quality gates --------------------------------------------
+  pre_merge_checks:
+    docstrings:
+      mode: warning
+      threshold: 80
+    title:
+      mode: warning
+      requirements: 'Descriptive, mentions component or ticket'
+    description:
+      mode: warning
+  # ------------------------------------------------------------------------------------
+
+tools:
+  # --- Core linters for Laravel (PHP) and JS -------------------------------------------
+  phpstan:
+    enabled: true
+    level: 3
+  phpcs:
+    enabled: true
+  eslint:
+    enabled: true
+  markdownlint:
+    enabled: true
+
+  # --- collapsible: supporting & infra tools -------------------------------------------
+  shellcheck:
+    enabled: false
+  hadolint:
+    enabled: false
+  yamllint:
+    enabled: false
+  dotenvLint:
+    enabled: false
+  htmlhint:
+    enabled: false
+  semgrep:
+    enabled: false
+  gitleaks:
+    enabled: false
+  osvScanner:
+    enabled: false
+  actionlint:
+    enabled: true
+  # ------------------------------------------------------------------------------------
+
+chat:
+  # --- collapsible: personality + integrations -----------------------------------------
+  art: false
+  auto_reply: true
+  integrations:
+    jira:
+      usage: off
+    linear:
+      usage: off
+  # ------------------------------------------------------------------------------------
+
+# --- collapsible: AI learning + docs integration ---------------------------------------
+knowledge_base:
+  opt_out: true
+  web_search:
+    enabled: false
+  code_guidelines:
+    enabled: false
+    filePatterns: ['CONTRIBUTING.md', 'docs/code-guidelines.md']
+  learnings:
+    scope: org
+  issues:
+    scope: org
+  pull_requests:
+    scope: org
+# ---------------------------------------------------------------------------------------
+
+# --- collapsible: AI code generation suggestions ---------------------------------------
+code_generation:
+  docstrings:
+    language: en-US
+
+  unit_tests:
+    # Allows AI-generated unit tests to follow local conventions.
+    path_instructions:
+      - path: 'tests/Unit/**'
+        instructions: |
+          Each test method must begin with `it_`.
+          Annotate each test method with `#[Test]`.
+          Each test method must contain `$this->markTestIncomplete();` by default.
+          Prefer Fakes and Fixtures over Mocks.
+          Structure tests with `it_` functions and place happy paths first.
+          Reusable logic (e.g., fixtures) must reside in an abstract test case.
+      - path: 'tests/Feature/**'
+        instructions: |
+          Each test method must begin with `it_`.
+          Annotate each test method with `#[Test]`.
+          Default to `$this->markTestIncomplete();` until test logic is finalized.
+          Write the tests in "Arrange, Act, Assert" form
+          Prefix each phase of "Arrange, Act, Assert" with a phpdoc annotations of that phase (not php `//` comment)
+          Avoid inline fixture setup; use factories and seeders.
+# ---------------------------------------------------------------------------------------
