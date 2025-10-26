@@ -96,12 +96,13 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
-            ->mountAction('exportExcelV2')
+            ->mountAction('exportCsvV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 
         /* Assert */
         $this->assertEquals(200, $response->status());
+        $this->assertMatchesRegularExpression('/^text\/csv\b/i', $response->headers->get('content-type'));
         $content = $response->getContent();
         $this->assertStringContainsString('ÜTask', $content);
         $this->assertStringContainsString('"Test"', $content);
