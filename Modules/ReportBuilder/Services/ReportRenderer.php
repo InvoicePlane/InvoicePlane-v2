@@ -50,7 +50,7 @@ class ReportRenderer
 
             $content = '';
             foreach ($blocks as $block) {
-                $handler  = $this->blockFactory->make($block->getType());
+                $handler  = BlockFactory::make($block->getType());
                 $content .= $handler->render($block, $invoice, $company);
             }
 
@@ -154,7 +154,7 @@ class ReportRenderer
 
             $content = '';
             foreach ($blocks as $block) {
-                $handler  = $this->blockFactory->make($block->getType());
+                $handler  = BlockFactory::make($block->getType());
                 $content .= $handler->render($block, $sample, $company);
             }
 
