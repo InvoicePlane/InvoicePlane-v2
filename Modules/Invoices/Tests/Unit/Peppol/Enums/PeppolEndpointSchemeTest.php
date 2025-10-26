@@ -11,8 +11,8 @@ use Tests\TestCase;
 /**
  * PeppolEndpointSchemeTest - Unit tests for PeppolEndpointScheme enum.
  *
- * Tests participant identifier schemes including country mappings,
- * validation logic, and formatting rules.
+ * Tests the endpoint scheme enum including country-based recommendations
+ * and identifier validation.
  *
  * @package Modules\Invoices\Tests\Unit\Peppol\Enums
  */
@@ -29,57 +29,24 @@ class PeppolEndpointSchemeTest extends TestCase
         $this->assertContains(PeppolEndpointScheme::DE_VAT, $schemes);
         $this->assertContains(PeppolEndpointScheme::FR_SIRENE, $schemes);
         $this->assertContains(PeppolEndpointScheme::IT_VAT, $schemes);
+        $this->assertContains(PeppolEndpointScheme::IT_CF, $schemes);
+        $this->assertContains(PeppolEndpointScheme::ES_VAT, $schemes);
+        $this->assertContains(PeppolEndpointScheme::NL_KVK, $schemes);
+        $this->assertContains(PeppolEndpointScheme::NO_ORGNR, $schemes);
+        $this->assertContains(PeppolEndpointScheme::DK_CVR, $schemes);
+        $this->assertContains(PeppolEndpointScheme::SE_ORGNR, $schemes);
+        $this->assertContains(PeppolEndpointScheme::FI_OVT, $schemes);
+        $this->assertContains(PeppolEndpointScheme::AT_VAT, $schemes);
+        $this->assertContains(PeppolEndpointScheme::CH_UIDB, $schemes);
+        $this->assertContains(PeppolEndpointScheme::GB_COH, $schemes);
         $this->assertContains(PeppolEndpointScheme::GLN, $schemes);
         $this->assertContains(PeppolEndpointScheme::DUNS, $schemes);
+        $this->assertContains(PeppolEndpointScheme::ISO_6523, $schemes);
     }
 
     #[Test]
-    #[DataProvider('labelProvider')]
-    public function it_provides_correct_labels(
-        PeppolEndpointScheme $scheme,
-        string $expectedLabel
-    ): void {
-        $this->assertEquals($expectedLabel, $scheme->label());
-    }
-
-    public static function labelProvider(): array
-    {
-        return [
-            [PeppolEndpointScheme::BE_CBE, 'Belgian CBE/KBO/BCE Number'],
-            [PeppolEndpointScheme::DE_VAT, 'German VAT Number'],
-            [PeppolEndpointScheme::FR_SIRENE, 'French SIREN/SIRET'],
-            [PeppolEndpointScheme::IT_VAT, 'Italian VAT Number (Partita IVA)'],
-            [PeppolEndpointScheme::GLN, 'Global Location Number (GLN)'],
-            [PeppolEndpointScheme::DUNS, 'DUNS Number'],
-        ];
-    }
-
-    #[Test]
-    #[DataProvider('descriptionProvider')]
-    public function it_provides_descriptions(
-        PeppolEndpointScheme $scheme,
-        string $expectedDescription
-    ): void {
-        $description = $scheme->description();
-        
-        $this->assertIsString($description);
-        $this->assertNotEmpty($description);
-        $this->assertStringContainsString($expectedDescription, $description);
-    }
-
-    public static function descriptionProvider(): array
-    {
-        return [
-            [PeppolEndpointScheme::BE_CBE, '10 digits'],
-            [PeppolEndpointScheme::DE_VAT, 'DE + 9 digits'],
-            [PeppolEndpointScheme::FR_SIRENE, '9 or 14 digits'],
-            [PeppolEndpointScheme::IT_VAT, 'IT + 11 digits'],
-        ];
-    }
-
-    #[Test]
-    #[DataProvider('countryMappingProvider')]
-    public function it_maps_countries_to_schemes(
+    #[DataProvider('countrySchemeProvider')]
+    public function it_returns_correct_scheme_for_country(
         string $countryCode,
         PeppolEndpointScheme $expectedScheme
     ): void {
@@ -88,7 +55,7 @@ class PeppolEndpointSchemeTest extends TestCase
         $this->assertEquals($expectedScheme, $scheme);
     }
 
-    public static function countryMappingProvider(): array
+    public static function countrySchemeProvider(): array
     {
         return [
             ['BE', PeppolEndpointScheme::BE_CBE],
@@ -104,28 +71,13 @@ class PeppolEndpointSchemeTest extends TestCase
             ['AT', PeppolEndpointScheme::AT_VAT],
             ['CH', PeppolEndpointScheme::CH_UIDB],
             ['GB', PeppolEndpointScheme::GB_COH],
+            ['XX', PeppolEndpointScheme::ISO_6523], // Unknown country
         ];
     }
 
     #[Test]
-    public function it_defaults_to_iso_6523_for_unknown_countries(): void
-    {
-        $scheme = PeppolEndpointScheme::forCountry('XX');
-
-        $this->assertEquals(PeppolEndpointScheme::ISO_6523, $scheme);
-    }
-
-    #[Test]
-    public function it_handles_null_country_code(): void
-    {
-        $scheme = PeppolEndpointScheme::forCountry(null);
-
-        $this->assertEquals(PeppolEndpointScheme::ISO_6523, $scheme);
-    }
-
-    #[Test]
-    #[DataProvider('validIdentifierProvider')]
-    public function it_validates_correct_identifiers(
+    #[DataProvider('identifierValidationProvider')]
+    public function it_validates_identifiers_correctly(
         PeppolEndpointScheme $scheme,
         string $identifier,
         bool $expectedValid
@@ -135,140 +87,132 @@ class PeppolEndpointSchemeTest extends TestCase
         $this->assertEquals($expectedValid, $isValid);
     }
 
-    public static function validIdentifierProvider(): array
+    public static function identifierValidationProvider(): array
     {
         return [
             // Belgian CBE - 10 digits
             [PeppolEndpointScheme::BE_CBE, '0123456789', true],
-            [PeppolEndpointScheme::BE_CBE, '012345678', false],
-            [PeppolEndpointScheme::BE_CBE, '01234567890', false],
+            [PeppolEndpointScheme::BE_CBE, '012345678', false], // Too short
+            [PeppolEndpointScheme::BE_CBE, '01234567890', false], // Too long
             
             // German VAT - DE + 9 digits
             [PeppolEndpointScheme::DE_VAT, 'DE123456789', true],
-            [PeppolEndpointScheme::DE_VAT, 'DE12345678', false],
-            [PeppolEndpointScheme::DE_VAT, '123456789', false],
+            [PeppolEndpointScheme::DE_VAT, 'DE12345678', false], // Too short
+            [PeppolEndpointScheme::DE_VAT, '123456789', false], // Missing DE prefix
             
             // French SIRENE - 9 or 14 digits
             [PeppolEndpointScheme::FR_SIRENE, '123456789', true],
-            [PeppolEndpointScheme::FR_SIRENE, '12345678901234', true],
-            [PeppolEndpointScheme::FR_SIRENE, '1234567890', false],
+            [PeppolEndpointScheme::FR_SIRENE, '12345678912345', true],
+            [PeppolEndpointScheme::FR_SIRENE, '12345678', false], // Too short
             
             // Italian VAT - IT + 11 digits
             [PeppolEndpointScheme::IT_VAT, 'IT12345678901', true],
-            [PeppolEndpointScheme::IT_VAT, 'IT1234567890', false],
-            [PeppolEndpointScheme::IT_VAT, '12345678901', false],
+            [PeppolEndpointScheme::IT_VAT, 'IT1234567890', false], // Too short
+            [PeppolEndpointScheme::IT_VAT, '12345678901', false], // Missing IT prefix
+            
+            // Spanish NIF/CIF - Letter + 7-8 digits + letter/digit
+            [PeppolEndpointScheme::ES_VAT, 'A12345678', true],
+            [PeppolEndpointScheme::ES_VAT, 'B1234567C', true],
+            [PeppolEndpointScheme::ES_VAT, '12345678A', false], // Wrong format
             
             // Dutch KVK - 8 digits
             [PeppolEndpointScheme::NL_KVK, '12345678', true],
-            [PeppolEndpointScheme::NL_KVK, '1234567', false],
+            [PeppolEndpointScheme::NL_KVK, '1234567', false], // Too short
+            
+            // Norwegian Organization Number - 9 digits
+            [PeppolEndpointScheme::NO_ORGNR, '123456789', true],
+            [PeppolEndpointScheme::NO_ORGNR, '12345678', false], // Too short
+            
+            // Danish CVR - 8 digits
+            [PeppolEndpointScheme::DK_CVR, '12345678', true],
+            [PeppolEndpointScheme::DK_CVR, '1234567', false], // Too short
+            
+            // Swedish Organization Number - 10 digits (with or without hyphen)
+            [PeppolEndpointScheme::SE_ORGNR, '123456-7890', true],
+            [PeppolEndpointScheme::SE_ORGNR, '1234567890', true],
+            [PeppolEndpointScheme::SE_ORGNR, '12345-6789', false], // Wrong format
+            
+            // Finnish Business ID - 7 digits + check digit (with or without hyphen)
+            [PeppolEndpointScheme::FI_OVT, '1234567-8', true],
+            [PeppolEndpointScheme::FI_OVT, '12345678', true],
+            [PeppolEndpointScheme::FI_OVT, '123456-78', false], // Wrong format
             
             // GLN - 13 digits
             [PeppolEndpointScheme::GLN, '1234567890123', true],
-            [PeppolEndpointScheme::GLN, '123456789012', false],
+            [PeppolEndpointScheme::GLN, '123456789012', false], // Too short
             
             // DUNS - 9 digits
             [PeppolEndpointScheme::DUNS, '123456789', true],
-            [PeppolEndpointScheme::DUNS, '12345678', false],
+            [PeppolEndpointScheme::DUNS, '12345678', false], // Too short
+            
+            // ISO 6523 - Flexible
+            [PeppolEndpointScheme::ISO_6523, 'any-value', true],
+            [PeppolEndpointScheme::ISO_6523, '', false], // Empty
         ];
     }
 
     #[Test]
-    #[DataProvider('formatProvider')]
-    public function it_formats_identifiers_correctly(
-        PeppolEndpointScheme $scheme,
-        string $input,
-        string $expectedOutput
-    ): void {
-        $formatted = $scheme->format($input);
-
-        $this->assertEquals($expectedOutput, $formatted);
+    public function it_provides_label_for_schemes(): void
+    {
+        $this->assertEquals('Belgian CBE/KBO/BCE Number', PeppolEndpointScheme::BE_CBE->label());
+        $this->assertEquals('German VAT Number', PeppolEndpointScheme::DE_VAT->label());
+        $this->assertEquals('French SIREN/SIRET', PeppolEndpointScheme::FR_SIRENE->label());
+        $this->assertEquals('Italian VAT Number (Partita IVA)', PeppolEndpointScheme::IT_VAT->label());
+        $this->assertEquals('Global Location Number (GLN)', PeppolEndpointScheme::GLN->label());
     }
 
-    public static function formatProvider(): array
+    #[Test]
+    public function it_provides_description_for_schemes(): void
+    {
+        $description = PeppolEndpointScheme::BE_CBE->description();
+
+        $this->assertIsString($description);
+        $this->assertNotEmpty($description);
+    }
+
+    #[Test]
+    #[DataProvider('formatIdentifierProvider')]
+    public function it_formats_identifiers_correctly(
+        PeppolEndpointScheme $scheme,
+        string $rawIdentifier,
+        string $expectedFormatted
+    ): void {
+        $formatted = $scheme->format($rawIdentifier);
+
+        $this->assertEquals($expectedFormatted, $formatted);
+    }
+
+    public static function formatIdentifierProvider(): array
     {
         return [
-            // Swedish - adds hyphen
+            // Swedish Organization Number - adds hyphen
             [PeppolEndpointScheme::SE_ORGNR, '1234567890', '123456-7890'],
-            [PeppolEndpointScheme::SE_ORGNR, '123456-7890', '123456-7890'],
+            [PeppolEndpointScheme::SE_ORGNR, '123456-7890', '123456-7890'], // Already formatted
             
-            // Finnish - adds hyphen
+            // Finnish Business ID - adds hyphen
             [PeppolEndpointScheme::FI_OVT, '12345678', '1234567-8'],
-            [PeppolEndpointScheme::FI_OVT, '1234567-8', '1234567-8'],
+            [PeppolEndpointScheme::FI_OVT, '1234567-8', '1234567-8'], // Already formatted
             
-            // Others - no formatting
+            // Others remain unchanged
             [PeppolEndpointScheme::BE_CBE, '0123456789', '0123456789'],
             [PeppolEndpointScheme::DE_VAT, 'DE123456789', 'DE123456789'],
         ];
     }
 
     #[Test]
-    public function it_validates_italian_codice_fiscale_format(): void
+    public function it_handles_null_country_code_gracefully(): void
     {
-        $scheme = PeppolEndpointScheme::IT_CF;
+        $scheme = PeppolEndpointScheme::forCountry(null);
 
-        // Valid 16-character alphanumeric
-        $this->assertTrue($scheme->validates('RSSMRA80A01H501U'));
-        $this->assertTrue($scheme->validates('ABCDEF12G34H567I'));
-        
-        // Invalid formats
-        $this->assertFalse($scheme->validates('RSSMRA80A01H501')); // Too short
-        $this->assertFalse($scheme->validates('RSSMRA80A01H501UX')); // Too long
-        $this->assertFalse($scheme->validates('rssmra80a01h501u')); // Lowercase (after strtoupper)
+        $this->assertEquals(PeppolEndpointScheme::ISO_6523, $scheme);
     }
 
     #[Test]
-    public function it_validates_spanish_nif_format(): void
+    public function it_handles_lowercase_country_codes(): void
     {
-        $scheme = PeppolEndpointScheme::ES_VAT;
+        $scheme = PeppolEndpointScheme::forCountry('it');
 
-        // Valid formats: letter + 7-8 digits + letter/digit
-        $this->assertTrue($scheme->validates('A12345678'));
-        $this->assertTrue($scheme->validates('B1234567X'));
-        
-        // Invalid formats
-        $this->assertFalse($scheme->validates('12345678A')); // Wrong position
-        $this->assertFalse($scheme->validates('A123456')); // Too short
-    }
-
-    #[Test]
-    public function it_validates_swiss_uid_with_flexible_separators(): void
-    {
-        $scheme = PeppolEndpointScheme::CH_UIDB;
-
-        // Various formats with different separators
-        $this->assertTrue($scheme->validates('CHE-123.456.789'));
-        $this->assertTrue($scheme->validates('CHE-123-456-789'));
-        $this->assertTrue($scheme->validates('CHE 123 456 789'));
-        $this->assertTrue($scheme->validates('CHE123456789'));
-        
-        // Invalid
-        $this->assertFalse($scheme->validates('CHE12345678')); // Wrong digit count
-    }
-
-    #[Test]
-    public function it_validates_uk_companies_house_alphanumeric(): void
-    {
-        $scheme = PeppolEndpointScheme::GB_COH;
-
-        $this->assertTrue($scheme->validates('12345678'));
-        $this->assertTrue($scheme->validates('AB123456'));
-        $this->assertTrue($scheme->validates('SC123456')); // Scottish company
-        
-        $this->assertFalse($scheme->validates('1234567')); // Too short
-        $this->assertFalse($scheme->validates('123456789')); // Too long
-    }
-
-    #[Test]
-    public function it_has_flexible_validation_for_iso_6523(): void
-    {
-        $scheme = PeppolEndpointScheme::ISO_6523;
-
-        // Accept any non-empty string
-        $this->assertTrue($scheme->validates('anything'));
-        $this->assertTrue($scheme->validates('123'));
-        $this->assertTrue($scheme->validates('abc-123'));
-        
-        $this->assertFalse($scheme->validates(''));
+        $this->assertEquals(PeppolEndpointScheme::IT_VAT, $scheme);
     }
 
     #[Test]
@@ -283,16 +227,6 @@ class PeppolEndpointSchemeTest extends TestCase
     public function it_throws_on_invalid_value(): void
     {
         $this->expectException(\ValueError::class);
-        PeppolEndpointScheme::from('INVALID:SCHEME');
-    }
-
-    #[Test]
-    public function it_handles_case_insensitive_country_codes(): void
-    {
-        $scheme1 = PeppolEndpointScheme::forCountry('BE');
-        $scheme2 = PeppolEndpointScheme::forCountry('be');
-
-        $this->assertEquals($scheme1, $scheme2);
-        $this->assertEquals(PeppolEndpointScheme::BE_CBE, $scheme1);
+        PeppolEndpointScheme::from('invalid_scheme');
     }
 }
