@@ -23,12 +23,14 @@ class ListReportTemplates extends ListRecords
                         $company = auth()->user()->companies()->first();
                     }
 
-                    app(ReportTemplateService::class)->createTemplate(
+                    $template = app(ReportTemplateService::class)->createTemplate(
                         $company,
                         $data['name'],
                         $data['template_type'],
                         []
                     );
+
+                    $this->notify('success', trans('ip.template_created'));
                 })
                 ->modalWidth('full'),
         ];

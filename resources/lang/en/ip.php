@@ -410,6 +410,7 @@ return [
     'tax_rates'                                    => 'Tax Rates',
     'tax_total'                                    => 'Tax Total',
     'taxes'                                        => 'Taxes',
+    'template_created'                             => 'Template created successfully',
     'terms'                                        => 'Terms',
     'terms_and_conditions'                         => 'Terms and Conditions',
     'text'                                         => 'Text',

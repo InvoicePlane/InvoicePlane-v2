@@ -176,10 +176,17 @@ class ReportTemplateService
      */
     public function deleteTemplate(ReportTemplate $template): void
     {
-        $this->fileRepository->delete(
+        $deleted = $this->fileRepository->delete(
             $template->company_id,
             $template->slug
         );
+
+        if (!$deleted) {
+            \Log::warning('Failed to delete report template file', [
+                'company_id' => $template->company_id,
+                'slug'       => $template->slug,
+            ]);
+        }
 
         $template->delete();
     }
