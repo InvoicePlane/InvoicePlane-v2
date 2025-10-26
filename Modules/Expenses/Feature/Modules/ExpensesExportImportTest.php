@@ -105,12 +105,13 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportExcel')
+            ->mountAction('exportCsv')
             ->callMountedAction();
         $response = $component->lastResponse;
 
         /* Assert */
         $this->assertEquals(200, $response->status());
+        $this->assertMatchesRegularExpression('/^text\/csv\b/i', $response->headers->get('content-type'));
         $content = $response->getContent();
         $this->assertStringContainsString('Üxpense', $content);
         $this->assertStringContainsString('"Test"', $content);
