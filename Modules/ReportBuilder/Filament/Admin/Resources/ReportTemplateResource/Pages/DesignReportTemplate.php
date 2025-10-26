@@ -36,9 +36,11 @@ class DesignReportTemplate extends Page
         $service = app(ReportTemplateService::class);
         $blockDTOs = $service->loadBlocks($this->record);
         
-        $this->blocks = array_map(function ($blockDTO) {
-            return BlockTransformer::toArray($blockDTO);
-        }, $blockDTOs);
+        $this->blocks = [];
+        foreach ($blockDTOs as $blockDTO) {
+            $blockArray = BlockTransformer::toArray($blockDTO);
+            $this->blocks[$blockArray['id']] = $blockArray;
+        }
     }
 
     #[On('drag-block')]
