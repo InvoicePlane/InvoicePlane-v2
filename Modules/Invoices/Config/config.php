@@ -153,81 +153,8 @@ return [
             'enable_webhooks' => env('PEPPOL_ENABLE_WEBHOOKS', false),
             'enable_participant_search' => env('PEPPOL_ENABLE_PARTICIPANT_SEARCH', true),
             'enable_health_checks' => env('PEPPOL_ENABLE_HEALTH_CHECKS', true),
-            'auto_retry_failed' => env('PEPPOL_AUTO_RETRY', true),
-            'max_retries' => env('PEPPOL_MAX_RETRIES', 5),
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | Country to Scheme Mapping
-        |--------------------------------------------------------------------------
-        |
-        | Mapping of country codes to default Peppol endpoint schemes.
-        | Used for auto-suggesting the appropriate scheme when onboarding customers.
-        |
-        */
-        'country_scheme_mapping' => [
-            'BE' => 'BE:CBE',
-            'DE' => 'DE:VAT',
-            'FR' => 'FR:SIRENE',
-            'IT' => 'IT:VAT',
-            'ES' => 'ES:VAT',
-            'NL' => 'NL:KVK',
-            'NO' => 'NO:ORGNR',
-            'DK' => 'DK:CVR',
-            'SE' => 'SE:ORGNR',
-            'FI' => 'FI:OVT',
-            'AT' => 'AT:VAT',
-            'CH' => 'CH:UIDB',
-            'GB' => 'GB:COH',
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | Retry Policy
-        |--------------------------------------------------------------------------
-        |
-        | Configuration for automatic retries of failed transmissions.
-        | Uses exponential backoff strategy.
-        |
-        */
-        'retry' => [
-            'max_attempts' => env('PEPPOL_MAX_RETRY_ATTEMPTS', 5),
-            'backoff_delays' => [60, 300, 1800, 7200, 21600], // 1min, 5min, 30min, 2h, 6h
-            'retry_transient_errors' => true,
-            'retry_unknown_errors' => true,
-            'retry_permanent_errors' => false,
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | Storage Configuration
-        |--------------------------------------------------------------------------
-        |
-        | Configuration for storing Peppol artifacts (XML, PDF).
-        |
-        */
-        'storage' => [
-            'disk' => env('PEPPOL_STORAGE_DISK', 'local'),
-            'path_template' => 'peppol/{integration_id}/{year}/{month}/{transmission_id}',
-            'retention_days' => env('PEPPOL_RETENTION_DAYS', 2555), // 7 years default
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | Monitoring & Alerting
-        |--------------------------------------------------------------------------
-        |
-        | Thresholds and settings for monitoring Peppol operations.
-        |
-        */
-        'monitoring' => [
-            'alert_on_dead_transmission' => true,
-            'dead_transmission_threshold' => 10, // Alert if > 10 dead in 1 hour
-            'alert_on_auth_failure' => true,
-            'status_check_interval' => 15, // minutes
-            'reconciliation_interval' => 60, // minutes
-            'old_transmission_threshold' => 168, // hours (7 days)
+            'auto_retry_failed' => env('PEPPOL_AUTO_RETRY', false),
+            'max_retries' => env('PEPPOL_MAX_RETRIES', 3),
         ],
     ],
 ];
