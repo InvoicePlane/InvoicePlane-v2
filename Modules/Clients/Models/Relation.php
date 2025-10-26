@@ -17,6 +17,8 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Enums\PeppolValidationStatus;
+use Modules\Invoices\Models\CustomerPeppolValidationHistory;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
@@ -37,8 +39,12 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $coc_number
  * @property string|null          $vat_number
  * @property string|null          $peppol_id
+ * @property string|null          $peppol_scheme
  * @property string|null          $peppol_format
  * @property bool                 $enable_e_invoicing
+ * @property PeppolValidationStatus|null $peppol_validation_status
+ * @property string|null          $peppol_validation_message
+ * @property Carbon|null          $peppol_validated_at
  * @property Carbon               $registered_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
@@ -68,6 +74,8 @@ class Relation extends Model
         'relation_type'      => RelationType::class,
         'relation_status'    => RelationStatus::class,
         'enable_e_invoicing' => 'boolean',
+        'peppol_validation_status' => PeppolValidationStatus::class,
+        'peppol_validated_at' => 'datetime',
     ];
 
     protected $guarded = [];
@@ -161,9 +169,24 @@ class Relation extends Model
         return $this->hasMany(Task::class, 'customer_id');
     }
 
+    /**
+     * Define a one-to-many relationship to User models.
+     *
+     * @return HasMany The has-many relationship for User models.
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * Get the Peppol validation history records for this relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany Collection of CustomerPeppolValidationHistory models related by `customer_id`.
+     */
+    public function peppolValidationHistory(): HasMany
+    {
+        return $this->hasMany(CustomerPeppolValidationHistory::class, 'customer_id');
     }
 
     /*
@@ -180,6 +203,19 @@ class Relation extends Model
     {
         return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
     }*/
+    
+    /**
+     * Determines whether the relation's Peppol ID has been validated and e-invoicing is enabled.
+     *
+     * @return bool `true` if e-invoicing is enabled, the Peppol validation status is `PeppolValidationStatus::VALID`, and `peppol_id` is not null; `false` otherwise.
+     */
+    public function hasPeppolIdValidated(): bool
+    {
+        return $this->enable_e_invoicing 
+            && $this->peppol_validation_status === PeppolValidationStatus::VALID
+            && $this->peppol_id !== null;
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | Scopes
