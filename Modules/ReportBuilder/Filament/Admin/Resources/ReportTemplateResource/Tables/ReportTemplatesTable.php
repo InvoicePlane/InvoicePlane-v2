@@ -11,6 +11,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Modules\ReportBuilder\Models\ReportTemplate;
 use Modules\ReportBuilder\Services\ReportTemplateService;
@@ -63,12 +64,9 @@ class ReportTemplatesTable
                         'quote' => 'Quote',
                         'estimate' => 'Estimate',
                     ]),
-                SelectFilter::make('is_active')
+                TernaryFilter::make('is_active')
                     ->label('Active')
-                    ->options([
-                        '1' => 'Active',
-                        '0' => 'Inactive',
-                    ]),
+                    ->nullable(),
             ])
             ->recordActions([
                 ActionGroup::make([
@@ -103,6 +101,7 @@ class ReportTemplatesTable
                         })
                         ->visible(fn (ReportTemplate $record) => $record->isCloneable()),
                     DeleteAction::make('delete')
+                        ->requiresConfirmation()
                         ->icon(Heroicon::OutlinedTrash)
                         ->action(function (ReportTemplate $record) {
                             app(ReportTemplateService::class)->deleteTemplate($record);

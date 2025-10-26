@@ -59,7 +59,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_prevents_editing_system_blocks(): void
+    public function it_identifies_system_templates(): void
     {
         /* Arrange */
         $company = Company::factory()->create();

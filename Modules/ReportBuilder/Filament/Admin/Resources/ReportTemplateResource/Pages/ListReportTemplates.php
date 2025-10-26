@@ -17,9 +17,6 @@ class ListReportTemplates extends ListRecords
     {
         return [
             CreateAction::make()
-                ->mutateDataUsing(function (array $data) {
-                    return $data;
-                })
                 ->action(function (array $data) {
                     $company = Company::find(session('current_company_id'));
                     if (!$company) {

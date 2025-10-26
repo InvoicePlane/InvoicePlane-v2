@@ -27,6 +27,16 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
         $this->renderer = app(ReportRenderer::class);
     }
 
+    protected function createCompanyContext(): Company
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create();
+        $user->companies()->attach($company);
+        session(['current_company_id' => $company->id]);
+        
+        return $company;
+    }
+
     #[Test]
     #[Group('rendering')]
     /**
@@ -42,10 +52,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
     public function it_renders_template_to_html_with_correct_block_order(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $blocks = [
             [
@@ -100,10 +107,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
     public function it_renders_template_to_pdf(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $blocks = [
             [
@@ -145,10 +149,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
     public function it_handles_missing_blocks_with_error_log(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $blocks = [
             [
