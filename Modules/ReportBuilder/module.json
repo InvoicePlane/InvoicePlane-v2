@@ -1,0 +1,11 @@
+{
+    "name": "ReportBuilder",
+    "alias": "reportbuilder",
+    "description": "Report template builder and renderer",
+    "keywords": ["report", "template", "builder", "invoice", "quote"],
+    "priority": 0,
+    "providers": [
+        "Modules\\ReportBuilder\\Providers\\ReportBuilderServiceProvider"
+    ],
+    "files": []
+}
