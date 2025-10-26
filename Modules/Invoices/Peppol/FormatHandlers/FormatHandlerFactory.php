@@ -125,29 +125,12 @@ class FormatHandlerFactory
     }
 
     /**
-     * Return the registry mapping format string values to their handler class names.
+     * Get all registered handlers.
      *
-     * @return array<string, class-string<InvoiceFormatHandlerInterface>> Array where keys are format values and values are handler class-strings implementing InvoiceFormatHandlerInterface.
+     * @return array<string, class-string<InvoiceFormatHandlerInterface>>
      */
     public static function getRegisteredHandlers(): array
     {
         return self::$handlers;
-    }
-
-    /**
-     * Create an invoice format handler from a format string.
-     *
-     * @param string $formatString Format identifier, e.g. 'peppol_bis_3.0'.
-     * @return InvoiceFormatHandlerInterface The handler instance for the parsed format.
-     * @throws \RuntimeException If the provided format string is not a valid PeppolDocumentFormat.
-     */
-    public static function make(string $formatString): InvoiceFormatHandlerInterface
-    {
-        try {
-            $format = PeppolDocumentFormat::from($formatString);
-            return self::create($format);
-        } catch (\ValueError $e) {
-            throw new \RuntimeException("Invalid format: {$formatString}");
-        }
     }
 }
