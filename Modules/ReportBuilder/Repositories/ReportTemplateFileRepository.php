@@ -58,7 +58,9 @@ class ReportTemplateFileRepository
 
         $json = Storage::disk('report_templates')->get($path);
 
-        return json_decode($json, true) ?? [];
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     /**
