@@ -108,12 +108,11 @@ class ReportTemplateFileRepository
     {
         $directory = (string) $companyId;
 
-        if ( ! Storage::disk('report_templates')->exists($directory)) {
+        if ( ! Storage::disk('report_templates')->directoryExists($directory)) {
             return [];
         }
 
         $files = Storage::disk('report_templates')->files($directory);
-
         return array_map(function ($file) {
             return pathinfo($file, PATHINFO_FILENAME);
         }, $files);
