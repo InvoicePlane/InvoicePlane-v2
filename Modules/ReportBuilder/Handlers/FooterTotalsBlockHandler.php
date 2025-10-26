@@ -6,6 +6,7 @@ use Modules\Core\Models\Company;
 use Modules\Invoices\Models\Invoice;
 use Modules\ReportBuilder\DTOs\BlockDTO;
 use Modules\ReportBuilder\Interfaces\BlockHandlerInterface;
+use Modules\ReportBuilder\Traits\FormatsCurrency;
 
 /**
  * Handler for rendering invoice totals block.
@@ -24,6 +25,7 @@ use Modules\ReportBuilder\Interfaces\BlockHandlerInterface;
  */
 class FooterTotalsBlockHandler implements BlockHandlerInterface
 {
+    use FormatsCurrency;
     public function render(BlockDTO $block, Invoice $invoice, Company $company): string
     {
         $config = $block->getConfig();
@@ -60,12 +62,5 @@ class FooterTotalsBlockHandler implements BlockHandlerInterface
         $html .= '</div>';
 
         return $html;
-    }
-
-    private function formatCurrency(float $amount, ?string $currency = null): string
-    {
-        $currency = $currency ?? 'USD';
-
-        return $currency . ' ' . number_format($amount, 2, '.', ',');
     }
 }

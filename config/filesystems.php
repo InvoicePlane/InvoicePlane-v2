@@ -48,7 +48,6 @@ return [
         'report_templates' => [
             'driver'     => 'local',
             'root'       => storage_path('app/report_templates'),
-            'url'        => env('APP_URL') . '/storage/report_templates',
             'visibility' => 'private',
             'throw'      => false,
             'report'     => false,

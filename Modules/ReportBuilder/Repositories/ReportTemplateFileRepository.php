@@ -35,7 +35,7 @@ class ReportTemplateFileRepository
     public function save(int $companyId, string $templateSlug, array $blocksArray): void
     {
         $path = $this->getTemplatePath($companyId, $templateSlug);
-        $json = json_encode($blocksArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $json = json_encode($blocksArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 
         Storage::disk('report_templates')->put($path, $json);
     }
@@ -58,7 +58,11 @@ class ReportTemplateFileRepository
 
         $json = Storage::disk('report_templates')->get($path);
 
-        $decoded = json_decode($json, true);
+        try {
+            $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            return [];
+        }
 
         return is_array($decoded) ? $decoded : [];
     }

@@ -393,6 +393,7 @@ return [
     'submit'                                       => 'Submit',
     'subtotal'                                     => 'Subtotal',
     'success'                                      => 'Success',
+    'summary'                                      => 'Summary',
     'sumex'                                        => 'Sumex',
     'sumex_information'                            => 'Sumex Information',
     'sumex_settings'                               => 'Sumex Settings',

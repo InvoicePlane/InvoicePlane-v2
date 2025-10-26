@@ -143,7 +143,7 @@ class DesignReportTemplate extends Page
             return;
         }
 
-        $this->blocks[$blockId]['config'] = array_merge(
+        $this->blocks[$blockId]['config'] = array_replace_recursive(
             $this->blocks[$blockId]['config'] ?? [],
             $config
         );

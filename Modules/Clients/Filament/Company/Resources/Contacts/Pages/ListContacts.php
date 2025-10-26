@@ -19,9 +19,6 @@ class ListContacts extends ListRecords
     {
         return [
             CreateAction::make()
-                ->mutateDataUsing(function (array $data) {
-                    return $data;
-                })
                 ->action(function (array $data) {
                     app(ContactService::class)->createContact($data);
                 })
