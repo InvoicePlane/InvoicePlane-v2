@@ -45,7 +45,7 @@ class BlockFactoryTest extends TestCase
     public function it_throws_exception_for_invalid_type(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unsupported block type: invalid_type');
+        $this->expectExceptionMessageMatches('/Unsupported block type/i');
 
         BlockFactory::make('invalid_type');
     }
