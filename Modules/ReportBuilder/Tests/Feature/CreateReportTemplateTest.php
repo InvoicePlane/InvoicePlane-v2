@@ -26,6 +26,16 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
         $this->service = app(ReportTemplateService::class);
     }
 
+    protected function createCompanyContext(): Company
+    {
+        $company = Company::factory()->create();
+        $user = User::factory()->create();
+        $user->companies()->attach($company);
+        session(['current_company_id' => $company->id]);
+        
+        return $company;
+    }
+
     #[Test]
     #[Group('crud')]
     /**
@@ -51,10 +61,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     public function it_creates_report_template_with_valid_blocks(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $blocks = [
             [
@@ -97,10 +104,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     public function it_persists_blocks_to_filesystem(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $blocks = [
             [
@@ -117,7 +121,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
         ];
 
         /* Act */
-        $template = $this->service->createTemplate(
+        $_template = $this->service->createTemplate(
             $company,
             'Test Template',
             'invoice',
@@ -159,10 +163,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     public function it_rejects_invalid_block_types(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company);
-        session(['current_company_id' => $company->id]);
+        $company = $this->createCompanyContext();
 
         $invalidBlocks = [
             [
@@ -190,11 +191,8 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     public function it_respects_company_tenancy(): void
     {
         /* Arrange */
-        $company1 = Company::factory()->create();
+        $company1 = $this->createCompanyContext();
         $company2 = Company::factory()->create();
-        $user = User::factory()->create();
-        $user->companies()->attach($company1);
-        session(['current_company_id' => $company1->id]);
 
         $blocks = [
             [
