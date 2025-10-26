@@ -12,6 +12,61 @@ This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with
 - Tests for each module are located in:  
   `/Modules/(ModuleName)/Tests`
 
+## Tech Stack
+
+- **Backend:** Laravel 12+ (PHP 8.2+)
+- **UI Framework:** Filament 4.0
+- **Frontend:** Livewire, Tailwind CSS
+- **Testing:** PHPUnit 11+
+- **Code Quality:** Laravel Pint (PSR-12), PHPStan, Rector
+- **Module System:** nwidart/laravel-modules
+- **Permissions:** spatie/laravel-permission
+- **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
+
+## Development Commands
+
+### Testing
+```bash
+# Run all tests
+php artisan test
+
+# Run tests with coverage
+php artisan test --coverage
+
+# Run specific test suite
+php artisan test --testsuite=Unit
+php artisan test --testsuite=Feature
+```
+
+### Code Quality
+```bash
+# Format code with Laravel Pint
+vendor/bin/pint
+
+# Run static analysis
+vendor/bin/phpstan analyse
+
+# Run Rector for automated refactoring
+vendor/bin/rector process --dry-run
+```
+
+### Setup & Installation
+```bash
+# See .github/INSTALLATION.md for detailed setup
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+```
+
+## Related Documentation
+
+- **Installation:** `.github/INSTALLATION.md`
+- **Contributing:** `.github/CONTRIBUTING.md`
+- **Seeding:** `.github/SEEDING.md`
+- **Testing:** See test examples in `Modules/*/Tests/`
+- **Commit Conventions:** `.github/git-commit-instructions.md`
+
 ## Guidelines
 
 - **SOLID Principles** must be followed at all times.
