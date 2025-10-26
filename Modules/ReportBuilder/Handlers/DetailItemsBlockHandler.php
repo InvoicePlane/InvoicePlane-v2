@@ -55,7 +55,7 @@ class DetailItemsBlockHandler implements BlockHandlerInterface
 
         foreach ($invoice->invoice_items as $item) {
             $html .= '<tr>';
-            $html .= '<td>' . htmlspecialchars($item->name ?? '') . '</td>';
+            $html .= '<td>' . htmlspecialchars($item->item_name ?? '') . '</td>';
 
             if (!empty($config['show_description'])) {
                 $html .= '<td>' . htmlspecialchars($item->description ?? '') . '</td>';

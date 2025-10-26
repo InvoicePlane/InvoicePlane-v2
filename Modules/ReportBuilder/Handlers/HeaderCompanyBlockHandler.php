@@ -35,18 +35,24 @@ class HeaderCompanyBlockHandler implements BlockHandlerInterface
             $html .= '<p>VAT: ' . htmlspecialchars($company->vat_number) . '</p>';
         }
 
-        if (!empty($config['show_phone']) && !empty($company->phone)) {
-            $html .= '<p>Phone: ' . htmlspecialchars($company->phone) . '</p>';
+        if (!empty($config['show_phone'])) {
+            $communication = $company->communications->where('type', 'phone')->first();
+            if ($communication) {
+                $html .= '<p>Phone: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+            }
         }
 
-        if (!empty($config['show_email']) && !empty($company->email)) {
-            $html .= '<p>Email: ' . htmlspecialchars($company->email) . '</p>';
+        if (!empty($config['show_email'])) {
+            $communication = $company->communications->where('type', 'email')->first();
+            if ($communication) {
+                $html .= '<p>Email: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+            }
         }
 
         if (!empty($config['show_address'])) {
             $address = $company->addresses->first();
             if ($address) {
-                $html .= '<p>' . htmlspecialchars($address->street ?? '') . '</p>';
+                $html .= '<p>' . htmlspecialchars($address->address_1 ?? '') . '</p>';
                 $html .= '<p>' . htmlspecialchars($address->city ?? '') . ' ' . htmlspecialchars($address->postal_code ?? '') . '</p>';
             }
         }

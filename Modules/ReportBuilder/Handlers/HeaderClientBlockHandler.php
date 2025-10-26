@@ -32,20 +32,26 @@ class HeaderClientBlockHandler implements BlockHandlerInterface
         }
 
         $html .= '<div class="client-header">';
-        $html .= '<h3>' . htmlspecialchars($customer->name ?? '') . '</h3>';
+        $html .= '<h3>' . htmlspecialchars($customer->company_name ?? '') . '</h3>';
 
-        if (!empty($config['show_email']) && !empty($customer->email)) {
-            $html .= '<p>Email: ' . htmlspecialchars($customer->email) . '</p>';
+        if (!empty($config['show_email'])) {
+            $communication = $customer->communications->where('type', 'email')->first();
+            if ($communication) {
+                $html .= '<p>Email: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+            }
         }
 
-        if (!empty($config['show_phone']) && !empty($customer->phone)) {
-            $html .= '<p>Phone: ' . htmlspecialchars($customer->phone) . '</p>';
+        if (!empty($config['show_phone'])) {
+            $communication = $customer->communications->where('type', 'phone')->first();
+            if ($communication) {
+                $html .= '<p>Phone: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+            }
         }
 
         if (!empty($config['show_address'])) {
             $address = $customer->addresses->first();
             if ($address) {
-                $html .= '<p>' . htmlspecialchars($address->street ?? '') . '</p>';
+                $html .= '<p>' . htmlspecialchars($address->address_1 ?? '') . '</p>';
                 $html .= '<p>' . htmlspecialchars($address->city ?? '') . ' ' . htmlspecialchars($address->postal_code ?? '') . '</p>';
                 if (!empty($address->country)) {
                     $html .= '<p>' . htmlspecialchars($address->country) . '</p>';
