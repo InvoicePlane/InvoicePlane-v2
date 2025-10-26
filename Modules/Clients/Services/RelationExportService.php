@@ -13,7 +13,10 @@ class RelationExportService
 {
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
+        $companyId = session('current_company_id');
+        if (empty($companyId)) {
+            throw new \RuntimeException('No active company context (current_company_id).');
+        }
         $relations   = Relation::query()->where('company_id', $companyId)->get();
         $fileName    = 'relations-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $version     = config('ip.export_version', 2);
