@@ -232,11 +232,24 @@ class ReportTemplateService
                 throw new InvalidArgumentException("Block at index {$index} position must have x, y, width, and height");
             }
 
-            $positionDTO = new GridPositionDTO();
-            $positionDTO->setX($position['x'])
-                ->setY($position['y'])
-                ->setWidth($position['width'])
-                ->setHeight($position['height']);
+            foreach (['x', 'y', 'width', 'height'] as $k) {
+                if (!is_int($position[$k])) {
+                    throw new InvalidArgumentException("Block at index {$index} position '{$k}' must be int");
+                }
+            }
+            if ($position['width'] <= 0 || $position['height'] <= 0) {
+                throw new InvalidArgumentException("Block at index {$index} position width/height must be > 0");
+            }
+            if (!array_key_exists('config', $block) || !is_array($block['config'])) {
+                throw new InvalidArgumentException("Block at index {$index} must have a 'config' array");
+            }
+
+            $positionDTO = new GridPositionDTO(
+                $position['x'],
+                $position['y'],
+                $position['width'],
+                $position['height']
+            );
 
             if (!$this->gridSnapper->validate($positionDTO)) {
                 throw new InvalidArgumentException("Block at index {$index} has invalid position");
@@ -366,8 +379,7 @@ class ReportTemplateService
         string $label,
         string $dataSource
     ): BlockDTO {
-        $position = new GridPositionDTO();
-        $position->setX($x)->setY($y)->setWidth($width)->setHeight($height);
+        $position = new GridPositionDTO($x, $y, $width, $height);
 
         $block = new BlockDTO();
         $block->setId($id)

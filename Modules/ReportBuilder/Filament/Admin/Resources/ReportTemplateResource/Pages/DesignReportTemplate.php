@@ -51,11 +51,12 @@ class DesignReportTemplate extends Page
         }
 
         $gridSnapper = app(GridSnapperService::class);
-        $positionDTO = new GridPositionDTO();
-        $positionDTO->setX($position['x'] ?? 0)
-            ->setY($position['y'] ?? 0)
-            ->setWidth($position['width'] ?? 1)
-            ->setHeight($position['height'] ?? 1);
+        $positionDTO = new GridPositionDTO(
+            $position['x'] ?? 0,
+            $position['y'] ?? 0,
+            $position['width'] ?? 1,
+            $position['height'] ?? 1
+        );
 
         if (!$gridSnapper->validate($positionDTO)) {
             return;
@@ -76,8 +77,7 @@ class DesignReportTemplate extends Page
     {
         $blockId = 'block_' . $blockType . '_' . Str::random(8);
         
-        $position = new GridPositionDTO();
-        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
+        $position = new GridPositionDTO(0, 0, 6, 4);
         
         $block = new BlockDTO();
         $block->setId($blockId)
@@ -105,11 +105,12 @@ class DesignReportTemplate extends Page
         if ($originalBlock['isCloned'] === false && $originalBlock['isCloneable'] === true) {
             $newBlockId = 'block_' . $originalBlock['type'] . '_' . Str::random(8);
             
-            $position = new GridPositionDTO();
-            $position->setX($originalBlock['position']['x'] + 1)
-                ->setY($originalBlock['position']['y'] + 1)
-                ->setWidth($originalBlock['position']['width'])
-                ->setHeight($originalBlock['position']['height']);
+            $position = new GridPositionDTO(
+                $originalBlock['position']['x'] + 1,
+                $originalBlock['position']['y'] + 1,
+                $originalBlock['position']['width'],
+                $originalBlock['position']['height']
+            );
             
             $clonedBlock = new BlockDTO();
             $clonedBlock->setId($newBlockId)
