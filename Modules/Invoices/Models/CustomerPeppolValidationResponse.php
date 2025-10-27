@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $validation_history_id
- * @property string $response_key
- * @property string $response_value
+ * @property int                             $id
+ * @property int                             $validation_history_id
+ * @property string                          $response_key
+ * @property string                          $response_value
  * @property CustomerPeppolValidationHistory $validationHistory
  */
 class CustomerPeppolValidationResponse extends Model
@@ -23,7 +23,7 @@ class CustomerPeppolValidationResponse extends Model
     /**
      * Defines the BelongsTo relationship to a CustomerPeppolValidationHistory record.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo Relationship to the related Modules\Invoices\Models\CustomerPeppolValidationHistory model via `validation_history_id`.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo relationship to the related Modules\Invoices\Models\CustomerPeppolValidationHistory model via `validation_history_id`
      */
     public function validationHistory(): BelongsTo
     {

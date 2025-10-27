@@ -15,8 +15,6 @@ use Tests\TestCase;
  *
  * Tests the Peppol documents client using HTTP fakes.
  * Verifies proper API integration and error handling.
- *
- * @package Modules\Invoices\Tests\Unit\Peppol\Clients
  */
 #[Group('peppol')]
 class DocumentsClientTest extends TestCase
@@ -29,9 +27,9 @@ class DocumentsClientTest extends TestCase
 
         Http::fake();
 
-        $apiClient = new ApiClient();
+        $apiClient        = new ApiClient();
         $exceptionHandler = new HttpClientExceptionHandler($apiClient);
-        
+
         $this->client = new DocumentsClient(
             $exceptionHandler,
             'test-api-key-12345',
@@ -45,21 +43,21 @@ class DocumentsClientTest extends TestCase
         Http::fake([
             'https://api.e-invoice.be/api/documents' => Http::response([
                 'document_id' => 'DOC-789',
-                'status' => 'submitted',
-                'created_at' => '2024-01-15T10:00:00Z',
+                'status'      => 'submitted',
+                'created_at'  => '2024-01-15T10:00:00Z',
             ], 201),
         ]);
 
         $documentData = [
             'invoice_number' => 'INV-001',
-            'customer' => ['name' => 'Test Customer'],
+            'customer'       => ['name' => 'Test Customer'],
         ];
 
         $response = $this->client->submitDocument($documentData);
 
         $this->assertTrue($response->successful());
         $this->assertEquals('DOC-789', $response->json('document_id'));
-        
+
         Http::assertSent(function ($request) use ($documentData) {
             return $request->url() === 'https://api.e-invoice.be/api/documents' &&
                    $request->method() === 'POST' &&
@@ -73,8 +71,8 @@ class DocumentsClientTest extends TestCase
     {
         Http::fake([
             'https://api.e-invoice.be/api/documents/DOC-123' => Http::response([
-                'document_id' => 'DOC-123',
-                'status' => 'delivered',
+                'document_id'    => 'DOC-123',
+                'status'         => 'delivered',
                 'invoice_number' => 'INV-001',
             ], 200),
         ]);
@@ -83,7 +81,7 @@ class DocumentsClientTest extends TestCase
 
         $this->assertTrue($response->successful());
         $this->assertEquals('DOC-123', $response->json('document_id'));
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-123' &&
                    $request->method() === 'GET';
@@ -95,7 +93,7 @@ class DocumentsClientTest extends TestCase
     {
         Http::fake([
             'https://api.e-invoice.be/api/documents/DOC-456/status' => Http::response([
-                'status' => 'delivered',
+                'status'       => 'delivered',
                 'delivered_at' => '2024-01-15T12:30:00Z',
             ], 200),
         ]);
@@ -104,7 +102,7 @@ class DocumentsClientTest extends TestCase
 
         $this->assertTrue($response->successful());
         $this->assertEquals('delivered', $response->json('status'));
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-456/status';
         });
@@ -123,12 +121,12 @@ class DocumentsClientTest extends TestCase
             ], 200),
         ]);
 
-        $filters = ['status' => 'submitted', 'limit' => 10];
+        $filters  = ['status' => 'submitted', 'limit' => 10];
         $response = $this->client->listDocuments($filters);
 
         $this->assertTrue($response->successful());
         $this->assertCount(2, $response->json('documents'));
-        
+
         Http::assertSent(function ($request) {
             return str_contains($request->url(), 'status=submitted') &&
                    str_contains($request->url(), 'limit=10');
@@ -146,7 +144,7 @@ class DocumentsClientTest extends TestCase
 
         $this->assertTrue($response->successful());
         $this->assertEquals(204, $response->status());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-999' &&
                    $request->method() === 'DELETE';
@@ -190,7 +188,7 @@ class DocumentsClientTest extends TestCase
     {
         Http::fake([
             'https://api.e-invoice.be/api/documents' => Http::response([
-                'error' => 'Validation failed',
+                'error'   => 'Validation failed',
                 'details' => ['invoice_number' => ['required']],
             ], 422),
         ]);

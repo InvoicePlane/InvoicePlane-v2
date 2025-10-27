@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Tables;
 
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -139,7 +140,7 @@ class InvoicesTable
                             try {
                                 $action = app(SendInvoiceToPeppolAction::class);
                                 $result = $action->execute($record, $data);
-                                
+
                                 \Filament\Notifications\Notification::make()
                                     ->title(trans('ip.peppol_success_title'))
                                     ->body(trans('ip.peppol_success_body', [
@@ -147,7 +148,7 @@ class InvoicesTable
                                     ]))
                                     ->success()
                                     ->send();
-                            } catch (\Exception $e) {
+                            } catch (Exception $e) {
                                 \Filament\Notifications\Notification::make()
                                     ->title(trans('ip.peppol_error_title'))
                                     ->body(trans('ip.peppol_error_body', ['error' => $e->getMessage()]))

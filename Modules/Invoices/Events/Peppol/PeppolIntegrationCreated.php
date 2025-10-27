@@ -14,15 +14,15 @@ class PeppolIntegrationCreated extends PeppolEvent
      * Sets the event's PeppolIntegration instance and initializes the base event data
      * with the integration's id, provider name, and company id.
      *
-     * @param PeppolIntegration $integration The created Peppol integration.
+     * @param PeppolIntegration $integration the created Peppol integration
      */
     public function __construct(PeppolIntegration $integration)
     {
         $this->integration = $integration;
         parent::__construct([
             'integration_id' => $integration->id,
-            'provider_name' => $integration->provider_name,
-            'company_id' => $integration->company_id,
+            'provider_name'  => $integration->provider_name,
+            'company_id'     => $integration->company_id,
         ]);
     }
 

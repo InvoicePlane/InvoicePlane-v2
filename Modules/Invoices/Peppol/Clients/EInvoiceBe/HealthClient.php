@@ -12,8 +12,6 @@ use Modules\Invoices\Http\RequestMethod;
  * retrieve system status information. Useful for monitoring and alerting.
  *
  * API Documentation: https://api.e-invoice.be/docs#tag/health
- *
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class HealthClient extends EInvoiceBeClient
 {
@@ -35,7 +33,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function ping(): Response
     {
-        $url = $this->buildUrl('/health/ping');
+        $url     = $this->buildUrl('/health/ping');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -75,7 +73,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function getStatus(): Response
     {
-        $url = $this->buildUrl('/health/status');
+        $url     = $this->buildUrl('/health/status');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -109,7 +107,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function getMetrics(): Response
     {
-        $url = $this->buildUrl('/health/metrics');
+        $url     = $this->buildUrl('/health/metrics');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -137,7 +135,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function checkPeppolConnectivity(): Response
     {
-        $url = $this->buildUrl('/health/peppol');
+        $url     = $this->buildUrl('/health/peppol');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -171,7 +169,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function getVersion(): Response
     {
-        $url = $this->buildUrl('/health/version');
+        $url     = $this->buildUrl('/health/version');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -198,7 +196,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function checkReadiness(): Response
     {
-        $url = $this->buildUrl('/health/ready');
+        $url     = $this->buildUrl('/health/ready');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -220,7 +218,7 @@ class HealthClient extends EInvoiceBeClient
      */
     public function checkLiveness(): Response
     {
-        $url = $this->buildUrl('/health/live');
+        $url     = $this->buildUrl('/health/live');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);

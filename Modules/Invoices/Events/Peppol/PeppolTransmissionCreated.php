@@ -15,19 +15,19 @@ class PeppolTransmissionCreated extends PeppolEvent
      * with the transmission's identifiers and metadata (transmission_id, invoice_id,
      * customer_id, integration_id, format, status).
      *
-     * @param PeppolTransmission $transmission The PeppolTransmission instance associated with this event.
+     * @param PeppolTransmission $transmission the PeppolTransmission instance associated with this event
      */
     public function __construct(PeppolTransmission $transmission)
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'customer_id' => $transmission->customer_id,
-            'integration_id' => $transmission->integration_id,
-            'format' => $transmission->format,
-            'status' => $transmission->status,
+            'invoice_id'      => $transmission->invoice_id,
+            'customer_id'     => $transmission->customer_id,
+            'integration_id'  => $transmission->integration_id,
+            'format'          => $transmission->format,
+            'status'          => $transmission->status,
         ]);
     }
 

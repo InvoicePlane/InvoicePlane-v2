@@ -3,33 +3,43 @@
 namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Peppol\FormatHandlers\{
-    FacturaeHandler,
-    FacturXHandler,
-    ZugferdHandler,
-    OioublHandler,
-    EhfHandler
-};
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
+use Modules\Invoices\Peppol\FormatHandlers\{
+    EhfHandler,
+    FacturXHandler,
+    FacturaeHandler,
+    OioublHandler,
+    ZugferdHandler
+};
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 use Tests\TestCase;
 
 /**
  * FormatHandlersTest - Comprehensive tests for all format handlers.
- *
- * @package Modules\Invoices\Tests\Unit\Peppol\FormatHandlers
  */
 #[Group('peppol')]
 class FormatHandlersTest extends TestCase
 {
+    public static function handlerProvider(): array
+    {
+        return [
+            'Facturae (Spain)'          => [FacturaeHandler::class, PeppolDocumentFormat::FACTURAE_32],
+            'Factur-X (France/Germany)' => [FacturXHandler::class, PeppolDocumentFormat::FACTURX_10],
+            'ZUGFeRD 2.0 (Germany)'     => [ZugferdHandler::class, PeppolDocumentFormat::ZUGFERD_20],
+            'OIOUBL (Denmark)'          => [OioublHandler::class, PeppolDocumentFormat::OIOUBL],
+            'EHF (Norway)'              => [EhfHandler::class, PeppolDocumentFormat::EHF],
+        ];
+    }
+
     #[Test]
     #[DataProvider('handlerProvider')]
     public function it_returns_correct_format($handlerClass, $expectedFormat): void
     {
         $handler = new $handlerClass();
-        
+
         $this->assertEquals($expectedFormat, $handler->getFormat());
     }
 
@@ -37,9 +47,9 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_returns_correct_mime_type($handlerClass): void
     {
-        $handler = new $handlerClass();
+        $handler  = new $handlerClass();
         $mimeType = $handler->getMimeType();
-        
+
         $this->assertContains($mimeType, ['application/xml', 'application/pdf']);
     }
 
@@ -47,9 +57,9 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_returns_correct_file_extension($handlerClass): void
     {
-        $handler = new $handlerClass();
+        $handler   = new $handlerClass();
         $extension = $handler->getFileExtension();
-        
+
         $this->assertContains($extension, ['xml', 'pdf']);
     }
 
@@ -83,13 +93,13 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_validates_missing_customer($handlerClass): void
     {
-        $handler = new $handlerClass();
-        $invoice = new Invoice();
-        $invoice->customer = null;
+        $handler                 = new $handlerClass();
+        $invoice                 = new Invoice();
+        $invoice->customer       = null;
         $invoice->invoice_number = 'TEST-001';
-        $invoice->invoiced_at = now();
+        $invoice->invoiced_at    = now();
         $invoice->invoice_due_at = now()->addDays(30);
-        $invoice->invoiceItems = collect([]);
+        $invoice->invoiceItems   = collect([]);
 
         $errors = $handler->validate($invoice);
 
@@ -101,8 +111,8 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_validates_missing_invoice_number($handlerClass): void
     {
-        $handler = new $handlerClass();
-        $invoice = $this->createMockInvoice();
+        $handler                 = new $handlerClass();
+        $invoice                 = $this->createMockInvoice();
         $invoice->invoice_number = null;
 
         $errors = $handler->validate($invoice);
@@ -115,8 +125,8 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_validates_missing_items($handlerClass): void
     {
-        $handler = new $handlerClass();
-        $invoice = $this->createMockInvoice();
+        $handler               = new $handlerClass();
+        $invoice               = $this->createMockInvoice();
         $invoice->invoiceItems = collect([]);
 
         $errors = $handler->validate($invoice);
@@ -143,7 +153,7 @@ class FormatHandlersTest extends TestCase
     {
         $handler = new FacturaeHandler();
         $invoice = $this->createMockInvoice(['country_code' => 'ES']);
-        
+
         $this->assertTrue($handler->supports($invoice));
     }
 
@@ -195,7 +205,7 @@ class FormatHandlersTest extends TestCase
     {
         $handler = new OioublHandler();
         $invoice = $this->createMockInvoice(['country_code' => 'DK', 'peppol_id' => '12345678']);
-        
+
         $this->assertTrue($handler->supports($invoice));
     }
 
@@ -216,7 +226,7 @@ class FormatHandlersTest extends TestCase
     {
         $handler = new EhfHandler();
         $invoice = $this->createMockInvoice(['country_code' => 'NO', 'peppol_id' => '123456789']);
-        
+
         $this->assertTrue($handler->supports($invoice));
     }
 
@@ -224,7 +234,7 @@ class FormatHandlersTest extends TestCase
     public function ehf_handler_transforms_correctly(): void
     {
         config(['invoices.peppol.supplier.organization_number' => '987654321']);
-        
+
         $handler = new EhfHandler();
         $invoice = $this->createMockInvoice(['country_code' => 'NO', 'peppol_id' => '123456789']);
 
@@ -235,66 +245,56 @@ class FormatHandlersTest extends TestCase
         $this->assertArrayHasKey('accounting_customer_party', $data);
     }
 
-    public static function handlerProvider(): array
-    {
-        return [
-            'Facturae (Spain)' => [FacturaeHandler::class, PeppolDocumentFormat::FACTURAE_32],
-            'Factur-X (France/Germany)' => [FacturXHandler::class, PeppolDocumentFormat::FACTURX_10],
-            'ZUGFeRD 2.0 (Germany)' => [ZugferdHandler::class, PeppolDocumentFormat::ZUGFERD_20],
-            'OIOUBL (Denmark)' => [OioublHandler::class, PeppolDocumentFormat::OIOUBL],
-            'EHF (Norway)' => [EhfHandler::class, PeppolDocumentFormat::EHF],
-        ];
-    }
-
     /**
      * Create a mock invoice for testing.
      *
      * @param array<string, mixed> $customerData
+     *
      * @return Invoice
      */
     protected function createMockInvoice(array $customerData = []): Invoice
     {
-        $invoice = new Invoice();
-        $invoice->invoice_number = $customerData['invoice_number'] ?? 'TEST-001';
-        $invoice->invoiced_at = now();
-        $invoice->invoice_due_at = now()->addDays(30);
+        $invoice                   = new Invoice();
+        $invoice->invoice_number   = $customerData['invoice_number'] ?? 'TEST-001';
+        $invoice->invoiced_at      = now();
+        $invoice->invoice_due_at   = now()->addDays(30);
         $invoice->invoice_subtotal = 100.00;
-        $invoice->invoice_total = 120.00;
-        
+        $invoice->invoice_total    = 120.00;
+
         // Create mock customer
-        $customer = new \stdClass();
-        $customer->company_name = 'Test Customer';
-        $customer->customer_name = 'Test Customer';
-        $customer->country_code = $customerData['country_code'] ?? 'ES';
-        $customer->peppol_id = $customerData['peppol_id'] ?? null;
-        $customer->tax_code = $customerData['tax_code'] ?? null;
+        $customer                      = new stdClass();
+        $customer->company_name        = 'Test Customer';
+        $customer->customer_name       = 'Test Customer';
+        $customer->country_code        = $customerData['country_code'] ?? 'ES';
+        $customer->peppol_id           = $customerData['peppol_id'] ?? null;
+        $customer->tax_code            = $customerData['tax_code'] ?? null;
         $customer->organization_number = $customerData['organization_number'] ?? null;
-        $customer->street1 = 'Test Street 1';
-        $customer->street2 = null;
-        $customer->city = 'Test City';
-        $customer->zip = '12345';
-        $customer->province = 'Test Province';
-        $customer->contact_name = 'Test Contact';
-        $customer->contact_phone = '+34123456789';
-        $customer->contact_email = 'test@example.com';
-        $customer->reference = 'REF-001';
-        
+        $customer->street1             = 'Test Street 1';
+        $customer->street2             = null;
+        $customer->city                = 'Test City';
+        $customer->zip                 = '12345';
+        $customer->province            = 'Test Province';
+        $customer->contact_name        = 'Test Contact';
+        $customer->contact_phone       = '+34123456789';
+        $customer->contact_email       = 'test@example.com';
+        $customer->reference           = 'REF-001';
+
         $invoice->customer = $customer;
-        
+
         // Create mock invoice items
-        $item = new \stdClass();
-        $item->item_name = 'Test Item';
-        $item->item_code = 'ITEM-001';
-        $item->description = 'Test Description';
-        $item->quantity = 1;
-        $item->price = 100.00;
-        $item->subtotal = 100.00;
-        $item->tax_rate = 20.0;
+        $item                  = new stdClass();
+        $item->item_name       = 'Test Item';
+        $item->item_code       = 'ITEM-001';
+        $item->description     = 'Test Description';
+        $item->quantity        = 1;
+        $item->price           = 100.00;
+        $item->subtotal        = 100.00;
+        $item->tax_rate        = 20.0;
         $item->accounting_cost = 'ACC-001';
-        
+
         $invoice->invoiceItems = collect([$item]);
-        $invoice->reference = 'REF-001';
-        
+        $invoice->reference    = 'REF-001';
+
         return $invoice;
     }
 }

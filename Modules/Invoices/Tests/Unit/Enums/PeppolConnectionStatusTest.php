@@ -7,18 +7,53 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use ValueError;
 
 /**
  * PeppolConnectionStatusTest - Unit tests for PeppolConnectionStatus enum.
  *
  * Tests the connection status enum including labels, colors, icons,
  * and instantiation from values.
- *
- * @package Modules\Invoices\Tests\Unit\Enums
  */
 #[Group('peppol')]
 class PeppolConnectionStatusTest extends TestCase
 {
+    public static function labelProvider(): array
+    {
+        return [
+            [PeppolConnectionStatus::UNTESTED, 'Untested'],
+            [PeppolConnectionStatus::SUCCESS, 'Success'],
+            [PeppolConnectionStatus::FAILED, 'Failed'],
+        ];
+    }
+
+    public static function colorProvider(): array
+    {
+        return [
+            [PeppolConnectionStatus::UNTESTED, 'gray'],
+            [PeppolConnectionStatus::SUCCESS, 'green'],
+            [PeppolConnectionStatus::FAILED, 'red'],
+        ];
+    }
+
+    public static function iconProvider(): array
+    {
+        return [
+            [PeppolConnectionStatus::UNTESTED, 'heroicon-o-question-mark-circle'],
+            [PeppolConnectionStatus::SUCCESS, 'heroicon-o-check-circle'],
+            [PeppolConnectionStatus::FAILED, 'heroicon-o-x-circle'],
+        ];
+    }
+
+    public static function valueProvider(): array
+    {
+        return [
+            [PeppolConnectionStatus::UNTESTED, 'untested'],
+            [PeppolConnectionStatus::SUCCESS, 'success'],
+            [PeppolConnectionStatus::FAILED, 'failed'],
+        ];
+    }
+
     #[Test]
     public function it_has_all_expected_cases(): void
     {
@@ -39,15 +74,6 @@ class PeppolConnectionStatusTest extends TestCase
         $this->assertEquals($expectedLabel, $status->label());
     }
 
-    public static function labelProvider(): array
-    {
-        return [
-            [PeppolConnectionStatus::UNTESTED, 'Untested'],
-            [PeppolConnectionStatus::SUCCESS, 'Success'],
-            [PeppolConnectionStatus::FAILED, 'Failed'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('colorProvider')]
     public function it_provides_correct_colors(
@@ -55,15 +81,6 @@ class PeppolConnectionStatusTest extends TestCase
         string $expectedColor
     ): void {
         $this->assertEquals($expectedColor, $status->color());
-    }
-
-    public static function colorProvider(): array
-    {
-        return [
-            [PeppolConnectionStatus::UNTESTED, 'gray'],
-            [PeppolConnectionStatus::SUCCESS, 'green'],
-            [PeppolConnectionStatus::FAILED, 'red'],
-        ];
     }
 
     #[Test]
@@ -75,15 +92,6 @@ class PeppolConnectionStatusTest extends TestCase
         $this->assertEquals($expectedIcon, $status->icon());
     }
 
-    public static function iconProvider(): array
-    {
-        return [
-            [PeppolConnectionStatus::UNTESTED, 'heroicon-o-question-mark-circle'],
-            [PeppolConnectionStatus::SUCCESS, 'heroicon-o-check-circle'],
-            [PeppolConnectionStatus::FAILED, 'heroicon-o-x-circle'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('valueProvider')]
     public function it_has_correct_enum_values(
@@ -91,15 +99,6 @@ class PeppolConnectionStatusTest extends TestCase
         string $expectedValue
     ): void {
         $this->assertEquals($expectedValue, $status->value);
-    }
-
-    public static function valueProvider(): array
-    {
-        return [
-            [PeppolConnectionStatus::UNTESTED, 'untested'],
-            [PeppolConnectionStatus::SUCCESS, 'success'],
-            [PeppolConnectionStatus::FAILED, 'failed'],
-        ];
     }
 
     #[Test]
@@ -113,7 +112,7 @@ class PeppolConnectionStatusTest extends TestCase
     #[Test]
     public function it_throws_on_invalid_value(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(ValueError::class);
         PeppolConnectionStatus::from('invalid_status');
     }
 
@@ -132,8 +131,8 @@ class PeppolConnectionStatusTest extends TestCase
 
         $message = match ($status) {
             PeppolConnectionStatus::UNTESTED => 'Not yet tested',
-            PeppolConnectionStatus::SUCCESS => 'Connection successful',
-            PeppolConnectionStatus::FAILED => 'Connection failed',
+            PeppolConnectionStatus::SUCCESS  => 'Connection successful',
+            PeppolConnectionStatus::FAILED   => 'Connection failed',
         };
 
         $this->assertEquals('Connection successful', $message);
@@ -142,9 +141,9 @@ class PeppolConnectionStatusTest extends TestCase
     #[Test]
     public function it_provides_all_cases_for_selection(): void
     {
-        $cases = PeppolConnectionStatus::cases();
+        $cases   = PeppolConnectionStatus::cases();
         $options = [];
-        
+
         foreach ($cases as $case) {
             $options[$case->value] = $case->label();
         }

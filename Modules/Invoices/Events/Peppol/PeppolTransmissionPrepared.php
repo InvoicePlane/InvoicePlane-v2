@@ -11,18 +11,18 @@ class PeppolTransmissionPrepared extends PeppolEvent
     /**
      * Create a PeppolTransmissionPrepared event for a specific transmission.
      *
-     * @param PeppolTransmission $transmission The prepared transmission whose key fields (transmission id, invoice id, format, XML and PDF stored paths) are attached to the event payload.
+     * @param PeppolTransmission $transmission the prepared transmission whose key fields (transmission id, invoice id, format, XML and PDF stored paths) are attached to the event payload
      */
     public function __construct(PeppolTransmission $transmission)
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'format' => $transmission->format,
-            'xml_path' => $transmission->stored_xml_path,
-            'pdf_path' => $transmission->stored_pdf_path,
+            'invoice_id'      => $transmission->invoice_id,
+            'format'          => $transmission->format,
+            'xml_path'        => $transmission->stored_xml_path,
+            'pdf_path'        => $transmission->stored_pdf_path,
         ]);
     }
 

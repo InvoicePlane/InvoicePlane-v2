@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Pages;
 
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
@@ -69,7 +70,7 @@ class EditInvoice extends EditRecord
                     try {
                         $action = app(SendInvoiceToPeppolAction::class);
                         $result = $action->execute($this->getRecord(), $data);
-                        
+
                         Notification::make()
                             ->title(trans('ip.peppol_success_title'))
                             ->body(trans('ip.peppol_success_body', [
@@ -77,7 +78,7 @@ class EditInvoice extends EditRecord
                             ]))
                             ->success()
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Notification::make()
                             ->title(trans('ip.peppol_error_title'))
                             ->body(trans('ip.peppol_error_body', ['error' => $e->getMessage()]))

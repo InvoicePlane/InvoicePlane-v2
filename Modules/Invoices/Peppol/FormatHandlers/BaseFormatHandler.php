@@ -11,8 +11,6 @@ use Modules\Invoices\Peppol\Enums\PeppolEndpointScheme;
  *
  * Provides common functionality for all format handlers and implements
  * the Template Method pattern for invoice transformation.
- *
- * @package Modules\Invoices\Peppol\FormatHandlers
  */
 abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
 {
@@ -34,6 +32,15 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     }
 
     /**
+     * Format-specific validation logic.
+     *
+     * @param Invoice $invoice
+     *
+     * @return array<string> Validation errors
+     */
+    abstract protected function validateFormatSpecific(Invoice $invoice): array;
+
+    /**
      * {@inheritdoc}
      */
     public function getFormat(): PeppolDocumentFormat
@@ -48,7 +55,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     {
         // Check if customer's country matches format requirements
         $customerCountry = $invoice->customer->country_code ?? null;
-        
+
         // Mandatory formats must be used for their countries
         if ($this->format->isMandatoryFor($customerCountry)) {
             return true;
@@ -56,7 +63,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
 
         // Check if format is suitable for customer's country
         $suitableFormats = PeppolDocumentFormat::formatsForCountry($customerCountry);
-        
+
         return in_array($this->format, $suitableFormats, true);
     }
 
@@ -68,11 +75,11 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
         $errors = [];
 
         // Common validation rules
-        if (!$invoice->customer) {
+        if ( ! $invoice->customer) {
             $errors[] = 'Invoice must have a customer';
         }
 
-        if (!$invoice->invoice_number) {
+        if ( ! $invoice->invoice_number) {
             $errors[] = 'Invoice must have an invoice number';
         }
 
@@ -80,17 +87,17 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
             $errors[] = 'Invoice must have at least one line item';
         }
 
-        if (!$invoice->invoiced_at) {
+        if ( ! $invoice->invoiced_at) {
             $errors[] = 'Invoice must have an issue date';
         }
 
-        if (!$invoice->invoice_due_at) {
+        if ( ! $invoice->invoice_due_at) {
             $errors[] = 'Invoice must have a due date';
         }
 
         // Format-specific validation
         $formatErrors = $this->validateFormatSpecific($invoice);
-        
+
         return array_merge($errors, $formatErrors);
     }
 
@@ -99,8 +106,8 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     public function getMimeType(): string
     {
-        return $this->format->requiresPdfEmbedding() 
-            ? 'application/pdf' 
+        return $this->format->requiresPdfEmbedding()
+            ? 'application/pdf'
             : 'application/xml';
     }
 
@@ -116,12 +123,13 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      * Get currency code from invoice or configuration.
      *
      * @param Invoice $invoice
+     *
      * @return string
      */
     protected function getCurrencyCode(Invoice $invoice): string
     {
         // Try to get from invoice, then company settings, then config
-        return $invoice->currency_code 
+        return $invoice->currency_code
             ?? config('invoices.peppol.document.currency_code')
             ?? 'EUR';
     }
@@ -130,20 +138,13 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      * Get endpoint scheme for customer's country.
      *
      * @param Invoice $invoice
+     *
      * @return PeppolEndpointScheme
      */
     protected function getEndpointScheme(Invoice $invoice): PeppolEndpointScheme
     {
         $countryCode = $invoice->customer->country_code ?? null;
-        
+
         return PeppolEndpointScheme::forCountry($countryCode);
     }
-
-    /**
-     * Format-specific validation logic.
-     *
-     * @param Invoice $invoice
-     * @return array<string> Validation errors
-     */
-    abstract protected function validateFormatSpecific(Invoice $invoice): array;
 }

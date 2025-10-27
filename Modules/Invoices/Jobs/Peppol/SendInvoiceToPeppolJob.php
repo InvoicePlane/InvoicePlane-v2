@@ -2,12 +2,14 @@
 
 namespace Modules\Invoices\Jobs\Peppol;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use Modules\Invoices\Enums\PeppolErrorType;
 use Modules\Invoices\Enums\PeppolTransmissionStatus;
 use Modules\Invoices\Events\Peppol\PeppolTransmissionCreated;
@@ -20,10 +22,11 @@ use Modules\Invoices\Models\PeppolTransmission;
 use Modules\Invoices\Peppol\FormatHandlers\FormatHandlerFactory;
 use Modules\Invoices\Peppol\Providers\ProviderFactory;
 use Modules\Invoices\Traits\LogsPeppolActivity;
+use RuntimeException;
 
 /**
- * Job to send an invoice to the Peppol network
- * 
+ * Job to send an invoice to the Peppol network.
+ *
  * This is the main job that orchestrates the entire sending process:
  * 1. Pre-send validation
  * 2. Create/find transmission record
@@ -34,11 +37,18 @@ use Modules\Invoices\Traits\LogsPeppolActivity;
  */
 class SendInvoiceToPeppolJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LogsPeppolActivity;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use LogsPeppolActivity;
+    use Queueable;
+    use SerializesModels;
 
     public Invoice $invoice;
+
     public PeppolIntegration $integration;
+
     public bool $force;
+
     public ?int $transmissionId;
 
     /**
@@ -54,16 +64,16 @@ class SendInvoiceToPeppolJob implements ShouldQueue
     /**
      * Create a job to send a specific invoice to the Peppol network.
      *
-     * @param Invoice $invoice The invoice to be transmitted.
-     * @param PeppolIntegration $integration The Peppol integration context used for transmission.
-     * @param bool $force Whether to force processing even if a final transmission already exists.
-     * @param int|null $transmissionId Optional specific PeppolTransmission ID to use instead of locating or creating one.
+     * @param Invoice           $invoice        the invoice to be transmitted
+     * @param PeppolIntegration $integration    the Peppol integration context used for transmission
+     * @param bool              $force          whether to force processing even if a final transmission already exists
+     * @param int|null          $transmissionId optional specific PeppolTransmission ID to use instead of locating or creating one
      */
     public function __construct(Invoice $invoice, PeppolIntegration $integration, bool $force = false, ?int $transmissionId = null)
     {
-        $this->invoice = $invoice;
-        $this->integration = $integration;
-        $this->force = $force;
+        $this->invoice        = $invoice;
+        $this->integration    = $integration;
+        $this->force          = $force;
         $this->transmissionId = $transmissionId;
     }
 
@@ -79,7 +89,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
     {
         try {
             $this->logPeppolInfo('Starting Peppol invoice sending job', [
-                'invoice_id' => $this->invoice->id,
+                'invoice_id'     => $this->invoice->id,
                 'integration_id' => $this->integration->id,
             ]);
 
@@ -90,11 +100,12 @@ class SendInvoiceToPeppolJob implements ShouldQueue
             $transmission = $this->getOrCreateTransmission();
 
             // If transmission is already in a final state and not forcing, skip
-            if (!$this->force && $transmission->isFinal()) {
+            if ( ! $this->force && $transmission->isFinal()) {
                 $this->logPeppolInfo('Transmission already in final state, skipping', [
                     'transmission_id' => $transmission->id,
-                    'status' => $transmission->status->value,
+                    'status'          => $transmission->status->value,
                 ]);
+
                 return;
             }
 
@@ -107,12 +118,11 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
             // Step 5: Send to provider
             $this->sendToProvider($transmission);
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logPeppolError('Peppol sending job failed', [
                 'invoice_id' => $this->invoice->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error'      => $e->getMessage(),
+                'trace'      => $e->getTraceAsString(),
             ]);
 
             if (isset($transmission)) {
@@ -133,28 +143,28 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      * - Invoice must have an invoice number.
      * - Invoice must contain at least one line item.
      *
-     * @throws \InvalidArgumentException If any validation fails.
+     * @throws InvalidArgumentException if any validation fails
      */
     protected function validateInvoice(): void
     {
-        if (!$this->invoice->customer) {
-            throw new \InvalidArgumentException('Invoice must have a customer');
+        if ( ! $this->invoice->customer) {
+            throw new InvalidArgumentException('Invoice must have a customer');
         }
 
-        if (!$this->invoice->customer->enable_e_invoicing) {
-            throw new \InvalidArgumentException('Customer does not have e-invoicing enabled');
+        if ( ! $this->invoice->customer->enable_e_invoicing) {
+            throw new InvalidArgumentException('Customer does not have e-invoicing enabled');
         }
 
-        if (!$this->invoice->customer->hasPeppolIdValidated()) {
-            throw new \InvalidArgumentException('Customer Peppol ID has not been validated');
+        if ( ! $this->invoice->customer->hasPeppolIdValidated()) {
+            throw new InvalidArgumentException('Customer Peppol ID has not been validated');
         }
 
-        if (!$this->invoice->number) {
-            throw new \InvalidArgumentException('Invoice must have an invoice number');
+        if ( ! $this->invoice->number) {
+            throw new InvalidArgumentException('Invoice must have an invoice number');
         }
 
         if ($this->invoice->invoiceItems->count() === 0) {
-            throw new \InvalidArgumentException('Invoice must have at least one line item');
+            throw new InvalidArgumentException('Invoice must have at least one line item');
         }
     }
 
@@ -163,8 +173,9 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      *
      * When a new transmission is created this method persists the record and emits a PeppolTransmissionCreated event.
      *
-     * @return PeppolTransmission The existing or newly created transmission.
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If a specific transmission ID was provided but no record is found.
+     * @return PeppolTransmission the existing or newly created transmission
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException if a specific transmission ID was provided but no record is found
      */
     protected function getOrCreateTransmission(): PeppolTransmission
     {
@@ -181,18 +192,19 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         if ($transmission) {
             $this->logPeppolInfo('Found existing transmission', ['transmission_id' => $transmission->id]);
+
             return $transmission;
         }
 
         // Create new transmission
         $transmission = PeppolTransmission::create([
-            'invoice_id' => $this->invoice->id,
-            'customer_id' => $this->invoice->customer_id,
-            'integration_id' => $this->integration->id,
-            'format' => $this->determineFormat(),
-            'status' => PeppolTransmissionStatus::PENDING,
+            'invoice_id'      => $this->invoice->id,
+            'customer_id'     => $this->invoice->customer_id,
+            'integration_id'  => $this->integration->id,
+            'format'          => $this->determineFormat(),
+            'status'          => PeppolTransmissionStatus::PENDING,
             'idempotency_key' => $idempotencyKey,
-            'attempts' => 0,
+            'attempts'        => 0,
         ]);
 
         event(new PeppolTransmissionCreated($transmission));
@@ -207,7 +219,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      * integration ID, and the invoice's updated-at timestamp to uniquely
      * identify a transmission attempt.
      *
-     * @return string A SHA-256 hash string computed from the invoice ID, customer Peppol ID, integration ID, and invoice updated timestamp.
+     * @return string a SHA-256 hash string computed from the invoice ID, customer Peppol ID, integration ID, and invoice updated timestamp
      */
     protected function calculateIdempotencyKey(): string
     {
@@ -224,7 +236,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      *
      * Prefers the customer's configured `peppol_format`; if absent, falls back to the application default (configured `invoices.peppol.default_format` or `'peppol_bis_3.0'`).
      *
-     * @return string The Peppol format identifier to use for the transmission.
+     * @return string the Peppol format identifier to use for the transmission
      */
     protected function determineFormat(): string
     {
@@ -237,8 +249,9 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      * Generates and validates the XML for the job's invoice, stores the XML and a PDF to storage,
      * and updates the transmission with the resulting storage paths.
      *
-     * @param PeppolTransmission $transmission The transmission to associate the stored artifact paths with.
-     * @throws \RuntimeException If invoice validation fails; the exception message contains the validation errors.
+     * @param PeppolTransmission $transmission the transmission to associate the stored artifact paths with
+     *
+     * @throws RuntimeException if invoice validation fails; the exception message contains the validation errors
      */
     protected function prepareArtifacts(PeppolTransmission $transmission): void
     {
@@ -250,8 +263,8 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         // Validate XML (handler's validate method checks the invoice)
         $errors = $handler->validate($this->invoice);
-        if (!empty($errors)) {
-            throw new \RuntimeException('Invoice validation failed: ' . implode(', ', $errors));
+        if ( ! empty($errors)) {
+            throw new RuntimeException('Invoice validation failed: ' . implode(', ', $errors));
         }
 
         // Store XML
@@ -268,12 +281,13 @@ class SendInvoiceToPeppolJob implements ShouldQueue
     }
 
     /**
-         * Persist the generated Peppol XML for a transmission to storage.
-         *
-         * @param PeppolTransmission $transmission The transmission record used to construct the storage path.
-         * @param string $xml The XML content to store.
-         * @return string The storage path where the XML was saved.
-         */
+     * Persist the generated Peppol XML for a transmission to storage.
+     *
+     * @param PeppolTransmission $transmission the transmission record used to construct the storage path
+     * @param string             $xml          the XML content to store
+     *
+     * @return string the storage path where the XML was saved
+     */
     protected function storeXml(PeppolTransmission $transmission, string $xml): string
     {
         $path = sprintf(
@@ -290,11 +304,12 @@ class SendInvoiceToPeppolJob implements ShouldQueue
     }
 
     /**
-         * Persist a PDF representation of the invoice for the given Peppol transmission and return its storage path.
-         *
-         * @param PeppolTransmission $transmission The transmission used to build the storage path.
-         * @return string The storage path where the PDF was saved.
-         */
+     * Persist a PDF representation of the invoice for the given Peppol transmission and return its storage path.
+     *
+     * @param PeppolTransmission $transmission the transmission used to build the storage path
+     *
+     * @return string the storage path where the PDF was saved
+     */
     protected function storePdf(PeppolTransmission $transmission): string
     {
         $path = sprintf(
@@ -320,7 +335,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      * On success, marks the transmission as sent, stores the provider response, and emits PeppolTransmissionSent.
      * On failure, marks the transmission as failed, stores the provider response, emits PeppolTransmissionFailed, and schedules a retry when the error is classified as transient.
      *
-     * @param PeppolTransmission $transmission The transmission record representing this send attempt.
+     * @param PeppolTransmission $transmission the transmission record representing this send attempt
      */
     protected function sendToProvider(PeppolTransmission $transmission): void
     {
@@ -331,13 +346,13 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         // Prepare transmission data
         $transmissionData = [
-            'transmission_id' => $transmission->id,
-            'invoice_id' => $this->invoice->id,
-            'customer_peppol_id' => $this->invoice->customer->peppol_id,
+            'transmission_id'        => $transmission->id,
+            'invoice_id'             => $this->invoice->id,
+            'customer_peppol_id'     => $this->invoice->customer->peppol_id,
             'customer_peppol_scheme' => $this->invoice->customer->peppol_scheme,
-            'format' => $transmission->format,
-            'xml' => $xml,
-            'idempotency_key' => $transmission->idempotency_key,
+            'format'                 => $transmission->format,
+            'xml'                    => $xml,
+            'idempotency_key'        => $transmission->idempotency_key,
         ];
 
         // Send to provider
@@ -347,22 +362,22 @@ class SendInvoiceToPeppolJob implements ShouldQueue
         if ($result['accepted']) {
             $transmission->markAsSent($result['external_id']);
             $transmission->setProviderResponse($result['response'] ?? []);
-            
+
             event(new PeppolTransmissionSent($transmission));
-            
+
             $this->logPeppolInfo('Invoice sent to Peppol successfully', [
                 'transmission_id' => $transmission->id,
-                'external_id' => $result['external_id'],
+                'external_id'     => $result['external_id'],
             ]);
         } else {
             // Provider rejected the submission
             $errorType = $this->classifyError($result['status_code'], $result['response']);
-            
+
             $transmission->markAsFailed($result['message'], $errorType);
             $transmission->setProviderResponse($result['response'] ?? []);
-            
+
             event(new PeppolTransmissionFailed($transmission, $result['message']));
-            
+
             // Schedule retry if transient error
             if ($errorType === PeppolErrorType::TRANSIENT) {
                 $this->scheduleRetry($transmission);
@@ -371,32 +386,33 @@ class SendInvoiceToPeppolJob implements ShouldQueue
     }
 
     /**
-         * Determine the Peppol error type corresponding to an HTTP status code.
-         *
-         * @param int $statusCode HTTP status code from the provider response.
-         * @param array|null $responseBody Optional response body returned by the provider; currently not used for classification.
-         * @return PeppolErrorType `TRANSIENT` for 5xx, 429 or 408 status codes; `PERMANENT` for 401, 403, 404, 400 or 422; `UNKNOWN` otherwise.
-         */
+     * Determine the Peppol error type corresponding to an HTTP status code.
+     *
+     * @param int        $statusCode   HTTP status code from the provider response
+     * @param array|null $responseBody optional response body returned by the provider; currently not used for classification
+     *
+     * @return peppolErrorType `TRANSIENT` for 5xx, 429 or 408 status codes; `PERMANENT` for 401, 403, 404, 400 or 422; `UNKNOWN` otherwise
+     */
     protected function classifyError(int $statusCode, ?array $responseBody = null): PeppolErrorType
     {
         return match(true) {
-            $statusCode >= 500 => PeppolErrorType::TRANSIENT,
-            $statusCode === 429 => PeppolErrorType::TRANSIENT,
-            $statusCode === 408 => PeppolErrorType::TRANSIENT,
+            $statusCode >= 500                         => PeppolErrorType::TRANSIENT,
+            $statusCode === 429                        => PeppolErrorType::TRANSIENT,
+            $statusCode === 408                        => PeppolErrorType::TRANSIENT,
             $statusCode === 401 || $statusCode === 403 => PeppolErrorType::PERMANENT,
-            $statusCode === 404 => PeppolErrorType::PERMANENT,
+            $statusCode === 404                        => PeppolErrorType::PERMANENT,
             $statusCode === 400 || $statusCode === 422 => PeppolErrorType::PERMANENT,
-            default => PeppolErrorType::UNKNOWN,
+            default                                    => PeppolErrorType::UNKNOWN,
         };
     }
 
     /**
      * Mark the given transmission as failed because of an exception, emit a failure event, and schedule a retry if appropriate.
      *
-     * @param PeppolTransmission $transmission The transmission to mark as failed.
-     * @param \Exception $e The exception that caused the failure; its message is recorded on the transmission.
+     * @param PeppolTransmission $transmission the transmission to mark as failed
+     * @param Exception          $e            the exception that caused the failure; its message is recorded on the transmission
      */
-    protected function handleFailure(PeppolTransmission $transmission, \Exception $e): void
+    protected function handleFailure(PeppolTransmission $transmission, Exception $e): void
     {
         $transmission->markAsFailed(
             $e->getMessage(),
@@ -416,7 +432,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      * Otherwise computes the next retry time using increasing delays, updates the transmission's
      * retry schedule, re-dispatches this job with the computed delay, and logs the scheduling.
      *
-     * @param PeppolTransmission $transmission The transmission to schedule a retry for.
+     * @param PeppolTransmission $transmission the transmission to schedule a retry for
      */
     protected function scheduleRetry(PeppolTransmission $transmission): void
     {
@@ -424,12 +440,13 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         if ($transmission->attempts >= $maxAttempts) {
             $transmission->markAsDead('Maximum retry attempts exceeded');
+
             return;
         }
 
         // Exponential backoff: 1min, 5min, 30min, 2h, 6h
         $delays = [60, 300, 1800, 7200, 21600];
-        $delay = $delays[$transmission->attempts] ?? 21600;
+        $delay  = $delays[$transmission->attempts] ?? 21600;
 
         $nextRetryAt = now()->addSeconds($delay);
         $transmission->scheduleRetry($nextRetryAt);
@@ -440,8 +457,8 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         $this->logPeppolInfo('Scheduled retry for Peppol transmission', [
             'transmission_id' => $transmission->id,
-            'attempt' => $transmission->attempts,
-            'next_retry_at' => $nextRetryAt,
+            'attempt'         => $transmission->attempts,
+            'next_retry_at'   => $nextRetryAt,
         ]);
     }
 }

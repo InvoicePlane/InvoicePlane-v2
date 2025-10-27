@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Create the customer_peppol_validation_history table to record Peppol identifier validation events for customers.
      *
@@ -24,11 +23,11 @@ return new class extends Migration
             $table->text('validation_message')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            
+
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
             $table->foreign('integration_id')->references('id')->on('peppol_integrations')->onDelete('set null');
             $table->foreign('validated_by')->references('id')->on('users')->onDelete('set null');
-            
+
             $table->index(['customer_id', 'created_at']);
             $table->index('validation_status');
         });

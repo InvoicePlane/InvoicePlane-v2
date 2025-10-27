@@ -9,8 +9,6 @@ namespace Modules\Invoices\Peppol\Enums;
  * This enum defines all supported formats for e-invoicing transmission.
  *
  * Based on InvoicePlane v1 XML templates implementation and European e-invoice standards.
- *
- * @package Modules\Invoices\Peppol\Enums
  */
 enum PeppolDocumentFormat: string
 {
@@ -81,6 +79,50 @@ enum PeppolDocumentFormat: string
     case PEPPOL_BIS_30 = 'peppol_bis_3.0';
 
     /**
+     * Get the recommended format based on country code.
+     *
+     * @param string|null $countryCode ISO 3166-1 alpha-2 country code
+     *
+     * @return self
+     */
+    public static function recommendedForCountry(?string $countryCode): self
+    {
+        return match (mb_strtoupper($countryCode ?? '')) {
+            'ES'    => self::FACTURAE_32,
+            'IT'    => self::FATTURAPA_12,
+            'FR'    => self::FACTURX_10,
+            'DE'    => self::ZUGFERD_20,
+            'AT'    => self::CII,
+            'DK'    => self::OIOUBL,
+            'NO'    => self::EHF,
+            default => self::PEPPOL_BIS_30,
+        };
+    }
+
+    /**
+     * Get all formats suitable for a given country.
+     *
+     * @param string|null $countryCode ISO 3166-1 alpha-2 country code
+     *
+     * @return array<self>
+     */
+    public static function formatsForCountry(?string $countryCode): array
+    {
+        $country = mb_strtoupper($countryCode ?? '');
+
+        return match ($country) {
+            'ES'    => [self::FACTURAE_32, self::UBL_21, self::PEPPOL_BIS_30],
+            'IT'    => [self::FATTURAPA_12, self::UBL_21, self::PEPPOL_BIS_30],
+            'FR'    => [self::FACTURX_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
+            'DE'    => [self::ZUGFERD_20, self::ZUGFERD_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
+            'AT'    => [self::CII, self::UBL_21, self::PEPPOL_BIS_30],
+            'DK'    => [self::OIOUBL, self::UBL_21, self::PEPPOL_BIS_30],
+            'NO'    => [self::EHF, self::UBL_21, self::PEPPOL_BIS_30],
+            default => [self::PEPPOL_BIS_30, self::UBL_21, self::CII],
+        };
+    }
+
+    /**
      * Get the human-readable label for the format.
      *
      * @return string
@@ -88,16 +130,16 @@ enum PeppolDocumentFormat: string
     public function label(): string
     {
         return match ($this) {
-            self::UBL_21 => 'UBL 2.1 (Universal Business Language)',
-            self::UBL_24 => 'UBL 2.4 (Universal Business Language)',
-            self::CII => 'CII (Cross Industry Invoice)',
-            self::FACTURAE_32 => 'Facturae 3.2 (Spain)',
-            self::FATTURAPA_12 => 'FatturaPA 1.2 (Italy)',
-            self::FACTURX_10 => 'Factur-X 1.0 (France/Germany)',
-            self::ZUGFERD_10 => 'ZUGFeRD 1.0 (Germany)',
-            self::ZUGFERD_20 => 'ZUGFeRD 2.0 (Germany)',
-            self::OIOUBL => 'OIOUBL (Denmark)',
-            self::EHF => 'EHF (Norway)',
+            self::UBL_21        => 'UBL 2.1 (Universal Business Language)',
+            self::UBL_24        => 'UBL 2.4 (Universal Business Language)',
+            self::CII           => 'CII (Cross Industry Invoice)',
+            self::FACTURAE_32   => 'Facturae 3.2 (Spain)',
+            self::FATTURAPA_12  => 'FatturaPA 1.2 (Italy)',
+            self::FACTURX_10    => 'Factur-X 1.0 (France/Germany)',
+            self::ZUGFERD_10    => 'ZUGFeRD 1.0 (Germany)',
+            self::ZUGFERD_20    => 'ZUGFeRD 2.0 (Germany)',
+            self::OIOUBL        => 'OIOUBL (Denmark)',
+            self::EHF           => 'EHF (Norway)',
             self::PEPPOL_BIS_30 => 'PEPPOL BIS Billing 3.0',
         };
     }
@@ -110,16 +152,16 @@ enum PeppolDocumentFormat: string
     public function description(): string
     {
         return match ($this) {
-            self::UBL_21 => 'Most widely used format across Europe. Recommended for most use cases.',
-            self::UBL_24 => 'Updated UBL format with enhanced validation rules.',
-            self::CII => 'Common in Germany, France, and Austria. UN/CEFACT standard.',
-            self::FACTURAE_32 => 'Mandatory for invoices to Spanish public administration.',
-            self::FATTURAPA_12 => 'Mandatory format for all B2B and B2G invoices in Italy.',
-            self::FACTURX_10 => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
-            self::ZUGFERD_10 => 'German standard combining PDF with embedded XML invoice data.',
-            self::ZUGFERD_20 => 'Updated ZUGFeRD compatible with Factur-X. Uses CII format.',
-            self::OIOUBL => 'Danish UBL-based format with national extensions.',
-            self::EHF => 'Norwegian UBL-based format used in public procurement.',
+            self::UBL_21        => 'Most widely used format across Europe. Recommended for most use cases.',
+            self::UBL_24        => 'Updated UBL format with enhanced validation rules.',
+            self::CII           => 'Common in Germany, France, and Austria. UN/CEFACT standard.',
+            self::FACTURAE_32   => 'Mandatory for invoices to Spanish public administration.',
+            self::FATTURAPA_12  => 'Mandatory format for all B2B and B2G invoices in Italy.',
+            self::FACTURX_10    => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
+            self::ZUGFERD_10    => 'German standard combining PDF with embedded XML invoice data.',
+            self::ZUGFERD_20    => 'Updated ZUGFeRD compatible with Factur-X. Uses CII format.',
+            self::OIOUBL        => 'Danish UBL-based format with national extensions.',
+            self::EHF           => 'Norwegian UBL-based format used in public procurement.',
             self::PEPPOL_BIS_30 => 'Pan-European Public Procurement Online standard.',
         };
     }
@@ -158,58 +200,11 @@ enum PeppolDocumentFormat: string
     public function xmlNamespace(): string
     {
         return match ($this) {
-            self::UBL_21, self::UBL_24, self::PEPPOL_BIS_30, self::OIOUBL, self::EHF =>
-                'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
-            self::CII, self::FACTURX_10, self::ZUGFERD_20 =>
-                'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
-            self::ZUGFERD_10 =>
-                'urn:ferd:CrossIndustryDocument:invoice:1p0',
-            self::FACTURAE_32 =>
-                'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
-            self::FATTURAPA_12 =>
-                'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
-        };
-    }
-
-    /**
-     * Get the recommended format based on country code.
-     *
-     * @param string|null $countryCode ISO 3166-1 alpha-2 country code
-     * @return self
-     */
-    public static function recommendedForCountry(?string $countryCode): self
-    {
-        return match (strtoupper($countryCode ?? '')) {
-            'ES' => self::FACTURAE_32,
-            'IT' => self::FATTURAPA_12,
-            'FR' => self::FACTURX_10,
-            'DE' => self::ZUGFERD_20,
-            'AT' => self::CII,
-            'DK' => self::OIOUBL,
-            'NO' => self::EHF,
-            default => self::PEPPOL_BIS_30,
-        };
-    }
-
-    /**
-     * Get all formats suitable for a given country.
-     *
-     * @param string|null $countryCode ISO 3166-1 alpha-2 country code
-     * @return array<self>
-     */
-    public static function formatsForCountry(?string $countryCode): array
-    {
-        $country = strtoupper($countryCode ?? '');
-
-        return match ($country) {
-            'ES' => [self::FACTURAE_32, self::UBL_21, self::PEPPOL_BIS_30],
-            'IT' => [self::FATTURAPA_12, self::UBL_21, self::PEPPOL_BIS_30],
-            'FR' => [self::FACTURX_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'DE' => [self::ZUGFERD_20, self::ZUGFERD_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'AT' => [self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'DK' => [self::OIOUBL, self::UBL_21, self::PEPPOL_BIS_30],
-            'NO' => [self::EHF, self::UBL_21, self::PEPPOL_BIS_30],
-            default => [self::PEPPOL_BIS_30, self::UBL_21, self::CII],
+            self::UBL_21, self::UBL_24, self::PEPPOL_BIS_30, self::OIOUBL, self::EHF => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+            self::CII, self::FACTURX_10, self::ZUGFERD_20 => 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+            self::ZUGFERD_10   => 'urn:ferd:CrossIndustryDocument:invoice:1p0',
+            self::FACTURAE_32  => 'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
+            self::FATTURAPA_12 => 'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
         };
     }
 
@@ -217,16 +212,17 @@ enum PeppolDocumentFormat: string
      * Check if this format is mandatory for the given country.
      *
      * @param string|null $countryCode ISO 3166-1 alpha-2 country code
+     *
      * @return bool
      */
     public function isMandatoryFor(?string $countryCode): bool
     {
-        $country = strtoupper($countryCode ?? '');
+        $country = mb_strtoupper($countryCode ?? '');
 
         return match ($this) {
             self::FATTURAPA_12 => $country === 'IT',
-            self::FACTURAE_32 => $country === 'ES', // For public administration
-            default => false,
+            self::FACTURAE_32  => $country === 'ES', // For public administration
+            default            => false,
         };
     }
 }

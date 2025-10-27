@@ -7,11 +7,12 @@ use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Services\PeppolManagementService;
 
 /**
- * Console command to test a Peppol integration connection
+ * Console command to test a Peppol integration connection.
  */
 class TestPeppolIntegrationCommand extends Command
 {
     protected $signature = 'peppol:test-integration {integration_id}';
+
     protected $description = 'Test connection to a Peppol integration';
 
     /**
@@ -22,17 +23,19 @@ class TestPeppolIntegrationCommand extends Command
      * the integration's connection, outputs the service message, and returns success on a successful
      * test or failure otherwise.
      *
-     * @param PeppolManagementService $service Service used to perform the connection test.
-     * @return int `self::SUCCESS` on a successful connection test, `self::FAILURE` otherwise.
+     * @param PeppolManagementService $service service used to perform the connection test
+     *
+     * @return int `self::SUCCESS` on a successful connection test, `self::FAILURE` otherwise
      */
     public function handle(PeppolManagementService $service): int
     {
         $integrationId = $this->argument('integration_id');
-        
+
         $integration = PeppolIntegration::find($integrationId);
-        
-        if (!$integration) {
+
+        if ( ! $integration) {
             $this->error("Integration {$integrationId} not found.");
+
             return self::FAILURE;
         }
 
@@ -43,11 +46,12 @@ class TestPeppolIntegrationCommand extends Command
         if ($result['ok']) {
             $this->info('✓ Connection test successful!');
             $this->line($result['message']);
+
             return self::SUCCESS;
-        } else {
-            $this->error('✗ Connection test failed.');
-            $this->error($result['message']);
-            return self::FAILURE;
         }
+        $this->error('✗ Connection test failed.');
+        $this->error($result['message']);
+
+        return self::FAILURE;
     }
 }

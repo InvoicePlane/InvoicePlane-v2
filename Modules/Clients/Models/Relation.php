@@ -26,40 +26,40 @@ use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                  $id
- * @property int                  $company_id
- * @property int|null             $primary_contact_id
- * @property string               $relation_type
- * @property string               $relation_status
- * @property string               $relation_number
- * @property string               $company_name
- * @property string|null          $trading_name
- * @property string|null          $unique_name
- * @property string|null          $id_number
- * @property string|null          $coc_number
- * @property string|null          $vat_number
- * @property string|null          $peppol_id
- * @property string|null          $peppol_scheme
- * @property string|null          $peppol_format
- * @property bool                 $enable_e_invoicing
+ * @property int                         $id
+ * @property int                         $company_id
+ * @property int|null                    $primary_contact_id
+ * @property string                      $relation_type
+ * @property string                      $relation_status
+ * @property string                      $relation_number
+ * @property string                      $company_name
+ * @property string|null                 $trading_name
+ * @property string|null                 $unique_name
+ * @property string|null                 $id_number
+ * @property string|null                 $coc_number
+ * @property string|null                 $vat_number
+ * @property string|null                 $peppol_id
+ * @property string|null                 $peppol_scheme
+ * @property string|null                 $peppol_format
+ * @property bool                        $enable_e_invoicing
  * @property PeppolValidationStatus|null $peppol_validation_status
- * @property string|null          $peppol_validation_message
- * @property Carbon|null          $peppol_validated_at
- * @property Carbon               $registered_at
- * @property mixed                $created_at
- * @property mixed                $updated_at
- * @property Invoice[]            $invoices
- * @property Quote[]              $quotes
- * @property Project[]            $projects
- * @property Contact              $contact
- * @property string|null          $currency_code
- * @property string|null          $language
- * @property Company              $company
- * @property Collection|Contact[] $contacts
- * @property Collection|Expense[] $expenses
- * @property Collection|Payment[] $payments
- * @property Collection|User[]    $users
- * @property Task[]               $tasks
+ * @property string|null                 $peppol_validation_message
+ * @property Carbon|null                 $peppol_validated_at
+ * @property Carbon                      $registered_at
+ * @property mixed                       $created_at
+ * @property mixed                       $updated_at
+ * @property Invoice[]                   $invoices
+ * @property Quote[]                     $quotes
+ * @property Project[]                   $projects
+ * @property Contact                     $contact
+ * @property string|null                 $currency_code
+ * @property string|null                 $language
+ * @property Company                     $company
+ * @property Collection|Contact[]        $contacts
+ * @property Collection|Expense[]        $expenses
+ * @property Collection|Payment[]        $payments
+ * @property Collection|User[]           $users
+ * @property Task[]                      $tasks
  */
 class Relation extends Model
 {
@@ -71,11 +71,11 @@ class Relation extends Model
     protected $table = 'relations';
 
     protected $casts = [
-        'relation_type'      => RelationType::class,
-        'relation_status'    => RelationStatus::class,
-        'enable_e_invoicing' => 'boolean',
+        'relation_type'            => RelationType::class,
+        'relation_status'          => RelationStatus::class,
+        'enable_e_invoicing'       => 'boolean',
         'peppol_validation_status' => PeppolValidationStatus::class,
-        'peppol_validated_at' => 'datetime',
+        'peppol_validated_at'      => 'datetime',
     ];
 
     protected $guarded = [];
@@ -172,7 +172,7 @@ class Relation extends Model
     /**
      * Define a one-to-many relationship to User models.
      *
-     * @return HasMany The has-many relationship for User models.
+     * @return HasMany the has-many relationship for User models
      */
     public function users(): HasMany
     {
@@ -182,7 +182,7 @@ class Relation extends Model
     /**
      * Get the Peppol validation history records for this relation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany Collection of CustomerPeppolValidationHistory models related by `customer_id`.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany collection of CustomerPeppolValidationHistory models related by `customer_id`
      */
     public function peppolValidationHistory(): HasMany
     {
@@ -203,19 +203,19 @@ class Relation extends Model
     {
         return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
     }*/
-    
+
     /**
      * Determines whether the relation's Peppol ID has been validated and e-invoicing is enabled.
      *
-     * @return bool `true` if e-invoicing is enabled, the Peppol validation status is `PeppolValidationStatus::VALID`, and `peppol_id` is not null; `false` otherwise.
+     * @return bool `true` if e-invoicing is enabled, the Peppol validation status is `PeppolValidationStatus::VALID`, and `peppol_id` is not null; `false` otherwise
      */
     public function hasPeppolIdValidated(): bool
     {
-        return $this->enable_e_invoicing 
+        return $this->enable_e_invoicing
             && $this->peppol_validation_status === PeppolValidationStatus::VALID
             && $this->peppol_id !== null;
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | Scopes

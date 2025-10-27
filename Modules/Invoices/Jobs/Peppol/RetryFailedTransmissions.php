@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Jobs\Peppol;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,14 +14,18 @@ use Modules\Invoices\Models\PeppolTransmission;
 use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
- * Retry failed transmissions with exponential backoff
- * 
+ * Retry failed transmissions with exponential backoff.
+ *
  * This job processes transmissions that are scheduled for retry
  * Typically scheduled to run frequently (e.g., every minute)
  */
 class RetryFailedTransmissions implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LogsPeppolActivity;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use LogsPeppolActivity;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 3;
 
@@ -44,10 +49,10 @@ class RetryFailedTransmissions implements ShouldQueue
         foreach ($transmissions as $transmission) {
             try {
                 $this->retryTransmission($transmission);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logPeppolError('Failed to retry transmission', [
                     'transmission_id' => $transmission->id,
-                    'error' => $e->getMessage(),
+                    'error'           => $e->getMessage(),
                 ]);
             }
         }
@@ -69,12 +74,12 @@ class RetryFailedTransmissions implements ShouldQueue
         if ($transmission->attempts >= $maxAttempts) {
             $transmission->markAsDead('Maximum retry attempts exceeded');
             event(new PeppolTransmissionDead($transmission, 'Maximum retry attempts exceeded'));
-            
+
             $this->logPeppolWarning('Transmission marked as dead', [
                 'transmission_id' => $transmission->id,
-                'attempts' => $transmission->attempts,
+                'attempts'        => $transmission->attempts,
             ]);
-            
+
             return;
         }
 
@@ -88,7 +93,7 @@ class RetryFailedTransmissions implements ShouldQueue
 
         $this->logPeppolInfo('Retrying transmission', [
             'transmission_id' => $transmission->id,
-            'attempt' => $transmission->attempts + 1,
+            'attempt'         => $transmission->attempts + 1,
         ]);
     }
 }

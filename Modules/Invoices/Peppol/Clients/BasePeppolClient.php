@@ -11,8 +11,6 @@ use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
  * including authentication, base URL configuration, and shared HTTP client setup.
  * Each Peppol provider (e.g., e-invoice.be, Storecove, etc.) should extend this
  * class to implement their specific authentication and configuration.
- *
- * @package Modules\Invoices\Peppol\Clients
  */
 abstract class BasePeppolClient
 {
@@ -47,26 +45,47 @@ abstract class BasePeppolClient
     /**
      * Constructor.
      *
-     * @param HttpClientExceptionHandler $client The HTTP client
-     * @param string $apiKey The API key for authentication
-     * @param string $baseUrl The base URL for the API
+     * @param HttpClientExceptionHandler $client  The HTTP client
+     * @param string                     $apiKey  The API key for authentication
+     * @param string                     $baseUrl The base URL for the API
      */
     public function __construct(HttpClientExceptionHandler $client, string $apiKey, string $baseUrl)
     {
-        $this->client = $client;
-        $this->apiKey = $apiKey;
-        $this->baseUrl = rtrim($baseUrl, '/');
+        $this->client  = $client;
+        $this->apiKey  = $apiKey;
+        $this->baseUrl = mb_rtrim($baseUrl, '/');
+    }
+
+    /**
+     * Get authentication headers for the API.
+     *
+     * This method must be implemented by each provider client to return
+     * the appropriate authentication headers for that provider's API.
+     *
+     * @return array<string, string> Authentication headers
+     */
+    abstract protected function getAuthenticationHeaders(): array;
+
+    /**
+     * Get the HTTP client instance.
+     *
+     * @return HttpClientExceptionHandler
+     */
+    public function getClient(): HttpClientExceptionHandler
+    {
+        return $this->client;
     }
 
     /**
      * Build the full URL from the base URL and path.
      *
      * @param string $path The API path
+     *
      * @return string The full URL
      */
     protected function buildUrl(string $path): string
     {
-        return $this->baseUrl . '/' . ltrim($path, '/');
+        return $this->baseUrl . '/' . mb_ltrim($path, '/');
     }
 
     /**
@@ -83,16 +102,6 @@ abstract class BasePeppolClient
     }
 
     /**
-     * Get authentication headers for the API.
-     *
-     * This method must be implemented by each provider client to return
-     * the appropriate authentication headers for that provider's API.
-     *
-     * @return array<string, string> Authentication headers
-     */
-    abstract protected function getAuthenticationHeaders(): array;
-
-    /**
      * Get the request timeout in seconds.
      *
      * Override this method in child classes to set a different timeout.
@@ -102,15 +111,5 @@ abstract class BasePeppolClient
     protected function getTimeout(): int
     {
         return $this->timeout;
-    }
-
-    /**
-     * Get the HTTP client instance.
-     *
-     * @return HttpClientExceptionHandler
-     */
-    public function getClient(): HttpClientExceptionHandler
-    {
-        return $this->client;
     }
 }

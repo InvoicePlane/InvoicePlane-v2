@@ -7,17 +7,52 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use ValueError;
 
 /**
  * PeppolErrorTypeTest - Unit tests for PeppolErrorType enum.
  *
  * Tests error type classification including labels, colors, and icons.
- *
- * @package Modules\Invoices\Tests\Unit\Enums
  */
 #[Group('peppol')]
 class PeppolErrorTypeTest extends TestCase
 {
+    public static function labelProvider(): array
+    {
+        return [
+            [PeppolErrorType::TRANSIENT, 'Transient Error'],
+            [PeppolErrorType::PERMANENT, 'Permanent Error'],
+            [PeppolErrorType::UNKNOWN, 'Unknown Error'],
+        ];
+    }
+
+    public static function colorProvider(): array
+    {
+        return [
+            [PeppolErrorType::TRANSIENT, 'yellow'],
+            [PeppolErrorType::PERMANENT, 'red'],
+            [PeppolErrorType::UNKNOWN, 'gray'],
+        ];
+    }
+
+    public static function iconProvider(): array
+    {
+        return [
+            [PeppolErrorType::TRANSIENT, 'heroicon-o-arrow-path'],
+            [PeppolErrorType::PERMANENT, 'heroicon-o-x-circle'],
+            [PeppolErrorType::UNKNOWN, 'heroicon-o-question-mark-circle'],
+        ];
+    }
+
+    public static function valueProvider(): array
+    {
+        return [
+            [PeppolErrorType::TRANSIENT, 'TRANSIENT'],
+            [PeppolErrorType::PERMANENT, 'PERMANENT'],
+            [PeppolErrorType::UNKNOWN, 'UNKNOWN'],
+        ];
+    }
+
     #[Test]
     public function it_has_all_expected_cases(): void
     {
@@ -38,15 +73,6 @@ class PeppolErrorTypeTest extends TestCase
         $this->assertEquals($expectedLabel, $type->label());
     }
 
-    public static function labelProvider(): array
-    {
-        return [
-            [PeppolErrorType::TRANSIENT, 'Transient Error'],
-            [PeppolErrorType::PERMANENT, 'Permanent Error'],
-            [PeppolErrorType::UNKNOWN, 'Unknown Error'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('colorProvider')]
     public function it_provides_correct_colors(
@@ -54,15 +80,6 @@ class PeppolErrorTypeTest extends TestCase
         string $expectedColor
     ): void {
         $this->assertEquals($expectedColor, $type->color());
-    }
-
-    public static function colorProvider(): array
-    {
-        return [
-            [PeppolErrorType::TRANSIENT, 'yellow'],
-            [PeppolErrorType::PERMANENT, 'red'],
-            [PeppolErrorType::UNKNOWN, 'gray'],
-        ];
     }
 
     #[Test]
@@ -74,15 +91,6 @@ class PeppolErrorTypeTest extends TestCase
         $this->assertEquals($expectedIcon, $type->icon());
     }
 
-    public static function iconProvider(): array
-    {
-        return [
-            [PeppolErrorType::TRANSIENT, 'heroicon-o-arrow-path'],
-            [PeppolErrorType::PERMANENT, 'heroicon-o-x-circle'],
-            [PeppolErrorType::UNKNOWN, 'heroicon-o-question-mark-circle'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('valueProvider')]
     public function it_has_correct_enum_values(
@@ -90,15 +98,6 @@ class PeppolErrorTypeTest extends TestCase
         string $expectedValue
     ): void {
         $this->assertEquals($expectedValue, $type->value);
-    }
-
-    public static function valueProvider(): array
-    {
-        return [
-            [PeppolErrorType::TRANSIENT, 'TRANSIENT'],
-            [PeppolErrorType::PERMANENT, 'PERMANENT'],
-            [PeppolErrorType::UNKNOWN, 'UNKNOWN'],
-        ];
     }
 
     #[Test]
@@ -112,7 +111,7 @@ class PeppolErrorTypeTest extends TestCase
     #[Test]
     public function it_throws_on_invalid_value(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(ValueError::class);
         PeppolErrorType::from('INVALID');
     }
 

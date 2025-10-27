@@ -13,7 +13,6 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
  *
  * @see http://docs.oasis-open.org/ubl/UBL-2.1.html
  * @see http://docs.oasis-open.org/ubl/UBL-2.4.html
- * @package Modules\Invoices\Peppol\FormatHandlers
  */
 class UblHandler extends BaseFormatHandler
 {
@@ -32,29 +31,29 @@ class UblHandler extends BaseFormatHandler
      */
     public function transform(Invoice $invoice, array $options = []): array
     {
-        $customer = $invoice->customer;
-        $currencyCode = $this->getCurrencyCode($invoice);
+        $customer       = $invoice->customer;
+        $currencyCode   = $this->getCurrencyCode($invoice);
         $endpointScheme = $this->getEndpointScheme($invoice);
 
         return [
-            'ubl_version_id' => $this->format === PeppolDocumentFormat::UBL_24 ? '2.4' : '2.1',
-            'customization_id' => config('invoices.peppol.formats.ubl.customization_id', 'urn:cen.eu:en16931:2017'),
-            'profile_id' => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
-            'id' => $invoice->invoice_number,
-            'issue_date' => $invoice->invoiced_at->format('Y-m-d'),
-            'due_date' => $invoice->invoice_due_at->format('Y-m-d'),
-            'invoice_type_code' => '380', // Standard commercial invoice
+            'ubl_version_id'         => $this->format === PeppolDocumentFormat::UBL_24 ? '2.4' : '2.1',
+            'customization_id'       => config('invoices.peppol.formats.ubl.customization_id', 'urn:cen.eu:en16931:2017'),
+            'profile_id'             => 'urn:fdc:peppol.eu:2017:poacc:billing:01:1.0',
+            'id'                     => $invoice->invoice_number,
+            'issue_date'             => $invoice->invoiced_at->format('Y-m-d'),
+            'due_date'               => $invoice->invoice_due_at->format('Y-m-d'),
+            'invoice_type_code'      => '380', // Standard commercial invoice
             'document_currency_code' => $currencyCode,
-            
+
             // Supplier
             'accounting_supplier_party' => $this->buildSupplierParty($invoice),
-            
+
             // Customer
             'accounting_customer_party' => $this->buildCustomerParty($invoice),
-            
+
             // Invoice lines
             'invoice_line' => $this->buildInvoiceLines($invoice, $currencyCode),
-            
+
             // Totals
             'legal_monetary_total' => $this->buildMonetaryTotals($invoice, $currencyCode),
         ];
@@ -66,7 +65,7 @@ class UblHandler extends BaseFormatHandler
     public function generateXml(Invoice $invoice, array $options = []): string
     {
         $data = $this->transform($invoice, $options);
-        
+
         // Placeholder - would use XML library to generate proper UBL XML
         return json_encode($data, JSON_PRETTY_PRINT);
     }
@@ -79,7 +78,7 @@ class UblHandler extends BaseFormatHandler
         $errors = [];
 
         // UBL requires certain fields
-        if (!$invoice->customer->peppol_id && config('invoices.peppol.validation.require_customer_peppol_id')) {
+        if ( ! $invoice->customer->peppol_id && config('invoices.peppol.validation.require_customer_peppol_id')) {
             $errors[] = 'Customer Peppol ID is required for UBL format';
         }
 
@@ -90,6 +89,7 @@ class UblHandler extends BaseFormatHandler
      * Build supplier party data.
      *
      * @param Invoice $invoice
+     *
      * @return array<string, mixed>
      */
     protected function buildSupplierParty(Invoice $invoice): array
@@ -99,7 +99,7 @@ class UblHandler extends BaseFormatHandler
         return [
             'party' => [
                 'endpoint_id' => [
-                    'value' => config('invoices.peppol.supplier.vat_number'),
+                    'value'     => config('invoices.peppol.supplier.vat_number'),
                     'scheme_id' => $endpointScheme->value,
                 ],
                 'party_name' => [
@@ -107,9 +107,9 @@ class UblHandler extends BaseFormatHandler
                 ],
                 'postal_address' => [
                     'street_name' => config('invoices.peppol.supplier.street_name'),
-                    'city_name' => config('invoices.peppol.supplier.city_name'),
+                    'city_name'   => config('invoices.peppol.supplier.city_name'),
                     'postal_zone' => config('invoices.peppol.supplier.postal_zone'),
-                    'country' => [
+                    'country'     => [
                         'identification_code' => config('invoices.peppol.supplier.country_code'),
                     ],
                 ],
@@ -121,8 +121,8 @@ class UblHandler extends BaseFormatHandler
                     'registration_name' => config('invoices.peppol.supplier.company_name'),
                 ],
                 'contact' => [
-                    'name' => config('invoices.peppol.supplier.contact_name'),
-                    'telephone' => config('invoices.peppol.supplier.contact_phone'),
+                    'name'            => config('invoices.peppol.supplier.contact_name'),
+                    'telephone'       => config('invoices.peppol.supplier.contact_phone'),
                     'electronic_mail' => config('invoices.peppol.supplier.contact_email'),
                 ],
             ],
@@ -133,28 +133,29 @@ class UblHandler extends BaseFormatHandler
      * Build customer party data.
      *
      * @param Invoice $invoice
+     *
      * @return array<string, mixed>
      */
     protected function buildCustomerParty(Invoice $invoice): array
     {
-        $customer = $invoice->customer;
+        $customer       = $invoice->customer;
         $endpointScheme = $this->getEndpointScheme($invoice);
 
         return [
             'party' => [
                 'endpoint_id' => [
-                    'value' => $customer->peppol_id,
+                    'value'     => $customer->peppol_id,
                     'scheme_id' => $endpointScheme->value,
                 ],
                 'party_name' => [
                     'name' => $customer->company_name ?? $customer->customer_name,
                 ],
                 'postal_address' => [
-                    'street_name' => $customer->street1,
+                    'street_name'            => $customer->street1,
                     'additional_street_name' => $customer->street2,
-                    'city_name' => $customer->city,
-                    'postal_zone' => $customer->zip,
-                    'country' => [
+                    'city_name'              => $customer->city,
+                    'postal_zone'            => $customer->zip,
+                    'country'                => [
                         'identification_code' => $customer->country_code,
                     ],
                 ],
@@ -166,29 +167,30 @@ class UblHandler extends BaseFormatHandler
      * Build invoice lines data.
      *
      * @param Invoice $invoice
-     * @param string $currencyCode
+     * @param string  $currencyCode
+     *
      * @return array<int, array<string, mixed>>
      */
     protected function buildInvoiceLines(Invoice $invoice, string $currencyCode): array
     {
         return $invoice->invoiceItems->map(function ($item, $index) use ($currencyCode) {
             return [
-                'id' => $index + 1,
+                'id'                => $index + 1,
                 'invoiced_quantity' => [
-                    'value' => $item->quantity,
+                    'value'     => $item->quantity,
                     'unit_code' => config('invoices.peppol.document.default_unit_code', 'C62'),
                 ],
                 'line_extension_amount' => [
-                    'value' => number_format($item->subtotal, 2, '.', ''),
+                    'value'       => number_format($item->subtotal, 2, '.', ''),
                     'currency_id' => $currencyCode,
                 ],
                 'item' => [
-                    'name' => $item->item_name,
+                    'name'        => $item->item_name,
                     'description' => $item->description,
                 ],
                 'price' => [
                     'price_amount' => [
-                        'value' => number_format($item->price, 2, '.', ''),
+                        'value'       => number_format($item->price, 2, '.', ''),
                         'currency_id' => $currencyCode,
                     ],
                 ],
@@ -200,26 +202,27 @@ class UblHandler extends BaseFormatHandler
      * Build monetary totals data.
      *
      * @param Invoice $invoice
-     * @param string $currencyCode
+     * @param string  $currencyCode
+     *
      * @return array<string, mixed>
      */
     protected function buildMonetaryTotals(Invoice $invoice, string $currencyCode): array
     {
         return [
             'line_extension_amount' => [
-                'value' => number_format($invoice->invoice_subtotal, 2, '.', ''),
+                'value'       => number_format($invoice->invoice_subtotal, 2, '.', ''),
                 'currency_id' => $currencyCode,
             ],
             'tax_exclusive_amount' => [
-                'value' => number_format($invoice->invoice_subtotal, 2, '.', ''),
+                'value'       => number_format($invoice->invoice_subtotal, 2, '.', ''),
                 'currency_id' => $currencyCode,
             ],
             'tax_inclusive_amount' => [
-                'value' => number_format($invoice->invoice_total, 2, '.', ''),
+                'value'       => number_format($invoice->invoice_total, 2, '.', ''),
                 'currency_id' => $currencyCode,
             ],
             'payable_amount' => [
-                'value' => number_format($invoice->invoice_total, 2, '.', ''),
+                'value'       => number_format($invoice->invoice_total, 2, '.', ''),
                 'currency_id' => $currencyCode,
             ],
         ];

@@ -7,18 +7,80 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use ValueError;
 
 /**
  * PeppolDocumentFormatTest - Unit tests for PeppolDocumentFormat enum.
  *
  * Tests the document format enum including country-based recommendations
  * and mandatory format detection.
- *
- * @package Modules\Invoices\Tests\Unit\Peppol\Enums
  */
 #[Group('peppol')]
 class PeppolDocumentFormatTest extends TestCase
 {
+    public static function countryRecommendationProvider(): array
+    {
+        return [
+            // CII countries
+            ['DE', PeppolDocumentFormat::CII],
+            ['FR', PeppolDocumentFormat::CII],
+            ['AT', PeppolDocumentFormat::CII],
+
+            // Country-specific formats
+            ['IT', PeppolDocumentFormat::FATTURAPA_12],
+            ['ES', PeppolDocumentFormat::FACTURAE_32],
+            ['DK', PeppolDocumentFormat::OIOUBL],
+            ['NO', PeppolDocumentFormat::EHF_30],
+
+            // Default UBL for other countries
+            ['NL', PeppolDocumentFormat::UBL_24],
+            ['BE', PeppolDocumentFormat::UBL_24],
+            ['GB', PeppolDocumentFormat::UBL_24],
+            ['SE', PeppolDocumentFormat::UBL_24],
+            ['FI', PeppolDocumentFormat::UBL_24],
+
+            // Unknown country defaults to UBL
+            ['XX', PeppolDocumentFormat::UBL_24],
+            ['', PeppolDocumentFormat::UBL_24],
+        ];
+    }
+
+    public static function mandatoryFormatProvider(): array
+    {
+        return [
+            // FatturaPA is mandatory for Italy
+            [PeppolDocumentFormat::FATTURAPA_12, 'IT', true],
+            [PeppolDocumentFormat::FATTURAPA_12, 'DE', false],
+            [PeppolDocumentFormat::UBL_24, 'IT', false],
+
+            // Facturae is mandatory for Spanish public sector (simplified - would be true with public sector flag)
+            [PeppolDocumentFormat::FACTURAE_32, 'ES', false], // Not mandatory for all Spanish invoices
+            [PeppolDocumentFormat::FACTURAE_32, 'FR', false],
+
+            // No other formats are strictly mandatory
+            [PeppolDocumentFormat::UBL_24, 'NL', false],
+            [PeppolDocumentFormat::CII, 'DE', false],
+            [PeppolDocumentFormat::OIOUBL, 'DK', false],
+        ];
+    }
+
+    public static function formatValuesProvider(): array
+    {
+        return [
+            [PeppolDocumentFormat::PEPPOL_BIS_30, 'peppol_bis_3.0'],
+            [PeppolDocumentFormat::UBL_21, 'ubl_2.1'],
+            [PeppolDocumentFormat::UBL_24, 'ubl_2.4'],
+            [PeppolDocumentFormat::CII, 'cii'],
+            [PeppolDocumentFormat::FATTURAPA_12, 'fatturapa_1.2'],
+            [PeppolDocumentFormat::FACTURAE_32, 'facturae_3.2'],
+            [PeppolDocumentFormat::FACTURX, 'factur-x'],
+            [PeppolDocumentFormat::ZUGFERD_10, 'zugferd_1.0'],
+            [PeppolDocumentFormat::ZUGFERD_20, 'zugferd_2.0'],
+            [PeppolDocumentFormat::OIOUBL, 'oioubl'],
+            [PeppolDocumentFormat::EHF_30, 'ehf_3.0'],
+        ];
+    }
+
     #[Test]
     public function it_has_all_expected_formats(): void
     {
@@ -49,33 +111,6 @@ class PeppolDocumentFormatTest extends TestCase
         $this->assertEquals($expectedFormat, $recommended);
     }
 
-    public static function countryRecommendationProvider(): array
-    {
-        return [
-            // CII countries
-            ['DE', PeppolDocumentFormat::CII],
-            ['FR', PeppolDocumentFormat::CII],
-            ['AT', PeppolDocumentFormat::CII],
-            
-            // Country-specific formats
-            ['IT', PeppolDocumentFormat::FATTURAPA_12],
-            ['ES', PeppolDocumentFormat::FACTURAE_32],
-            ['DK', PeppolDocumentFormat::OIOUBL],
-            ['NO', PeppolDocumentFormat::EHF_30],
-            
-            // Default UBL for other countries
-            ['NL', PeppolDocumentFormat::UBL_24],
-            ['BE', PeppolDocumentFormat::UBL_24],
-            ['GB', PeppolDocumentFormat::UBL_24],
-            ['SE', PeppolDocumentFormat::UBL_24],
-            ['FI', PeppolDocumentFormat::UBL_24],
-            
-            // Unknown country defaults to UBL
-            ['XX', PeppolDocumentFormat::UBL_24],
-            ['', PeppolDocumentFormat::UBL_24],
-        ];
-    }
-
     #[Test]
     #[DataProvider('mandatoryFormatProvider')]
     public function it_identifies_mandatory_formats_correctly(
@@ -86,25 +121,6 @@ class PeppolDocumentFormatTest extends TestCase
         $isMandatory = $format->isMandatoryFor($countryCode);
 
         $this->assertEquals($expectedMandatory, $isMandatory);
-    }
-
-    public static function mandatoryFormatProvider(): array
-    {
-        return [
-            // FatturaPA is mandatory for Italy
-            [PeppolDocumentFormat::FATTURAPA_12, 'IT', true],
-            [PeppolDocumentFormat::FATTURAPA_12, 'DE', false],
-            [PeppolDocumentFormat::UBL_24, 'IT', false],
-            
-            // Facturae is mandatory for Spanish public sector (simplified - would be true with public sector flag)
-            [PeppolDocumentFormat::FACTURAE_32, 'ES', false], // Not mandatory for all Spanish invoices
-            [PeppolDocumentFormat::FACTURAE_32, 'FR', false],
-            
-            // No other formats are strictly mandatory
-            [PeppolDocumentFormat::UBL_24, 'NL', false],
-            [PeppolDocumentFormat::CII, 'DE', false],
-            [PeppolDocumentFormat::OIOUBL, 'DK', false],
-        ];
     }
 
     #[Test]
@@ -134,7 +150,7 @@ class PeppolDocumentFormatTest extends TestCase
     #[Test]
     public function it_throws_on_invalid_value(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(ValueError::class);
         PeppolDocumentFormat::from('invalid_format');
     }
 
@@ -155,23 +171,6 @@ class PeppolDocumentFormatTest extends TestCase
         string $expectedValue
     ): void {
         $this->assertEquals($expectedValue, $format->value);
-    }
-
-    public static function formatValuesProvider(): array
-    {
-        return [
-            [PeppolDocumentFormat::PEPPOL_BIS_30, 'peppol_bis_3.0'],
-            [PeppolDocumentFormat::UBL_21, 'ubl_2.1'],
-            [PeppolDocumentFormat::UBL_24, 'ubl_2.4'],
-            [PeppolDocumentFormat::CII, 'cii'],
-            [PeppolDocumentFormat::FATTURAPA_12, 'fatturapa_1.2'],
-            [PeppolDocumentFormat::FACTURAE_32, 'facturae_3.2'],
-            [PeppolDocumentFormat::FACTURX, 'factur-x'],
-            [PeppolDocumentFormat::ZUGFERD_10, 'zugferd_1.0'],
-            [PeppolDocumentFormat::ZUGFERD_20, 'zugferd_2.0'],
-            [PeppolDocumentFormat::OIOUBL, 'oioubl'],
-            [PeppolDocumentFormat::EHF_30, 'ehf_3.0'],
-        ];
     }
 
     #[Test]

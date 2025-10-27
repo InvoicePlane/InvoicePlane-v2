@@ -11,47 +11,47 @@ enum PeppolErrorType: string implements LabeledEnum
 
     case TRANSIENT = 'TRANSIENT';
     case PERMANENT = 'PERMANENT';
-    case UNKNOWN = 'UNKNOWN';
+    case UNKNOWN   = 'UNKNOWN';
 
     /**
      * Get a human-readable label for the error type.
      *
-     * @return string Human-readable label for the enum case.
+     * @return string human-readable label for the enum case
      */
     public function label(): string
     {
         return match ($this) {
             self::TRANSIENT => 'Transient Error',
             self::PERMANENT => 'Permanent Error',
-            self::UNKNOWN => 'Unknown Error',
+            self::UNKNOWN   => 'Unknown Error',
         };
     }
 
     /**
      * Gets the UI color identifier associated with this Peppol error type.
      *
-     * @return string The color identifier: 'yellow' for TRANSIENT, 'red' for PERMANENT, 'gray' for UNKNOWN.
+     * @return string the color identifier: 'yellow' for TRANSIENT, 'red' for PERMANENT, 'gray' for UNKNOWN
      */
     public function color(): string
     {
         return match ($this) {
             self::TRANSIENT => 'yellow',
             self::PERMANENT => 'red',
-            self::UNKNOWN => 'gray',
+            self::UNKNOWN   => 'gray',
         };
     }
 
     /**
      * Get the icon identifier corresponding to this error type.
      *
-     * @return string The icon identifier for the enum case.
+     * @return string the icon identifier for the enum case
      */
     public function icon(): string
     {
         return match ($this) {
             self::TRANSIENT => 'heroicon-o-arrow-path',
             self::PERMANENT => 'heroicon-o-x-circle',
-            self::UNKNOWN => 'heroicon-o-question-mark-circle',
+            self::UNKNOWN   => 'heroicon-o-question-mark-circle',
         };
     }
 }

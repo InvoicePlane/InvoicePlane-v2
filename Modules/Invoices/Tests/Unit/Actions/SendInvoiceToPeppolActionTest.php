@@ -4,6 +4,7 @@ namespace Modules\Invoices\Tests\Unit\Actions;
 
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
 use Modules\Invoices\Actions\SendInvoiceToPeppolAction;
 use Modules\Invoices\Models\Invoice;
@@ -18,8 +19,6 @@ use Tests\TestCase;
  *
  * Tests the action that coordinates invoice transmission to Peppol.
  * Uses fakes for HTTP responses and database interactions.
- *
- * @package Modules\Invoices\Tests\Unit\Actions
  */
 class SendInvoiceToPeppolActionTest extends TestCase
 {
@@ -33,14 +32,14 @@ class SendInvoiceToPeppolActionTest extends TestCase
         Http::fake([
             'https://api.e-invoice.be/*' => Http::response([
                 'document_id' => 'DOC-123456',
-                'status' => 'submitted',
+                'status'      => 'submitted',
             ], 200),
         ]);
 
         // Create real dependencies
-        $externalClient = new \Modules\Invoices\Http\Clients\ApiClient();
+        $externalClient   = new \Modules\Invoices\Http\Clients\ApiClient();
         $exceptionHandler = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($externalClient);
-        $documentsClient = new DocumentsClient(
+        $documentsClient  = new DocumentsClient(
             $exceptionHandler,
             'test-api-key',
             'https://api.e-invoice.be'
@@ -83,7 +82,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
     {
         $invoice = $this->createMockInvoice('draft');
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot send draft invoices to Peppol');
 
         $this->action->execute($invoice);
@@ -92,10 +91,10 @@ class SendInvoiceToPeppolActionTest extends TestCase
     #[Test]
     public function it_passes_additional_data_to_service(): void
     {
-        $invoice = $this->createMockInvoice('sent');
+        $invoice        = $this->createMockInvoice('sent');
         $additionalData = [
             'customer_peppol_id' => 'BE:0123456789',
-            'custom_field' => 'custom_value',
+            'custom_field'       => 'custom_value',
         ];
 
         $this->action->execute($invoice, $additionalData);
@@ -103,6 +102,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
         // Verify additional data is included in the request
         Http::assertSent(function ($request) {
             $data = $request->data();
+
             return isset($data['customer_peppol_id']) &&
                    $data['customer_peppol_id'] === 'BE:0123456789';
         });
@@ -113,7 +113,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
     {
         Http::fake([
             'https://api.e-invoice.be/api/documents/*/status' => Http::response([
-                'status' => 'delivered',
+                'status'    => 'delivered',
                 'timestamp' => '2024-01-15T10:30:00Z',
             ], 200),
         ]);
@@ -179,7 +179,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
         $invoice->setRelation('customer', Relation::factory()->make());
         $invoice->setRelation('invoiceItems', collect([]));
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->action->execute($invoice);
     }
@@ -216,33 +216,34 @@ class SendInvoiceToPeppolActionTest extends TestCase
      * Create a mock invoice for testing.
      *
      * @param string $status The invoice status
+     *
      * @return Invoice
      */
     protected function createMockInvoice(string $status = 'sent'): Invoice
     {
         $customer = Relation::factory()->make([
-            'company_name' => 'Test Customer',
+            'company_name'  => 'Test Customer',
             'customer_name' => 'Test Customer',
         ]);
 
         $items = collect([
             InvoiceItem::factory()->make([
-                'item_name' => 'Product 1',
-                'quantity' => 2,
-                'price' => 100,
-                'subtotal' => 200,
+                'item_name'   => 'Product 1',
+                'quantity'    => 2,
+                'price'       => 100,
+                'subtotal'    => 200,
                 'description' => 'Test product',
             ]),
         ]);
 
         $invoice = Invoice::factory()->make([
-            'invoice_number' => 'INV-2024-001',
-            'invoice_status' => $status,
+            'invoice_number'        => 'INV-2024-001',
+            'invoice_status'        => $status,
             'invoice_item_subtotal' => 200,
-            'invoice_tax_total' => 42,
-            'invoice_total' => 242,
-            'invoiced_at' => now(),
-            'invoice_due_at' => now()->addDays(30),
+            'invoice_tax_total'     => 42,
+            'invoice_total'         => 242,
+            'invoiced_at'           => now(),
+            'invoice_due_at'        => now()->addDays(30),
         ]);
 
         $invoice->setRelation('customer', $customer);

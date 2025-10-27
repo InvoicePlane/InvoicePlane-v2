@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Add Peppol validation columns to the relations table.
      *
@@ -19,13 +18,13 @@ return new class extends Migration
         Schema::table('relations', function (Blueprint $table): void {
             $table->string('peppol_scheme', 50)->nullable()->after('peppol_id')
                 ->comment('Peppol endpoint scheme (e.g., BE:CBE, DE:VAT)');
-            
+
             $table->string('peppol_validation_status', 20)->nullable()->after('enable_e_invoicing')
                 ->comment('Quick lookup: valid, invalid, not_found, error, null');
-            
+
             $table->text('peppol_validation_message')->nullable()->after('peppol_validation_status')
                 ->comment('Last validation result message');
-            
+
             $table->timestamp('peppol_validated_at')->nullable()->after('peppol_validation_message')
                 ->comment('When was the Peppol ID last validated');
         });

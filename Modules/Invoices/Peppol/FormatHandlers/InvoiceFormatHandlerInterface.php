@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Peppol\FormatHandlers;
 
+use InvalidArgumentException;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 
@@ -13,8 +14,6 @@ use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
  * encapsulate format-specific behavior.
  *
  * This follows the pattern established in InvoicePlane v1 with XML templates.
- *
- * @package Modules\Invoices\Peppol\FormatHandlers
  */
 interface InvoiceFormatHandlerInterface
 {
@@ -28,22 +27,24 @@ interface InvoiceFormatHandlerInterface
     /**
      * Transform an invoice to the format's data structure.
      *
-     * @param Invoice $invoice The invoice to transform
+     * @param Invoice              $invoice The invoice to transform
      * @param array<string, mixed> $options Additional options for transformation
+     *
      * @return array<string, mixed> The transformed invoice data
      *
-     * @throws \InvalidArgumentException If the invoice cannot be transformed
+     * @throws InvalidArgumentException If the invoice cannot be transformed
      */
     public function transform(Invoice $invoice, array $options = []): array;
 
     /**
      * Generate XML document from invoice data.
      *
-     * @param Invoice $invoice The invoice to convert
+     * @param Invoice              $invoice The invoice to convert
      * @param array<string, mixed> $options Additional options
+     *
      * @return string The generated XML content
      *
-     * @throws \InvalidArgumentException If generation fails
+     * @throws InvalidArgumentException If generation fails
      */
     public function generateXml(Invoice $invoice, array $options = []): string;
 
@@ -51,6 +52,7 @@ interface InvoiceFormatHandlerInterface
      * Validate that an invoice meets the format's requirements.
      *
      * @param Invoice $invoice The invoice to validate
+     *
      * @return array<string> Array of validation error messages (empty if valid)
      */
     public function validate(Invoice $invoice): array;
@@ -59,6 +61,7 @@ interface InvoiceFormatHandlerInterface
      * Check if this handler can process the given invoice.
      *
      * @param Invoice $invoice The invoice to check
+     *
      * @return bool True if the handler can process the invoice
      */
     public function supports(Invoice $invoice): bool;

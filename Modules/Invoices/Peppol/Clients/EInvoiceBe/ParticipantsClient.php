@@ -12,8 +12,6 @@ use Modules\Invoices\Http\RequestMethod;
  * identifiers, useful for validating customer Peppol IDs before sending invoices.
  *
  * API Documentation: https://api.e-invoice.be/docs#tag/participants
- *
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class ParticipantsClient extends EInvoiceBeClient
 {
@@ -44,17 +42,18 @@ class ParticipantsClient extends EInvoiceBeClient
      * }
      * ```
      *
-     * @param string $participantId The Peppol participant identifier
-     * @param string|null $scheme The identifier scheme (e.g., 'BE:CBE')
+     * @param string      $participantId The Peppol participant identifier
+     * @param string|null $scheme        The identifier scheme (e.g., 'BE:CBE')
+     *
      * @return Response
      */
     public function searchParticipant(string $participantId, ?string $scheme = null): Response
     {
-        $url = $this->buildUrl('/participants/search');
+        $url     = $this->buildUrl('/participants/search');
         $options = $this->getRequestOptions([
             'payload' => array_filter([
                 'participant_id' => $participantId,
-                'scheme' => $scheme,
+                'scheme'         => $scheme,
             ]),
         ]);
 
@@ -80,11 +79,12 @@ class ParticipantsClient extends EInvoiceBeClient
      * ```
      *
      * @param string $participantId The participant identifier (format: scheme:id)
+     *
      * @return Response
      */
     public function lookupParticipant(string $participantId): Response
     {
-        $url = $this->buildUrl("/participants/{$participantId}");
+        $url     = $this->buildUrl("/participants/{$participantId}");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -104,12 +104,13 @@ class ParticipantsClient extends EInvoiceBeClient
      * ```
      *
      * @param string $participantId The participant identifier
-     * @param string $documentType The document type (e.g., 'invoice', 'credit_note')
+     * @param string $documentType  The document type (e.g., 'invoice', 'credit_note')
+     *
      * @return Response
      */
     public function checkCapability(string $participantId, string $documentType): Response
     {
-        $url = $this->buildUrl("/participants/{$participantId}/capabilities");
+        $url     = $this->buildUrl("/participants/{$participantId}/capabilities");
         $options = $this->getRequestOptions([
             'payload' => [
                 'document_type' => $documentType,
@@ -140,11 +141,12 @@ class ParticipantsClient extends EInvoiceBeClient
      * ```
      *
      * @param string $participantId The participant identifier
+     *
      * @return Response
      */
     public function getServiceMetadata(string $participantId): Response
     {
-        $url = $this->buildUrl("/participants/{$participantId}/metadata");
+        $url     = $this->buildUrl("/participants/{$participantId}/metadata");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);

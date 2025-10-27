@@ -7,18 +7,107 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use ValueError;
 
 /**
  * PeppolTransmissionStatusTest - Unit tests for PeppolTransmissionStatus enum.
  *
  * Tests transmission lifecycle status including state methods,
  * labels, colors, icons, and business logic.
- *
- * @package Modules\Invoices\Tests\Unit\Enums
  */
 #[Group('peppol')]
 class PeppolTransmissionStatusTest extends TestCase
 {
+    public static function labelProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, 'Pending'],
+            [PeppolTransmissionStatus::QUEUED, 'Queued'],
+            [PeppolTransmissionStatus::PROCESSING, 'Processing'],
+            [PeppolTransmissionStatus::SENT, 'Sent'],
+            [PeppolTransmissionStatus::ACCEPTED, 'Accepted'],
+            [PeppolTransmissionStatus::REJECTED, 'Rejected'],
+            [PeppolTransmissionStatus::FAILED, 'Failed'],
+            [PeppolTransmissionStatus::RETRYING, 'Retrying'],
+            [PeppolTransmissionStatus::DEAD, 'Dead'],
+        ];
+    }
+
+    public static function colorProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, 'gray'],
+            [PeppolTransmissionStatus::QUEUED, 'blue'],
+            [PeppolTransmissionStatus::PROCESSING, 'yellow'],
+            [PeppolTransmissionStatus::SENT, 'indigo'],
+            [PeppolTransmissionStatus::ACCEPTED, 'green'],
+            [PeppolTransmissionStatus::REJECTED, 'red'],
+            [PeppolTransmissionStatus::FAILED, 'orange'],
+            [PeppolTransmissionStatus::RETRYING, 'purple'],
+            [PeppolTransmissionStatus::DEAD, 'red'],
+        ];
+    }
+
+    public static function iconProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, 'heroicon-o-clock'],
+            [PeppolTransmissionStatus::QUEUED, 'heroicon-o-queue-list'],
+            [PeppolTransmissionStatus::PROCESSING, 'heroicon-o-arrow-path'],
+            [PeppolTransmissionStatus::SENT, 'heroicon-o-paper-airplane'],
+            [PeppolTransmissionStatus::ACCEPTED, 'heroicon-o-check-circle'],
+            [PeppolTransmissionStatus::REJECTED, 'heroicon-o-x-circle'],
+            [PeppolTransmissionStatus::FAILED, 'heroicon-o-exclamation-triangle'],
+            [PeppolTransmissionStatus::RETRYING, 'heroicon-o-arrow-path'],
+            [PeppolTransmissionStatus::DEAD, 'heroicon-o-no-symbol'],
+        ];
+    }
+
+    public static function finalStatusProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, false],
+            [PeppolTransmissionStatus::QUEUED, false],
+            [PeppolTransmissionStatus::PROCESSING, false],
+            [PeppolTransmissionStatus::SENT, false],
+            [PeppolTransmissionStatus::ACCEPTED, true],
+            [PeppolTransmissionStatus::REJECTED, true],
+            [PeppolTransmissionStatus::FAILED, false],
+            [PeppolTransmissionStatus::RETRYING, false],
+            [PeppolTransmissionStatus::DEAD, true],
+        ];
+    }
+
+    public static function retryableStatusProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, false],
+            [PeppolTransmissionStatus::QUEUED, false],
+            [PeppolTransmissionStatus::PROCESSING, false],
+            [PeppolTransmissionStatus::SENT, false],
+            [PeppolTransmissionStatus::ACCEPTED, false],
+            [PeppolTransmissionStatus::REJECTED, false],
+            [PeppolTransmissionStatus::FAILED, true],
+            [PeppolTransmissionStatus::RETRYING, true],
+            [PeppolTransmissionStatus::DEAD, false],
+        ];
+    }
+
+    public static function awaitingAckProvider(): array
+    {
+        return [
+            [PeppolTransmissionStatus::PENDING, false],
+            [PeppolTransmissionStatus::QUEUED, false],
+            [PeppolTransmissionStatus::PROCESSING, false],
+            [PeppolTransmissionStatus::SENT, true],
+            [PeppolTransmissionStatus::ACCEPTED, false],
+            [PeppolTransmissionStatus::REJECTED, false],
+            [PeppolTransmissionStatus::FAILED, false],
+            [PeppolTransmissionStatus::RETRYING, false],
+            [PeppolTransmissionStatus::DEAD, false],
+        ];
+    }
+
     #[Test]
     public function it_has_all_expected_cases(): void
     {
@@ -45,21 +134,6 @@ class PeppolTransmissionStatusTest extends TestCase
         $this->assertEquals($expectedLabel, $status->label());
     }
 
-    public static function labelProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, 'Pending'],
-            [PeppolTransmissionStatus::QUEUED, 'Queued'],
-            [PeppolTransmissionStatus::PROCESSING, 'Processing'],
-            [PeppolTransmissionStatus::SENT, 'Sent'],
-            [PeppolTransmissionStatus::ACCEPTED, 'Accepted'],
-            [PeppolTransmissionStatus::REJECTED, 'Rejected'],
-            [PeppolTransmissionStatus::FAILED, 'Failed'],
-            [PeppolTransmissionStatus::RETRYING, 'Retrying'],
-            [PeppolTransmissionStatus::DEAD, 'Dead'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('colorProvider')]
     public function it_provides_correct_colors(
@@ -67,21 +141,6 @@ class PeppolTransmissionStatusTest extends TestCase
         string $expectedColor
     ): void {
         $this->assertEquals($expectedColor, $status->color());
-    }
-
-    public static function colorProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, 'gray'],
-            [PeppolTransmissionStatus::QUEUED, 'blue'],
-            [PeppolTransmissionStatus::PROCESSING, 'yellow'],
-            [PeppolTransmissionStatus::SENT, 'indigo'],
-            [PeppolTransmissionStatus::ACCEPTED, 'green'],
-            [PeppolTransmissionStatus::REJECTED, 'red'],
-            [PeppolTransmissionStatus::FAILED, 'orange'],
-            [PeppolTransmissionStatus::RETRYING, 'purple'],
-            [PeppolTransmissionStatus::DEAD, 'red'],
-        ];
     }
 
     #[Test]
@@ -93,21 +152,6 @@ class PeppolTransmissionStatusTest extends TestCase
         $this->assertEquals($expectedIcon, $status->icon());
     }
 
-    public static function iconProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, 'heroicon-o-clock'],
-            [PeppolTransmissionStatus::QUEUED, 'heroicon-o-queue-list'],
-            [PeppolTransmissionStatus::PROCESSING, 'heroicon-o-arrow-path'],
-            [PeppolTransmissionStatus::SENT, 'heroicon-o-paper-airplane'],
-            [PeppolTransmissionStatus::ACCEPTED, 'heroicon-o-check-circle'],
-            [PeppolTransmissionStatus::REJECTED, 'heroicon-o-x-circle'],
-            [PeppolTransmissionStatus::FAILED, 'heroicon-o-exclamation-triangle'],
-            [PeppolTransmissionStatus::RETRYING, 'heroicon-o-arrow-path'],
-            [PeppolTransmissionStatus::DEAD, 'heroicon-o-no-symbol'],
-        ];
-    }
-
     #[Test]
     #[DataProvider('finalStatusProvider')]
     public function it_correctly_identifies_final_statuses(
@@ -115,21 +159,6 @@ class PeppolTransmissionStatusTest extends TestCase
         bool $expectedIsFinal
     ): void {
         $this->assertEquals($expectedIsFinal, $status->isFinal());
-    }
-
-    public static function finalStatusProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, false],
-            [PeppolTransmissionStatus::QUEUED, false],
-            [PeppolTransmissionStatus::PROCESSING, false],
-            [PeppolTransmissionStatus::SENT, false],
-            [PeppolTransmissionStatus::ACCEPTED, true],
-            [PeppolTransmissionStatus::REJECTED, true],
-            [PeppolTransmissionStatus::FAILED, false],
-            [PeppolTransmissionStatus::RETRYING, false],
-            [PeppolTransmissionStatus::DEAD, true],
-        ];
     }
 
     #[Test]
@@ -141,21 +170,6 @@ class PeppolTransmissionStatusTest extends TestCase
         $this->assertEquals($expectedCanRetry, $status->canRetry());
     }
 
-    public static function retryableStatusProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, false],
-            [PeppolTransmissionStatus::QUEUED, false],
-            [PeppolTransmissionStatus::PROCESSING, false],
-            [PeppolTransmissionStatus::SENT, false],
-            [PeppolTransmissionStatus::ACCEPTED, false],
-            [PeppolTransmissionStatus::REJECTED, false],
-            [PeppolTransmissionStatus::FAILED, true],
-            [PeppolTransmissionStatus::RETRYING, true],
-            [PeppolTransmissionStatus::DEAD, false],
-        ];
-    }
-
     #[Test]
     #[DataProvider('awaitingAckProvider')]
     public function it_correctly_identifies_awaiting_acknowledgement_status(
@@ -163,21 +177,6 @@ class PeppolTransmissionStatusTest extends TestCase
         bool $expectedIsAwaitingAck
     ): void {
         $this->assertEquals($expectedIsAwaitingAck, $status->isAwaitingAck());
-    }
-
-    public static function awaitingAckProvider(): array
-    {
-        return [
-            [PeppolTransmissionStatus::PENDING, false],
-            [PeppolTransmissionStatus::QUEUED, false],
-            [PeppolTransmissionStatus::PROCESSING, false],
-            [PeppolTransmissionStatus::SENT, true],
-            [PeppolTransmissionStatus::ACCEPTED, false],
-            [PeppolTransmissionStatus::REJECTED, false],
-            [PeppolTransmissionStatus::FAILED, false],
-            [PeppolTransmissionStatus::RETRYING, false],
-            [PeppolTransmissionStatus::DEAD, false],
-        ];
     }
 
     #[Test]
@@ -191,7 +190,7 @@ class PeppolTransmissionStatusTest extends TestCase
     #[Test]
     public function it_throws_on_invalid_value(): void
     {
-        $this->expectException(\ValueError::class);
+        $this->expectException(ValueError::class);
         PeppolTransmissionStatus::from('invalid');
     }
 
@@ -205,7 +204,7 @@ class PeppolTransmissionStatusTest extends TestCase
 
         $queued = PeppolTransmissionStatus::QUEUED;
         $this->assertFalse($queued->isFinal());
-        
+
         $processing = PeppolTransmissionStatus::PROCESSING;
         $this->assertFalse($processing->isFinal());
 

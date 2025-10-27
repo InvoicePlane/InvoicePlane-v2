@@ -2,12 +2,15 @@
 
 namespace Modules\Invoices\Tests\Unit\Http\Decorators;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 /**
@@ -15,8 +18,6 @@ use Tests\TestCase;
  *
  * Tests the decorator that adds exception handling and logging to the ApiClient.
  * Uses HTTP fakes to simulate various scenarios.
- *
- * @package Modules\Invoices\Tests\Unit\Http\Decorators
  */
 #[Group('peppol')]
 class HttpClientExceptionHandlerTest extends TestCase
@@ -27,7 +28,7 @@ class HttpClientExceptionHandlerTest extends TestCase
     {
         parent::setUp();
 
-        $apiClient = new ApiClient();
+        $apiClient     = new ApiClient();
         $this->handler = new HttpClientExceptionHandler($apiClient);
     }
 
@@ -95,14 +96,14 @@ class HttpClientExceptionHandlerTest extends TestCase
         $this->handler->get('test');
 
         Log::shouldHaveReceived('info')
-            ->with('HTTP Request', \Mockery::on(function ($arg) {
-                return isset($arg['method']) && 
-                       isset($arg['uri']) && 
+            ->with('HTTP Request', Mockery::on(function ($arg) {
+                return isset($arg['method']) &&
+                       isset($arg['uri']) &&
                        $arg['method'] === 'GET';
             }));
 
         Log::shouldHaveReceived('info')
-            ->with('HTTP Response', \Mockery::on(function ($arg) {
+            ->with('HTTP Response', Mockery::on(function ($arg) {
                 return isset($arg['status']) && $arg['status'] === 200;
             }));
     }
@@ -133,12 +134,12 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         try {
             $this->handler->get('test');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Expected exception
         }
 
         Log::shouldHaveReceived('error')
-            ->with('HTTP Request Error', \Mockery::on(function ($arg) {
+            ->with('HTTP Request Error', Mockery::on(function ($arg) {
                 return isset($arg['status']) && $arg['status'] === 404;
             }));
     }
@@ -156,13 +157,13 @@ class HttpClientExceptionHandlerTest extends TestCase
         $this->handler->request('GET', 'test', [
             'headers' => [
                 'Authorization' => 'Bearer secret-token',
-                'X-API-Key' => 'my-secret-key',
-                'Content-Type' => 'application/json',
+                'X-API-Key'     => 'my-secret-key',
+                'Content-Type'  => 'application/json',
             ],
         ]);
 
         Log::shouldHaveReceived('info')
-            ->with('HTTP Request', \Mockery::on(function ($arg) {
+            ->with('HTTP Request', Mockery::on(function ($arg) {
                 return isset($arg['options']['headers']['Authorization']) &&
                        $arg['options']['headers']['Authorization'] === '***REDACTED***' &&
                        $arg['options']['headers']['X-API-Key'] === '***REDACTED***' &&
@@ -185,7 +186,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         Log::shouldHaveReceived('info')
-            ->with('HTTP Request', \Mockery::on(function ($arg) {
+            ->with('HTTP Request', Mockery::on(function ($arg) {
                 return isset($arg['options']['auth']) &&
                        $arg['options']['auth'] === ['***REDACTED***', '***REDACTED***'];
             }));
@@ -295,13 +296,13 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         try {
             $this->handler->get('test');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Expected exception
         }
 
         Log::shouldHaveReceived('error')
-            ->with('HTTP Connection Error', \Mockery::on(function ($arg) {
-                return isset($arg['message']) && 
+            ->with('HTTP Connection Error', Mockery::on(function ($arg) {
+                return isset($arg['message']) &&
                        str_contains($arg['message'], 'Network error');
             }));
     }
@@ -313,19 +314,19 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Http::fake([
             'https://api.example.com/*' => function () {
-                throw new \RuntimeException('Unexpected error');
+                throw new RuntimeException('Unexpected error');
             },
         ]);
 
         try {
             $this->handler->get('test');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Expected exception
         }
 
         Log::shouldHaveReceived('error')
-            ->with('HTTP Unexpected Error', \Mockery::on(function ($arg) {
-                return isset($arg['message']) && 
+            ->with('HTTP Unexpected Error', Mockery::on(function ($arg) {
+                return isset($arg['message']) &&
                        str_contains($arg['message'], 'Unexpected error');
             }));
     }

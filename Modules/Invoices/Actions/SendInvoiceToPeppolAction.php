@@ -3,6 +3,7 @@
 namespace Modules\Invoices\Actions;
 
 use Illuminate\Http\Client\RequestException;
+use InvalidArgumentException;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Services\PeppolService;
 
@@ -12,8 +13,6 @@ use Modules\Invoices\Peppol\Services\PeppolService;
  * This action handles the process of gathering invoice information and
  * sending it to the Peppol network through the PeppolService. It provides
  * a clean interface for both the EditInvoice page and the ListInvoices table.
- *
- * @package Modules\Invoices\Actions
  */
 class SendInvoiceToPeppolAction
 {
@@ -40,12 +39,13 @@ class SendInvoiceToPeppolAction
      * This method gathers all necessary information from the invoice and
      * submits it to the Peppol network. It returns the result of the operation.
      *
-     * @param Invoice $invoice The invoice to send
+     * @param Invoice              $invoice        The invoice to send
      * @param array<string, mixed> $additionalData Optional additional data (e.g., Peppol ID)
+     *
      * @return array<string, mixed> The result of the operation
      *
-     * @throws RequestException If the Peppol API request fails
-     * @throws \InvalidArgumentException If the invoice data is invalid
+     * @throws RequestException         If the Peppol API request fails
+     * @throws InvalidArgumentException If the invoice data is invalid
      */
     public function execute(Invoice $invoice, array $additionalData = []): array
     {
@@ -66,27 +66,10 @@ class SendInvoiceToPeppolAction
     }
 
     /**
-     * Validate that the invoice is in a valid state for Peppol transmission.
-     *
-     * @param Invoice $invoice The invoice to validate
-     * @return void
-     *
-     * @throws \InvalidArgumentException If validation fails
-     */
-    protected function validateInvoiceState(Invoice $invoice): void
-    {
-        // Check if invoice is in draft status - drafts should not be sent
-        if ($invoice->invoice_status === 'draft') {
-            throw new \InvalidArgumentException('Cannot send draft invoices to Peppol');
-        }
-
-        // Additional business logic validation can be added here
-    }
-
-    /**
      * Get the status of a previously sent invoice from Peppol.
      *
      * @param string $documentId The Peppol document ID
+     *
      * @return array<string, mixed> Status information
      *
      * @throws RequestException If the API request fails
@@ -100,6 +83,7 @@ class SendInvoiceToPeppolAction
      * Cancel a Peppol document transmission.
      *
      * @param string $documentId The Peppol document ID
+     *
      * @return bool True if cancellation was successful
      *
      * @throws RequestException If the API request fails
@@ -107,5 +91,24 @@ class SendInvoiceToPeppolAction
     public function cancel(string $documentId): bool
     {
         return $this->peppolService->cancelDocument($documentId);
+    }
+
+    /**
+     * Validate that the invoice is in a valid state for Peppol transmission.
+     *
+     * @param Invoice $invoice The invoice to validate
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If validation fails
+     */
+    protected function validateInvoiceState(Invoice $invoice): void
+    {
+        // Check if invoice is in draft status - drafts should not be sent
+        if ($invoice->invoice_status === 'draft') {
+            throw new InvalidArgumentException('Cannot send draft invoices to Peppol');
+        }
+
+        // Additional business logic validation can be added here
     }
 }

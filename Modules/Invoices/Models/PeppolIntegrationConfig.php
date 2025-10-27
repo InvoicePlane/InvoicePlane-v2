@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $integration_id
- * @property string $config_key
- * @property string $config_value
+ * @property int               $id
+ * @property int               $integration_id
+ * @property string            $config_key
+ * @property string            $config_value
  * @property PeppolIntegration $integration
  */
 class PeppolIntegrationConfig extends Model
@@ -23,7 +23,7 @@ class PeppolIntegrationConfig extends Model
     /**
      * Get the PeppolIntegration that this configuration belongs to.
      *
-     * @return BelongsTo The parent PeppolIntegration relation.
+     * @return BelongsTo the parent PeppolIntegration relation
      */
     public function integration(): BelongsTo
     {

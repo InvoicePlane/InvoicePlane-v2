@@ -12,8 +12,6 @@ use Modules\Invoices\Http\RequestMethod;
  * errors, and other events via HTTP callbacks to your application.
  *
  * API Documentation: https://api.e-invoice.be/docs#tag/webhooks
- *
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class WebhooksClient extends EInvoiceBeClient
 {
@@ -43,17 +41,18 @@ class WebhooksClient extends EInvoiceBeClient
      * }
      * ```
      *
-     * @param string $url The webhook callback URL
-     * @param array<string> $events Array of event types to subscribe to
+     * @param string               $url     The webhook callback URL
+     * @param array<string>        $events  Array of event types to subscribe to
      * @param array<string, mixed> $options Additional options (secret, description, etc.)
+     *
      * @return Response
      */
     public function createWebhook(string $url, array $events, array $options = []): Response
     {
-        $apiUrl = $this->buildUrl('/webhooks');
+        $apiUrl         = $this->buildUrl('/webhooks');
         $requestOptions = $this->getRequestOptions([
             'payload' => array_merge([
-                'url' => $url,
+                'url'    => $url,
                 'events' => $events,
             ], $options),
         ]);
@@ -88,7 +87,7 @@ class WebhooksClient extends EInvoiceBeClient
      */
     public function listWebhooks(): Response
     {
-        $url = $this->buildUrl('/webhooks');
+        $url     = $this->buildUrl('/webhooks');
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -116,11 +115,12 @@ class WebhooksClient extends EInvoiceBeClient
      * ```
      *
      * @param string $webhookId The webhook ID
+     *
      * @return Response
      */
     public function getWebhook(string $webhookId): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -149,13 +149,14 @@ class WebhooksClient extends EInvoiceBeClient
      * }
      * ```
      *
-     * @param string $webhookId The webhook ID
-     * @param array<string, mixed> $data Update data
+     * @param string               $webhookId The webhook ID
+     * @param array<string, mixed> $data      Update data
+     *
      * @return Response
      */
     public function updateWebhook(string $webhookId, array $data): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}");
         $options = $this->getRequestOptions([
             'payload' => $data,
         ]);
@@ -176,11 +177,12 @@ class WebhooksClient extends EInvoiceBeClient
      * ```
      *
      * @param string $webhookId The webhook ID
+     *
      * @return Response
      */
     public function deleteWebhook(string $webhookId): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::DELETE->value, $url, $options);
@@ -214,16 +216,17 @@ class WebhooksClient extends EInvoiceBeClient
      * ```
      *
      * @param string $webhookId The webhook ID
-     * @param int $page Page number
-     * @param int $perPage Results per page
+     * @param int    $page      Page number
+     * @param int    $perPage   Results per page
+     *
      * @return Response
      */
     public function getDeliveryHistory(string $webhookId, int $page = 1, int $perPage = 50): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}/deliveries");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}/deliveries");
         $options = $this->getRequestOptions([
             'payload' => [
-                'page' => $page,
+                'page'     => $page,
                 'per_page' => $perPage,
             ],
         ]);
@@ -255,11 +258,12 @@ class WebhooksClient extends EInvoiceBeClient
      *
      * @param string $webhookId The webhook ID
      * @param string $eventType The event type to test
+     *
      * @return Response
      */
     public function testWebhook(string $webhookId, string $eventType = 'document.delivered'): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}/test");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}/test");
         $options = $this->getRequestOptions([
             'payload' => [
                 'event_type' => $eventType,
@@ -282,11 +286,12 @@ class WebhooksClient extends EInvoiceBeClient
      * ```
      *
      * @param string $webhookId The webhook ID
+     *
      * @return Response
      */
     public function regenerateSecret(string $webhookId): Response
     {
-        $url = $this->buildUrl("/webhooks/{$webhookId}/regenerate-secret");
+        $url     = $this->buildUrl("/webhooks/{$webhookId}/regenerate-secret");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::POST->value, $url, $options);

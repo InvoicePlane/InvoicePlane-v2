@@ -2,24 +2,26 @@
 
 namespace Modules\Invoices\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Modules\Invoices\Jobs\Peppol\PeppolStatusPoller;
 
 /**
- * Console command to poll Peppol transmission statuses
- * 
+ * Console command to poll Peppol transmission statuses.
+ *
  * Should be scheduled to run periodically (e.g., every 15 minutes)
  * Add to schedule: $schedule->command('peppol:poll-status')->everyFifteenMinutes();
  */
 class PollPeppolStatusCommand extends Command
 {
     protected $signature = 'peppol:poll-status';
+
     protected $description = 'Poll Peppol provider for transmission status updates';
 
     /**
      * Triggers a background job to poll Peppol transmission statuses and reports the result.
      *
-     * @return int Exit code: `self::SUCCESS` if the polling job was dispatched successfully, `self::FAILURE` if dispatch failed.
+     * @return int exit code: `self::SUCCESS` if the polling job was dispatched successfully, `self::FAILURE` if dispatch failed
      */
     public function handle(): int
     {
@@ -27,13 +29,13 @@ class PollPeppolStatusCommand extends Command
 
         try {
             PeppolStatusPoller::dispatch();
-            
+
             $this->info('Peppol status polling job dispatched successfully.');
-            
+
             return self::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Failed to dispatch status polling job: ' . $e->getMessage());
-            
+
             return self::FAILURE;
         }
     }

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Create the peppol_integrations table to store PEPPOL integration settings and connection test metadata.
      *
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->text('test_connection_message')->nullable()->comment('Last test connection result message');
             $table->timestamp('test_connection_at')->nullable();
             $table->boolean('enabled')->default(false)->comment('Whether integration is active');
-            
+
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->index(['company_id', 'enabled']);
             $table->index('provider_name');

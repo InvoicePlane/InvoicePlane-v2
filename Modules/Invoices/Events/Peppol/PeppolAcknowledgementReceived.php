@@ -13,19 +13,19 @@ class PeppolAcknowledgementReceived extends PeppolEvent
      *
      * Initializes the event and prepares the base payload using the transmission's identifiers and status, plus the provided acknowledgement payload.
      *
-     * @param PeppolTransmission $transmission The transmission associated with this acknowledgement.
-     * @param array $ackPayload Optional acknowledgement payload to include in the event payload.
+     * @param PeppolTransmission $transmission the transmission associated with this acknowledgement
+     * @param array              $ackPayload   optional acknowledgement payload to include in the event payload
      */
     public function __construct(PeppolTransmission $transmission, array $ackPayload = [])
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'external_id' => $transmission->external_id,
-            'status' => $transmission->status,
-            'ack_payload' => $ackPayload,
+            'invoice_id'      => $transmission->invoice_id,
+            'external_id'     => $transmission->external_id,
+            'status'          => $transmission->status,
+            'ack_payload'     => $ackPayload,
         ]);
     }
 

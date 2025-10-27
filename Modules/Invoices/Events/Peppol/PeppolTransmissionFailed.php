@@ -15,20 +15,20 @@ class PeppolTransmissionFailed extends PeppolEvent
      * containing transmission id, invoice id, status, error message, error type,
      * and attempt count.
      *
-     * @param PeppolTransmission $transmission The transmission associated with this failure.
-     * @param string|null $error Optional error message to use instead of the transmission's last error.
+     * @param PeppolTransmission $transmission the transmission associated with this failure
+     * @param string|null        $error        optional error message to use instead of the transmission's last error
      */
     public function __construct(PeppolTransmission $transmission, ?string $error = null)
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'status' => $transmission->status,
-            'error' => $error ?? $transmission->last_error,
-            'error_type' => $transmission->error_type,
-            'attempts' => $transmission->attempts,
+            'invoice_id'      => $transmission->invoice_id,
+            'status'          => $transmission->status,
+            'error'           => $error ?? $transmission->last_error,
+            'error_type'      => $transmission->error_type,
+            'attempts'        => $transmission->attempts,
         ]);
     }
 

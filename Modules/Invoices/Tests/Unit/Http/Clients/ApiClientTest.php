@@ -16,8 +16,6 @@ use Tests\TestCase;
  * Demonstrates preference for fakes over mocks as requested.
  *
  * The ApiClient uses a single request() method with RequestMethod enum.
- *
- * @package Modules\Invoices\Tests\Unit\Http\Clients
  */
 #[Group('peppol')]
 class ApiClientTest extends TestCase
@@ -41,7 +39,7 @@ class ApiClientTest extends TestCase
 
         $this->assertTrue($response->successful());
         $this->assertEquals(['success' => true], $response->json());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.example.com/test' &&
                    $request->method() === 'GET';
@@ -63,7 +61,7 @@ class ApiClientTest extends TestCase
 
         $this->assertTrue($response->successful());
         $this->assertEquals(['id' => 123], $response->json());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.example.com/create' &&
                    $request->method() === 'POST' &&
@@ -85,7 +83,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.example.com/update/1' &&
                    $request->method() === 'PUT';
@@ -106,7 +104,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.example.com/patch/1' &&
                    $request->method() === 'PATCH';
@@ -126,7 +124,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://api.example.com/delete/1' &&
                    $request->method() === 'DELETE';
@@ -159,7 +157,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->hasHeader('X-API-Key') &&
                    $request->header('X-API-Key')[0] === 'secret123';
@@ -196,7 +194,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->hasHeader('Authorization') &&
                    str_contains($request->header('Authorization')[0], 'Bearer token123');
@@ -217,7 +215,7 @@ class ApiClientTest extends TestCase
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->hasHeader('Authorization') &&
                    str_contains($request->header('Authorization')[0], 'Basic');
@@ -286,15 +284,15 @@ class ApiClientTest extends TestCase
             'https://api.example.com/test',
             [
                 'headers' => [
-                    'X-API-Key' => 'key123',
+                    'X-API-Key'       => 'key123',
                     'X-Custom-Header' => 'value',
-                    'Accept' => 'application/json',
+                    'Accept'          => 'application/json',
                 ],
             ]
         );
 
         $this->assertTrue($response->successful());
-        
+
         Http::assertSent(function ($request) {
             return $request->hasHeader('X-API-Key') &&
                    $request->hasHeader('X-Custom-Header') &&

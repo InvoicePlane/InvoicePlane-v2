@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
  *
  * Provides consistent logging functionality for API clients with
  * automatic sensitive data sanitization.
- *
- * @package Modules\Invoices\Http\Traits
  */
 trait LogsApiRequests
 {
@@ -29,6 +27,7 @@ trait LogsApiRequests
     public function enableLogging(): self
     {
         $this->loggingEnabled = true;
+
         return $this;
     }
 
@@ -40,26 +39,28 @@ trait LogsApiRequests
     public function disableLogging(): self
     {
         $this->loggingEnabled = false;
+
         return $this;
     }
 
     /**
      * Log an API request.
      *
-     * @param string $method
-     * @param string $uri
+     * @param string               $method
+     * @param string               $uri
      * @param array<string, mixed> $options
+     *
      * @return void
      */
     protected function logRequest(string $method, string $uri, array $options): void
     {
-        if (!$this->loggingEnabled) {
+        if ( ! $this->loggingEnabled) {
             return;
         }
 
         Log::info('API Request', [
-            'method' => $method,
-            'uri' => $uri,
+            'method'  => $method,
+            'uri'     => $uri,
             'options' => $this->sanitizeForLogging($options),
         ]);
     }
@@ -69,39 +70,41 @@ trait LogsApiRequests
      *
      * @param string $method
      * @param string $uri
-     * @param int $status
-     * @param mixed $body
+     * @param int    $status
+     * @param mixed  $body
+     *
      * @return void
      */
     protected function logResponse(string $method, string $uri, int $status, mixed $body): void
     {
-        if (!$this->loggingEnabled) {
+        if ( ! $this->loggingEnabled) {
             return;
         }
 
         Log::info('API Response', [
             'method' => $method,
-            'uri' => $uri,
+            'uri'    => $uri,
             'status' => $status,
-            'body' => $body,
+            'body'   => $body,
         ]);
     }
 
     /**
      * Log an API error.
      *
-     * @param string $type Error type (Connection, Request, Unexpected)
-     * @param string $method
-     * @param string $uri
-     * @param string $message
+     * @param string               $type    Error type (Connection, Request, Unexpected)
+     * @param string               $method
+     * @param string               $uri
+     * @param string               $message
      * @param array<string, mixed> $context Additional context
+     *
      * @return void
      */
     protected function logError(string $type, string $method, string $uri, string $message, array $context = []): void
     {
         Log::error("API {$type} Error", array_merge([
-            'method' => $method,
-            'uri' => $uri,
+            'method'  => $method,
+            'uri'     => $uri,
             'message' => $message,
         ], $context));
     }
@@ -110,6 +113,7 @@ trait LogsApiRequests
      * Sanitize data for logging by redacting sensitive information.
      *
      * @param array<string, mixed> $data
+     *
      * @return array<string, mixed>
      */
     protected function sanitizeForLogging(array $data): array

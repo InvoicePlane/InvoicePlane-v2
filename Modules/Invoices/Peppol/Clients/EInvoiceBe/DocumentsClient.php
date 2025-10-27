@@ -12,7 +12,6 @@ use Modules\Invoices\Http\RequestMethod;
  * Peppol provider, including submitting invoices to the Peppol network.
  *
  * @see https://api.e-invoice.be/docs#tag/documents/post/api/documents/ API Documentation
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class DocumentsClient extends EInvoiceBeClient
 {
@@ -54,9 +53,10 @@ class DocumentsClient extends EInvoiceBeClient
      * ```
      *
      * @param array<string, mixed> $documentData The document data to submit
+     *
      * @return Response The API response
      *
-     * @throws \Illuminate\Http\Client\RequestException If the request fails
+     * @throws \Illuminate\Http\Client\RequestException    If the request fails
      * @throws \Illuminate\Http\Client\ConnectionException If there's a connection issue
      */
     public function submitDocument(array $documentData): Response
@@ -89,9 +89,10 @@ class DocumentsClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The unique identifier of the document
+     *
      * @return Response The API response containing document details
      *
-     * @throws \Illuminate\Http\Client\RequestException If the request fails
+     * @throws \Illuminate\Http\Client\RequestException    If the request fails
      * @throws \Illuminate\Http\Client\ConnectionException If there's a connection issue
      */
     public function getDocument(string $documentId): Response
@@ -118,9 +119,10 @@ class DocumentsClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The unique identifier of the document
+     *
      * @return Response The API response containing status information
      *
-     * @throws \Illuminate\Http\Client\RequestException If the request fails
+     * @throws \Illuminate\Http\Client\RequestException    If the request fails
      * @throws \Illuminate\Http\Client\ConnectionException If there's a connection issue
      */
     public function getDocumentStatus(string $documentId): Response
@@ -151,9 +153,10 @@ class DocumentsClient extends EInvoiceBeClient
      * ```
      *
      * @param array<string, mixed> $filters Optional filters (e.g., status, date range)
+     *
      * @return Response The API response containing list of documents
      *
-     * @throws \Illuminate\Http\Client\RequestException If the request fails
+     * @throws \Illuminate\Http\Client\RequestException    If the request fails
      * @throws \Illuminate\Http\Client\ConnectionException If there's a connection issue
      */
     public function listDocuments(array $filters = []): Response
@@ -175,9 +178,10 @@ class DocumentsClient extends EInvoiceBeClient
      * Attempts to cancel a document that has been submitted but not yet delivered.
      *
      * @param string $documentId The unique identifier of the document to cancel
+     *
      * @return Response The API response
      *
-     * @throws \Illuminate\Http\Client\RequestException If the request fails
+     * @throws \Illuminate\Http\Client\RequestException    If the request fails
      * @throws \Illuminate\Http\Client\ConnectionException If there's a connection issue
      */
     public function cancelDocument(string $documentId): Response

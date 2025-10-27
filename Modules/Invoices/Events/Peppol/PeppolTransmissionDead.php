@@ -11,19 +11,19 @@ class PeppolTransmissionDead extends PeppolEvent
     /**
      * Create a PeppolTransmissionDead event for the given transmission and optional reason.
      *
-     * @param PeppolTransmission $transmission The transmission associated with this event.
-     * @param string|null $reason Optional human-readable reason why the transmission is considered dead.
+     * @param PeppolTransmission $transmission the transmission associated with this event
+     * @param string|null        $reason       optional human-readable reason why the transmission is considered dead
      */
     public function __construct(PeppolTransmission $transmission, ?string $reason = null)
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'attempts' => $transmission->attempts,
-            'last_error' => $transmission->last_error,
-            'reason' => $reason,
+            'invoice_id'      => $transmission->invoice_id,
+            'attempts'        => $transmission->attempts,
+            'last_error'      => $transmission->last_error,
+            'reason'          => $reason,
         ]);
     }
 

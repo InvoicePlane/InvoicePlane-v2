@@ -7,6 +7,7 @@ use Modules\Invoices\Models\PeppolIntegration;
 class PeppolIntegrationTested extends PeppolEvent
 {
     public PeppolIntegration $integration;
+
     public bool $success;
 
     /**
@@ -15,20 +16,20 @@ class PeppolIntegrationTested extends PeppolEvent
      * Sets the public properties and populates the event payload with `integration_id`,
      * `provider_name`, `success`, and `message`.
      *
-     * @param \Modules\Invoices\Models\PeppolIntegration $integration The integration instance that was tested.
-     * @param bool $success True if the integration test succeeded, false otherwise.
-     * @param string|null $message Optional human-readable message describing the test result.
+     * @param \Modules\Invoices\Models\PeppolIntegration $integration the integration instance that was tested
+     * @param bool                                       $success     true if the integration test succeeded, false otherwise
+     * @param string|null                                $message     optional human-readable message describing the test result
      */
     public function __construct(PeppolIntegration $integration, bool $success, ?string $message = null)
     {
         $this->integration = $integration;
-        $this->success = $success;
-        
+        $this->success     = $success;
+
         parent::__construct([
             'integration_id' => $integration->id,
-            'provider_name' => $integration->provider_name,
-            'success' => $success,
-            'message' => $message,
+            'provider_name'  => $integration->provider_name,
+            'success'        => $success,
+            'message'        => $message,
         ]);
     }
 

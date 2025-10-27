@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Create the `peppol_transmissions` table with its columns, indexes, and foreign key constraints.
      *
@@ -34,11 +33,11 @@ return new class extends Migration
             $table->timestamp('next_retry_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            
+
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
             $table->foreign('integration_id')->references('id')->on('peppol_integrations')->onDelete('cascade');
-            
+
             $table->index(['invoice_id', 'integration_id']);
             $table->index('status');
             $table->index('external_id');

@@ -12,8 +12,6 @@ use Modules\Invoices\Http\RequestMethod;
  * the Peppol network, including delivery confirmations and error tracking.
  *
  * API Documentation: https://api.e-invoice.be/docs#tag/tracking
- *
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class TrackingClient extends EInvoiceBeClient
 {
@@ -50,11 +48,12 @@ class TrackingClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The document ID to track
+     *
      * @return Response
      */
     public function getTransmissionHistory(string $documentId): Response
     {
-        $url = $this->buildUrl("/tracking/{$documentId}/history");
+        $url     = $this->buildUrl("/tracking/{$documentId}/history");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -79,11 +78,12 @@ class TrackingClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The document ID
+     *
      * @return Response
      */
     public function getStatus(string $documentId): Response
     {
-        $url = $this->buildUrl("/tracking/{$documentId}/status");
+        $url     = $this->buildUrl("/tracking/{$documentId}/status");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -113,11 +113,12 @@ class TrackingClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The document ID
+     *
      * @return Response
      */
     public function getDeliveryConfirmation(string $documentId): Response
     {
-        $url = $this->buildUrl("/tracking/{$documentId}/confirmation");
+        $url     = $this->buildUrl("/tracking/{$documentId}/confirmation");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);
@@ -159,11 +160,12 @@ class TrackingClient extends EInvoiceBeClient
      * ```
      *
      * @param array<string, mixed> $filters Optional filters
+     *
      * @return Response
      */
     public function listDocuments(array $filters = []): Response
     {
-        $url = $this->buildUrl('/tracking/documents');
+        $url     = $this->buildUrl('/tracking/documents');
         $options = $this->getRequestOptions([
             'payload' => $filters,
         ]);
@@ -193,11 +195,12 @@ class TrackingClient extends EInvoiceBeClient
      * ```
      *
      * @param string $documentId The document ID
+     *
      * @return Response
      */
     public function getErrors(string $documentId): Response
     {
-        $url = $this->buildUrl("/tracking/{$documentId}/errors");
+        $url     = $this->buildUrl("/tracking/{$documentId}/errors");
         $options = $this->getRequestOptions();
 
         return $this->client->request(RequestMethod::GET->value, $url, $options);

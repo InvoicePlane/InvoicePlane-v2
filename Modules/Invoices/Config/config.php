@@ -34,9 +34,9 @@ return [
         |
         */
         'e_invoice_be' => [
-            'api_key' => env('PEPPOL_E_INVOICE_BE_API_KEY', ''),
+            'api_key'  => env('PEPPOL_E_INVOICE_BE_API_KEY', ''),
             'base_url' => env('PEPPOL_E_INVOICE_BE_BASE_URL', 'https://api.e-invoice.be'),
-            'timeout' => env('PEPPOL_E_INVOICE_BE_TIMEOUT', 30),
+            'timeout'  => env('PEPPOL_E_INVOICE_BE_TIMEOUT', 30),
         ],
 
         /*
@@ -50,12 +50,12 @@ return [
         */
         'document' => [
             // Currency settings
-            'currency_code' => env('PEPPOL_CURRENCY_CODE', 'EUR'),
+            'currency_code'     => env('PEPPOL_CURRENCY_CODE', 'EUR'),
             'fallback_currency' => 'EUR',
-            
+
             // Unit codes (UN/CEFACT)
             'default_unit_code' => env('PEPPOL_UNIT_CODE', 'C62'), // C62 = Unit (piece)
-            
+
             // Endpoint scheme settings
             'endpoint_scheme_by_country' => [
                 'BE' => 'BE:CBE',
@@ -85,13 +85,13 @@ return [
         |
         */
         'supplier' => [
-            'company_name' => env('PEPPOL_SUPPLIER_NAME', config('app.name')),
-            'vat_number' => env('PEPPOL_SUPPLIER_VAT', ''),
-            'street_name' => env('PEPPOL_SUPPLIER_STREET', ''),
-            'city_name' => env('PEPPOL_SUPPLIER_CITY', ''),
-            'postal_zone' => env('PEPPOL_SUPPLIER_POSTAL', ''),
-            'country_code' => env('PEPPOL_SUPPLIER_COUNTRY', ''),
-            'contact_name' => env('PEPPOL_SUPPLIER_CONTACT', ''),
+            'company_name'  => env('PEPPOL_SUPPLIER_NAME', config('app.name')),
+            'vat_number'    => env('PEPPOL_SUPPLIER_VAT', ''),
+            'street_name'   => env('PEPPOL_SUPPLIER_STREET', ''),
+            'city_name'     => env('PEPPOL_SUPPLIER_CITY', ''),
+            'postal_zone'   => env('PEPPOL_SUPPLIER_POSTAL', ''),
+            'country_code'  => env('PEPPOL_SUPPLIER_COUNTRY', ''),
+            'contact_name'  => env('PEPPOL_SUPPLIER_CONTACT', ''),
             'contact_phone' => env('PEPPOL_SUPPLIER_PHONE', ''),
             'contact_email' => env('PEPPOL_SUPPLIER_EMAIL', ''),
         ],
@@ -106,7 +106,7 @@ return [
         */
         'formats' => [
             'default_format' => env('PEPPOL_DEFAULT_FORMAT', 'peppol_bis_3.0'),
-            
+
             // Country-specific mandatory formats
             'mandatory_formats_by_country' => [
                 'IT' => 'fatturapa_1.2',  // Italy requires FatturaPA
@@ -115,7 +115,7 @@ return [
 
             // Format-specific settings
             'ubl' => [
-                'version' => '2.1',
+                'version'          => '2.1',
                 'customization_id' => 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0',
             ],
 
@@ -135,8 +135,8 @@ return [
         */
         'validation' => [
             'require_customer_peppol_id' => env('PEPPOL_REQUIRE_PEPPOL_ID', true),
-            'require_vat_number' => env('PEPPOL_REQUIRE_VAT', false),
-            'min_invoice_amount' => env('PEPPOL_MIN_AMOUNT', 0),
+            'require_vat_number'         => env('PEPPOL_REQUIRE_VAT', false),
+            'min_invoice_amount'         => env('PEPPOL_MIN_AMOUNT', 0),
             'validate_format_compliance' => env('PEPPOL_VALIDATE_FORMAT', true),
         ],
 
@@ -149,12 +149,12 @@ return [
         |
         */
         'features' => [
-            'enable_tracking' => env('PEPPOL_ENABLE_TRACKING', true),
-            'enable_webhooks' => env('PEPPOL_ENABLE_WEBHOOKS', false),
+            'enable_tracking'           => env('PEPPOL_ENABLE_TRACKING', true),
+            'enable_webhooks'           => env('PEPPOL_ENABLE_WEBHOOKS', false),
             'enable_participant_search' => env('PEPPOL_ENABLE_PARTICIPANT_SEARCH', true),
-            'enable_health_checks' => env('PEPPOL_ENABLE_HEALTH_CHECKS', true),
-            'auto_retry_failed' => env('PEPPOL_AUTO_RETRY', true),
-            'max_retries' => env('PEPPOL_MAX_RETRIES', 5),
+            'enable_health_checks'      => env('PEPPOL_ENABLE_HEALTH_CHECKS', true),
+            'auto_retry_failed'         => env('PEPPOL_AUTO_RETRY', true),
+            'max_retries'               => env('PEPPOL_MAX_RETRIES', 5),
         ],
 
         /*
@@ -192,10 +192,10 @@ return [
         |
         */
         'retry' => [
-            'max_attempts' => env('PEPPOL_MAX_RETRY_ATTEMPTS', 5),
-            'backoff_delays' => [60, 300, 1800, 7200, 21600], // 1min, 5min, 30min, 2h, 6h
+            'max_attempts'           => env('PEPPOL_MAX_RETRY_ATTEMPTS', 5),
+            'backoff_delays'         => [60, 300, 1800, 7200, 21600], // 1min, 5min, 30min, 2h, 6h
             'retry_transient_errors' => true,
-            'retry_unknown_errors' => true,
+            'retry_unknown_errors'   => true,
             'retry_permanent_errors' => false,
         ],
 
@@ -208,8 +208,8 @@ return [
         |
         */
         'storage' => [
-            'disk' => env('PEPPOL_STORAGE_DISK', 'local'),
-            'path_template' => 'peppol/{integration_id}/{year}/{month}/{transmission_id}',
+            'disk'           => env('PEPPOL_STORAGE_DISK', 'local'),
+            'path_template'  => 'peppol/{integration_id}/{year}/{month}/{transmission_id}',
             'retention_days' => env('PEPPOL_RETENTION_DAYS', 2555), // 7 years default
         ],
 
@@ -222,12 +222,12 @@ return [
         |
         */
         'monitoring' => [
-            'alert_on_dead_transmission' => true,
+            'alert_on_dead_transmission'  => true,
             'dead_transmission_threshold' => 10, // Alert if > 10 dead in 1 hour
-            'alert_on_auth_failure' => true,
-            'status_check_interval' => 15, // minutes
-            'reconciliation_interval' => 60, // minutes
-            'old_transmission_threshold' => 168, // hours (7 days)
+            'alert_on_auth_failure'       => true,
+            'status_check_interval'       => 15, // minutes
+            'reconciliation_interval'     => 60, // minutes
+            'old_transmission_threshold'  => 168, // hours (7 days)
         ],
     ],
 ];

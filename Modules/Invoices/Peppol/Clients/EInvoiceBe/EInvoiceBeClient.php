@@ -12,7 +12,6 @@ use Modules\Invoices\Peppol\Clients\BasePeppolClient;
  * all e-invoice.be endpoint clients.
  *
  * @see https://api.e-invoice.be/docs API Documentation
- * @package Modules\Invoices\Peppol\Clients\EInvoiceBe
  */
 class EInvoiceBeClient extends BasePeppolClient
 {
@@ -26,15 +25,15 @@ class EInvoiceBeClient extends BasePeppolClient
     protected function getAuthenticationHeaders(): array
     {
         return [
-            'X-API-Key' => $this->apiKey,
-            'Accept' => 'application/json',
+            'X-API-Key'    => $this->apiKey,
+            'Accept'       => 'application/json',
             'Content-Type' => 'application/json',
         ];
     }
 
     /**
      * Get the request timeout for e-invoice.be operations.
-     *
+     */
     protected function getTimeout(): int
     {
         return (int) config('invoices.peppol.e_invoice_be.timeout', 90);

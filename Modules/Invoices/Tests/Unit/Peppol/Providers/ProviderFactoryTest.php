@@ -2,10 +2,11 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Providers;
 
+use InvalidArgumentException;
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Contracts\ProviderInterface;
-use Modules\Invoices\Peppol\Providers\ProviderFactory;
 use Modules\Invoices\Peppol\Providers\EInvoiceBe\EInvoiceBeProvider;
+use Modules\Invoices\Peppol\Providers\ProviderFactory;
 use Modules\Invoices\Peppol\Providers\Storecove\StorecoveProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -16,8 +17,6 @@ use Tests\TestCase;
  *
  * Tests the factory pattern for creating Peppol provider instances,
  * including provider discovery and instantiation.
- *
- * @package Modules\Invoices\Tests\Unit\Peppol\Providers
  */
 #[Group('peppol')]
 class ProviderFactoryTest extends TestCase
@@ -25,7 +24,7 @@ class ProviderFactoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Clear cache before each test
         ProviderFactory::clearCache();
     }
@@ -43,7 +42,7 @@ class ProviderFactoryTest extends TestCase
 
         $this->assertIsArray($providers);
         $this->assertNotEmpty($providers);
-        
+
         // Should have at least the two included providers
         $this->assertArrayHasKey('e_invoice_be', $providers);
         $this->assertArrayHasKey('storecove', $providers);
@@ -72,7 +71,7 @@ class ProviderFactoryTest extends TestCase
     {
         $integration = new PeppolIntegration([
             'provider_name' => 'e_invoice_be',
-            'company_id' => 1,
+            'company_id'    => 1,
         ]);
 
         $provider = ProviderFactory::make($integration);
@@ -102,7 +101,7 @@ class ProviderFactoryTest extends TestCase
     #[Test]
     public function it_throws_exception_for_unknown_provider(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown Peppol provider');
 
         ProviderFactory::makeFromName('unknown_provider');
@@ -113,7 +112,7 @@ class ProviderFactoryTest extends TestCase
     {
         // First call discovers providers
         $providers1 = ProviderFactory::getAvailableProviders();
-        
+
         // Second call should use cache (same result)
         $providers2 = ProviderFactory::getAvailableProviders();
 
@@ -125,10 +124,10 @@ class ProviderFactoryTest extends TestCase
     {
         // Discover providers
         $providers1 = ProviderFactory::getAvailableProviders();
-        
+
         // Clear cache
         ProviderFactory::clearCache();
-        
+
         // Re-discover
         $providers2 = ProviderFactory::getAvailableProviders();
 
@@ -154,7 +153,7 @@ class ProviderFactoryTest extends TestCase
 
         // Directory 'EInvoiceBe' becomes 'e_invoice_be'
         $this->assertArrayHasKey('e_invoice_be', $providers);
-        
+
         // Directory 'Storecove' becomes 'storecove'
         $this->assertArrayHasKey('storecove', $providers);
     }
@@ -175,8 +174,8 @@ class ProviderFactoryTest extends TestCase
     {
         $integration = new PeppolIntegration([
             'provider_name' => 'e_invoice_be',
-            'company_id' => 1,
-            'enabled' => true,
+            'company_id'    => 1,
+            'enabled'       => true,
         ]);
 
         $provider = ProviderFactory::make($integration);

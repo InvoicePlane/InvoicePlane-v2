@@ -10,19 +10,19 @@ use Modules\Core\Models\User;
 use Modules\Invoices\Enums\PeppolValidationStatus;
 
 /**
- * @property int $id
- * @property int $customer_id
- * @property int|null $integration_id
- * @property int|null $validated_by
- * @property string $peppol_scheme
- * @property string $peppol_id
- * @property PeppolValidationStatus $validation_status
- * @property string|null $validation_message
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property Relation $customer
- * @property PeppolIntegration|null $integration
- * @property User|null $validator
+ * @property int                                $id
+ * @property int                                $customer_id
+ * @property int|null                           $integration_id
+ * @property int|null                           $validated_by
+ * @property string                             $peppol_scheme
+ * @property string                             $peppol_id
+ * @property PeppolValidationStatus             $validation_status
+ * @property string|null                        $validation_message
+ * @property \Carbon\Carbon|null                $created_at
+ * @property \Carbon\Carbon|null                $updated_at
+ * @property Relation                           $customer
+ * @property PeppolIntegration|null             $integration
+ * @property User|null                          $validator
  * @property CustomerPeppolValidationResponse[] $responses
  */
 class CustomerPeppolValidationHistory extends Model
@@ -35,14 +35,14 @@ class CustomerPeppolValidationHistory extends Model
 
     protected $casts = [
         'validation_status' => PeppolValidationStatus::class,
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'created_at'        => 'datetime',
+        'updated_at'        => 'datetime',
     ];
 
     /**
      * Get the customer associated with this validation history.
      *
-     * @return BelongsTo The relation linking this record to a Relation model using the `customer_id` foreign key.
+     * @return BelongsTo the relation linking this record to a Relation model using the `customer_id` foreign key
      */
     public function customer(): BelongsTo
     {
@@ -52,7 +52,7 @@ class CustomerPeppolValidationHistory extends Model
     /**
      * Get the PeppolIntegration associated with this validation history.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The related PeppolIntegration model.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo the related PeppolIntegration model
      */
     public function integration(): BelongsTo
     {
@@ -62,7 +62,7 @@ class CustomerPeppolValidationHistory extends Model
     /**
      * Get the user who performed the validation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo The user that validated this record.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo the user that validated this record
      */
     public function validator(): BelongsTo
     {
@@ -72,7 +72,7 @@ class CustomerPeppolValidationHistory extends Model
     /**
      * Get the provider responses associated with this validation history.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany Related CustomerPeppolValidationResponse models.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany related CustomerPeppolValidationResponse models
      */
     public function responses(): HasMany
     {
@@ -80,12 +80,12 @@ class CustomerPeppolValidationHistory extends Model
     }
 
     /**
-         * Returns provider responses as an associative array keyed by response key.
-         *
-         * Each value will be the decoded JSON value when the stored response is valid JSON; otherwise the raw string value is returned.
-         *
-         * @return array<string,mixed> Map of response_key => response_value (decoded or raw)
-         */
+     * Returns provider responses as an associative array keyed by response key.
+     *
+     * Each value will be the decoded JSON value when the stored response is valid JSON; otherwise the raw string value is returned.
+     *
+     * @return array<string,mixed> Map of response_key => response_value (decoded or raw)
+     */
     public function getProviderResponseAttribute(): array
     {
         return $this->responses
@@ -114,7 +114,7 @@ class CustomerPeppolValidationHistory extends Model
     {
         foreach ($response as $key => $value) {
             $this->responses()->updateOrCreate(
-                ['response_key'   => $key],
+                ['response_key' => $key],
                 [
                     'response_value' => is_array($value)
                         ? json_encode($value, JSON_THROW_ON_ERROR)
@@ -127,7 +127,7 @@ class CustomerPeppolValidationHistory extends Model
     /**
      * Determine whether this validation record represents a successful Peppol validation.
      *
-     * @return bool `true` if the record's `validation_status` equals `PeppolValidationStatus::VALID`, `false` otherwise.
+     * @return bool `true` if the record's `validation_status` equals `PeppolValidationStatus::VALID`, `false` otherwise
      */
     public function isValid(): bool
     {

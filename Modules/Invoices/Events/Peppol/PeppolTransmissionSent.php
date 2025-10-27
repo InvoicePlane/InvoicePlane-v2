@@ -14,17 +14,17 @@ class PeppolTransmissionSent extends PeppolEvent
      * Initializes the event and seeds its payload with the transmission's
      * `transmission_id`, `invoice_id`, `external_id`, and `status`.
      *
-     * @param PeppolTransmission $transmission The associated Peppol transmission.
+     * @param PeppolTransmission $transmission the associated Peppol transmission
      */
     public function __construct(PeppolTransmission $transmission)
     {
         $this->transmission = $transmission;
-        
+
         parent::__construct([
             'transmission_id' => $transmission->id,
-            'invoice_id' => $transmission->invoice_id,
-            'external_id' => $transmission->external_id,
-            'status' => $transmission->status,
+            'invoice_id'      => $transmission->invoice_id,
+            'external_id'     => $transmission->external_id,
+            'status'          => $transmission->status,
         ]);
     }
 
