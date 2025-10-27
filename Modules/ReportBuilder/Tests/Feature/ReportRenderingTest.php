@@ -51,7 +51,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
      */
     public function it_renders_template_to_html_with_correct_block_order(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $blocks = [
@@ -94,10 +94,10 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
             'items' => [],
         ];
 
-        /* Act */
+        /* act */
         $html = $this->renderer->render($template, $data);
 
-        /* Assert */
+        /* assert */
         $this->assertIsString($html);
         $this->assertStringContainsString('Test Company', $html);
     }
@@ -106,7 +106,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
     #[Group('rendering')]
     public function it_renders_template_to_pdf(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $blocks = [
@@ -136,10 +136,10 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $pdf = $this->renderer->renderToPdf($template, $data);
 
-        /* Assert */
+        /* assert */
         $this->assertNotNull($pdf);
         $this->assertIsString($pdf);
         $this->assertStringStartsWith('%PDF-', $pdf);
@@ -149,7 +149,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
     #[Group('rendering')]
     public function it_handles_missing_blocks_with_error_log(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $blocks = [
@@ -179,14 +179,14 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         Log::shouldReceive('error')
             ->once()
             ->with(\Mockery::pattern('/Block handler not found/i'), \Mockery::any());
 
         $html = $this->renderer->render($template, $data);
 
-        /* Assert */
+        /* assert */
         $this->assertIsString($html);
     }
 }

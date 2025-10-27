@@ -33,7 +33,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
      */
     public function it_clones_system_block_on_edit(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -45,10 +45,10 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $position = new GridPositionDTO();
         $position->setX(1)->setY(1)->setWidth(6)->setHeight(4);
 
-        /* Act */
+        /* act */
         $clonedBlock = $this->service->cloneSystemBlock($blockType, $newId, $position);
 
-        /* Assert */
+        /* assert */
         $this->assertEquals($newId, $clonedBlock->getId());
         $this->assertEquals($blockType, $clonedBlock->getType());
         $this->assertTrue($clonedBlock->isCloned());
@@ -61,7 +61,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_identifies_system_templates(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -91,7 +91,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $template->is_system = true;
         $template->save();
 
-        /* Assert */
+        /* assert */
         $this->assertTrue($template->is_system);
         $this->assertTrue($template->isSystem());
     }
@@ -100,7 +100,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_custom_version_with_unique_id(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -116,11 +116,11 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $position2 = new GridPositionDTO();
         $position2->setX(6)->setY(0)->setWidth(6)->setHeight(4);
 
-        /* Act */
+        /* act */
         $firstClone = $this->service->cloneSystemBlock($blockType, $firstCloneId, $position1);
         $secondClone = $this->service->cloneSystemBlock($blockType, $secondCloneId, $position2);
 
-        /* Assert */
+        /* assert */
         $this->assertNotEquals($firstClone->getId(), $secondClone->getId());
         $this->assertEquals($firstCloneId, $firstClone->getId());
         $this->assertEquals($secondCloneId, $secondClone->getId());

@@ -60,7 +60,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
      */
     public function it_creates_report_template_with_valid_blocks(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $blocks = [
@@ -77,7 +77,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $template = $this->service->createTemplate(
             $company,
             'Test Invoice Template',
@@ -85,7 +85,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             $blocks
         );
 
-        /* Assert */
+        /* assert */
         $this->assertDatabaseHas('report_templates', [
             'company_id' => $company->id,
             'name' => 'Test Invoice Template',
@@ -103,7 +103,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_persists_blocks_to_filesystem(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $blocks = [
@@ -120,7 +120,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $_template = $this->service->createTemplate(
             $company,
             'Test Template',
@@ -128,7 +128,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             $blocks
         );
 
-        /* Assert */
+        /* assert */
         Storage::disk('report_templates')->assertExists(
             "{$company->id}/test-template.json"
         );
@@ -162,7 +162,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
      */
     public function it_rejects_invalid_block_types(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = $this->createCompanyContext();
 
         $invalidBlocks = [
@@ -174,7 +174,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act & Assert */
+        /* act /* Act & Assert */ assert */
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("must have a 'type'");
 
@@ -190,7 +190,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
     #[Group('multi-tenancy')]
     public function it_respects_company_tenancy(): void
     {
-        /* Arrange */
+        /* arrange */
         $company1 = $this->createCompanyContext();
         $company2 = Company::factory()->create();
 
@@ -208,7 +208,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $template = $this->service->createTemplate(
             $company1,
             'Company 1 Template',
@@ -216,7 +216,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
             $blocks
         );
 
-        /* Assert */
+        /* assert */
         $this->assertEquals($company1->id, $template->company_id);
         $this->assertNotEquals($company2->id, $template->company_id);
 
