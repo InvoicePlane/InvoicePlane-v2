@@ -194,6 +194,11 @@ class BlockDTOTest extends TestCase
         $this->assertEquals('company', $cloned->getDataSource());
         $this->assertTrue($cloned->getIsCloned());
         $this->assertEquals('block_original', $cloned->getClonedFrom());
+
+        // Verify deep copy: mutating original position should not affect clone
+        $position->setX(10);
+        $this->assertEquals(10, $original->getPosition()->getX());
+        $this->assertEquals(0, $cloned->getPosition()->getX());
     }
 
     #[Test]

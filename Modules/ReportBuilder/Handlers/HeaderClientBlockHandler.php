@@ -21,6 +21,7 @@ use Modules\ReportBuilder\Interfaces\BlockHandlerInterface;
  */
 class HeaderClientBlockHandler implements BlockHandlerInterface
 {
+    /** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
     public function render(BlockDTO $block, Invoice $invoice, Company $company): string
     {
         $config   = $block->getConfig();

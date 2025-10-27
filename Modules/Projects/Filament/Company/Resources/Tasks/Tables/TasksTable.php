@@ -25,9 +25,6 @@ class TasksTable
                     ->formatStateUsing(
                         fn (Task $record): string => static::getStatusLabel($record->task_status)
                     )
-                    ->color(
-                        fn (Task $record): string => static::getStatusColor($record->task_status) ?? 'secondary'
-                    )
                     ->sortable()
                     ->searchable()
                     ->color(function (Task $record) {
@@ -109,14 +106,5 @@ class TasksTable
             : TaskStatus::tryFrom($status);
 
         return $status?->label() ?? trans('ip.tasks.unknown');
-    }
-
-    protected static function getStatusColor(mixed $status): ?string
-    {
-        $status = $status instanceof TaskStatus
-            ? $status
-            : TaskStatus::tryFrom($status);
-
-        return $status?->color();
     }
 }

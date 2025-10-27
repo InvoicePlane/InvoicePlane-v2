@@ -33,7 +33,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    public function map($row): array
+    public function map(\Modules\Clients\Models\Contact $row): array
     {
         return [
             $row->relation?->trading_name ?? $row->relation?->company_name ?? '',

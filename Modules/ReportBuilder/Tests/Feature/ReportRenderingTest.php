@@ -142,6 +142,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
         /* Assert */
         $this->assertNotNull($pdf);
         $this->assertIsString($pdf);
+        $this->assertStringStartsWith('%PDF-', $pdf);
     }
 
     #[Test]
