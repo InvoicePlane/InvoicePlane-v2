@@ -14,10 +14,14 @@ class RelationExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (empty($companyId)) {
-            throw new \RuntimeException('No active company context (current_company_id).');
+        if (!$companyId) {
+            throw new \RuntimeException('No company context available');
         }
-        $relations   = Relation::query()->where('company_id', $companyId)->get();
+
+        $relations   = Relation::query()
+            ->where('company_id', $companyId)
+            ->orderBy('id')
+            ->get();
         $fileName    = 'relations-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $version     = config('ip.export_version', 2);
         $exportClass = $version === 1 ? RelationsLegacyExport::class : RelationsExport::class;
@@ -27,8 +31,15 @@ class RelationExportService
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
-        $relations   = Relation::query()->where('company_id', $companyId)->get();
+        $companyId = session('current_company_id');
+        if (!$companyId) {
+            throw new \RuntimeException('No company context available');
+        }
+
+        $relations   = Relation::query()
+            ->where('company_id', $companyId)
+            ->orderBy('id')
+            ->get();
         $fileName    = 'relations-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $exportClass = $version === 1 ? RelationsLegacyExport::class : RelationsExport::class;
 
