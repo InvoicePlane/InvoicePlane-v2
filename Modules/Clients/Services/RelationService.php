@@ -53,7 +53,7 @@ class RelationService extends BaseService
 
             DB::commit();
 
-            event(new CustomerWasCreated($relation));
+            event(new CustomerWasCreated());
 
             return $relation;
         } catch (Throwable $e) {
@@ -94,13 +94,27 @@ class RelationService extends BaseService
 
             DB::commit();
 
-            event(new CustomerWasUpdated($relation));
+            event(new CustomerWasUpdated());
 
             return $relation;
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function deleteRelation(Relation $relation): Relation
+    {
+        DB::beginTransaction();
+        try {
+            $relation->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $relation;
     }
 
     protected function generateRelationNumber(string $relationType): string

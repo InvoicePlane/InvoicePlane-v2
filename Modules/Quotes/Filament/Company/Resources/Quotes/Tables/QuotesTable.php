@@ -5,6 +5,7 @@ namespace Modules\Quotes\Filament\Company\Resources\Quotes\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -79,6 +80,10 @@ class QuotesTable
                         ->modalDescription('todo: make sure we can email the Quote through an action,
                             so need for modal anymore')
                         ->action(function (Quote $record): void {}),
+                    DeleteAction::make('delete')
+                        ->action(function (Quote $quote) {
+                            app(QuoteService::class)->deleteQuote($quote);
+                        }),
                 ]),
             ])
             ->toolbarActions([

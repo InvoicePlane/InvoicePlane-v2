@@ -44,6 +44,7 @@ class EditMerchantClient extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return app(MerchantClientService::class)->updateMerchantClient($record, $data);
+        return $record;
+        //app(MerchantClientService::class)->updateMerchantClient($record, $data)
     }
 }

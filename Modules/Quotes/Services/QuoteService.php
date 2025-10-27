@@ -113,6 +113,21 @@ class QuoteService extends BaseService
         }
     }
 
+    public function deleteQuote(Quote $quote): Quote
+    {
+        DB::beginTransaction();
+        try {
+            $quote->quoteItems()->delete();
+            $quote->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $quote;
+    }
+
     private function calculateItemTaxTotal(array $data): float
     {
         return collect($data['quoteItems'] ?? [])->sum(fn ($item) => $item['tax_total'] ?? 0);

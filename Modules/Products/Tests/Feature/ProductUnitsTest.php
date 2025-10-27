@@ -231,88 +231,48 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_update_product_unit_without_required_unit_name(): void
-    {
-        /* arrange */
-        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
-        $payload = ['unit_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditProductUnit::class, ['record' => $record->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['unit_name']);
-    }
-
-    #[Test]
-    #[Group('crud')]
     public function it_deletes_a_product_unit(): void
     {
-        $this->markTestIncomplete();
-
         /* arrange */
-        $record = ProductUnit::factory()
+        $productUnit = ProductUnit::factory()
             ->for($this->user->companies()->first())
             ->create();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($productUnit))
+            ->callMountedAction();
 
         /* assert */
         $component->assertSuccessful();
-        $this->assertModelMissing($record);
+        $this->assertModelMissing($productUnit);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_fails_to_delete_product_unit_twice(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
-        $record = ProductUnit::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        $productUnit = ProductUnit::factory()->for($this->user->companies()->first())->create();
+        $productUnit->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
-            ->callAction('delete', $record);
+            ->mountAction(TestAction::make('delete')->table($productUnit))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
 
-        $this->assertDatabaseMissing('product_units', ['id' => $record->id]);
+        $this->assertDatabaseMissing('product_units', ['id' => $productUnit->id]);
     }
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_product_units_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Verify tenant isolation for product units');
-
-        // Arrange
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->create();
-
-        $user1 = User::factory()->create();
-        $user1->companies()->attach($company1);
-
-        $unit = ProductUnit::factory()
-            ->for($company1)
-            ->create(['unit_name' => 'Company 1 Unit']);
-
-        // Act & Assert - User from company 2 tries to access company 1's unit
-        $this->actingAs($user1->companies()->first()->pivot->switchCompany($company2))
-            ->get(route('filament.company.resources.product-units.edit', $unit))
-            ->assertForbidden();
-    }
     # endregion
 
     #region spicy

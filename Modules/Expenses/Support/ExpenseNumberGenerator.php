@@ -2,7 +2,7 @@
 
 namespace Modules\Expenses\Support;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Support\NumberGenerator\AbstractNumberGenerator;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Models\Expense;

@@ -14,32 +14,29 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
-use Modules\Invoices\Models\RecurringInvoice;
-use Modules\Invoices\Models\RecurringInvoiceItem;
 use Modules\Products\Models\Product;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 
 /**
- * @property int                               $id
- * @property int                               $company_id
- * @property string                            $tax_rate_type
- * @property bool                              $is_active
- * @property string                            $code
- * @property string                            $name
- * @property bool                              $is_compound
- * @property bool                              $calculate_vat
- * @property float                             $rate
- * @property Company                           $company
- * @property Collection|ExpenseItem[]          $expense_items
- * @property Collection|InvoiceItem[]          $invoice_items
- * @property Collection|Invoice[]              $invoices
- * @property Collection|Product[]              $products
- * @property Collection|QuoteItem[]            $quote_items
- * @property Collection|Quote[]                $quotes
- * @property Collection|RecurringInvoiceItem[] $recurring_invoice_items
- * @property Collection|Task[]                 $tasks
+ * @property int                      $id
+ * @property int                      $company_id
+ * @property string                   $tax_rate_type
+ * @property bool                     $is_active
+ * @property string                   $code
+ * @property string                   $name
+ * @property bool                     $is_compound
+ * @property bool                     $calculate_vat
+ * @property float                    $rate
+ * @property Company                  $company
+ * @property Collection|ExpenseItem[] $expense_items
+ * @property Collection|InvoiceItem[] $invoice_items
+ * @property Collection|Invoice[]     $invoices
+ * @property Collection|Product[]     $products
+ * @property Collection|QuoteItem[]   $quote_items
+ * @property Collection|Quote[]       $quotes
+ * @property Collection|Task[]        $tasks
  */
 class TaxRate extends Model
 {
@@ -79,11 +76,6 @@ class TaxRate extends Model
             ->withPivot('id', 'include_item_tax', 'tax_total');
     }
 
-    public function invoiceItems(): HasMany
-    {
-        return $this->hasMany(RecurringInvoiceItem::class);
-    }
-
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'tax_rate_id');
@@ -98,16 +90,6 @@ class TaxRate extends Model
     public function quoteItems(): HasMany
     {
         return $this->hasMany(QuoteItem::class);
-    }
-
-    public function recurringInvoices(): HasMany
-    {
-        return $this->hasMany(RecurringInvoice::class);
-    }
-
-    public function recurringInvoiceItems(): HasMany
-    {
-        return $this->hasMany(RecurringInvoiceItem::class);
     }
 
     public function tasks(): HasMany

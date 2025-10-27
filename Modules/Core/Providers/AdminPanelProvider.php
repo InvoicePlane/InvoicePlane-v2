@@ -163,8 +163,8 @@ class AdminPanelProvider extends PanelProvider
                 TaxRateResource::class,
                 UserResource::class,
             ])
-            ->discoverPages(in: app_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
-            ->discoverWidgets(in: app_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
+            ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
+            ->discoverWidgets(in: base_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -173,6 +173,7 @@ class AdminPanelProvider extends PanelProvider
                 'profile' => MenuItem::make()->label('Edit profile'),
                 MenuItem::make()
                     ->label('Settings')
+                    ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => MenuItem::make()->label('Translate Sign Out'),
             ])

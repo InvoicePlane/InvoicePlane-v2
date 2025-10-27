@@ -22,7 +22,7 @@ class LoginResponse implements BaseLoginResponse
         }
 
         if ($isElevated) {
-            $tenant = \Modules\Core\Models\Company::query()->first();
+            $tenant = \Modules\Core\Models\Company::query()->first(); // <<</// @todo should be ivplv2, maybe
             if ( ! $tenant) {
                 abort(500, 'Fallback company not found.');
             }

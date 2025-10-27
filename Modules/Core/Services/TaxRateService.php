@@ -3,7 +3,9 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\TaxRate;
+use Throwable;
 
 class TaxRateService extends BaseService
 {
@@ -36,6 +38,20 @@ class TaxRateService extends BaseService
             'name'          => $data['name'],
             'rate'          => $data['rate'] ?? null,
         ]);
+
+        return $taxRate;
+    }
+
+    public function deleteTaxRate(TaxRate $taxRate): TaxRate
+    {
+        DB::beginTransaction();
+        try {
+            $taxRate->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return $taxRate;
     }

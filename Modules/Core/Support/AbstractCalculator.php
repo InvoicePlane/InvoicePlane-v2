@@ -176,7 +176,7 @@ class AbstractCalculator
     /**
      * Calculate discount amount.
      *
-     * @param Quote $quote
+     * @param       $document
      * @param float $subtotal
      *
      * @return float
@@ -198,7 +198,7 @@ class AbstractCalculator
      *
      * @param float $subtotal
      * @param float $itemTaxTotal
-     * @param float $quoteTaxTotal
+     * @param float $taxTotal
      * @param float $discountAmount
      *
      * @return float

@@ -2,7 +2,6 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
@@ -14,9 +13,6 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Enums\AddressType;
 
-/**
- * @extends Factory<Relation>
- */
 class RelationFactory extends AbstractFactory
 {
     protected $model = Relation::class;

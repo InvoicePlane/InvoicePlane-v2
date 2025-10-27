@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -11,9 +10,6 @@ use Modules\Invoices\Models\InvoiceItem;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 
-/**
- * @extends Factory<Invoice>
- */
 class InvoiceFactory extends AbstractFactory
 {
     protected $model = Invoice::class;

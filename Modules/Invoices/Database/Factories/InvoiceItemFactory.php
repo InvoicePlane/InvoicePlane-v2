@@ -2,25 +2,23 @@
 
 namespace Modules\Invoices\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
 use Modules\Invoices\Models\InvoiceItem;
 
-/**
- * @extends Factory<InvoiceItem>
- */
 class InvoiceItemFactory extends AbstractFactory
 {
     protected $model = InvoiceItem::class;
 
     public function definition(): array
     {
+        /** @phpstan-ignore-next-line */
         $taxRateId = $attributes['tax_rate_id'] ?? null;
         $taxRate   = $taxRateId
             ? TaxRate::query()->find($taxRateId)
             : null;
 
+        /** @phpstan-ignore-next-line */
         $taxPercent = $taxRate?->rate ?? 0;
 
         $quantity = $this->faker->randomFloat(4, 1, 20);

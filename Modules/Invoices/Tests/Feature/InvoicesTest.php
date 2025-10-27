@@ -16,6 +16,7 @@ use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
@@ -315,88 +316,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_status' => InvoiceStatus::SENT,
         ]);
     }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_updates_invoice_and_updates_total_through_a_modal(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'subtotal' => 100,
-            'tax'      => 20,
-            'discount' => 0,
-            'total'    => 120,
-        ]);
-
-        $payload = [
-            'subtotal' => 200,
-            'tax'      => 40,
-            'discount' => 20,
-            'total'    => 220,
-        ];
-
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
-            ->fillForm($payload)
-            ->mountAction('save')
-            ->callMountedAction()
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'total' => 220]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_with_invalid_discount_through_a_modal(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'subtotal' => 200,
-            'tax'      => 40,
-            'discount' => 10,
-            'total'    => 230,
-        ]);
-
-        $payload = [
-            'subtotal' => 200,
-            'tax'      => 40,
-            'discount' => 9999, // absurd value
-            'total'    => 230,
-        ];
-
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $updatedData)
-            ->fillForm($payload)
-            ->callMountedAction()
-            ->assertHasErrors(['discount']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_invoice_with_invalid_status_through_a_modal(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
-        $payload = ['invoice_status' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $updatedData)
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* assert */
-        $component->assertHasFormErrors(['invoice_status']);
-    }
     # endregion
 
     # region crud
@@ -661,67 +580,50 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function it_fails_to_update_with_invalid_discount(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'subtotal' => 200,
-            'tax'      => 40,
-            'discount' => 10,
-            'total'    => 230,
-        ]);
-
-        /** @payload */
-        $payload = [
-            'subtotal' => 200,
-            'tax'      => 40,
-            'discount' => 9999, // absurd value
-            'total'    => 230,
-        ];
-
-        Livewire::actingAs($this->user)
-            ->test(EditInvoice::class, ['record' => $invoice->id])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasErrors(['discount']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_invoice_with_invalid_status(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
-        $payload = ['invoice_status' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(EditInvoice::class, ['record' => $invoice->id])
-            ->fillForm($payload)
-            ->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['invoice_status']);
-    }
-
-    #[Test]
     #[Group('crud')]
     public function it_deletes_an_invoice(): void
     {
-        $this->markTestIncomplete();
         /* arrange */
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
-        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
+
+        $invoice = Invoice::factory()
+            ->for($company)
+            ->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->callAction('delete', $invoice);
+            ->mountAction(TestAction::make('delete')->table($invoice))
+            ->callMountedAction();
 
         /* assert */
         $component
@@ -736,42 +638,55 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_paid_invoice(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Still can delete paid invoice');
 
         /* arrange */
+        $company         = $this->user->companies()->first();
+        $user            = $this->user;
+        $customer        = Relation::factory()->for($company)->customer()->create();
+        $documentGroup   = DocumentGroup::factory()->for($company)->create();
+        $taxRate         = TaxRate::factory()->for($company)->create();
+        $productCategory = ProductCategory::factory()->for($company)->create();
+        $productUnit     = ProductUnit::factory()->for($company)->create();
+        $product         = Product::factory()->for($company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::PAID,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
 
         $invoice = Invoice::factory()
-            ->for($this->user->companies()->first())
-            ->hasPayments(1)
-            ->create([
-                'invoice_status' => InvoiceStatus::PAID,
-            ]);
+            ->for($company)
+            ->create($payload);
 
-        Livewire::actingAs($this->user)
+        $payment = Payment::factory()->for($this->company)->create([
+            'customer_id'    => $customer->id,
+            'invoice_id'     => $invoice->id,
+            'payment_amount' => 440,
+            'paid_at'        => now(),
+        ]);
+
+        $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->call('delete', $invoice->id)
-            ->assertHasErrors(['delete']);
-
-        $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_delete_if_has_payments(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-
-        $invoice = Invoice::factory()
-            ->for($this->user->companies()->first())
-            ->hasPayments(1)
-            ->create();
-
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->call('delete', $invoice->id)
-            ->assertHasErrors(['delete']);
+            ->mountAction(TestAction::make('delete')->table($invoice))
+            ->callMountedAction();
 
         $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
     }
@@ -780,16 +695,17 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        $this->markTestIncomplete('record to deleteAction cannot be null');
 
+        /* arrange */
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
         $invoice->delete();
 
         /* act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->callAction('delete', $invoice);
+            ->mountAction(TestAction::make('delete')->table($invoice))
+            ->callMountedAction();
 
         /* assert */
         $component->assertHasErrors();
@@ -799,19 +715,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function it_cannot_access_invoices_of_another_tenant(): void
-    {
-        $this->markTestIncomplete('Should assert forbidden/404 when accessing another tenant\'s invoice.');
-    }
-
-    #[Test]
-    #[Group('multi-tenancy')]
-    public function widget_shows_only_current_tenant_invoices(): void
-    {
-        $this->markTestIncomplete('Should assert widget only shows invoices for the current tenant.');
-    }
     # endregion
 
     #region spicy

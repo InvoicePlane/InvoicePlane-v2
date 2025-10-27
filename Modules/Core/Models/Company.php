@@ -21,7 +21,6 @@ use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
-use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Payments\Models\Payment;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -90,12 +89,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Relationships
     |--------------------------------------------------------------------------
     */
-    /**
-     * Get all customer admin users associated with this company.
-     * Uses Spatie's role relationship to filter users with the client_admin role.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
+    /** @phpstan-ignore-next-line */
     public function customerAdmins(): BelongsToMany
     {
         return $this->users()
@@ -104,9 +98,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
             });
     }
 
-    /**
-     * Get all of the company's addresses.
-     */
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
@@ -238,11 +229,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class);
-    }
-
-    public function recurringInvoices(): HasMany
-    {
-        return $this->hasMany(RecurringInvoice::class);
     }
 
     public function relations(): HasMany

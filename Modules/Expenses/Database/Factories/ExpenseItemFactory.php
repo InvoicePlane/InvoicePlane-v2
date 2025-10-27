@@ -11,9 +11,6 @@ use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
 use RuntimeException;
 
-/**
- * @extends Factory<\Modules\Expenses\Models\ExpenseItem>
- */
 class ExpenseItemFactory extends Factory
 {
     protected $model = ExpenseItem::class;

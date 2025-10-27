@@ -2,13 +2,9 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Products\Models\ProductCategory;
 
-/**
- * @extends Factory<\Modules\Products\Models\ProductCategory>
- */
 class ProductCategoryFactory extends AbstractFactory
 {
     protected $model = ProductCategory::class;

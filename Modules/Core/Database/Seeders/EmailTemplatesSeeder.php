@@ -5,9 +5,9 @@ namespace Modules\Core\Database\Seeders;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\EmailTemplate;
 
-class EmailTemplatesSeeder extends \Modules\Core\Database\Seeders\AbstractSeeder
+class EmailTemplatesSeeder extends AbstractSeeder
 {
-    public function run(?int $companyId = null): void
+    public function buildOne(?int $companyId = null): void
     {
         $templates = [
             [

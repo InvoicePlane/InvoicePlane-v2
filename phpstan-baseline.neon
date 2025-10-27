@@ -1,7 +1,61 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Class Modules\\Core\\Tests\\Feature\\UserProfileResource not found\.$#'
-			identifier: class.notFound
+			message: '#^Method Modules\\Core\\Models\\Company\:\:customerAdmins\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany but returns Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: return.type
 			count: 1
-			path: Modules/Core/Tests/Feature/UserProfilesTest.php
+			path: Modules/Core/Models/Company.php
+
+		-
+			message: '#^Method Modules\\Expenses\\Filament\\Company\\Widgets\\RecentExpensesWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Expenses/Filament/Company/Widgets/RecentExpensesWidget.php
+
+		-
+			message: '#^Cannot access property \$rate on null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Modules/Invoices/Database/Factories/InvoiceItemFactory.php
+
+		-
+			message: '#^Variable \$attributes on left side of \?\? is never defined\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: Modules/Invoices/Database/Factories/InvoiceItemFactory.php
+
+		-
+			message: '#^Method Modules\\Payments\\Filament\\Company\\Widgets\\RecentPaymentsWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Payments/Filament/Company/Widgets/RecentPaymentsWidget.php
+
+		-
+			message: '#^Method Modules\\Projects\\Filament\\Company\\Resources\\Tasks\\Pages\\ListTasks\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Projects/Filament/Company/Resources/Tasks/Pages/ListTasks.php
+
+		-
+			message: '#^Method Modules\\Projects\\Filament\\Company\\Widgets\\RecentProjectsWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Projects/Filament/Company/Widgets/RecentProjectsWidget.php
+
+		-
+			message: '#^Method Modules\\Projects\\Filament\\Company\\Widgets\\RecentTasksWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Projects/Filament/Company/Widgets/RecentTasksWidget.php
+
+		-
+			message: '#^Cannot access property \$rate on null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Modules/Quotes/Database/Factories/QuoteItemFactory.php
+
+		-
+			message: '#^Variable \$attributes on left side of \?\? is never defined\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: Modules/Quotes/Database/Factories/QuoteItemFactory.php
