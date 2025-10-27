@@ -40,5 +40,8 @@ return [
      * Allowed values: 1 (legacy format) or 2 (current format)
      * Can be overridden via IP_EXPORT_VERSION environment variable
      */
-    'export_version' => env('IP_EXPORT_VERSION', 2),
+    'export_version' => (function () {
+        $v = (int) env('IP_EXPORT_VERSION', 2);
+        return in_array($v, [1, 2], true) ? $v : 2;
+    })(),
 ];
