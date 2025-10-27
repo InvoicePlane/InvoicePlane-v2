@@ -25,35 +25,37 @@ class HeaderCompanyBlockHandler implements BlockHandlerInterface
 {
     public function render(BlockDTO $block, Invoice $invoice, Company $company): string
     {
-        $config = $block->getConfig();
-        $html   = '';
+        $config = $block->getConfig() ?? [];
+        $company->loadMissing(['communications', 'addresses']);
+        $e     = static fn ($v) => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $html  = '';
 
         $html .= '<div class="company-header">';
-        $html .= '<h2>' . htmlspecialchars($company->name ?? '') . '</h2>';
+        $html .= '<h2>' . $e($company->name) . '</h2>';
 
-        if (!empty($config['show_vat_id']) && !empty($company->vat_number)) {
-            $html .= '<p>VAT: ' . htmlspecialchars($company->vat_number) . '</p>';
+        if (($config['show_vat_id'] ?? false) && !empty($company->vat_number)) {
+            $html .= '<p>VAT: ' . $e($company->vat_number) . '</p>';
         }
 
-        if (!empty($config['show_phone'])) {
+        if ($config['show_phone'] ?? false) {
             $communication = $company->communications->where('type', 'phone')->first();
             if ($communication) {
-                $html .= '<p>Phone: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+                $html .= '<p>Phone: ' . $e($communication->value) . '</p>';
             }
         }
 
-        if (!empty($config['show_email'])) {
+        if ($config['show_email'] ?? false) {
             $communication = $company->communications->where('type', 'email')->first();
             if ($communication) {
-                $html .= '<p>Email: ' . htmlspecialchars($communication->value ?? '') . '</p>';
+                $html .= '<p>Email: ' . $e($communication->value) . '</p>';
             }
         }
 
-        if (!empty($config['show_address'])) {
+        if ($config['show_address'] ?? false) {
             $address = $company->addresses->first();
             if ($address) {
-                $html .= '<p>' . htmlspecialchars($address->address_1 ?? '') . '</p>';
-                $html .= '<p>' . htmlspecialchars($address->city ?? '') . ' ' . htmlspecialchars($address->postal_code ?? '') . '</p>';
+                $html .= '<p>' . $e($address->address_1) . '</p>';
+                $html .= '<p>' . $e($address->city) . ' ' . $e($address->postal_code) . '</p>';
             }
         }
 

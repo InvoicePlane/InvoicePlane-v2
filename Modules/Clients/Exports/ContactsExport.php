@@ -24,7 +24,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.relation_id'),
+            trans('ip.relation_name'),
             trans('ip.type'),
             trans('ip.contact_name'),
             trans('ip.email'),

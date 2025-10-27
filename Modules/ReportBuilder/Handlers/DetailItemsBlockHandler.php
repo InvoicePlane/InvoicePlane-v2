@@ -55,7 +55,7 @@ class DetailItemsBlockHandler implements BlockHandlerInterface
 
         $html .= '</tr></thead><tbody>';
 
-        foreach ($invoice->invoice_items as $item) {
+        foreach (($invoice->invoice_items ?? []) as $item) {
             $html .= '<tr>';
             $html .= '<td>' . htmlspecialchars($item->item_name ?? '') . '</td>';
 
