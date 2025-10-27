@@ -41,7 +41,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
             )
         );
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($expenses->count() + 1, $lines);
         foreach ($expenses as $expense) {
@@ -90,7 +90,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertEquals(200, $response->status());
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(1, count($lines));
     }
 
@@ -135,7 +135,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
         $this->assertEquals(200, $response->status());
         $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($expenses->count() + 1, $lines);
         foreach ($expenses as $expense) {
@@ -160,7 +160,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
         $this->assertEquals(200, $response->status());
         $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($expenses->count() + 1, $lines);
         foreach ($expenses as $expense) {

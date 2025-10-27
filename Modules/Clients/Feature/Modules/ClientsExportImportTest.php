@@ -41,7 +41,7 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
             )
         );
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($contacts->count() + 1, $lines);
         foreach ($contacts as $contact) {
@@ -90,7 +90,7 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertEquals(200, $response->status());
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(1, count($lines)); // Only header row
     }
 }
