@@ -45,7 +45,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
      */
     public function it_updates_template_blocks(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -86,10 +86,10 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $this->service->updateTemplate($template, $updatedBlocks);
 
-        /* Assert */
+        /* assert */
         $fileContents = Storage::disk('report_templates')->get(
             "{$company->id}/test-template.json"
         );
@@ -107,7 +107,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_snaps_blocks_to_grid_on_update(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -134,10 +134,10 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $this->service->updateTemplate($template, $blocksWithValidPosition);
 
-        /* Assert */
+        /* assert */
         $fileContents = Storage::disk('report_templates')->get(
             "{$company->id}/test-template.json"
         );
@@ -153,7 +153,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_persists_updates_to_filesystem(): void
     {
-        /* Arrange */
+        /* arrange */
         $company = Company::factory()->create();
         $user = User::factory()->create();
         $user->companies()->attach($company);
@@ -205,10 +205,10 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
             ],
         ];
 
-        /* Act */
+        /* act */
         $this->service->updateTemplate($template, $updatedBlocks);
 
-        /* Assert */
+        /* assert */
         Storage::disk('report_templates')->assertExists(
             "{$company->id}/test-template.json"
         );

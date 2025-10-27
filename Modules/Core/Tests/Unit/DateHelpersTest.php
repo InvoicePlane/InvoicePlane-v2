@@ -5,10 +5,12 @@ namespace Modules\Core\Tests\Unit;
 use Illuminate\Support\Carbon;
 use Modules\Core\Support\DateHelpers;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DateHelpersTest extends AbstractTestCase
 {
-    public function test_format_date_returns_formatted_date()
+    #[Test]
+    public function it_format_date_returns_formatted_date(): void
     {
         $this->markTestIncomplete();
 
@@ -16,14 +18,16 @@ class DateHelpersTest extends AbstractTestCase
         $this->assertEquals('2025-07-14', DateHelpers::formatDate($date));
     }
 
-    public function test_format_date_returns_dash_for_null()
+    #[Test]
+    public function it_format_date_returns_dash_for_null(): void
     {
         $this->markTestIncomplete();
 
         $this->assertEquals('-', DateHelpers::formatDate(null));
     }
 
-    public function test_format_since_returns_since_for_past_date()
+    #[Test]
+    public function it_format_since_returns_since_for_past_date(): void
     {
         $this->markTestIncomplete();
 
@@ -32,7 +36,8 @@ class DateHelpersTest extends AbstractTestCase
         $this->assertStringContainsString('ago', $result);
     }
 
-    public function test_format_since_returns_in_for_future_date()
+    #[Test]
+    public function it_format_since_returns_in_for_future_date(): void
     {
         $this->markTestIncomplete();
 
@@ -41,7 +46,8 @@ class DateHelpersTest extends AbstractTestCase
         $this->assertStringContainsString('in', $result);
     }
 
-    public function test_format_since_returns_date_for_large_difference()
+    #[Test]
+    public function it_format_since_returns_date_for_large_difference(): void
     {
         $this->markTestIncomplete();
 
