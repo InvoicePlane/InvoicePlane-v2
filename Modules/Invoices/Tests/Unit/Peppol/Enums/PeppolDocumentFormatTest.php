@@ -2,11 +2,11 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Enums;
 
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 use ValueError;
 
 /**

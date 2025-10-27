@@ -26,8 +26,8 @@ class RecentExpensesWidget extends TableWidget
             TextColumn::make('expense_status')
                 ->label(trans('ip.expense_status'))
                 ->badge()
-                ->formatStateUsing(fn ($state) => EnumHelper::safeEnum(ExpenseStatus::class, $state)?->label() ?? '-')
-                ->color(fn ($state) => EnumHelper::safeEnum(ExpenseStatus::class, $state)?->color() ?? 'secondary'),
+                ->formatStateUsing(fn ($state) => (EnumHelper::safeEnum(ExpenseStatus::class, $state) && method_exists(EnumHelper::safeEnum(ExpenseStatus::class, $state), 'label')) ? EnumHelper::safeEnum(ExpenseStatus::class, $state)->label() : '-')
+                ->color(fn ($state) => (EnumHelper::safeEnum(ExpenseStatus::class, $state) && method_exists(EnumHelper::safeEnum(ExpenseStatus::class, $state), 'color')) ? EnumHelper::safeEnum(ExpenseStatus::class, $state)->color() : 'secondary'),
             TextColumn::make('expenseCategory.category_name')->label(trans('ip.expense_category')),
             TextColumn::make('amount')->label(trans('ip.amount')),
         ];

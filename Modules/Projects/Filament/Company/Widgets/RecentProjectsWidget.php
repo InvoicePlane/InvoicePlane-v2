@@ -29,8 +29,8 @@ class RecentProjectsWidget extends TableWidget
             TextColumn::make('project_status')
                 ->label(trans('ip.project_status'))
                 ->badge()
-                ->formatStateUsing(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->label() ?? '-')
-                ->color(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->color() ?? 'secondary'),
+                ->formatStateUsing(fn ($state) => ($enum = EnumHelper::safeEnum(ProjectStatus::class, $state)) && method_exists($enum, 'label') ? $enum->label() : '-')
+                ->color(fn ($state) => ($enum = EnumHelper::safeEnum(ProjectStatus::class, $state)) && method_exists($enum, 'color') ? $enum->color() : 'secondary'),
         ];
     }
 }

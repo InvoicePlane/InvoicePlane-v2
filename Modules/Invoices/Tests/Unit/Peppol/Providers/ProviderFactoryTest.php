@@ -3,6 +3,7 @@
 namespace Modules\Invoices\Tests\Unit\Peppol\Providers;
 
 use InvalidArgumentException;
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Contracts\ProviderInterface;
 use Modules\Invoices\Peppol\Providers\EInvoiceBe\EInvoiceBeProvider;
@@ -10,7 +11,6 @@ use Modules\Invoices\Peppol\Providers\ProviderFactory;
 use Modules\Invoices\Peppol\Providers\Storecove\StorecoveProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 /**
  * ProviderFactoryTest - Unit tests for ProviderFactory.

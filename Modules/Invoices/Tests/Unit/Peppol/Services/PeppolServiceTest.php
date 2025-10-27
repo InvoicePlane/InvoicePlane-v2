@@ -6,12 +6,12 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use Modules\Invoices\Peppol\Services\PeppolService;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 /**
  * PeppolServiceTest - Unit tests for PeppolService.

@@ -3,11 +3,11 @@
 namespace Modules\Invoices\Tests\Unit\Http\Clients;
 
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\RequestMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 /**
  * ApiClientTest - Unit tests for ApiClient.

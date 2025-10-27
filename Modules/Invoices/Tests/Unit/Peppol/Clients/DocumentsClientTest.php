@@ -3,12 +3,12 @@
 namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 /**
  * DocumentsClientTest - Unit tests for DocumentsClient.

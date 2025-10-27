@@ -2,13 +2,13 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 use Modules\Invoices\Peppol\FormatHandlers\FatturaPaHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use stdClass;
-use Tests\TestCase;
 
 /**
  * FatturaPaHandlerTest - Unit tests for FatturaPA handler.

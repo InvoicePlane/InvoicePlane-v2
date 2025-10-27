@@ -79,6 +79,18 @@ enum PeppolDocumentFormat: string
     case PEPPOL_BIS_30 = 'peppol_bis_3.0';
 
     /**
+     * EHF 3.0 - Norwegian e-invoice format (specific version for Peppol tests).
+     * Used in some test cases and country recommendations.
+     */
+    case EHF_30 = 'ehf_3.0';
+
+    /**
+     * Factur-X - Hybrid PDF/XML format (specific version for Peppol tests).
+     * Used in some test cases and country recommendations.
+     */
+    case FACTURX = 'facturx';
+
+    /**
      * Get the recommended format based on country code.
      *
      * @param string|null $countryCode ISO 3166-1 alpha-2 country code

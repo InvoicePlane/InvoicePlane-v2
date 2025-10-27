@@ -2,20 +2,14 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
-use Modules\Invoices\Peppol\FormatHandlers\{
-    EhfHandler,
-    FacturXHandler,
-    FacturaeHandler,
-    OioublHandler,
-    ZugferdHandler
-};
+use Modules\Invoices\Peppol\FormatHandlers\{EhfHandler, FacturXHandler, FacturaeHandler, OioublHandler, ZugferdHandler};
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use stdClass;
-use Tests\TestCase;
 
 /**
  * FormatHandlersTest - Comprehensive tests for all format handlers.

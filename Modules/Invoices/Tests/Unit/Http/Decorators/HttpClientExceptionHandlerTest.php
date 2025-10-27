@@ -6,12 +6,12 @@ use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mockery;
+use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
-use Tests\TestCase;
 
 /**
  * HttpClientExceptionHandlerTest - Unit tests for HttpClientExceptionHandler.
