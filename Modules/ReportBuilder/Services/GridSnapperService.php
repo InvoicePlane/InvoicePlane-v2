@@ -24,13 +24,12 @@ class GridSnapperService
      */
     public function snap(GridPositionDTO $position): GridPositionDTO
     {
-        $snapped = new GridPositionDTO();
-        $snapped->setX(max(0, min($position->getX(), $this->gridSize - 1)));
-        $snapped->setY(max(0, $position->getY()));
-        $snapped->setWidth(max(1, min($position->getWidth(), $this->gridSize - $position->getX())));
-        $snapped->setHeight(max(1, $position->getHeight()));
+        $x = max(0, min($position->getX(), $this->gridSize - 1));
+        $y = max(0, $position->getY());
+        $width = max(1, min($position->getWidth(), $this->gridSize - $position->getX()));
+        $height = max(1, $position->getHeight());
 
-        return $snapped;
+        return new GridPositionDTO($x, $y, $width, $height);
     }
 
     /**

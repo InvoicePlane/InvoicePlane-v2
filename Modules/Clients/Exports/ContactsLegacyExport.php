@@ -24,7 +24,7 @@ class ContactsLegacyExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.relation_id'),
+            trans('ip.relation_name'),
             trans('ip.type'),
             trans('ip.contact_name'),
             trans('ip.email'),
@@ -37,7 +37,7 @@ class ContactsLegacyExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
-            $row->relation?->relation_type ?? '', // <<== It's an enum so figure out how to export it properly
+            $row->relation?->relation_type?->value ?? $row->relation?->relation_type?->name ?? '',
             $row->full_name,
             $row->email ?? null,
             $row->phone ?? null,

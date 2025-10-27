@@ -26,7 +26,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('exportCsv')
+            ->mountAction('exportCsvV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -40,7 +40,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]
         );
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($products->count() + 1, $lines);
         foreach ($products as $product) {
@@ -60,7 +60,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('exportExcel')
+            ->mountAction('exportExcelV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 
@@ -83,14 +83,14 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('exportExcel')
+            ->mountAction('exportExcelV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 
         /* Assert */
         $this->assertEquals(200, $response->status());
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
+        $lines   = preg_split('/\r?\n/', trim($content));
         $this->assertGreaterThanOrEqual(1, count($lines));
     }
 
@@ -106,7 +106,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
-            ->mountAction('exportExcel')
+            ->mountAction('exportExcelV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 

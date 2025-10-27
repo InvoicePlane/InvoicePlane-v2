@@ -29,6 +29,24 @@ class GridPositionDTO
 
     //endregion
 
+    //region Constructor
+
+    public function __construct(int $x, int $y, int $width, int $height)
+    {
+        if ($x < 0 || $y < 0) {
+            throw new \InvalidArgumentException('x and y must be >= 0');
+        }
+        if ($width <= 0 || $height <= 0) {
+            throw new \InvalidArgumentException('width and height must be > 0');
+        }
+        $this->x = $x;
+        $this->y = $y;
+        $this->width = $width;
+        $this->height = $height;
+    }
+
+    //endregion
+
     //region Getters
 
     public function getX(): int

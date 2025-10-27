@@ -20,8 +20,15 @@ class ProjectExportService
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
-        $projects    = Project::query()->where('company_id', $companyId)->get();
+        $companyId = session('current_company_id');
+        if (!$companyId) {
+            throw new \RuntimeException('No company context available');
+        }
+
+        $projects    = Project::query()
+            ->where('company_id', $companyId)
+            ->orderBy('id')
+            ->get();
         $fileName    = 'projects-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $exportClass = $version === 1 ? ProjectsLegacyExport::class : ProjectsExport::class;
 

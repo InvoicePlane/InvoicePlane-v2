@@ -50,7 +50,12 @@ class ReportRenderer
 
             $content = '';
             foreach ($blocks as $block) {
-                $handler  = BlockFactory::make($block->getType());
+                $handler = $this->blockFactory->make($block->getType());
+                if ($handler === null) {
+                    Log::channel('report-builder')->warning('Unknown block type', ['type' => $block->getType()]);
+
+                    continue;
+                }
                 $content .= $handler->render($block, $invoice, $company);
             }
 
@@ -154,7 +159,12 @@ class ReportRenderer
 
             $content = '';
             foreach ($blocks as $block) {
-                $handler  = BlockFactory::make($block->getType());
+                $handler = $this->blockFactory->make($block->getType());
+                if ($handler === null) {
+                    Log::channel('report-builder')->warning('Unknown block type', ['type' => $block->getType()]);
+
+                    continue;
+                }
                 $content .= $handler->render($block, $sample, $company);
             }
 

@@ -69,13 +69,19 @@ class ReportTemplateService
         $template = new ReportTemplate();
         $template->company_id    = $company->id;
         $template->name          = $name;
-        $template->slug          = Str::slug($name);
+        $template->slug          = $this->makeUniqueSlug($company, $name);
         $template->template_type = $templateType;
         $template->is_system     = false;
         $template->is_active     = true;
         $template->save();
 
-        $this->persistBlocks($template, $blocks);
+        try {
+            $this->persistBlocks($template, $blocks);
+        } catch (\Throwable $e) {
+            $template->delete();
+
+            throw $e;
+        }
 
         return $template;
     }
@@ -232,11 +238,24 @@ class ReportTemplateService
                 throw new InvalidArgumentException("Block at index {$index} position must have x, y, width, and height");
             }
 
-            $positionDTO = new GridPositionDTO();
-            $positionDTO->setX($position['x'])
-                ->setY($position['y'])
-                ->setWidth($position['width'])
-                ->setHeight($position['height']);
+            foreach (['x', 'y', 'width', 'height'] as $k) {
+                if (!is_int($position[$k])) {
+                    throw new InvalidArgumentException("Block at index {$index} position '{$k}' must be int");
+                }
+            }
+            if ($position['width'] <= 0 || $position['height'] <= 0) {
+                throw new InvalidArgumentException("Block at index {$index} position width/height must be > 0");
+            }
+            if (!array_key_exists('config', $block) || !is_array($block['config'])) {
+                throw new InvalidArgumentException("Block at index {$index} must have a 'config' array");
+            }
+
+            $positionDTO = new GridPositionDTO(
+                $position['x'],
+                $position['y'],
+                $position['width'],
+                $position['height']
+            );
 
             if (!$this->gridSnapper->validate($positionDTO)) {
                 throw new InvalidArgumentException("Block at index {$index} has invalid position");
@@ -366,8 +385,7 @@ class ReportTemplateService
         string $label,
         string $dataSource
     ): BlockDTO {
-        $position = new GridPositionDTO();
-        $position->setX($x)->setY($y)->setWidth($width)->setHeight($height);
+        $position = new GridPositionDTO($x, $y, $width, $height);
 
         $block = new BlockDTO();
         $block->setId($id)
@@ -381,5 +399,27 @@ class ReportTemplateService
             ->setClonedFrom(null);
 
         return $block;
+    }
+
+    /**
+     * Generate a unique slug for the template within the company.
+     *
+     * @param Company $company The company
+     * @param string  $name    The template name
+     *
+     * @return string The unique slug
+     */
+    private function makeUniqueSlug(Company $company, string $name): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $i    = 2;
+
+        while (ReportTemplate::where('company_id', $company->id)->where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+
+        return $slug;
     }
 }

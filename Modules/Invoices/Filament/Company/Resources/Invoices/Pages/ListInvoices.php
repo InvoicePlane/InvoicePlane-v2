@@ -45,7 +45,7 @@ class ListInvoices extends ListRecords
                     ->action(fn () => app(InvoiceExportService::class)->exportWithVersion('xlsx', 1)),
             ])
                 ->label('Export')
-                ->icon(Heroicon::OutlinedFolderArrowDown)
+                ->icon('heroicon-o-folder-arrow-down')
                 ->button(),
         ];
     }

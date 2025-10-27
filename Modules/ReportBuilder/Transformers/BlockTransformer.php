@@ -45,11 +45,12 @@ class BlockTransformer
     public static function toDTO(array $blockData): BlockDTO
     {
         $positionData = $blockData['position'] ?? [];
-        $position     = new GridPositionDTO();
-        $position->setX($positionData['x'] ?? 0)
-            ->setY($positionData['y'] ?? 0)
-            ->setWidth($positionData['width'] ?? 1)
-            ->setHeight($positionData['height'] ?? 1);
+        $position     = new GridPositionDTO(
+            $positionData['x'] ?? 0,
+            $positionData['y'] ?? 0,
+            $positionData['width'] ?? 1,
+            $positionData['height'] ?? 1
+        );
 
         $dto = new BlockDTO();
         $dto->setId($blockData['id'] ?? '')
