@@ -5,6 +5,7 @@ namespace Modules\ReportBuilder\Tests\Unit;
 use Illuminate\Support\Facades\Storage;
 use Modules\ReportBuilder\Repositories\ReportTemplateFileRepository;
 use Modules\ReportBuilder\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ReportTemplateFileRepositoryTest extends TestCase
 {
@@ -20,7 +21,8 @@ class ReportTemplateFileRepositoryTest extends TestCase
         Storage::fake('report_templates');
     }
 
-    public function test_save_creates_template_file(): void
+    #[Test]
+    public function it_save_creates_template_file(): void
     {
         $companyId     = 1;
         $templateSlug  = 'professional_invoice';
@@ -40,7 +42,8 @@ class ReportTemplateFileRepositoryTest extends TestCase
         Storage::disk('report_templates')->assertExists("{$companyId}/{$templateSlug}.json");
     }
 
-    public function test_get_returns_blocks_array(): void
+    #[Test]
+    public function it_get_returns_blocks_array(): void
     {
         $companyId     = 1;
         $templateSlug  = 'minimal_invoice';
@@ -62,14 +65,16 @@ class ReportTemplateFileRepositoryTest extends TestCase
         $this->assertEquals($blocksArray, $result);
     }
 
-    public function test_get_returns_empty_array_when_template_not_exists(): void
+    #[Test]
+    public function it_get_returns_empty_array_when_template_not_exists(): void
     {
         $result = $this->repository->get(999, 'non_existent_template');
 
         $this->assertEquals([], $result);
     }
 
-    public function test_exists_returns_true_when_template_exists(): void
+    #[Test]
+    public function it_exists_returns_true_when_template_exists(): void
     {
         $companyId    = 1;
         $templateSlug = 'payment_history_report';
@@ -89,12 +94,14 @@ class ReportTemplateFileRepositoryTest extends TestCase
         $this->assertTrue($this->repository->exists($companyId, $templateSlug));
     }
 
-    public function test_exists_returns_false_when_template_not_exists(): void
+    #[Test]
+    public function it_exists_returns_false_when_template_not_exists(): void
     {
         $this->assertFalse($this->repository->exists(1, 'non_existent_template'));
     }
 
-    public function test_delete_removes_template_file(): void
+    #[Test]
+    public function it_delete_removes_template_file(): void
     {
         $companyId    = 1;
         $templateSlug = 'invoice_aging_report';
@@ -117,14 +124,16 @@ class ReportTemplateFileRepositoryTest extends TestCase
         $this->assertFalse($this->repository->exists($companyId, $templateSlug));
     }
 
-    public function test_delete_returns_false_when_template_not_exists(): void
+    #[Test]
+    public function it_delete_returns_false_when_template_not_exists(): void
     {
         $result = $this->repository->delete(1, 'non_existent_template');
 
         $this->assertFalse($result);
     }
 
-    public function test_all_returns_template_slugs_for_company(): void
+    #[Test]
+    public function it_all_returns_template_slugs_for_company(): void
     {
         $companyId = 1;
 
@@ -140,14 +149,16 @@ class ReportTemplateFileRepositoryTest extends TestCase
         $this->assertContains('invoice_aging_report', $result);
     }
 
-    public function test_all_returns_empty_array_when_no_templates_exist(): void
+    #[Test]
+    public function it_all_returns_empty_array_when_no_templates_exist(): void
     {
         $result = $this->repository->all(999);
 
         $this->assertEquals([], $result);
     }
 
-    public function test_all_returns_only_templates_for_specific_company(): void
+    #[Test]
+    public function it_all_returns_only_templates_for_specific_company(): void
     {
         $this->repository->save(1, 'template_company_1', []);
         $this->repository->save(2, 'template_company_2', []);

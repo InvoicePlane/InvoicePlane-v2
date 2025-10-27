@@ -29,14 +29,14 @@ class GridSnapperTest extends AbstractAdminPanelTestCase
      */
     public function it_snaps_position_to_grid(): void
     {
-        /* Arrange */
+        /* arrange */
         $position = new GridPositionDTO();
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
-        /* Act */
+        /* act */
         $snapped = $this->gridSnapper->snap($position);
 
-        /* Assert */
+        /* assert */
         $this->assertEquals(0, $snapped->getX());
         $this->assertEquals(0, $snapped->getY());
         $this->assertEquals(6, $snapped->getWidth());
@@ -53,7 +53,7 @@ class GridSnapperTest extends AbstractAdminPanelTestCase
      */
     public function it_validates_position_constraints(): void
     {
-        /* Arrange */
+        /* arrange */
         $validPosition = new GridPositionDTO();
         $validPosition->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
@@ -63,7 +63,7 @@ class GridSnapperTest extends AbstractAdminPanelTestCase
         $invalidPositionWidth = new GridPositionDTO();
         $invalidPositionWidth->setX(0)->setY(0)->setWidth(0)->setHeight(4);
 
-        /* Act & Assert */
+        /* act /* Act & Assert */ assert */
         $this->assertTrue($this->gridSnapper->validate($validPosition));
         $this->assertFalse($this->gridSnapper->validate($invalidPositionX));
         $this->assertFalse($this->gridSnapper->validate($invalidPositionWidth));
