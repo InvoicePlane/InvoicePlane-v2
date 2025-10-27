@@ -45,7 +45,7 @@ class ListTasks extends ListRecords
                     ->action(fn () => app(TaskExportService::class)->exportWithVersion('xlsx', 1)),
             ])
                 ->label('Export')
-                ->icon(Heroicon::OutlinedFolderArrowDown)
+                ->icon('heroicon-o-folder-arrow-down')
                 ->button(),
         ];
     }

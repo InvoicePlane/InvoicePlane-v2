@@ -40,8 +40,9 @@ class HeaderInvoiceMetaBlockHandler implements BlockHandlerInterface
             $html .= '<p><strong>Due Date:</strong> ' . $invoice->due_at->format('Y-m-d') . '</p>';
         }
 
-        if (!empty($config['show_status']) && isset($invoice->invoice_status)) {
-            $html .= '<p><strong>Status:</strong> ' . htmlspecialchars($invoice->invoice_status->value ?? '') . '</p>';
+        if (!empty($config['show_status'])) {
+            $status = $invoice->invoice_status?->label() ?? '';
+            $html .= '<p><strong>' . trans('ip.status') . ':</strong> ' . htmlspecialchars($status, ENT_QUOTES, 'UTF-8') . '</p>';
         }
 
         $html .= '</div>';

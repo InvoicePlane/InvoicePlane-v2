@@ -25,7 +25,6 @@ class TasksTable
                     ->formatStateUsing(
                         fn (Task $record): string => static::getStatusLabel($record->task_status)
                     )
-                    ->sortable()
                     ->searchable()
                     ->color(function (Task $record) {
                         $status = $record->task_status instanceof TaskStatus ? $record->task_status : TaskStatus::tryFrom($record->task_status);
@@ -48,11 +47,15 @@ class TasksTable
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->color(
-                        fn (Task $record): ?string => $record->due_at?->isPast() && $record->task_status !== TaskStatus::COMPLETED->value
+                    ->color(function (Task $record): ?string {
+                        $status = $record->task_status instanceof TaskStatus
+                            ? $record->task_status
+                            : TaskStatus::tryFrom($record->task_status);
+
+                        return $record->due_at?->isPast() && $status !== TaskStatus::COMPLETED
                             ? 'danger'
-                            : null
-                    ),
+                            : null;
+                    }),
 
                 TextColumn::make('task_price')
                     ->label(trans('ip.task_price'))

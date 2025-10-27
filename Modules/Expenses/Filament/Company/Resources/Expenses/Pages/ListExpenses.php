@@ -45,7 +45,7 @@ class ListExpenses extends ListRecords
                     ->action(fn () => app(ExpenseExportService::class)->exportWithVersion('xlsx', 1)),
             ])
                 ->label('Export')
-                ->icon(Heroicon::OutlinedFolderArrowDown)
+                ->icon('heroicon-o-folder-arrow-down')
                 ->button(),
         ];
     }

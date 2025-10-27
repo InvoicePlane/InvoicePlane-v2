@@ -69,13 +69,19 @@ class ReportTemplateService
         $template = new ReportTemplate();
         $template->company_id    = $company->id;
         $template->name          = $name;
-        $template->slug          = Str::slug($name);
+        $template->slug          = $this->makeUniqueSlug($company, $name);
         $template->template_type = $templateType;
         $template->is_system     = false;
         $template->is_active     = true;
         $template->save();
 
-        $this->persistBlocks($template, $blocks);
+        try {
+            $this->persistBlocks($template, $blocks);
+        } catch (\Throwable $e) {
+            $template->delete();
+
+            throw $e;
+        }
 
         return $template;
     }
@@ -393,5 +399,27 @@ class ReportTemplateService
             ->setClonedFrom(null);
 
         return $block;
+    }
+
+    /**
+     * Generate a unique slug for the template within the company.
+     *
+     * @param Company $company The company
+     * @param string  $name    The template name
+     *
+     * @return string The unique slug
+     */
+    private function makeUniqueSlug(Company $company, string $name): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $i    = 2;
+
+        while (ReportTemplate::where('company_id', $company->id)->where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+
+        return $slug;
     }
 }

@@ -46,7 +46,7 @@ class ListPayments extends ListRecords
                     ->action(fn () => app(PaymentExportService::class)->exportWithVersion('xlsx', 1)),
             ])
                 ->label('Export')
-                ->icon(Heroicon::OutlinedFolderArrowDown)
+                ->icon('heroicon-o-folder-arrow-down')
                 ->button(),
         ];
     }
