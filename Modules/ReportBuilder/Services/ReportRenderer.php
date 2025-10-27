@@ -101,8 +101,8 @@ class ReportRenderer
             $html = $this->renderToHtml($template, $invoice);
 
             $mpdf = new \Mpdf\Mpdf([
-                'mode'        => 'utf-8',
-                'format'      => 'A4',
+                'mode'          => 'utf-8',
+                'format'        => 'A4',
                 'margin_left'   => 15,
                 'margin_right'  => 15,
                 'margin_top'    => 16,

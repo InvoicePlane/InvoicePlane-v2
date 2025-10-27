@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Payments\Exports\PaymentsExport;
 use Modules\Payments\Exports\PaymentsLegacyExport;
 use Modules\Payments\Models\Payment;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PaymentExportService
@@ -14,11 +15,11 @@ class PaymentExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $payments    = Payment::query()
+        $payments = Payment::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class PaymentExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $payments    = Payment::query()
+        $payments = Payment::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

@@ -33,15 +33,15 @@ class BlockFactory
     public static function make(string $type): BlockHandlerInterface
     {
         return match ($type) {
-            'header_company'       => app(HeaderCompanyBlockHandler::class),
-            'header_client'        => app(HeaderClientBlockHandler::class),
-            'header_invoice_meta'  => app(HeaderInvoiceMetaBlockHandler::class),
-            'detail_items'         => app(DetailItemsBlockHandler::class),
-            'detail_item_tax'      => app(DetailItemTaxBlockHandler::class),
-            'footer_totals'        => app(FooterTotalsBlockHandler::class),
-            'footer_notes'         => app(FooterNotesBlockHandler::class),
-            'footer_qr_code'       => app(FooterQrCodeBlockHandler::class),
-            default                => throw new InvalidArgumentException("Unsupported block type: {$type}"),
+            'header_company'      => app(HeaderCompanyBlockHandler::class),
+            'header_client'       => app(HeaderClientBlockHandler::class),
+            'header_invoice_meta' => app(HeaderInvoiceMetaBlockHandler::class),
+            'detail_items'        => app(DetailItemsBlockHandler::class),
+            'detail_item_tax'     => app(DetailItemTaxBlockHandler::class),
+            'footer_totals'       => app(FooterTotalsBlockHandler::class),
+            'footer_notes'        => app(FooterNotesBlockHandler::class),
+            'footer_qr_code'      => app(FooterQrCodeBlockHandler::class),
+            default               => throw new InvalidArgumentException("Unsupported block type: {$type}"),
         };
     }
 

@@ -60,8 +60,8 @@ class ReportTemplatesTable
                 SelectFilter::make('template_type')
                     ->label('Template Type')
                     ->options([
-                        'invoice' => 'Invoice',
-                        'quote' => 'Quote',
+                        'invoice'  => 'Invoice',
+                        'quote'    => 'Quote',
                         'estimate' => 'Estimate',
                     ]),
                 TernaryFilter::make('is_active')
@@ -79,19 +79,19 @@ class ReportTemplatesTable
                             app(ReportTemplateService::class)->updateTemplate($record, $blocks);
                         })
                         ->modalWidth('full')
-                        ->visible(fn (ReportTemplate $record) => !$record->is_system),
+                        ->visible(fn (ReportTemplate $record) => ! $record->is_system),
                     Action::make('design')
                         ->label('Design')
                         ->icon(Heroicon::OutlinedPaintBrush)
                         ->url(fn (ReportTemplate $record) => route('filament.admin.resources.report-templates.design', ['record' => $record->id]))
-                        ->visible(fn (ReportTemplate $record) => !$record->is_system),
+                        ->visible(fn (ReportTemplate $record) => ! $record->is_system),
                     Action::make('clone')
                         ->label('Clone')
                         ->icon(Heroicon::OutlinedDocumentDuplicate)
                         ->requiresConfirmation()
                         ->action(function (ReportTemplate $record) {
                             $service = app(ReportTemplateService::class);
-                            $blocks = $service->loadBlocks($record);
+                            $blocks  = $service->loadBlocks($record);
                             $service->createTemplate(
                                 $record->company,
                                 $record->name . ' (Copy)',
@@ -106,7 +106,7 @@ class ReportTemplatesTable
                         ->action(function (ReportTemplate $record) {
                             app(ReportTemplateService::class)->deleteTemplate($record);
                         })
-                        ->visible(fn (ReportTemplate $record) => !$record->is_system),
+                        ->visible(fn (ReportTemplate $record) => ! $record->is_system),
                 ]),
             ]);
     }

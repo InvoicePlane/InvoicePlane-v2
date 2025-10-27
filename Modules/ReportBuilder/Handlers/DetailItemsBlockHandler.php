@@ -24,6 +24,7 @@ use Modules\ReportBuilder\Traits\FormatsCurrency;
 class DetailItemsBlockHandler implements BlockHandlerInterface
 {
     use FormatsCurrency;
+
     public function render(BlockDTO $block, Invoice $invoice, Company $company): string
     {
         $config = $block->getConfig();
@@ -33,23 +34,23 @@ class DetailItemsBlockHandler implements BlockHandlerInterface
         $html .= '<thead><tr>';
         $html .= '<th>Item</th>';
 
-        if (!empty($config['show_description'])) {
+        if ( ! empty($config['show_description'])) {
             $html .= '<th>Description</th>';
         }
 
-        if (!empty($config['show_quantity'])) {
+        if ( ! empty($config['show_quantity'])) {
             $html .= '<th>Qty</th>';
         }
 
-        if (!empty($config['show_price'])) {
+        if ( ! empty($config['show_price'])) {
             $html .= '<th>Price</th>';
         }
 
-        if (!empty($config['show_discount'])) {
+        if ( ! empty($config['show_discount'])) {
             $html .= '<th>Discount</th>';
         }
 
-        if (!empty($config['show_subtotal'])) {
+        if ( ! empty($config['show_subtotal'])) {
             $html .= '<th>Subtotal</th>';
         }
 
@@ -59,23 +60,23 @@ class DetailItemsBlockHandler implements BlockHandlerInterface
             $html .= '<tr>';
             $html .= '<td>' . htmlspecialchars($item->item_name ?? '') . '</td>';
 
-            if (!empty($config['show_description'])) {
+            if ( ! empty($config['show_description'])) {
                 $html .= '<td>' . htmlspecialchars($item->description ?? '') . '</td>';
             }
 
-            if (!empty($config['show_quantity'])) {
+            if ( ! empty($config['show_quantity'])) {
                 $html .= '<td>' . htmlspecialchars($item->quantity ?? '0') . '</td>';
             }
 
-            if (!empty($config['show_price'])) {
+            if ( ! empty($config['show_price'])) {
                 $html .= '<td>' . $this->formatCurrency($item->price ?? 0, $invoice->currency_code) . '</td>';
             }
 
-            if (!empty($config['show_discount'])) {
+            if ( ! empty($config['show_discount'])) {
                 $html .= '<td>' . htmlspecialchars($item->discount ?? '0') . '%</td>';
             }
 
-            if (!empty($config['show_subtotal'])) {
+            if ( ! empty($config['show_subtotal'])) {
                 $html .= '<td>' . $this->formatCurrency($item->subtotal ?? 0, $invoice->currency_code) . '</td>';
             }
 

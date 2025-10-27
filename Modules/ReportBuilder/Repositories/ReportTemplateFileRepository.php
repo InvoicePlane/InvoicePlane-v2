@@ -3,6 +3,7 @@
 namespace Modules\ReportBuilder\Repositories;
 
 use Illuminate\Support\Facades\Storage;
+use JsonException;
 
 /**
  * Repository for managing report template files.
@@ -60,7 +61,7 @@ class ReportTemplateFileRepository
 
         try {
             $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             return [];
         }
 
@@ -117,6 +118,7 @@ class ReportTemplateFileRepository
         }
 
         $files = Storage::disk('report_templates')->files($directory);
+
         return array_map(function ($file) {
             return pathinfo($file, PATHINFO_FILENAME);
         }, $files);

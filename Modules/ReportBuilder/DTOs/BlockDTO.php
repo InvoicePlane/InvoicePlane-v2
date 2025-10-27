@@ -54,6 +54,45 @@ class BlockDTO
 
     //endregion
 
+    //region Static Factory Methods
+
+    /**
+     * Create a system block with default configuration.
+     */
+    public static function system(string $type, GridPositionDTO $position, array $config): self
+    {
+        $dto = new self();
+        $dto->setType($type);
+        $dto->setPosition($position);
+        $dto->setConfig($config);
+        $dto->setIsCloneable(true);
+        $dto->setIsCloned(false);
+        $dto->setClonedFrom(null);
+
+        return $dto;
+    }
+
+    /**
+     * Create a cloned block from an original block.
+     */
+    public static function clonedFrom(self $original, string $newId): self
+    {
+        $dto = new self();
+        $dto->setId($newId);
+        $dto->setType($original->getType());
+        $dto->setPosition($original->getPosition());
+        $dto->setConfig($original->getConfig());
+        $dto->setLabel($original->getLabel());
+        $dto->setIsCloneable($original->getIsCloneable());
+        $dto->setDataSource($original->getDataSource());
+        $dto->setIsCloned(true);
+        $dto->setClonedFrom($original->getId());
+
+        return $dto;
+    }
+
+    //endregion
+
     //region Getters
 
     public function getId(): string
@@ -166,45 +205,6 @@ class BlockDTO
         $this->clonedFrom = $clonedFrom;
 
         return $this;
-    }
-
-    //endregion
-
-    //region Static Factory Methods
-
-    /**
-     * Create a system block with default configuration.
-     */
-    public static function system(string $type, GridPositionDTO $position, array $config): self
-    {
-        $dto = new self();
-        $dto->setType($type);
-        $dto->setPosition($position);
-        $dto->setConfig($config);
-        $dto->setIsCloneable(true);
-        $dto->setIsCloned(false);
-        $dto->setClonedFrom(null);
-
-        return $dto;
-    }
-
-    /**
-     * Create a cloned block from an original block.
-     */
-    public static function clonedFrom(BlockDTO $original, string $newId): self
-    {
-        $dto = new self();
-        $dto->setId($newId);
-        $dto->setType($original->getType());
-        $dto->setPosition($original->getPosition());
-        $dto->setConfig($original->getConfig());
-        $dto->setLabel($original->getLabel());
-        $dto->setIsCloneable($original->getIsCloneable());
-        $dto->setDataSource($original->getDataSource());
-        $dto->setIsCloned(true);
-        $dto->setClonedFrom($original->getId());
-
-        return $dto;
     }
 
     //endregion

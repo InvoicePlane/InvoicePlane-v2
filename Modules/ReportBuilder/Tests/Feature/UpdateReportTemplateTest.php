@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
-use Modules\ReportBuilder\Models\ReportTemplate;
 use Modules\ReportBuilder\Services\ReportTemplateService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,7 +17,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Storage::fake('report_templates');
         $this->service = app(ReportTemplateService::class);
     }
@@ -47,21 +46,21 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
         $initialBlocks = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                'config' => ['show_vat_id' => true],
-                'label' => 'Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'      => ['show_vat_id' => true],
+                'label'       => 'Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 
@@ -74,15 +73,15 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $updatedBlocks = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 2, 'y' => 2, 'width' => 8, 'height' => 6],
-                'config' => ['show_vat_id' => false],
-                'label' => 'Updated Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 2, 'y' => 2, 'width' => 8, 'height' => 6],
+                'config'      => ['show_vat_id' => false],
+                'label'       => 'Updated Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 
@@ -109,7 +108,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
@@ -122,15 +121,15 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $blocksWithValidPosition = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                'config' => [],
-                'label' => 'Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'      => [],
+                'label'       => 'Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 
@@ -155,21 +154,21 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
         $initialBlocks = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                'config' => [],
-                'label' => 'Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'      => [],
+                'label'       => 'Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 
@@ -182,26 +181,26 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $updatedBlocks = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                'config' => [],
-                'label' => 'Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'      => [],
+                'label'       => 'Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
             [
-                'id' => 'block_footer_totals',
-                'type' => 'footer_totals',
-                'position' => ['x' => 6, 'y' => 14, 'width' => 6, 'height' => 4],
-                'config' => ['show_subtotal' => true],
-                'label' => 'Invoice Totals',
+                'id'          => 'block_footer_totals',
+                'type'        => 'footer_totals',
+                'position'    => ['x' => 6, 'y' => 14, 'width' => 6, 'height' => 4],
+                'config'      => ['show_subtotal' => true],
+                'label'       => 'Invoice Totals',
                 'isCloneable' => true,
-                'dataSource' => 'invoice',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'invoice',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 

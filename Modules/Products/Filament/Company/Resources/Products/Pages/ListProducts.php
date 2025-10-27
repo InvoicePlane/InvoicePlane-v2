@@ -6,7 +6,6 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Icons\Heroicon;
 use Modules\Products\Filament\Company\Resources\Products\ProductResource;
 use Modules\Products\Services\ProductExportService;
 use Modules\Products\Services\ProductService;

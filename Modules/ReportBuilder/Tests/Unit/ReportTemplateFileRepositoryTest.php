@@ -24,9 +24,9 @@ class ReportTemplateFileRepositoryTest extends TestCase
     #[Test]
     public function it_save_creates_template_file(): void
     {
-        $companyId     = 1;
-        $templateSlug  = 'professional_invoice';
-        $blocksArray   = [
+        $companyId    = 1;
+        $templateSlug = 'professional_invoice';
+        $blocksArray  = [
             [
                 'id'          => 'block_1',
                 'type'        => 'header_company',
@@ -45,9 +45,9 @@ class ReportTemplateFileRepositoryTest extends TestCase
     #[Test]
     public function it_get_returns_blocks_array(): void
     {
-        $companyId     = 1;
-        $templateSlug  = 'minimal_invoice';
-        $blocksArray   = [
+        $companyId    = 1;
+        $templateSlug = 'minimal_invoice';
+        $blocksArray  = [
             [
                 'id'          => 'block_header',
                 'type'        => 'header_company',

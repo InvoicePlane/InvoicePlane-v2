@@ -27,13 +27,13 @@ class HeaderCompanyBlockHandler implements BlockHandlerInterface
     {
         $config = $block->getConfig() ?? [];
         $company->loadMissing(['communications', 'addresses']);
-        $e     = static fn ($v) => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $html  = '';
+        $e    = static fn ($v) => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $html = '';
 
         $html .= '<div class="company-header">';
         $html .= '<h2>' . $e($company->name) . '</h2>';
 
-        if (($config['show_vat_id'] ?? false) && !empty($company->vat_number)) {
+        if (($config['show_vat_id'] ?? false) && ! empty($company->vat_number)) {
             $html .= '<p>VAT: ' . $e($company->vat_number) . '</p>';
         }
 

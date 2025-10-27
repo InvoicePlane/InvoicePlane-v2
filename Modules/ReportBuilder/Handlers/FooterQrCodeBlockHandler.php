@@ -34,7 +34,7 @@ class FooterQrCodeBlockHandler implements BlockHandlerInterface
         $html .= '<div class="qr-code">';
         $html .= '<img src="https://api.qrserver.com/v1/create-qr-code/?size=' . $size . 'x' . $size . '&data=' . urlencode($qrData) . '" alt="QR Code" width="' . $size . '" height="' . $size . '" />';
 
-        if (!empty($config['include_url'])) {
+        if ( ! empty($config['include_url'])) {
             $html .= '<p class="qr-url">' . htmlspecialchars($qrData, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
         }
 

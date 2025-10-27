@@ -11,7 +11,6 @@ use Modules\ReportBuilder\Repositories\ReportTemplateFileRepository;
 use Modules\ReportBuilder\Services\GridSnapperService;
 use Modules\ReportBuilder\Services\ReportTemplateService;
 use Modules\ReportBuilder\Tests\TestCase;
-use Modules\ReportBuilder\Transformers\BlockTransformer;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -36,7 +35,7 @@ class ReportTemplateServiceTest extends TestCase
     #[Group('unit')]
     public function it_creates_template(): void
     {
-        $company = new Company();
+        $company       = new Company();
         $company->id   = 1;
         $company->name = 'Test Company';
 
@@ -185,9 +184,9 @@ class ReportTemplateServiceTest extends TestCase
     #[Group('unit')]
     public function it_persists_blocks(): void
     {
-        $template              = new ReportTemplate();
-        $template->company_id  = 1;
-        $template->slug        = 'test-template';
+        $template             = new ReportTemplate();
+        $template->company_id = 1;
+        $template->slug       = 'test-template';
 
         $position = new GridPositionDTO();
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);

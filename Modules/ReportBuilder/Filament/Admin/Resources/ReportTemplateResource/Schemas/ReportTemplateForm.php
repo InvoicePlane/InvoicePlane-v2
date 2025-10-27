@@ -28,8 +28,8 @@ class ReportTemplateForm
                                     ->label('Template Type')
                                     ->required()
                                     ->options([
-                                        'invoice' => 'Invoice',
-                                        'quote' => 'Quote',
+                                        'invoice'  => 'Invoice',
+                                        'quote'    => 'Quote',
                                         'estimate' => 'Estimate',
                                     ]),
                             ]),

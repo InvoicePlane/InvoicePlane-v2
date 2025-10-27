@@ -34,15 +34,15 @@ class DetailItemTaxBlockHandler implements BlockHandlerInterface
         $html .= '<table class="tax-table" width="100%">';
         $html .= '<thead><tr>';
 
-        if (!empty($config['show_tax_name'])) {
+        if ( ! empty($config['show_tax_name'])) {
             $html .= '<th>Tax Name</th>';
         }
 
-        if (!empty($config['show_tax_rate'])) {
+        if ( ! empty($config['show_tax_rate'])) {
             $html .= '<th>Rate</th>';
         }
 
-        if (!empty($config['show_tax_amount'])) {
+        if ( ! empty($config['show_tax_amount'])) {
             $html .= '<th>Amount</th>';
         }
 
@@ -51,17 +51,17 @@ class DetailItemTaxBlockHandler implements BlockHandlerInterface
         foreach ($invoice->tax_rates as $taxRate) {
             $html .= '<tr>';
 
-            if (!empty($config['show_tax_name'])) {
+            if ( ! empty($config['show_tax_name'])) {
                 $html .= '<td>' . htmlspecialchars($taxRate->name ?? '') . '</td>';
             }
 
-            if (!empty($config['show_tax_rate'])) {
+            if ( ! empty($config['show_tax_rate'])) {
                 $html .= '<td>' . htmlspecialchars($taxRate->rate ?? '0') . '%</td>';
             }
 
-            if (!empty($config['show_tax_amount'])) {
+            if ( ! empty($config['show_tax_amount'])) {
                 $taxAmount = ($invoice->subtotal ?? 0) * (($taxRate->rate ?? 0) / 100);
-                $html     .= '<td>' . $this->formatCurrency($taxAmount, $invoice->currency_code) . '</td>';
+                $html .= '<td>' . $this->formatCurrency($taxAmount, $invoice->currency_code) . '</td>';
             }
 
             $html .= '</tr>';
@@ -75,7 +75,7 @@ class DetailItemTaxBlockHandler implements BlockHandlerInterface
 
     private function formatCurrency(float $amount, ?string $currency = null): string
     {
-        $currency = $currency ?? 'USD';
+        $currency ??= 'USD';
 
         return $currency . ' ' . number_format($amount, 2, '.', ',');
     }

@@ -74,9 +74,9 @@ class BlockTransformer
         $position = $dto->getPosition();
 
         return [
-            'id'          => $dto->getId(),
-            'type'        => $dto->getType(),
-            'position'    => [
+            'id'       => $dto->getId(),
+            'type'     => $dto->getType(),
+            'position' => [
                 'x'      => $position->getX(),
                 'y'      => $position->getY(),
                 'width'  => $position->getWidth(),

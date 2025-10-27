@@ -28,21 +28,21 @@ class FooterNotesBlockHandler implements BlockHandlerInterface
 
         $html .= '<div class="footer-notes">';
 
-        if (!empty($config['show_summary']) && !empty($invoice->summary)) {
+        if ( ! empty($config['show_summary']) && ! empty($invoice->summary)) {
             $html .= '<div class="summary">';
             $html .= '<h4>' . trans('ip.summary') . '</h4>';
             $html .= '<p>' . nl2br(htmlspecialchars($invoice->summary)) . '</p>';
             $html .= '</div>';
         }
 
-        if (!empty($config['show_terms']) && !empty($invoice->terms)) {
+        if ( ! empty($config['show_terms']) && ! empty($invoice->terms)) {
             $html .= '<div class="terms">';
             $html .= '<h4>' . trans('ip.terms_and_conditions') . '</h4>';
             $html .= '<p>' . nl2br(htmlspecialchars($invoice->terms)) . '</p>';
             $html .= '</div>';
         }
 
-        if (!empty($config['show_footer']) && !empty($invoice->footer)) {
+        if ( ! empty($config['show_footer']) && ! empty($invoice->footer)) {
             $html .= '<div class="footer-text">';
             $html .= '<p>' . nl2br(htmlspecialchars($invoice->footer)) . '</p>';
             $html .= '</div>';

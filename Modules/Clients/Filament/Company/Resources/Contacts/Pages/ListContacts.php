@@ -6,7 +6,6 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Icons\Heroicon;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Services\ContactExportService;
 use Modules\Clients\Services\ContactService;

@@ -40,7 +40,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]
         );
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($products->count() + 1, $lines);
         foreach ($products as $product) {
@@ -90,7 +90,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertEquals(200, $response->status());
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(1, count($lines));
     }
 

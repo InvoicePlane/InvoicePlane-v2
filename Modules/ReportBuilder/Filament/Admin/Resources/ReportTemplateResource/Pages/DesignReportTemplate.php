@@ -15,15 +15,15 @@ use Modules\ReportBuilder\Transformers\BlockTransformer;
 
 class DesignReportTemplate extends Page
 {
-    protected static string $resource = ReportTemplateResource::class;
-
-    protected static string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
-
     public ReportTemplate $record;
 
     public array $blocks = [];
 
     public string $selectedBlockId = '';
+
+    protected static string $resource = ReportTemplateResource::class;
+
+    protected static string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
     {
@@ -31,22 +31,10 @@ class DesignReportTemplate extends Page
         $this->loadBlocks();
     }
 
-    protected function loadBlocks(): void
-    {
-        $service = app(ReportTemplateService::class);
-        $blockDTOs = $service->loadBlocks($this->record);
-        
-        $this->blocks = [];
-        foreach ($blockDTOs as $blockDTO) {
-            $blockArray = BlockTransformer::toArray($blockDTO);
-            $this->blocks[$blockArray['id']] = $blockArray;
-        }
-    }
-
     #[On('drag-block')]
     public function updateBlockPosition(string $blockId, array $position): void
     {
-        if (!isset($this->blocks[$blockId])) {
+        if ( ! isset($this->blocks[$blockId])) {
             return;
         }
 
@@ -58,16 +46,16 @@ class DesignReportTemplate extends Page
             $position['height'] ?? 1
         );
 
-        if (!$gridSnapper->validate($positionDTO)) {
+        if ( ! $gridSnapper->validate($positionDTO)) {
             return;
         }
 
         $snappedPosition = $gridSnapper->snap($positionDTO);
-        
+
         $this->blocks[$blockId]['position'] = [
-            'x' => $snappedPosition->getX(),
-            'y' => $snappedPosition->getY(),
-            'width' => $snappedPosition->getWidth(),
+            'x'      => $snappedPosition->getX(),
+            'y'      => $snappedPosition->getY(),
+            'width'  => $snappedPosition->getWidth(),
             'height' => $snappedPosition->getHeight(),
         ];
     }
@@ -76,9 +64,9 @@ class DesignReportTemplate extends Page
     public function addBlock(string $blockType): void
     {
         $blockId = 'block_' . $blockType . '_' . Str::random(8);
-        
+
         $position = new GridPositionDTO(0, 0, 6, 4);
-        
+
         $block = new BlockDTO();
         $block->setId($blockId)
             ->setType($blockType)
@@ -89,29 +77,29 @@ class DesignReportTemplate extends Page
             ->setDataSource('custom')
             ->setIsCloned(false)
             ->setClonedFrom(null);
-        
+
         $this->blocks[$blockId] = BlockTransformer::toArray($block);
     }
 
     #[On('clone-block')]
     public function cloneBlock(string $blockId): void
     {
-        if (!isset($this->blocks[$blockId])) {
+        if ( ! isset($this->blocks[$blockId])) {
             return;
         }
 
         $originalBlock = $this->blocks[$blockId];
-        
+
         if ($originalBlock['isCloned'] === false && $originalBlock['isCloneable'] === true) {
             $newBlockId = 'block_' . $originalBlock['type'] . '_' . Str::random(8);
-            
+
             $position = new GridPositionDTO(
                 $originalBlock['position']['x'] + 1,
                 $originalBlock['position']['y'] + 1,
                 $originalBlock['position']['width'],
                 $originalBlock['position']['height']
             );
-            
+
             $clonedBlock = new BlockDTO();
             $clonedBlock->setId($newBlockId)
                 ->setType($originalBlock['type'])
@@ -122,7 +110,7 @@ class DesignReportTemplate extends Page
                 ->setDataSource($originalBlock['dataSource'])
                 ->setIsCloned(true)
                 ->setClonedFrom($blockId);
-            
+
             $this->blocks[$newBlockId] = BlockTransformer::toArray($clonedBlock);
         }
     }
@@ -130,7 +118,7 @@ class DesignReportTemplate extends Page
     #[On('delete-block')]
     public function deleteBlock(string $blockId): void
     {
-        if (!isset($this->blocks[$blockId])) {
+        if ( ! isset($this->blocks[$blockId])) {
             return;
         }
 
@@ -140,7 +128,7 @@ class DesignReportTemplate extends Page
     #[On('edit-config')]
     public function updateBlockConfig(string $blockId, array $config): void
     {
-        if (!isset($this->blocks[$blockId])) {
+        if ( ! isset($this->blocks[$blockId])) {
             return;
         }
 
@@ -154,8 +142,20 @@ class DesignReportTemplate extends Page
     {
         $service = app(ReportTemplateService::class);
         $service->persistBlocks($this->record, $this->blocks);
-        
+
         $this->dispatch('blocks-saved');
         $this->redirect(static::getResource()::getUrl('index'));
+    }
+
+    protected function loadBlocks(): void
+    {
+        $service   = app(ReportTemplateService::class);
+        $blockDTOs = $service->loadBlocks($this->record);
+
+        $this->blocks = [];
+        foreach ($blockDTOs as $blockDTO) {
+            $blockArray                      = BlockTransformer::toArray($blockDTO);
+            $this->blocks[$blockArray['id']] = $blockArray;
+        }
     }
 }

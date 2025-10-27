@@ -16,15 +16,15 @@ class BlockTransformerTest extends TestCase
     public function it_can_transform_array_to_dto(): void
     {
         $blockData = [
-            'id'          => 'block_header_company',
-            'type'        => 'header_company',
-            'position'    => [
+            'id'       => 'block_header_company',
+            'type'     => 'header_company',
+            'position' => [
                 'x'      => 0,
                 'y'      => 0,
                 'width'  => 6,
                 'height' => 4,
             ],
-            'config'      => [
+            'config' => [
                 'show_vat_id' => true,
                 'show_phone'  => true,
             ],

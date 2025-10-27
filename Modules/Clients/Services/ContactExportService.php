@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Clients\Exports\ContactsExport;
 use Modules\Clients\Exports\ContactsLegacyExport;
 use Modules\Clients\Models\Contact;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ContactExportService
@@ -21,11 +22,11 @@ class ContactExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $contacts    = Contact::query()
+        $contacts = Contact::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

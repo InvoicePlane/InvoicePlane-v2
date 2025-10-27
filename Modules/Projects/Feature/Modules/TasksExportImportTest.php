@@ -33,7 +33,7 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         $this->assertEquals(200, $response->status());
         $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($tasks->count() + 1, $lines);
         foreach ($tasks as $task) {
@@ -81,7 +81,7 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertEquals(200, $response->status());
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(1, count($lines));
     }
 
@@ -127,7 +127,7 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         $this->assertEquals(200, $response->status());
         $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($tasks->count() + 1, $lines);
         foreach ($tasks as $task) {
@@ -153,7 +153,7 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         $this->assertEquals(200, $response->status());
         $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
         $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', trim($content));
+        $lines   = preg_split('/\r?\n/', mb_trim($content));
         $this->assertGreaterThanOrEqual(2, count($lines));
         $this->assertCount($tasks->count() + 1, $lines);
         foreach ($tasks as $task) {

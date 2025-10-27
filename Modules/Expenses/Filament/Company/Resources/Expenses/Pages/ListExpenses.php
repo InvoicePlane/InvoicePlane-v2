@@ -6,7 +6,6 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Icons\Heroicon;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Services\ExpenseExportService;
 

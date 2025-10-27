@@ -40,7 +40,7 @@ class EditReportTemplate extends EditRecord
     {
         return [
             DeleteAction::make()
-                ->visible(fn () => !$this->record->is_system)
+                ->visible(fn () => ! $this->record->is_system)
                 ->action(function () {
                     app(ReportTemplateService::class)->deleteTemplate($this->record);
                 }),
@@ -50,10 +50,10 @@ class EditReportTemplate extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $record->update([
-            'name' => $data['name'],
-            'description' => $data['description'] ?? null,
+            'name'          => $data['name'],
+            'description'   => $data['description'] ?? null,
             'template_type' => $data['template_type'],
-            'is_active' => $data['is_active'] ?? true,
+            'is_active'     => $data['is_active'] ?? true,
         ]);
 
         return $record;

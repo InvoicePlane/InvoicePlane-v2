@@ -17,7 +17,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->service = app(ReportTemplateService::class);
     }
 
@@ -35,13 +35,13 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
         $blockType = 'header_company';
-        $newId = 'block_header_company_cloned';
-        
+        $newId     = 'block_header_company_cloned';
+
         $position = new GridPositionDTO();
         $position->setX(1)->setY(1)->setWidth(6)->setHeight(4);
 
@@ -63,21 +63,21 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
         $systemBlocks = [
             [
-                'id' => 'block_header_company',
-                'type' => 'header_company',
-                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                'config' => ['show_vat_id' => true],
-                'label' => 'Company Header',
+                'id'          => 'block_header_company',
+                'type'        => 'header_company',
+                'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'      => ['show_vat_id' => true],
+                'label'       => 'Company Header',
                 'isCloneable' => true,
-                'dataSource' => 'company',
-                'isCloned' => false,
-                'clonedFrom' => null,
+                'dataSource'  => 'company',
+                'isCloned'    => false,
+                'clonedFrom'  => null,
             ],
         ];
 
@@ -102,22 +102,22 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $company = Company::factory()->create();
-        $user = User::factory()->create();
+        $user    = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
-        $blockType = 'header_company';
-        $firstCloneId = 'block_header_company_custom_1';
+        $blockType     = 'header_company';
+        $firstCloneId  = 'block_header_company_custom_1';
         $secondCloneId = 'block_header_company_custom_2';
-        
+
         $position1 = new GridPositionDTO();
         $position1->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-        
+
         $position2 = new GridPositionDTO();
         $position2->setX(6)->setY(0)->setWidth(6)->setHeight(4);
 
         /* act */
-        $firstClone = $this->service->cloneSystemBlock($blockType, $firstCloneId, $position1);
+        $firstClone  = $this->service->cloneSystemBlock($blockType, $firstCloneId, $position1);
         $secondClone = $this->service->cloneSystemBlock($blockType, $secondCloneId, $position2);
 
         /* assert */

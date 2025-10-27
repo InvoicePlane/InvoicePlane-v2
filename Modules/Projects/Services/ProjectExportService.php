@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Projects\Exports\ProjectsExport;
 use Modules\Projects\Exports\ProjectsLegacyExport;
 use Modules\Projects\Models\Project;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProjectExportService
@@ -21,11 +22,11 @@ class ProjectExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $projects    = Project::query()
+        $projects = Project::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

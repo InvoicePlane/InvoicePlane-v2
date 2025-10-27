@@ -58,9 +58,9 @@ class ReportTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListReportTemplates::route('/'),
+            'index'  => ListReportTemplates::route('/'),
             'create' => CreateReportTemplate::route('/create'),
-            'edit' => EditReportTemplate::route('/{record}/edit'),
+            'edit'   => EditReportTemplate::route('/{record}/edit'),
             'design' => DesignReportTemplate::route('/{record}/design'),
         ];
     }

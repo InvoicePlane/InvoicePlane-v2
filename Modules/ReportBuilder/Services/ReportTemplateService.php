@@ -4,12 +4,14 @@ namespace Modules\ReportBuilder\Services;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Log;
 use Modules\Core\Models\Company;
 use Modules\ReportBuilder\DTOs\BlockDTO;
 use Modules\ReportBuilder\DTOs\GridPositionDTO;
 use Modules\ReportBuilder\Models\ReportTemplate;
 use Modules\ReportBuilder\Repositories\ReportTemplateFileRepository;
 use Modules\ReportBuilder\Transformers\BlockTransformer;
+use Throwable;
 
 /**
  * Service for managing report templates and their blocks.
@@ -66,7 +68,7 @@ class ReportTemplateService
     ): ReportTemplate {
         $this->validateBlocks($blocks);
 
-        $template = new ReportTemplate();
+        $template                = new ReportTemplate();
         $template->company_id    = $company->id;
         $template->name          = $name;
         $template->slug          = $this->makeUniqueSlug($company, $name);
@@ -77,7 +79,7 @@ class ReportTemplateService
 
         try {
             $this->persistBlocks($template, $blocks);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $template->delete();
 
             throw $e;
@@ -105,9 +107,9 @@ class ReportTemplateService
     /**
      * Clone a system block with a new ID and position.
      *
-     * @param string           $blockType The type of block to clone
-     * @param string           $newId     The new block ID
-     * @param GridPositionDTO  $position  The new position
+     * @param string          $blockType The type of block to clone
+     * @param string          $newId     The new block ID
+     * @param GridPositionDTO $position  The new position
      *
      * @return BlockDTO The cloned block
      */
@@ -118,7 +120,7 @@ class ReportTemplateService
     ): BlockDTO {
         $systemBlocks = $this->getSystemBlocks();
 
-        if (!isset($systemBlocks[$blockType])) {
+        if ( ! isset($systemBlocks[$blockType])) {
             throw new InvalidArgumentException("System block type '{$blockType}' not found");
         }
 
@@ -187,8 +189,8 @@ class ReportTemplateService
             $template->slug
         );
 
-        if (!$deleted) {
-            \Log::warning('Failed to delete report template file', [
+        if ( ! $deleted) {
+            Log::warning('Failed to delete report template file', [
                 'company_id' => $template->company_id,
                 'slug'       => $template->slug,
             ]);
@@ -208,7 +210,7 @@ class ReportTemplateService
      */
     public function validateBlocks(array $blocks): void
     {
-        if (!is_array($blocks)) {
+        if ( ! is_array($blocks)) {
             throw new InvalidArgumentException('Blocks must be an array');
         }
 
@@ -217,36 +219,36 @@ class ReportTemplateService
                 $block = BlockTransformer::toArray($block);
             }
 
-            if (!is_array($block)) {
+            if ( ! is_array($block)) {
                 throw new InvalidArgumentException("Block at index {$index} must be an array");
             }
 
-            if (!isset($block['id']) || empty($block['id'])) {
+            if ( ! isset($block['id']) || empty($block['id'])) {
                 throw new InvalidArgumentException("Block at index {$index} must have an 'id'");
             }
 
-            if (!isset($block['type']) || empty($block['type'])) {
+            if ( ! isset($block['type']) || empty($block['type'])) {
                 throw new InvalidArgumentException("Block at index {$index} must have a 'type'");
             }
 
-            if (!isset($block['position']) || !is_array($block['position'])) {
+            if ( ! isset($block['position']) || ! is_array($block['position'])) {
                 throw new InvalidArgumentException("Block at index {$index} must have a 'position' array");
             }
 
             $position = $block['position'];
-            if (!isset($position['x'], $position['y'], $position['width'], $position['height'])) {
+            if ( ! isset($position['x'], $position['y'], $position['width'], $position['height'])) {
                 throw new InvalidArgumentException("Block at index {$index} position must have x, y, width, and height");
             }
 
             foreach (['x', 'y', 'width', 'height'] as $k) {
-                if (!is_int($position[$k])) {
+                if ( ! is_int($position[$k])) {
                     throw new InvalidArgumentException("Block at index {$index} position '{$k}' must be int");
                 }
             }
             if ($position['width'] <= 0 || $position['height'] <= 0) {
                 throw new InvalidArgumentException("Block at index {$index} position width/height must be > 0");
             }
-            if (!array_key_exists('config', $block) || !is_array($block['config'])) {
+            if ( ! array_key_exists('config', $block) || ! is_array($block['config'])) {
                 throw new InvalidArgumentException("Block at index {$index} must have a 'config' array");
             }
 
@@ -257,7 +259,7 @@ class ReportTemplateService
                 $position['height']
             );
 
-            if (!$this->gridSnapper->validate($positionDTO)) {
+            if ( ! $this->gridSnapper->validate($positionDTO)) {
                 throw new InvalidArgumentException("Block at index {$index} has invalid position");
             }
         }

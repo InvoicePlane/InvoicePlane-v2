@@ -5,6 +5,8 @@ namespace Modules\ReportBuilder\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class ReportBuilderServiceProvider extends ServiceProvider
 {
@@ -22,10 +24,7 @@ class ReportBuilderServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
     }
 
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
     public function registerTranslations(): void
     {
@@ -64,7 +63,7 @@ class ReportBuilderServiceProvider extends ServiceProvider
         $configPath         = module_path($this->name, $relativeConfigPath);
 
         if (is_dir($configPath)) {
-            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($configPath));
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
 
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {

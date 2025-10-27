@@ -15,7 +15,7 @@ class GridSnapperTest extends AbstractAdminPanelTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->gridSnapper = app(GridSnapperService::class);
     }
 
@@ -63,7 +63,7 @@ class GridSnapperTest extends AbstractAdminPanelTestCase
         $invalidPositionWidth = new GridPositionDTO();
         $invalidPositionWidth->setX(0)->setY(0)->setWidth(0)->setHeight(4);
 
-        /* act /* Act & Assert */ assert */
+        /* Act & Assert */
         $this->assertTrue($this->gridSnapper->validate($validPosition));
         $this->assertFalse($this->gridSnapper->validate($invalidPositionX));
         $this->assertFalse($this->gridSnapper->validate($invalidPositionWidth));

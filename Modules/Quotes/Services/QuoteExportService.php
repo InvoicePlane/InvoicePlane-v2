@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Quotes\Exports\QuotesExport;
 use Modules\Quotes\Exports\QuotesLegacyExport;
 use Modules\Quotes\Models\Quote;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class QuoteExportService
@@ -14,11 +15,11 @@ class QuoteExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $quotes      = Quote::query()
+        $quotes = Quote::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class QuoteExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $quotes      = Quote::query()
+        $quotes = Quote::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

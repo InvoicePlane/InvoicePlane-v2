@@ -35,7 +35,7 @@ return [
         '2' => '2',
         '3' => '3',
     ],
-    /**
+    /*
      * Export version for CSV/Excel exports.
      * Allowed values: 1 (legacy format) or 2 (current format)
      * Can be overridden via IP_EXPORT_VERSION environment variable

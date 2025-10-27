@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Projects\Exports\TasksExport;
 use Modules\Projects\Exports\TasksLegacyExport;
 use Modules\Projects\Models\Task;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TaskExportService
@@ -14,11 +15,11 @@ class TaskExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $tasks       = Task::query()
+        $tasks = Task::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class TaskExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $tasks       = Task::query()
+        $tasks = Task::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

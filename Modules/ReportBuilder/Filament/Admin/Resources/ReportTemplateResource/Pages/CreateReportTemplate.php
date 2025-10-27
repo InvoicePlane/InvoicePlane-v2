@@ -44,7 +44,7 @@ class CreateReportTemplate extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $company = Company::find(session('current_company_id'));
-        if (!$company) {
+        if ( ! $company) {
             $company = auth()->user()->companies()->first();
         }
 

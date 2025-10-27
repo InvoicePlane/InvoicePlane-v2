@@ -2,7 +2,6 @@
 
 namespace Modules\ReportBuilder\Filament\Admin\Resources\ReportTemplateResource\Pages;
 
-use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Models\Company;
@@ -19,7 +18,7 @@ class ListReportTemplates extends ListRecords
             CreateAction::make()
                 ->action(function (array $data) {
                     $company = Company::find(session('current_company_id'));
-                    if (!$company) {
+                    if ( ! $company) {
                         $company = auth()->user()->companies()->first();
                     }
 

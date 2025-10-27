@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Clients\Exports\RelationsExport;
 use Modules\Clients\Exports\RelationsLegacyExport;
 use Modules\Clients\Models\Relation;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RelationExportService
@@ -14,11 +15,11 @@ class RelationExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $relations   = Relation::query()
+        $relations = Relation::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class RelationExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $relations   = Relation::query()
+        $relations = Relation::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

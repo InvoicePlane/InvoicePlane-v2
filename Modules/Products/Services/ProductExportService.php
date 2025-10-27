@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Products\Exports\ProductsExport;
 use Modules\Products\Exports\ProductsLegacyExport;
 use Modules\Products\Models\Product;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProductExportService
@@ -14,11 +15,11 @@ class ProductExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $products    = Product::query()
+        $products = Product::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class ProductExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $products    = Product::query()
+        $products = Product::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

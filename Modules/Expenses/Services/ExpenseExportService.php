@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Expenses\Exports\ExpensesExport;
 use Modules\Expenses\Exports\ExpensesLegacyExport;
 use Modules\Expenses\Models\Expense;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExpenseExportService
@@ -14,11 +15,11 @@ class ExpenseExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $expenses    = Expense::query()
+        $expenses = Expense::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class ExpenseExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $expenses    = Expense::query()
+        $expenses = Expense::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();

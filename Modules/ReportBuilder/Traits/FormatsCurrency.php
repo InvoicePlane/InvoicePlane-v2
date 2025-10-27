@@ -17,7 +17,7 @@ trait FormatsCurrency
      */
     private function formatCurrency(float $amount, ?string $currency = null): string
     {
-        $currency = $currency ?? 'USD';
+        $currency ??= 'USD';
 
         return $currency . ' ' . number_format($amount, 2, '.', ',');
     }

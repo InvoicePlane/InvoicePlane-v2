@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Invoices\Exports\InvoicesExport;
 use Modules\Invoices\Exports\InvoicesLegacyExport;
 use Modules\Invoices\Models\Invoice;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class InvoiceExportService
@@ -14,11 +15,11 @@ class InvoiceExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $invoices    = Invoice::query()
+        $invoices = Invoice::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
@@ -32,11 +33,11 @@ class InvoiceExportService
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $companyId = session('current_company_id');
-        if (!$companyId) {
-            throw new \RuntimeException('No company context available');
+        if ( ! $companyId) {
+            throw new RuntimeException('No company context available');
         }
 
-        $invoices    = Invoice::query()
+        $invoices = Invoice::query()
             ->where('company_id', $companyId)
             ->orderBy('id')
             ->get();
