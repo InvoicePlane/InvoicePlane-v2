@@ -86,7 +86,7 @@ class PeppolIntegration extends Model
      */
     public function getConfigAttribute(): array
     {
-        return $this->configurations->pluck('config_value', 'config_key')->toArray();
+        return collect($this->configurations)->pluck('config_value', 'config_key')->toArray();
     }
 
     /**

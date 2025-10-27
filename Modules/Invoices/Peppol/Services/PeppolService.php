@@ -3,10 +3,12 @@
 namespace Modules\Invoices\Peppol\Services;
 
 use Illuminate\Http\Client\RequestException;
+use InvalidArgumentException;
 use Modules\Invoices\Http\Traits\LogsApiRequests;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use Modules\Invoices\Peppol\FormatHandlers\FormatHandlerFactory;
+use RuntimeException;
 
 /**
  * PeppolService - Service for managing Peppol document transmission.
@@ -17,8 +19,6 @@ use Modules\Invoices\Peppol\FormatHandlers\FormatHandlerFactory;
  *
  * Uses the Strategy Pattern to select appropriate format handlers based on
  * customer requirements and country-specific regulations.
- *
- * @package Modules\Invoices\Peppol\Services
  */
 class PeppolService
 {
@@ -47,13 +47,14 @@ class PeppolService
      * This method takes an invoice, prepares it using the appropriate format handler,
      * and sends it through the Peppol network via the configured provider.
      *
-     * @param Invoice $invoice The invoice to send
+     * @param Invoice              $invoice The invoice to send
      * @param array<string, mixed> $options Optional options for the transmission
+     *
      * @return array<string, mixed> Response data including document ID and status
      *
-     * @throws RequestException If the Peppol API request fails
-     * @throws \InvalidArgumentException If the invoice data is invalid
-     * @throws \RuntimeException If no format handler is available
+     * @throws RequestException         If the Peppol API request fails
+     * @throws InvalidArgumentException If the invoice data is invalid
+     * @throws RuntimeException         If no format handler is available
      */
     public function sendInvoiceToPeppol(Invoice $invoice, array $options = []): array
     {
@@ -62,41 +63,38 @@ class PeppolService
 
         // Validate invoice before sending
         $validationErrors = $formatHandler->validate($invoice);
-        if (!empty($validationErrors)) {
-            throw new \InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));
+        if ( ! empty($validationErrors)) {
+            throw new InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));
         }
 
         // Transform invoice using the format handler
         $documentData = $formatHandler->transform($invoice, $options);
 
         $this->logRequest('Peppol', 'POST /documents', [
-            'invoice_id' => $invoice->id,
-            'invoice_number' => $invoice->invoice_number,
-            'format' => $formatHandler->getFormat()->value,
+            'invoice_id'       => $invoice->id,
+            'invoice_number'   => $invoice->invoice_number,
+            'format'           => $formatHandler->getFormat()->value,
             'customer_country' => $invoice->customer->country_code,
         ]);
 
         try {
-            $response = $this->documentsClient->submitDocument($documentData);
+            $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
 
-            $this->logResponse('Peppol', 'POST /documents', $responseData, [
-                'invoice_id' => $invoice->id,
-                'document_id' => $responseData['document_id'] ?? null,
-            ]);
+            $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
             return [
-                'success' => true,
+                'success'     => true,
                 'document_id' => $responseData['document_id'] ?? null,
-                'status' => $responseData['status'] ?? 'submitted',
-                'format' => $formatHandler->getFormat()->value,
-                'message' => 'Invoice successfully submitted to Peppol network',
-                'response' => $responseData,
+                'status'      => $responseData['status'] ?? 'submitted',
+                'format'      => $formatHandler->getFormat()->value,
+                'message'     => 'Invoice successfully submitted to Peppol network',
+                'response'    => $responseData,
             ];
         } catch (RequestException $e) {
-            $this->logError('Peppol', 'POST /documents', $e, [
+            $this->logError('Request', 'POST', '/documents', $e->getMessage(), [
                 'invoice_id' => $invoice->id,
-                'format' => $formatHandler->getFormat()->value,
+                'format'     => $formatHandler->getFormat()->value,
             ]);
 
             throw $e;
@@ -109,6 +107,7 @@ class PeppolService
      * Retrieves the current transmission status of a document in the Peppol network.
      *
      * @param string $documentId The Peppol document ID
+     *
      * @return array<string, mixed> Status information
      *
      * @throws RequestException If the API request fails
@@ -120,14 +119,14 @@ class PeppolService
         ]);
 
         try {
-            $response = $this->documentsClient->getDocumentStatus($documentId);
+            $response     = $this->documentsClient->getDocumentStatus($documentId);
             $responseData = $response->json();
 
-            $this->logResponse('Peppol', "GET /documents/{$documentId}/status", $responseData);
+            $this->logResponse('Peppol', "GET /documents/{$documentId}/status", $response->status(), $responseData);
 
             return $responseData;
         } catch (RequestException $e) {
-            $this->logError('Peppol', "GET /documents/{$documentId}/status", $e, [
+            $this->logError('Request', 'GET', "/documents/{$documentId}/status", $e->getMessage(), [
                 'document_id' => $documentId,
             ]);
 
@@ -141,6 +140,7 @@ class PeppolService
      * Attempts to cancel a document that hasn't been delivered yet.
      *
      * @param string $documentId The Peppol document ID
+     *
      * @return bool True if cancellation was successful
      *
      * @throws RequestException If the API request fails
@@ -153,43 +153,43 @@ class PeppolService
 
         try {
             $response = $this->documentsClient->cancelDocument($documentId);
-            $success = $response->successful();
+            $success  = $response->successful();
 
-            $this->logResponse('Peppol', "DELETE /documents/{$documentId}", [
+            $this->logResponse('Peppol', "DELETE /documents/{$documentId}", $response->status(), [
                 'success' => $success,
             ]);
 
             return $success;
         } catch (RequestException $e) {
-            $this->logError('Peppol', "DELETE /documents/{$documentId}", $e, [
+            $this->logError('Request', 'DELETE', "/documents/{$documentId}", $e->getMessage(), [
                 'document_id' => $documentId,
             ]);
 
             throw $e;
         }
     }
-}
 
     /**
      * Validate that an invoice is ready for Peppol transmission.
      *
      * @param Invoice $invoice The invoice to validate
+     *
      * @return void
      *
-     * @throws \InvalidArgumentException If validation fails
+     * @throws InvalidArgumentException If validation fails
      */
     protected function validateInvoice(Invoice $invoice): void
     {
-        if (!$invoice->customer) {
-            throw new \InvalidArgumentException('Invoice must have a customer');
+        if ( ! $invoice->customer) {
+            throw new InvalidArgumentException('Invoice must have a customer');
         }
 
-        if (!$invoice->invoice_number) {
-            throw new \InvalidArgumentException('Invoice must have an invoice number');
+        if ( ! $invoice->invoice_number) {
+            throw new InvalidArgumentException('Invoice must have an invoice number');
         }
 
         if ($invoice->invoiceItems->isEmpty()) {
-            throw new \InvalidArgumentException('Invoice must have at least one item');
+            throw new InvalidArgumentException('Invoice must have at least one item');
         }
 
         // Add more validation as needed for Peppol requirements
@@ -200,8 +200,9 @@ class PeppolService
      *
      * Converts the invoice model to the format required by the Peppol API.
      *
-     * @param Invoice $invoice The invoice to prepare
+     * @param Invoice              $invoice        The invoice to prepare
      * @param array<string, mixed> $additionalData Optional additional data
+     *
      * @return array<string, mixed> Document data ready for API submission
      */
     protected function prepareDocumentData(Invoice $invoice, array $additionalData = []): array
@@ -211,49 +212,49 @@ class PeppolService
         // Prepare document according to Peppol UBL format
         // This is a simplified example - real implementation should follow UBL 2.1 standard
         $documentData = [
-            'document_type' => 'invoice',
+            'document_type'  => 'invoice',
             'invoice_number' => $invoice->invoice_number,
-            'issue_date' => $invoice->invoiced_at->format('Y-m-d'),
-            'due_date' => $invoice->invoice_due_at->format('Y-m-d'),
-            'currency_code' => 'EUR', // Should be configurable
-            
+            'issue_date'     => $invoice->invoiced_at->format('Y-m-d'),
+            'due_date'       => $invoice->invoice_due_at->format('Y-m-d'),
+            'currency_code'  => 'EUR', // Should be configurable
+
             // Supplier (seller) information
             'supplier' => [
                 'name' => config('app.name'),
                 // Add more supplier details from company settings
             ],
-            
+
             // Customer (buyer) information
             'customer' => [
-                'name' => $customer->company_name ?? $customer->customer_name,
-                'endpoint_id' => $additionalData['customer_peppol_id'] ?? null,
+                'name'            => $customer->company_name ?? $customer->customer_name,
+                'endpoint_id'     => $additionalData['customer_peppol_id'] ?? null,
                 'endpoint_scheme' => 'BE:CBE', // Should be configurable based on country
             ],
-            
+
             // Line items
             'invoice_lines' => $invoice->invoiceItems->map(function ($item) {
                 return [
-                    'id' => $item->id,
-                    'quantity' => $item->quantity,
-                    'unit_code' => 'C62', // Default to 'unit', should be configurable
+                    'id'                    => $item->id,
+                    'quantity'              => $item->quantity,
+                    'unit_code'             => 'C62', // Default to 'unit', should be configurable
                     'line_extension_amount' => $item->subtotal,
-                    'price_amount' => $item->price,
-                    'item' => [
-                        'name' => $item->item_name,
+                    'price_amount'          => $item->price,
+                    'item'                  => [
+                        'name'        => $item->item_name,
                         'description' => $item->description,
                     ],
                     'tax_percent' => 0, // Calculate from tax rates
                 ];
             })->toArray(),
-            
+
             // Monetary totals
             'legal_monetary_total' => [
                 'line_extension_amount' => $invoice->invoice_item_subtotal,
-                'tax_exclusive_amount' => $invoice->invoice_item_subtotal,
-                'tax_inclusive_amount' => $invoice->invoice_total,
-                'payable_amount' => $invoice->invoice_total,
+                'tax_exclusive_amount'  => $invoice->invoice_item_subtotal,
+                'tax_inclusive_amount'  => $invoice->invoice_total,
+                'payable_amount'        => $invoice->invoice_total,
             ],
-            
+
             // Tax totals
             'tax_total' => [
                 'tax_amount' => $invoice->invoice_tax_total,

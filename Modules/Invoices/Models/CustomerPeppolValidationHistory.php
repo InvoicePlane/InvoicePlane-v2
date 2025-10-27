@@ -88,7 +88,7 @@ class CustomerPeppolValidationHistory extends Model
      */
     public function getProviderResponseAttribute(): array
     {
-        return $this->responses
+        return collect($this->responses)
             ->mapWithKeys(function (CustomerPeppolValidationResponse $response) {
                 $value   = $response->response_value;
                 $decoded = json_decode($value, true);

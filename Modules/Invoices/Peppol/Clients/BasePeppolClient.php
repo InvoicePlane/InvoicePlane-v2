@@ -77,6 +77,19 @@ abstract class BasePeppolClient
     }
 
     /**
+     * Get request options for the HTTP client.
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    public function getRequestOptions(array $options = []): array
+    {
+        // Implement logic or return options as needed
+        return $options;
+    }
+
+    /**
      * Build the full URL from the base URL and path.
      *
      * @param string $path The API path
@@ -86,19 +99,6 @@ abstract class BasePeppolClient
     protected function buildUrl(string $path): string
     {
         return $this->baseUrl . '/' . mb_ltrim($path, '/');
-    }
-
-    /**
-     * Get default request options including authentication.
-     *
-     * @return array<string, mixed>
-     */
-    protected function getRequestOptions(): array
-    {
-        return [
-            'headers' => $this->getAuthenticationHeaders(),
-            'timeout' => $this->getTimeout(),
-        ];
     }
 
     /**

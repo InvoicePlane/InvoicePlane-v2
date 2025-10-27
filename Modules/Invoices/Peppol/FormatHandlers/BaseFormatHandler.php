@@ -123,10 +123,11 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      * Get currency code from invoice or configuration.
      *
      * @param Invoice $invoice
+     * @param mixed   ...$args
      *
      * @return string
      */
-    protected function getCurrencyCode(Invoice $invoice): string
+    protected function getCurrencyCode(Invoice $invoice, ...$args): string
     {
         // Try to get from invoice, then company settings, then config
         return $invoice->currency_code

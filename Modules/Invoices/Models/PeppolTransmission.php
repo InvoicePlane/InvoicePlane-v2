@@ -99,7 +99,7 @@ class PeppolTransmission extends Model
      */
     public function getProviderResponseAttribute(): array
     {
-        return $this->responses->pluck('response_value', 'response_key')->toArray();
+        return collect($this->responses)->pluck('response_value', 'response_key')->toArray();
     }
 
     /**

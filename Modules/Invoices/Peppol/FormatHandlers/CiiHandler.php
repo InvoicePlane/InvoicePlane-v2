@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Peppol\FormatHandlers;
 
 use Modules\Invoices\Models\Invoice;
-use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 
 /**
  * CiiHandler - Cross Industry Invoice (CII) format handler.
@@ -19,15 +18,16 @@ class CiiHandler extends BaseFormatHandler
     /**
      * @inheritDoc
      */
-    public function supports(PeppolDocumentFormat $format): bool
+    public function supports(Invoice $invoice): bool
     {
-        return $format === PeppolDocumentFormat::CII;
+        // Implement logic to check if this handler supports the invoice's format
+        return $invoice->format === \Modules\Invoices\Peppol\Enums\PeppolDocumentFormat::CII;
     }
 
     /**
      * @inheritDoc
      */
-    public function transform(Invoice $invoice): array
+    public function transform(Invoice $invoice, array $options = []): array
     {
         $customer = $invoice->customer;
         $company  = $invoice->company;
@@ -47,43 +47,53 @@ class CiiHandler extends BaseFormatHandler
     /**
      * @inheritDoc
      */
-    public function validate(Invoice $invoice): bool
+    public function validate(Invoice $invoice): array
     {
+        $errors   = [];
         $customer = $invoice->customer;
-
-        $this->validationErrors = [];
-
         // Required fields validation
         if (empty($invoice->invoice_number)) {
-            $this->validationErrors[] = 'Invoice number is required for CII format';
+            $errors[] = 'Invoice number is required for CII format';
         }
-
         if ( ! $invoice->invoice_date) {
-            $this->validationErrors[] = 'Invoice date is required for CII format';
+            $errors[] = 'Invoice date is required for CII format';
         }
-
         if ( ! $invoice->invoice_due_at) {
-            $this->validationErrors[] = 'Invoice due date is required for CII format';
+            $errors[] = 'Invoice due date is required for CII format';
         }
-
         if (empty($customer->name)) {
-            $this->validationErrors[] = 'Customer name is required for CII format';
+            $errors[] = 'Customer name is required for CII format';
         }
-
         if (empty($customer->country_code)) {
-            $this->validationErrors[] = 'Customer country code is required for CII format';
+            $errors[] = 'Customer country code is required for CII format';
         }
-
         if ($invoice->items->isEmpty()) {
-            $this->validationErrors[] = 'At least one invoice item is required for CII format';
+            $errors[] = 'At least one invoice item is required for CII format';
         }
-
         // Validate amounts
         if ($invoice->total <= 0) {
-            $this->validationErrors[] = 'Invoice total must be greater than zero for CII format';
+            $errors[] = 'Invoice total must be greater than zero for CII format';
         }
 
-        return empty($this->validationErrors);
+        return $errors;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generateXml(Invoice $invoice, array $options = []): string
+    {
+        // Implement XML generation logic
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function validateFormatSpecific(Invoice $invoice): array
+    {
+        // Implement format-specific validation
+        return [];
     }
 
     /**

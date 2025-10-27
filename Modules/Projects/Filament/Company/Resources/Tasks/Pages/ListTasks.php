@@ -10,7 +10,6 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
-use Modules\Projects\Models\Task;
 use Modules\Projects\Services\TaskExportService;
 use Modules\Projects\Services\TaskService;
 
@@ -56,7 +55,7 @@ class ListTasks extends ListRecords
     /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Task::query()
+        return \Modules\Projects\Models\Task::query()
             ->orderByRaw("
                 FIELD(task_status,
                     'not_started',

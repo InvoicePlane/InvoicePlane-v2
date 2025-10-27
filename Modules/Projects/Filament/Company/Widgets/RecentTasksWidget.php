@@ -7,7 +7,6 @@ use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Projects\Enums\TaskStatus;
-use Modules\Projects\Models\Task;
 
 class RecentTasksWidget extends TableWidget
 {
@@ -18,7 +17,7 @@ class RecentTasksWidget extends TableWidget
     /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Task::query()->latest()->limit(10);
+        return \Modules\Projects\Models\Task::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array

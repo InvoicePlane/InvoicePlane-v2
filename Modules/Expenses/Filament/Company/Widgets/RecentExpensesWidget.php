@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
-use Modules\Expenses\Models\Expense;
 
 class RecentExpensesWidget extends TableWidget
 {
@@ -18,7 +17,7 @@ class RecentExpensesWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Expense::query()->latest()->limit(10);
+        return \Modules\Expenses\Models\Expense::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array

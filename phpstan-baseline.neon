@@ -25,6 +25,132 @@ parameters:
 			path: Modules/Expenses/Filament/Company/Widgets/RecentExpensesWidget.php
 
 		-
+			message: '#^Cannot call method mapWithKeys\(\) on array\<Modules\\Invoices\\Models\\CustomerPeppolValidationResponse\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Invoices/Models/CustomerPeppolValidationHistory.php
+
+		-
+			message: '#^Cannot call method pluck\(\) on array\<Modules\\Invoices\\Models\\PeppolIntegrationConfig\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Invoices/Models/PeppolIntegration.php
+
+		-
+			message: '#^Cannot call method pluck\(\) on array\<Modules\\Invoices\\Models\\PeppolTransmissionResponse\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Invoices/Models/PeppolTransmission.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Peppol\\Clients\\BasePeppolClient\:\:getRequestOptions\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: Modules/Invoices/Peppol/Clients/EInvoiceBe/ParticipantsClient.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Peppol\\Clients\\BasePeppolClient\:\:getRequestOptions\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/Invoices/Peppol/Clients/EInvoiceBe/TrackingClient.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Peppol\\Clients\\BasePeppolClient\:\:getRequestOptions\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 4
+			path: Modules/Invoices/Peppol/Clients/EInvoiceBe/WebhooksClient.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Peppol\\FormatHandlers\\BaseFormatHandler\:\:getCurrencyCode\(\) invoked with 3 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/Invoices/Peppol/FormatHandlers/CiiHandler.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Peppol\\Services\\PeppolService\:\:logResponse\(\) invoked with 3 parameters, 4 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: Modules/Invoices/Peppol/Services/PeppolService.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest\:\:createMockInvoice\(\) should return Modules\\Invoices\\Models\\Invoice but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Clients\\DocumentsClientTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Clients\\DocumentsClientTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/Clients/DocumentsClientTest.php
+
+		-
+			message: '#^Access to undefined constant Modules\\Invoices\\Peppol\\Enums\\PeppolDocumentFormat\:\:EHF_30\.$#'
+			identifier: classConstant.notFound
+			count: 4
+			path: Modules/Invoices/Tests/Unit/Peppol/Enums/PeppolDocumentFormatTest.php
+
+		-
+			message: '#^Access to undefined constant Modules\\Invoices\\Peppol\\Enums\\PeppolDocumentFormat\:\:FACTURX\.$#'
+			identifier: classConstant.notFound
+			count: 3
+			path: Modules/Invoices/Tests/Unit/Peppol/Enums/PeppolDocumentFormatTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\FormatHandlers\\FatturaPaHandlerTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\FormatHandlers\\FatturaPaHandlerTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FatturaPaHandlerTest.php
+
+		-
+			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept stdClass\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FatturaPaHandlerTest.php
+
+		-
+			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlersTest.php
+
+		-
+			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept stdClass\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlersTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest\:\:tearDown\(\) calls parent\:\:tearDown\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php
+
+		-
+			message: '#^Method Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest\:\:createMockInvoice\(\) should return Modules\\Invoices\\Models\\Invoice but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php
+
+		-
+			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest does not extend any class\.$#'
+			identifier: class.noParent
+			count: 1
+			path: Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php
+
+		-
 			message: '#^Method Modules\\Payments\\Filament\\Company\\Widgets\\RecentPaymentsWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
 			identifier: return.type
 			count: 1
