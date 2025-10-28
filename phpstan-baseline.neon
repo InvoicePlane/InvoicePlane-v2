@@ -37,24 +37,6 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php
 
 		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php
-
-		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Clients\\DocumentsClientTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Clients\\DocumentsClientTest does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/Clients/DocumentsClientTest.php
-
-		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\FormatHandlers\\FatturaPaHandlerTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\FormatHandlers\\FatturaPaHandlerTest does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FatturaPaHandlerTest.php
-
-		-
 			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept stdClass\.$#'
 			identifier: assign.propertyType
 			count: 1
@@ -73,26 +55,8 @@ parameters:
 			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlersTest.php
 
 		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php
-
-		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest\:\:tearDown\(\) calls parent\:\:tearDown\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Providers\\ProviderFactoryTest does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php
-
-		-
 			message: '#^Method Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest\:\:createMockInvoice\(\) should return Modules\\Invoices\\Models\\Invoice but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\.$#'
 			identifier: return.type
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php
-
-		-
-			message: '#^Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest\:\:setUp\(\) calls parent\:\:setUp\(\) but Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest does not extend any class\.$#'
-			identifier: class.noParent
 			count: 1
 			path: Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php
 

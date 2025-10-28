@@ -5,7 +5,7 @@ namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
-use Modules\Invoices\Peppol\FormatHandlers\{EhfHandler, FacturXHandler, FacturaeHandler, OioublHandler, ZugferdHandler};
+use Modules\Invoices\Peppol\FormatHandlers\{EhfHandler, FacturaeHandler, FacturXHandler, OioublHandler, ZugferdHandler};
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -89,7 +89,9 @@ class FormatHandlersTest extends TestCase
     {
         $handler                 = new $handlerClass();
         $invoice                 = new Invoice();
-        $invoice->customer       = null;
+        /** @var Customer|null $nullCustomer */
+        $nullCustomer            = null;
+        $invoice->customer       = $nullCustomer;
         $invoice->invoice_number = 'TEST-001';
         $invoice->invoiced_at    = now();
         $invoice->invoice_due_at = now()->addDays(30);

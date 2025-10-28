@@ -149,6 +149,7 @@ class FatturaPaHandlerTest extends TestCase
         $customer->city          = 'Roma';
         $customer->zip           = '00100';
 
+        /** @var Customer $customer */
         $invoice->customer = $customer;
 
         // Create mock invoice items

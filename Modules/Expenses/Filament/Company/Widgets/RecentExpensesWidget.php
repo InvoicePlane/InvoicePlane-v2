@@ -17,7 +17,7 @@ class RecentExpensesWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return \Modules\Expenses\Models\Expense::query()->latest()->limit(10);
+        return \Modules\Expenses\Models\Expense::query()->latest()->limit(10); /** @var Builder $query */
     }
 
     protected function getTableColumns(): array

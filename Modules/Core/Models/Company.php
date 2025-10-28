@@ -89,7 +89,6 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Relationships
     |--------------------------------------------------------------------------
     */
-    /** @phpstan-ignore-next-line */
     public function customerAdmins(): BelongsToMany
     {
         return $this->users()

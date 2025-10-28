@@ -64,15 +64,13 @@ class StorecoveProvider extends BaseProvider
      * @param array $transmissionData Transmission payload and metadata required to send the invoice.
      *                                Expected keys vary by provider integration (e.g. invoice XML, sender/recipient identifiers, options).
      *
-     * @return array {
-     *               Result of the send attempt
-     *
-     * @var bool        $accepted    Whether the provider accepted the submission.
-     * @var string|null $external_id Provider-assigned identifier for the transmission, or null if not assigned.
-     * @var int         $status_code Numeric status or HTTP-like code indicating result (0 when not applicable).
-     * @var string      $message     Human-readable message describing the result.
-     * @var mixed|null  $response    Raw provider response payload when available, or null.
-     *                  }
+     * @return array{accepted: bool, external_id: string|null, status_code: int, message: string, response: mixed|null}
+     *               Result of the send attempt with keys:
+     *               - accepted (bool): Whether the provider accepted the submission.
+     *               - external_id (string|null): Provider-assigned identifier for the transmission, or null if not assigned.
+     *               - status_code (int): Numeric status or HTTP-like code indicating result (0 when not applicable).
+     *               - message (string): Human-readable message describing the result.
+     *               - response (mixed|null): Raw provider response payload when available, or null.
      */
     public function sendInvoice(array $transmissionData): array
     {
