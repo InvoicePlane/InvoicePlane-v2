@@ -3,6 +3,9 @@
 namespace Modules\Quotes\Feature\Modules;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
@@ -16,107 +19,110 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('export')]
-    public function it_exports_quotes_downloads_csv_with_correct_data(): void
+    public function it_dispatches_csv_export_job_v2(): void
     {
-        $this->markTestIncomplete();
-
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $quotes = Quote::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListQuotes::class)
-            ->mountAction('exportCsvV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportCsvV2', data: [
+                'columnMap' => [
+                    'number' => ['isEnabled' => true, 'label' => 'Quote Number'],
+                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertTrue(
-            in_array(
-                $response->headers->get('content-type'),
-                [
-                    'text/csv',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ]
-            )
-        );
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(2, count($lines));
-        $this->assertCount($quotes->count() + 1, $lines);
-        foreach ($quotes as $quote) {
-            $this->assertStringContainsString($quote->number, $content);
-        }
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_quotes_downloads_excel_with_correct_data(): void
+    public function it_dispatches_excel_export_job(): void
     {
-        $this->markTestIncomplete();
-
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $quotes = Quote::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListQuotes::class)
-            ->mountAction('exportExcel')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcel', data: [
+                'columnMap' => [
+                    'number' => ['isEnabled' => true, 'label' => 'Number'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        $this->assertStringStartsWith('PK', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_quotes_with_no_records(): void
+    public function it_exports_with_no_records(): void
     {
-        $this->markTestIncomplete();
-
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         // No quotes created
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListQuotes::class)
-            ->mountAction('exportExcel')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcel', data: [
+                'columnMap' => [
+                    'number' => ['isEnabled' => true, 'label' => 'Number'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(1, count($lines));
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_quotes_with_special_characters(): void
+    public function it_exports_with_special_characters(): void
     {
-        $this->markTestIncomplete();
-
         /* Arrange */
-        $quotes = Quote::factory()->for($this->company)->create(['number' => 'QÜØTË, "Test"', 'total' => 123.45]);
+        Queue::fake();
+        Storage::fake('local');
+        $quote = Quote::factory()->for($this->company)->create([
+            'number' => 'QÜØTË, "Test"',
+            'total' => 123.45,
+        ]);
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListQuotes::class)
-            ->mountAction('exportExcel')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcel', data: [
+                'columnMap' => [
+                    'number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $content = $response->getContent();
-        $this->assertStringContainsString('QÜØTË', $content);
-        $this->assertStringContainsString('"Test"', $content);
-        $this->assertStringContainsString('123.45', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 }
