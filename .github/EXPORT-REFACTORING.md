@@ -10,6 +10,24 @@ This document outlines the refactoring of export functionality from Maatwebsite/
 
 All modules now have dedicated Filament Exporters located in `Modules/{ModuleName}/Filament/Exporters/`:
 
+**Architecture Improvements:**
+- All exporters extend `Modules/Core/Filament/Exporters/BaseExporter` (follows SOLID/DRY principles)
+- BaseExporter provides centralized, translatable notification logic
+- Each exporter implements abstract `getEntityName()` for dynamic entity naming
+- Eliminates code duplication across 18 exporter classes
+
+**Proper Type Handling:**
+- Enum values: Use `->formatStateUsing(fn ($state) => $state?->label() ?? '')` to call label() method
+- Date fields: Use `->date()` method for proper date formatting
+- Accessor attributes: Explicitly handle with `->formatStateUsing(fn ($state, $record) => $record->accessor_name)`
+
+**Internationalization:**
+- All notification strings use trans() function
+- New translation keys in resources/lang/en/ip.php:
+  - `export_completed` - Success notification
+  - `export_failed_rows` - Failure notification  
+  - `row` - Pluralizable row/rows
+
 **Expenses Module:**
 - `ExpenseExporter` - Regular export with 7 columns
 - `ExpenseLegacyExporter` - Legacy export with 3 columns
@@ -143,7 +161,9 @@ For each module (Expenses, Products, Quotes, Projects, Tasks, Relations, Contact
 
 ### Automated Testing
 
-The existing test files need to be updated to test Filament Export actions:
+**Note:** Filament Export requires comprehensive test rewrite, not simple updates.
+
+The existing test files are marked as incomplete and need complete rewriting to test Filament Export's asynchronous behavior:
 
 - `Modules/Expenses/Feature/Modules/ExpensesExportImportTest.php`
 - `Modules/Products/Feature/Modules/ProductsExportImportTest.php`
@@ -151,7 +171,35 @@ The existing test files need to be updated to test Filament Export actions:
 - `Modules/Projects/Feature/Modules/ProjectsExportImportTest.php`
 - `Modules/Projects/Feature/Modules/TasksExportImportTest.php`
 
-These tests are currently marked as incomplete and need to be rewritten to test Filament Export behavior.
+**Why tests need complete rewrite:**
+
+Filament Export fundamentally changes the export flow from synchronous to asynchronous:
+
+**Old Flow (Maatwebsite/Excel):**
+1. User clicks export button
+2. Export executes immediately
+3. File downloads directly
+4. Test: Call action, check response
+
+**New Flow (Filament Export):**
+1. User clicks export button
+2. Modal opens for column selection
+3. User submits form
+4. Export job queued
+5. Jobs process asynchronously
+6. Notification sent on completion
+7. User downloads from notification
+
+**Test Requirements:**
+- Mock/fake queue system
+- Test Livewire modal interactions
+- Verify job dispatching
+- Check database records in exports table
+- Validate notification delivery
+- Test file generation and storage
+- Verify column selection functionality
+
+This is a significant undertaking beyond the scope of export refactoring. Tests are documented for future implementation.
 
 ## Future Improvements
 
