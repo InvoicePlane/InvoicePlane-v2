@@ -15,6 +15,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_transform_array_to_dto(): void
     {
+        /* arrange */
         $blockData = [
             'id'       => 'block_header_company',
             'type'     => 'header_company',
@@ -35,8 +36,10 @@ class BlockTransformerTest extends TestCase
             'clonedFrom'  => null,
         ];
 
+        /* act */
         $dto = BlockTransformer::toDTO($blockData);
 
+        /* assert */
         $this->assertInstanceOf(BlockDTO::class, $dto);
         $this->assertEquals('block_header_company', $dto->getId());
         $this->assertEquals('header_company', $dto->getType());
@@ -57,13 +60,16 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_uses_defaults_for_missing_array_values(): void
     {
+        /* arrange */
         $blockData = [
             'id'   => 'block_test',
             'type' => 'test_type',
         ];
 
+        /* act */
         $dto = BlockTransformer::toDTO($blockData);
 
+        /* assert */
         $this->assertEquals('block_test', $dto->getId());
         $this->assertEquals('test_type', $dto->getType());
         $this->assertInstanceOf(GridPositionDTO::class, $dto->getPosition());
@@ -83,6 +89,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_transform_dto_to_array(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
@@ -97,8 +104,10 @@ class BlockTransformerTest extends TestCase
             ->setIsCloned(false)
             ->setClonedFrom(null);
 
+        /* act */
         $array = BlockTransformer::toArray($dto);
 
+        /* assert */
         $this->assertIsArray($array);
         $this->assertEquals('block_header_company', $array['id']);
         $this->assertEquals('header_company', $array['type']);
@@ -119,6 +128,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_transform_dto_to_json_pretty(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
@@ -133,8 +143,10 @@ class BlockTransformerTest extends TestCase
             ->setIsCloned(false)
             ->setClonedFrom(null);
 
+        /* act */
         $json = BlockTransformer::toJson($dto, true);
 
+        /* assert */
         $this->assertJson($json);
         $decoded = json_decode($json, true);
         $this->assertEquals('block_test', $decoded['id']);
@@ -146,6 +158,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_transform_dto_to_json_compact(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
@@ -160,8 +173,10 @@ class BlockTransformerTest extends TestCase
             ->setIsCloned(false)
             ->setClonedFrom(null);
 
+        /* act */
         $json = BlockTransformer::toJson($dto, false);
 
+        /* assert */
         $this->assertJson($json);
         $decoded = json_decode($json, true);
         $this->assertEquals('block_test', $decoded['id']);
@@ -172,6 +187,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_transform_array_collection_to_dto_collection(): void
     {
+        /* arrange */
         $blocks = [
             [
                 'id'          => 'block_1',
@@ -197,8 +213,10 @@ class BlockTransformerTest extends TestCase
             ],
         ];
 
+        /* act */
         $dtos = BlockTransformer::toArrayCollection($blocks);
 
+        /* assert */
         $this->assertIsArray($dtos);
         $this->assertCount(2, $dtos);
         $this->assertInstanceOf(BlockDTO::class, $dtos[0]);
@@ -213,8 +231,13 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function it_can_handle_empty_array_collection(): void
     {
+        /* arrange */
+        // No setup needed
+
+        /* act */
         $dtos = BlockTransformer::toArrayCollection([]);
 
+        /* assert */
         $this->assertIsArray($dtos);
         $this->assertCount(0, $dtos);
     }
@@ -223,6 +246,7 @@ class BlockTransformerTest extends TestCase
     #[Group('unit')]
     public function roundtrip_conversion_preserves_data(): void
     {
+        /* arrange */
         $originalData = [
             'id'          => 'block_roundtrip',
             'type'        => 'footer_totals',
@@ -235,9 +259,11 @@ class BlockTransformerTest extends TestCase
             'clonedFrom'  => 'block_original_totals',
         ];
 
+        /* act */
         $dto           = BlockTransformer::toDTO($originalData);
         $convertedData = BlockTransformer::toArray($dto);
 
+        /* assert */
         $this->assertEquals($originalData['id'], $convertedData['id']);
         $this->assertEquals($originalData['type'], $convertedData['type']);
         $this->assertEquals($originalData['position'], $convertedData['position']);
