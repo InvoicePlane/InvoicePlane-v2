@@ -3,11 +3,10 @@
 namespace Modules\Payments\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Payments\Models\Payment;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class PaymentLegacyExporter extends Exporter
+class PaymentLegacyExporter extends BaseExporter
 {
     protected static ?string $model = Payment::class;
 
@@ -23,18 +22,13 @@ class PaymentLegacyExporter extends Exporter
             ExportColumn::make('payment_amount')
                 ->label(trans('ip.payment_amount')),
             ExportColumn::make('paid_at')
-                ->label(trans('ip.paid_at')),
+                ->label(trans('ip.paid_at'))
+                ->date(),
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your payment export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.payment');
     }
 }

@@ -3,11 +3,10 @@
 namespace Modules\Projects\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Projects\Models\Task;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class TaskExporter extends Exporter
+class TaskExporter extends BaseExporter
 {
     protected static ?string $model = Task::class;
 
@@ -20,7 +19,8 @@ class TaskExporter extends Exporter
             ExportColumn::make('task_name')
                 ->label(trans('ip.task_name')),
             ExportColumn::make('due_at')
-                ->label(trans('ip.task_finish_date')),
+                ->label(trans('ip.task_finish_date'))
+                ->date(),
             ExportColumn::make('task_price')
                 ->label(trans('ip.task_price')),
             ExportColumn::make('project_name')
@@ -32,14 +32,8 @@ class TaskExporter extends Exporter
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your task export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.task');
     }
 }

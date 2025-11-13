@@ -3,11 +3,10 @@
 namespace Modules\Projects\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Projects\Models\Project;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class ProjectLegacyExporter extends Exporter
+class ProjectLegacyExporter extends BaseExporter
 {
     protected static ?string $model = Project::class;
 
@@ -23,20 +22,16 @@ class ProjectLegacyExporter extends Exporter
                 ->label(trans('ip.project_status'))
                 ->formatStateUsing(fn ($state) => $state?->label() ?? ''),
             ExportColumn::make('start_at')
-                ->label(trans('ip.start_at')),
+                ->label(trans('ip.start_at'))
+                ->date(),
             ExportColumn::make('end_at')
-                ->label(trans('ip.end_at')),
+                ->label(trans('ip.end_at'))
+                ->date(),
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your project export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.project');
     }
 }

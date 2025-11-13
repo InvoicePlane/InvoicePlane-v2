@@ -3,11 +3,10 @@
 namespace Modules\Invoices\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Invoices\Models\Invoice;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class InvoiceExporter extends Exporter
+class InvoiceExporter extends BaseExporter
 {
     protected static ?string $model = Invoice::class;
 
@@ -23,22 +22,18 @@ class InvoiceExporter extends Exporter
                 ->label(trans('ip.customer_name'))
                 ->formatStateUsing(fn ($state, Invoice $record) => $record->customer?->trading_name ?? $record->customer?->company_name ?? ''),
             ExportColumn::make('invoiced_at')
-                ->label(trans('ip.invoiced_at')),
+                ->label(trans('ip.invoiced_at'))
+                ->date(),
             ExportColumn::make('invoice_due_at')
-                ->label(trans('ip.invoice_due_at')),
+                ->label(trans('ip.invoice_due_at'))
+                ->date(),
             ExportColumn::make('invoice_total')
                 ->label(trans('ip.invoice_total')),
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your invoice export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.invoice');
     }
 }

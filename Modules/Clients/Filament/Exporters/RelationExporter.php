@@ -3,11 +3,10 @@
 namespace Modules\Clients\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class RelationExporter extends Exporter
+class RelationExporter extends BaseExporter
 {
     protected static ?string $model = Relation::class;
 
@@ -41,14 +40,8 @@ class RelationExporter extends Exporter
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your relation export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.relation');
     }
 }

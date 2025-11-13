@@ -3,11 +3,10 @@
 namespace Modules\Quotes\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
 use Modules\Quotes\Models\Quote;
+use Modules\Core\Filament\Exporters\BaseExporter;
 
-class QuoteLegacyExporter extends Exporter
+class QuoteLegacyExporter extends BaseExporter
 {
     protected static ?string $model = Quote::class;
 
@@ -23,22 +22,18 @@ class QuoteLegacyExporter extends Exporter
                 ->label(trans('ip.prospect_name'))
                 ->formatStateUsing(fn ($state, Quote $record) => $record->prospect?->trading_name ?? $record->prospect?->company_name ?? ''),
             ExportColumn::make('quoted_at')
-                ->label(trans('ip.quoted_at')),
+                ->label(trans('ip.quoted_at'))
+                ->date(),
             ExportColumn::make('quote_expires_at')
-                ->label(trans('ip.quote_expires_at')),
+                ->label(trans('ip.quote_expires_at'))
+                ->date(),
             ExportColumn::make('quote_total')
                 ->label(trans('ip.quote_total')),
         ];
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    protected static function getEntityName(): string
     {
-        $body = 'Your quote export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return trans('ip.quote');
     }
 }
