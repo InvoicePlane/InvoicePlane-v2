@@ -14,9 +14,14 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_id(): void
     {
+        /* arrange */
         $dto = new BlockDTO();
+
+        /* act */
         $dto->setId('block_header_company');
 
+
+        /* assert */
         $this->assertEquals('block_header_company', $dto->getId());
     }
 
@@ -24,9 +29,14 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_type(): void
     {
+        /* arrange */
         $dto = new BlockDTO();
+
+        /* act */
         $dto->setType('header_company');
 
+
+        /* assert */
         $this->assertEquals('header_company', $dto->getType());
     }
 
@@ -34,12 +44,17 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_position(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
+
+        /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         $dto = new BlockDTO();
         $dto->setPosition($position);
 
+
+        /* assert */
         $this->assertInstanceOf(GridPositionDTO::class, $dto->getPosition());
         $this->assertEquals(0, $dto->getPosition()->getX());
         $this->assertEquals(0, $dto->getPosition()->getY());
@@ -51,10 +66,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_config(): void
     {
-        $config = ['show_vat_id' => true, 'show_phone' => true];
-        $dto    = new BlockDTO();
-        $dto->setConfig($config);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertEquals($config, $dto->getConfig());
     }
 
@@ -62,9 +77,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_label(): void
     {
-        $dto = new BlockDTO();
-        $dto->setLabel('Company Header');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertEquals('Company Header', $dto->getLabel());
     }
 
@@ -72,9 +88,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_label_to_null(): void
     {
-        $dto = new BlockDTO();
-        $dto->setLabel(null);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertNull($dto->getLabel());
     }
 
@@ -82,13 +99,12 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_is_cloneable(): void
     {
-        $dto = new BlockDTO();
-        $dto->setIsCloneable(true);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertTrue($dto->getIsCloneable());
-
         $dto->setIsCloneable(false);
-
         $this->assertFalse($dto->getIsCloneable());
     }
 
@@ -96,9 +112,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_data_source(): void
     {
-        $dto = new BlockDTO();
-        $dto->setDataSource('company');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertEquals('company', $dto->getDataSource());
     }
 
@@ -106,9 +123,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_data_source_to_null(): void
     {
-        $dto = new BlockDTO();
-        $dto->setDataSource(null);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertNull($dto->getDataSource());
     }
 
@@ -116,13 +134,12 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_is_cloned(): void
     {
-        $dto = new BlockDTO();
-        $dto->setIsCloned(true);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertTrue($dto->getIsCloned());
-
         $dto->setIsCloned(false);
-
         $this->assertFalse($dto->getIsCloned());
     }
 
@@ -130,9 +147,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_and_get_cloned_from(): void
     {
-        $dto = new BlockDTO();
-        $dto->setClonedFrom('block_original');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertEquals('block_original', $dto->getClonedFrom());
     }
 
@@ -140,9 +158,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_set_cloned_from_to_null(): void
     {
-        $dto = new BlockDTO();
-        $dto->setClonedFrom(null);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertNull($dto->getClonedFrom());
     }
 
@@ -150,13 +169,18 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_create_system_block(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
+
+        /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         $config = ['show_vat_id' => true];
 
         $dto = BlockDTO::system('header_company', $position, $config);
 
+
+        /* assert */
         $this->assertEquals('header_company', $dto->getType());
         $this->assertEquals($position, $dto->getPosition());
         $this->assertEquals($config, $dto->getConfig());
@@ -169,7 +193,10 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_can_create_cloned_block(): void
     {
+        /* arrange */
         $position = new GridPositionDTO();
+
+        /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         $original = new BlockDTO();
@@ -185,6 +212,8 @@ class BlockDTOTest extends TestCase
 
         $cloned = BlockDTO::clonedFrom($original, 'block_cloned');
 
+
+        /* assert */
         $this->assertEquals('block_cloned', $cloned->getId());
         $this->assertEquals('header_company', $cloned->getType());
         $this->assertEquals($position, $cloned->getPosition());
@@ -194,7 +223,6 @@ class BlockDTOTest extends TestCase
         $this->assertEquals('company', $cloned->getDataSource());
         $this->assertTrue($cloned->getIsCloned());
         $this->assertEquals('block_original', $cloned->getClonedFrom());
-
         // Verify deep copy: mutating original position should not affect clone
         $position->setX(10);
         $this->assertEquals(10, $original->getPosition()->getX());

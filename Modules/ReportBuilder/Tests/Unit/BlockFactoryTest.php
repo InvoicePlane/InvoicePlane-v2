@@ -17,8 +17,10 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_creates_header_company_handler(): void
     {
-        $handler = BlockFactory::make('header_company');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertInstanceOf(HeaderCompanyBlockHandler::class, $handler);
     }
 
@@ -26,8 +28,10 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_creates_detail_items_handler(): void
     {
-        $handler = BlockFactory::make('detail_items');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertInstanceOf(DetailItemsBlockHandler::class, $handler);
     }
 
@@ -35,8 +39,10 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_creates_footer_notes_handler(): void
     {
-        $handler = BlockFactory::make('footer_notes');
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertInstanceOf(FooterNotesBlockHandler::class, $handler);
     }
 
@@ -44,9 +50,12 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_throws_exception_for_invalid_type(): void
     {
+        /* arrange */
+        // No setup needed
+
+        /* assert */
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/Unsupported block type/i');
-
         BlockFactory::make('invalid_type');
     }
 
@@ -54,12 +63,13 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_returns_all_block_types(): void
     {
-        $blockTypes = BlockFactory::all();
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertIsArray($blockTypes);
         $this->assertNotEmpty($blockTypes);
         $this->assertCount(8, $blockTypes);
-
         foreach ($blockTypes as $block) {
             $this->assertArrayHasKey('type', $block);
             $this->assertArrayHasKey('label', $block);

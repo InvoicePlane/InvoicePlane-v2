@@ -26,23 +26,16 @@ class ReportTemplateTest extends TestCase
     #[Group('unit')]
     public function it_can_create_a_report_template(): void
     {
-        $template = ReportTemplate::create([
-            'company_id'    => $this->company->id,
-            'name'          => 'Professional Invoice',
-            'slug'          => 'professional_invoice',
-            'description'   => 'A professional invoice template',
-            'template_type' => 'invoice',
-            'is_system'     => false,
-            'is_active'     => true,
-        ]);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertDatabaseHas('report_templates', [
             'company_id'    => $this->company->id,
             'name'          => 'Professional Invoice',
             'slug'          => 'professional_invoice',
             'template_type' => 'invoice',
         ]);
-
         $this->assertEquals('Professional Invoice', $template->name);
         $this->assertEquals('professional_invoice', $template->slug);
         $this->assertFalse($template->is_system);
@@ -53,15 +46,10 @@ class ReportTemplateTest extends TestCase
     #[Group('unit')]
     public function it_casts_boolean_fields_correctly(): void
     {
-        $template = ReportTemplate::create([
-            'company_id'    => $this->company->id,
-            'name'          => 'System Template',
-            'slug'          => 'system_template',
-            'template_type' => 'report',
-            'is_system'     => 1,
-            'is_active'     => 0,
-        ]);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertTrue($template->is_system);
         $this->assertFalse($template->is_active);
         $this->assertIsBool($template->is_system);
@@ -72,15 +60,10 @@ class ReportTemplateTest extends TestCase
     #[Group('unit')]
     public function it_belongs_to_a_company(): void
     {
-        $template = ReportTemplate::create([
-            'company_id'    => $this->company->id,
-            'name'          => 'Test Template',
-            'slug'          => 'test_template',
-            'template_type' => 'invoice',
-            'is_system'     => false,
-            'is_active'     => true,
-        ]);
+        /* arrange */
+        // No setup needed
 
+        /* assert */
         $this->assertInstanceOf(Company::class, $template->company);
         $this->assertEquals($this->company->id, $template->company->id);
     }
