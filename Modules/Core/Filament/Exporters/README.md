@@ -2,7 +2,68 @@
 
 ## Overview
 
-This application uses Filament's export system, which handles exports asynchronously via queued jobs.
+This application uses Filament's export system, which handles exports **asynchronously via queued jobs**.
+
+**⚠️ Queue Worker Required**: Export functionality requires a running queue worker to process export jobs.
+
+## Queue Configuration
+
+### Local Development
+
+For local development, you can use the `sync` queue driver:
+
+```bash
+# In .env
+QUEUE_CONNECTION=sync
+```
+
+Or run a queue worker in a separate terminal:
+
+```bash
+php artisan queue:work
+```
+
+### Production
+
+For production environments, configure a proper queue driver:
+
+**Redis (Recommended):**
+```bash
+# In .env
+QUEUE_CONNECTION=redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+**Database:**
+```bash
+# In .env
+QUEUE_CONNECTION=database
+
+# Run migration
+php artisan queue:table
+php artisan migrate
+```
+
+**Supervisor Configuration:**
+
+Use Supervisor to keep queue workers running:
+
+```ini
+[program:invoiceplane-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/path/to/storage/logs/worker.log
+stopwaitsecs=3600
+```
 
 ## Database Storage
 
@@ -41,13 +102,44 @@ Bus::assertChained([...]);
 
 ## Configuration
 
+### Queue Worker
+
+Exports will not process without a queue worker running. Choose one of these options:
+
+**Option 1: Sync Driver (Local Development Only)**
+```bash
+# In .env
+QUEUE_CONNECTION=sync
+```
+This processes jobs immediately but blocks the request.
+
+**Option 2: Queue Worker (Recommended)**
+```bash
+# Run in separate terminal
+php artisan queue:work
+
+# Or with specific options
+php artisan queue:work --queue=default --sleep=3 --tries=3
+```
+
+**Option 3: Supervisor (Production)**
+
+See configuration example above.
+
+### Model Pruning
+
 To automatically clean up old export records, run Laravel's model pruning command:
 
 ```bash
 php artisan model:prune
 ```
 
-This should be scheduled to run daily in production (add to your task scheduler).
+This should be scheduled to run daily in production (add to your task scheduler):
+
+```php
+// In routes/console.php or bootstrap/app.php
+Schedule::command('model:prune')->daily();
+```
 
 ## No Export History
 
