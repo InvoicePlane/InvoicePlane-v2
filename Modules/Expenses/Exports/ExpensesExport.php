@@ -41,7 +41,7 @@ class ExpensesExport implements FromCollection, WithHeadings, WithMapping
             $row->expenseCategory?->category_name,
             $row->expense_type?->label() ?? '',
             $row->expense_number,
-            $row->vendor->company_name,
+            $row->vendor?->company_name ?? '',
             $row->expensed_at,
             $row->expense_amount,
         ];
