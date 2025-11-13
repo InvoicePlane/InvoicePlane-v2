@@ -26,7 +26,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListQuotes::class)
-            ->mountAction('exportCsv')
+            ->mountAction('exportCsvV2')
             ->callMountedAction();
         $response = $component->lastResponse;
 
