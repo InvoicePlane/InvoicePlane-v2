@@ -89,10 +89,12 @@ jobs:
             --no-interaction --prefer-dist
           echo "✓ Composer dependencies installed"
 
-      - name: Install and run vendor cleaner
+      - name: Install vendor cleaner and optimize
         run: |
           echo "Installing composer-vendor-cleaner..."
-          composer require liborm85/composer-vendor-cleaner --dev --no-interaction
+          composer require liborm85/composer-vendor-cleaner --dev \
+            --no-interaction --no-update
+          composer update liborm85/composer-vendor-cleaner --no-interaction
           echo "Running vendor cleanup..."
           composer vendor-cleaner
           echo "✓ Vendor directory optimized"
@@ -111,7 +113,8 @@ jobs:
           find . -type f -name '.DS_Store' -delete
           
           echo "Cleaning mPDF fonts (keeping only DejaVu)..."
-          find vendor/mpdf/mpdf/ttfonts ! -name 'DejaVu*' -type f -exec rm -f {} + 2>/dev/null || true
+          find vendor/mpdf/mpdf/ttfonts -type f ! -name "DejaVu*" \
+            -delete 2>/dev/null || true
           
           echo "Cleaning mPDF QR code data..."
           rm -rf vendor/mpdf/mpdf/src/QrCode/data/* 2>/dev/null || true
@@ -191,13 +194,18 @@ jobs:
         run: |
           echo "Generating release notes..."
           
-          # Get the latest tag or use initial commit if no tags
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          # Get the latest tag or limit to last 100 commits if no tags
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           
-          # Generate changelog
-          echo "## Changes since ${PREVIOUS_TAG}" > RELEASE_NOTES.md
-          echo "" >> RELEASE_NOTES.md
-          git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "## Recent Changes (last 100 commits)" > RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            git log --max-count=100 --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md
+          else
+            echo "## Changes since ${PREVIOUS_TAG}" > RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md
+          fi
           
           echo "✓ Release notes generated"
           cat RELEASE_NOTES.md
