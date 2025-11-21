@@ -18,12 +18,9 @@ jobs:
       - name: Download translations from Crowdin
         uses: crowdin/github-action@v2
         with:
-          upload_sources: false
-          upload_translations: false
           download_translations: true
           localization_branch_name: master
           create_pull_request: false
-          push_translations: false
           crowdin_branch_name: master
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
@@ -46,7 +43,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.3'  # Using 8.3; composer.json requires ^8.2
           extensions: mbstring, bcmath, pdo_mysql
           coverage: none
 

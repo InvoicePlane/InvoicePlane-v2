@@ -49,19 +49,6 @@ After the workflow runs:
 3. Scroll down to the "Artifacts" section
 4. Download the ZIP file (named `invoiceplane-v2-YYYYMMDD_HHMMSS.zip`)
 
-**Optional: Automatic GitHub Releases**
-
-The workflow includes commented-out code for creating GitHub releases.
-To enable automatic releases when you create a tag:
-
-1. Uncomment lines 140-146 in `release.yml`
-2. Create and push a tag:
-   ```bash
-   git tag v2.0.0
-   git push origin v2.0.0
-   ```
-3. The workflow will create a GitHub Release with the ZIP file attached
-
 ### 2. PHPUnit Tests (`phpunit.yml`)
 
 **Trigger:** Manual dispatch only
@@ -148,7 +135,7 @@ If Composer installation fails:
 
 Edit line 49 in `release.yml`:
 ```yaml
-php-version: '8.3'  # Change to your desired version
+php-version: '8.3'  # Using 8.3 for latest features; composer.json requires ^8.2
 ```
 
 ### Changing Node.js Version
@@ -160,14 +147,14 @@ node-version: '20'  # Change to your desired version
 
 ### Adjusting Artifact Retention
 
-Edit line 137 in `release.yml`:
+Edit line 121 in `release.yml`:
 ```yaml
 retention-days: 90  # Change to your desired retention period (1-90 days)
 ```
 
 ### Custom ZIP Exclusions
 
-Add or remove exclusions in the "Create release zip" step (lines 102-126).
+Add or remove exclusions in the "Create release zip" step (lines 86-110).
 
 ## Best Practices
 
