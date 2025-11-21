@@ -24,6 +24,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
+        Bus::fake();
         $products = Product::factory()->for($this->company)->count(3)->create();
 
         /* Act */

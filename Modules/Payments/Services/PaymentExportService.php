@@ -19,7 +19,11 @@ class PaymentExportService
             abort(403, 'No company context available');
         }
         
-        $payments    = Payment::query()->where('company_id', $companyId)->get();
+        $payments    = Payment::query()
+            ->where('company_id', $companyId)
+            ->orderBy('paid_at', 'desc')
+            ->limit(10000)
+            ->get();
         $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $version     = config('ip.export_version', 2);
         $exportClass = $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
