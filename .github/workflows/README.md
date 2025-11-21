@@ -19,6 +19,12 @@ This directory contains GitHub Actions workflows for automated CI/CD tasks.
 6. **Creates release archive** - Packages everything into a timestamped ZIP file
 7. **Uploads artifact** - Makes the release available for download (90-day retention)
 
+**Security:**
+
+The workflow uses minimal permissions:
+- `contents: read` - Read access to repository contents
+- `actions: write` - Write access to upload workflow artifacts
+
 **Required Secrets:**
 
 Before using this workflow, you need to configure these GitHub secrets:

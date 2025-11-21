@@ -10,6 +10,10 @@ jobs:
     name: Build and Package Production Release
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      actions: write  # Required for uploading artifacts
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
