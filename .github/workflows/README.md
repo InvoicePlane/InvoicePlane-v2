@@ -8,7 +8,7 @@ This directory contains GitHub Actions workflows for automated CI/CD tasks.
 
 **Trigger:** Automatically runs on every push to the `master` branch
 
-**Purpose:** Creates a production-ready release package of InvoicePlane v2
+**Purpose:** Creates a production-ready release package of InvoicePlane v2 and publishes it as a GitHub Release
 
 **What it does:**
 1. **Downloads translations from Crowdin** - Retrieves the latest translations
@@ -17,13 +17,31 @@ This directory contains GitHub Actions workflows for automated CI/CD tasks.
 4. **Cleans up node_modules** - Removes Node.js dependencies
 5. **Optimizes vendor directory** - Removes unnecessary files (tests, docs, etc.)
 6. **Creates release archive** - Packages everything into a timestamped ZIP file
-7. **Uploads artifact** - Makes the release available for download (90-day retention)
+7. **Generates version tag** - Creates a new version tag (alpha/beta/stable)
+8. **Creates GitHub Release** - Publishes release with changelog and artifacts
+
+**Release Types:**
+
+The workflow supports configurable release types (set in workflow file):
+- `alpha` - Pre-release versions (increments patch, adds -alpha suffix)
+- `beta` - Beta versions (increments patch, adds -beta suffix)
+- `stable` - Stable releases (increments minor version)
+
+To change the release type, edit the `RELEASE_TYPE` environment variable at the top of `release.yml`.
+
+**Versioning:**
+
+The workflow automatically:
+- Detects the latest tag (or starts from v0.0.0)
+- Increments version based on release type
+- Creates a new tag (e.g., v0.1.0-alpha, v0.2.0-beta, v1.0.0)
+- Generates release notes showing changes since the previous tag
 
 **Security:**
 
 The workflow uses minimal permissions:
-- `contents: read` - Read access to repository contents
-- `actions: write` - Write access to upload workflow artifacts
+- `contents: write` - Required for creating releases and tags
+- `actions: write` - Required for uploading workflow artifacts
 
 **Required Secrets:**
 
@@ -47,13 +65,15 @@ To get your Crowdin credentials:
 4. Generate a Personal Access Token
 5. Copy your Project ID from the project settings
 
-**Accessing Release Artifacts:**
+**Accessing Releases:**
 
 After the workflow runs:
-1. Go to the Actions tab in your repository
-2. Click on the completed "Build Production Release" workflow run
-3. Scroll down to the "Artifacts" section
-4. Download the ZIP file (named `invoiceplane-v2-YYYYMMDD_HHMMSS.zip`)
+1. Go to the **Releases** section of your repository
+2. Find the latest release (e.g., "Release v0.1.0-alpha")
+3. Download the ZIP file and checksums from the release assets
+4. Review the automated changelog
+
+Artifacts are also available in the Actions tab for 90 days.
 
 ### 2. PHPUnit Tests (`phpunit.yml`)
 

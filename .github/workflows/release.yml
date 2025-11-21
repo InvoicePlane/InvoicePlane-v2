@@ -5,20 +5,24 @@ on:
     branches:
       - master
 
+env:
+  RELEASE_TYPE: 'alpha'  # Options: alpha, beta, stable
+
 jobs:
   build-release:
     name: Build and Package Production Release
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
-      actions: write  # Required for uploading artifacts
+      contents: write  # Required for creating releases and tags
+      actions: write   # Required for uploading artifacts
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for release notes
+          fetch-depth: 1  # Fetch only last commit for faster checkout
+          fetch-tags: true  # Fetch tags for versioning
 
       # Step 1: Download translations from Crowdin
       - name: Download translations from Crowdin
@@ -188,24 +192,79 @@ jobs:
           ls -lh "${RELEASE_FILE}"
           echo "========================================="
 
-      # Step 7: Generate release notes
-      - name: Generate release notes
-        id: release_notes
+      # Step 7: Generate version tag and release notes
+      - name: Generate version tag and release notes
+        id: version
         run: |
+          echo "========================================="
+          echo "Generating Version Tag"
+          echo "========================================="
+          
+          # Get the latest tag or start with v0.0.0
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Previous tag: ${PREVIOUS_TAG}"
+          
+          # Extract version numbers
+          VERSION=${PREVIOUS_TAG#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Increment version based on release type
+          case "${{ env.RELEASE_TYPE }}" in
+            alpha)
+              PATCH=$((PATCH + 1))
+              NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-alpha"
+              ;;
+            beta)
+              PATCH=$((PATCH + 1))
+              NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}-beta"
+              ;;
+            stable)
+              MINOR=$((MINOR + 1))
+              NEW_VERSION="${MAJOR}.${MINOR}.0"
+              ;;
+            *)
+              echo "ERROR: Invalid RELEASE_TYPE: ${{ env.RELEASE_TYPE }}"
+              exit 1
+              ;;
+          esac
+          
+          NEW_TAG="v${NEW_VERSION}"
+          echo "New tag: ${NEW_TAG}"
+          
+          # Store for later steps
+          echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
+          echo "PREVIOUS_TAG=${PREVIOUS_TAG}" >> $GITHUB_ENV
+          echo "new_tag=${NEW_TAG}" >> $GITHUB_OUTPUT
+          
+          echo "✓ Version tag generated"
+          echo "========================================="
+          
+          # Generate release notes between tags
           echo "Generating release notes..."
+          echo "# Release ${NEW_TAG}" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          echo "**Release Type:** ${{ env.RELEASE_TYPE }}" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
           
-          # Get the latest tag or limit to last 100 commits if no tags
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "## Recent Changes (last 100 commits)" > RELEASE_NOTES.md
+          if [ "$PREVIOUS_TAG" = "v0.0.0" ]; then
+            echo "## Initial Release" >> RELEASE_NOTES.md
             echo "" >> RELEASE_NOTES.md
-            git log --max-count=100 --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md
+            echo "This is the first release of InvoicePlane v2." >> RELEASE_NOTES.md
           else
-            echo "## Changes since ${PREVIOUS_TAG}" > RELEASE_NOTES.md
+            echo "## Changes since ${PREVIOUS_TAG}" >> RELEASE_NOTES.md
             echo "" >> RELEASE_NOTES.md
-            git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md
+            
+            # Fetch previous tag for comparison
+            git fetch --depth=1 origin tag ${PREVIOUS_TAG} 2>/dev/null || true
+            
+            # Generate changelog
+            git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" >> RELEASE_NOTES.md 2>/dev/null || \
+              echo "- Initial release" >> RELEASE_NOTES.md
           fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "---" >> RELEASE_NOTES.md
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> RELEASE_NOTES.md
           
           echo "✓ Release notes generated"
           cat RELEASE_NOTES.md
@@ -222,14 +281,34 @@ jobs:
             RELEASE_NOTES.md
           retention-days: 90
 
-      # Step 9: Workflow complete
+      # Step 9: Create GitHub Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          name: Release ${{ env.NEW_TAG }}
+          body_path: RELEASE_NOTES.md
+          files: |
+            ${{ env.RELEASE_FILE }}
+            sha256.txt
+            md5.txt
+          draft: false
+          prerelease: ${{ env.RELEASE_TYPE != 'stable' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 10: Workflow complete
       - name: Workflow summary
         run: |
           echo "========================================="
           echo "INVOICEPLANE V2 WORKFLOW COMPLETED"
           echo "========================================="
+          echo "Release: ${{ env.NEW_TAG }}"
+          echo "Type: ${{ env.RELEASE_TYPE }}"
           echo "Package: ${{ env.RELEASE_FILE }}"
           echo "Artifact name: ${{ env.RELEASE_NAME }}"
           echo "Checksums: sha256.txt, md5.txt"
           echo "Release notes: RELEASE_NOTES.md"
+          echo "========================================="
+          echo "GitHub Release created successfully!"
           echo "========================================="
