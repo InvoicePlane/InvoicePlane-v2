@@ -63,32 +63,16 @@ jobs:
       - name: Optimize vendor directory
         run: |
           # Remove unnecessary files from vendor
-          find vendor -type d -name "tests" \
+          find vendor -type d \( -name "tests" -o -name "test" \
+            -o -name "Tests" -o -name "Test" -o -name "docs" \
+            -o -name "doc" -o -name ".git" \) \
             -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name "test" \
-            -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name "Tests" \
-            -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name "Test" -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name "doc" -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type d -name ".git" -exec rm -rf {} + 2>/dev/null || true
-          find vendor -type f -name "*.md" -delete 2>/dev/null || true
-          find vendor -type f -name "*.txt" -delete 2>/dev/null || true
-          find vendor -type f -name ".gitignore" -delete 2>/dev/null || true
-          find vendor -type f -name ".gitattributes" -delete 2>/dev/null || true
-          find vendor -type f -name "composer.json" -delete 2>/dev/null || true
-          find vendor -type f -name "composer.lock" -delete 2>/dev/null || true
-          find vendor -type f -name "phpunit.xml" -delete 2>/dev/null || true
-          find vendor -type f -name "phpunit.xml.dist" \
-            -delete 2>/dev/null || true
-          find vendor -type f -name ".php_cs" \
-            -delete 2>/dev/null || true
-          find vendor -type f -name ".php_cs.dist" \
-            -delete 2>/dev/null || true
-          find vendor -type f -name "phpstan.neon" \
-            -delete 2>/dev/null || true
-          find vendor -type f -name "phpstan.neon.dist" \
+          find vendor -type f \( -name "*.md" -o -name "*.txt" \
+            -o -name ".gitignore" -o -name ".gitattributes" \
+            -o -name "composer.json" -o -name "composer.lock" \
+            -o -name "phpunit.xml" -o -name "phpunit.xml.dist" \
+            -o -name ".php_cs" -o -name ".php_cs.dist" \
+            -o -name "phpstan.neon" -o -name "phpstan.neon.dist" \) \
             -delete 2>/dev/null || true
 
       # Step 6: Create release archive
@@ -135,12 +119,3 @@ jobs:
           name: ${{ env.RELEASE_NAME }}
           path: ${{ env.RELEASE_FILE }}
           retention-days: 90
-
-      # Optional: Create GitHub Release (uncomment if needed)
-      # - name: Create GitHub Release
-      #   uses: softprops/action-gh-release@v1
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     files: ${{ env.RELEASE_FILE }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
