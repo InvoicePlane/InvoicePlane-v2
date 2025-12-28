@@ -2,20 +2,30 @@
 
 namespace Modules\Core\Services;
 
+use Modules\Core\Enums\DocumentGroupType;
+use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Models\TaxRate;
+use Modules\Expenses\Models\ExpenseCategory;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+
 class CompanyDefaultsBootstrapService
 {
     public static function bootstrap(int $companyId): void
     {
-        $company = \Modules\Core\Models\Company::findOrFail($companyId);
+        $company = Company::findOrFail($companyId);
 
         // Create default document group for invoices
         $documentGroupData = [
             'company_id'              => $company->id,
-            'type'                    => \Modules\Core\Enums\DocumentGroupType::INVOICES->value,
-            'group_identifier_format' => \Modules\Core\Enums\DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
-            'name'                    => \Modules\Core\Enums\DocumentGroupType::INVOICES->label(),
+            'type'                    => DocumentGroupType::INVOICES->value,
+            'group_identifier_format' => DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'name'                    => DocumentGroupType::INVOICES->label(),
             'left_pad'                => 6,
-            'format'                  => \Modules\Core\Enums\DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'format'                  => DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
             'next_id'                 => 1,
             'reset_number'            => 0,
             'last_id'                 => 0,
@@ -24,17 +34,17 @@ class CompanyDefaultsBootstrapService
             'last_week'               => now()->week,
         ];
 
-        \Modules\Core\Models\DocumentGroup::firstOrCreate(
+        DocumentGroup::firstOrCreate(
             [
                 'company_id' => $company->id,
-                'type'       => \Modules\Core\Enums\DocumentGroupType::INVOICES->value,
-                'name'       => \Modules\Core\Enums\DocumentGroupType::INVOICES->label(),
+                'type'       => DocumentGroupType::INVOICES->value,
+                'name'       => DocumentGroupType::INVOICES->label(),
             ],
             $documentGroupData
         );
 
         // Create default email template
-        \Modules\Core\Models\EmailTemplate::firstOrCreate(
+        EmailTemplate::firstOrCreate(
             [
                 'company_id' => $company->id,
                 'title'      => 'Default Template',
@@ -50,12 +60,12 @@ class CompanyDefaultsBootstrapService
         );
 
         // Create default tax rate
-        \Modules\Core\Models\TaxRate::firstOrCreate(
+        TaxRate::firstOrCreate(
             [
                 'company_id'    => $company->id,
                 'name'          => 'Standard VAT',
                 'code'          => 'VAT21',
-                'tax_rate_type' => \Modules\Core\Enums\TaxRateType::EXCLUSIVE->value,
+                'tax_rate_type' => TaxRateType::EXCLUSIVE->value,
             ],
             [
                 'rate' => 21.00,
@@ -63,7 +73,7 @@ class CompanyDefaultsBootstrapService
         );
 
         // Create default product category
-        \Modules\Products\Models\ProductCategory::firstOrCreate(
+        ProductCategory::firstOrCreate(
             [
                 'company_id'    => $company->id,
                 'category_name' => 'General',
@@ -73,7 +83,7 @@ class CompanyDefaultsBootstrapService
         );
 
         // Create default product unit
-        \Modules\Products\Models\ProductUnit::firstOrCreate(
+        ProductUnit::firstOrCreate(
             [
                 'company_id' => $company->id,
                 'unit_name'  => 'Piece',
@@ -84,7 +94,7 @@ class CompanyDefaultsBootstrapService
         );
 
         // Create default expense category
-        \Modules\Expenses\Models\ExpenseCategory::firstOrCreate(
+        ExpenseCategory::firstOrCreate(
             [
                 'company_id'    => $company->id,
                 'category_name' => 'Office Expenses',

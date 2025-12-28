@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Filament\Exporters\ProjectExporter;
 use Modules\Projects\Filament\Exporters\ProjectLegacyExporter;
+use Modules\Projects\Services\ProjectService;
 
 class ListProjects extends ListRecords
 {
@@ -24,7 +25,7 @@ class ListProjects extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Projects\Services\ProjectService::class)->createProject($data);
+                    app(ProjectService::class)->createProject($data);
                 })
                 ->modalWidth('full'),
 

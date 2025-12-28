@@ -5,6 +5,7 @@ namespace Modules\Products\Filament\Company\Resources\ProductUnits\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Products\Filament\Company\Resources\ProductUnits\ProductUnitResource;
+use Modules\Products\Services\ProductUnitService;
 
 class ListProductUnits extends ListRecords
 {
@@ -18,7 +19,7 @@ class ListProductUnits extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Products\Services\ProductUnitService::class)->createProductUnit($data);
+                    app(ProductUnitService::class)->createProductUnit($data);
                 })
                 ->modalWidth('full'),
         ];

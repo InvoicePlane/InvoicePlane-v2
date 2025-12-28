@@ -14,9 +14,11 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Log;
+use Modules\Clients\Enums\RelationType;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Support\ExpenseCalculator;
+use Modules\Expenses\Support\ExpenseNumberGenerator;
 use Modules\Products\Models\Product;
 
 class ExpenseForm
@@ -34,7 +36,7 @@ class ExpenseForm
                                     ->relationship(
                                         name: 'customer',
                                         titleAttribute: 'company_name',
-                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', RelationType::CUSTOMER->value)
                                     )
                                     ->label(trans('ip.client'))
                                     ->required()
@@ -55,7 +57,7 @@ class ExpenseForm
                                     ->relationship(
                                         name: 'vendor',
                                         titleAttribute: 'company_name',
-                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', \Modules\Clients\Enums\RelationType::VENDOR->value)
+                                        modifyQueryUsing: fn ($query) => $query->where('relation_type', RelationType::VENDOR->value)
                                     )
                                     ->label(trans('ip.vendor'))
                                     ->searchable()
@@ -91,7 +93,7 @@ class ExpenseForm
                                             ]);
                                         }
 
-                                        $generator = new \Modules\Expenses\Support\ExpenseNumberGenerator($companyId);
+                                        $generator = new ExpenseNumberGenerator($companyId);
 
                                         if (config('app.extreme_logging')) {
                                             Log::debug('ExpenseForm: Generating number', [
