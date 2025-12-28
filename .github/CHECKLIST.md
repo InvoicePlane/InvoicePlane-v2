@@ -39,6 +39,7 @@ Maybe I'll do the *settings* per module as a separate row in this checklist.
 | invoices  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
 |           | invoice_groups   | ✔️            |                  | ✔️             | ✔️             |                |              |
 |           | tax_rates        | ✔️            |                  | ✔️             | ✔️             |                |              |
+|           | peppol           | ✔️            | ✔️               | ✔️             | ✔️             |                |              |
 | payments  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
 |           | payment_methods  | ✔️            |                  | ✔️             | ✔️             |                |              |
 | products  |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
@@ -50,3 +51,14 @@ Maybe I'll do the *settings* per module as a separate row in this checklist.
 | reports   |                  |               |                  | ✔️             | ✔️             |                |              |
 | users     |                  | ✔️            |                  | ✔️             | ✔️             |                |              |
 | setup     |                  |               |                  | ✔️             | ✔️             |                |              |
+
+---
+
+## Notes (Peppol E-Invoicing)
+
+The Peppol integration includes comprehensive test coverage:
+- **Enum Tests:** All Peppol enums (TransmissionStatus, ErrorType, ValidationStatus, etc.) have complete test coverage
+- **Service Tests:** PeppolService with HTTP fakes for transmission, status checking, and cancellation
+- **Provider Tests:** Factory pattern and provider-specific client tests
+- **Format Handler Tests:** UBL, FatturaPA, ZUGFeRD format validation and transformation
+- **Integration Tests:** End-to-end integration lifecycle (create, test, validate, send)

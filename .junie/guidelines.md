@@ -303,6 +303,82 @@ command=php /path/to/artisan queue:work --sleep=3 --tries=3
 
 ---
 
+## 🌍 Peppol E-Invoicing Integration
+
+### Architecture Overview
+InvoicePlane v2 includes a comprehensive Peppol integration for sending electronic invoices across the European Peppol network.
+
+**Key Components:**
+- **PeppolService:** Main facade for invoice transmission and status checking
+- **PeppolManagementService:** Integration lifecycle management (create, test, validate, send)
+- **Format Handlers:** Strategy Pattern for different e-invoice formats (UBL, FatturaPA, ZUGFeRD, etc.)
+- **Provider Factory:** Creates provider-specific clients (e.g., EInvoiceBe)
+- **API Client:** Centralized HTTP client with exception handling
+- **Event System:** Dispatches events for all major operations
+
+### Format Handlers (Strategy Pattern)
+Each format handler implements:
+- `validate(Invoice $invoice): array` - Validates invoice for format requirements
+- `transform(Invoice $invoice, array $options): array` - Converts to format-specific structure
+- `getFormat(): PeppolDocumentFormat` - Returns format enum
+
+**Supported Formats:**
+- UBL 2.1 (Universal Business Language)
+- FatturaPA (Italian e-invoicing)
+- ZUGFeRD (German hybrid PDF/XML format)
+- Peppol BIS Billing 3.0
+
+### Service Layer Pattern
+```php
+// PeppolService - Transmission & Status
+$peppolService->sendInvoiceToPeppol($invoice, $options);
+$peppolService->getDocumentStatus($documentId);
+$peppolService->cancelDocument($documentId);
+
+// PeppolManagementService - Lifecycle
+$service->createIntegration($companyId, $provider, $config, $token);
+$service->testConnection($integration);
+$service->validatePeppolId($customer, $integration);
+$service->sendInvoice($invoice, $integration);
+```
+
+### Logging & Monitoring
+- **LogsApiRequests trait:** Logs all API requests/responses
+- **LogsPeppolActivity trait:** Logs Peppol-specific events
+- **Events:** PeppolTransmissionCreated, PeppolTransmissionSent, etc.
+- **Status Tracking:** Comprehensive enum-based status system
+
+### Database Structure
+- `peppol_integrations` - Company provider configurations
+- `peppol_integration_config` - Key-value config storage
+- `peppol_transmissions` - Transmission tracking
+- `peppol_transmission_responses` - Provider responses
+- `customer_peppol_validation_history` - Validation records
+
+### Testing Peppol Components
+```php
+#[Test]
+public function it_sends_invoice_to_peppol_successfully(): void
+{
+    /* Arrange */
+    Http::fake(['https://api.e-invoice.be/*' => Http::response([
+        'document_id' => 'DOC-123456',
+        'status' => 'submitted',
+    ], 200)]);
+    
+    $invoice = $this->createMockInvoice();
+    
+    /* Act */
+    $result = $this->service->sendInvoiceToPeppol($invoice);
+    
+    /* Assert */
+    $this->assertTrue($result['success']);
+    $this->assertEquals('DOC-123456', $result['document_id']);
+}
+```
+
+---
+
 ## 🔐 Security & Permissions
 
 ### Seeding Rules

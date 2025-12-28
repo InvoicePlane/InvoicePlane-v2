@@ -1,12 +1,14 @@
 ### Features
 
-- Invoice & Quote Management
-- Customer & Contact Handling
-- Payment Tracking & Reminders
-- Modular Architecture (Laravel + Filament)
-- Multi-Tenant Support via Filament Companies
-- Realtime UI with Livewire
-- Asynchronous Export System (requires queue workers)
+- **Invoice & Quote Management** - Create, send, and track invoices and quotes
+- **Peppol E-Invoicing** - Send invoices through the European Peppol network (UBL, FatturaPA, ZUGFeRD)
+- **Customer & Contact Handling** - Manage customers and relationships
+- **Payment Tracking & Reminders** - Track payments and send automated reminders
+- **Modular Architecture** - Laravel + Filament with clean module separation
+- **Multi-Tenant Support** - Via Filament Companies with company isolation
+- **Realtime UI** - Built with Livewire for reactive interfaces
+- **Asynchronous Export System** - Requires queue workers for background processing
+- **Comprehensive Testing** - PHPUnit tests with 100% coverage goal
 
 ---
 
