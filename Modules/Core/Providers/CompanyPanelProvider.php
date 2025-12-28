@@ -52,6 +52,7 @@ class CompanyPanelProvider extends PanelProvider
             ->default()
             ->id('company')
             ->path('')
+            ->viteTheme('resources/css/filament/company/invoiceplane.css')
             ->login()
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
