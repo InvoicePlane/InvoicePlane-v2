@@ -372,7 +372,7 @@ class NumberingService
             return null;
         }
 
-        $trimmed = mb_trim($prefix);
+        $trimmed = trim($prefix);
 
         return $trimmed === '' ? null : $trimmed;
     }
