@@ -120,6 +120,13 @@ class NumberingService
      */
     protected function prepareCreateData(array $data): array
     {
+        if ( ! isset($data['company_id'])) {
+            $companyId = session('current_company_id')
+                ?? Auth::user()?->companies()?->first()?->id
+                ?? 1;
+            $data['company_id'] = $companyId;
+        }
+
         if (isset($data['starting_id'])) {
             $data['next_id'] = (int) $data['starting_id'];
             unset($data['starting_id']);

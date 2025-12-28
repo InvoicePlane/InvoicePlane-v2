@@ -21,13 +21,14 @@ class NumberingFactory extends AbstractFactory
         }
 
         return [
-            'type'     => $numberingType->value,
-            'name'     => $name,
-            'next_id'  => 1,
-            'left_pad' => $this->faker->numberBetween(3, 6),
-            'format'   => '{{prefix}}-{{number}}',
-            'prefix'   => $numberingType->prefix(),
-            'last_id'  => null,
+            'company_id' => $companyId,
+            'type'       => $numberingType->value,
+            'name'       => $name,
+            'next_id'    => 1,
+            'left_pad'   => $this->faker->numberBetween(3, 6),
+            'format'     => '{{prefix}}-{{number}}',
+            'prefix'     => $numberingType->prefix(),
+            'last_id'    => null,
         ];
     }
 }

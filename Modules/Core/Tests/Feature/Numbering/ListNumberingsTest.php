@@ -21,7 +21,7 @@ class ListNumberingsTest extends AbstractAdminPanelTestCase
     public function it_lists_numberings(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $numbering = Numbering::factory()->for($this->company)->create([
             'type'     => NumberingType::JOB_CARD->value,
             'name'     => 'Test Numbering',
             'next_id'  => 1,
