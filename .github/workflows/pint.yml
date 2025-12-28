@@ -22,3 +22,12 @@ jobs:
 
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
+
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: ran pint and committed the fixes
+          commit_options: '--no-verify'
+          file_pattern: |
+            **/*
+            !.github/workflows/*
