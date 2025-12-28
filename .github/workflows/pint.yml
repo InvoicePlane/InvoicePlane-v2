@@ -21,7 +21,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Run Laravel Pint
-        run: vendor/bin/pint --test
+        run: vendor/bin/pint
 
       - name: Commit Changes
         uses: stefanzweifel/git-auto-commit-action@v5
