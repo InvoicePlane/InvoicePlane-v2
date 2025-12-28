@@ -431,7 +431,7 @@ class ZugferdHandler extends BaseFormatHandler
         ];
     }
 
-    /****
+    /**
      * Builds tax total entries for ZUGFeRD 1.0 grouped by tax rate.
      *
      * Each entry contains:
