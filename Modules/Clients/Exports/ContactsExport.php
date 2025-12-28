@@ -24,7 +24,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('ip.relation_name'),
+            trans('ip.relation_id'),
             trans('ip.type'),
             trans('ip.contact_name'),
             trans('ip.email'),
@@ -33,7 +33,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    public function map(\Modules\Clients\Models\Contact $row): array
+    public function map($row): array
     {
         return [
             $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
@@ -41,7 +41,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
             $row->full_name,
             $row->email ?? null,
             $row->phone ?? null,
-            $row->gender?->label() ?? '',
+            $row->gender,
         ];
     }
 }

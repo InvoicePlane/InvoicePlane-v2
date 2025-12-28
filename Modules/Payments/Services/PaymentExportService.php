@@ -7,21 +7,22 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Payments\Exports\PaymentsExport;
 use Modules\Payments\Exports\PaymentsLegacyExport;
 use Modules\Payments\Models\Payment;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PaymentExportService
 {
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
-        $companyId = session('current_company_id');
-        if ( ! $companyId) {
-            throw new RuntimeException('No company context available');
+        $companyId   = session('current_company_id');
+        
+        if (!$companyId) {
+            abort(403, 'No company context available');
         }
-
-        $payments = Payment::query()
+        
+        $payments    = Payment::query()
             ->where('company_id', $companyId)
-            ->orderBy('id')
+            ->orderBy('paid_at', 'desc')
+            ->limit(10000)
             ->get();
         $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $version     = config('ip.export_version', 2);
@@ -32,15 +33,8 @@ class PaymentExportService
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId = session('current_company_id');
-        if ( ! $companyId) {
-            throw new RuntimeException('No company context available');
-        }
-
-        $payments = Payment::query()
-            ->where('company_id', $companyId)
-            ->orderBy('id')
-            ->get();
+        $companyId   = session('current_company_id');
+        $payments    = Payment::query()->where('company_id', $companyId)->get();
         $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $exportClass = $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
 

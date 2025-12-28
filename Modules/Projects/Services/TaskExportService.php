@@ -7,22 +7,14 @@ use Maatwebsite\Excel\Facades\Excel;
 use Modules\Projects\Exports\TasksExport;
 use Modules\Projects\Exports\TasksLegacyExport;
 use Modules\Projects\Models\Task;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TaskExportService
 {
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
-        $companyId = session('current_company_id');
-        if ( ! $companyId) {
-            throw new RuntimeException('No company context available');
-        }
-
-        $tasks = Task::query()
-            ->where('company_id', $companyId)
-            ->orderBy('id')
-            ->get();
+        $companyId   = session('current_company_id');
+        $tasks       = Task::query()->where('company_id', $companyId)->get();
         $fileName    = 'tasks-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $version     = config('ip.export_version', 2);
         $exportClass = $version === 1 ? TasksLegacyExport::class : TasksExport::class;
@@ -32,15 +24,8 @@ class TaskExportService
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId = session('current_company_id');
-        if ( ! $companyId) {
-            throw new RuntimeException('No company context available');
-        }
-
-        $tasks = Task::query()
-            ->where('company_id', $companyId)
-            ->orderBy('id')
-            ->get();
+        $companyId   = session('current_company_id');
+        $tasks       = Task::query()->where('company_id', $companyId)->get();
         $fileName    = 'tasks-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $exportClass = $version === 1 ? TasksLegacyExport::class : TasksExport::class;
 

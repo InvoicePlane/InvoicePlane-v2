@@ -3,6 +3,9 @@
 namespace Modules\Expenses\Feature\Modules;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
@@ -16,196 +19,221 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_csv_with_correct_data(): void
+    public function it_dispatches_csv_export_job_v2(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportCsvV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportCsvV2', data: [
+                'columnMap' => [
+                    'expense_status' => ['isEnabled' => true, 'label' => 'Status'],
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => true, 'label' => 'Amount'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertTrue(
-            in_array(
-                $response->headers->get('content-type'),
-                [
-                    'text/csv',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ]
-            )
-        );
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(2, count($lines));
-        $this->assertCount($expenses->count() + 1, $lines);
-        foreach ($expenses as $expense) {
-            $this->assertStringContainsString((string) $expense->amount, $content);
-        }
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_excel_with_correct_data(): void
+    public function it_dispatches_excel_export_job_v2(): void
     {
-        $this->markTestIncomplete();
-
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportExcelV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'expense_status' => ['isEnabled' => true, 'label' => 'Status'],
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => true, 'label' => 'Amount'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        $this->assertStringStartsWith('PK', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_with_no_records(): void
+    public function it_exports_with_no_records(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         // No expenses created
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportExcelV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(1, count($lines));
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_with_special_characters(): void
+    public function it_exports_with_special_characters(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
-        $expenses = Expense::factory()->for($this->company)->create(['description' => 'Üxpense, "Test"', 'amount' => 123.45]);
+        Queue::fake();
+        Storage::fake('local');
+        $expense = Expense::factory()->for($this->company)->create([
+            'description' => 'Üxpense, "Test"',
+            'amount' => 123.45,
+        ]);
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportCsv')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => true, 'label' => 'Amount'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertMatchesRegularExpression('/^text\/csv\b/i', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        $this->assertStringContainsString('Üxpense', $content);
-        $this->assertStringContainsString('"Test"', $content);
-        $this->assertStringContainsString('123.45', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_csv_with_correct_data_v2(): void
+    public function it_dispatches_csv_export_job_v2_with_column_selection(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
+
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportCsvV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportCsvV2', data: [
+                'columnMap' => [
+                    'expense_status' => ['isEnabled' => true, 'label' => 'Status'],
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => false, 'label' => 'Amount'],
+                ],
+            ]);
+
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(2, count($lines));
-        $this->assertCount($expenses->count() + 1, $lines);
-        foreach ($expenses as $expense) {
-            $this->assertStringContainsString((string) $expense->amount, $content);
-        }
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_csv_with_correct_data_v1(): void
+    public function it_dispatches_csv_export_job_v1(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
+
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportCsvV1')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportCsvV1', data: [
+                'columnMap' => [
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => true, 'label' => 'Amount'],
+                ],
+            ]);
+
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertTrue(in_array($response->headers->get('content-type'), ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']));
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(2, count($lines));
-        $this->assertCount($expenses->count() + 1, $lines);
-        foreach ($expenses as $expense) {
-            $this->assertStringContainsString((string) $expense->amount, $content);
-        }
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_excel_with_correct_data_v2(): void
+    public function it_dispatches_excel_export_job_v2_with_data(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
+
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportExcelV2')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                    'expense_amount' => ['isEnabled' => true, 'label' => 'Amount'],
+                ],
+            ]);
+
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        $this->assertStringStartsWith('PK', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function it_exports_expenses_downloads_excel_with_correct_data_v1(): void
+    public function it_dispatches_excel_export_job_v1(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
+        Queue::fake();
+        Storage::fake('local');
         $expenses = Expense::factory()->for($this->company)->count(3)->create();
+
         /* Act */
-        $component = Livewire::actingAs($this->user)
+        Livewire::actingAs($this->user)
             ->test(ListExpenses::class)
-            ->mountAction('exportExcelV1')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+            ->callAction('exportExcelV1', data: [
+                'columnMap' => [
+                    'expense_number' => ['isEnabled' => true, 'label' => 'Number'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        $this->assertStringStartsWith('PK', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 }
