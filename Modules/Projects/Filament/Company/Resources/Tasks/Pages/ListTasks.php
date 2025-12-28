@@ -57,10 +57,9 @@ class ListTasks extends ListRecords
         ];
     }
 
-    /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Task::query()
+        $query = \Modules\Projects\Models\Task::query()
             ->orderByRaw("
                 FIELD(task_status,
                     'not_started',
@@ -72,5 +71,8 @@ class ListTasks extends ListRecords
                 )
             ")
             ->orderBy('due_at', 'asc');
+
+        /** @var Builder $query */
+        return $query;
     }
 }

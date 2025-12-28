@@ -6,7 +6,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Modules\Payments\Models\Payment;
 
 class RecentPaymentsWidget extends TableWidget
 {
@@ -16,7 +15,7 @@ class RecentPaymentsWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Payment::query()->latest()->limit(10);
+        return \Modules\Payments\Models\Payment::query()->latest()->limit(10); /** @var Builder $query */
     }
 
     protected function getTableColumns(): array

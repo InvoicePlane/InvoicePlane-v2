@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
-use Modules\Projects\Models\Project;
 
 class RecentProjectsWidget extends TableWidget
 {
@@ -19,7 +18,7 @@ class RecentProjectsWidget extends TableWidget
     /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Project::query()->latest()->limit(10);
+        return \Modules\Projects\Models\Project::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array
@@ -30,8 +29,8 @@ class RecentProjectsWidget extends TableWidget
             TextColumn::make('project_status')
                 ->label(trans('ip.project_status'))
                 ->badge()
-                ->formatStateUsing(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->label() ?? '-')
-                ->color(fn ($state) => EnumHelper::safeEnum(ProjectStatus::class, $state)?->color() ?? 'secondary'),
+                ->formatStateUsing(fn ($state) => ($enum = EnumHelper::safeEnum(ProjectStatus::class, $state)) && method_exists($enum, 'label') ? $enum->label() : '-')
+                ->color(fn ($state) => ($enum = EnumHelper::safeEnum(ProjectStatus::class, $state)) && method_exists($enum, 'color') ? $enum->color() : 'secondary'),
         ];
     }
 }
