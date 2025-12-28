@@ -29,6 +29,7 @@
         "filament/tables": "^4.0",
         "filament/widgets": "^4.0",
         "laravel/framework": "^12.26",
+        "maatwebsite/excel": "^3.1",
         "nwidart/laravel-modules": "^12.0",
         "spatie/laravel-permission": "^6.21"
     },

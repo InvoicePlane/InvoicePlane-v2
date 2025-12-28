@@ -833,6 +833,12 @@ return [
     'years'                                     => 'Years',
     #endregion
 
+    #region EXPORTS
+    'export_completed'      => 'Your :entity export has completed and :count :rows exported.',
+    'export_failed_rows'    => ':count :rows failed to export.',
+    'row'                   => 'row|rows',
+    #endregion
+
     #region AUTHENTICATION
     'account_inactive'              => 'Your account is inactive. Please contact the administrator.',
     'account_inactive_login_denied' => 'Login denied: Your account has been deactivated.',

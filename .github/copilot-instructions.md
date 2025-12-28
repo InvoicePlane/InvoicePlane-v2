@@ -22,6 +22,7 @@ This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with
 - **Module System:** nwidart/laravel-modules
 - **Permissions:** spatie/laravel-permission
 - **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
+- **Queue System:** Required for export functionality (Redis, database, or sync for local development)
 
 ## Development Commands
 
@@ -57,7 +58,15 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+
+# Start queue worker for export functionality
+php artisan queue:work
 ```
+
+**Queue Configuration:**
+- Export functionality requires a queue worker to be running
+- For local development, you can use `QUEUE_CONNECTION=sync` in `.env`
+- For production, use Redis or database queue driver with Supervisor
 
 ## Related Documentation
 
@@ -123,6 +132,15 @@ php artisan migrate --seed
     - Place happy paths last in test cases.
     - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
     - Tests have inline comment blocks above sections (Arrange, Act, Assert).
+
+### Export System Rules
+
+- **Exports use Filament's asynchronous export system** which requires queue workers.
+- **Export tests must use fakes:** `Queue::fake()`, `Storage::fake()`, and verify job dispatching with `Bus::assertChained()`.
+- **The `exports` table is temporary** and managed by Filament for job coordination only.
+- **No export history feature** - export records are ephemeral and auto-prunable.
+- **Queue configuration is required** for export functionality to work in production.
+- See `Modules/Core/Filament/Exporters/README.md` for export architecture details.
 
 ### Database & Models
 

@@ -6,6 +6,7 @@
 - Modular Architecture (Laravel + Filament)
 - Multi-Tenant Support via Filament Companies
 - Realtime UI with Livewire
+- Asynchronous Export System (requires queue workers)
 
 ---
 
@@ -22,7 +23,12 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+
+# Start queue worker for export functionality
+php artisan queue:work
 ```
+
+**Note:** Export functionality requires a queue worker to be running. For production, configure a queue driver (Redis, database, etc.) and use a process manager like Supervisor.
 
 For detailed steps, see: INSTALLATION.md
 

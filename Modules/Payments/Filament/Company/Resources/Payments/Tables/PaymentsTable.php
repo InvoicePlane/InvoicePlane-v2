@@ -60,7 +60,7 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
-                    ->formatStateUsing(fn ($state) => trans('ip.' . $state))
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? '')
                     ->limit(10)
                     ->sortable()
                     ->searchable()

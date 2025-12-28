@@ -36,6 +36,7 @@ class TasksTable
                         return $status?->color() ?? 'secondary';
                     })
                     ->sortable(false),
+
                 TextColumn::make('task_name')
                     ->limit(30)
                     ->label(trans('ip.task_name'))
