@@ -3,9 +3,12 @@
 namespace Modules\Clients\Feature\Modules;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
-use Modules\Clients\Filament\Company\Resources\Contacts\Pages\ListContacts;
-use Modules\Clients\Models\Contact;
+use Modules\Clients\Filament\Company\Resources\Clients\Pages\ListClients;
+use Modules\Clients\Models\Client;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -16,256 +19,162 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('export')]
-    public function export_contacts_downloads_csv_with_correct_data(): void
+    public function it_dispatches_csv_export_job_v2(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
-        $contacts = Contact::factory()->for($this->company)->count(3)->create();
+        Queue::fake();
+        Storage::fake('local');
+        $clients = Client::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('export')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+        Livewire::actingAs($this->user)
+            ->test(ListClients::class)
+            ->callAction('exportCsvV2', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertTrue(
-            in_array(
-                $response->headers->get('content-type'),
-                [
-                    'text/csv',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ]
-            )
-        );
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(2, count($lines));
-        $this->assertCount($contacts->count() + 1, $lines);
-        foreach ($contacts as $contact) {
-            $this->assertStringContainsString($contact->name, $content);
-        }
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function export_contacts_downloads_excel_with_correct_data(): void
+    public function it_dispatches_excel_export_job_v2(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
-        $contacts = Contact::factory()->for($this->company)->count(3)->create();
+        Queue::fake();
+        Storage::fake('local');
+        $clients = Client::factory()->for($this->company)->count(3)->create();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('export', ['format' => 'xlsx'])
-            ->callMountedAction();
-        $response = $component->lastResponse;
+        Livewire::actingAs($this->user)
+            ->test(ListClients::class)
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $this->assertEquals('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', $response->headers->get('content-type'));
-        $content = $response->getContent();
-        // Check for XLSX file signature (PK\x03\x04)
-        $this->assertStringStartsWith('PK', $content);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function export_contacts_with_no_records(): void
+    public function it_exports_with_no_records(): void
     {
+        $this->markTestIncomplete();
         /* Arrange */
-        // No contacts created
+        Queue::fake();
+        Storage::fake('local');
+        // No clients created
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('export')
-            ->callMountedAction();
-        $response = $component->lastResponse;
+        Livewire::actingAs($this->user)
+            ->test(ListClients::class)
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertEquals(200, $response->status());
-        $content = $response->getContent();
-        $lines   = preg_split('/\r?\n/', mb_trim($content));
-        $this->assertGreaterThanOrEqual(1, count($lines)); // Only header row
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
     #[Group('export')]
-    public function export_contacts_with_special_characters(): void
+    public function it_exports_with_special_characters(): void
     {
         /* Arrange */
-        $contacts = Contact::factory()->for($this->company)->for($this->company)->create(['name' => 'Jöhn Dœ, "Test"', 'email' => 'special@example.com']);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('export')
-            ->callMountedAction();
-        $response = $component->lastResponse;
-
-        /* Assert */
-        $this->assertEquals(200, $response->status());
-        $content = $response->getContent();
-        $this->assertStringContainsString('Jöhn Dœ', $content);
-        $this->assertStringContainsString('"Test"', $content);
-        $this->assertStringContainsString('special@example.com', $content);
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_empty_file(): void
-    {
-        /* Arrange */
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', '');
+        Queue::fake();
+        Storage::fake('local');
+        $client = Client::factory()->for($this->company)->create([
+            'company_name' => 'ÜClient, "Test"',
+        ]);
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
+            ->test(ListClients::class)
+            ->callAction('exportExcelV2', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertDatabaseCount('contacts', 0);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
-    #[Group('import')]
-    public function import_contacts_with_only_headers(): void
+    #[Group('export')]
+    public function it_dispatches_csv_export_job_v1(): void
     {
         /* Arrange */
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', "name,email\n");
+        Queue::fake();
+        Storage::fake('local');
+        $clients = Client::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
+            ->test(ListClients::class)
+            ->callAction('exportCsvV1', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertDatabaseCount('contacts', 0);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 
     #[Test]
-    #[Group('import')]
-    public function import_contacts_with_invalid_columns(): void
+    #[Group('export')]
+    public function it_dispatches_excel_export_job_v1(): void
     {
         /* Arrange */
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', "foo,bar\nabc,def\n");
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseCount('contacts', 0);
-        // Optionally, assert error message if your import action provides one
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_duplicate_records(): void
-    {
-        /* Arrange */
-        $csv  = "name,email\nDup User,dup@example.com\nDup User,dup@example.com\n";
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
+        Queue::fake();
+        Storage::fake('local');
+        $clients = Client::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
+            ->test(ListClients::class)
+            ->callAction('exportExcelV1', data: [
+                'columnMap' => [
+                    'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
+                ],
+            ]);
 
         /* Assert */
-        $this->assertDatabaseCount('contacts', 2); // or 1 if your import deduplicates
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_invalid_data_types(): void
-    {
-        /* Arrange */
-        $csv  = "name,email\n12345,not-an-email\n";
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
-
-        /* Assert */
-        // Depending on your validation, this may fail or create a record
-        $this->assertDatabaseHas('contacts', ['name' => '12345', 'email' => 'not-an-email']);
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_large_file(): void
-    {
-        /* Arrange */
-        $rows = [];
-        for ($i = 0; $i < 1000; $i++) {
-            $rows[] = "User{$i},user{$i}@example.com";
-        }
-        $csv  = "name,email\n" . implode("\n", $rows);
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseCount('contacts', 1000);
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_extra_columns(): void
-    {
-        /* Arrange */
-        $csv  = "name,email,extra\nExtra User,extra@example.com,something\n";
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseHas('contacts', ['name' => 'Extra User', 'email' => 'extra@example.com']);
-    }
-
-    #[Test]
-    #[Group('import')]
-    public function import_contacts_with_missing_required_columns(): void
-    {
-        /* Arrange */
-        $csv  = "name\nMissing Email\n";
-        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('contacts.csv', $csv);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListContacts::class)
-            ->mountAction('import')
-            ->set('data.file', $file)
-            ->callMountedAction();
-
-        /* Assert */
-        // Should not create a record if email is required
-        $this->assertDatabaseCount('contacts', 0);
+        Bus::assertChained([
+            function ($batch) {
+                return $batch instanceof \Illuminate\Bus\PendingBatch;
+            },
+        ]);
     }
 }

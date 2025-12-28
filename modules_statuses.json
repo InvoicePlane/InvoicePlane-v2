@@ -6,5 +6,6 @@
     "Payments": true,
     "Products": true,
     "Projects": true,
-    "Quotes": true
+    "Quotes": true,
+    "ReportBuilder": true
 }

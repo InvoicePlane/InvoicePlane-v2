@@ -393,6 +393,7 @@ return [
     'submit'                                       => 'Submit',
     'subtotal'                                     => 'Subtotal',
     'success'                                      => 'Success',
+    'summary'                                      => 'Summary',
     'sumex'                                        => 'Sumex',
     'sumex_information'                            => 'Sumex Information',
     'sumex_settings'                               => 'Sumex Settings',
@@ -409,6 +410,7 @@ return [
     'tax_rates'                                    => 'Tax Rates',
     'tax_total'                                    => 'Tax Total',
     'taxes'                                        => 'Taxes',
+    'template_created'                             => 'Template created successfully',
     'terms'                                        => 'Terms',
     'terms_and_conditions'                         => 'Terms and Conditions',
     'text'                                         => 'Text',
@@ -833,10 +835,26 @@ return [
     'years'                                     => 'Years',
     #endregion
 
+    #region EXPORTS
+    'export_completed'      => 'Your :entity export has completed and :count :rows exported.',
+    'export_failed_rows'    => ':count :rows failed to export.',
+    'row'                   => 'row|rows',
+    #endregion
+
     #region AUTHENTICATION
     'account_inactive'              => 'Your account is inactive. Please contact the administrator.',
     'account_inactive_login_denied' => 'Login denied: Your account has been deactivated.',
     'login_failed'                  => 'Login failed. Please check your credentials.',
     'authentication_failed'         => 'Authentication failed.',
+    #endregion
+
+    #region PEPPOL
+    'customer_peppol_id'        => 'Customer Peppol ID',
+    'customer_peppol_id_helper' => 'The Peppol participant identifier of the customer (e.g., BE:0123456789 for Belgian companies)',
+    'peppol_error_body'         => 'Failed to send invoice to Peppol: :error',
+    'peppol_error_title'        => 'Peppol Transmission Failed',
+    'peppol_success_body'       => 'Invoice successfully sent to Peppol network. Document ID: :document_id',
+    'peppol_success_title'      => 'Sent to Peppol',
+    'send_to_peppol'            => 'Send to Peppol',
     #endregion
 ];

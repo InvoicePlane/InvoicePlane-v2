@@ -23,7 +23,7 @@ jobs:
       - name: Check running services
         run: docker-compose ps
 
-      - name:
-          Optional: Run health checks or tests
-        run:
-          echo "TODO: insert test commands after containers are up"
+      #- name:
+      #    Optional: Run health checks or tests
+      #  run:
+      #    echo "TODO: insert test commands after containers are up"

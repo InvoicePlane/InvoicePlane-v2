@@ -4,9 +4,8 @@ return [
     'date_formats' => [
         'd/m/Y' => date('d/m/Y') . ' (d/m/Y)',
         'd-m-Y' => date('d-m-Y') . ' (d-m-Y)',
-        'd-M-Y' => date('d-M-Y') . ' (d-M-Y)',
-        'd.m.Y' => date('d.m.Y') . ' (d.m.Y)',
-        'j.n.Y' => date('j.n.Y') . ' (j.n.Y)',
+        'd.M.Y' => date('d.M.Y') . ' (d.M.Y)',
+        'j/n/Y' => date('j/n/Y') . ' (j/n/Y)',
         'd M,Y' => date('d M,Y') . ' (d M,Y)',
         'm/d/Y' => date('m/d/Y') . ' (m/d/Y)',
         'm-d-Y' => date('m-d-Y') . ' (m-d-Y)',
@@ -36,4 +35,5 @@ return [
         '2' => '2',
         '3' => '3',
     ],
+    'export_version' => 2,
 ];

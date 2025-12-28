@@ -22,6 +22,7 @@ This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with
 - **Module System:** nwidart/laravel-modules
 - **Permissions:** spatie/laravel-permission
 - **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
+- **Queue System:** Required for export functionality (Redis, database, or sync for local development)
 
 ## Development Commands
 
@@ -57,7 +58,15 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+
+# Start queue worker for export functionality
+php artisan queue:work
 ```
+
+**Queue Configuration:**
+- Export functionality requires a queue worker to be running
+- For local development, you can use `QUEUE_CONNECTION=sync` in `.env`
+- For production, use Redis or database queue driver with Supervisor
 
 ## Related Documentation
 
@@ -117,12 +126,23 @@ php artisan migrate --seed
 ### Testing Rules
 
 - **Unit Tests must follow these rules:**
-    - Test functions must be prefixed with `it_`.
-    - No `@test` annotations.
+    - Test functions must be prefixed with `it_` and make grammatical sense (e.g., `it_creates_payment`, `it_validates_invoice_has_customer`).
+    - Use `#[Test]` attribute instead of `@test` annotations.
     - Prefer Fakes and Fixtures over Mocks.
     - Place happy paths last in test cases.
     - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
-    - Tests have inline comment blocks above sections (Arrange, Act, Assert).
+    - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
+    - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
+    - Use data providers for testing multiple scenarios with the same logic.
+
+### Export System Rules
+
+- **Exports use Filament's asynchronous export system** which requires queue workers.
+- **Export tests must use fakes:** `Queue::fake()`, `Storage::fake()`, and verify job dispatching with `Bus::assertChained()`.
+- **The `exports` table is temporary** and managed by Filament for job coordination only.
+- **No export history feature** - export records are ephemeral and auto-prunable.
+- **Queue configuration is required** for export functionality to work in production.
+- See `Modules/Core/Filament/Exporters/README.md` for export architecture details.
 
 ### Database & Models
 
@@ -131,8 +151,27 @@ php artisan migrate --seed
 - **No `timestamps` or `softDeletes` properties/traits in Models** unless explicitly specified.
 - **Use native PHP type hints** and utilize `$casts` for Enum fields.
 
+### Peppol Integration Rules
+
+- **Peppol service follows Strategy Pattern** for format handlers (UBL, FatturaPA, ZUGFeRD, etc.).
+- **PeppolService coordinates** invoice transformation and transmission.
+- **PeppolManagementService handles** integration lifecycle (create, test, validate, send).
+- **Format handlers** must implement validation, transformation, and format-specific logic.
+- **Provider Factory** creates provider-specific clients (e.g., EInvoiceBe).
+- **All API calls** must go through the ApiClient with exception handling.
+- **Logging** is done via LogsApiRequests and LogsPeppolActivity traits.
+- **Events** are dispatched for all major Peppol operations (transmission, validation, etc.).
+
 ### Seeding Rules
 
 - Seed 5 default roles (`superadmin`, `admin`, `assistance`, `useradmin`, `user`).
 - Ensure users can belong to accounts when relevant.
 - Admin Panel access restricted to `admin` and `superadmin`.
+
+### Code Refactoring Principles
+
+- **Extract duplicate code** into private/protected methods following Single Responsibility Principle.
+- **Use early returns** to reduce nesting and improve readability.
+- **Validate inputs** at the start of methods and abort/throw exceptions early.
+- **Extract complex conditions** into well-named methods.
+- **Use meaningful method names** that describe what they do.

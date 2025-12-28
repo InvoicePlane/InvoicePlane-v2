@@ -15,22 +15,23 @@ use Modules\Core\Models\Note;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Database\Factories\PaymentFactory;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 
 /**
- * @property int          $id
- * @property int          $company_id
- * @property int          $customer_id
- * @property int|null     $invoice_id
- * @property int|null     $merchant_client_id
- * @property string       $payment_method
- * @property string       $payment_status
- * @property Carbon|null  $paid_at
- * @property float        $payment_amount
- * @property string|null  $notes
- * @property Company      $company
- * @property Relation     $relation
- * @property Invoice|null $invoice
+ * @property int           $id
+ * @property int           $company_id
+ * @property int           $customer_id
+ * @property int|null      $invoice_id
+ * @property int|null      $merchant_client_id
+ * @property PaymentMethod $payment_method
+ * @property PaymentStatus $payment_status
+ * @property Carbon|null   $paid_at
+ * @property float         $payment_amount
+ * @property string|null   $notes
+ * @property Company       $company
+ * @property Relation      $relation
+ * @property Invoice|null  $invoice
  */
 class Payment extends Model
 {
@@ -42,16 +43,9 @@ class Payment extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'payment_status'             => PaymentStatus::class,
-        'paid_at'                    => 'date',
-        'payment_amount'             => 'float',
-        'refunded_amount'            => 'float',
-        'exchange_rate'              => 'float',
-        'payment_gateway_fee'        => 'float',
-        'payment_gateway_percentage' => 'float',
-        'is_online'                  => 'boolean',
-        'is_manual'                  => 'boolean',
-        'is_refunded'                => 'boolean',
+        'payment_method' => PaymentMethod::class,
+        'payment_status' => PaymentStatus::class,
+        'paid_at'        => 'date',
     ];
 
     /*

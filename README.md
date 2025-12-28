@@ -1,11 +1,14 @@
 ### Features
 
-- Invoice & Quote Management
-- Customer & Contact Handling
-- Payment Tracking & Reminders
-- Modular Architecture (Laravel + Filament)
-- Multi-Tenant Support via Filament Companies
-- Realtime UI with Livewire
+- **Invoice & Quote Management** - Create, send, and track invoices and quotes
+- **Peppol E-Invoicing** - Send invoices through the European Peppol network (UBL, FatturaPA, ZUGFeRD)
+- **Customer & Contact Handling** - Manage customers and relationships
+- **Payment Tracking & Reminders** - Track payments and send automated reminders
+- **Modular Architecture** - Laravel + Filament with clean module separation
+- **Multi-Tenant Support** - Via Filament Companies with company isolation
+- **Realtime UI** - Built with Livewire for reactive interfaces
+- **Asynchronous Export System** - Requires queue workers for background processing
+- **Comprehensive Testing** - PHPUnit tests with 100% coverage goal
 
 ---
 
@@ -22,7 +25,12 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+
+# Start queue worker for export functionality
+php artisan queue:work
 ```
+
+**Note:** Export functionality requires a queue worker to be running. For production, configure a queue driver (Redis, database, etc.) and use a process manager like Supervisor.
 
 For detailed steps, see: INSTALLATION.md
 

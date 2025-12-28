@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +32,7 @@ class EnsureUserCanAccessCompany
         // If we have a company, verify access
         if ($company instanceof Company) {
             // Elevated users can access any company
-            if ($user->hasAnyRole(\Modules\Core\Enums\UserRole::elevated())) {
+            if ($user->hasAnyRole(UserRole::elevated())) {
                 return $this->setCurrentCompany($company, $request, $next);
             }
 
@@ -44,7 +45,7 @@ class EnsureUserCanAccessCompany
         }
 
         // If no company specified, check if user has access to any company
-        if ($user->companies->isEmpty() && ! $user->hasAnyRole(\Modules\Core\Enums\UserRole::elevated())) {
+        if ($user->companies->isEmpty() && ! $user->hasAnyRole(UserRole::elevated())) {
             abort(403, 'You do not have access to any companies.');
         }
 
