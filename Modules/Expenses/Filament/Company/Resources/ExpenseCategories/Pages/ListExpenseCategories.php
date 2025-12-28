@@ -5,6 +5,7 @@ namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
+use Modules\Expenses\Services\ExpenseCategoryService;
 
 class ListExpenseCategories extends ListRecords
 {
@@ -18,7 +19,7 @@ class ListExpenseCategories extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Expenses\Services\ExpenseCategoryService::class)->createExpenseCategory($data);
+                    app(ExpenseCategoryService::class)->createExpenseCategory($data);
                 })
                 ->modalWidth('full'),
         ];

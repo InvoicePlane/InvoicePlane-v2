@@ -59,7 +59,7 @@ class ListTasks extends ListRecords
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        $query = \Modules\Projects\Models\Task::query()
+        $query = Task::query()
             ->orderByRaw("
                 FIELD(task_status,
                     'not_started',

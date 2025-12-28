@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
+use Modules\Projects\Models\Project;
 
 class RecentProjectsWidget extends TableWidget
 {
@@ -18,7 +19,7 @@ class RecentProjectsWidget extends TableWidget
     /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return \Modules\Projects\Models\Project::query()->latest()->limit(10);
+        return Project::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array

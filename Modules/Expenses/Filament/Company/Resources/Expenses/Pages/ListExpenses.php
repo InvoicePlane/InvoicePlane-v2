@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Filament\Exporters\ExpenseExporter;
 use Modules\Expenses\Filament\Exporters\ExpenseLegacyExporter;
+use Modules\Expenses\Services\ExpenseService;
 
 class ListExpenses extends ListRecords
 {
@@ -24,7 +25,7 @@ class ListExpenses extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(\Modules\Expenses\Services\ExpenseService::class)->createExpense($data);
+                    app(ExpenseService::class)->createExpense($data);
                 })
                 ->modalWidth('full'),
 

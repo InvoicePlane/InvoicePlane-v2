@@ -126,12 +126,14 @@ php artisan queue:work
 ### Testing Rules
 
 - **Unit Tests must follow these rules:**
-    - Test functions must be prefixed with `it_`.
-    - No `@test` annotations.
+    - Test functions must be prefixed with `it_` and make grammatical sense (e.g., `it_creates_payment`, `it_validates_invoice_has_customer`).
+    - Use `#[Test]` attribute instead of `@test` annotations.
     - Prefer Fakes and Fixtures over Mocks.
     - Place happy paths last in test cases.
     - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
-    - Tests have inline comment blocks above sections (Arrange, Act, Assert).
+    - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
+    - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
+    - Use data providers for testing multiple scenarios with the same logic.
 
 ### Export System Rules
 
@@ -149,8 +151,27 @@ php artisan queue:work
 - **No `timestamps` or `softDeletes` properties/traits in Models** unless explicitly specified.
 - **Use native PHP type hints** and utilize `$casts` for Enum fields.
 
+### Peppol Integration Rules
+
+- **Peppol service follows Strategy Pattern** for format handlers (UBL, FatturaPA, ZUGFeRD, etc.).
+- **PeppolService coordinates** invoice transformation and transmission.
+- **PeppolManagementService handles** integration lifecycle (create, test, validate, send).
+- **Format handlers** must implement validation, transformation, and format-specific logic.
+- **Provider Factory** creates provider-specific clients (e.g., EInvoiceBe).
+- **All API calls** must go through the ApiClient with exception handling.
+- **Logging** is done via LogsApiRequests and LogsPeppolActivity traits.
+- **Events** are dispatched for all major Peppol operations (transmission, validation, etc.).
+
 ### Seeding Rules
 
 - Seed 5 default roles (`superadmin`, `admin`, `assistance`, `useradmin`, `user`).
 - Ensure users can belong to accounts when relevant.
 - Admin Panel access restricted to `admin` and `superadmin`.
+
+### Code Refactoring Principles
+
+- **Extract duplicate code** into private/protected methods following Single Responsibility Principle.
+- **Use early returns** to reduce nesting and improve readability.
+- **Validate inputs** at the start of methods and abort/throw exceptions early.
+- **Extract complex conditions** into well-named methods.
+- **Use meaningful method names** that describe what they do.
