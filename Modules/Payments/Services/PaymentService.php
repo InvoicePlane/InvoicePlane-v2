@@ -20,18 +20,9 @@ class PaymentService extends BaseService
 
     public function createPayment(array $data): Model
     {
-        $customerId = $data['customer_id'] ?? Invoice::query()->findOrFail($data['invoice_id'])->customer_id;
+        $paymentData = $this->preparePaymentData($data);
 
-        $payment = Payment::query()->create([
-            'customer_id'        => $customerId,
-            'invoice_id'         => $data['invoice_id'] ?? null,
-            'merchant_client_id' => $data['merchant_client_id'] ?? null,
-            'payment_method'     => $data['payment_method'],
-            'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
-            'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
-            'paid_at'            => $data['paid_at'],
-            'notes'              => $data['notes'] ?? null,
-        ]);
+        $payment = Payment::query()->create($paymentData);
 
         /* if ($payment->merchant_client_id) {
             dispatch(new ProcessMerchantPaymentJob($payment));
@@ -45,18 +36,8 @@ class PaymentService extends BaseService
         DB::beginTransaction();
 
         try {
-            $customerId = $data['customer_id'] ?? Invoice::query()->findOrFail($data['invoice_id'])->customer_id;
-
-            $payment->update([
-                'customer_id'        => $customerId,
-                'invoice_id'         => $data['invoice_id'] ?? null,
-                'merchant_client_id' => $data['merchant_client_id'] ?? null,
-                'payment_method'     => $data['payment_method'],
-                'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
-                'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
-                'paid_at'            => $data['paid_at'],
-                'notes'              => $data['notes'] ?? null,
-            ]);
+            $paymentData = $this->preparePaymentData($data);
+            $payment->update($paymentData);
 
             DB::commit();
 
@@ -65,6 +46,27 @@ class PaymentService extends BaseService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    protected function preparePaymentData(array $data): array
+    {
+        $customerId = $data['customer_id'] ?? $this->getCustomerIdFromInvoice($data['invoice_id']);
+
+        return [
+            'customer_id'        => $customerId,
+            'invoice_id'         => $data['invoice_id'] ?? null,
+            'merchant_client_id' => $data['merchant_client_id'] ?? null,
+            'payment_method'     => $data['payment_method'],
+            'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
+            'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
+            'paid_at'            => $data['paid_at'],
+            'notes'              => $data['notes'] ?? null,
+        ];
+    }
+
+    protected function getCustomerIdFromInvoice(int $invoiceId): int
+    {
+        return Invoice::query()->findOrFail($invoiceId)->customer_id;
     }
 
     public function deletePayment(Payment $payment): Payment

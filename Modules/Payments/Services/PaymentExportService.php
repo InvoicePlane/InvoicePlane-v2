@@ -13,36 +13,63 @@ class PaymentExportService
 {
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
+        $this->validateCompanyContext();
         
-        if (!$companyId) {
-            abort(403, 'No company context available');
-        }
+        $companyId = session('current_company_id');
+        $payments = $this->getPayments($companyId);
+        $version = config('ip.export_version', 2);
         
-        $payments    = Payment::query()
-            ->where('company_id', $companyId)
-            ->orderBy('paid_at', 'desc')
-            ->limit(10000)
-            ->get();
-        $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
-        $version     = config('ip.export_version', 2);
-        $exportClass = $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
-
-        return Excel::download(new $exportClass($payments), $fileName, $format === 'csv' ? ExcelAlias::CSV : ExcelAlias::XLSX);
+        return $this->downloadExport($payments, $format, $version);
     }
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId = session('current_company_id');
+        $this->validateCompanyContext();
         
-        if (!$companyId) {
+        $companyId = session('current_company_id');
+        $payments = Payment::query()->where('company_id', $companyId)->get();
+        
+        return $this->downloadExport($payments, $format, $version);
+    }
+
+    protected function validateCompanyContext(): void
+    {
+        if (!session('current_company_id')) {
             abort(403, 'No company context available');
         }
-        
-        $payments    = Payment::query()->where('company_id', $companyId)->get();
-        $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
-        $exportClass = $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
+    }
 
-        return Excel::download(new $exportClass($payments), $fileName, $format === 'csv' ? ExcelAlias::CSV : ExcelAlias::XLSX);
+    protected function getPayments(int $companyId)
+    {
+        return Payment::query()
+            ->where('company_id', $companyId)
+            ->orderBy('paid_at', 'desc')
+            ->limit(10000)
+            ->get();
+    }
+
+    protected function downloadExport($payments, string $format, int $version): BinaryFileResponse
+    {
+        $fileName = $this->generateFileName($format);
+        $exportClass = $this->getExportClass($version);
+        $excelFormat = $this->getExcelFormat($format);
+
+        return Excel::download(new $exportClass($payments), $fileName, $excelFormat);
+    }
+
+    protected function generateFileName(string $format): string
+    {
+        $extension = $format === 'csv' ? 'csv' : 'xlsx';
+        return 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
+    }
+
+    protected function getExportClass(int $version): string
+    {
+        return $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
+    }
+
+    protected function getExcelFormat(string $format): string
+    {
+        return $format === 'csv' ? ExcelAlias::CSV : ExcelAlias::XLSX;
     }
 }
