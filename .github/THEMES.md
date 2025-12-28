@@ -4,11 +4,71 @@
 
 InvoicePlane v2 comes with multiple pre-built themes that can be applied to any Filament panel:
 
-1. **invoiceplane** - Default InvoicePlane theme using the primary color palette
-2. **invoiceplane_blue** - Blue variant of the InvoicePlane theme
-3. **nord** - Nord color scheme with Polar Night, Snow Storm, Frost, and Aurora colors
-4. **orange** - Orange-themed interface using Tailwind orange colors
-5. **reddit** - Reddit-inspired theme with the iconic Reddit orange (#FF4500)
+### 1. InvoicePlane (Default)
+**File:** `invoiceplane.css`
+
+The default InvoicePlane theme uses the primary color palette defined in the panel configuration. It provides a clean, professional interface that adapts to the primary colors set in your panel provider.
+
+**Key Features:**
+- Uses Filament's primary color system
+- Flexible and customizable through panel color configuration
+- Professional and clean design
+- Good contrast for readability
+
+### 2. InvoicePlane Blue
+**File:** `invoiceplane-blue.css`
+
+A blue variant of the InvoicePlane theme with a vibrant blue color scheme.
+
+**Key Colors:**
+- Primary: Blue-500 (#3B82F6)
+- Sidebar: Blue-500
+- Active states: Blue-700
+- Hover states: Blue-500
+
+**Best For:** Users who prefer a traditional blue business interface
+
+### 3. Nord
+**File:** `nord.css`
+
+Based on the popular Nord color palette, this theme features cool, arctic-inspired colors with excellent contrast and readability.
+
+**Key Colors:**
+- **Polar Night** (Backgrounds): #2e3440, #3b4252
+- **Snow Storm** (Text): #eceff4, #e5e9f0
+- **Frost** (Accents): #88c0d0, #5e81ac
+- **Aurora** (Semantic):
+  - Danger: #bf616a (red)
+  - Warning: #ebcb8b (yellow)
+  - Success: #a3be8c (green)
+
+**Best For:** Developers who love the Nord color scheme, or anyone preferring a cool, calming interface
+
+### 4. Orange
+**File:** `orange.css`
+
+A vibrant orange theme using Tailwind's orange color palette.
+
+**Key Colors:**
+- Primary: Orange-500 (#F97316)
+- Sidebar: Orange-500
+- Active states: Orange-700
+- Hover states: Orange-500
+
+**Best For:** Creative professionals, agencies, or those wanting a warm, energetic interface
+
+### 5. Reddit
+**File:** `reddit.css`
+
+Inspired by Reddit's iconic branding, this theme uses Reddit's signature orange.
+
+**Key Colors:**
+- Primary: #FF4500 (Reddit Orange)
+- Sidebar: #FF4500
+- Active states: #d93900 (darker orange)
+- Hover states: #ff5722 (lighter orange)
+
+**Best For:** Reddit enthusiasts or those wanting a bold, recognizable orange theme
 
 ## Theme Files Location
 
@@ -128,3 +188,39 @@ The Nord theme uses the following color palette:
 - Themes use Tailwind CSS utility classes where possible
 - Custom CSS variables (like those in the Nord theme) are defined using the `@theme` directive
 - Each theme is self-contained and can be switched independently per panel
+
+## Quick Reference: Switching Themes
+
+To quickly switch themes for a panel, update the `viteTheme()` method in the appropriate panel provider:
+
+**Admin Panel** (`Modules/Core/Providers/AdminPanelProvider.php`):
+```php
+->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
+->viteTheme('resources/css/filament/company/nord.css')              // Nord
+->viteTheme('resources/css/filament/company/orange.css')            // Orange
+->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+```
+
+**Company Panel** (`Modules/Core/Providers/CompanyPanelProvider.php`):
+```php
+->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
+->viteTheme('resources/css/filament/company/nord.css')              // Nord
+->viteTheme('resources/css/filament/company/orange.css')            // Orange
+->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+```
+
+**User Panel** (`Modules/Core/Providers/UserPanelProvider.php`):
+```php
+->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
+->viteTheme('resources/css/filament/company/nord.css')              // Nord
+->viteTheme('resources/css/filament/company/orange.css')            // Orange
+->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+```
+
+After changing the theme, rebuild assets:
+```bash
+npm run build
+```
