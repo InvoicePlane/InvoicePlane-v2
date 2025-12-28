@@ -25,42 +25,6 @@ parameters:
 			path: Modules/Expenses/Filament/Company/Widgets/RecentExpensesWidget.php
 
 		-
-			message: '#^PHPDoc tag @var above a method has no effect\.$#'
-			identifier: varTag.misplaced
-			count: 1
-			path: Modules/Invoices/Peppol/Providers/Storecove/StorecoveProvider.php
-
-		-
-			message: '#^Method Modules\\Invoices\\Tests\\Unit\\Actions\\SendInvoiceToPeppolActionTest\:\:createMockInvoice\(\) should return Modules\\Invoices\\Models\\Invoice but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php
-
-		-
-			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept stdClass\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FatturaPaHandlerTest.php
-
-		-
-			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlersTest.php
-
-		-
-			message: '#^Property Modules\\Invoices\\Models\\Invoice\:\:\$customer \(Modules\\Clients\\Models\\Customer\) does not accept stdClass\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlersTest.php
-
-		-
-			message: '#^Method Modules\\Invoices\\Tests\\Unit\\Peppol\\Services\\PeppolServiceTest\:\:createMockInvoice\(\) should return Modules\\Invoices\\Models\\Invoice but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\.$#'
-			identifier: return.type
-			count: 1
-			path: Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php
-
-		-
 			message: '#^Method Modules\\Payments\\Filament\\Company\\Widgets\\RecentPaymentsWidget\:\:getTableQuery\(\) should return Illuminate\\Database\\Eloquent\\Builder\|Illuminate\\Database\\Eloquent\\Relations\\Relation\|null but returns Illuminate\\Database\\Query\\Builder\.$#'
 			identifier: return.type
 			count: 1

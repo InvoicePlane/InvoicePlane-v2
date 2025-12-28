@@ -37,7 +37,7 @@ class ContactsExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $row->relation?->trading_name ?? $row->relation?->company_name ?? '',
-            $row->relation?->relation_type ?? '', // <<== It's an enum so figure out how to export it properly
+            $row->relation?->relation_type?->label() ?? '',
             $row->full_name,
             $row->email ?? null,
             $row->phone ?? null,

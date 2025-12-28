@@ -13,13 +13,7 @@ class ProjectExportService
 {
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
-        $projects    = Project::query()->where('company_id', $companyId)->get();
-        $fileName    = 'projects-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
-        $version     = config('ip.export_version', 2);
-        $exportClass = $version === 1 ? ProjectsLegacyExport::class : ProjectsExport::class;
-
-        return Excel::download(new $exportClass($projects), $fileName, $format === 'csv' ? ExcelAlias::CSV : ExcelAlias::XLSX);
+        return $this->exportWithVersion($format, config('ip.export_version', 2));
     }
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse

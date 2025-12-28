@@ -203,19 +203,6 @@ class Relation extends Model
     {
         return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
     }*/
-
-    /**
-     * Determines whether the relation's Peppol ID has been validated and e-invoicing is enabled.
-     *
-     * @return bool `true` if e-invoicing is enabled, the Peppol validation status is `PeppolValidationStatus::VALID`, and `peppol_id` is not null; `false` otherwise
-     */
-    public function hasPeppolIdValidated(): bool
-    {
-        return $this->enable_e_invoicing
-            && $this->peppol_validation_status === PeppolValidationStatus::VALID
-            && $this->peppol_id !== null;
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Scopes

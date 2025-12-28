@@ -19,19 +19,19 @@ use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 
 /**
- * @property int          $id
- * @property int          $company_id
- * @property int          $customer_id
- * @property int|null     $invoice_id
- * @property int|null     $merchant_client_id
- * @property string       $payment_method
- * @property string       $payment_status
- * @property Carbon|null  $paid_at
- * @property float        $payment_amount
- * @property string|null  $notes
- * @property Company      $company
- * @property Relation     $relation
- * @property Invoice|null $invoice
+ * @property int           $id
+ * @property int           $company_id
+ * @property int           $customer_id
+ * @property int|null      $invoice_id
+ * @property int|null      $merchant_client_id
+ * @property PaymentMethod $payment_method
+ * @property PaymentStatus $payment_status
+ * @property Carbon|null   $paid_at
+ * @property float         $payment_amount
+ * @property string|null   $notes
+ * @property Company       $company
+ * @property Relation      $relation
+ * @property Invoice|null  $invoice
  */
 class Payment extends Model
 {
