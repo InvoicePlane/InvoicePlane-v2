@@ -15,7 +15,7 @@ class RecentPaymentsWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return \Modules\Payments\Models\Payment::query()->latest()->limit(10); /** @var Builder $query */
+        return \Modules\Payments\Models\Payment::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array

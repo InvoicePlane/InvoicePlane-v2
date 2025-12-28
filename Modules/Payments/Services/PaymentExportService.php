@@ -33,7 +33,12 @@ class PaymentExportService
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
-        $companyId   = session('current_company_id');
+        $companyId = session('current_company_id');
+        
+        if (!$companyId) {
+            abort(403, 'No company context available');
+        }
+        
         $payments    = Payment::query()->where('company_id', $companyId)->get();
         $fileName    = 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . ($format === 'csv' ? 'csv' : 'xlsx');
         $exportClass = $version === 1 ? PaymentsLegacyExport::class : PaymentsExport::class;
