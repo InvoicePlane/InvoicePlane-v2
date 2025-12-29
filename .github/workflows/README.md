@@ -77,7 +77,7 @@ Artifacts are also available in the Actions tab for 90 days.
 
 ### 2. Composer Dependency Update (`composer-update.yml`)
 
-**Trigger:** 
+**Trigger:**
 - Scheduled: Weekly on Mondays at 9:00 AM UTC
 - Manual dispatch with update type selection
 
@@ -243,21 +243,21 @@ If Composer installation fails:
 
 Edit line 49 in `release.yml`:
 ```yaml
-php-version: '8.3'  # Using 8.3 for latest features; composer.json requires ^8.2
+php-version: '8.3' # Using 8.3 for latest features; composer.json requires ^8.2
 ```
 
 ### Changing Node.js Version
 
 Edit line 36 in `release.yml`:
 ```yaml
-node-version: '20'  # Change to your desired version
+node-version: '20' # Change to your desired version
 ```
 
 ### Adjusting Artifact Retention
 
 Edit line 121 in `release.yml`:
 ```yaml
-retention-days: 90  # Change to your desired retention period (1-90 days)
+retention-days: 90 # Change to your desired retention period (1-90 days)
 ```
 
 ### Custom ZIP Exclusions

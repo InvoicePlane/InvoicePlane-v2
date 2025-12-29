@@ -4,7 +4,7 @@
 
 This application uses Filament's export system, which handles exports **asynchronously via queued jobs**.
 
-**⚠️ Queue Worker Required**: Export functionality requires a running queue worker to process export jobs.
+** Queue Worker Required**: Export functionality requires a running queue worker to process export jobs.
 
 ## Queue Configuration
 
@@ -93,8 +93,8 @@ Storage::fake('local');
 
 // Act
 Livewire::actingAs($this->user)
-    ->test(ListExpenses::class)
-    ->callAction('exportCsvV2', data: [...]);
+ ->test(ListExpenses::class)
+ ->callAction('exportCsvV2', data: [...]);
 
 // Assert - verify job dispatching, not database records
 Bus::assertChained([...]);
@@ -145,7 +145,7 @@ Schedule::command('model:prune')->daily();
 
 By design, there is **no export history feature**. Users can export data when needed, download it immediately, and the system automatically cleans up the temporary records. This approach:
 
-- ✅ Reduces database bloat
-- ✅ Improves privacy (no lingering export data)
-- ✅ Simplifies the system
-- ✅ Follows the principle: "I don't need to see what I exported in the past"
+- Reduces database bloat
+- Improves privacy (no lingering export data)
+- Simplifies the system
+- Follows the principle: "I don't need to see what I exported in the past"

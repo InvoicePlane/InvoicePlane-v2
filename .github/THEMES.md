@@ -38,9 +38,9 @@ Based on the popular Nord color palette, this theme features cool, arctic-inspir
 - **Snow Storm** (Text): #eceff4, #e5e9f0
 - **Frost** (Accents): #88c0d0, #5e81ac
 - **Aurora** (Semantic):
-  - Danger: #bf616a (red)
-  - Warning: #ebcb8b (yellow)
-  - Success: #a3be8c (green)
+ - Danger: #bf616a (red)
+ - Warning: #ebcb8b (yellow)
+ - Success: #a3be8c (green)
 
 **Best For:** Developers who love the Nord color scheme, or anyone preferring a cool, calming interface
 
@@ -95,12 +95,12 @@ To apply a theme to a Filament panel, update the panel provider file and set the
 
 public function panel(Panel $panel): Panel
 {
-    return $panel
-        ->id('company')
-        ->path('')
-        ->viteTheme('resources/css/filament/company/nord.css')  // Change this line
-        ->login()
-        // ... other configuration
+ return $panel
+ ->id('company')
+ ->path('')
+ ->viteTheme('resources/css/filament/company/nord.css') // Change this line
+ ->login()
+ // ... other configuration
 }
 ```
 
@@ -134,53 +134,53 @@ Each theme includes styling for:
 To create a new custom theme:
 
 1. Create a new CSS file in `resources/css/filament/company/`:
-   ```bash
-   touch resources/css/filament/company/my-custom-theme.css
-   ```
+ ```bash
+ touch resources/css/filament/company/my-custom-theme.css
+ ```
 
 2. Copy the content from an existing theme (e.g., `invoiceplane.css`) as a starting point
 
 3. Update the colors and styles to match your desired theme
 
 4. Register the theme in `vite.config.js`:
-   ```javascript
-   input: [
-       'resources/css/app.css',
-       'resources/js/app.js',
-       // ... existing themes
-       'resources/css/filament/company/my-custom-theme.css'  // Add your theme
-   ],
-   ```
+ ```javascript
+ input: [
+ 'resources/css/app.css',
+ 'resources/js/app.js',
+ // ... existing themes
+ 'resources/css/filament/company/my-custom-theme.css' // Add your theme
+ ],
+ ```
 
 5. Build the assets:
-   ```bash
-   npm run build
-   ```
+ ```bash
+ npm run build
+ ```
 
 6. Update your panel provider to use the new theme:
-   ```php
-   ->viteTheme('resources/css/filament/company/my-custom-theme.css')
-   ```
+ ```php
+ ->viteTheme('resources/css/filament/company/my-custom-theme.css')
+ ```
 
 ## Nord Theme Colors
 
 The Nord theme uses the following color palette:
 
 - **Polar Night** - Dark backgrounds and UI elements
-  - `--color-polarnight-800: #2e3440` (Primary dark background)
-  - `--color-polarnight-700: #3b4252` (Secondary dark background)
-  
+ - `--color-polarnight-800: #2e3440` (Primary dark background)
+ - `--color-polarnight-700: #3b4252` (Secondary dark background)
+
 - **Snow Storm** - Light text and highlights
-  - `--color-snowstorm-600: #eceff4` (Primary light text)
-  
+ - `--color-snowstorm-600: #eceff4` (Primary light text)
+
 - **Frost** - Primary accent colors
-  - `--color-frost-500: #88c0d0` (Primary accent)
-  - `--color-frost-700: #5e81ac` (Secondary accent)
-  
+ - `--color-frost-500: #88c0d0` (Primary accent)
+ - `--color-frost-700: #5e81ac` (Secondary accent)
+
 - **Aurora** - Semantic colors
-  - `--color-aurora-danger: #bf616a` (Error/danger)
-  - `--color-aurora-warning: #ebcb8b` (Warning)
-  - `--color-aurora-success: #a3be8c` (Success)
+ - `--color-aurora-danger: #bf616a` (Error/danger)
+ - `--color-aurora-warning: #ebcb8b` (Warning)
+ - `--color-aurora-success: #a3be8c` (Success)
 
 ## Notes
 
@@ -195,29 +195,29 @@ To quickly switch themes for a panel, update the `viteTheme()` method in the app
 
 **Admin Panel** (`Modules/Core/Providers/AdminPanelProvider.php`):
 ```php
-->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane.css') // Default
 ->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
-->viteTheme('resources/css/filament/company/nord.css')              // Nord
-->viteTheme('resources/css/filament/company/orange.css')            // Orange
-->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+->viteTheme('resources/css/filament/company/nord.css') // Nord
+->viteTheme('resources/css/filament/company/orange.css') // Orange
+->viteTheme('resources/css/filament/company/reddit.css') // Reddit
 ```
 
 **Company Panel** (`Modules/Core/Providers/CompanyPanelProvider.php`):
 ```php
-->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane.css') // Default
 ->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
-->viteTheme('resources/css/filament/company/nord.css')              // Nord
-->viteTheme('resources/css/filament/company/orange.css')            // Orange
-->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+->viteTheme('resources/css/filament/company/nord.css') // Nord
+->viteTheme('resources/css/filament/company/orange.css') // Orange
+->viteTheme('resources/css/filament/company/reddit.css') // Reddit
 ```
 
 **User Panel** (`Modules/Core/Providers/UserPanelProvider.php`):
 ```php
-->viteTheme('resources/css/filament/company/invoiceplane.css')      // Default
+->viteTheme('resources/css/filament/company/invoiceplane.css') // Default
 ->viteTheme('resources/css/filament/company/invoiceplane-blue.css') // Blue
-->viteTheme('resources/css/filament/company/nord.css')              // Nord
-->viteTheme('resources/css/filament/company/orange.css')            // Orange
-->viteTheme('resources/css/filament/company/reddit.css')            // Reddit
+->viteTheme('resources/css/filament/company/nord.css') // Nord
+->viteTheme('resources/css/filament/company/orange.css') // Orange
+->viteTheme('resources/css/filament/company/reddit.css') // Reddit
 ```
 
 After changing the theme, rebuild assets:

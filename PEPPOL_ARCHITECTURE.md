@@ -6,7 +6,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 
 ## Architecture Components Implemented
 
-### 1. Database Layer ✅
+### 1. Database Layer
 
 #### Migrations Created:
 - `2025_10_02_000001_create_peppol_integrations_table.php`
@@ -20,7 +20,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - `CustomerPeppolValidationHistory` - Audits all customer Peppol ID validations
 - Updated `Relation` (Customer) model with Peppol fields and validation status
 
-### 2. Provider Abstraction Layer ✅
+### 2. Provider Abstraction Layer
 
 #### Core Interfaces & Factories:
 - `ProviderInterface` - Contract that all providers must implement
@@ -39,7 +39,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - `cancelDocument()` - Cancel pending transmissions
 - `classifyError()` - Categorize errors as TRANSIENT/PERMANENT/UNKNOWN
 
-### 3. Events & Audit Trail ✅
+### 3. Events & Audit Trail
 
 **Events Implemented:**
 - `PeppolIntegrationCreated`
@@ -56,30 +56,30 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - `LogPeppolEventToAudit` listener logs all events to `audit_log` table
 - Complete event payload preserved for compliance
 
-### 4. Background Jobs & Queue Processing ✅
+### 4. Background Jobs & Queue Processing
 
 **Jobs Implemented:**
 - `SendInvoiceToPeppolJob` - Main orchestration job for sending invoices
-  - Pre-send validation
-  - Idempotency guards
-  - Artifact generation (XML/PDF)
-  - Provider transmission
-  - Retry scheduling with exponential backoff
-  
+ - Pre-send validation
+ - Idempotency guards
+ - Artifact generation (XML/PDF)
+ - Provider transmission
+ - Retry scheduling with exponential backoff
+
 - `PeppolStatusPoller` - Polls providers for acknowledgements
-  - Batch processes transmissions awaiting ACK
-  - Updates status to accepted/rejected
-  
+ - Batch processes transmissions awaiting ACK
+ - Updates status to accepted/rejected
+
 - `RetryFailedTransmissions` - Retry scheduler
-  - Respects max attempts limit
-  - Marks as dead when exceeded
+ - Respects max attempts limit
+ - Marks as dead when exceeded
 
 **Console Commands:**
 - `peppol:poll-status` - Dispatch status polling job
 - `peppol:retry-failed` - Dispatch retry job
 - `peppol:test-integration` - Test connection for an integration
 
-### 5. Services & Business Logic ✅
+### 5. Services & Business Logic
 
 **PeppolManagementService:**
 - `createIntegration()` - Create new provider integration
@@ -94,13 +94,13 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - Extracts supplier, customer, line items, tax totals
 - Formats dates, amounts, and codes per Peppol requirements
 
-### 6. State Machine Implementation ✅
+### 6. State Machine Implementation
 
 **Transmission States:**
 ```
 pending → queued → processing → sent → accepted
-                           ↘ rejected
-                           ↘ failed → retrying → (back to processing or dead)
+ ↘ rejected
+ ↘ failed → retrying → (back to processing or dead)
 ```
 
 **State Machine Methods on PeppolTransmission:**
@@ -116,7 +116,7 @@ pending → queued → processing → sent → accepted
 - `canRetry()` - Check if retry is allowed
 - `isAwaitingAck()` - Check if waiting for acknowledgement
 
-### 7. Error Handling & Classification ✅
+### 7. Error Handling & Classification
 
 **Error Types:**
 - `TRANSIENT` - 5xx errors, timeouts, rate limits (retryable)
@@ -129,7 +129,7 @@ pending → queued → processing → sent → accepted
 - Automatic dead-letter marking after max attempts
 - Manual retry capability via UI actions
 
-### 8. Configuration ✅
+### 8. Configuration
 
 **Comprehensive Config in `Modules/Invoices/Config/config.php`:**
 
@@ -144,13 +144,13 @@ pending → queued → processing → sent → accepted
 - **Storage** settings for artifacts
 - **Monitoring** thresholds and alerts
 
-### 9. Storage & Artifacts ✅
+### 9. Storage & Artifacts
 
 **Storage Structure:**
 ```
 peppol/{integration_id}/{year}/{month}/{transmission_id}/
-  - invoice.xml
-  - invoice.pdf
+ - invoice.xml
+ - invoice.pdf
 ```
 
 **Implemented in SendInvoiceToPeppolJob:**
@@ -159,7 +159,7 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 - Records paths in transmission record
 - Configurable retention period
 
-### 10. Idempotency & Concurrency ✅
+### 10. Idempotency & Concurrency
 
 **Idempotency:**
 - Unique idempotency key calculated from: `hash(invoice_id|customer_peppol_id|integration_id|updated_at)`
@@ -209,7 +209,7 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 
 ## Implementation Status
 
-### ✅ Completed
+### Completed
 
 - [x] Database migrations (4 tables)
 - [x] Models (3 new + 1 updated)
@@ -226,7 +226,7 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 - [x] Idempotency
 - [x] Storage structure
 
-### 🚧 Partial / Needs UI Integration
+### Partial / Needs UI Integration
 
 - [ ] Filament Resources (PeppolIntegration CRUD)
 - [ ] Customer Peppol validation UI
@@ -235,7 +235,7 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 - [ ] Webhook receiver endpoint
 - [ ] Dashboard widgets
 
-### 📝 TODO (Additional Enhancements)
+### TODO (Additional Enhancements)
 
 - [ ] Additional provider implementations (Storecove, Peppol Connect, etc.)
 - [ ] PDF generation for Factur-X embedded invoices
@@ -257,16 +257,16 @@ use Modules\Invoices\Peppol\Services\PeppolManagementService;
 $service = app(PeppolManagementService::class);
 
 $integration = $service->createIntegration(
-    companyId: 1,
-    providerName: 'e_invoice_be',
-    config: ['base_url' => 'https://api.e-invoice.be'],
-    apiToken: 'your-api-key'
+ companyId: 1,
+ providerName: 'e_invoice_be',
+ config: ['base_url' => 'https://api.e-invoice.be'],
+ apiToken: 'your-api-key'
 );
 
 // Test connection
 $result = $service->testConnection($integration);
 if ($result['ok']) {
-    $integration->update(['enabled' => true]);
+ $integration->update(['enabled' => true]);
 }
 ```
 
@@ -274,13 +274,13 @@ if ($result['ok']) {
 
 ```php
 $result = $service->validatePeppolId(
-    customer: $customer,
-    integration: $integration,
-    validatedBy: auth()->id()
+ customer: $customer,
+ integration: $integration,
+ validatedBy: auth()->id()
 );
 
 if ($result['valid']) {
-    // Customer can receive Peppol invoices
+ // Customer can receive Peppol invoices
 }
 ```
 
@@ -290,8 +290,8 @@ if ($result['valid']) {
 $integration = $service->getActiveIntegration($invoice->company_id);
 
 if ($integration && $invoice->customer->hasPeppolIdValidated()) {
-    $service->sendInvoice($invoice, $integration);
-    // Job is queued, will execute asynchronously
+ $service->sendInvoice($invoice, $integration);
+ // Job is queued, will execute asynchronously
 }
 ```
 
@@ -301,9 +301,9 @@ if ($integration && $invoice->customer->hasPeppolIdValidated()) {
 $transmission = PeppolTransmission::where('invoice_id', $invoice->id)->first();
 
 if ($transmission->status === PeppolTransmission::STATUS_ACCEPTED) {
-    // Invoice delivered successfully
+ // Invoice delivered successfully
 } elseif ($transmission->status === PeppolTransmission::STATUS_DEAD) {
-    // Manual intervention required
+ // Manual intervention required
 }
 ```
 
@@ -314,15 +314,15 @@ Add to `app/Console/Kernel.php`:
 ```php
 protected function schedule(Schedule $schedule)
 {
-    // Poll for status updates every 15 minutes
-    $schedule->command('peppol:poll-status')
-        ->everyFifteenMinutes()
-        ->withoutOverlapping();
+ // Poll for status updates every 15 minutes
+ $schedule->command('peppol:poll-status')
+ ->everyFifteenMinutes()
+ ->withoutOverlapping();
 
-    // Retry failed transmissions every minute
-    $schedule->command('peppol:retry-failed')
-        ->everyMinute()
-        ->withoutOverlapping();
+ // Retry failed transmissions every minute
+ $schedule->command('peppol:retry-failed')
+ ->everyMinute()
+ ->withoutOverlapping();
 }
 ```
 
@@ -372,51 +372,51 @@ protected function schedule(Schedule $schedule)
 
 ```
 Modules/Invoices/
-├── Models/
-│   ├── PeppolIntegration.php
-│   ├── PeppolTransmission.php
-│   └── CustomerPeppolValidationHistory.php
-├── Peppol/
-│   ├── Contracts/
-│   │   └── ProviderInterface.php
-│   ├── Providers/
-│   │   ├── BaseProvider.php
-│   │   ├── ProviderFactory.php
-│   │   ├── EInvoiceBe/
-│   │   │   └── EInvoiceBeProvider.php
-│   │   └── Storecove/
-│   │       └── StorecoveProvider.php
-│   └── Services/
-│       ├── PeppolManagementService.php
-│       └── PeppolTransformerService.php
-├── Events/Peppol/
-│   ├── PeppolEvent.php (base)
-│   ├── PeppolIntegrationCreated.php
-│   ├── PeppolIntegrationTested.php
-│   ├── PeppolIdValidationCompleted.php
-│   ├── PeppolTransmissionCreated.php
-│   ├── PeppolTransmissionPrepared.php
-│   ├── PeppolTransmissionSent.php
-│   ├── PeppolTransmissionFailed.php
-│   ├── PeppolAcknowledgementReceived.php
-│   └── PeppolTransmissionDead.php
-├── Jobs/Peppol/
-│   ├── SendInvoiceToPeppolJob.php
-│   ├── PeppolStatusPoller.php
-│   └── RetryFailedTransmissions.php
-├── Listeners/Peppol/
-│   └── LogPeppolEventToAudit.php
-├── Console/Commands/
-│   ├── PollPeppolStatusCommand.php
-│   ├── RetryFailedPeppolTransmissionsCommand.php
-│   └── TestPeppolIntegrationCommand.php
-└── Database/Migrations/
-    ├── 2025_10_02_000001_create_peppol_integrations_table.php
-    ├── 2025_10_02_000002_create_peppol_transmissions_table.php
-    └── 2025_10_02_000003_create_customer_peppol_validation_history_table.php
+ Models/
+ PeppolIntegration.php
+ PeppolTransmission.php
+ CustomerPeppolValidationHistory.php
+ Peppol/
+ Contracts/
+ ProviderInterface.php
+ Providers/
+ BaseProvider.php
+ ProviderFactory.php
+ EInvoiceBe/
+ EInvoiceBeProvider.php
+ Storecove/
+ StorecoveProvider.php
+ Services/
+ PeppolManagementService.php
+ PeppolTransformerService.php
+ Events/Peppol/
+ PeppolEvent.php (base)
+ PeppolIntegrationCreated.php
+ PeppolIntegrationTested.php
+ PeppolIdValidationCompleted.php
+ PeppolTransmissionCreated.php
+ PeppolTransmissionPrepared.php
+ PeppolTransmissionSent.php
+ PeppolTransmissionFailed.php
+ PeppolAcknowledgementReceived.php
+ PeppolTransmissionDead.php
+ Jobs/Peppol/
+ SendInvoiceToPeppolJob.php
+ PeppolStatusPoller.php
+ RetryFailedTransmissions.php
+ Listeners/Peppol/
+ LogPeppolEventToAudit.php
+ Console/Commands/
+ PollPeppolStatusCommand.php
+ RetryFailedPeppolTransmissionsCommand.php
+ TestPeppolIntegrationCommand.php
+ Database/Migrations/
+ 2025_10_02_000001_create_peppol_integrations_table.php
+ 2025_10_02_000002_create_peppol_transmissions_table.php
+ 2025_10_02_000003_create_customer_peppol_validation_history_table.php
 
 Modules/Clients/Database/Migrations/
-└── 2025_10_02_000004_add_peppol_validation_fields_to_relations_table.php
+ 2025_10_02_000004_add_peppol_validation_fields_to_relations_table.php
 ```
 
 ## Total Lines of Code

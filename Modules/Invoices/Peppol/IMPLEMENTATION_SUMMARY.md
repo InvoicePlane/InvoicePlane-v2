@@ -5,19 +5,19 @@ Complete Peppol e-invoicing integration for InvoicePlane v2 with extensive forma
 
 ## Architecture Layers
 
-### 1. HTTP Client Layer ✅
+### 1. HTTP Client Layer
 - **ApiClient**: Simplified single `request()` method using Laravel Http facade
 - **RequestMethod Enum**: Type-safe HTTP method constants
 - **HttpClientExceptionHandler**: Decorator with exception handling and logging
 - **LogsApiRequests Trait**: Centralized API request/response logging with sensitive data sanitization
 
-### 2. Configuration Layer ✅
+### 2. Configuration Layer
 - **Comprehensive Config**: Currency, supplier details, endpoint schemes by country
 - **Format Settings**: UBL, CII customization IDs and profiles
 - **Validation Rules**: Configurable requirements for Peppol transmission
 - **Feature Flags**: Enable/disable tracking, webhooks, participant search, health checks
 
-### 3. Enums & Data Structures ✅
+### 3. Enums & Data Structures
 
 #### PeppolDocumentFormat (11 formats)
 - UBL 2.1/2.4, CII, PEPPOL BIS 3.0
@@ -33,7 +33,7 @@ Complete Peppol e-invoicing integration for InvoicePlane v2 with extensive forma
 - Automatic scheme selection based on country
 - Format validation and identifier formatting
 
-### 4. Format Handlers (Strategy Pattern) ✅
+### 4. Format Handlers (Strategy Pattern)
 
 #### Interface & Base
 - **InvoiceFormatHandlerInterface**: Contract for all handlers
@@ -45,12 +45,12 @@ Complete Peppol e-invoicing integration for InvoicePlane v2 with extensive forma
 
 #### Factory
 - **FormatHandlerFactory**: Automatic handler selection based on:
-  1. Customer's preferred format
-  2. Mandatory format for country
-  3. Recommended format
-  4. Default PEPPOL BIS fallback
+ 1. Customer's preferred format
+ 2. Mandatory format for country
+ 3. Recommended format
+ 4. Default PEPPOL BIS fallback
 
-### 5. API Clients (Complete e-invoice.be Coverage) ✅
+### 5. API Clients (Complete e-invoice.be Coverage)
 
 #### DocumentsClient
 - submitDocument() - Send invoices
@@ -88,18 +88,18 @@ Complete Peppol e-invoicing integration for InvoicePlane v2 with extensive forma
 - checkReadiness() - Load balancer check
 - checkLiveness() - Orchestrator check
 
-### 6. Service Layer ✅
+### 6. Service Layer
 - **PeppolService**:
-  - Integrated with LogsApiRequests trait
-  - Uses FormatHandlerFactory for automatic format selection
-  - Format-specific validation
-  - Comprehensive error handling with format context
+ - Integrated with LogsApiRequests trait
+ - Uses FormatHandlerFactory for automatic format selection
+ - Format-specific validation
+ - Comprehensive error handling with format context
 
-### 7. Database & Models ✅
+### 7. Database & Models
 - **Migration**: add_peppol_fields_to_relations_table
-  - peppol_id (string) - Customer Peppol identifier
-  - peppol_format (string) - Preferred document format
-  - enable_e_invoicing (boolean) - Toggle per customer
+ - peppol_id (string) - Customer Peppol identifier
+ - peppol_format (string) - Preferred document format
+ - enable_e_invoicing (boolean) - Toggle per customer
 - **Relation Model**: Updated with Peppol properties and casting
 
 ## Configuration Examples
@@ -143,11 +143,11 @@ $result = $peppolService->sendInvoiceToPeppol($invoice);
 
 // Returns:
 // [
-//     'success' => true,
-//     'document_id' => 'DOC-123',
-//     'status' => 'submitted',
-//     'format' => 'peppol_bis_3.0',
-//     'message' => 'Invoice successfully submitted'
+// 'success' => true,
+// 'document_id' => 'DOC-123',
+// 'status' => 'submitted',
+// 'format' => 'peppol_bis_3.0',
+// 'message' => 'Invoice successfully submitted'
 // ]
 ```
 

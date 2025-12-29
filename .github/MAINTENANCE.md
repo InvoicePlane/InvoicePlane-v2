@@ -4,7 +4,7 @@ This document provides guidelines for maintaining the InvoicePlane v2 applicatio
 
 ---
 
-## 📦 Dependency Management
+## Dependency Management
 
 ### Package Managers
 
@@ -22,7 +22,7 @@ Both package managers use lockfiles to ensure consistent dependency versions:
 
 ---
 
-## 🔒 When to Use `--frozen-lockfile`
+## When to Use `--frozen-lockfile`
 
 ### Composer
 
@@ -43,15 +43,15 @@ Use `yarn install --frozen-lockfile` in the following scenarios:
 **Example GitHub Actions:**
 ```yaml
 - name: Install Composer dependencies
-  run: composer install --no-interaction --prefer-dist --optimize-autoloader
+ run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
 - name: Install Yarn dependencies
-  run: yarn install --frozen-lockfile
+ run: yarn install --frozen-lockfile
 ```
 
 ---
 
-## 🔓 When to "Unfreeze" and Upgrade Packages
+## When to "Unfreeze" and Upgrade Packages
 
 ### Regular Maintenance
 
@@ -112,7 +112,7 @@ yarn outdated
 
 ---
 
-## 🚨 Security Alert Response Process
+## Security Alert Response Process
 
 ### When You Receive a Security Alert
 
@@ -152,10 +152,10 @@ php artisan test
 - Run the full test suite
 - Test affected functionality manually
 - Use security scanning tools to verify the fix:
-  ```bash
-  composer audit
-  yarn audit
-  ```
+ ```bash
+ composer audit
+ yarn audit
+ ```
 
 #### 5. **Deploy**
 
@@ -170,7 +170,7 @@ php artisan test
 
 ---
 
-## 🔍 Automated Dependency Scanning
+## Automated Dependency Scanning
 
 ### GitHub Dependabot
 
@@ -180,19 +180,19 @@ InvoicePlane v2 uses GitHub Dependabot to automatically detect and create pull r
 ```yaml
 version: 2
 updates:
-  # Composer
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    
-  # npm/Yarn
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
+ # Composer
+ - package-ecosystem: "composer"
+ directory: "/"
+ schedule:
+ interval: "weekly"
+ open-pull-requests-limit: 10
+
+ # npm/Yarn
+ - package-ecosystem: "npm"
+ directory: "/"
+ schedule:
+ interval: "weekly"
+ open-pull-requests-limit: 10
 ```
 
 ### Manual Security Audits
@@ -212,7 +212,7 @@ yarn audit --fix
 
 ---
 
-## 📅 Maintenance Schedule
+## Maintenance Schedule
 
 ### Weekly
 
@@ -242,7 +242,7 @@ yarn audit --fix
 
 ---
 
-## 🔧 GitHub Actions Workflows
+## GitHub Actions Workflows
 
 ### Automated Dependency Updates
 
@@ -260,7 +260,7 @@ See: `.github/workflows/` directory for workflow details.
 
 ---
 
-## 🛠️ Tools and Commands
+## Tools and Commands
 
 ### Code Quality
 
@@ -300,7 +300,7 @@ php artisan migrate:refresh
 
 ---
 
-## 📝 Best Practices
+## Best Practices
 
 ### General
 
@@ -326,7 +326,7 @@ php artisan migrate:refresh
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **Installation Guide** - `.github/INSTALLATION.md`
 - **Contributing Guide** - `.github/CONTRIBUTING.md`
@@ -338,7 +338,7 @@ php artisan migrate:refresh
 
 ---
 
-## 🆘 Support
+## Support
 
 If you encounter issues with dependency management or security updates:
 

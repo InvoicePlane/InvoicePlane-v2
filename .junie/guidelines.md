@@ -4,7 +4,7 @@ This document provides comprehensive guidelines for AI agents (like Junie) worki
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 **InvoicePlane v2** is a multi-tenant invoicing and billing application built with modern PHP/Laravel technologies.
 
@@ -20,20 +20,20 @@ This document provides comprehensive guidelines for AI agents (like Junie) worki
 ### Module Structure
 ```
 Modules/
-├── ModuleName/
-│   ├── Models/          # Eloquent models
-│   ├── Services/        # Business logic layer
-│   ├── Repositories/    # Data access layer
-│   ├── DTOs/           # Data Transfer Objects
-│   ├── Transformers/   # DTO ↔ Model transformations
-│   ├── Filament/       # Filament resources (Admin/Company panels)
-│   ├── Tests/          # PHPUnit tests
-│   └── Database/       # Migrations, seeders, factories
+ ModuleName/
+ Models/ # Eloquent models
+ Services/ # Business logic layer
+ Repositories/ # Data access layer
+ DTOs/ # Data Transfer Objects
+ Transformers/ # DTO ↔ Model transformations
+ Filament/ # Filament resources (Admin/Company panels)
+ Tests/ # PHPUnit tests
+ Database/ # Migrations, seeders, factories
 ```
 
 ---
 
-## 📋 Critical Principles (MUST FOLLOW)
+## Critical Principles (MUST FOLLOW)
 
 ### 1. SOLID Principles
 - **Single Responsibility:** Each class has one clear purpose
@@ -53,27 +53,27 @@ Modules/
 ```php
 // Catch specific exceptions separately
 try {
-    // code
+ // code
 } catch (Error $e) {
-    // Handle Error
+ // Handle Error
 } catch (ErrorException $e) {
-    // Handle ErrorException
+ // Handle ErrorException
 } catch (Throwable $e) {
-    // Handle other throwables
+ // Handle other throwables
 }
 ```
 
 ---
 
-## 🏗️ Architecture Patterns
+## Architecture Patterns
 
 ### DTO & Transformer Rules
 
 **DTOs (Data Transfer Objects):**
-- ❌ NO constructors in DTOs
-- ✅ Use static named constructors when necessary
-- ✅ Rely on getters and setters for data access
-- ✅ DTOs are transformed using Transformers
+- NO constructors in DTOs
+- Use static named constructors when necessary
+- Rely on getters and setters for data access
+- DTOs are transformed using Transformers
 
 **Transformers:**
 - Must implement `toDto()` and `toModel()` methods
@@ -85,41 +85,41 @@ try {
 // DTO
 class InvoiceDTO
 {
-    private string $number;
-    private float $total;
-    
-    // No constructor!
-    
-    public static function fromArray(array $data): self
-    {
-        $dto = new self();
-        $dto->setNumber($data['number']);
-        $dto->setTotal($data['total']);
-        return $dto;
-    }
-    
-    public function getNumber(): string { return $this->number; }
-    public function setNumber(string $number): void { $this->number = $number; }
+ private string $number;
+ private float $total;
+
+ // No constructor!
+
+ public static function fromArray(array $data): self
+ {
+ $dto = new self();
+ $dto->setNumber($data['number']);
+ $dto->setTotal($data['total']);
+ return $dto;
+ }
+
+ public function getNumber(): string { return $this->number; }
+ public function setNumber(string $number): void { $this->number = $number; }
 }
 
 // Transformer
 class InvoiceTransformer
 {
-    public function toDto(Invoice $model): InvoiceDTO
-    {
-        return InvoiceDTO::fromArray([
-            'number' => $model->number,
-            'total' => $model->total,
-        ]);
-    }
-    
-    public function toModel(InvoiceDTO $dto): Invoice
-    {
-        $model = new Invoice();
-        $model->number = $dto->getNumber();
-        $model->total = $dto->getTotal();
-        return $model;
-    }
+ public function toDto(Invoice $model): InvoiceDTO
+ {
+ return InvoiceDTO::fromArray([
+ 'number' => $model->number,
+ 'total' => $model->total,
+ ]);
+ }
+
+ public function toModel(InvoiceDTO $dto): Invoice
+ {
+ $model = new Invoice();
+ $model->number = $dto->getNumber();
+ $model->total = $dto->getTotal();
+ return $model;
+ }
 }
 ```
 
@@ -143,7 +143,7 @@ class InvoiceTransformer
 
 ---
 
-## 🧪 Testing Standards
+## Testing Standards
 
 ### Test Structure
 ```php
@@ -152,22 +152,22 @@ use PHPUnit\Framework\Attributes\Group;
 
 class InvoiceServiceTest extends AbstractCompanyPanelTestCase
 {
-    use RefreshDatabase;
-    
-    #[Test]
-    #[Group('invoices')]
-    public function it_creates_invoice_with_valid_data(): void
-    {
-        /* Arrange */
-        $data = ['number' => 'INV-001', 'total' => 100.00];
-        
-        /* Act */
-        $result = $this->service->createInvoice($data);
-        
-        /* Assert */
-        $this->assertInstanceOf(InvoiceDTO::class, $result);
-        $this->assertEquals('INV-001', $result->getNumber());
-    }
+ use RefreshDatabase;
+
+ #[Test]
+ #[Group('invoices')]
+ public function it_creates_invoice_with_valid_data(): void
+ {
+ /* Arrange */
+ $data = ['number' => 'INV-001', 'total' => 100.00];
+
+ /* Act */
+ $result = $this->service->createInvoice($data);
+
+ /* Assert */
+ $this->assertInstanceOf(InvoiceDTO::class, $result);
+ $this->assertEquals('INV-001', $result->getNumber());
+ }
 }
 ```
 
@@ -175,11 +175,11 @@ class InvoiceServiceTest extends AbstractCompanyPanelTestCase
 1. **Test Naming:** Functions prefixed with `it_` (e.g., `it_creates_invoice`)
 2. **No `@test` Annotations:** Use `#[Test]` attribute instead
 3. **Prefer Fakes over Mocks:**
-   ```php
-   Queue::fake();
-   Storage::fake('local');
-   Notification::fake();
-   ```
+ ```php
+ Queue::fake();
+ Storage::fake('local');
+ Notification::fake();
+ ```
 4. **Happy Paths Last:** Place success scenarios at the end
 5. **Reusable Setup:** Abstract test cases for fixtures, not inline
 6. **Comment Blocks:** Use `/* Arrange */`, `/* Act */`, `/* Assert */`
@@ -190,59 +190,59 @@ class InvoiceServiceTest extends AbstractCompanyPanelTestCase
 #[Group('export')]
 public function it_dispatches_csv_export_job(): void
 {
-    /* Arrange */
-    Queue::fake();
-    Storage::fake('local');
-    $records = Model::factory()->count(3)->create();
-    
-    /* Act */
-    Livewire::actingAs($this->user)
-        ->test(ListPage::class)
-        ->callAction('exportCsv', data: [
-            'columnMap' => [
-                'field' => ['isEnabled' => true, 'label' => 'Label'],
-            ],
-        ]);
-    
-    /* Assert */
-    Bus::assertChained([
-        fn($batch) => $batch instanceof \Illuminate\Bus\PendingBatch
-    ]);
+ /* Arrange */
+ Queue::fake();
+ Storage::fake('local');
+ $records = Model::factory()->count(3)->create();
+
+ /* Act */
+ Livewire::actingAs($this->user)
+ ->test(ListPage::class)
+ ->callAction('exportCsv', data: [
+ 'columnMap' => [
+ 'field' => ['isEnabled' => true, 'label' => 'Label'],
+ ],
+ ]);
+
+ /* Assert */
+ Bus::assertChained([
+ fn($batch) => $batch instanceof \Illuminate\Bus\PendingBatch
+ ]);
 }
 ```
 
 ---
 
-## 🗄️ Database & Models
+## Database & Models
 
 ### Migration Rules
-- ❌ NO JSON columns in migrations
-- ❌ NO ENUM columns in migrations
-- ❌ NO `timestamps()` unless explicitly specified
-- ❌ NO `softDeletes()` unless explicitly specified
+- NO JSON columns in migrations
+- NO ENUM columns in migrations
+- NO `timestamps()` unless explicitly specified
+- NO `softDeletes()` unless explicitly specified
 
 ### Model Rules
-- ❌ NO `$fillable` array in models
-- ❌ NO `timestamps` or `softDeletes` properties unless needed
-- ✅ Use native PHP type hints
-- ✅ Use `$casts` for Enum fields
+- NO `$fillable` array in models
+- NO `timestamps` or `softDeletes` properties unless needed
+- Use native PHP type hints
+- Use `$casts` for Enum fields
 
 ```php
 class Invoice extends Model
 {
-    // No $fillable!
-    
-    protected $casts = [
-        'status' => InvoiceStatus::class,  // Enum
-        'total' => 'decimal:2',
-        'issued_at' => 'datetime',
-    ];
+ // No $fillable!
+
+ protected $casts = [
+ 'status' => InvoiceStatus::class, // Enum
+ 'total' => 'decimal:2',
+ 'issued_at' => 'datetime',
+ ];
 }
 ```
 
 ---
 
-## 🎨 Filament Resources
+## Filament Resources
 
 ### Resource Generation
 - Must use Filament internal traits (`CanReadModelSchemas`, etc.)
@@ -265,7 +265,7 @@ class Invoice extends Model
 
 ---
 
-## 📤 Export System
+## Export System
 
 ### Architecture
 - Exports use Filament's asynchronous export system
@@ -303,7 +303,7 @@ command=php /path/to/artisan queue:work --sleep=3 --tries=3
 
 ---
 
-## 🌍 Peppol E-Invoicing Integration
+## Peppol E-Invoicing Integration
 
 ### Architecture Overview
 InvoicePlane v2 includes a comprehensive Peppol integration for sending electronic invoices across the European Peppol network.
@@ -360,26 +360,26 @@ $service->sendInvoice($invoice, $integration);
 #[Test]
 public function it_sends_invoice_to_peppol_successfully(): void
 {
-    /* Arrange */
-    Http::fake(['https://api.e-invoice.be/*' => Http::response([
-        'document_id' => 'DOC-123456',
-        'status' => 'submitted',
-    ], 200)]);
-    
-    $invoice = $this->createMockInvoice();
-    
-    /* Act */
-    $result = $this->service->sendInvoiceToPeppol($invoice);
-    
-    /* Assert */
-    $this->assertTrue($result['success']);
-    $this->assertEquals('DOC-123456', $result['document_id']);
+ /* Arrange */
+ Http::fake(['https://api.e-invoice.be/*' => Http::response([
+ 'document_id' => 'DOC-123456',
+ 'status' => 'submitted',
+ ], 200)]);
+
+ $invoice = $this->createMockInvoice();
+
+ /* Act */
+ $result = $this->service->sendInvoiceToPeppol($invoice);
+
+ /* Assert */
+ $this->assertTrue($result['success']);
+ $this->assertEquals('DOC-123456', $result['document_id']);
 }
 ```
 
 ---
 
-## 🔐 Security & Permissions
+## Security & Permissions
 
 ### Seeding Rules
 - Seed 5 default roles: `superadmin`, `admin`, `assistance`, `useradmin`, `user`
@@ -393,22 +393,22 @@ public function it_sends_invoice_to_peppol_successfully(): void
 
 ---
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ### Commands
 
 **Testing:**
 ```bash
-php artisan test                    # All tests
-php artisan test --coverage         # With coverage
-php artisan test --testsuite=Unit   # Unit tests only
-php artisan test --group=export     # Export tests only
+php artisan test # All tests
+php artisan test --coverage # With coverage
+php artisan test --testsuite=Unit # Unit tests only
+php artisan test --group=export # Export tests only
 ```
 
 **Code Quality:**
 ```bash
-vendor/bin/pint                     # Format code (PSR-12)
-vendor/bin/phpstan analyse          # Static analysis
+vendor/bin/pint # Format code (PSR-12)
+vendor/bin/phpstan analyse # Static analysis
 vendor/bin/rector process --dry-run # Refactoring suggestions
 ```
 
@@ -418,7 +418,7 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
-php artisan queue:work              # For exports
+php artisan queue:work # For exports
 ```
 
 ### Git Commit Conventions
@@ -428,7 +428,7 @@ php artisan queue:work              # For exports
 
 ---
 
-## 📚 Documentation References
+## Documentation References
 
 ### Key Documentation Files
 - **Installation:** `.github/INSTALLATION.md`
@@ -447,7 +447,7 @@ php artisan queue:work              # For exports
 
 ---
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
 ### Query Optimization
 - Use eager loading to prevent N+1 queries
@@ -467,22 +467,22 @@ php artisan queue:work              # For exports
 
 ---
 
-## 🚫 Common Pitfalls to Avoid
+## Common Pitfalls to Avoid
 
-1. ❌ Don't use `$fillable` in models
-2. ❌ Don't create DTOs with constructors
-3. ❌ Don't build DTOs manually in services—use Transformers
-4. ❌ Don't use JSON or ENUM columns in migrations
-5. ❌ Don't add timestamps/softDeletes unless specified
-6. ❌ Don't test export file content—test job dispatching
-7. ❌ Don't make direct API calls—use Advanced API Client
-8. ❌ Don't use `updateOrCreate`—use repository upsert methods
-9. ❌ Don't nest conditions deeply—use early returns
-10. ❌ Don't duplicate logic—centralize in traits
+1. Don't use `$fillable` in models
+2. Don't create DTOs with constructors
+3. Don't build DTOs manually in services—use Transformers
+4. Don't use JSON or ENUM columns in migrations
+5. Don't add timestamps/softDeletes unless specified
+6. Don't test export file content—test job dispatching
+7. Don't make direct API calls—use Advanced API Client
+8. Don't use `updateOrCreate`—use repository upsert methods
+9. Don't nest conditions deeply—use early returns
+10. Don't duplicate logic—centralize in traits
 
 ---
 
-## ✅ Code Review Checklist
+## Code Review Checklist
 
 Before submitting code, verify:
 
@@ -505,7 +505,7 @@ Before submitting code, verify:
 
 ---
 
-## 🎓 Learning Resources
+## Learning Resources
 
 ### InvoicePlane-Specific
 - Review existing modules for patterns
@@ -524,7 +524,7 @@ Before submitting code, verify:
 
 ---
 
-## 🔄 Continuous Improvement
+## Continuous Improvement
 
 This document should be updated as:
 - New patterns emerge
@@ -536,7 +536,7 @@ This document should be updated as:
 
 ---
 
-## 📞 Support
+## Support
 
 - **Discord:** https://discord.gg/PPzD2hTrXt
 - **Forums:** https://community.invoiceplane.com

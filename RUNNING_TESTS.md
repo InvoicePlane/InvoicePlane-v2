@@ -25,7 +25,7 @@ composer install
 ./vendor/bin/phpunit Modules/Invoices/Tests/Unit/Enums/
 ```
 
-### Factory Tests  
+### Factory Tests
 ```bash
 ./vendor/bin/phpunit Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlerFactoryTest.php
 ./vendor/bin/phpunit Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php
