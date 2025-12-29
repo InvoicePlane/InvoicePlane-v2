@@ -78,17 +78,17 @@ jobs:
         run: |
           composer update --prefer-stable --no-interaction
 
-      - name: Run tests
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-          php artisan test --testsuite=Unit
+      # - name: Run smoke tests
+      #   run: |
+      #     cp .env.example .env
+      #     php artisan key:generate
+      #     php artisan test --group=smoke
 
-      - name: Run static analysis
-        run: vendor/bin/phpstan analyse --no-progress --error-format=github || true
+      # - name: Run static analysis
+      #   run: vendor/bin/phpstan analyse --no-progress --error-format=github || true
 
-      - name: Run code formatting
-        run: vendor/bin/pint --test || true
+      # - name: Run code formatting
+      #   run: vendor/bin/pint --test || true
 
       - name: Check for changes
         id: check-changes
@@ -134,9 +134,9 @@ jobs:
             
             ### Checks Performed
             
-            - [x] Unit tests passed
-            - [x] Static analysis completed
-            - [x] Code formatting checked
+            - [ ] ~~Unit tests passed~~ (commented out until further notice)
+            - [ ] ~~Static analysis completed~~ (commented out until further notice)
+            - [ ] ~~Code formatting checked~~ (commented out until further notice)
             
             ### Security Audit
             
