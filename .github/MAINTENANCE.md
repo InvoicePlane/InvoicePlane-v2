@@ -281,7 +281,7 @@ To configure GitHub secrets for the Crowdin workflow:
    - `CROWDIN_PROJECT_ID` - Your Crowdin project ID
    - `CROWDIN_PERSONAL_TOKEN` - Your Crowdin personal access token
 
-Direct URL: `https://github.com/InvoicePlane/InvoicePlane-v2/settings/secrets/actions`
+Direct URL format: `https://github.com/OWNER/REPO/settings/secrets/actions`
 
 **Manual Trigger:**
 ```bash
