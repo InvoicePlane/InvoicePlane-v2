@@ -344,7 +344,7 @@ If you encounter issues with dependency management or security updates:
 
 - **Discord** - https://discord.gg/PPzD2hTrXt
 - **Forums** - https://community.invoiceplane.com
-- **GitHub Issues** - https://github.com/InvoicePlane/InvoicePlane/issues
+- **GitHub Issues** - https://github.com/InvoicePlane/InvoicePlane-v2/issues
 - **Security Issues** - See `.github/SECURITY.md` for responsible disclosure
 
 ---

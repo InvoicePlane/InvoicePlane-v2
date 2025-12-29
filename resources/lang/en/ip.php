@@ -879,4 +879,32 @@ return [
     'duplicate_invoice_number'             => 'Duplicate invoice number :number for company :company',
     'duplicate_quote_number'               => 'Duplicate quote number :number for company :company',
     #endregion
+
+    #region REPORT BUILDER
+    'template_name'                        => 'Template Name',
+    'template_type'                        => 'Template Type',
+    'estimate'                             => 'Estimate',
+    'system_template'                      => 'System Template',
+    'design'                               => 'Design',
+    'clone'                                => 'Clone',
+    #endregion
+
+    #region GENERAL
+    'format'                               => 'Format',
+    'padding'                              => 'Padding',
+    'system'                               => 'System',
+    'created_at'                           => 'Created At',
+    'customer'                             => 'Customer',
+    'prospect'                             => 'Prospect',
+    'partner'                              => 'Partner',
+    'lead'                                 => 'Lead',
+    'gender_unknown'                       => 'Unknown',
+    #endregion
+
+    #region TAX RATES
+    'tax_rate_type_exclusive'              => 'Exclusive',
+    'tax_rate_type_inclusive'              => 'Inclusive',
+    'tax_rate_type_zero'                   => 'Zero Rated',
+    'tax_rate_type_exempt'                 => 'Exempt',
+    #endregion
 ];

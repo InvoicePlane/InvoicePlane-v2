@@ -8,10 +8,10 @@ on:
         required: true
         type: choice
         options:
-          - security-only
+          - common-packages
           - patch-minor
           - all-dependencies
-        default: 'security-only'
+        default: 'common-packages'
   schedule:
     # Run weekly on Monday at 10:00 AM UTC
     - cron: '0 10 * * 1'
@@ -56,10 +56,11 @@ jobs:
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update Yarn dependencies (Security Only)
-        if: github.event.inputs.update_type == 'security-only' || github.event_name == 'schedule'
+      - name: Update Yarn dependencies (Common Packages)
+        if: github.event.inputs.update_type == 'common-packages' || github.event_name == 'schedule'
         run: |
-          # Upgrade packages with security fixes
+          # Note: This upgrades a predefined set of commonly updated packages
+          # For true security-only updates, use yarn audit to identify vulnerable packages
           yarn upgrade --pattern 'vite|laravel-vite-plugin|tailwindcss|autoprefixer|axios'
 
       - name: Update Yarn dependencies (Patch & Minor)
@@ -100,16 +101,16 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          commit-message: 'chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})'
           branch: automated/yarn-update-${{ github.run_number }}
           delete-branch: true
-          title: 'chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          title: 'chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})'
           body: |
             ## Yarn Dependency Update
             
             This PR updates Yarn (npm) dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type || 'security-only' }}
+            **Update Type:** ${{ github.event.inputs.update_type || 'common-packages' }}
             **Triggered by:** ${{ github.event_name }}
             
             ### Updated Packages

@@ -8,10 +8,10 @@ on:
         required: true
         type: choice
         options:
-          - security-only
+          - security-patch
           - patch-minor
           - all-dependencies
-        default: 'security-only'
+        default: 'security-patch'
   schedule:
     # Run weekly on Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
@@ -61,9 +61,11 @@ jobs:
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update Composer dependencies (Security Only)
-        if: github.event.inputs.update_type == 'security-only' || github.event_name == 'schedule'
+      - name: Update Composer dependencies (Security & Patch Updates)
+        if: github.event.inputs.update_type == 'security-patch' || github.event_name == 'schedule'
         run: |
+          # Note: This updates all dependencies while respecting version constraints in composer.json
+          # For true security-only updates, manually update specific vulnerable packages
           composer update --with-dependencies --prefer-stable --no-interaction
 
       - name: Update Composer dependencies (Patch & Minor)
@@ -112,16 +114,16 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          commit-message: 'chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})'
           branch: automated/composer-update-${{ github.run_number }}
           delete-branch: true
-          title: 'chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          title: 'chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})'
           body: |
             ## Composer Dependency Update
             
             This PR updates Composer dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type || 'security-only' }}
+            **Update Type:** ${{ github.event.inputs.update_type || 'security-patch' }}
             **Triggered by:** ${{ github.event_name }}
             
             ### Updated Packages
