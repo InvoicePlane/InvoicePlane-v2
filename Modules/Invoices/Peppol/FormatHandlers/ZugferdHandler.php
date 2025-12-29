@@ -18,7 +18,7 @@ class ZugferdHandler extends BaseFormatHandler
     /**
      * Create a ZugferdHandler for the specified Peppol document format.
      *
-     * If null, the handler defaults to ZUGFERD 2.0 (Factur‑X compatible).
+     * If null, the handler defaults to ZUGFERD 2.0 (Factur-X compatible).
      *
      * @param PeppolDocumentFormat|null $format the target ZUGFeRD/Factur‑X format or null to use the default
      */

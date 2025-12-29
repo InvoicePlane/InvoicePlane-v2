@@ -9,8 +9,8 @@ This Peppol integration allows InvoicePlane v2 to send invoices electronically t
 ### Components
 
 1. **HTTP Client Layer**
-   - `ExternalClient`: Guzzle-like HTTP wrapper using Laravel's Http facade
-   - `HttpClientExceptionHandler`: Decorator providing exception handling and logging
+   - HTTP client: Laravel's Http facade wrapper
+   - Comprehensive exception handling and logging for all API requests
 
 2. **Peppol Provider Layer**
    - `BasePeppolClient`: Abstract base class for all Peppol providers

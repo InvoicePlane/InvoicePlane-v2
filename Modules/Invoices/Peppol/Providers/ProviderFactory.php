@@ -120,13 +120,13 @@ class ProviderFactory
         $baseNamespace = 'Modules\\Invoices\\Peppol\\Providers\\';
 
         // Get all subdirectories (each provider has its own directory)
-        $directories = glob($basePath . '/*', GLOB_ONLYDIR);
+        $directories = glob($basePath . '/*', GLOB_ONLYDIR) ?: [];
 
         foreach ($directories as $directory) {
             $providerDir = basename($directory);
 
             // Look for a Provider class in this directory
-            $providerFiles = glob($directory . '/*Provider.php');
+            $providerFiles = glob($directory . '/*Provider.php') ?: [];
 
             foreach ($providerFiles as $file) {
                 $className     = basename($file, '.php');
