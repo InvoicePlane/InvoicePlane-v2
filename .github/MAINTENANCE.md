@@ -271,8 +271,17 @@ This workflow can be triggered manually with three action types:
 The workflow runs automatically on a weekly schedule (Sundays at 2:00 AM UTC) to download new translations and create pull requests.
 
 **Required Secrets:**
-- `CROWDIN_PROJECT_ID` - Your Crowdin project ID
-- `CROWDIN_PERSONAL_TOKEN` - Your Crowdin personal access token
+
+To configure GitHub secrets for the Crowdin workflow:
+
+1. Go to your repository on GitHub
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add the following secrets:
+   - `CROWDIN_PROJECT_ID` - Your Crowdin project ID
+   - `CROWDIN_PERSONAL_TOKEN` - Your Crowdin personal access token
+
+Direct URL: `https://github.com/InvoicePlane/InvoicePlane-v2/settings/secrets/actions`
 
 **Manual Trigger:**
 ```bash
