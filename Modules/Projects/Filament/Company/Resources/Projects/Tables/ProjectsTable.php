@@ -20,6 +20,11 @@ class ProjectsTable
     {
         return $table
             ->columns([
+                TextColumn::make('project_number')
+                    ->label(trans('ip.project_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('project_name')
                     ->limit(10)
                     ->label(trans('ip.project_name'))

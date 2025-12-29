@@ -59,6 +59,10 @@ class ProjectForm
                                 Section::make(trans('ip.details'))
                                     ->columns(2)
                                     ->schema([
+                                        TextInput::make('project_number')
+                                            ->label(trans('ip.project_number'))
+                                            ->maxLength(255),
+
                                         TextInput::make('project_name')
                                             ->label(trans('ip.project_name'))
                                             ->required()

@@ -19,6 +19,11 @@ class TasksTable
     {
         return $table
             ->columns([
+                TextColumn::make('task_number')
+                    ->label(trans('ip.task_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('task_status')
                     ->label(trans('ip.task_status'))
                     ->badge()

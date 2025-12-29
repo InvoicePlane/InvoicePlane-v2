@@ -35,6 +35,10 @@ class PaymentForm
                                         Grid::make()
                                             ->columns(1)
                                             ->schema([
+                                                TextInput::make('payment_number')
+                                                    ->label(trans('ip.payment_number'))
+                                                    ->maxLength(255),
+
                                                 Select::make('invoice_id')
                                                     ->label(trans('ip.invoice'))
                                                     ->getSearchResultsUsing(function (string $search): array {
