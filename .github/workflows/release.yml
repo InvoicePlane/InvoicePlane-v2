@@ -79,12 +79,46 @@ jobs:
           fi
           echo "✓ Translations structure validated" | tee -a "$LOG_FILE"
 
-      # Step 3: Set up Node.js for frontend build
+      # Step 3: Set up PHP and Composer (before frontend build)
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
+          coverage: none
+
+      - name: Install Composer dependencies (production)
+        run: |
+          set -e
+          set -o pipefail
+          
+          LOG_FILE="${{ env.LOG_DIR }}/composer-install.log"
+          
+          echo "Installing Composer dependencies (production mode)..." | tee -a "$LOG_FILE"
+          composer install --no-dev --optimize-autoloader \
+            --no-interaction --prefer-dist 2>&1 | tee -a "$LOG_FILE"
+          echo "✓ Composer dependencies installed" | tee -a "$LOG_FILE"
+
+      # Step 4: Set up Node.js for frontend build
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'yarn'
+
+      - name: Display tool versions
+        run: |
+          LOG_FILE="${{ env.LOG_DIR }}/tool-versions.log"
+          
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "Tool Versions" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
+          echo "PHP version: $(php -v | head -n 1)" | tee -a "$LOG_FILE"
+          echo "Composer version: $(composer --version)" | tee -a "$LOG_FILE"
+          echo "Node.js version: $(node -v)" | tee -a "$LOG_FILE"
+          echo "npm version: $(npm -v)" | tee -a "$LOG_FILE"
+          echo "Yarn version: $(yarn -v)" | tee -a "$LOG_FILE"
+          echo "=========================================" | tee -a "$LOG_FILE"
 
       - name: Install frontend dependencies (production mode)
         run: |
@@ -107,40 +141,6 @@ jobs:
           echo "Building frontend assets..." | tee -a "$LOG_FILE"
           yarn build 2>&1 | tee -a "$LOG_FILE"
           echo "✓ Frontend assets built successfully" | tee -a "$LOG_FILE"
-
-      # Step 4: Set up PHP and Composer
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: gd, bcmath, dom, intl, xml, zip, mbstring, pdo_mysql
-          coverage: none
-
-      - name: Display tool versions
-        run: |
-          LOG_FILE="${{ env.LOG_DIR }}/tool-versions.log"
-          
-          echo "=========================================" | tee -a "$LOG_FILE"
-          echo "Tool Versions" | tee -a "$LOG_FILE"
-          echo "=========================================" | tee -a "$LOG_FILE"
-          echo "PHP version: $(php -v | head -n 1)" | tee -a "$LOG_FILE"
-          echo "Composer version: $(composer --version)" | tee -a "$LOG_FILE"
-          echo "Node.js version: $(node -v)" | tee -a "$LOG_FILE"
-          echo "npm version: $(npm -v)" | tee -a "$LOG_FILE"
-          echo "Yarn version: $(yarn -v)" | tee -a "$LOG_FILE"
-          echo "=========================================" | tee -a "$LOG_FILE"
-
-      - name: Install Composer dependencies (production)
-        run: |
-          set -e
-          set -o pipefail
-          
-          LOG_FILE="${{ env.LOG_DIR }}/composer-install.log"
-          
-          echo "Installing Composer dependencies (production mode)..." | tee -a "$LOG_FILE"
-          composer install --no-dev --optimize-autoloader \
-            --no-interaction --prefer-dist 2>&1 | tee -a "$LOG_FILE"
-          echo "✓ Composer dependencies installed" | tee -a "$LOG_FILE"
 
       - name: Install vendor cleaner and optimize
         run: |
