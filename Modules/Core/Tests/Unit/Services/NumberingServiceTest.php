@@ -131,7 +131,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
         /* Assert */
         $this->assertNotNull($result);
         $this->assertDatabaseMissing('numbering', [
-            'numbering_id' => $numbering->numbering_id,
+            'id' => $numbering->id,
         ]);
     }
 

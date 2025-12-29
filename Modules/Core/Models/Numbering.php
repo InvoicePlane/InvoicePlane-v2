@@ -14,7 +14,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                  $numbering_id
+ * @property int                  $id
  * @property int                  $company_id
  * @property NumberingType        $type
  * @property string               $name
@@ -38,8 +38,6 @@ class Numbering extends Model
     use HasFactory;
 
     protected $table = 'numbering';
-
-    protected $primaryKey = 'numbering_id';
 
     public $timestamps = false;
 
@@ -114,13 +112,13 @@ class Numbering extends Model
     public static function findIdByName($name)
     {
         if ($group = self::query()->where('name', $name)->first()) {
-            return $group->numbering_id;
+            return $group->id;
         }
     }
 
     public static function getList()
     {
-        return self::orderBy('name')->pluck('name', 'numbering_id')->all();
+        return self::orderBy('name')->pluck('name', 'id')->all();
     }
 
     /*

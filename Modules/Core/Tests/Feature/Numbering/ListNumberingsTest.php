@@ -37,8 +37,8 @@ class ListNumberingsTest extends AbstractAdminPanelTestCase
         /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('numbering', [
-            'numbering_id' => $numbering->numbering_id,
-            'type'         => $numbering->type->value,
+            'id'       => $numbering->id,
+            'type'     => $numbering->type->value,
             'name'         => $numbering->name,
             'next_id'      => $numbering->next_id,
             'left_pad'     => $numbering->left_pad,

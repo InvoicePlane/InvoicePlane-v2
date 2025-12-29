@@ -20,7 +20,7 @@ return new class () extends Migration {
         Schema::table('invoices', function (Blueprint $table): void {
             $table->index('numbering_id', 'invoices_numbering_id_index');
             $table->foreign('numbering_id', 'invoices_numbering_id_foreign')
-                  ->references('numbering_id')->on('numbering')->onDelete('restrict');
+                  ->references('id')->on('numbering')->onDelete('restrict');
         });
 
         // Rename document_group_id to numbering_id in quotes table
@@ -36,7 +36,7 @@ return new class () extends Migration {
         Schema::table('quotes', function (Blueprint $table): void {
             $table->index('numbering_id', 'quotes_numbering_id_index');
             $table->foreign('numbering_id', 'quotes_numbering_id_foreign')
-                  ->references('numbering_id')->on('numbering')->onDelete('restrict');
+                  ->references('id')->on('numbering')->onDelete('restrict');
         });
     }
 

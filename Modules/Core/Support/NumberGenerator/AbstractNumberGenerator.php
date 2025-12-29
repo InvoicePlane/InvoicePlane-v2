@@ -91,12 +91,12 @@ abstract class AbstractNumberGenerator
             ->where('type', $this->type);
 
         if ($this->groupId) {
-            $query->where('numbering_id', $this->groupId);
+            $query->where('id', $this->groupId);
         } elseif ($this->groupName) {
             $query->where('name', $this->groupName);
         } else {
             // Get the first numbering for this type if no specific group is set
-            $query->orderBy('numbering_id');
+            $query->orderBy('id');
         }
 
         if ($forUpdate) {
