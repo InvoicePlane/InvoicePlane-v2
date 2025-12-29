@@ -80,18 +80,18 @@ class PeppolBisHandler extends BaseFormatHandler
             'accounting_customer_party' => [
                 'party' => [
                     'endpoint_id' => [
-                        'value'     => $customer->peppol_id,
+                        'value'     => $customer?->peppol_id,
                         'scheme_id' => $endpointScheme->value,
                     ],
                     'party_name' => [
-                        'name' => $customer->company_name ?? $customer->customer_name,
+                        'name' => $customer?->company_name ?? $customer?->customer_name,
                     ],
                     'postal_address' => [
-                        'street_name' => $customer->street1,
-                        'city_name'   => $customer->city,
-                        'postal_zone' => $customer->zip,
+                        'street_name' => $customer?->street1,
+                        'city_name'   => $customer?->city,
+                        'postal_zone' => $customer?->zip,
                         'country'     => [
-                            'identification_code' => $customer->country_code,
+                            'identification_code' => $customer?->country_code,
                         ],
                     ],
                 ],

@@ -43,11 +43,9 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_position(): void
     {
         /* arrange */
-        $position = new GridPositionDTO();
+        $position = new GridPositionDTO(0, 0, 6, 4);
 
         /* act */
-        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-
         $dto = new BlockDTO();
         $dto->setPosition($position);
 
@@ -64,7 +62,11 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_config(): void
     {
         /* arrange */
-        // No setup needed
+        $config = ['show_vat_id' => true];
+
+        /* act */
+        $dto = new BlockDTO();
+        $dto->setConfig($config);
 
         /* assert */
         $this->assertEquals($config, $dto->getConfig());
@@ -75,7 +77,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_label(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setLabel('Company Header');
 
         /* assert */
         $this->assertEquals('Company Header', $dto->getLabel());
@@ -86,7 +91,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_label_to_null(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setLabel(null);
 
         /* assert */
         $this->assertNull($dto->getLabel());
@@ -97,7 +105,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_is_cloneable(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setIsCloneable(true);
 
         /* assert */
         $this->assertTrue($dto->getIsCloneable());
@@ -110,7 +121,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_data_source(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setDataSource('company');
 
         /* assert */
         $this->assertEquals('company', $dto->getDataSource());
@@ -121,7 +135,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_data_source_to_null(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setDataSource(null);
 
         /* assert */
         $this->assertNull($dto->getDataSource());
@@ -132,7 +149,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_is_cloned(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setIsCloned(true);
 
         /* assert */
         $this->assertTrue($dto->getIsCloned());
@@ -145,7 +165,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_cloned_from(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setClonedFrom('block_original');
 
         /* assert */
         $this->assertEquals('block_original', $dto->getClonedFrom());
@@ -156,7 +179,10 @@ class BlockDTOTest extends TestCase
     public function it_can_set_cloned_from_to_null(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new BlockDTO();
+
+        /* act */
+        $dto->setClonedFrom(null);
 
         /* assert */
         $this->assertNull($dto->getClonedFrom());
@@ -167,13 +193,10 @@ class BlockDTOTest extends TestCase
     public function it_can_create_system_block(): void
     {
         /* arrange */
-        $position = new GridPositionDTO();
-
-        /* act */
-        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-
+        $position = new GridPositionDTO(0, 0, 6, 4);
         $config = ['show_vat_id' => true];
 
+        /* act */
         $dto = BlockDTO::system('header_company', $position, $config);
 
         /* assert */
@@ -190,11 +213,9 @@ class BlockDTOTest extends TestCase
     public function it_can_create_cloned_block(): void
     {
         /* arrange */
-        $position = new GridPositionDTO();
+        $position = new GridPositionDTO(0, 0, 6, 4);
 
         /* act */
-        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-
         $original = new BlockDTO();
         $original->setId('block_original')
             ->setType('header_company')
@@ -228,8 +249,7 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function setters_return_self_for_method_chaining(): void
     {
-        $position = new GridPositionDTO();
-        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
+        $position = new GridPositionDTO(0, 0, 6, 4);
 
         $dto = (new BlockDTO())
             ->setId('block_test')

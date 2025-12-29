@@ -43,6 +43,71 @@ class ApiClient
     }
 
     /**
+     * Make a GET request.
+     *
+     * @param string               $uri     The URI to request
+     * @param array<string, mixed> $options Request options
+     *
+     * @return Response
+     */
+    public function get(string $uri, array $options = []): Response
+    {
+        return $this->request('get', $uri, $options);
+    }
+
+    /**
+     * Make a POST request.
+     *
+     * @param string               $uri     The URI to request
+     * @param array<string, mixed> $options Request options
+     *
+     * @return Response
+     */
+    public function post(string $uri, array $options = []): Response
+    {
+        return $this->request('post', $uri, $options);
+    }
+
+    /**
+     * Make a PUT request.
+     *
+     * @param string               $uri     The URI to request
+     * @param array<string, mixed> $options Request options
+     *
+     * @return Response
+     */
+    public function put(string $uri, array $options = []): Response
+    {
+        return $this->request('put', $uri, $options);
+    }
+
+    /**
+     * Make a PATCH request.
+     *
+     * @param string               $uri     The URI to request
+     * @param array<string, mixed> $options Request options
+     *
+     * @return Response
+     */
+    public function patch(string $uri, array $options = []): Response
+    {
+        return $this->request('patch', $uri, $options);
+    }
+
+    /**
+     * Make a DELETE request.
+     *
+     * @param string               $uri     The URI to request
+     * @param array<string, mixed> $options Request options
+     *
+     * @return Response
+     */
+    public function delete(string $uri, array $options = []): Response
+    {
+        return $this->request('delete', $uri, $options);
+    }
+
+    /**
      * Apply authentication to the HTTP client.
      *
      * @param PendingRequest       $client  The HTTP client
