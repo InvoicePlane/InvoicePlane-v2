@@ -24,6 +24,7 @@ use Modules\Payments\Enums\PaymentStatus;
  * @property int           $customer_id
  * @property int|null      $invoice_id
  * @property int|null      $merchant_client_id
+ * @property string|null   $payment_number
  * @property PaymentMethod $payment_method
  * @property PaymentStatus $payment_status
  * @property Carbon|null   $paid_at

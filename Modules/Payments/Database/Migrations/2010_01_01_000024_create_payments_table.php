@@ -13,6 +13,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('invoice_id')->nullable();
             $table->unsignedBigInteger('merchant_client_id')->nullable();
+            $table->string('payment_number')->nullable();
             $table->string('payment_method');
             $table->string('payment_status');
             $table->date('paid_at')->nullable();
