@@ -43,7 +43,9 @@ class ExpenseItemFactory extends Factory
             ->first();
 
         if ( ! $item) {
-            dd('die early');
+            $item = Product::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
         }
 
         // Get a unit that belongs to this company
@@ -53,7 +55,9 @@ class ExpenseItemFactory extends Factory
             ->first();
 
         if ( ! $unit) {
-            dd('die early');
+            $unit = ProductUnit::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
         }
 
         // Get a tax rate that belongs to this company
@@ -63,7 +67,9 @@ class ExpenseItemFactory extends Factory
             ->first();
 
         if ( ! $taxRate) {
-            dd('die early');
+            $taxRate = TaxRate::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
         }
 
         // Get a second tax rate 75% of the time that belongs to this company
@@ -76,7 +82,9 @@ class ExpenseItemFactory extends Factory
                 ->first();
 
             if ( ! $taxRate2) {
-                dd('die early');
+                $taxRate2 = TaxRate::factory()
+                    ->state(['company_id' => $company->id])
+                    ->create();
             }
         }
 

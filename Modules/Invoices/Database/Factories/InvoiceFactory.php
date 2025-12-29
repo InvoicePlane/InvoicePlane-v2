@@ -76,7 +76,7 @@ class InvoiceFactory extends AbstractFactory
                 ->first();
 
             if ( ! $taxRate) {
-                $taxRate = Product::factory()
+                $taxRate = TaxRate::factory()
                     ->state(['company_id' => $invoice->company_id])
                     ->create();
             }
