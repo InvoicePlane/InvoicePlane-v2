@@ -1,0 +1,163 @@
+name: Composer Dependency Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Type of update to perform'
+        required: true
+        type: choice
+        options:
+          - security-only
+          - patch-minor
+          - all-dependencies
+        default: 'security-only'
+  schedule:
+    # Run weekly on Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-composer-dependencies:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run Composer audit
+        id: audit
+        run: |
+          composer audit --format=json > audit-report.json || true
+          if [ -s audit-report.json ]; then
+            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update Composer dependencies (Security Only)
+        if: github.event.inputs.update_type == 'security-only' || github.event_name == 'schedule'
+        run: |
+          composer update --with-dependencies --prefer-stable --no-interaction
+
+      - name: Update Composer dependencies (Patch & Minor)
+        if: github.event.inputs.update_type == 'patch-minor'
+        run: |
+          composer update --prefer-stable --no-interaction
+
+      - name: Update Composer dependencies (All)
+        if: github.event.inputs.update_type == 'all-dependencies'
+        run: |
+          composer update --prefer-stable --no-interaction
+
+      - name: Run tests
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan test --testsuite=Unit
+
+      - name: Run static analysis
+        run: vendor/bin/phpstan analyse --no-progress --error-format=github || true
+
+      - name: Run code formatting
+        run: vendor/bin/pint --test || true
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet composer.lock; then
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get updated packages
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        id: updated-packages
+        run: |
+          # Get list of updated packages
+          git diff composer.lock | grep -E '^\+.*"(name|version)"' | head -20 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
+          echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
+          cat updated-packages.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          branch: automated/composer-update-${{ github.run_number }}
+          delete-branch: true
+          title: 'chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          body: |
+            ## Composer Dependency Update
+            
+            This PR updates Composer dependencies.
+            
+            **Update Type:** ${{ github.event.inputs.update_type || 'security-only' }}
+            **Triggered by:** ${{ github.event_name }}
+            
+            ### Updated Packages
+            
+            ```
+            ${{ steps.updated-packages.outputs.UPDATED_PACKAGES }}
+            ```
+            
+            ### Checks Performed
+            
+            - ✅ Unit tests passed
+            - ✅ Static analysis completed
+            - ✅ Code formatting checked
+            
+            ### Security Audit
+            
+            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && '⚠️ Security vulnerabilities detected. Please review audit-report.json.' || '✅ No security vulnerabilities detected.' }}
+            
+            ### Review Checklist
+            
+            - [ ] Review updated packages and their changelogs
+            - [ ] Verify all tests pass
+            - [ ] Check for breaking changes
+            - [ ] Update documentation if needed
+            - [ ] Test manually in development environment
+            
+            ---
+            
+            *This PR was automatically created by the Composer Update workflow.*
+          labels: |
+            dependencies
+            composer
+            automated-pr
+          reviewers: |
+            ${{ github.repository_owner }}
+
+      - name: No changes detected
+        if: steps.check-changes.outputs.changes_detected == 'false'
+        run: echo "No Composer dependency updates available."

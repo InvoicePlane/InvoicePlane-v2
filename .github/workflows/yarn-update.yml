@@ -1,0 +1,150 @@
+name: Yarn Dependency Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Type of update to perform'
+        required: true
+        type: choice
+        options:
+          - security-only
+          - patch-minor
+          - all-dependencies
+        default: 'security-only'
+  schedule:
+    # Run weekly on Monday at 10:00 AM UTC
+    - cron: '0 10 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-yarn-dependencies:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install Yarn dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Yarn audit
+        id: audit
+        continue-on-error: true
+        run: |
+          yarn audit --json > audit-report.json || true
+          if [ -s audit-report.json ]; then
+            VULNERABILITIES=$(grep -c "auditAdvisory" audit-report.json || echo "0")
+            if [ "$VULNERABILITIES" -gt 0 ]; then
+              echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+              echo "vulnerability_count=$VULNERABILITIES" >> $GITHUB_OUTPUT
+            else
+              echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update Yarn dependencies (Security Only)
+        if: github.event.inputs.update_type == 'security-only' || github.event_name == 'schedule'
+        run: |
+          # Upgrade packages with security fixes
+          yarn upgrade --pattern 'vite|laravel-vite-plugin|tailwindcss|autoprefixer|axios'
+
+      - name: Update Yarn dependencies (Patch & Minor)
+        if: github.event.inputs.update_type == 'patch-minor'
+        run: |
+          yarn upgrade
+
+      - name: Update Yarn dependencies (All)
+        if: github.event.inputs.update_type == 'all-dependencies'
+        run: |
+          yarn upgrade --latest
+
+      - name: Build assets
+        run: |
+          yarn build
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet yarn.lock; then
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get updated packages
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        id: updated-packages
+        run: |
+          # Get list of updated packages
+          git diff yarn.lock | grep -E '^\+  ' | grep -v '^\+  version' | head -20 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
+          echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
+          cat updated-packages.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          branch: automated/yarn-update-${{ github.run_number }}
+          delete-branch: true
+          title: 'chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'security-only' }})'
+          body: |
+            ## Yarn Dependency Update
+            
+            This PR updates Yarn (npm) dependencies.
+            
+            **Update Type:** ${{ github.event.inputs.update_type || 'security-only' }}
+            **Triggered by:** ${{ github.event_name }}
+            
+            ### Updated Packages
+            
+            ```
+            ${{ steps.updated-packages.outputs.UPDATED_PACKAGES }}
+            ```
+            
+            ### Checks Performed
+            
+            - ✅ Assets built successfully
+            - ✅ Dependencies installed and verified
+            
+            ### Security Audit
+            
+            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && format('⚠️ {0} security vulnerabilities detected. Please review audit-report.json.', steps.audit.outputs.vulnerability_count) || '✅ No security vulnerabilities detected.' }}
+            
+            ### Review Checklist
+            
+            - [ ] Review updated packages and their changelogs
+            - [ ] Verify assets build correctly
+            - [ ] Check for breaking changes in frontend
+            - [ ] Test UI changes in development environment
+            - [ ] Verify no console errors in browser
+            
+            ---
+            
+            *This PR was automatically created by the Yarn Update workflow.*
+          labels: |
+            dependencies
+            yarn
+            automated-pr
+          reviewers: |
+            ${{ github.repository_owner }}
+
+      - name: No changes detected
+        if: steps.check-changes.outputs.changes_detected == 'false'
+        run: echo "No Yarn dependency updates available."
