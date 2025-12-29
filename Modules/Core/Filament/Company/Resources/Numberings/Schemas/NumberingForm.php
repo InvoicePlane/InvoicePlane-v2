@@ -35,7 +35,7 @@ class NumberingForm
                                 Schemas\Components\Group::make()
                                     ->schema([
                                         Select::make('type')
-                                            ->label('Type')
+                                            ->label(trans('ip.numbering_type'))
                                             ->options(array_combine(
                                                 array_map(fn ($case) => $case->value, NumberingType::cases()),
                                                 array_map(fn ($case) => $case->label(), NumberingType::cases())
@@ -45,7 +45,7 @@ class NumberingForm
                                             ->dehydrated(),
                                         
                                         TextInput::make('name')
-                                            ->label('Name')
+                                            ->label(trans('ip.numbering_name'))
                                             ->required(),
                                     ])
                                     ->columnSpan(1),
@@ -54,13 +54,13 @@ class NumberingForm
                                 Grid::make()
                                     ->schema([
                                         TextInput::make('next_id')
-                                            ->label('Next ID')
+                                            ->label(trans('ip.numbering_next_id'))
                                             ->numeric()
                                             ->required()
-                                            ->helperText('Can be adjusted to troubleshoot numbering issues'),
+                                            ->helperText(trans('ip.numbering_next_id_help')),
 
                                         TextInput::make('left_pad')
-                                            ->label('Left Pad')
+                                            ->label(trans('ip.numbering_left_pad'))
                                             ->numeric()
                                             ->default(4),
                                     ])
@@ -79,20 +79,20 @@ class NumberingForm
                             ->schema([
                                 Schemas\Components\Group::make()->schema([
                                     TextInput::make('prefix')
-                                        ->label('Prefix')
+                                        ->label(trans('ip.numbering_prefix'))
                                         ->placeholder('INV')
                                         ->disabled() // Company users cannot change prefix
                                         ->dehydrated(),
                                     
                                     TextInput::make('format')
-                                        ->label('Format')
-                                        ->placeholder('{{prefix}}-{{number}}')
-                                        ->helperText('Use {{prefix}}, {{number}}, {{year}}, {{month}}, {{day}} as placeholders. Only dash (-) or underscore (_) separators allowed.'),
+                                        ->label(trans('ip.numbering_format'))
+                                        ->placeholder(trans('ip.numbering_format_placeholder'))
+                                        ->helperText(trans('ip.numbering_format_help')),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
-                                        ->label('Format Help')
-                                        ->content('You can customize the format using placeholders: {{prefix}} for prefix, {{number}} for sequential number, {{year}} for 4-digit year, {{yy}} for 2-digit year, {{month}} for month, {{day}} for day. The number will be left-padded according to the Left Pad setting.')
+                                        ->label(trans('ip.numbering_format_help_label'))
+                                        ->content(trans('ip.numbering_format_helper'))
                                         ->columnSpanFull(),
                                 ]),
                             ]),

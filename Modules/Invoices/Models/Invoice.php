@@ -89,31 +89,6 @@ class Invoice extends Model
         'invoice_password',
     ];
 
-    /**
-     * Boot the model and register event listeners.
-     */
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        // Prevent duplicate invoice numbers within the same company
-        // Allows multiple nulls (for draft invoices)
-        static::saving(function (Invoice $model) {
-            if ($model->invoice_number !== null) {
-                $duplicate = self::where('company_id', $model->company_id)
-                    ->where('invoice_number', $model->invoice_number)
-                    ->where('id', '!=', $model->id ?? 0)
-                    ->exists();
-
-                if ($duplicate) {
-                    throw new \RuntimeException(
-                        "Duplicate invoice number '{$model->invoice_number}' for company {$model->company_id}"
-                    );
-                }
-            }
-        });
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Relationships

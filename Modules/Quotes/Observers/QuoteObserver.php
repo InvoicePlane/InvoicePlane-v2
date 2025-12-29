@@ -3,23 +3,31 @@
 namespace Modules\Quotes\Observers;
 
 use Modules\Core\Observers\AbstractObserver;
+use Modules\Quotes\Models\Quote;
 
 class QuoteObserver extends AbstractObserver
 {
-    /*public static function boot(): void
+    /**
+     * Handle the Quote "saving" event.
+     * Prevent duplicate quote numbers within the same company.
+     * Allows multiple nulls (for draft quotes).
+     */
+    public function saving(Quote $quote): void
     {
-        parent::boot();
+        if ($quote->quote_number !== null) {
+            $duplicate = Quote::where('company_id', $quote->company_id)
+                ->where('quote_number', $quote->quote_number)
+                ->where('id', '!=', $quote->id ?? 0)
+                ->exists();
 
-        static::creating(function ($quote): void {
-            //event(new QuoteCreating($quote));
-        });
-
-        static::created(function ($quote): void {
-            //event(new QuoteCreated($quote));
-        });
-
-        static::deleted(function ($quote): void {
-            //event(new QuoteDeleted($quote));
-        });
-    }*/
+            if ($duplicate) {
+                throw new \RuntimeException(
+                    trans('ip.duplicate_quote_number', [
+                        'number' => $quote->quote_number,
+                        'company' => $quote->company_id,
+                    ])
+                );
+            }
+        }
+    }
 }

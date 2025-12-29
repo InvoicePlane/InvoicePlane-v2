@@ -19,15 +19,15 @@ class NumberingForm
         return $schema
             ->components([
                 // Company selection (Admin can assign to any company)
-                Section::make('Company Assignment')
+                Section::make(trans('ip.numbering_company_assignment'))
                     ->schema([
                         Select::make('company_id')
-                            ->label('Company')
+                            ->label(trans('ip.numbering_company'))
                             ->options(Company::all()->pluck('name', 'id'))
                             ->required()
                             ->searchable()
                             ->preload()
-                            ->helperText('Select which company this numbering scheme belongs to'),
+                            ->helperText(trans('ip.numbering_select_company_help')),
                     ])
                     ->columnSpanFull(),
 
@@ -42,7 +42,7 @@ class NumberingForm
                                 Schemas\Components\Group::make()
                                     ->schema([
                                         Select::make('type')
-                                            ->label('Type')
+                                            ->label(trans('ip.numbering_type'))
                                             ->options(array_combine(
                                                 array_map(fn ($case) => $case->value, NumberingType::cases()),
                                                 array_map(fn ($case) => $case->label(), NumberingType::cases())
@@ -58,7 +58,7 @@ class NumberingForm
                                                 }
                                             }),
                                         TextInput::make('name')
-                                            ->label('Name')
+                                            ->label(trans('ip.numbering_name'))
                                             ->required(),
                                     ])
                                     ->columnSpan(1),
@@ -67,13 +67,13 @@ class NumberingForm
                                 Grid::make()
                                     ->schema([
                                         TextInput::make('next_id')
-                                            ->label('Next ID')
+                                            ->label(trans('ip.numbering_next_id'))
                                             ->numeric()
                                             ->required()
                                             ->default(1),
 
                                         TextInput::make('left_pad')
-                                            ->label('Left Pad')
+                                            ->label(trans('ip.numbering_left_pad'))
                                             ->numeric()
                                             ->default(4),
                                     ])
@@ -92,17 +92,17 @@ class NumberingForm
                             ->schema([
                                 Schemas\Components\Group::make()->schema([
                                     TextInput::make('prefix')
-                                        ->label('Prefix')
+                                        ->label(trans('ip.numbering_prefix'))
                                         ->placeholder('JOB'),
                                     TextInput::make('format')
-                                        ->label('Format')
-                                        ->placeholder('{{prefix}}-{{number}}')
-                                        ->helperText('Use {{prefix}} and {{number}} as placeholders'),
+                                        ->label(trans('ip.numbering_format'))
+                                        ->placeholder(trans('ip.numbering_format_placeholder'))
+                                        ->helperText(trans('ip.numbering_format_help')),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
                                         ->label('')
-                                        ->content('The format string can use {{prefix}} for the prefix and {{number}} for the sequential number. The number will be left-padded according to the Left Pad setting.')
+                                        ->content(trans('ip.numbering_format_helper_admin'))
                                         ->columnSpanFull(),
                                 ]),
                             ]),
