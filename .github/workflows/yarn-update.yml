@@ -121,12 +121,12 @@ jobs:
             
             ### Checks Performed
             
-            - ✅ Assets built successfully
-            - ✅ Dependencies installed and verified
+            - [x] Assets built successfully
+            - [x] Dependencies installed and verified
             
             ### Security Audit
             
-            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && format('⚠️ {0} security vulnerabilities detected. Please review audit-report.json.', steps.audit.outputs.vulnerability_count) || '✅ No security vulnerabilities detected.' }}
+            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && format('{0} security vulnerabilities detected. Please review audit-report.json.', steps.audit.outputs.vulnerability_count) || 'No security vulnerabilities detected.' }}
             
             ### Review Checklist
             

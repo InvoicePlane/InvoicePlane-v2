@@ -134,13 +134,13 @@ jobs:
             
             ### Checks Performed
             
-            - ✅ Unit tests passed
-            - ✅ Static analysis completed
-            - ✅ Code formatting checked
+            - [x] Unit tests passed
+            - [x] Static analysis completed
+            - [x] Code formatting checked
             
             ### Security Audit
             
-            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && '⚠️ Security vulnerabilities detected. Please review audit-report.json.' || '✅ No security vulnerabilities detected.' }}
+            ${{ steps.audit.outputs.vulnerabilities_found == 'true' && 'Security vulnerabilities detected. Please review audit-report.json.' || 'No security vulnerabilities detected.' }}
             
             ### Review Checklist
             
