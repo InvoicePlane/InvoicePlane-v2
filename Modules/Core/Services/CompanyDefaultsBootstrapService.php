@@ -2,10 +2,10 @@
 
 namespace Modules\Core\Services;
 
-use Modules\Core\Enums\DocumentGroupType;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\TaxRate;
 use Modules\Expenses\Models\ExpenseCategory;
@@ -21,11 +21,11 @@ class CompanyDefaultsBootstrapService
         // Create default document group for invoices
         $documentGroupData = [
             'company_id'              => $company->id,
-            'type'                    => DocumentGroupType::INVOICES->value,
-            'group_identifier_format' => DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
-            'name'                    => DocumentGroupType::INVOICES->label(),
+            'type'                    => NumberingType::INVOICES->value,
+            'group_identifier_format' => NumberingType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'name'                    => NumberingType::INVOICES->label(),
             'left_pad'                => 6,
-            'format'                  => DocumentGroupType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'format'                  => NumberingType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
             'next_id'                 => 1,
             'reset_number'            => 0,
             'last_id'                 => 0,
@@ -34,11 +34,11 @@ class CompanyDefaultsBootstrapService
             'last_week'               => now()->week,
         ];
 
-        DocumentGroup::firstOrCreate(
+        Numbering::firstOrCreate(
             [
                 'company_id' => $company->id,
-                'type'       => DocumentGroupType::INVOICES->value,
-                'name'       => DocumentGroupType::INVOICES->label(),
+                'type'       => NumberingType::INVOICES->value,
+                'name'       => NumberingType::INVOICES->label(),
             ],
             $documentGroupData
         );

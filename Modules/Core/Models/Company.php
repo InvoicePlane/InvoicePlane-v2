@@ -48,7 +48,7 @@ use Modules\Quotes\Models\QuoteItem;
  * @property Collection|Contact[]          $contacts
  * @property Collection|CustomFieldValue[] $custom_field_values
  * @property Collection|CustomField[]      $custom_fields
- * @property Collection|DocumentGroup[]    $document_groups
+ * @property Collection|Numbering[]    $numberings
  * @property Collection|EmailTemplate[]    $email_templates
  * @property Collection|ExpenseCategory[]  $expense_categories
  * @property Collection|ExpenseItem[]      $expense_items
@@ -157,7 +157,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
 
     public function documentGroups(): HasMany
     {
-        return $this->hasMany(DocumentGroup::class);
+        return $this->hasMany(Numbering::class);
     }
 
     public function email_templates(): HasMany

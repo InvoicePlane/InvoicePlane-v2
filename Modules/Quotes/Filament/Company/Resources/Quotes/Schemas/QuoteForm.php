@@ -96,8 +96,8 @@ class QuoteForm
                                             ->label(trans('ip.quote_expires_at'))
                                             ->native(false),
 
-                                        Select::make('document_group_id')
-                                            ->label(trans('ip.document_group'))
+                                        Select::make('numbering_id')
+                                            ->label(trans('ip.numbering'))
                                             ->relationship('documentGroup', 'name')
                                             ->required()
                                             ->searchable()

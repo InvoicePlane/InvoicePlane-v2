@@ -14,14 +14,14 @@ class QuotesSeeder extends AbstractSeeder
     protected function buildOne(): void
     {
         $prospect      = $this->findOrCreateProspect($this->companyId);
-        $documentGroup = $this->findOrCreateDocumentGroup($this->companyId);
+        $documentGroup = $this->findOrCreateNumbering($this->companyId);
         $user          = $this->findOrCreateUser($this->companyId);
 
         Quote::factory()
             ->state([
                 'company_id'        => $this->companyId,
                 'prospect_id'       => $prospect->id,
-                'document_group_id' => $documentGroup->id,
+                'numbering_id' => $documentGroup->id,
                 'user_id'           => $user->id,
             ])
             ->create();

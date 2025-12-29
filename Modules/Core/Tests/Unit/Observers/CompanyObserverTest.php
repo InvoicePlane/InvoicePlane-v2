@@ -30,7 +30,7 @@ class CompanyObserverTest extends AbstractTestCase
         $this->assertDatabaseHas('tax_rates', [
             'company_id' => $company->id,
         ]);
-        $this->assertDatabaseHas('document_groups', [
+        $this->assertDatabaseHas('numberings', [
             'company_id' => $company->id,
         ]);
 

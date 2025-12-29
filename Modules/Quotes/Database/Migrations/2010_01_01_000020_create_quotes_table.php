@@ -11,7 +11,7 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('prospect_id');
-            $table->unsignedBigInteger('document_group_id')->nullable()->index('quotes_document_group_id_foreign');
+            $table->unsignedBigInteger('numbering_id')->nullable()->index('quotes_numbering_id_index');
             $table->unsignedBigInteger('user_id');
             $table->string('quote_number')->index('quote_number');
             $table->string('quote_status');
@@ -31,9 +31,9 @@ return new class () extends Migration {
             $table->text('footer')->nullable();
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('prospect_id', 'quotes_prospect_id_foreign')->references('id')->on('relations')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreign('document_group_id', 'quotes_document_group_id_foreign')
+            $table->foreign('numbering_id', 'quotes_numbering_id_foreign')
                 ->references('id')
-                ->on('document_groups')
+                ->on('numbering')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
             $table->foreign('user_id', 'quotes_user_id_foreign')->references('id')->on('users')->onUpdate('cascade')->onDelete('restrict');
