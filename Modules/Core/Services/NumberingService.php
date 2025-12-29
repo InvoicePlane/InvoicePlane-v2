@@ -45,6 +45,20 @@ class NumberingService
             try {
                 $payload = $this->prepareUpdateData($numbering, $data);
 
+                // Troubleshooting mode: if next_id is set lower than existing numbers,
+                // automatically recalculate to find the highest number
+                if (isset($payload['next_id']) && $payload['next_id'] < $numbering->next_id) {
+                    Log::warning('Numbering troubleshooting mode triggered', [
+                        'numbering_id'   => $numbering->id,
+                        'numbering_name' => $numbering->name,
+                        'old_next_id'    => $numbering->next_id,
+                        'requested_next_id' => $payload['next_id'],
+                    ]);
+
+                    // Trigger resolveNextIdUpdate to find the highest existing number
+                    $payload['next_id'] = $this->resolveNextIdUpdate($numbering, $payload['next_id']);
+                }
+
                 unset($payload['__desired_next_id'], $payload['__resolved_next_id']);
 
                 $numbering->update($payload);

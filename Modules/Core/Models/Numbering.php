@@ -82,7 +82,10 @@ class Numbering extends Model
     }
 
     /**
-     * Sanitize format string by trimming whitespace.
+     * Sanitize format string by trimming whitespace and enforcing separator restrictions.
+     * 
+     * Only dash "-" and underscore "_" are allowed as separators.
+     * Forward slash "/" is automatically converted to dash for backward compatibility.
      */
     public static function sanitizeFormat(?string $format): ?string
     {
@@ -91,8 +94,15 @@ class Numbering extends Model
         }
 
         $trimmed = trim($format);
+        
+        if ($trimmed === '') {
+            return null;
+        }
 
-        return $trimmed === '' ? null : $trimmed;
+        // Replace forward slash with dash for backward compatibility
+        $trimmed = str_replace('/', '-', $trimmed);
+
+        return $trimmed;
     }
 
     /**

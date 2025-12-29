@@ -166,7 +166,7 @@ class NumberGeneratorTemplateTest extends TestCase
         $numbering = Numbering::factory()->for($this->company)->create([
             'type'     => NumberingType::PROJECT->value,
             'name'     => 'Sequential with Date',
-            'format'   => '{{prefix}}/{{year}}/{{month}}/{{number}}',
+            'format'   => '{{prefix}}-{{year}}-{{month}}-{{number}}',
             'prefix'   => 'PRJ',
             'next_id'  => 1,
             'left_pad' => 4,
@@ -180,9 +180,9 @@ class NumberGeneratorTemplateTest extends TestCase
         $number3 = $generator->forNumberingId($numbering->id)->generate();
 
         /* Assert */
-        $this->assertEquals('PRJ/2025/01/0001', $number1);
-        $this->assertEquals('PRJ/2025/01/0002', $number2);
-        $this->assertEquals('PRJ/2025/01/0003', $number3);
+        $this->assertEquals('PRJ-2025-01-0001', $number1);
+        $this->assertEquals('PRJ-2025-01-0002', $number2);
+        $this->assertEquals('PRJ-2025-01-0003', $number3);
     }
 
     #[Test]
