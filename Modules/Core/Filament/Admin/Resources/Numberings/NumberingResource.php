@@ -40,8 +40,6 @@ class NumberingResource extends Resource
     {
         return [
             'index'  => ListNumberings::route('/'),
-            'create' => CreateNumbering::route('/create'),
-            'edit'   => EditNumbering::route('/{record}/edit'),
         ];
     }
 }
