@@ -18,7 +18,7 @@ Maybe I'll do the *settings* per module as a separate row in this checklist.
 
 ## Test Coverage
 
-| Module | Submodule | Index (happy) | Specials (happy) | Create (happy) | Update (happy) | Delete (happy) | Translations |
+| Module | Submodule | Index | Specials | Create | Update | Delete | Translations |
 |-----------|------------------|:-------------:|:----------------:|:--------------:|:--------------:|:--------------:|:------------:|
 | clients | | | | | | | |
 | | user_clients | | | | | | |
