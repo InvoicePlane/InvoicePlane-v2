@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\DocumentGroups\Tables;
+namespace Modules\Core\Filament\Admin\Resources\Numberings\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -9,12 +9,12 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\Core\Enums\DocumentGroupType;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Helpers\EnumHelper;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Services\DocumentGroupService;
+use Modules\Core\Models\Numbering;
+use Modules\Core\Services\NumberingService;
 
-class DocumentGroupsTable
+class NumberingsTable
 {
     public static function configure(Table $table): Table
     {
@@ -23,22 +23,22 @@ class DocumentGroupsTable
                 TextColumn::make('type')
                     ->limit(10)
                     ->formatStateUsing(function ($state) {
-                        if ($state instanceof DocumentGroupType) {
+                        if ($state instanceof NumberingType) {
                             return $state->label();
                         }
 
-                        $status = EnumHelper::safeEnum(DocumentGroupType::class, $state);
+                        $type = EnumHelper::safeEnum(NumberingType::class, $state);
 
-                        return $status?->label() ?? '-';
+                        return $type?->label() ?? '-';
                     })
                     ->color(function ($state) {
-                        if ($state instanceof DocumentGroupType) {
+                        if ($state instanceof NumberingType) {
                             return $state->color();
                         }
 
-                        $status = EnumHelper::safeEnum(DocumentGroupType::class, $state);
+                        $type = EnumHelper::safeEnum(NumberingType::class, $state);
 
-                        return $status?->color() ?? 'secondary';
+                        return $type?->color() ?? 'secondary';
                     })
                     ->badge()
                     ->searchable()
@@ -46,7 +46,7 @@ class DocumentGroupsTable
                     ->toggleable(),
                 TextColumn::make('name')
                     ->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('group_identifier_format')
+                TextColumn::make('prefix')
                     ->searchable()->sortable()->toggleable(),
                 TextColumn::make('left_pad')
                     ->numeric()
@@ -60,14 +60,10 @@ class DocumentGroupsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->action(function (DocumentGroup $record, array $data) {
-                            app(DocumentGroupService::class)->updateDocumentGroup($record, $data);
-                        })
-                        ->modalWidth('full'),
+                    EditAction::make(),
                     DeleteAction::make('delete')
-                        ->action(function (DocumentGroup $record, array $data) {
-                            app(DocumentGroupService::class)->deleteDocumentGroup($record);
+                        ->action(function (Numbering $record) {
+                            app(NumberingService::class)->deleteNumbering($record);
                         }),
                 ]),
             ])

@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
@@ -70,7 +70,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         $company       = $this->user->companies()->first();
         $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $documentGroup = Numbering::factory()->for($company)->create();
 
         $taxRate         = TaxRate::factory()->for($company)->create();
         $productCategory = ProductCategory::factory()->for($company)->create();
@@ -85,7 +85,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'document_group_id'      => $documentGroup->id,
+            'numbering_id'      => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
@@ -135,7 +135,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $company       = $this->user->companies()->first();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $documentGroup = Numbering::factory()->for($company)->create();
 
         $taxRate         = TaxRate::factory()->for($company)->create();
         $productCategory = ProductCategory::factory()->for($company)->create();
@@ -148,7 +148,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'document_group_id'   => $documentGroup->id,
+            'numbering_id'   => $documentGroup->id,
             'quote_status'        => QuoteStatus::DRAFT->value,
             'quoted_at'           => now()->format('Y-m-d'),
             'quote_expires_at'    => now()->addDays(30)->format('Y-m-d'),
@@ -303,7 +303,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company       = $this->user->companies()->first();
         $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $documentGroup = Numbering::factory()->for($company)->create();
 
         $taxRate         = TaxRate::factory()->for($company)->create();
         $productCategory = ProductCategory::factory()->for($company)->create();
@@ -318,7 +318,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'document_group_id'      => $documentGroup->id,
+            'numbering_id'      => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
@@ -448,14 +448,14 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
         $quote = Quote::factory()
             ->for($this->company)
             ->create([
                 'quote_number'           => 'Q-0001',
                 'prospect_id'            => $prospect->id,
-                'document_group_id'      => $documentGroup->id,
+                'numbering_id'      => $documentGroup->id,
                 'user_id'                => $this->user->id,
                 'quote_status'           => QuoteStatus::DRAFT->value,
                 'quoted_at'              => now()->format('Y-m-d'),
@@ -501,7 +501,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         $company       = $this->user->companies()->first();
         $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $documentGroup = Numbering::factory()->for($company)->create();
 
         $taxRate         = TaxRate::factory()->for($company)->create();
         $productCategory = ProductCategory::factory()->for($company)->create();
@@ -516,7 +516,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'document_group_id'      => $documentGroup->id,
+            'numbering_id'      => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),

@@ -32,6 +32,10 @@ class TaskForm
                             ->schema([
                                 Section::make(trans('ip.task'))
                                     ->schema([
+                                        TextInput::make('task_number')
+                                            ->label(trans('ip.task_number'))
+                                            ->maxLength(255),
+
                                         TextInput::make('task_name')
                                             ->label(trans('ip.task_name'))
                                             ->required()

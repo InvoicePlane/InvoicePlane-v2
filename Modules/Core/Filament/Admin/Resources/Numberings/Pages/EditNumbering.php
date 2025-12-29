@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages;
+namespace Modules\Core\Filament\Admin\Resources\Numberings\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Services\DocumentGroupService;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Models\Numbering;
+use Modules\Core\Services\NumberingService;
 use Throwable;
 
-class EditDocumentGroup extends EditRecord
+class EditNumbering extends EditRecord
 {
-    protected static string $resource = DocumentGroupResource::class;
+    protected static string $resource = NumberingResource::class;
 
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
@@ -48,8 +48,8 @@ class EditDocumentGroup extends EditRecord
     /**
      * @throws Throwable
      */
-    protected function handleRecordUpdate(DocumentGroup|Model $record, array $data): Model
+    protected function handleRecordUpdate(Numbering|Model $record, array $data): mixed
     {
-        return app(DocumentGroupService::class)->updateDocumentGroup($record, $data);
+        return app(NumberingService::class)->updateNumbering($record, $data);
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Pages\Settings;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -29,23 +29,23 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_filters_document_groups_by_current_company_id(): void
+    public function it_filters_numberings_by_current_company_id(): void
     {
         $this->markTestIncomplete();
 
-        $group1Company1 = DocumentGroup::factory()->create([
+        $group1Company1 = Numbering::factory()->create([
             'company_id' => $this->company1->id,
             'name'       => 'Invoice Group Company 1',
             'type'       => 'invoice',
         ]);
 
-        $group2Company1 = DocumentGroup::factory()->create([
+        $group2Company1 = Numbering::factory()->create([
             'company_id' => $this->company1->id,
             'name'       => 'Quote Group Company 1',
             'type'       => 'quote',
         ]);
 
-        $group1Company2 = DocumentGroup::factory()->create([
+        $group1Company2 = Numbering::factory()->create([
             'company_id' => $this->company2->id,
             'name'       => 'Invoice Group Company 2',
             'type'       => 'invoice',
@@ -87,7 +87,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
     {
         $this->markTestIncomplete();
 
-        DocumentGroup::factory()->for($this->company1)->create([
+        Numbering::factory()->for($this->company1)->create([
             'name' => 'Test Group',
             'type' => 'invoice',
         ]);
@@ -102,7 +102,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_returns_empty_options_when_no_document_groups_exist(): void
+    public function it_returns_empty_options_when_no_numberings_exist(): void
     {
         $this->markTestIncomplete();
 
@@ -131,13 +131,13 @@ class SettingsTest extends AbstractAdminPanelTestCase
     {
         $this->markTestIncomplete();
 
-        $group1 = DocumentGroup::factory()->create([
+        $group1 = Numbering::factory()->create([
             'company_id' => $this->company1->id,
             'name'       => 'Group Company 1',
             'type'       => 'invoice',
         ]);
 
-        $group2 = DocumentGroup::factory()->create([
+        $group2 = Numbering::factory()->create([
             'company_id' => $this->company2->id,
             'name'       => 'Group Company 2',
             'type'       => 'invoice',

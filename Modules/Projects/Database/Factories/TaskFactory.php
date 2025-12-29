@@ -13,6 +13,7 @@ class TaskFactory extends AbstractFactory
     public function definition(): array
     {
         return [
+            'task_number' => $this->faker->unique()->numerify('TSK-#####'),
             'assigned_to' => null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
             'task_name'   => $this->faker->words(3, true),

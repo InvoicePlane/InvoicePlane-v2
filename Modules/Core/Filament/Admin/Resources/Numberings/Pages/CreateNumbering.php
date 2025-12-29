@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages;
+namespace Modules\Core\Filament\Admin\Resources\Numberings\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
-use Modules\Core\Services\DocumentGroupService;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Services\NumberingService;
 use Throwable;
 
-class CreateDocumentGroup extends CreateRecord
+class CreateNumbering extends CreateRecord
 {
-    protected static string $resource = DocumentGroupResource::class;
+    protected static string $resource = NumberingResource::class;
 
     public function create(bool $another = false): void
     {
@@ -48,7 +48,7 @@ class CreateDocumentGroup extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        return app(DocumentGroupService::class)->createDocumentGroup($data);
+        return app(NumberingService::class)->createNumbering($data);
     }
 
     protected function afterCreate(): void

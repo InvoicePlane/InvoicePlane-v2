@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\DocumentGroups\Pages;
+namespace Modules\Core\Filament\Admin\Resources\Numberings\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
-use Modules\Core\Services\DocumentGroupService;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Services\NumberingService;
 
-class ListDocumentGroups extends ListRecords
+class ListNumberings extends ListRecords
 {
-    protected static string $resource = DocumentGroupResource::class;
+    protected static string $resource = NumberingResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -19,7 +19,7 @@ class ListDocumentGroups extends ListRecords
                     return $data;
                 })
                 ->action(function (array $data) {
-                    app(DocumentGroupService::class)->createDocumentGroup($data);
+                    app(NumberingService::class)->createNumbering($data);
                 })
                 ->modalWidth('full'),
         ];
