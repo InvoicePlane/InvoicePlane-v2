@@ -4,16 +4,17 @@ namespace Modules\ReportBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\ReportBuilder\Enums\ReportTemplateType;
 
 /**
- * @property int         $id
- * @property int         $company_id
- * @property string      $name
- * @property string      $slug
- * @property string|null $description
- * @property string      $template_type
- * @property bool        $is_system
- * @property bool        $is_active
+ * @property int                  $id
+ * @property int                  $company_id
+ * @property string               $name
+ * @property string               $slug
+ * @property string|null          $description
+ * @property ReportTemplateType   $template_type
+ * @property bool                 $is_system
+ * @property bool                 $is_active
  */
 class ReportTemplate extends Model
 {
@@ -32,7 +33,7 @@ class ReportTemplate extends Model
     protected $casts = [
         'is_system'     => 'boolean',
         'is_active'     => 'boolean',
-        'template_type' => 'string',
+        'template_type' => ReportTemplateType::class,
     ];
 
     /**

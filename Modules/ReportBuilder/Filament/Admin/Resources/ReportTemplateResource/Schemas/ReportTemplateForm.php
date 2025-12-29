@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\ReportBuilder\Enums\ReportTemplateType;
 
 class ReportTemplateForm
 {
@@ -21,29 +22,28 @@ class ReportTemplateForm
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Template Name')
+                                    ->label(trans('ip.template_name'))
                                     ->required()
                                     ->maxLength(255),
                                 Select::make('template_type')
-                                    ->label('Template Type')
+                                    ->label(trans('ip.template_type'))
                                     ->required()
-                                    ->options([
-                                        'invoice'  => 'Invoice',
-                                        'quote'    => 'Quote',
-                                        'estimate' => 'Estimate',
-                                    ]),
+                                    ->options(
+                                        collect(ReportTemplateType::cases())
+                                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                                    ),
                             ]),
                         Textarea::make('description')
-                            ->label('Description')
+                            ->label(trans('ip.description'))
                             ->rows(3)
                             ->maxLength(1000),
                         Grid::make(2)
                             ->schema([
                                 Checkbox::make('is_active')
-                                    ->label('Active')
+                                    ->label(trans('ip.active'))
                                     ->default(true),
                                 Checkbox::make('is_system')
-                                    ->label('System Template')
+                                    ->label(trans('ip.system_template'))
                                     ->disabled()
                                     ->dehydrated(false),
                             ]),

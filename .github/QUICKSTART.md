@@ -13,7 +13,6 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
-
 Then visit:
 
 `http://localhost:8000/ivpl` (Artisan)

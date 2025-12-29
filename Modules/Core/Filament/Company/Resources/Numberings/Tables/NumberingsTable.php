@@ -12,25 +12,25 @@ class NumberingsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(trans('ip.name'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('type')
-                    ->label('Type')
+                    ->label(trans('ip.type'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('format')
-                    ->label('Format')
+                    ->label(trans('ip.format'))
                     ->searchable(),
 
                 TextColumn::make('next_id')
-                    ->label('Next ID')
+                    ->label(trans('ip.next_id'))
                     ->sortable(),
 
                 TextColumn::make('left_pad')
-                    ->label('Padding'),
+                    ->label(trans('ip.left_pad')),
             ])
             ->defaultSort('type', 'asc');
     }

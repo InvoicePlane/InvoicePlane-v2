@@ -41,7 +41,7 @@ jobs:
           # Check if there were parse errors
           if grep -q "Parse error" pint_output.log || grep -q "!" pint_output.log; then
             echo "parse_errors=true" >> $GITHUB_OUTPUT
-            echo "⚠️  Parse errors detected in one or more files"
+            echo "WARNING: Parse errors detected in one or more files"
           else
             echo "parse_errors=false" >> $GITHUB_OUTPUT
           fi
@@ -71,10 +71,10 @@ jobs:
           git push
           
           if [[ "${{ steps.pint_run.outputs.parse_errors }}" == "true" ]]; then
-            echo "⚠️  Changes committed successfully, but some files had parse errors and were not formatted"
+            echo "WARNING: Changes committed successfully, but some files had parse errors and were not formatted"
             echo "Please fix the parse errors in the files marked with '!' in the Pint output above"
           else
-            echo "✓ All changes committed and pushed successfully"
+            echo "SUCCESS: All changes committed and pushed successfully"
           fi
 
       - name: Report Parse Errors

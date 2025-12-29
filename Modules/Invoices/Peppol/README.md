@@ -9,26 +9,26 @@ This Peppol integration allows InvoicePlane v2 to send invoices electronically t
 ### Components
 
 1. **HTTP Client Layer**
-   - HTTP client: Laravel's Http facade wrapper
-   - Comprehensive exception handling and logging for all API requests
+ - HTTP client: Laravel's Http facade wrapper
+ - Comprehensive exception handling and logging for all API requests
 
 2. **Peppol Provider Layer**
-   - `BasePeppolClient`: Abstract base class for all Peppol providers
-   - `EInvoiceBeClient`: Concrete implementation for e-invoice.be provider
-   - `DocumentsClient`: Specific client for document operations
+ - `BasePeppolClient`: Abstract base class for all Peppol providers
+ - `EInvoiceBeClient`: Concrete implementation for e-invoice.be provider
+ - `DocumentsClient`: Specific client for document operations
 
 3. **Service Layer**
-   - `PeppolService`: Business logic for Peppol operations
-   - Handles invoice validation, data preparation, and transmission
+ - `PeppolService`: Business logic for Peppol operations
+ - Handles invoice validation, data preparation, and transmission
 
 4. **Action Layer**
-   - `SendInvoiceToPeppolAction`: Orchestrates invoice sending process
-   - Can be called from UI actions or programmatically
+ - `SendInvoiceToPeppolAction`: Orchestrates invoice sending process
+ - Can be called from UI actions or programmatically
 
 5. **UI Integration**
-   - Header action in `EditInvoice` page
-   - Table action in `ListInvoices` page
-   - Modal form for entering customer Peppol ID
+ - Header action in `EditInvoice` page
+ - Table action in `ListInvoices` page
+ - Modal form for entering customer Peppol ID
 
 ## Installation & Configuration
 
@@ -87,21 +87,21 @@ $invoice = Invoice::find($invoiceId);
 $action = app(SendInvoiceToPeppolAction::class);
 
 try {
-    $result = $action->execute($invoice, [
-        'customer_peppol_id' => 'BE:0123456789',
-    ]);
-    
-    // Success! Document ID is available
-    $documentId = $result['document_id'];
-    $status = $result['status'];
-    
+ $result = $action->execute($invoice, [
+ 'customer_peppol_id' => 'BE:0123456789',
+ ]);
+
+ // Success! Document ID is available
+ $documentId = $result['document_id'];
+ $status = $result['status'];
+
 } catch (\InvalidArgumentException $e) {
-    // Validation error
-    Log::error('Invalid invoice data: ' . $e->getMessage());
-    
+ // Validation error
+ Log::error('Invalid invoice data: ' . $e->getMessage());
+
 } catch (\Illuminate\Http\Client\RequestException $e) {
-    // API request failed
-    Log::error('Peppol API error: ' . $e->getMessage());
+ // API request failed
+ Log::error('Peppol API error: ' . $e->getMessage());
 }
 ```
 
@@ -113,9 +113,9 @@ $status = $action->getStatus('DOC-123456');
 
 // Returns:
 // [
-//     'status' => 'delivered',
-//     'delivered_at' => '2024-01-15T12:30:00Z',
-//     ...
+// 'status' => 'delivered',
+// 'delivered_at' => '2024-01-15T12:30:00Z',
+// ...
 // ]
 ```
 
@@ -134,47 +134,47 @@ The `PeppolService` transforms InvoicePlane invoices to Peppol UBL format:
 
 ```php
 [
-    'document_type' => 'invoice',
-    'invoice_number' => 'INV-2024-001',
-    'issue_date' => '2024-01-15',
-    'due_date' => '2024-02-14',
-    'currency_code' => 'EUR',
-    
-    'supplier' => [
-        'name' => 'Company Name',
-        // Additional supplier details
-    ],
-    
-    'customer' => [
-        'name' => 'Customer Name',
-        'endpoint_id' => 'BE:0123456789',
-        'endpoint_scheme' => 'BE:CBE',
-    ],
-    
-    'invoice_lines' => [
-        [
-            'id' => 1,
-            'quantity' => 2,
-            'unit_code' => 'C62',
-            'line_extension_amount' => 200.00,
-            'price_amount' => 100.00,
-            'item' => [
-                'name' => 'Product Name',
-                'description' => 'Product description',
-            ],
-        ],
-    ],
-    
-    'legal_monetary_total' => [
-        'line_extension_amount' => 200.00,
-        'tax_exclusive_amount' => 200.00,
-        'tax_inclusive_amount' => 242.00,
-        'payable_amount' => 242.00,
-    ],
-    
-    'tax_total' => [
-        'tax_amount' => 42.00,
-    ],
+ 'document_type' => 'invoice',
+ 'invoice_number' => 'INV-2024-001',
+ 'issue_date' => '2024-01-15',
+ 'due_date' => '2024-02-14',
+ 'currency_code' => 'EUR',
+
+ 'supplier' => [
+ 'name' => 'Company Name',
+ // Additional supplier details
+ ],
+
+ 'customer' => [
+ 'name' => 'Customer Name',
+ 'endpoint_id' => 'BE:0123456789',
+ 'endpoint_scheme' => 'BE:CBE',
+ ],
+
+ 'invoice_lines' => [
+ [
+ 'id' => 1,
+ 'quantity' => 2,
+ 'unit_code' => 'C62',
+ 'line_extension_amount' => 200.00,
+ 'price_amount' => 100.00,
+ 'item' => [
+ 'name' => 'Product Name',
+ 'description' => 'Product description',
+ ],
+ ],
+ ],
+
+ 'legal_monetary_total' => [
+ 'line_extension_amount' => 200.00,
+ 'tax_exclusive_amount' => 200.00,
+ 'tax_inclusive_amount' => 242.00,
+ 'payable_amount' => 242.00,
+ ],
+
+ 'tax_total' => [
+ 'tax_amount' => 42.00,
+ ],
 ]
 ```
 
@@ -182,11 +182,11 @@ The `PeppolService` transforms InvoicePlane invoices to Peppol UBL format:
 
 Before sending to Peppol, invoices are validated:
 
-- ✅ Must have a customer
-- ✅ Must have an invoice number
-- ✅ Must have at least one invoice item
-- ✅ Cannot be in draft status
-- ✅ Customer Peppol ID must be provided
+- Must have a customer
+- Must have an invoice number
+- Must have at least one invoice item
+- Cannot be in draft status
+- Customer Peppol ID must be provided
 
 ## Error Handling
 
@@ -231,26 +231,26 @@ Tests use Laravel's HTTP fakes instead of mocks:
 use Illuminate\Support\Facades\Http;
 
 Http::fake([
-    'https://api.e-invoice.be/*' => Http::response([
-        'document_id' => 'DOC-123',
-        'status' => 'submitted',
-    ], 200),
+ 'https://api.e-invoice.be/*' => Http::response([
+ 'document_id' => 'DOC-123',
+ 'status' => 'submitted',
+ ], 200),
 ]);
 
 // Your test code here
 
 Http::assertSent(function ($request) {
-    return $request->url() === 'https://api.e-invoice.be/api/documents';
+ return $request->url() === 'https://api.e-invoice.be/api/documents';
 });
 ```
 
 ### Test Coverage
 
-- ✅ `ExternalClientTest`: 15 tests (HTTP wrapper)
-- ✅ `HttpClientExceptionHandlerTest`: Not yet implemented
-- ✅ `DocumentsClientTest`: 12 tests (API client)
-- ✅ `PeppolServiceTest`: 11 tests (Business logic)
-- ✅ `SendInvoiceToPeppolActionTest`: 11 tests (Action)
+- `ExternalClientTest`: 15 tests (HTTP wrapper)
+- `HttpClientExceptionHandlerTest`: Not yet implemented
+- `DocumentsClientTest`: 12 tests (API client)
+- `PeppolServiceTest`: 11 tests (Business logic)
+- `SendInvoiceToPeppolActionTest`: 11 tests (Action)
 
 Total: **49 unit tests** covering success and failure scenarios
 
@@ -264,13 +264,13 @@ namespace Modules\Invoices\Peppol\Clients\Storecove;
 
 class StorecoveClient extends BasePeppolClient
 {
-    protected function getAuthenticationHeaders(): array
-    {
-        return [
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Content-Type' => 'application/json',
-        ];
-    }
+ protected function getAuthenticationHeaders(): array
+ {
+ return [
+ 'Authorization' => 'Bearer ' . $this->apiKey,
+ 'Content-Type' => 'application/json',
+ ];
+ }
 }
 ```
 
@@ -278,33 +278,33 @@ class StorecoveClient extends BasePeppolClient
 ```php
 class StorecoveDocumentsClient extends StorecoveClient
 {
-    public function submitDocument(array $data): Response
-    {
-        return $this->client->post('documents', $data);
-    }
+ public function submitDocument(array $data): Response
+ {
+ return $this->client->post('documents', $data);
+ }
 }
 ```
 
 3. Register in `InvoicesServiceProvider`:
 ```php
 $this->app->bind(
-    StorecoveDocumentsClient::class,
-    function ($app) {
-        $handler = $app->make(HttpClientExceptionHandler::class);
-        return new StorecoveDocumentsClient(
-            $handler,
-            config('invoices.peppol.storecove.api_key'),
-            config('invoices.peppol.storecove.base_url')
-        );
-    }
+ StorecoveDocumentsClient::class,
+ function ($app) {
+ $handler = $app->make(HttpClientExceptionHandler::class);
+ return new StorecoveDocumentsClient(
+ $handler,
+ config('invoices.peppol.storecove.api_key'),
+ config('invoices.peppol.storecove.base_url')
+ );
+ }
 );
 ```
 
 4. Update configuration in `config.php`:
 ```php
 'storecove' => [
-    'api_key' => env('PEPPOL_STORECOVE_API_KEY', ''),
-    'base_url' => env('PEPPOL_STORECOVE_BASE_URL', 'https://api.storecove.com'),
+ 'api_key' => env('PEPPOL_STORECOVE_API_KEY', ''),
+ 'base_url' => env('PEPPOL_STORECOVE_BASE_URL', 'https://api.storecove.com'),
 ],
 ```
 
@@ -365,7 +365,7 @@ Increase timeout in provider client:
 ```php
 protected function getTimeout(): int
 {
-    return 120; // 2 minutes
+ return 120; // 2 minutes
 }
 ```
 
@@ -388,7 +388,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `PeppolBisHandler`
 - **Profile**: `urn:fdc:peppol.eu:2017:poacc:billing:01:1.0`
 - **Use case**: Default format for cross-border invoicing in Europe
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 #### UBL 2.1 / 2.4
 - **Format**: OASIS Universal Business Language
@@ -396,7 +396,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `UblHandler`
 - **Standards**: [OASIS UBL](http://docs.oasis-open.org/ubl/)
 - **Use case**: General-purpose e-invoicing
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 #### CII (Cross Industry Invoice)
 - **Format**: UN/CEFACT XML
@@ -404,7 +404,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `CiiHandler`
 - **Standard**: UN/CEFACT D16B
 - **Use case**: Alternative to UBL, common in Central Europe
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 ### Country-Specific Formats
 
@@ -414,14 +414,14 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `FatturaPaHandler`
 - **Authority**: Agenzia delle Entrate
 - **Requirements**:
-  - Supplier: Italian VAT number (Partita IVA)
-  - Customer: Tax code (Codice Fiscale) for Italian customers
-  - Transmission: Via SDI (Sistema di Interscambio)
+ - Supplier: Italian VAT number (Partita IVA)
+ - Customer: Tax code (Codice Fiscale) for Italian customers
+ - Transmission: Via SDI (Sistema di Interscambio)
 - **Features**:
-  - Fiscal regime codes
-  - Payment conditions
-  - Tax summary by rate
-- **Status**: ✅ Fully implemented
+ - Fiscal regime codes
+ - Payment conditions
+ - Tax summary by rate
+- **Status**: Fully implemented
 
 #### Facturae 3.2 (Spain)
 - **Format**: XML
@@ -429,14 +429,14 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `FacturaeHandler`
 - **Authority**: Ministry of Finance and Public Administration
 - **Requirements**:
-  - Supplier: Spanish tax ID (NIF/CIF)
-  - Format includes: File header, parties, invoices
-  - Support for both resident and overseas addresses
+ - Supplier: Spanish tax ID (NIF/CIF)
+ - Format includes: File header, parties, invoices
+ - Support for both resident and overseas addresses
 - **Features**:
-  - Series codes for invoice numbering
-  - Administrative centres
-  - IVA (Spanish VAT) handling
-- **Status**: ✅ Fully implemented
+ - Series codes for invoice numbering
+ - Administrative centres
+ - IVA (Spanish VAT) handling
+- **Status**: Fully implemented
 
 #### Factur-X 1.0 (France/Germany)
 - **Format**: PDF/A-3 with embedded CII XML
@@ -444,15 +444,15 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `FacturXHandler`
 - **Standards**: Hybrid of PDF and XML
 - **Requirements**:
-  - Supplier: VAT number
-  - PDF must be PDF/A-3 compliant
-  - XML embedded as attachment
+ - Supplier: VAT number
+ - PDF must be PDF/A-3 compliant
+ - XML embedded as attachment
 - **Features**:
-  - Human-readable PDF
-  - Machine-readable XML
-  - Compatible with ZUGFeRD 2.0
+ - Human-readable PDF
+ - Machine-readable XML
+ - Compatible with ZUGFeRD 2.0
 - **Profiles**: MINIMUM, BASIC, EN16931, EXTENDED
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 #### ZUGFeRD 1.0 / 2.0 (Germany)
 - **Format**: PDF/A-3 with embedded XML (1.0) or CII XML (2.0)
@@ -460,17 +460,17 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `ZugferdHandler`
 - **Authority**: FeRD (Forum elektronische Rechnung Deutschland)
 - **Requirements**:
-  - Supplier: German VAT number
-  - SEPA payment means support
-  - German-specific tax handling
+ - Supplier: German VAT number
+ - SEPA payment means support
+ - German-specific tax handling
 - **Versions**:
-  - **1.0**: Original ZUGFeRD format
-  - **2.0**: Compatible with Factur-X, uses EN 16931
+ - **1.0**: Original ZUGFeRD format
+ - **2.0**: Compatible with Factur-X, uses EN 16931
 - **Features**:
-  - Multiple profiles (Comfort, Basic, Extended)
-  - SEPA credit transfer codes
-  - German VAT rate (19% standard)
-- **Status**: ✅ Fully implemented (both versions)
+ - Multiple profiles (Comfort, Basic, Extended)
+ - SEPA credit transfer codes
+ - German VAT rate (19% standard)
+- **Status**: Fully implemented (both versions)
 
 #### OIOUBL (Denmark)
 - **Format**: UBL 2.0 with Danish extensions
@@ -478,16 +478,16 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `OioublHandler`
 - **Authority**: Digitaliseringsstyrelsen
 - **Requirements**:
-  - Supplier: CVR number (Danish business registration)
-  - Customer: Peppol ID (CVR for Danish entities)
-  - Accounting cost codes
+ - Supplier: CVR number (Danish business registration)
+ - Customer: Peppol ID (CVR for Danish entities)
+ - Accounting cost codes
 - **Features**:
-  - Danish-specific party identification
-  - Payment means with bank details
-  - Settlement periods
-  - Danish VAT (25% standard)
+ - Danish-specific party identification
+ - Payment means with bank details
+ - Settlement periods
+ - Danish VAT (25% standard)
 - **Profile**: `Procurement-OrdSim-BilSim-1.0`
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 #### EHF 3.0 (Norway)
 - **Format**: UBL 2.1 with Norwegian extensions
@@ -495,16 +495,16 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Handler**: `EhfHandler`
 - **Authority**: Difi (Agency for Public Management and eGovernment)
 - **Requirements**:
-  - Supplier: Norwegian organization number (ORGNR)
-  - Customer: Organization number or Peppol ID
-  - Buyer reference for routing
+ - Supplier: Norwegian organization number (ORGNR)
+ - Customer: Organization number or Peppol ID
+ - Buyer reference for routing
 - **Features**:
-  - Norwegian organization numbers (9 digits)
-  - Delivery information
-  - Norwegian payment terms
-  - Norwegian VAT (25% standard)
+ - Norwegian organization numbers (9 digits)
+ - Delivery information
+ - Norwegian payment terms
+ - Norwegian VAT (25% standard)
 - **Profile**: PEPPOL BIS 3.0 compliant
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 
 ### Format Selection
 
@@ -518,14 +518,14 @@ The system automatically selects the appropriate format based on:
 #### Format Recommendations by Country
 
 ```php
-'ES' => Facturae 3.2      // Spain
-'IT' => FatturaPA 1.2     // Italy (mandatory)
-'FR' => Factur-X 1.0      // France
-'DE' => ZUGFeRD 2.0       // Germany
-'AT' => CII               // Austria
-'DK' => OIOUBL            // Denmark
-'NO' => EHF               // Norway
-'*'  => PEPPOL BIS 3.0    // Default for all other countries
+'ES' => Facturae 3.2 // Spain
+'IT' => FatturaPA 1.2 // Italy (mandatory)
+'FR' => Factur-X 1.0 // France
+'DE' => ZUGFeRD 2.0 // Germany
+'AT' => CII // Austria
+'DK' => OIOUBL // Denmark
+'NO' => EHF // Norway
+'*' => PEPPOL BIS 3.0 // Default for all other countries
 ```
 
 ### Endpoint Schemes by Country
@@ -564,10 +564,10 @@ php artisan test Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FatturaPaHand
 
 ### Test Coverage
 
-- ✅ **PeppolEndpointSchemeTest**: 240+ assertions covering all 17 endpoint schemes
-- ✅ **FatturaPaHandlerTest**: Italian FatturaPA format validation and transformation
-- ✅ **FormatHandlersTest**: Comprehensive tests for all 5 new handlers (Facturae, Factur-X, ZUGFeRD, OIOUBL, EHF)
-- ✅ **PeppolDocumentFormatTest**: Format enum validation and country recommendations
+- **PeppolEndpointSchemeTest**: 240+ assertions covering all 17 endpoint schemes
+- **FatturaPaHandlerTest**: Italian FatturaPA format validation and transformation
+- **FormatHandlersTest**: Comprehensive tests for all 5 new handlers (Facturae, Factur-X, ZUGFeRD, OIOUBL, EHF)
+- **PeppolDocumentFormatTest**: Format enum validation and country recommendations
 
 Total test count: **90+ unit tests** covering all formats and handlers
 

@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Modules\ReportBuilder\Enums\ReportTemplateType;
 use Modules\ReportBuilder\Models\ReportTemplate;
 use Modules\ReportBuilder\Services\ReportTemplateService;
 
@@ -23,34 +24,37 @@ class ReportTemplatesTable
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ID')
+                    ->label(trans('ip.id'))
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('name')
+                    ->label(trans('ip.name'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('slug')
+                    ->label(trans('ip.slug'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('template_type')
-                    ->label('Type')
+                    ->label(trans('ip.type'))
                     ->badge()
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 IconColumn::make('is_system')
-                    ->label('System')
+                    ->label(trans('ip.system'))
                     ->boolean()
                     ->sortable()
                     ->toggleable(),
                 IconColumn::make('is_active')
-                    ->label('Active')
+                    ->label(trans('ip.active'))
                     ->boolean()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('created_at')
+                    ->label(trans('ip.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable()
@@ -58,14 +62,13 @@ class ReportTemplatesTable
             ])
             ->filters([
                 SelectFilter::make('template_type')
-                    ->label('Template Type')
-                    ->options([
-                        'invoice'  => 'Invoice',
-                        'quote'    => 'Quote',
-                        'estimate' => 'Estimate',
-                    ]),
+                    ->label(trans('ip.template_type'))
+                    ->options(
+                        collect(ReportTemplateType::cases())
+                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                    ),
                 TernaryFilter::make('is_active')
-                    ->label('Active')
+                    ->label(trans('ip.active'))
                     ->nullable(),
             ])
             ->recordActions([
@@ -81,12 +84,12 @@ class ReportTemplatesTable
                         ->modalWidth('full')
                         ->visible(fn (ReportTemplate $record) => ! $record->is_system),
                     Action::make('design')
-                        ->label('Design')
+                        ->label(trans('ip.design'))
                         ->icon(Heroicon::OutlinedPaintBrush)
                         ->url(fn (ReportTemplate $record) => route('filament.admin.resources.report-templates.design', ['record' => $record->id]))
                         ->visible(fn (ReportTemplate $record) => ! $record->is_system),
                     Action::make('clone')
-                        ->label('Clone')
+                        ->label(trans('ip.clone'))
                         ->icon(Heroicon::OutlinedDocumentDuplicate)
                         ->requiresConfirmation()
                         ->action(function (ReportTemplate $record) {

@@ -8,9 +8,9 @@ This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with
 
 - The application uses **Laravel Filament** for Admin Panel, Company Panel, and InvoicePanel interfaces.
 - Code is structured into **Modules**, each module encapsulating its own logic (models, services, repositories, DTOs,
-  transformers, tests, etc.).
-- Tests for each module are located in:  
-  `/Modules/(ModuleName)/Tests`
+ transformers, tests, etc.).
+- Tests for each module are located in:
+ `/Modules/(ModuleName)/Tests`
 
 ## Tech Stack
 
@@ -112,28 +112,28 @@ php artisan queue:work
 
 - **Filament resources must respect proper panel separation and namespaces.**
 - **Resource Generation (via commands):**
-    - Must use Filament internal traits (`CanReadModelSchemas`, etc.).
-    - No reflection for relationship detection.
-    - Separate form and table generators by field type.
-    - Keep a configurable `$excludedFields` array.
-    - Enums detected via `$casts` and `enum_exists()`.
-    - Add docblocks above `form()`, `table()`, `getRelations()` with relationships/fields.
-    - Use `copyStubToApp()` instead of inline string replacements.
-    - **Preserve the exact method signatures** for Filament resource methods.
-    - **Use the correct `Action::make()` syntax** with fluent methods.
-    - **Do not display raw `created_at` or `updated_at`** in tables/infolists; use dedicated timestamp columns.
+ - Must use Filament internal traits (`CanReadModelSchemas`, etc.).
+ - No reflection for relationship detection.
+ - Separate form and table generators by field type.
+ - Keep a configurable `$excludedFields` array.
+ - Enums detected via `$casts` and `enum_exists()`.
+ - Add docblocks above `form()`, `table()`, `getRelations()` with relationships/fields.
+ - Use `copyStubToApp()` instead of inline string replacements.
+ - **Preserve the exact method signatures** for Filament resource methods.
+ - **Use the correct `Action::make()` syntax** with fluent methods.
+ - **Do not display raw `created_at` or `updated_at`** in tables/infolists; use dedicated timestamp columns.
 
 ### Testing Rules
 
 - **Unit Tests must follow these rules:**
-    - Test functions must be prefixed with `it_` and make grammatical sense (e.g., `it_creates_payment`, `it_validates_invoice_has_customer`).
-    - Use `#[Test]` attribute instead of `@test` annotations.
-    - Prefer Fakes and Fixtures over Mocks.
-    - Place happy paths last in test cases.
-    - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
-    - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
-    - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
-    - Use data providers for testing multiple scenarios with the same logic.
+ - Test functions must be prefixed with `it_` and make grammatical sense (e.g., `it_creates_payment`, `it_validates_invoice_has_customer`).
+ - Use `#[Test]` attribute instead of `@test` annotations.
+ - Prefer Fakes and Fixtures over Mocks.
+ - Place happy paths last in test cases.
+ - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
+ - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
+ - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
+ - Use data providers for testing multiple scenarios with the same logic.
 
 ### Export System Rules
 

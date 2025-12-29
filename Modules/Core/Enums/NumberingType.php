@@ -22,13 +22,13 @@ enum NumberingType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::CUSTOMER => 'Customer',
-            self::EXPENSE  => 'Expense',
-            self::INVOICE  => 'Invoice',
-            self::PAYMENT  => 'Payment',
-            self::PROJECT  => 'Project',
-            self::QUOTE    => 'Quote',
-            self::TASK     => 'Task',
+            self::CUSTOMER => trans('ip.customer'),
+            self::EXPENSE  => trans('ip.expense'),
+            self::INVOICE  => trans('ip.invoice'),
+            self::PAYMENT  => trans('ip.payment'),
+            self::PROJECT  => trans('ip.project'),
+            self::QUOTE    => trans('ip.quote'),
+            self::TASK     => trans('ip.task'),
         };
     }
 
