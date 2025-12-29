@@ -28,12 +28,12 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $data = [
-            'type'     => NumberingType::JOB_CARD->value,
+            'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 1,
             'left_pad' => 4,
             'format'   => '{{prefix}}-{{number}}',
-            'prefix'   => 'JC',
+            'prefix'   => 'PRJ',
         ];
 
         /* Act */
@@ -42,9 +42,9 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
         /* Assert */
         $this->assertInstanceOf(Numbering::class, $numbering);
         $this->assertDatabaseHas('numbering', [
-            'type'   => NumberingType::JOB_CARD->value,
+            'type'   => NumberingType::PROJECT->value,
             'name'   => 'Test Numbering',
-            'prefix' => 'JC',
+            'prefix' => 'PRJ',
         ]);
     }
 
@@ -54,7 +54,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $data = [
-            'type'     => NumberingType::JOB_CARD->value,
+            'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 1,
             'left_pad' => 4,
@@ -65,8 +65,8 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $this->assertDatabaseHas('numbering', [
-            'type'   => NumberingType::JOB_CARD->value,
-            'prefix' => NumberingType::JOB_CARD->prefix(),
+            'type'   => NumberingType::PROJECT->value,
+            'prefix' => NumberingType::PROJECT->prefix(),
         ]);
     }
 
@@ -99,19 +99,19 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $numbering = Numbering::factory()->create([
-            'type'     => NumberingType::JOB_CARD->value,
+            'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 42,
             'left_pad' => 6,
             'format'   => '{{prefix}}-{{number}}',
-            'prefix'   => 'JC',
+            'prefix'   => 'PRJ',
         ]);
 
         /* Act */
         $preview = $this->service->previewNextFormattedNumber($numbering);
 
         /* Assert */
-        $this->assertEquals('JC-000042', $preview);
+        $this->assertEquals('PRJ-000042', $preview);
     }
 
     #[Test]
@@ -120,7 +120,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $numbering = Numbering::factory()->create([
-            'type'    => NumberingType::JOB_CARD->value,
+            'type'    => NumberingType::PROJECT->value,
             'name'    => 'Test Numbering',
             'next_id' => 1,
         ]);

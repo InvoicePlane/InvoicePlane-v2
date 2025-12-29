@@ -22,12 +22,12 @@ class ListNumberingsTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $numbering = Numbering::factory()->for($this->company)->create([
-            'type'     => NumberingType::JOB_CARD->value,
+            'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 1,
             'left_pad' => 4,
             'format'   => null,
-            'prefix'   => NumberingType::JOB_CARD->prefix(),
+            'prefix'   => NumberingType::PROJECT->prefix(),
         ]);
 
         /* Act */

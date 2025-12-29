@@ -9,8 +9,6 @@ use InvalidArgumentException;
 use Modules\Core\DataTransferObjects\NumberingUpdateResult;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
-use Modules\Projects\Models\Job;
-use Modules\Projects\Models\JobCard;
 use Modules\Projects\Models\Project;
 use Throwable;
 
@@ -84,9 +82,7 @@ class NumberingService
 
     public function hasNumberingsInUse(): bool
     {
-        return Project::query()->whereNotNull(Project::NUMBERING_ID)->exists()
-            || Job::query()->whereNotNull(Job::NUMBERING_ID)->exists()
-            || JobCard::query()->whereNotNull(JobCard::NUMBERING_ID)->exists();
+        return Project::query()->whereNotNull(Project::NUMBERING_ID)->exists();
     }
 
     /**
@@ -338,8 +334,6 @@ class NumberingService
     protected function getModelClassForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Job'     => Job::class,
-            'JobCard' => JobCard::class,
             'Project' => Project::class,
             default   => null,
         };
@@ -355,8 +349,6 @@ class NumberingService
     protected function getNumberFieldForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Job'     => 'job_number',
-            'JobCard' => 'job_card_number',
             'Project' => 'project_number',
             default   => null,
         };
@@ -365,8 +357,8 @@ class NumberingService
     protected function getNumberingForeignKeyForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Job', 'JobCard', 'Project' => 'numbering_id',
-            default => null,
+            'Project' => 'numbering_id',
+            default   => null,
         };
     }
 

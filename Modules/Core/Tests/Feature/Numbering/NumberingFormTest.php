@@ -60,20 +60,20 @@ class NumberingFormTest extends AbstractAdminPanelTestCase
     {
         $this->markTestIncomplete();
         $data = [
-            'type'     => \Modules\Core\Enums\NumberingType::JOB_CARD->value,
-            'name'     => 'Test Job Card',
+            'type'     => \Modules\Core\Enums\NumberingType::PROJECT->value,
+            'name'     => 'Test Project',
             'format'   => '{{prefix}}-{{number}}',
-            'prefix'   => \Modules\Core\Enums\NumberingType::JOB_CARD->prefix(),
+            'prefix'   => \Modules\Core\Enums\NumberingType::PROJECT->prefix(),
             'next_id'  => 1,
             'left_pad' => 4,
         ];
         $response = $this->post(route('filament.resources.numberings.store'), $data);
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('numbering', [
-            'name'   => 'Test Job Card',
-            'type'   => \Modules\Core\Enums\NumberingType::JOB_CARD->value,
+            'name'   => 'Test Project',
+            'type'   => \Modules\Core\Enums\NumberingType::PROJECT->value,
             'format' => '{{prefix}}-{{number}}',
-            'prefix' => \Modules\Core\Enums\NumberingType::JOB_CARD->prefix(),
+            'prefix' => \Modules\Core\Enums\NumberingType::PROJECT->prefix(),
         ]);
     }
 }
