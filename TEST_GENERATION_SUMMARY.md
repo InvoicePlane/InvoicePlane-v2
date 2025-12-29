@@ -1,29 +1,29 @@
 # PEPPOL Unit Tests - Generation Summary
 
-## ✅ Tests Successfully Generated
+## Tests Successfully Generated
 
 ### New Test Files Created: 7
 
 1. **PeppolConnectionStatusTest.php** - Tests connection status enum (3 cases, ~13 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Enums/`
-   
+ - Location: `Modules/Invoices/Tests/Unit/Enums/`
+
 2. **PeppolErrorTypeTest.php** - Tests error type classification (3 cases, ~10 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Enums/`
+ - Location: `Modules/Invoices/Tests/Unit/Enums/`
 
 3. **PeppolTransmissionStatusTest.php** - Tests transmission lifecycle (9 cases, ~25 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Enums/`
+ - Location: `Modules/Invoices/Tests/Unit/Enums/`
 
 4. **PeppolValidationStatusTest.php** - Tests validation status (4 cases, ~12 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Enums/`
+ - Location: `Modules/Invoices/Tests/Unit/Enums/`
 
 5. **PeppolEndpointSchemeTest.php** - Tests participant identifiers (17 schemes, ~30 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Peppol/Enums/`
+ - Location: `Modules/Invoices/Tests/Unit/Peppol/Enums/`
 
 6. **FormatHandlerFactoryTest.php** - Tests format handler factory (~15 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/`
+ - Location: `Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/`
 
 7. **ProviderFactoryTest.php** - Tests provider factory (~18 tests)
-   - Location: `Modules/Invoices/Tests/Unit/Peppol/Providers/`
+ - Location: `Modules/Invoices/Tests/Unit/Peppol/Providers/`
 
 ## Test Coverage Summary
 
@@ -34,12 +34,12 @@
 
 ## Key Features of Generated Tests
 
-✅ Data Provider pattern for parameterized testing
-✅ Group tagging with #[Group('peppol')]
-✅ Descriptive test names (it_should pattern)
-✅ Comprehensive edge case coverage
-✅ PHPUnit 10+ attributes (#[Test], #[DataProvider])
-✅ Proper documentation and comments
+ Data Provider pattern for parameterized testing
+ Group tagging with #[Group('peppol')]
+ Descriptive test names (it_should pattern)
+ Comprehensive edge case coverage
+ PHPUnit 10+ attributes (#[Test], #[DataProvider])
+ Proper documentation and comments
 
 ## Running the Tests
 

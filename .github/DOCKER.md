@@ -28,7 +28,6 @@ docker compose up -d
 
 Visit: http://localhost/ivpl
 
-
 ---
 
 Useful Commands
@@ -40,8 +39,6 @@ Stop services	docker compose down
 View logs	docker compose logs -f
 Run artisan	docker compose exec app php artisan
 Rebuild containers	docker compose build --no-cache
-
-
 
 ---
 
@@ -55,8 +52,6 @@ Mail: MailCatcher (port 1080)
 
 Queue: Redis (optional)
 
-
-
 ---
 
 Customize Docker
@@ -66,8 +61,6 @@ Change database port in docker-compose.yml
 Override PHP version via Dockerfile
 
 Add volumes for local persistence if needed
-
-
 
 ---
 
@@ -79,14 +72,10 @@ Permission issues: Ensure Docker has access to your project folder
 
 Missing .env config: Re-run cp .env.example .env and adjust
 
-
 ---
-
-
 
 ---
 
 What's Next?
 
 Visit CHECKLIST.md if contributing
-

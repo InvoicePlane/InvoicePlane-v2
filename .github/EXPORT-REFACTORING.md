@@ -24,9 +24,9 @@ All modules now have dedicated Filament Exporters located in `Modules/{ModuleNam
 **Internationalization:**
 - All notification strings use trans() function
 - New translation keys in resources/lang/en/ip.php:
-  - `export_completed` - Success notification
-  - `export_failed_rows` - Failure notification  
-  - `row` - Pluralizable row/rows
+ - `export_completed` - Success notification
+ - `export_failed_rows` - Failure notification
+ - `row` - Pluralizable row/rows
 
 **Expenses Module:**
 - `ExpenseExporter` - Regular export with 7 columns
@@ -148,16 +148,16 @@ For each module (Expenses, Products, Quotes, Projects, Tasks, Relations, Contact
 1. Navigate to the list page
 2. Click the "Export" button
 3. Test each of the 4 export options:
-   - Export as CSV (v2)
-   - Export as CSV (v1, Legacy)
-   - Export as Excel (v2)
-   - Export as Excel (v1, Legacy)
+ - Export as CSV (v2)
+ - Export as CSV (v1, Legacy)
+ - Export as Excel (v2)
+ - Export as Excel (v1, Legacy)
 4. Verify:
-   - Modal opens with column selection
-   - Export completes successfully
-   - Notification is received
-   - File downloads correctly
-   - File contains expected data and columns
+ - Modal opens with column selection
+ - Export completes successfully
+ - Notification is received
+ - File downloads correctly
+ - File contains expected data and columns
 
 ### Automated Testing
 

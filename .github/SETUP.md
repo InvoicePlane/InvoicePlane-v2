@@ -11,7 +11,6 @@ git clone https://github.com/InvoicePlane/InvoicePlane-v2.git ivplv2
 cd ivplv2
 ```
 
-
 ---
 
 2. Create the Environment File
@@ -27,7 +26,6 @@ DB_USERNAME=root
 DB_PASSWORD=yourpassword
 ```
 
-
 ---
 
 3. Install Dependencies
@@ -41,15 +39,11 @@ DB_PASSWORD=yourpassword
 
 `php artisan key:generate`
 
-
 ---
 
 5. Migrate and Seed Database
 
 `php artisan migrate --seed`
-
-
-
 
 ---
 
@@ -60,4 +54,3 @@ Laravel Herd → https://laravel.com/docs/herd
 MailCatcher → http://localhost:1080
 
 Docker → See DOCKER.md
-

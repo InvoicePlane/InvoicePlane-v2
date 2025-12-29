@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Invoice & Quote Management** - Create, send, and track invoices and quotes
 - **Peppol E-Invoicing** - Send invoices through the European Peppol network (UBL, FatturaPA, ZUGFeRD)
@@ -24,7 +24,7 @@
 
 ---
 
-## 📋 Requirements
+## Requirements
 
 - PHP 8.2 or higher
 - Composer
@@ -34,7 +34,7 @@
 
 ---
 
-## 🔧 Installation
+## Installation
 
 To install and run InvoicePlane v2 locally, see the [Installation Guide](.github/INSTALLATION.md).
 
@@ -69,7 +69,7 @@ For detailed setup instructions, see [INSTALLATION.md](.github/INSTALLATION.md).
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[Installation Guide](.github/INSTALLATION.md)** - Complete setup instructions
 - **[Contributing Guide](.github/CONTRIBUTING.md)** - How to contribute code
@@ -82,7 +82,7 @@ For detailed setup instructions, see [INSTALLATION.md](.github/INSTALLATION.md).
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Running Tests
 
@@ -126,7 +126,7 @@ yarn dev --watch
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome community contributions!
 
@@ -139,7 +139,7 @@ To learn how to contribute code, create modules, write tests, or help translate 
 
 ---
 
-## 🌍 Translations
+## Translations
 
 Help translate InvoicePlane v2 into your language using Crowdin:
 
@@ -157,7 +157,7 @@ See [TRANSLATIONS.md](.github/TRANSLATIONS.md) for more details.
 
 ---
 
-## 💬 Support & Community
+## Support & Community
 
 - **Discord** - [Join our Discord server](https://discord.gg/PPzD2hTrXt)
 - **Forums** - [Community discussions](https://community.invoiceplane.com)
@@ -166,7 +166,7 @@ See [TRANSLATIONS.md](.github/TRANSLATIONS.md) for more details.
 
 ---
 
-## 🔒 Security
+## Security
 
 If you discover a security vulnerability, please follow our [Security Policy](.github/SECURITY.md) for responsible disclosure.
 
@@ -174,7 +174,7 @@ If you discover a security vulnerability, please follow our [Security Policy](.g
 
 ---
 
-## 📄 License
+## License
 
 InvoicePlane v2 is open-source software licensed under the **MIT License**.
 
@@ -182,7 +182,7 @@ The InvoicePlane name and logo are protected trademarks of Kovah.de.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 - [Laravel](https://laravel.com) - The PHP framework
@@ -195,4 +195,4 @@ Special thanks to all our [contributors](https://github.com/InvoicePlane/Invoice
 
 ---
 
-**Made with ❤️ by the InvoicePlane community**
+**Made with by the InvoicePlane community**
