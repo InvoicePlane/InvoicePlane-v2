@@ -123,7 +123,7 @@ jobs:
             
             This PR updates Composer dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type || 'security-patch' }}
+            **Update Type:** ${{ github.event.inputs.update_type }}
             **Triggered by:** ${{ github.event_name }}
             
             ### Updated Packages

@@ -110,7 +110,7 @@ jobs:
             
             This PR updates Yarn (npm) dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type || 'common-packages' }}
+            **Update Type:** ${{ github.event.inputs.update_type }}
             **Triggered by:** ${{ github.event_name }}
             
             ### Updated Packages
