@@ -11,7 +11,7 @@ abstract class AbstractAdminPanelTestCase extends BaseTestCase
 {
     use RefreshDatabase;
 
-    protected $superAdmin;
+    protected ?User $superAdmin;
 
     protected function setUp(): void
     {

@@ -45,6 +45,8 @@ class UsersTest extends AbstractAdminPanelTestCase
     # endregion
 
     # region crud
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_user(): void
     {
         /* arrange */

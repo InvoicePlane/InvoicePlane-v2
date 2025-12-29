@@ -16,7 +16,7 @@ class NumberFormatter
     {
         $formatted = number_format($number, $decimalPlaces, '.', '');
 
-        return mb_rtrim(mb_rtrim($formatted, '0'), '.');
+        return rtrim(rtrim($formatted, '0'), '.');
     }
 
     public static function unformat($number, $currency = null): float | string
