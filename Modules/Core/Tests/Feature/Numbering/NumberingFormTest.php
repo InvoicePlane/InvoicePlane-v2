@@ -11,6 +11,39 @@ class NumberingFormTest extends AbstractAdminPanelTestCase
     use RefreshDatabase;
 
     #[Test]
+    #[Group('smoke')]
+    #[Group('crud')]
+    public function it_lists_numberings(): void
+    {
+        /* Arrange */
+        $numbering = Numbering::factory()->for($this->company)->create([
+            'type'     => NumberingType::PROJECT->value,
+            'name'     => 'Test Numbering',
+            'next_id'  => 1,
+            'left_pad' => 4,
+            'format'   => null,
+            'prefix'   => NumberingType::PROJECT->prefix(),
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListNumberings::class);
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('numbering', [
+            'id'       => $numbering->id,
+            'type'     => $numbering->type->value,
+            'name'         => $numbering->name,
+            'next_id'      => $numbering->next_id,
+            'left_pad'     => $numbering->left_pad,
+            'format'       => $numbering->format,
+            'prefix'       => $numbering->prefix,
+            'last_id'      => null,
+        ]);
+    }
+    
+    #[Test]
     public function it_displays_numbering_form_fields_correctly(): void
     {
         $this->markTestIncomplete();
