@@ -1,7 +1,8 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\Numberings\Schemas;
+namespace Modules\Core\Filament\Company\Resources\Numberings\Schemas;
 
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -10,7 +11,6 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
-use Modules\Core\Models\Company;
 
 class NumberingForm
 {
@@ -18,18 +18,11 @@ class NumberingForm
     {
         return $schema
             ->components([
-                // Company selection (Admin can assign to any company)
-                Section::make('Company Assignment')
-                    ->schema([
-                        Select::make('company_id')
-                            ->label('Company')
-                            ->options(Company::all()->pluck('name', 'id'))
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->helperText('Select which company this numbering scheme belongs to'),
-                    ])
-                    ->columnSpanFull(),
+                // Hidden company_id field (locked to current company)
+                Hidden::make('company_id')
+                    ->default(fn () => session('current_company_id'))
+                    ->disabled()
+                    ->dehydrated(false), // Don't allow changing company_id
 
                 //
                 // Top: Type and Name
@@ -48,15 +41,9 @@ class NumberingForm
                                                 array_map(fn ($case) => $case->label(), NumberingType::cases())
                                             ))
                                             ->required()
-                                            ->reactive()
-                                            ->afterStateUpdated(function (callable $set, callable $get, $state): void {
-                                                if ($state) {
-                                                    $type = NumberingType::tryFrom($state);
-                                                    if ($type && ! $get('prefix')) {
-                                                        $set('prefix', $type->prefix());
-                                                    }
-                                                }
-                                            }),
+                                            ->disabled() // Company users cannot change type
+                                            ->dehydrated(),
+                                        
                                         TextInput::make('name')
                                             ->label('Name')
                                             ->required(),
@@ -70,7 +57,7 @@ class NumberingForm
                                             ->label('Next ID')
                                             ->numeric()
                                             ->required()
-                                            ->default(1),
+                                            ->helperText('Can be adjusted to troubleshoot numbering issues'),
 
                                         TextInput::make('left_pad')
                                             ->label('Left Pad')
@@ -93,16 +80,19 @@ class NumberingForm
                                 Schemas\Components\Group::make()->schema([
                                     TextInput::make('prefix')
                                         ->label('Prefix')
-                                        ->placeholder('JOB'),
+                                        ->placeholder('INV')
+                                        ->disabled() // Company users cannot change prefix
+                                        ->dehydrated(),
+                                    
                                     TextInput::make('format')
                                         ->label('Format')
                                         ->placeholder('{{prefix}}-{{number}}')
-                                        ->helperText('Use {{prefix}} and {{number}} as placeholders'),
+                                        ->helperText('Use {{prefix}}, {{number}}, {{year}}, {{month}}, {{day}} as placeholders. Only dash (-) or underscore (_) separators allowed.'),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
-                                        ->label('')
-                                        ->content('The format string can use {{prefix}} for the prefix and {{number}} for the sequential number. The number will be left-padded according to the Left Pad setting.')
+                                        ->label('Format Help')
+                                        ->content('You can customize the format using placeholders: {{prefix}} for prefix, {{number}} for sequential number, {{year}} for 4-digit year, {{yy}} for 2-digit year, {{month}} for month, {{day}} for day. The number will be left-padded according to the Left Pad setting.')
                                         ->columnSpanFull(),
                                 ]),
                             ]),

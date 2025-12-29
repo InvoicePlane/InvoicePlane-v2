@@ -73,6 +73,31 @@ class Quote extends Model
         'quote_password',
     ];
 
+    /**
+     * Boot the model and register event listeners.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // Prevent duplicate quote numbers within the same company
+        // Allows multiple nulls (for draft quotes)
+        static::saving(function (Quote $model) {
+            if ($model->quote_number !== null) {
+                $duplicate = self::where('company_id', $model->company_id)
+                    ->where('quote_number', $model->quote_number)
+                    ->where('id', '!=', $model->id ?? 0)
+                    ->exists();
+
+                if ($duplicate) {
+                    throw new \RuntimeException(
+                        "Duplicate quote number '{$model->quote_number}' for company {$model->company_id}"
+                    );
+                }
+            }
+        });
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
