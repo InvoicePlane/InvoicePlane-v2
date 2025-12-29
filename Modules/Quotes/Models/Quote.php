@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Note;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
@@ -43,7 +43,7 @@ use Modules\Quotes\Enums\QuoteStatus;
  * @property string|null            $terms
  * @property string|null            $footer
  * @property Company                $company
- * @property Numbering|null     $numbering
+ * @property Numbering|null         $numbering
  * @property Relation               $relation
  * @property User                   $user
  * @property Collection|QuoteItem[] $quote_items

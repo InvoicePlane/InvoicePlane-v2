@@ -33,7 +33,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
             ->callAction('exportCsv', data: [
                 'columnMap' => [
                     'number' => ['isEnabled' => true, 'label' => 'Invoice Number'],
-                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
                 ],
             ]);
 
@@ -109,7 +109,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
         Storage::fake('local');
         $invoice = Invoice::factory()->for($this->company)->create([
             'number' => 'INV-Ü, "Test"',
-            'total' => 123.45,
+            'total'  => 123.45,
         ]);
 
         /* Act */
@@ -118,7 +118,7 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
             ->callAction('exportExcel', data: [
                 'columnMap' => [
                     'number' => ['isEnabled' => true, 'label' => 'Number'],
-                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
                 ],
             ]);
 

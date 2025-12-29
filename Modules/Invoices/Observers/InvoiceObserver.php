@@ -24,7 +24,7 @@ class InvoiceObserver extends AbstractObserver
             if ($duplicate) {
                 throw ValidationException::withMessages([
                     'invoice_number' => trans('ip.duplicate_invoice_number', [
-                        'number' => $invoice->invoice_number,
+                        'number'  => $invoice->invoice_number,
                         'company' => $invoice->company_id,
                     ]),
                 ]);

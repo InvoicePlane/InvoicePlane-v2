@@ -34,7 +34,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
             ->callAction('exportCsvV2', data: [
                 'columnMap' => [
                     'number' => ['isEnabled' => true, 'label' => 'Quote Number'],
-                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
                 ],
             ]);
 
@@ -113,7 +113,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
         Storage::fake('local');
         $quote = Quote::factory()->for($this->company)->create([
             'number' => 'QÜØTË, "Test"',
-            'total' => 123.45,
+            'total'  => 123.45,
         ]);
 
         /* Act */
@@ -122,7 +122,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
             ->callAction('exportExcel', data: [
                 'columnMap' => [
                     'number' => ['isEnabled' => true, 'label' => 'Number'],
-                    'total' => ['isEnabled' => true, 'label' => 'Total'],
+                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
                 ],
             ]);
 

@@ -3,8 +3,8 @@
 namespace Modules\Payments\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Payments\Models\Payment;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Payments\Models\Payment;
 
 class PaymentExporter extends BaseExporter
 {

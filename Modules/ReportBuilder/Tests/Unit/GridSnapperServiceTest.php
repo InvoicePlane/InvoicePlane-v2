@@ -24,7 +24,6 @@ class GridSnapperServiceTest extends TestCase
 
         $snapped = $service->snap($position);
 
-
         /* assert */
         $this->assertEquals(2, $snapped->getX());
         $this->assertEquals(3, $snapped->getY());
@@ -46,7 +45,6 @@ class GridSnapperServiceTest extends TestCase
 
         $snapped = $service->snap($position);
 
-
         /* assert */
         $this->assertEquals(11, $snapped->getX());
     }
@@ -64,7 +62,6 @@ class GridSnapperServiceTest extends TestCase
         $position->setX(-5)->setY(0)->setWidth(1)->setHeight(1);
 
         $snapped = $service->snap($position);
-
 
         /* assert */
         $this->assertEquals(0, $snapped->getX());
@@ -84,7 +81,6 @@ class GridSnapperServiceTest extends TestCase
 
         $snapped = $service->snap($position);
 
-
         /* assert */
         $this->assertEquals(0, $snapped->getY());
     }
@@ -100,7 +96,6 @@ class GridSnapperServiceTest extends TestCase
 
         /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-
 
         /* assert */
         $this->assertTrue($service->validate($position));
@@ -118,7 +113,6 @@ class GridSnapperServiceTest extends TestCase
         /* act */
         $position->setX(-1)->setY(0)->setWidth(1)->setHeight(1);
 
-
         /* assert */
         $this->assertFalse($service->validate($position));
     }
@@ -134,7 +128,6 @@ class GridSnapperServiceTest extends TestCase
 
         /* act */
         $position->setX(0)->setY(-1)->setWidth(1)->setHeight(1);
-
 
         /* assert */
         $this->assertFalse($service->validate($position));
@@ -152,7 +145,6 @@ class GridSnapperServiceTest extends TestCase
         /* act */
         $position->setX(12)->setY(0)->setWidth(1)->setHeight(1);
 
-
         /* assert */
         $this->assertFalse($service->validate($position));
     }
@@ -168,7 +160,6 @@ class GridSnapperServiceTest extends TestCase
 
         /* act */
         $position->setX(8)->setY(0)->setWidth(5)->setHeight(1);
-
 
         /* assert */
         $this->assertFalse($service->validate($position));
@@ -186,7 +177,6 @@ class GridSnapperServiceTest extends TestCase
         /* act */
         $position->setX(0)->setY(0)->setWidth(0)->setHeight(1);
 
-
         /* assert */
         $this->assertFalse($service->validate($position));
     }
@@ -202,7 +192,6 @@ class GridSnapperServiceTest extends TestCase
 
         /* act */
         $position->setX(0)->setY(0)->setWidth(1)->setHeight(0);
-
 
         /* assert */
         $this->assertFalse($service->validate($position));

@@ -29,28 +29,28 @@ class NumberingPanelAccessTest extends TestCase
         /* Act */
         // Admin can create numbering for company 1
         $numbering1 = $this->service->createNumbering([
-            'name' => 'Invoice Numbering for Company 1',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Invoice Numbering for Company 1',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company1->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         // Admin can create numbering for company 2
         $numbering2 = $this->service->createNumbering([
-            'name' => 'Invoice Numbering for Company 2',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Invoice Numbering for Company 2',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company2->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         /* Assert */
         $this->assertEquals($company1->id, $numbering1->company_id);
         $this->assertEquals($company2->id, $numbering2->company_id);
-        
+
         // Admin can see numberings from all companies
         $allNumberings = Numbering::all();
         $this->assertGreaterThanOrEqual(2, $allNumberings->count());
@@ -64,21 +64,21 @@ class NumberingPanelAccessTest extends TestCase
         $company2 = Company::factory()->create(['name' => 'Company Two']);
 
         $numbering1 = $this->service->createNumbering([
-            'name' => 'Numbering for Company 1',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Numbering for Company 1',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company1->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         $numbering2 = $this->service->createNumbering([
-            'name' => 'Numbering for Company 2',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Numbering for Company 2',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company2->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         /* Act */
@@ -89,7 +89,7 @@ class NumberingPanelAccessTest extends TestCase
         /* Assert */
         $this->assertEquals(1, $company1Numberings->count());
         $this->assertEquals($numbering1->id, $company1Numberings->first()->id);
-        
+
         $this->assertEquals(1, $company2Numberings->count());
         $this->assertEquals($numbering2->id, $company2Numberings->first()->id);
     }
@@ -102,21 +102,21 @@ class NumberingPanelAccessTest extends TestCase
         $company2 = Company::factory()->create(['name' => 'Company Two']);
 
         $numbering = $this->service->createNumbering([
-            'name' => 'Numbering for Company 1',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Numbering for Company 1',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company1->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         /* Act & Assert */
         // Company user should not be able to change company_id
         // This would typically be enforced at the form/policy level
         // In the Company panel, company_id field should be read-only or hidden
-        
+
         $this->assertEquals($company1->id, $numbering->company_id);
-        
+
         // Attempting to update with different company_id should fail or be ignored
         // In practice, this would be prevented by form validation or policy
         $this->assertTrue(true); // Placeholder - actual enforcement is in Filament form
@@ -129,18 +129,18 @@ class NumberingPanelAccessTest extends TestCase
         $company = Company::factory()->create(['name' => 'My Company']);
 
         $numbering = $this->service->createNumbering([
-            'name' => 'Invoice Numbering',
-            'type' => 'Invoice',
-            'format' => 'INV-{{number}}',
+            'name'       => 'Invoice Numbering',
+            'type'       => 'Invoice',
+            'format'     => 'INV-{{number}}',
             'company_id' => $company->id,
-            'next_id' => 1,
-            'left_pad' => 4,
+            'next_id'    => 1,
+            'left_pad'   => 4,
         ]);
 
         /* Act */
         // Company user can update format (but not company_id)
         $numbering->update([
-            'format' => 'INV-{{year}}-{{month}}-{{number}}',
+            'format'   => 'INV-{{year}}-{{month}}-{{number}}',
             'left_pad' => 6,
         ]);
         $numbering->refresh();

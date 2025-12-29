@@ -3,8 +3,8 @@
 namespace Modules\Products\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Products\Models\Product;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Products\Models\Product;
 
 class ProductExporter extends BaseExporter
 {

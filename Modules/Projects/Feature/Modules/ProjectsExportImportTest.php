@@ -104,7 +104,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
         Storage::fake('local');
         $project = Project::factory()->for($this->company)->create([
             'project_name' => 'ÜProject, "Test"',
-            'description' => 'Special chars',
+            'description'  => 'Special chars',
         ]);
 
         /* Act */

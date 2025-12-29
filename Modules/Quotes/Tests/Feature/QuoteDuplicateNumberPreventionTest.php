@@ -6,6 +6,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 class QuoteDuplicateNumberPreventionTest extends TestCase
@@ -14,18 +15,18 @@ class QuoteDuplicateNumberPreventionTest extends TestCase
     public function it_prevents_duplicate_quote_numbers_within_same_company(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
+        $company   = Company::factory()->create();
         $numbering = Numbering::factory()->for($company)->create();
-        
+
         Quote::factory()->for($company)->create([
             'numbering_id' => $numbering->id,
             'quote_number' => 'QUO-2025-0001',
         ]);
 
         /* Act & Assert */
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Duplicate quote number 'QUO-2025-0001'");
-        
+
         Quote::factory()->for($company)->create([
             'numbering_id' => $numbering->id,
             'quote_number' => 'QUO-2025-0001',
@@ -36,11 +37,11 @@ class QuoteDuplicateNumberPreventionTest extends TestCase
     public function it_allows_same_quote_number_in_different_companies(): void
     {
         /* Arrange */
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->create();
+        $company1   = Company::factory()->create();
+        $company2   = Company::factory()->create();
         $numbering1 = Numbering::factory()->for($company1)->create();
         $numbering2 = Numbering::factory()->for($company2)->create();
-        
+
         Quote::factory()->for($company1)->create([
             'numbering_id' => $numbering1->id,
             'quote_number' => 'QUO-2025-0001',
@@ -62,7 +63,7 @@ class QuoteDuplicateNumberPreventionTest extends TestCase
     public function it_allows_multiple_null_quote_numbers_for_drafts(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
+        $company   = Company::factory()->create();
         $numbering = Numbering::factory()->for($company)->create();
 
         /* Act */
@@ -85,7 +86,7 @@ class QuoteDuplicateNumberPreventionTest extends TestCase
         $this->assertNull($draft1->quote_number);
         $this->assertNull($draft2->quote_number);
         $this->assertNull($draft3->quote_number);
-        
+
         // All three drafts should exist
         $drafts = Quote::where('company_id', $company->id)
             ->whereNull('quote_number')
@@ -97,9 +98,9 @@ class QuoteDuplicateNumberPreventionTest extends TestCase
     public function it_allows_updating_quote_without_changing_number(): void
     {
         /* Arrange */
-        $company = Company::factory()->create();
+        $company   = Company::factory()->create();
         $numbering = Numbering::factory()->for($company)->create();
-        
+
         $quote = Quote::factory()->for($company)->create([
             'numbering_id' => $numbering->id,
             'quote_number' => 'QUO-2025-0001',

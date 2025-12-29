@@ -3,8 +3,8 @@
 namespace Modules\Projects\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Projects\Models\Task;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Projects\Models\Task;
 
 class TaskExporter extends BaseExporter
 {

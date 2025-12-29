@@ -85,7 +85,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'numbering_id'      => $documentGroup->id,
+            'numbering_id'           => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
@@ -148,7 +148,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'numbering_id'   => $documentGroup->id,
+            'numbering_id'        => $documentGroup->id,
             'quote_status'        => QuoteStatus::DRAFT->value,
             'quoted_at'           => now()->format('Y-m-d'),
             'quote_expires_at'    => now()->addDays(30)->format('Y-m-d'),
@@ -318,7 +318,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'numbering_id'      => $documentGroup->id,
+            'numbering_id'           => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
@@ -455,7 +455,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->create([
                 'quote_number'           => 'Q-0001',
                 'prospect_id'            => $prospect->id,
-                'numbering_id'      => $documentGroup->id,
+                'numbering_id'           => $documentGroup->id,
                 'user_id'                => $this->user->id,
                 'quote_status'           => QuoteStatus::DRAFT->value,
                 'quoted_at'              => now()->format('Y-m-d'),
@@ -516,7 +516,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $payload = [
             'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'numbering_id'      => $documentGroup->id,
+            'numbering_id'           => $documentGroup->id,
             'quote_status'           => QuoteStatus::DRAFT->value,
             'quoted_at'              => now()->format('Y-m-d'),
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),

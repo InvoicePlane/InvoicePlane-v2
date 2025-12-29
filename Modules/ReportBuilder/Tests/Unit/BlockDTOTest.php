@@ -20,7 +20,6 @@ class BlockDTOTest extends TestCase
         /* act */
         $dto->setId('block_header_company');
 
-
         /* assert */
         $this->assertEquals('block_header_company', $dto->getId());
     }
@@ -34,7 +33,6 @@ class BlockDTOTest extends TestCase
 
         /* act */
         $dto->setType('header_company');
-
 
         /* assert */
         $this->assertEquals('header_company', $dto->getType());
@@ -52,7 +50,6 @@ class BlockDTOTest extends TestCase
 
         $dto = new BlockDTO();
         $dto->setPosition($position);
-
 
         /* assert */
         $this->assertInstanceOf(GridPositionDTO::class, $dto->getPosition());
@@ -179,7 +176,6 @@ class BlockDTOTest extends TestCase
 
         $dto = BlockDTO::system('header_company', $position, $config);
 
-
         /* assert */
         $this->assertEquals('header_company', $dto->getType());
         $this->assertEquals($position, $dto->getPosition());
@@ -211,7 +207,6 @@ class BlockDTOTest extends TestCase
             ->setClonedFrom(null);
 
         $cloned = BlockDTO::clonedFrom($original, 'block_cloned');
-
 
         /* assert */
         $this->assertEquals('block_cloned', $cloned->getId());

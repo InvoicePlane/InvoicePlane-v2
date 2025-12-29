@@ -14,7 +14,6 @@ use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Projects\Filament\Exporters\TaskExporter;
 use Modules\Projects\Filament\Exporters\TaskLegacyExporter;
 use Modules\Projects\Models\Task;
-use Modules\Projects\Services\TaskExportService;
 use Modules\Projects\Services\TaskService;
 
 class ListTasks extends ListRecords
@@ -72,7 +71,7 @@ class ListTasks extends ListRecords
             ")
             ->orderBy('due_at', 'asc');
 
-        /** @var Builder $query */
+        /* @var Builder $query */
         return $query;
     }
 }

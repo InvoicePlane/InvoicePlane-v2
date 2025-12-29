@@ -5,7 +5,6 @@ namespace Modules\Core\Support\NumberGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Numbering;
-use RuntimeException;
 
 /**
  * AbstractNumberGenerator.
@@ -107,7 +106,7 @@ abstract class AbstractNumberGenerator
 
                 Log::error('No numbering scheme found for type: ' . $this->type . ', company: ' . $this->companyId);
 
-                return null;
+                return;
             }
 
             if (config('app.extreme_logging')) {
@@ -228,13 +227,13 @@ abstract class AbstractNumberGenerator
 
         if (config('app.extreme_logging')) {
             Log::debug('NumberGenerator: Checking for counter reset', [
-                'last_id'      => $numbering->last_id,
-                'next_id'      => $numbering->next_id,
-                'reset_number' => $numbering->reset_number,
-                'last_year'    => $numbering->last_year,
-                'last_month'   => $numbering->last_month,
-                'last_week'    => $numbering->last_week,
-                'current_year' => $now->year,
+                'last_id'       => $numbering->last_id,
+                'next_id'       => $numbering->next_id,
+                'reset_number'  => $numbering->reset_number,
+                'last_year'     => $numbering->last_year,
+                'last_month'    => $numbering->last_month,
+                'last_week'     => $numbering->last_week,
+                'current_year'  => $now->year,
                 'current_month' => $now->month,
                 'current_week'  => $now->weekOfYear,
             ]);
@@ -249,10 +248,10 @@ abstract class AbstractNumberGenerator
         if ($numbering->reset_number === 1 && $numbering->last_year < $now->year) {
             if (config('app.extreme_logging')) {
                 Log::info('NumberGenerator: Applying yearly reset', [
-                    'numbering_id' => $numbering->id,
-                    'name'         => $numbering->name,
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
                     'previous_next_id' => $numbering->next_id,
-                    'new_next_id' => 1,
+                    'new_next_id'      => 1,
                 ]);
             }
 
@@ -270,10 +269,10 @@ abstract class AbstractNumberGenerator
         ) {
             if (config('app.extreme_logging')) {
                 Log::info('NumberGenerator: Applying monthly reset', [
-                    'numbering_id' => $numbering->id,
-                    'name'         => $numbering->name,
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
                     'previous_next_id' => $numbering->next_id,
-                    'new_next_id' => 1,
+                    'new_next_id'      => 1,
                 ]);
             }
 
@@ -293,10 +292,10 @@ abstract class AbstractNumberGenerator
         ) {
             if (config('app.extreme_logging')) {
                 Log::info('NumberGenerator: Applying weekly reset', [
-                    'numbering_id' => $numbering->id,
-                    'name'         => $numbering->name,
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
                     'previous_next_id' => $numbering->next_id,
-                    'new_next_id' => 1,
+                    'new_next_id'      => 1,
                 ]);
             }
 

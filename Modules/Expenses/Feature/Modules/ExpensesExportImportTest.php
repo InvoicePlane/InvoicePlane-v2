@@ -108,7 +108,7 @@ class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
         Storage::fake('local');
         $expense = Expense::factory()->for($this->company)->create([
             'description' => 'Üxpense, "Test"',
-            'amount' => 123.45,
+            'amount'      => 123.45,
         ]);
 
         /* Act */

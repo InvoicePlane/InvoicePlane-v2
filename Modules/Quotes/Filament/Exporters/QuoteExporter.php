@@ -3,8 +3,8 @@
 namespace Modules\Quotes\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Quotes\Models\Quote;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Quotes\Models\Quote;
 
 class QuoteExporter extends BaseExporter
 {

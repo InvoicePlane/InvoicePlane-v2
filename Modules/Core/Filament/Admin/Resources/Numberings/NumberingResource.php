@@ -7,8 +7,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Modules\Core\Filament\Admin\Resources\Numberings\Pages\CreateNumbering;
-use Modules\Core\Filament\Admin\Resources\Numberings\Pages\EditNumbering;
 use Modules\Core\Filament\Admin\Resources\Numberings\Pages\ListNumberings;
 use Modules\Core\Filament\Admin\Resources\Numberings\Schemas\NumberingForm;
 use Modules\Core\Filament\Admin\Resources\Numberings\Tables\NumberingsTable;
@@ -39,7 +37,7 @@ class NumberingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListNumberings::route('/'),
+            'index' => ListNumberings::route('/'),
         ];
     }
 }

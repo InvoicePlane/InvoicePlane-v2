@@ -441,7 +441,8 @@ class ZugferdHandler extends BaseFormatHandler
      * - `CategoryCode`: `'S'` for taxable rates greater than zero, `'Z'` for zero rate.
      * - `ApplicablePercent`: tax rate as a numeric string.
      *
-     * @param Invoice $invoice Invoice used to compute tax groups.
+     * @param Invoice $invoice invoice used to compute tax groups
+     *
      * @return array<int,array{CalculatedAmount:array{'@currencyID':string,'#':string},TypeCode:string,BasisAmount:array{'@currencyID':string,'#':string},CategoryCode:string,ApplicablePercent:string}> Array of tax total entries suitable for ZUGFeRD 1.0.
      */
     protected function buildTaxTotals10(Invoice $invoice): array

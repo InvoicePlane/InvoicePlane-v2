@@ -54,12 +54,12 @@ class NumberingTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $otherCompany = \Modules\Core\Models\Company::factory()->create();
-        
+
         $ownNumbering = Numbering::factory()->for($this->company)->create([
             'type' => NumberingType::INVOICE->value,
             'name' => 'Own Numbering',
         ]);
-        
+
         $otherNumbering = Numbering::factory()->for($otherCompany)->create([
             'type' => NumberingType::INVOICE->value,
             'name' => 'Other Numbering',
@@ -130,8 +130,8 @@ class NumberingTest extends AbstractAdminPanelTestCase
         $component->assertSuccessful();
         $component->assertHasNoTableActionErrors();
         $this->assertDatabaseHas('numbering', [
-            'id'   => $numbering->id,
-            'name' => 'Updated Quote Numbering',
+            'id'                      => $numbering->id,
+            'name'                    => 'Updated Quote Numbering',
             'group_identifier_format' => 'QUO-{YEAR}-{ID}',
         ]);
     }

@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use RuntimeException;
 use Modules\Clients\Models\Customer;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
@@ -17,6 +16,7 @@ use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
+use RuntimeException;
 use Throwable;
 
 class NumberingService
@@ -49,9 +49,9 @@ class NumberingService
                 // automatically recalculate to find the highest number
                 if (isset($payload['next_id']) && $payload['next_id'] < $numbering->next_id) {
                     Log::warning('Numbering troubleshooting mode triggered', [
-                        'numbering_id'   => $numbering->id,
-                        'numbering_name' => $numbering->name,
-                        'old_next_id'    => $numbering->next_id,
+                        'numbering_id'      => $numbering->id,
+                        'numbering_name'    => $numbering->name,
+                        'old_next_id'       => $numbering->next_id,
                         'requested_next_id' => $payload['next_id'],
                     ]);
 
@@ -140,13 +140,13 @@ class NumberingService
         if ( ! isset($data['company_id'])) {
             $companyId = session('current_company_id')
                 ?? Auth::user()?->companies()?->first()?->id;
-            
+
             if ($companyId === null) {
                 throw new InvalidArgumentException(
                     'Unable to determine company_id. Please provide a valid company context via session or authenticated user.'
                 );
             }
-            
+
             $data['company_id'] = $companyId;
         }
 
@@ -303,11 +303,11 @@ class NumberingService
 
         // If we reach here, we've exceeded max attempts
         Log::warning('Numbering collision resolution exceeded max attempts', [
-            'numbering_id' => $numbering->id,
-            'numbering_name' => $numbering->name,
-            'prefix' => $prefix,
+            'numbering_id'    => $numbering->id,
+            'numbering_name'  => $numbering->name,
+            'prefix'          => $prefix,
             'desired_next_id' => $desiredNextId,
-            'attempts' => $attempts,
+            'attempts'        => $attempts,
         ]);
 
         throw new RuntimeException(

@@ -108,7 +108,7 @@ class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
         Storage::fake('local');
         $payment = Payment::factory()->for($this->company)->create([
             'amount' => 123.45,
-            'note' => 'Ü Payment, "Test"',
+            'note'   => 'Ü Payment, "Test"',
         ]);
 
         /* Act */

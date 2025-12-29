@@ -249,7 +249,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
         $invoice->setRelation('customer', $customer);
         $invoice->setRelation('invoiceItems', $items);
 
-        /** @var Invoice $invoice */
+        /* @var Invoice $invoice */
         return $invoice;
     }
 }

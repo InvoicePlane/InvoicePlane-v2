@@ -54,7 +54,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'customer_id'              => $customer->id,
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_number'           => 'INV-987654',
             'invoice_status'           => InvoiceStatus::DRAFT,
@@ -102,14 +102,14 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'invoice_number'    => 'INV-987654',
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => 'draft',
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
-            'invoiceItems'      => [
+            'invoice_number' => 'INV-987654',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => 'draft',
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'invoiceItems'   => [
                 [
                     'product_id' => $product->getKey(),
                     'quantity'   => 3,
@@ -150,13 +150,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => 'draft',
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
-            'invoiceItems'      => [
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => 'draft',
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'invoiceItems'   => [
                 [
                     'product_id' => $product->getKey(),
                     'quantity'   => 3,
@@ -196,13 +196,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'invoice_number'    => 'INV-987654',
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
-            'invoiceItems'      => [
+            'invoice_number' => 'INV-987654',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'invoiceItems'   => [
                 [
                     'product_id' => $product->getKey(),
                     'quantity'   => 3,
@@ -240,13 +240,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'invoice_number'    => 'INV-987654',
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => 'draft',
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
-            'invoiceItems'      => [
+            'invoice_number' => 'INV-987654',
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => 'draft',
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'invoiceItems'   => [
                 [
                     'product_id' => $product->getKey(),
                     'quantity'   => 3,
@@ -286,13 +286,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'invoice_number'    => 'INV-987654',
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => InvoiceStatus::DRAFT->value,
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
+            'invoice_number' => 'INV-987654',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
         ]);
 
         $payload = ['invoice_status' => InvoiceStatus::SENT];
@@ -337,14 +337,14 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'invoice_number'    => 'INV-987654',
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => 'draft',
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
-            'invoiceItems'      => [
+            'invoice_number' => 'INV-987654',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => 'draft',
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'invoiceItems'   => [
                 [
                     'product_id' => $product->getKey(),
                     'quantity'   => 3,
@@ -388,7 +388,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'customer_id'              => $customer->id,
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_status'           => InvoiceStatus::DRAFT,
             'invoice_sign'             => '1',
@@ -433,7 +433,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'customer_id'              => $customer->id,
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_number'           => 'INV-987654',
             'invoice_sign'             => '1',
@@ -475,7 +475,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $payload = [
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_number'           => 'INV-987654',
             'invoice_status'           => InvoiceStatus::DRAFT,
@@ -519,13 +519,13 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         ]);
 
         $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
-            'invoice_number'    => 'INV-987654',
-            'customer_id'       => $customer->getKey(),
-            'numbering_id' => $documentGroup->getKey(),
-            'user_id'           => $this->user->id,
-            'invoice_status'    => InvoiceStatus::DRAFT->value,
-            'invoiced_at'       => '2025-05-10',
-            'invoice_due_at'    => '2025-06-09',
+            'invoice_number' => 'INV-987654',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'user_id'        => $this->user->id,
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
         ]);
 
         $payload = ['invoice_status' => InvoiceStatus::SENT];
@@ -600,7 +600,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'customer_id'              => $customer->id,
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_number'           => 'INV-987654',
             'invoice_status'           => InvoiceStatus::DRAFT,
@@ -657,7 +657,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         $payload = [
             'customer_id'              => $customer->id,
-            'numbering_id'        => $documentGroup->id,
+            'numbering_id'             => $documentGroup->id,
             'user_id'                  => $user->id,
             'invoice_number'           => 'INV-987654',
             'invoice_status'           => InvoiceStatus::PAID,

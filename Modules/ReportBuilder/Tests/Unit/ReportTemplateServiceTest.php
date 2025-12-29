@@ -3,7 +3,6 @@
 namespace Modules\ReportBuilder\Tests\Unit;
 
 use InvalidArgumentException;
-use Modules\Core\Models\Company;
 use Modules\ReportBuilder\DTOs\BlockDTO;
 use Modules\ReportBuilder\DTOs\GridPositionDTO;
 use Modules\ReportBuilder\Models\ReportTemplate;
@@ -159,7 +158,6 @@ class ReportTemplateServiceTest extends TestCase
 
         $cloned = $this->service->cloneSystemBlock('header_company', 'block_cloned', $position);
 
-
         /* assert */
         $this->assertInstanceOf(BlockDTO::class, $cloned);
         $this->assertEquals('block_cloned', $cloned->getId());
@@ -181,7 +179,6 @@ class ReportTemplateServiceTest extends TestCase
         /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
-
         /* assert */
         $this->service->cloneSystemBlock('invalid_type', 'block_cloned', $position);
     }
@@ -199,7 +196,6 @@ class ReportTemplateServiceTest extends TestCase
 
         /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
-
 
         /* assert */
         $block = new BlockDTO();

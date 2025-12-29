@@ -3,8 +3,8 @@
 namespace Modules\Invoices\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Invoices\Models\Invoice;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Invoices\Models\Invoice;
 
 class InvoiceLegacyExporter extends BaseExporter
 {

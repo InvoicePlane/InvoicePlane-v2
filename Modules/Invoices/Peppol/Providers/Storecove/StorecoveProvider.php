@@ -65,12 +65,12 @@ class StorecoveProvider extends BaseProvider
      *                                Expected keys vary by provider integration (e.g. invoice XML, sender/recipient identifiers, options).
      *
      * @return array{accepted: bool, external_id: string|null, status_code: int, message: string, response: mixed|null}
-     *               Result of the send attempt with keys:
-     *               - accepted (bool): Whether the provider accepted the submission.
-     *               - external_id (string|null): Provider-assigned identifier for the transmission, or null if not assigned.
-     *               - status_code (int): Numeric status or HTTP-like code indicating result (0 when not applicable).
-     *               - message (string): Human-readable message describing the result.
-     *               - response (mixed|null): Raw provider response payload when available, or null.
+     *                                                                                                                  Result of the send attempt with keys:
+     *                                                                                                                  - accepted (bool): Whether the provider accepted the submission.
+     *                                                                                                                  - external_id (string|null): Provider-assigned identifier for the transmission, or null if not assigned.
+     *                                                                                                                  - status_code (int): Numeric status or HTTP-like code indicating result (0 when not applicable).
+     *                                                                                                                  - message (string): Human-readable message describing the result.
+     *                                                                                                                  - response (mixed|null): Raw provider response payload when available, or null.
      */
     public function sendInvoice(array $transmissionData): array
     {

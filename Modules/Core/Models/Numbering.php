@@ -42,9 +42,9 @@ class Numbering extends Model
     use BelongsToCompany;
     use HasFactory;
 
-    protected $table = 'numbering';
-
     public $timestamps = false;
+
+    protected $table = 'numbering';
 
     protected $casts = [
         'type'         => NumberingType::class,
@@ -83,7 +83,7 @@ class Numbering extends Model
 
     /**
      * Sanitize format string by trimming whitespace and enforcing separator restrictions.
-     * 
+     *
      * Only dash "-" and underscore "_" are allowed as separators.
      * Forward slash "/" is automatically converted to dash for backward compatibility.
      */
@@ -94,7 +94,7 @@ class Numbering extends Model
         }
 
         $trimmed = trim($format);
-        
+
         if ($trimmed === '') {
             return null;
         }
@@ -115,8 +115,8 @@ class Numbering extends Model
     ): string {
         if ($oldPrefix !== null && str_contains($format, $oldPrefix)) {
             $escapedPrefix = preg_quote($oldPrefix, '/');
-            $pattern = '/(?<=^|[^a-zA-Z0-9])' . $escapedPrefix . '(?=[^a-zA-Z0-9]|$)/';
-            $format = preg_replace($pattern, '{{prefix}}', $format);
+            $pattern       = '/(?<=^|[^a-zA-Z0-9])' . $escapedPrefix . '(?=[^a-zA-Z0-9]|$)/';
+            $format        = preg_replace($pattern, '{{prefix}}', $format);
         }
 
         if ($newPrefix !== null) {

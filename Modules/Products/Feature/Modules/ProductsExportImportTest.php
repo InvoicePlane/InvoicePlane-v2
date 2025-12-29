@@ -112,7 +112,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         Queue::fake();
         Storage::fake('local');
         $product = Product::factory()->for($this->company)->create([
-            'name' => 'ÜProduct, "Test"',
+            'name'  => 'ÜProduct, "Test"',
             'price' => 123.45,
         ]);
 

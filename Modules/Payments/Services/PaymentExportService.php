@@ -14,27 +14,27 @@ class PaymentExportService
     public function export(string $format = 'xlsx'): BinaryFileResponse
     {
         $this->validateCompanyContext();
-        
+
         $companyId = session('current_company_id');
-        $payments = $this->getPayments($companyId);
-        $version = config('ip.export_version', 2);
-        
+        $payments  = $this->getPayments($companyId);
+        $version   = config('ip.export_version', 2);
+
         return $this->downloadExport($payments, $format, $version);
     }
 
     public function exportWithVersion(string $format = 'xlsx', int $version = 2): BinaryFileResponse
     {
         $this->validateCompanyContext();
-        
+
         $companyId = session('current_company_id');
-        $payments = Payment::query()->where('company_id', $companyId)->get();
-        
+        $payments  = Payment::query()->where('company_id', $companyId)->get();
+
         return $this->downloadExport($payments, $format, $version);
     }
 
     protected function validateCompanyContext(): void
     {
-        if (!session('current_company_id')) {
+        if ( ! session('current_company_id')) {
             abort(403, 'No company context available');
         }
     }
@@ -50,7 +50,7 @@ class PaymentExportService
 
     protected function downloadExport($payments, string $format, int $version): BinaryFileResponse
     {
-        $fileName = $this->generateFileName($format);
+        $fileName    = $this->generateFileName($format);
         $exportClass = $this->getExportClass($version);
         $excelFormat = $this->getExcelFormat($format);
 
@@ -60,6 +60,7 @@ class PaymentExportService
     protected function generateFileName(string $format): string
     {
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
+
         return 'payments-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
     }
 

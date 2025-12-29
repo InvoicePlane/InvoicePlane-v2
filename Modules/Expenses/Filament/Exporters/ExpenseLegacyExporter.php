@@ -3,8 +3,8 @@
 namespace Modules\Expenses\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
-use Modules\Expenses\Models\Expense;
 use Modules\Core\Filament\Exporters\BaseExporter;
+use Modules\Expenses\Models\Expense;
 
 class ExpenseLegacyExporter extends BaseExporter
 {

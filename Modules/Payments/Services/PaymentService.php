@@ -48,6 +48,20 @@ class PaymentService extends BaseService
         }
     }
 
+    public function deletePayment(Payment $payment): Payment
+    {
+        DB::beginTransaction();
+        try {
+            $payment->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $payment;
+    }
+
     protected function preparePaymentData(array $data): array
     {
         $customerId = $data['customer_id'] ?? $this->getCustomerIdFromInvoice($data['invoice_id']);
@@ -67,19 +81,5 @@ class PaymentService extends BaseService
     protected function getCustomerIdFromInvoice(int $invoiceId): int
     {
         return Invoice::query()->findOrFail($invoiceId)->customer_id;
-    }
-
-    public function deletePayment(Payment $payment): Payment
-    {
-        DB::beginTransaction();
-        try {
-            $payment->delete();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
-        return $payment;
     }
 }

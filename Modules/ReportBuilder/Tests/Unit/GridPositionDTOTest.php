@@ -19,7 +19,6 @@ class GridPositionDTOTest extends TestCase
         /* act */
         $dto->setX(5);
 
-
         /* assert */
         $this->assertEquals(5, $dto->getX());
     }
@@ -33,7 +32,6 @@ class GridPositionDTOTest extends TestCase
 
         /* act */
         $dto->setY(10);
-
 
         /* assert */
         $this->assertEquals(10, $dto->getY());
@@ -91,7 +89,6 @@ class GridPositionDTOTest extends TestCase
             ->setWidth(0)
             ->setHeight(0);
 
-
         /* assert */
         $this->assertEquals(0, $dto->getX());
         $this->assertEquals(0, $dto->getY());
@@ -111,7 +108,6 @@ class GridPositionDTOTest extends TestCase
             ->setY(2000)
             ->setWidth(500)
             ->setHeight(300);
-
 
         /* assert */
         $this->assertEquals(1000, $dto->getX());

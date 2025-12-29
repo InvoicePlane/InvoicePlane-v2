@@ -115,7 +115,7 @@ abstract class AbstractSeeder extends Seeder
             $documentGroup = $this->findOrCreateNumbering($companyId);
 
             $invoice = Invoice::factory()->state([
-                'company_id'        => $this->companyId,
+                'company_id'   => $this->companyId,
                 'numbering_id' => $documentGroup->id,
             ])
                 ->create();

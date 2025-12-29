@@ -33,8 +33,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         parent::setUp();
 
-        $this->user    = User::factory()->create(); /** @var User $user */
-        $this->company = Company::factory()->create(); /** @var Company $company */
+        $this->user    = User::factory()->create(); /* @var User $user */
+        $this->company = Company::factory()->create(); /* @var Company $company */
         $this->user->companies()->attach($this->company);
     }
 

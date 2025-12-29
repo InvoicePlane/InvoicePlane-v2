@@ -15,8 +15,8 @@ use Modules\Core\Filament\Company\Resources\Numberings\Tables\NumberingsTable;
 use Modules\Core\Models\Numbering;
 
 /**
- * Company Panel Numbering Resource
- * 
+ * Company Panel Numbering Resource.
+ *
  * Allows company users to view and edit numbering schemes for their own company only.
  * Company users cannot:
  * - Create new numbering schemes (only admins can)

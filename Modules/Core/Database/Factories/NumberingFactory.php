@@ -11,8 +11,8 @@ class NumberingFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId    = $this->resolveCompanyId();
-        $company      = $this->resolveCompany();
+        $companyId     = $this->resolveCompanyId();
+        $company       = $this->resolveCompany();
         $numberingType = $this->faker->randomElement(NumberingType::cases());
 
         $name = $numberingType->label();

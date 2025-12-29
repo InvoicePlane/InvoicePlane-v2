@@ -43,7 +43,7 @@ class NumberingForm
                                             ->required()
                                             ->disabled() // Company users cannot change type
                                             ->dehydrated(),
-                                        
+
                                         TextInput::make('name')
                                             ->label(trans('ip.numbering_name'))
                                             ->required(),
@@ -83,7 +83,7 @@ class NumberingForm
                                         ->placeholder('INV')
                                         ->disabled() // Company users cannot change prefix
                                         ->dehydrated(),
-                                    
+
                                     TextInput::make('format')
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))

@@ -103,7 +103,7 @@ class TasksExportImportTest extends AbstractCompanyPanelTestCase
         Queue::fake();
         Storage::fake('local');
         $task = Task::factory()->for($this->company)->create([
-            'task_name' => 'ÜTask, "Test"',
+            'task_name'   => 'ÜTask, "Test"',
             'description' => 'Special chars',
         ]);
 

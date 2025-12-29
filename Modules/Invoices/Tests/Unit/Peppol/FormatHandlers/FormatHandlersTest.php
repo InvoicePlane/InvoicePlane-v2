@@ -5,7 +5,7 @@ namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
-use Modules\Invoices\Peppol\FormatHandlers\{EhfHandler, FacturaeHandler, FacturXHandler, OioublHandler, ZugferdHandler};
+use Modules\Invoices\Peppol\FormatHandlers\{EhfHandler, FacturXHandler, FacturaeHandler, OioublHandler, ZugferdHandler};
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -87,8 +87,8 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_validates_missing_customer($handlerClass): void
     {
-        $handler                 = new $handlerClass();
-        $invoice                 = new Invoice();
+        $handler = new $handlerClass();
+        $invoice = new Invoice();
         /** @var Customer|null $nullCustomer */
         $nullCustomer            = null;
         $invoice->customer       = $nullCustomer;

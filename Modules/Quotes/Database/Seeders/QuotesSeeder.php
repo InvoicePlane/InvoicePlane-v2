@@ -19,10 +19,10 @@ class QuotesSeeder extends AbstractSeeder
 
         Quote::factory()
             ->state([
-                'company_id'        => $this->companyId,
-                'prospect_id'       => $prospect->id,
+                'company_id'   => $this->companyId,
+                'prospect_id'  => $prospect->id,
                 'numbering_id' => $documentGroup->id,
-                'user_id'           => $user->id,
+                'user_id'      => $user->id,
             ])
             ->create();
     }

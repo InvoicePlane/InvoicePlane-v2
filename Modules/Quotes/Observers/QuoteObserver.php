@@ -4,6 +4,7 @@ namespace Modules\Quotes\Observers;
 
 use Modules\Core\Observers\AbstractObserver;
 use Modules\Quotes\Models\Quote;
+use RuntimeException;
 
 class QuoteObserver extends AbstractObserver
 {
@@ -21,9 +22,9 @@ class QuoteObserver extends AbstractObserver
                 ->exists();
 
             if ($duplicate) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     trans('ip.duplicate_quote_number', [
-                        'number' => $quote->quote_number,
+                        'number'  => $quote->quote_number,
                         'company' => $quote->company_id,
                     ])
                 );

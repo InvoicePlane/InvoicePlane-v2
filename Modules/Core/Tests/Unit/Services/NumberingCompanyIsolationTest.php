@@ -8,10 +8,9 @@ use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
+use Modules\Expenses\Support\ExpenseNumberGenerator;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Support\TaskNumberGenerator;
-use Modules\Expenses\Models\Expense;
-use Modules\Expenses\Support\ExpenseNumberGenerator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -36,9 +35,9 @@ class NumberingCompanyIsolationTest extends TestCase
     {
         /* Arrange */
         Carbon::setTestNow('2025-12-29');
-        
+
         $company = Company::factory()->create(['id' => 22]);
-        
+
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering',
@@ -74,10 +73,10 @@ class NumberingCompanyIsolationTest extends TestCase
     {
         /* Arrange */
         Carbon::setTestNow('2025-12-29');
-        
+
         $company22 = Company::factory()->create(['id' => 22]);
         $company23 = Company::factory()->create(['id' => 23]);
-        
+
         // Company 22 numbering
         $numbering22 = Numbering::factory()->for($company22)->create([
             'type'     => NumberingType::TASK->value,
@@ -123,9 +122,9 @@ class NumberingCompanyIsolationTest extends TestCase
     {
         /* Arrange */
         Carbon::setTestNow('2025-12-29');
-        
+
         $company = Company::factory()->create(['id' => 34]);
-        
+
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::EXPENSE->value,
             'name'     => 'Expense Numbering',
@@ -139,7 +138,7 @@ class NumberingCompanyIsolationTest extends TestCase
 
         /* Act */
         // Generate two numbers with original format
-        $firstNumber = $generator->forNumberingId($numbering->id)->generate();
+        $firstNumber  = $generator->forNumberingId($numbering->id)->generate();
         $secondNumber = $generator->forNumberingId($numbering->id)->generate();
 
         // Change format to include year and month
@@ -163,9 +162,9 @@ class NumberingCompanyIsolationTest extends TestCase
     {
         /* Arrange */
         Carbon::setTestNow('2025-12-29');
-        
+
         $company = Company::factory()->create();
-        
+
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Test Numbering',
@@ -209,7 +208,7 @@ class NumberingCompanyIsolationTest extends TestCase
     {
         /* Arrange */
         $company = Company::factory()->create(['id' => 17]);
-        
+
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering',
@@ -224,7 +223,7 @@ class NumberingCompanyIsolationTest extends TestCase
         // Note: Tasks don't have numbering_id FK, they just store the generated number
         for ($i = 1; $i <= 5; $i++) {
             Task::factory()->for($company)->create([
-                'task_number'  => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
+                'task_number' => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
             ]);
         }
 
@@ -237,7 +236,7 @@ class NumberingCompanyIsolationTest extends TestCase
         /* Assert */
         // System should automatically recalculate and find highest number
         $this->assertEquals(45534, $result->next_id); // Highest (45533) + 1
-        
+
         // Verify that generating a new number works correctly
         $generator = new TaskNumberGenerator($company->id);
         $newNumber = $generator->forNumberingId($numbering->id)->generate();
