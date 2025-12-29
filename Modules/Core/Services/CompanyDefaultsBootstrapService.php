@@ -37,8 +37,8 @@ class CompanyDefaultsBootstrapService
         Numbering::firstOrCreate(
             [
                 'company_id' => $company->id,
-                'type'       => NumberingType::INVOICES->value,
-                'name'       => NumberingType::INVOICES->label(),
+                'type'       => NumberingType::INVOICE->value,
+                'name'       => NumberingType::INVOICE->label(),
             ],
             $documentGroupData
         );
