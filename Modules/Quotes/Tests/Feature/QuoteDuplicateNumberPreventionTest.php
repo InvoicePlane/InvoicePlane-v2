@@ -4,12 +4,12 @@ namespace Modules\Quotes\Tests\Feature;
 
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
-use Tests\TestCase;
 
-class QuoteDuplicateNumberPreventionTest extends TestCase
+class QuoteDuplicateNumberPreventionTest extends AbstractTestCase
 {
     #[Test]
     public function it_prevents_duplicate_quote_numbers_within_same_company(): void

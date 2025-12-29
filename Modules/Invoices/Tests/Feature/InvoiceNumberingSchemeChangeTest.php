@@ -4,12 +4,12 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Support\InvoiceNumberGenerator;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class InvoiceNumberingSchemeChangeTest extends TestCase
+class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
 {
     use RefreshDatabase;
 

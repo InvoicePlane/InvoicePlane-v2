@@ -134,6 +134,10 @@ php artisan queue:work
  - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
  - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
  - Use data providers for testing multiple scenarios with the same logic.
+ - **NEVER extend `Tests\TestCase`** - all tests must extend one of the abstract test cases from `Modules/Core/Tests/`:
+   - `AbstractTestCase` - Basic test case with application bootstrap
+   - `AbstractAdminPanelTestCase` - For admin panel tests with RefreshDatabase
+   - `AbstractCompanyPanelTestCase` - For company panel tests with multi-tenancy
 
 ### Export System Rules
 

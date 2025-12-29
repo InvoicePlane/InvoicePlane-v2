@@ -8,14 +8,14 @@ use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Support\ExpenseNumberGenerator;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Support\TaskNumberGenerator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class NumberingCompanyIsolationTest extends TestCase
+class NumberingCompanyIsolationTest extends AbstractTestCase
 {
     use RefreshDatabase;
 

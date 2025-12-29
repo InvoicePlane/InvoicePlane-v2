@@ -183,6 +183,10 @@ class InvoiceServiceTest extends AbstractCompanyPanelTestCase
 4. **Happy Paths Last:** Place success scenarios at the end
 5. **Reusable Setup:** Abstract test cases for fixtures, not inline
 6. **Comment Blocks:** Use `/* Arrange */`, `/* Act */`, `/* Assert */`
+7. **NEVER extend `Tests\TestCase`:** All tests must extend one of the abstract test cases from `Modules/Core/Tests/`:
+   - `AbstractTestCase` - Basic test case with application bootstrap
+   - `AbstractAdminPanelTestCase` - For admin panel tests with RefreshDatabase
+   - `AbstractCompanyPanelTestCase` - For company panel tests with multi-tenancy
 
 ### Export Testing
 ```php
