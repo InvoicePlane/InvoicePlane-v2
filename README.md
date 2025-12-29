@@ -161,7 +161,7 @@ See [TRANSLATIONS.md](.github/TRANSLATIONS.md) for more details.
 
 - **Discord** - [Join our Discord server](https://discord.gg/PPzD2hTrXt)
 - **Forums** - [Community discussions](https://community.invoiceplane.com)
-- **Issue Tracker** - [Report bugs and request features](https://github.com/InvoicePlane/InvoicePlane/issues)
+- **Issue Tracker** - [Report bugs and request features](https://github.com/InvoicePlane/InvoicePlane-v2/issues)
 - **Documentation Wiki** - [Official documentation](https://wiki.invoiceplane.com)
 
 ---
