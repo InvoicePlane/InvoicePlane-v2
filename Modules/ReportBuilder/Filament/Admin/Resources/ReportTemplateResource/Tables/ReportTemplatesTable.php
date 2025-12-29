@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Modules\ReportBuilder\Enums\ReportTemplateType;
 use Modules\ReportBuilder\Models\ReportTemplate;
 use Modules\ReportBuilder\Services\ReportTemplateService;
 
@@ -62,11 +63,10 @@ class ReportTemplatesTable
             ->filters([
                 SelectFilter::make('template_type')
                     ->label(trans('ip.template_type'))
-                    ->options([
-                        'invoice'  => trans('ip.invoice'),
-                        'quote'    => trans('ip.quote'),
-                        'estimate' => trans('ip.estimate'),
-                    ]),
+                    ->options(
+                        collect(ReportTemplateType::cases())
+                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                    ),
                 TernaryFilter::make('is_active')
                     ->label(trans('ip.active'))
                     ->nullable(),

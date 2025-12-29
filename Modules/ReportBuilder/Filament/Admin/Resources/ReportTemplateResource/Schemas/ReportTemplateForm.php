@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\ReportBuilder\Enums\ReportTemplateType;
 
 class ReportTemplateForm
 {
@@ -27,11 +28,10 @@ class ReportTemplateForm
                                 Select::make('template_type')
                                     ->label(trans('ip.template_type'))
                                     ->required()
-                                    ->options([
-                                        'invoice'  => trans('ip.invoice'),
-                                        'quote'    => trans('ip.quote'),
-                                        'estimate' => trans('ip.estimate'),
-                                    ]),
+                                    ->options(
+                                        collect(ReportTemplateType::cases())
+                                            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
+                                    ),
                             ]),
                         Textarea::make('description')
                             ->label(trans('ip.description'))
