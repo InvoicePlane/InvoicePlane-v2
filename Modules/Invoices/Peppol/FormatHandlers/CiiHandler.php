@@ -18,20 +18,10 @@ class CiiHandler extends BaseFormatHandler
     /**
      * @inheritDoc
      */
-    public function supports(Invoice $invoice): bool
-    {
-        // Implement logic to check if this handler supports the invoice's format
-        return $invoice->format === \Modules\Invoices\Peppol\Enums\PeppolDocumentFormat::CII;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function transform(Invoice $invoice, array $options = []): array
     {
         $customer = $invoice->customer;
         $company  = $invoice->company;
-        $items    = $invoice->items;
 
         return [
             'ExchangedDocumentContext'    => $this->buildDocumentContext(),

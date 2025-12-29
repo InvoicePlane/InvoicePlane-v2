@@ -39,7 +39,7 @@ class PeppolManagementService
      * @param int         $companyId    the ID of the company that will own the integration
      * @param string      $providerName the provider identifier/name for the Peppol integration
      * @param array       $config       associative configuration values to attach to the integration
-     * @param string|null $apiToken     optional provider API token; stored on the model (encrypted by the model accessor)
+     * @param string|null $apiToken     optional provider API token; automatically encrypted via the model's setApiTokenAttribute accessor
      *
      * @return PeppolIntegration the newly created PeppolIntegration model (initially disabled until tested)
      */
@@ -51,7 +51,7 @@ class PeppolManagementService
             $integration                = new PeppolIntegration();
             $integration->company_id    = $companyId;
             $integration->provider_name = $providerName;
-            $integration->api_token     = $apiToken; // Will be encrypted automatically by model accessor
+            $integration->api_token     = $apiToken; // Encrypted automatically via setApiTokenAttribute accessor
             $integration->enabled       = false; // Start disabled until tested
             $integration->save();
 
@@ -195,9 +195,7 @@ class PeppolManagementService
                 'details' => $result['details'],
             ];
         } catch (Exception $e) {
-            if (isset($history)) {
-                DB::rollBack();
-            }
+            DB::rollBack();
 
             $this->logPeppolError('Peppol ID validation failed', [
                 'customer_id' => $customer->id,

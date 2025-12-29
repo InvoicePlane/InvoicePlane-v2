@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Observers;
 
+use Illuminate\Validation\ValidationException;
 use Modules\Core\Observers\AbstractObserver;
 use Modules\Invoices\Models\Invoice;
 
@@ -21,12 +22,12 @@ class InvoiceObserver extends AbstractObserver
                 ->exists();
 
             if ($duplicate) {
-                throw new \RuntimeException(
-                    trans('ip.duplicate_invoice_number', [
+                throw ValidationException::withMessages([
+                    'invoice_number' => trans('ip.duplicate_invoice_number', [
                         'number' => $invoice->invoice_number,
                         'company' => $invoice->company_id,
-                    ])
-                );
+                    ]),
+                ]);
             }
         }
     }
