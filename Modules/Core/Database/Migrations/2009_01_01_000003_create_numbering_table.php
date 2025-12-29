@@ -17,11 +17,11 @@ return new class () extends Migration {
             $table->unsignedBigInteger('left_pad')->default(0)->index();
             $table->string('format')->nullable();
             $table->string('prefix')->nullable();
-            $table->unsignedBiginteger('reset_number')->default(0);
-            $table->unsignedBiginteger('last_id')->default(0);
-            $table->unsignedBiginteger('last_year')->default(0);
-            $table->unsignedBiginteger('last_month')->default(0);
-            $table->unsignedBiginteger('last_week')->default(0);
+            $table->unsignedBigInteger('reset_number')->default(0);
+            $table->unsignedBigInteger('last_id')->default(0);
+            $table->unsignedBigInteger('last_year')->default(0);
+            $table->unsignedBigInteger('last_month')->default(0);
+            $table->unsignedBigInteger('last_week')->default(0);
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
