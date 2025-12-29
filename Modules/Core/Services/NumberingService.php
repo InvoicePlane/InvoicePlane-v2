@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Clients\Models\Customer;
-use Modules\Core\DataTransferObjects\NumberingUpdateResult;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 use Modules\Expenses\Models\Expense;
@@ -34,7 +33,7 @@ class NumberingService
         });
     }
 
-    public function updateNumbering(Numbering $numbering, array $data): NumberingUpdateResult
+    public function updateNumbering(Numbering $numbering, array $data): Numbering
     {
         if ($this->isNumberingApplied($numbering)) {
             throw new InvalidArgumentException('Cannot update numbering scheme that has already been applied.');
@@ -42,20 +41,14 @@ class NumberingService
 
         return DB::transaction(function () use ($numbering, $data) {
             try {
-                $payload        = $this->prepareUpdateData($numbering, $data);
-                $originalNextId = $numbering->next_id;
-
-                $desiredNextId  = $payload['__desired_next_id'] ?? null;
-                $resolvedNextId = $payload['__resolved_next_id'] ?? null;
+                $payload = $this->prepareUpdateData($numbering, $data);
 
                 unset($payload['__desired_next_id'], $payload['__resolved_next_id']);
 
                 $numbering->update($payload);
                 $numbering->refresh();
 
-                $nextIdAdjusted = $resolvedNextId !== null && (int) $desiredNextId !== (int) $resolvedNextId;
-
-                return new NumberingUpdateResult($numbering, $nextIdAdjusted, $originalNextId);
+                return $numbering;
             } catch (Throwable $e) {
                 throw $e;
             }

@@ -25,8 +25,7 @@ class EditNumbering extends EditRecord
         $data = $this->mutateFormDataBeforeSave($data);
         $this->callHook('beforeSave');
 
-        $result       = $this->handleRecordUpdate($this->getRecord(), $data);
-        $this->record = $result->numbering;
+        $this->record = $this->handleRecordUpdate($this->getRecord(), $data);
 
         $this->callHook('afterSave');
 

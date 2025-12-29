@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Clients\Models\Customer;
 use Modules\Core\Database\Factories\NumberingFactory;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
+use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
@@ -99,7 +104,9 @@ class Numbering extends Model
         ?string $oldPrefix = null
     ): string {
         if ($oldPrefix !== null && str_contains($format, $oldPrefix)) {
-            $format = str_replace($oldPrefix, '{{prefix}}', $format);
+            $escapedPrefix = preg_quote($oldPrefix, '/');
+            $pattern = '/(?<=^|[^a-zA-Z0-9])' . $escapedPrefix . '(?=[^a-zA-Z0-9]|$)/';
+            $format = preg_replace($pattern, '{{prefix}}', $format);
         }
 
         if ($newPrefix !== null) {
@@ -170,14 +177,39 @@ class Numbering extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class, 'numbering_id');
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'numbering_id');
+    }
+
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'numbering_id');
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'numbering_id');
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'numbering_id');
+    }
+
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'numbering_id');
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'numbering_id');
     }
 
     /*
