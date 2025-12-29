@@ -75,35 +75,117 @@ After the workflow runs:
 
 Artifacts are also available in the Actions tab for 90 days.
 
-### 2. PHPUnit Tests (`phpunit.yml`)
+### 2. Composer Dependency Update (`composer-update.yml`)
+
+**Trigger:** 
+- Scheduled: Weekly on Mondays at 9:00 AM UTC
+- Manual dispatch with update type selection
+
+**Purpose:** Automates Composer (PHP) dependency updates with security checks
+
+**What it does:**
+1. **Runs security audit** - Checks for known vulnerabilities
+2. **Updates dependencies** - Based on selected update type
+3. **Runs tests** - Executes unit tests to verify compatibility
+4. **Runs static analysis** - PHPStan checks for type errors
+5. **Creates pull request** - Automated PR with update details
+
+**Update Types:**
+- `security-only` - Only security fixes (default for scheduled runs)
+- `patch-minor` - Patch and minor version updates
+- `all-dependencies` - All updates including major versions
+
+**Required Permissions:**
+- `contents: write` - For creating branches and commits
+- `pull-requests: write` - For creating pull requests
+
+### 3. Yarn Dependency Update (`yarn-update.yml`)
+
+**Trigger:**
+- Scheduled: Weekly on Mondays at 10:00 AM UTC
+- Manual dispatch with update type selection
+
+**Purpose:** Automates Yarn (JavaScript) dependency updates with security checks
+
+**What it does:**
+1. **Runs security audit** - Checks for known vulnerabilities
+2. **Updates dependencies** - Based on selected update type
+3. **Builds assets** - Verifies frontend builds correctly
+4. **Creates pull request** - Automated PR with update details
+
+**Update Types:**
+- `security-only` - Only security fixes (default for scheduled runs)
+- `patch-minor` - Patch and minor version updates
+- `all-dependencies` - All updates including major versions
+
+**Required Permissions:**
+- `contents: write` - For creating branches and commits
+- `pull-requests: write` - For creating pull requests
+
+### 4. PHPUnit Tests (`phpunit.yml`)
 
 **Trigger:** Manual dispatch only
 
 Runs the PHPUnit test suite against a MySQL database.
 
-### 3. Laravel Pint (`pint.yml`)
+### 5. Laravel Pint (`pint.yml`)
 
 **Trigger:** Manual dispatch only
 
 Runs Laravel Pint for code formatting checks.
 
-### 4. PHPStan (`phpstan.yml`)
+### 6. PHPStan (`phpstan.yml`)
 
 **Trigger:** Manual dispatch only
 
 Runs PHPStan static analysis.
 
-### 5. Docker Compose Check (`docker.yml`)
+### 7. Docker Compose Check (`docker.yml`)
 
 **Trigger:** Manual dispatch only
 
 Tests Docker Compose configuration.
 
-### 6. Quickstart (`quickstart.yml`)
+### 8. Quickstart (`quickstart.yml`)
 
 **Trigger:** Manual dispatch only
 
 Provides a quick setup for development environments.
+
+## Dependency Management
+
+### GitHub Dependabot
+
+InvoicePlane v2 uses GitHub Dependabot for automated dependency updates. Configuration is in `.github/dependabot.yml`.
+
+**What Dependabot monitors:**
+- Composer (PHP dependencies) - Weekly updates on Mondays
+- npm/Yarn (JavaScript dependencies) - Weekly updates on Mondays
+- GitHub Actions - Monthly updates
+
+**How it works:**
+1. Dependabot scans for outdated or vulnerable dependencies
+2. Creates pull requests for updates
+3. Groups updates by type (security, patch, minor)
+4. Automatically labels PRs for easy filtering
+
+**Managing Dependabot PRs:**
+- Review the changelog and breaking changes
+- Run tests locally if needed
+- Merge when ready or close if not needed
+- Use `@dependabot rebase` to rebase the PR
+
+See [MAINTENANCE.md](../MAINTENANCE.md) for detailed dependency management guidelines.
+
+### Manual Dependency Updates
+
+Use the manual workflows when you need immediate updates:
+
+1. Go to **Actions** tab
+2. Select **Composer Update** or **Yarn Update**
+3. Click **Run workflow**
+4. Select update type
+5. Wait for automated PR
 
 ## Workflow Optimization
 
