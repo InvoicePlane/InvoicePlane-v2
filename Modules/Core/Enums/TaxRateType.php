@@ -19,10 +19,10 @@ enum TaxRateType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::EXCLUSIVE => trans('ip.tax_rate_type_exclusive'),
-            self::INCLUSIVE => trans('ip.tax_rate_type_inclusive'),
-            self::ZERO      => trans('ip.tax_rate_type_zero'),
-            self::EXEMPT    => trans('ip.tax_rate_type_exempt'),
+            self::EXCLUSIVE => 'Exclusive',
+            self::INCLUSIVE => 'Inclusive',
+            self::ZERO      => 'Zero',
+            self::EXEMPT    => 'Exempt',
         };
     }
 

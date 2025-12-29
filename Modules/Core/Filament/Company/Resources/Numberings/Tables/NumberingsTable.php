@@ -30,7 +30,7 @@ class NumberingsTable
                     ->sortable(),
 
                 TextColumn::make('left_pad')
-                    ->label(trans('ip.padding')),
+                    ->label(trans('ip.left_pad')),
             ])
             ->defaultSort('type', 'asc');
     }

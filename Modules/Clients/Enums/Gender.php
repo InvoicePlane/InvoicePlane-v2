@@ -22,7 +22,7 @@ enum Gender: string implements LabeledEnum
             self::MALE    => trans('ip.gender_male'),
             self::FEMALE  => trans('ip.gender_female'),
             self::OTHER   => trans('ip.gender_other'),
-            self::UNKNOWN => trans('ip.gender_unknown'),
+            self::UNKNOWN => trans('ip.gender_other'),
         };
     }
 
