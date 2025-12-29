@@ -89,6 +89,14 @@ class InvoiceForm
                                             ->label(trans('ip.invoice_due_at'))
                                             ->required(),
 
+                                        Select::make('numbering_id')
+                                            ->label(trans('ip.numbering'))
+                                            ->relationship('numbering', 'name')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false),
+
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),
                                     ]),
