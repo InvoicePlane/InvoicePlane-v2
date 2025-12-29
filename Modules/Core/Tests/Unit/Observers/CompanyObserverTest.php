@@ -16,7 +16,7 @@ class CompanyObserverTest extends AbstractTestCase
     #[Group('unit')]
     public function it_bootstraps_default_data_when_company_is_created(): void
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        /* Arrange */
         $company = Company::create([
             'search_code' => 'IVPLV2',
             'name'        => 'InvoicePlane Corporation',
