@@ -532,7 +532,7 @@ This document should be updated as:
 - Best practices evolve
 - Performance optimizations discovered
 
-**Last Updated:** 2025-11-13
+**Last Updated:** 2025-12-29
 
 ---
 

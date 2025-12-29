@@ -444,22 +444,22 @@ jobs:
           echo "=========================================" | tee -a "$LOG_FILE"
           
           # Add to GitHub Actions summary
-          echo "## 🎉 Release Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "## Release Build Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Version:** \`${{ env.NEW_TAG }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Type:** ${{ env.RELEASE_TYPE }}" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** \`${{ env.RELEASE_FILE }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📦 Download" >> $GITHUB_STEP_SUMMARY
+          echo "### Download" >> $GITHUB_STEP_SUMMARY
           echo "- Artifact: \`ip-${{ env.NEW_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🔐 Checksums" >> $GITHUB_STEP_SUMMARY
+          echo "### Checksums" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "SHA256: ${{ env.SHA256_HASH }}" >> $GITHUB_STEP_SUMMARY
           echo "MD5: ${{ env.MD5_HASH }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📝 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
           echo "1. Review the draft release in GitHub" >> $GITHUB_STEP_SUMMARY
           echo "2. Test the package if needed" >> $GITHUB_STEP_SUMMARY
           echo "3. Publish the release when ready" >> $GITHUB_STEP_SUMMARY

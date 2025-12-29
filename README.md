@@ -195,4 +195,4 @@ Special thanks to all our [contributors](https://github.com/InvoicePlane/Invoice
 
 ---
 
-**Made with by the InvoicePlane community**
+**Developed by the InvoicePlane community**

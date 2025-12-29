@@ -42,7 +42,7 @@ Based on the popular Nord color palette, this theme features cool, arctic-inspir
  - Warning: #ebcb8b (yellow)
  - Success: #a3be8c (green)
 
-**Best For:** Developers who love the Nord color scheme, or anyone preferring a cool, calming interface
+**Best For:** Developers who prefer the Nord color scheme, or anyone preferring a cool, calming interface
 
 ### 4. Orange
 **File:** `orange.css`

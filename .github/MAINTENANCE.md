@@ -256,6 +256,39 @@ These workflows can be triggered manually or on a schedule to:
 - Run tests
 - Create pull requests with updates
 
+### Crowdin Translation Sync
+
+InvoicePlane v2 includes a GitHub Actions workflow for automated translation management:
+
+- **Crowdin Sync Workflow** - `.github/workflows/crowdin-sync.yml`
+
+This workflow can be triggered manually with three action types:
+
+1. **upload-sources** - Upload source translation files to Crowdin
+2. **download-translations** - Download translated files from Crowdin (default)
+3. **sync-bidirectional** - Upload sources and download translations
+
+The workflow runs automatically on a weekly schedule (Sundays at 2:00 AM UTC) to download new translations and create pull requests.
+
+**Required Secrets:**
+
+To configure GitHub secrets for the Crowdin workflow:
+
+1. Go to your repository on GitHub
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add the following secrets:
+   - `CROWDIN_PROJECT_ID` - Your Crowdin project ID
+   - `CROWDIN_PERSONAL_TOKEN` - Your Crowdin personal access token
+
+Direct URL format: `https://github.com/OWNER/REPO/settings/secrets/actions`
+
+**Manual Trigger:**
+```bash
+# Go to Actions tab → Crowdin Translation Sync → Run workflow
+# Select desired action type
+```
+
 See: `.github/workflows/` directory for workflow details.
 
 ---
