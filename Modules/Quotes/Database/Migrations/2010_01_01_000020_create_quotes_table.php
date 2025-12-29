@@ -11,7 +11,7 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('prospect_id');
-            $table->unsignedBigInteger('numbering_id')->nullable()->index('quotes_numbering_id_index');
+            $table->unsignedBigInteger('numbering_id')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('quote_number')->index('quote_number');
             $table->string('quote_status');

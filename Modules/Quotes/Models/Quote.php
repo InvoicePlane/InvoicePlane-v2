@@ -106,7 +106,7 @@ class Quote extends Model
             ->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
         return $this->belongsTo(Numbering::class, 'numbering_id');
     }

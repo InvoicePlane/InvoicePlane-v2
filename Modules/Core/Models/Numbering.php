@@ -109,11 +109,20 @@ class Numbering extends Model
         return $format;
     }
 
-    public static function findIdByName($name)
+    /**
+     * Find numbering ID by name.
+     *
+     * @param string $name
+     *
+     * @return int|null
+     */
+    public static function findIdByName(string $name): ?int
     {
         if ($group = self::query()->where('name', $name)->first()) {
             return $group->id;
         }
+
+        return null;
     }
 
     public static function getList()

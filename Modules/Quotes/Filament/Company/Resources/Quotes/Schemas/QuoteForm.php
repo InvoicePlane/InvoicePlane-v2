@@ -98,7 +98,7 @@ class QuoteForm
 
                                         Select::make('numbering_id')
                                             ->label(trans('ip.numbering'))
-                                            ->relationship('documentGroup', 'name')
+                                            ->relationship('numbering', 'name')
                                             ->required()
                                             ->searchable()
                                             ->preload()

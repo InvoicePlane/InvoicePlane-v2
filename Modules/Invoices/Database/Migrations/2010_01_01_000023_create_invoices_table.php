@@ -11,7 +11,7 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id')->index('invoices_relation_id_foreign');
-            $table->unsignedBigInteger('numbering_id')->nullable()->index('invoices_numbering_id_foreign');
+            $table->unsignedBigInteger('numbering_id')->nullable();
             $table->unsignedBigInteger('creditinvoice_parent_id')->nullable()->index('invoices_creditinvoice_parent_id_foreign');
             $table->unsignedBigInteger('user_id')->index('invoices_user_id_foreign');
 

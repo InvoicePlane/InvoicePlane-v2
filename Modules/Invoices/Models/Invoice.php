@@ -134,7 +134,7 @@ class Invoice extends Model
         return $this->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
         return $this->belongsTo(Numbering::class, 'numbering_id');
     }

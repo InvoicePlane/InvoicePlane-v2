@@ -18,14 +18,14 @@ class CompanyDefaultsBootstrapService
     {
         $company = Company::findOrFail($companyId);
 
-        // Create default document group for invoices
-        $documentGroupData = [
+        // Create default numbering for invoices
+        $numberingData = [
             'company_id'              => $company->id,
-            'type'                    => NumberingType::INVOICES->value,
-            'group_identifier_format' => NumberingType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
-            'name'                    => NumberingType::INVOICES->label(),
+            'type'                    => NumberingType::INVOICE->value,
+            'group_identifier_format' => NumberingType::INVOICE->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'name'                    => NumberingType::INVOICE->label(),
             'left_pad'                => 6,
-            'format'                  => NumberingType::INVOICES->prefix() . '-{YEAR}-{MONTH}-{ID}',
+            'format'                  => NumberingType::INVOICE->prefix() . '-{YEAR}-{MONTH}-{ID}',
             'next_id'                 => 1,
             'reset_number'            => 0,
             'last_id'                 => 0,
