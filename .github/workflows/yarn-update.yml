@@ -8,10 +8,11 @@ on:
         required: true
         type: choice
         options:
+          - security-updates
           - common-packages
           - patch-minor
-          - all-dependencies
-        default: 'common-packages'
+          - all-latest-with-build
+        default: 'security-updates'
   schedule:
     # Run weekly on Monday at 10:00 AM UTC
     - cron: '0 10 * * 1'
@@ -36,6 +37,36 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
+      - name: Check for package-lock.json conflicts
+        id: lockfile-check
+        run: |
+          echo "========================================="
+          echo "Checking for lock file conflicts..."
+          echo "========================================="
+          
+          if [ -f "package-lock.json" ]; then
+            echo "⚠️  WARNING: package-lock.json detected!"
+            echo "⚠️  This project uses Yarn (yarn.lock), not npm (package-lock.json)"
+            echo "⚠️  Having both lock files can cause dependency conflicts"
+            echo ""
+            echo "lockfile_conflict=true" >> $GITHUB_OUTPUT
+            
+            # Show when it was last modified
+            echo "📅 package-lock.json last modified: $(stat -c %y package-lock.json 2>/dev/null || stat -f '%Sm' package-lock.json 2>/dev/null || echo 'unknown')"
+            echo ""
+          else
+            echo "✓ No package-lock.json conflict detected"
+            echo "lockfile_conflict=false" >> $GITHUB_OUTPUT
+          fi
+          
+          if [ -f "yarn.lock" ]; then
+            echo "✓ yarn.lock present (correct for this project)"
+          else
+            echo "❌ ERROR: yarn.lock is missing!"
+            exit 1
+          fi
+          echo "========================================="
+
       - name: Install Yarn dependencies
         run: yarn install --frozen-lockfile
 
@@ -56,26 +87,75 @@ jobs:
             echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update Yarn dependencies (Common Packages)
-        if: github.event.inputs.update_type == 'common-packages' || github.event_name == 'schedule'
+      - name: Update Yarn dependencies (Security Updates Only)
+        if: github.event.inputs.update_type == 'security-updates' || github.event_name == 'schedule'
         run: |
+          echo "========================================="
+          echo "Applying security updates only..."
+          echo "========================================="
+          
+          # Run yarn audit and apply fixes
+          yarn audit --json > audit-before.json || true
+          
+          # Note: Yarn v1 doesn't have 'audit fix', so we identify and upgrade vulnerable packages
+          if [ -f audit-report.json ]; then
+            echo "📋 Audit report generated. Checking for fixable vulnerabilities..."
+            
+            # Extract vulnerable package names and upgrade them
+            VULNERABLE_PACKAGES=$(grep -o '"module_name":"[^"]*"' audit-report.json | cut -d'"' -f4 | sort -u || echo "")
+            
+            if [ -n "$VULNERABLE_PACKAGES" ]; then
+              echo "🔒 Upgrading packages with security vulnerabilities:"
+              echo "$VULNERABLE_PACKAGES"
+              for pkg in $VULNERABLE_PACKAGES; do
+                echo "  Upgrading $pkg..."
+                yarn upgrade "$pkg" --latest || true
+              done
+            else
+              echo "✓ No vulnerable packages found to upgrade"
+            fi
+          else
+            echo "⚠️  No audit report available"
+          fi
+          
+          echo "========================================="
+
+      - name: Update Yarn dependencies (Common Packages)
+        if: github.event.inputs.update_type == 'common-packages'
+        run: |
+          echo "========================================="
+          echo "Upgrading common packages..."
+          echo "========================================="
           # Note: This upgrades a predefined set of commonly updated packages
-          # For true security-only updates, use yarn audit to identify vulnerable packages
           yarn upgrade --pattern 'vite|laravel-vite-plugin|tailwindcss|autoprefixer|axios'
+          echo "========================================="
 
       - name: Update Yarn dependencies (Patch & Minor)
         if: github.event.inputs.update_type == 'patch-minor'
         run: |
+          echo "========================================="
+          echo "Upgrading to latest patch and minor versions..."
+          echo "========================================="
           yarn upgrade
+          echo "========================================="
 
-      - name: Update Yarn dependencies (All)
-        if: github.event.inputs.update_type == 'all-dependencies'
+      - name: Update Yarn dependencies (All Latest with Build)
+        if: github.event.inputs.update_type == 'all-latest-with-build'
         run: |
+          echo "========================================="
+          echo "Upgrading all packages to latest versions..."
+          echo "========================================="
           yarn upgrade --latest
+          echo "========================================="
 
       - name: Build assets
         run: |
+          echo "========================================="
+          echo "Building production assets..."
+          echo "========================================="
           yarn build
+          echo "✓ Build completed successfully"
+          echo "========================================="
 
       - name: Check for changes
         id: check-changes
@@ -101,17 +181,21 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})"
+          commit-message: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-updates' }})"
           branch: automated/yarn-update-${{ github.run_number }}
           delete-branch: true
-          title: "chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})"
+          title: "chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'security-updates' }})"
           body: |
             ## Yarn Dependency Update
             
             This PR updates Yarn (npm) dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type }}
+            **Update Type:** ${{ github.event.inputs.update_type || 'security-updates' }}
             **Triggered by:** ${{ github.event_name }}
+            
+            ### Lock File Status
+            
+            ${{ steps.lockfile-check.outputs.lockfile_conflict == 'true' && '⚠️ **WARNING:** package-lock.json detected alongside yarn.lock. This can cause dependency conflicts. Consider removing package-lock.json.' || '✓ No lock file conflicts detected.' }}
             
             ### Updated Packages
             
@@ -123,6 +207,7 @@ jobs:
             
             - [x] Assets built successfully
             - [x] Dependencies installed and verified
+            - [x] Lock file conflicts checked
             
             ### Security Audit
             
@@ -135,6 +220,7 @@ jobs:
             - [ ] Check for breaking changes in frontend
             - [ ] Test UI changes in development environment
             - [ ] Verify no console errors in browser
+            ${{ steps.lockfile-check.outputs.lockfile_conflict == 'true' && '- [ ] Remove package-lock.json if not needed' || '' }}
             
             ---
             
