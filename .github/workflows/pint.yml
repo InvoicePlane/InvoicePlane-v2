@@ -35,11 +35,15 @@ jobs:
           git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
           git status
 
-      - name: Commit Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'style: apply Laravel Pint fixes'
-          commit_options: '--no-verify'
-          skip_dirty_check: false
-          skip_fetch: false
-          skip_checkout: false
+      - name: Commit and Push Changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add -A
+            git commit -m "style: apply Laravel Pint fixes" --no-verify
+            git push
+            echo "Changes committed and pushed successfully"
+          else
+            echo "No changes to commit"
+          fi
