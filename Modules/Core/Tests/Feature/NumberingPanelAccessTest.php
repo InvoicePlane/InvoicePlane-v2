@@ -6,10 +6,10 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Services\NumberingService;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class NumberingPanelAccessTest extends TestCase
+class NumberingPanelAccessTest extends AbstractTestCase
 {
     private NumberingService $service;
 

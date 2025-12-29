@@ -7,12 +7,12 @@ use Illuminate\Support\Carbon;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Projects\Support\ProjectNumberGenerator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class NumberGeneratorTemplateTest extends TestCase
+class NumberGeneratorTemplateTest extends AbstractTestCase
 {
     use RefreshDatabase;
 

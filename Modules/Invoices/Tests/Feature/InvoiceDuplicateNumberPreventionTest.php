@@ -4,12 +4,12 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
-use Tests\TestCase;
 
-class InvoiceDuplicateNumberPreventionTest extends TestCase
+class InvoiceDuplicateNumberPreventionTest extends AbstractTestCase
 {
     #[Test]
     public function it_prevents_duplicate_invoice_numbers_within_same_company(): void
