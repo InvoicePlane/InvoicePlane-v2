@@ -1,7 +1,8 @@
-@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import 'tailwindcss';
 
 @source '../../../../app/Filament/Tenant/**/*';
 @source '../../../../resources/views/filament/tenant/**/*';
+@source '../../../../vendor/filament/**/*.blade.php';
 
 .fi-bg-color-600 {
     @apply bg-primary-700;

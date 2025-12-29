@@ -1,4 +1,6 @@
-@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import 'tailwindcss';
+
+@source '../../../../vendor/filament/**/*.blade.php';
 
 /*
 .dark .fi-body {
