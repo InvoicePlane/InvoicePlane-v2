@@ -71,10 +71,10 @@ abstract class AbstractNumberGenerator
                 return null;
             }
 
-            // Skip reset check for new numbering schemes that haven't been used yet
-            if ($numbering->last_id > 0) {
-                $this->checkAndResetCounter($numbering);
-            }
+            // Apply reset logic if configured
+            // Note: For new numbering schemes (last_id = 0), reset logic is applied
+            // to ensure consistent behavior across all uses
+            $this->checkAndResetCounter($numbering);
 
             $number = $this->formatNumber($numbering);
 
