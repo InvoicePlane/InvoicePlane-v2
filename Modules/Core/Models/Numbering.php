@@ -187,39 +187,19 @@ class Numbering extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function customers(): HasMany
-    {
-        return $this->hasMany(Customer::class, 'numbering_id');
-    }
-
-    public function expenses(): HasMany
-    {
-        return $this->hasMany(Expense::class, 'numbering_id');
-    }
-
+    /**
+     * Only Invoice and Quote have numbering_id foreign key.
+     * Other entities (Customer, Expense, Payment, Project, Task) store generated numbers
+     * directly in their <entity_type>_number fields without FK relationship.
+     */
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'numbering_id');
     }
 
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class, 'numbering_id');
-    }
-
-    public function projects(): HasMany
-    {
-        return $this->hasMany(Project::class, 'numbering_id');
-    }
-
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'numbering_id');
-    }
-
-    public function tasks(): HasMany
-    {
-        return $this->hasMany(Task::class, 'numbering_id');
     }
 
     /*

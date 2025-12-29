@@ -221,9 +221,9 @@ class NumberingCompanyIsolationTest extends TestCase
         ]);
 
         // Create existing task records to simulate real usage
+        // Note: Tasks don't have numbering_id FK, they just store the generated number
         for ($i = 1; $i <= 5; $i++) {
             Task::factory()->for($company)->create([
-                'numbering_id' => $numbering->id,
                 'task_number'  => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
             ]);
         }
