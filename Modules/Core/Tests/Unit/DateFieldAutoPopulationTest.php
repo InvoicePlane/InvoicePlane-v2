@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
@@ -33,8 +33,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         parent::setUp();
 
-        $this->user    = User::factory()->create();
-        $this->company = Company::factory()->create();
+        $this->user    = User::factory()->create(); /* @var User $user */
+        $this->company = Company::factory()->create(); /* @var Company $company */
         $this->user->companies()->attach($this->company);
     }
 
@@ -46,7 +46,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
         $expectedDate = Carbon::now();
 
@@ -114,7 +114,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -175,7 +175,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         config(['app.timezone' => 'America/New_York']);
 
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now('America/New_York');
 
         /* act */
@@ -206,7 +206,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -247,7 +247,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
         $components    = [];
         $startTime     = Carbon::now();
 
@@ -282,7 +282,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -322,7 +322,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* arrange */
         $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
         // Simulate corrupted or invalid session data
         session(['corrupted_date' => 'invalid-date-string']);
@@ -348,14 +348,14 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
-    public function it_filters_document_groups_by_current_company_id(): void
+    public function it_filters_numberings_by_current_company_id(): void
     {
         $this->markTestIncomplete();
 
         /* arrange */
         $otherCompany           = Company::factory()->create();
-        $currentCompanyDocGroup = DocumentGroup::factory()->for($this->company)->create(['name' => 'Current Company Group']);
-        $otherCompanyDocGroup   = DocumentGroup::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
+        $currentCompanyDocGroup = Numbering::factory()->for($this->company)->create(['name' => 'Current Company Group']);
+        $otherCompanyDocGroup   = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
 
         $customer = Relation::factory()->for($this->company)->customer()->create();
 
@@ -368,15 +368,15 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         // The form should only show document groups belonging to the current company
-        $availableDocumentGroups = DocumentGroup::where('company_id', $this->company->id)->get();
-        $this->assertCount(1, $availableDocumentGroups, 'Should only have document groups for current company');
-        $this->assertEquals($currentCompanyDocGroup->id, $availableDocumentGroups->first()->id);
+        $availableNumberings = Numbering::where('company_id', $this->company->id)->get();
+        $this->assertCount(1, $availableNumberings, 'Should only have document groups for current company');
+        $this->assertEquals($currentCompanyDocGroup->id, $availableNumberings->first()->id);
 
         // Verify that the other company's document group is not accessible
-        $allDocGroups = DocumentGroup::all();
+        $allDocGroups = Numbering::all();
         $this->assertCount(2, $allDocGroups, 'Should have total of 2 document groups');
 
-        $otherCompanyGroups = DocumentGroup::where('company_id', $otherCompany->id)->get();
+        $otherCompanyGroups = Numbering::where('company_id', $otherCompany->id)->get();
         $this->assertCount(1, $otherCompanyGroups, 'Other company should have its document group');
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }

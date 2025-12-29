@@ -18,7 +18,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Support\Str;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 
 class Settings extends Page implements HasTable, HasForms
@@ -255,7 +255,7 @@ class Settings extends Page implements HasTable, HasForms
                                     Select::make('settings.default_invoice_group')
                                         ->label(trans('ip.default_invoice_group'))
                                         //->options([])
-                                        ->options(fn () => DocumentGroup::pluck('name', 'id'))
+                                        ->options(fn () => Numbering::pluck('name', 'id'))
                                         ->placeholder(trans('ip.none')),
 
                                     RichEditor::make('settings.default_invoice_terms')

@@ -27,7 +27,7 @@ class InvoiceService extends BaseService
 
             $invoice = Invoice::query()->create([
                 'customer_id'              => $data['customer_id'],
-                'document_group_id'        => $data['document_group_id'] ?? null,
+                'numbering_id'             => $data['numbering_id'] ?? null,
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
                 'user_id'                  => auth()->id(),
                 'invoice_number'           => $data['invoice_number'],
@@ -90,7 +90,7 @@ class InvoiceService extends BaseService
 
             $invoice->update([
                 'customer_id'              => $data['customer_id'],
-                'document_group_id'        => $data['document_group_id'] ?? null,
+                'numbering_id'             => $data['numbering_id'] ?? null,
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
                 'user_id'                  => auth()->id(),
                 'invoice_number'           => $data['invoice_number'],

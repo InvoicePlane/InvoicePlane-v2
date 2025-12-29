@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\Note;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
@@ -24,7 +24,7 @@ use Modules\Quotes\Enums\QuoteStatus;
  * @property int                    $id
  * @property int                    $company_id
  * @property int                    $prospect_id
- * @property int|null               $document_group_id
+ * @property int|null               $numbering_id
  * @property int                    $user_id
  * @property string                 $quote_number
  * @property string                 $quote_status
@@ -43,7 +43,7 @@ use Modules\Quotes\Enums\QuoteStatus;
  * @property string|null            $terms
  * @property string|null            $footer
  * @property Company                $company
- * @property DocumentGroup|null     $document_group
+ * @property Numbering|null         $numbering
  * @property Relation               $relation
  * @property User                   $user
  * @property Collection|QuoteItem[] $quote_items
@@ -106,9 +106,9 @@ class Quote extends Model
             ->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
-        return $this->belongsTo(DocumentGroup::class, 'document_group_id');
+        return $this->belongsTo(Numbering::class, 'numbering_id');
     }
 
     public function invoice(): BelongsTo

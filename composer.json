@@ -29,7 +29,10 @@
         "filament/tables": "^4.0",
         "filament/widgets": "^4.0",
         "laravel/framework": "^12.26",
+        "maatwebsite/excel": "^3.1",
+        "maennchen/zipstream-php": "^3.0 <3.2",
         "nwidart/laravel-modules": "^12.0",
+        "openspout/openspout": "^4.23 <4.26",
         "spatie/laravel-permission": "^6.21"
     },
     "require-dev": {

@@ -18,6 +18,11 @@ class PaymentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('payment_number')
+                    ->label(trans('ip.payment_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('paid_at')
                     ->date('d-m-Y')
                     ->since()
@@ -43,7 +48,7 @@ class PaymentsTable
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                TextColumn::make('invoice.documentGroup.name')
+                TextColumn::make('invoice.numbering.name')
                     ->limit(10)
                     ->label(trans('ip.invoice_group'))
                     ->hiddenFrom('xl')
@@ -60,7 +65,7 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
-                    ->formatStateUsing(fn ($state) => trans('ip.' . $state))
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? '')
                     ->limit(10)
                     ->sortable()
                     ->searchable()

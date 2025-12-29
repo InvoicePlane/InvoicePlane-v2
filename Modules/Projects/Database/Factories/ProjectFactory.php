@@ -21,6 +21,7 @@ class ProjectFactory extends AbstractFactory
             : null;
 
         return [
+            'project_number' => $this->faker->unique()->numerify('PRJ-#####'),
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),
             'start_at'       => $startDate?->format('Y-m-d'),

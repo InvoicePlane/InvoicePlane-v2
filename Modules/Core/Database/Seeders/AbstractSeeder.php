@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Expenses\Models\ExpenseCategory;
@@ -73,14 +73,14 @@ abstract class AbstractSeeder extends Seeder
         return $customer;
     }
 
-    protected function findOrCreateDocumentGroup(?int $companyId): DocumentGroup
+    protected function findOrCreateNumbering(?int $companyId): Numbering
     {
-        $documentGroup = DocumentGroup::query()->where('company_id', $this->companyId)
+        $documentGroup = Numbering::query()->where('company_id', $this->companyId)
             ->inRandomOrder()
             ->first();
 
         if ( ! $documentGroup) {
-            $documentGroup = DocumentGroup::factory()->state([
+            $documentGroup = Numbering::factory()->state([
                 'company_id' => $companyId,
             ])
                 ->create();
@@ -112,11 +112,11 @@ abstract class AbstractSeeder extends Seeder
             ->first();
 
         if ( ! $invoice) {
-            $documentGroup = $this->findOrCreateDocumentGroup($companyId);
+            $documentGroup = $this->findOrCreateNumbering($companyId);
 
             $invoice = Invoice::factory()->state([
-                'company_id'        => $this->companyId,
-                'document_group_id' => $documentGroup->id,
+                'company_id'   => $this->companyId,
+                'numbering_id' => $documentGroup->id,
             ])
                 ->create();
         }

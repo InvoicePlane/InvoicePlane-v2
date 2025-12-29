@@ -393,6 +393,7 @@ return [
     'submit'                                       => 'Submit',
     'subtotal'                                     => 'Subtotal',
     'success'                                      => 'Success',
+    'summary'                                      => 'Summary',
     'sumex'                                        => 'Sumex',
     'sumex_information'                            => 'Sumex Information',
     'sumex_settings'                               => 'Sumex Settings',
@@ -409,6 +410,7 @@ return [
     'tax_rates'                                    => 'Tax Rates',
     'tax_total'                                    => 'Tax Total',
     'taxes'                                        => 'Taxes',
+    'template_created'                             => 'Template created successfully',
     'terms'                                        => 'Terms',
     'terms_and_conditions'                         => 'Terms and Conditions',
     'text'                                         => 'Text',
@@ -833,10 +835,48 @@ return [
     'years'                                     => 'Years',
     #endregion
 
+    #region EXPORTS
+    'export_completed'      => 'Your :entity export has completed and :count :rows exported.',
+    'export_failed_rows'    => ':count :rows failed to export.',
+    'row'                   => 'row|rows',
+    #endregion
+
     #region AUTHENTICATION
     'account_inactive'              => 'Your account is inactive. Please contact the administrator.',
     'account_inactive_login_denied' => 'Login denied: Your account has been deactivated.',
     'login_failed'                  => 'Login failed. Please check your credentials.',
     'authentication_failed'         => 'Authentication failed.',
+    #endregion
+
+    #region PEPPOL
+    'customer_peppol_id'        => 'Customer Peppol ID',
+    'customer_peppol_id_helper' => 'The Peppol participant identifier of the customer (e.g., BE:0123456789 for Belgian companies)',
+    'peppol_error_body'         => 'Failed to send invoice to Peppol: :error',
+    'peppol_error_title'        => 'Peppol Transmission Failed',
+    'peppol_success_body'       => 'Invoice successfully sent to Peppol network. Document ID: :document_id',
+    'peppol_success_title'      => 'Sent to Peppol',
+    'send_to_peppol'            => 'Send to Peppol',
+    #endregion
+
+    #region NUMBERING
+    'numbering'                            => 'Numbering',
+    'numberings'                           => 'Numberings',
+    'numbering_company'                    => 'Company',
+    'numbering_company_assignment'         => 'Company Assignment',
+    'numbering_select_company_help'        => 'Select which company this numbering scheme belongs to',
+    'numbering_type'                       => 'Type',
+    'numbering_name'                       => 'Name',
+    'numbering_next_id'                    => 'Next ID',
+    'numbering_next_id_help'               => 'Can be adjusted to troubleshoot numbering issues',
+    'numbering_left_pad'                   => 'Left Pad',
+    'numbering_prefix'                     => 'Prefix',
+    'numbering_format'                     => 'Format',
+    'numbering_format_placeholder'         => '{{prefix}}-{{number}}',
+    'numbering_format_help'                => 'Use {{prefix}}, {{number}}, {{year}}, {{yy}}, {{month}}, {{day}} as placeholders. Only dash (-) or underscore (_) separators allowed.',
+    'numbering_format_helper'              => 'You can customize the format using placeholders: {{prefix}} for prefix, {{number}} for sequential number, {{year}} for 4-digit year, {{yy}} for 2-digit year, {{month}} for month, {{day}} for day. The number will be left-padded according to the Left Pad setting.',
+    'numbering_format_helper_admin'        => 'The format string can use {{prefix}} for the prefix and {{number}} for the sequential number. The number will be left-padded according to the Left Pad setting.',
+    'numbering_format_help_label'          => 'Format Help',
+    'duplicate_invoice_number'             => 'Duplicate invoice number :number for company :company',
+    'duplicate_quote_number'               => 'Duplicate quote number :number for company :company',
     #endregion
 ];

@@ -303,7 +303,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $this->assertDatabaseMissing('document_groups', ['id' => $template->id]);
+        $this->assertDatabaseMissing('email_templates', ['id' => $template->id]);
     }
     # endregion
 

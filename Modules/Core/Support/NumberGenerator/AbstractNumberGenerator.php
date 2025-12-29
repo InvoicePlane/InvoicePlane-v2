@@ -2,10 +2,30 @@
 
 namespace Modules\Core\Support\NumberGenerator;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Modules\Core\Models\DocumentGroup;
-use Modules\Core\Repositories\DocumentGroupRepository;
+use Modules\Core\Models\Numbering;
 
+/**
+ * AbstractNumberGenerator.
+ *
+ * Base class for generating sequential numbers with customizable formatting.
+ *
+ * Features:
+ * - Automatic number generation with configurable padding (e.g., PRJ-0001, PRJ-0023)
+ * - Custom format templates supporting tags like {{year}}, {{month}}, {{prefix}}, {{number}}
+ * - Thread-safe number generation using database row locking
+ * - Consistent formatting through Numbering model's applyFormat method
+ *
+ * Usage:
+ * ```php
+ * $generator = new ProjectNumberGenerator();
+ * $number = $generator->generate(); // Returns formatted number like "PRJ-0023"
+ * ```
+ *
+ * The generator ensures padding is preserved across generations (e.g., PRJ-0023 → PRJ-0024)
+ * and supports format patterns like "{{prefix}}/{{year}}/{{number}}" for PRJ/2025/0001.
+ */
 abstract class AbstractNumberGenerator
 {
     protected string $type;
@@ -18,10 +38,10 @@ abstract class AbstractNumberGenerator
 
     public function __construct(?int $companyId = null)
     {
-        $this->companyId = $companyId ?? auth()->user()?->company_id;
+        $this->companyId = $companyId ?? session('current_company_id') ?? auth()->user()?->company_id;
     }
 
-    public function forGroup(string $groupName): self
+    public function forNumbering(string $groupName): self
     {
         if (config('app.extreme_logging')) {
             Log::debug('NumberGenerator: Setting group name', [
@@ -38,7 +58,7 @@ abstract class AbstractNumberGenerator
         return $this;
     }
 
-    public function forGroupId(int $groupId): self
+    public function forNumberingId(int $groupId): self
     {
         if (config('app.extreme_logging')) {
             Log::debug('NumberGenerator: Setting group ID', [
@@ -55,8 +75,13 @@ abstract class AbstractNumberGenerator
         return $this;
     }
 
-    public function generate(): ?string
+    public function generate(?int $numberingId = null): ?string
     {
+        if ($numberingId !== null) {
+            $this->groupId   = $numberingId;
+            $this->groupName = null;
+        }
+
         if (config('app.extreme_logging')) {
             Log::debug('NumberGenerator: Starting number generation', [
                 'type'       => $this->type,
@@ -67,220 +92,120 @@ abstract class AbstractNumberGenerator
             ]);
         }
 
-        $group = $this->getDocumentGroup();
+        return DB::transaction(function () {
+            $numbering = $this->getNumbering(forUpdate: true);
+            if ( ! $numbering) {
+                if (config('app.extreme_logging')) {
+                    Log::error('NumberGenerator: Numbering scheme not found', [
+                        'type'       => $this->type,
+                        'company_id' => $this->companyId,
+                        'group_id'   => $this->groupId,
+                        'group_name' => $this->groupName,
+                    ]);
+                }
 
-        if ( ! $group) {
+                Log::error('No numbering scheme found for type: ' . $this->type . ', company: ' . $this->companyId);
+
+                return;
+            }
+
             if (config('app.extreme_logging')) {
-                Log::error('NumberGenerator: Document group not found', [
-                    'type'       => $this->type,
-                    'company_id' => $this->companyId,
-                    'group_id'   => $this->groupId,
-                    'group_name' => $this->groupName,
+                Log::debug('NumberGenerator: Found numbering scheme', [
+                    'numbering_id' => $numbering->id,
+                    'name'         => $numbering->name,
+                    'last_id'      => $numbering->last_id,
+                    'next_id'      => $numbering->next_id,
+                    'format'       => $numbering->format,
+                    'prefix'       => $numbering->prefix,
                 ]);
             }
 
-            return null;
-        }
+            // Apply reset logic if configured
+            // Note: For new numbering schemes (last_id = 0), reset logic is applied
+            // to ensure consistent behavior across all uses
+            $this->checkAndResetCounter($numbering);
 
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Found document group', [
-                'group'   => $group->toArray(),
-                'last_id' => $group->last_id,
-                'next_id' => $group->next_id,
-            ]);
-        }
+            $number = $this->formatNumber($numbering);
 
-        // Skip reset check for new groups that haven't been used yet
-        if ($group->last_id === 0) {
-            return null;
-        }
+            if (config('app.extreme_logging')) {
+                Log::debug('NumberGenerator: Generated number', [
+                    'number'       => $number,
+                    'numbering_id' => $numbering->id,
+                    'next_id'      => $numbering->next_id,
+                ]);
+            }
 
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Checking for counter reset', [
-                'last_id'      => $group->last_id,
-                'reset_number' => $group->reset_number,
-                'last_used'    => [
-                    'year'  => $group->last_year,
-                    'month' => $group->last_month,
-                    'week'  => $group->last_week,
-                ],
-                'current' => [
-                    'year'  => now()->year,
-                    'month' => now()->month,
-                    'week'  => now()->weekOfYear,
-                ],
-            ]);
-        }
+            $this->incrementCounter($numbering);
 
-        $this->checkAndResetCounter($group);
-
-        $number = $this->formatNumber($group);
-
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Formatted number', [
-                'format'           => $group->format,
-                'formatted_number' => $number,
-            ]);
-        }
-
-        $this->incrementCounter($group);
-
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Number generated successfully', [
-                'number'      => $number,
-                'new_next_id' => $group->next_id + 1,
-            ]);
-        }
-
-        return $number;
+            return $number;
+        });
     }
 
-    protected function getDocumentGroup(): ?DocumentGroup
+    protected function getNumbering(bool $forUpdate = false): ?Numbering
     {
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Getting document group', [
-                'type'       => $this->type,
-                'company_id' => $this->companyId,
-                'group_id'   => $this->groupId,
-                'group_name' => $this->groupName,
-                'trace'      => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
-            ]);
-        }
-
-        $documentGroupRepository = app(DocumentGroupRepository::class);
+        $query = Numbering::query()
+            ->where('company_id', $this->companyId)
+            ->where('type', $this->type);
 
         if ($this->groupId) {
-            $group = DocumentGroup::query()
-                ->where('company_id', $this->companyId)
-                ->where('type', $this->type)
-                ->find($this->groupId);
-
-            if (config('app.extreme_logging')) {
-                Log::debug('NumberGenerator: Found group by ID', [
-                    'group_id' => $this->groupId,
-                    'group'    => $group ? $group->toArray() : null,
-                ]);
-            }
-
-            return $group;
+            $query->where('id', $this->groupId);
+        } elseif ($this->groupName) {
+            $query->where('name', $this->groupName);
+        } else {
+            // Get the first numbering for this type if no specific group is set
+            $query->orderBy('id');
         }
 
-        // Find by company ID, type, and optional group name
-        $group = $documentGroupRepository->findByCompanyAndType(
-            $this->companyId,
-            $this->type,
-            $this->groupName
-        );
-
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Found group by company, type, and name', [
-                'company_id' => $this->companyId,
-                'type'       => $this->type,
-                'group_name' => $this->groupName,
-                'group'      => $group ? $group->toArray() : null,
-            ]);
+        if ($forUpdate) {
+            $query->lockForUpdate();
         }
 
-        return $group;
-
-        if (empty($this->groupName)) {
-            $this->groupName = 'default';
-            Log::warning('NumberGenerator: groupName was not set, using default', [
-                'type'       => $this->type,
-                'company_id' => $this->companyId,
-                'trace'      => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
-            ]);
-        }
-
-        $group = DocumentGroup::query()
-            ->where('company_id', $this->companyId)
-            ->where('type', $this->type)
-            ->where('name', $this->groupName)
-            ->first();
-
-        if (config('app.extreme_logging')) {
-            Log::debug('NumberGenerator: Found group by name', [
-                'group_name' => $this->groupName,
-                'group'      => $group ? $group->toArray() : null,
-            ]);
-        }
-        dd($group);
-
-        return $group;
+        return $query->first();
     }
 
-    protected function checkAndResetCounter(DocumentGroup $group): void
+    protected function formatNumber(Numbering $numbering): string
     {
-        $now            = now();
-        $resetPerformed = false;
-        $resetReason    = null;
+        $prefix = $numbering->resolvedPrefix();
+        $nextId = $numbering->next_id;
 
-        // No reset needed if reset_number is 0 (never reset)
-        if ($group->reset_number === 0) {
-            return;
+        // If format is provided, use the Numbering model's applyFormat method
+        if ($numbering->format) {
+            $formatted = $numbering->applyFormat($nextId, $prefix);
+
+            // Replace date placeholders if present
+            $formatted = $this->replaceDatePlaceholders($formatted);
+
+            return $formatted;
         }
 
-        // Yearly reset (1) - Reset at the start of each year
-        if ($group->reset_number === 1 && $group->last_year < $now->year) {
-            $group->next_id = 1;
-            $resetPerformed = true;
-            $resetReason    = 'yearly_reset';
-        }
-        // Monthly reset (2) - Reset at the start of each month
-        elseif (
-            $group->reset_number === 2 &&
-            ($group->last_year < $now->year ||
-                ($group->last_year === $now->year && $group->last_month < $now->month))
-        ) {
-            $group->next_id = 1;
-            $resetPerformed = true;
-            $resetReason    = 'monthly_reset';
-        }
-        // Weekly reset (3) - Reset at the start of each week
-        elseif (
-            $group->reset_number === 3 &&
-            ($group->last_year < $now->year ||
-                ($group->last_year === $now->year &&
-                    ($group->last_month < $now->month ||
-                        ($group->last_month === $now->month && $group->last_week < $now->weekOfYear))))
-        ) {
-            $group->next_id = 1;
-            $resetPerformed = true;
-            $resetReason    = 'weekly_reset';
-        }
-        $group->save();
+        // Default format: prefix + padded number
+        $pad      = max((int) ($numbering->left_pad ?? 0), 0);
+        $idPadded = mb_str_pad((string) $nextId, $pad, '0', STR_PAD_LEFT);
+
+        return ($prefix ? $prefix . '-' : '') . $idPadded;
     }
 
-    protected function formatNumber(DocumentGroup $group): string
-    {
-        $groupFormat = $this->group->format ?? '{{{YEAR}}}-{{{ID}}}';
-
-        // First try the new format with triple curly braces
-        $formatted = $this->parseIdentifierFormat($groupFormat, $group->next_id, $group->left_pad);
-
-        // Fall back to the old format if no replacements were made
-        if ($formatted === $group->format) {
-            $replacements = [
-                '{NUMBER}'         => mb_str_pad((string) $group->next_id, $group->left_pad, '0', STR_PAD_LEFT),
-                '{YEAR}'           => date('Y'),
-                '{MONTH}'          => date('m'),
-                '{WEEK}'           => date('W'),
-                '{MONTHSHORTNAME}' => date('M'),
-            ];
-
-            $formatted = strtr($group->format, $replacements);
-        }
-
-        return $formatted;
-    }
-
-    protected function incrementCounter(DocumentGroup $group): void
+    protected function replaceDatePlaceholders(string $formatted): string
     {
         $now = now();
 
-        $group->update([
-            'last_id'    => $group->next_id,
-            'next_id'    => $group->next_id + 1,
+        $replacements = [
+            '{{year}}'  => $now->format('Y'),
+            '{{yy}}'    => $now->format('y'),
+            '{{month}}' => $now->format('m'),
+            '{{day}}'   => $now->format('d'),
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $formatted);
+    }
+
+    protected function incrementCounter(Numbering $numbering): void
+    {
+        $now = now();
+
+        $numbering->update([
+            'last_id'    => $numbering->next_id,
+            'next_id'    => $numbering->next_id + 1,
             'last_week'  => (int) $now->weekOfYear,
             'last_month' => (int) $now->month,
             'last_year'  => (int) $now->year,
@@ -288,37 +213,94 @@ abstract class AbstractNumberGenerator
     }
 
     /**
-     * Parse identifier format with triple curly braces syntax
-     * Example: {{{year}}}-{{{id}}} becomes 2023-0001.
+     * Check and reset counter based on reset_number configuration.
+     *
+     * Reset rules:
+     * - 0: Never reset
+     * - 1: Reset yearly (at start of new year)
+     * - 2: Reset monthly (at start of new month)
+     * - 3: Reset weekly (at start of new week)
      */
-    private function parseIdentifierFormat(string $identifier_format, int $next_id, int $left_pad): string
+    protected function checkAndResetCounter(Numbering $numbering): void
     {
-        if (preg_match_all('/{{{([^{|}]*)}}}/', $identifier_format, $template_vars)) {
-            foreach ($template_vars[1] as $var) {
-                switch ($var) {
-                    case 'year':
-                        $replace = date('Y');
-                        break;
-                    case 'yy':
-                        $replace = date('y');
-                        break;
-                    case 'month':
-                        $replace = date('m');
-                        break;
-                    case 'day':
-                        $replace = date('d');
-                        break;
-                    case 'id':
-                        $replace = mb_str_pad($next_id, $left_pad, '0', STR_PAD_LEFT);
-                        break;
-                    default:
-                        $replace = '';
-                }
+        $now = now();
 
-                $identifier_format = str_replace('{{{' . $var . '}}}', $replace, $identifier_format);
-            }
+        if (config('app.extreme_logging')) {
+            Log::debug('NumberGenerator: Checking for counter reset', [
+                'last_id'       => $numbering->last_id,
+                'next_id'       => $numbering->next_id,
+                'reset_number'  => $numbering->reset_number,
+                'last_year'     => $numbering->last_year,
+                'last_month'    => $numbering->last_month,
+                'last_week'     => $numbering->last_week,
+                'current_year'  => $now->year,
+                'current_month' => $now->month,
+                'current_week'  => $now->weekOfYear,
+            ]);
         }
 
-        return $identifier_format;
+        // No reset needed if reset_number is 0 (never reset)
+        if ($numbering->reset_number === 0) {
+            return;
+        }
+
+        // Yearly reset (1) - Reset at the start of each year
+        if ($numbering->reset_number === 1 && $numbering->last_year < $now->year) {
+            if (config('app.extreme_logging')) {
+                Log::info('NumberGenerator: Applying yearly reset', [
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
+                    'previous_next_id' => $numbering->next_id,
+                    'new_next_id'      => 1,
+                ]);
+            }
+
+            $numbering->next_id = 1;
+            $numbering->save();
+
+            return;
+        }
+
+        // Monthly reset (2) - Reset at the start of each month
+        if (
+            $numbering->reset_number === 2 &&
+            ($numbering->last_year < $now->year ||
+                ($numbering->last_year === $now->year && $numbering->last_month < $now->month))
+        ) {
+            if (config('app.extreme_logging')) {
+                Log::info('NumberGenerator: Applying monthly reset', [
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
+                    'previous_next_id' => $numbering->next_id,
+                    'new_next_id'      => 1,
+                ]);
+            }
+
+            $numbering->next_id = 1;
+            $numbering->save();
+
+            return;
+        }
+
+        // Weekly reset (3) - Reset at the start of each week
+        if (
+            $numbering->reset_number === 3 &&
+            ($numbering->last_year < $now->year ||
+                ($numbering->last_year === $now->year &&
+                    ($numbering->last_month < $now->month ||
+                        ($numbering->last_month === $now->month && $numbering->last_week < $now->weekOfYear))))
+        ) {
+            if (config('app.extreme_logging')) {
+                Log::info('NumberGenerator: Applying weekly reset', [
+                    'numbering_id'     => $numbering->id,
+                    'name'             => $numbering->name,
+                    'previous_next_id' => $numbering->next_id,
+                    'new_next_id'      => 1,
+                ]);
+            }
+
+            $numbering->next_id = 1;
+            $numbering->save();
+        }
     }
 }

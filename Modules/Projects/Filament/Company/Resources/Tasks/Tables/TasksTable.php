@@ -19,16 +19,17 @@ class TasksTable
     {
         return $table
             ->columns([
+                TextColumn::make('task_number')
+                    ->label(trans('ip.task_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('task_status')
                     ->label(trans('ip.task_status'))
                     ->badge()
                     ->formatStateUsing(
                         fn (Task $record): string => static::getStatusLabel($record->task_status)
                     )
-                    ->color(
-                        fn (Task $record): string => static::getStatusColor($record->task_status) ?? 'secondary'
-                    )
-                    ->sortable()
                     ->searchable()
                     ->color(function (Task $record) {
                         $status = $record->task_status instanceof TaskStatus ? $record->task_status : TaskStatus::tryFrom($record->task_status);
@@ -36,6 +37,7 @@ class TasksTable
                         return $status?->color() ?? 'secondary';
                     })
                     ->sortable(false),
+
                 TextColumn::make('task_name')
                     ->limit(30)
                     ->label(trans('ip.task_name'))
@@ -50,11 +52,15 @@ class TasksTable
                     ->searchable()
                     ->sortable()
                     ->badge()
-                    ->color(
-                        fn (Task $record): ?string => $record->due_at?->isPast() && $record->task_status !== TaskStatus::COMPLETED->value
+                    ->color(function (Task $record): ?string {
+                        $status = $record->task_status instanceof TaskStatus
+                            ? $record->task_status
+                            : TaskStatus::tryFrom($record->task_status);
+
+                        return $record->due_at?->isPast() && $status !== TaskStatus::COMPLETED
                             ? 'danger'
-                            : null
-                    ),
+                            : null;
+                    }),
 
                 TextColumn::make('task_price')
                     ->label(trans('ip.task_price'))
@@ -108,14 +114,5 @@ class TasksTable
             : TaskStatus::tryFrom($status);
 
         return $status?->label() ?? trans('ip.tasks.unknown');
-    }
-
-    protected static function getStatusColor(mixed $status): ?string
-    {
-        $status = $status instanceof TaskStatus
-            ? $status
-            : TaskStatus::tryFrom($status);
-
-        return $status?->color();
     }
 }

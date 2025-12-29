@@ -14,6 +14,7 @@ class PaymentFactory extends AbstractFactory
     public function definition(): array
     {
         return [
+            'payment_number' => $this->faker->unique()->numerify('PAY-#####'),
             'payment_method' => PaymentMethod::BANK_TRANSFER->value,
             'payment_status' => $this->faker->randomElement(PaymentStatus::cases())->value,
             'paid_at'        => $this->faker->dateTimeBetween('-3 years', '-2 days'),

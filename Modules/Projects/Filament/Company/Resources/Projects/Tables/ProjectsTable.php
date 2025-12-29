@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
+use Modules\Projects\Services\ProjectService;
 
 class ProjectsTable
 {
@@ -19,6 +20,11 @@ class ProjectsTable
     {
         return $table
             ->columns([
+                TextColumn::make('project_number')
+                    ->label(trans('ip.project_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('project_name')
                     ->limit(10)
                     ->label(trans('ip.project_name'))
@@ -48,12 +54,12 @@ class ProjectsTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->action(function (Project $record, array $data) {
-                            app(\Modules\Projects\Services\ProjectService::class)->updateProject($record, $data);
+                            app(ProjectService::class)->updateProject($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
                         ->action(function (Project $record, array $data) {
-                            app(\Modules\Projects\Services\ProjectService::class)->deleteProject($record);
+                            app(ProjectService::class)->deleteProject($record);
                         }),
                 ]),
             ])

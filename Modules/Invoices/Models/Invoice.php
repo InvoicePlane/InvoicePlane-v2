@@ -16,9 +16,9 @@ use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\MailQueue;
 use Modules\Core\Models\Note;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
@@ -56,7 +56,7 @@ use Modules\Quotes\Models\Quote;
  * @property string|null              $footer
  * @property Company                  $company
  * @property Customer                 $customer
- * @property DocumentGroup            $group
+ * @property Numbering                $group
  * @property User                     $user
  * @property Collection|Expense[]     $expenses
  * @property Collection|InvoiceItem[] $invoice_items
@@ -134,9 +134,9 @@ class Invoice extends Model
         return $this->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
-        return $this->belongsTo(DocumentGroup::class, 'document_group_id');
+        return $this->belongsTo(Numbering::class, 'numbering_id');
     }
 
     public function expenses(): HasMany

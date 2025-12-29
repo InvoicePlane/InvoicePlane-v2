@@ -29,7 +29,7 @@ class QuoteService extends BaseService
             $quote = Quote::query()->create([
                 'company_id'             => $this->getCompanyId(),
                 'prospect_id'            => $data['prospect_id'],
-                'document_group_id'      => $data['document_group_id'] ?? null,
+                'numbering_id'           => $data['numbering_id'] ?? null,
                 'user_id'                => $data['user_id'] ?? auth()->id(),
                 'quote_number'           => $data['quote_number'],
                 'quote_status'           => $data['quote_status'],

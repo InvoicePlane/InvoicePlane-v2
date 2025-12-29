@@ -1,0 +1,206 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/Tenant/**/*';
+@source '../../../../resources/views/filament/tenant/**/*';
+
+.fi-bg-color-600 {
+    @apply bg-primary-700;
+    @apply hover:bg-primary-500;
+}
+
+.fi-topbar {
+    /* Background color */
+    @apply bg-primary-500;
+
+    /* Collapse icon */
+    .fi-topbar-close-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-primary-600;
+    }
+
+    .fi-topbar-open-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-primary-600;
+    }
+
+    .fi-logo {
+        @apply text-white;
+    }
+}
+
+.fi-sidebar {
+    /* Background color */
+    @apply bg-primary-500;
+    /* Text color */
+    @apply text-white;
+
+    .fi-icon {
+        @apply text-white;
+    }
+
+    .fi-icon-btn {
+        @apply text-white;
+    }
+
+    /* Sidebar items */
+    .fi-sidebar-group-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item.fi-active {
+        @apply text-white;
+        @apply !bg-primary-700;
+        @apply rounded-lg;
+    }
+
+    .fi-sidebar-header {
+        @apply bg-primary-500;
+    }
+}
+
+/*
+ * Checkbox
+ */
+.fi-checkbox-input {
+    @apply ring-primary-700;
+    @apply focus:ring-primary-500;
+    @apply hover:ring-primary-500
+}
+
+.fi-header-heading {
+    @apply text-primary-700;
+}
+
+.fi-checkbox-input:checked {
+    @apply bg-primary-700;
+    @apply hover:bg-primary-500;
+}
+
+/*
+ * Open/collapse
+ */
+.fi-section-collapse-btn {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+/*
+ * Modals
+ */
+.fi-modal-heading {
+    @apply text-primary-700;
+}
+
+.fi-section-header-heading {
+    @apply text-primary-700;
+}
+
+.fi-modal-close-btn {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+.fi-fo-field-label-content {
+    @apply text-primary-700;
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply text-primary-700;
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply border border-primary-700 rounded-lg;
+}
+
+.fi-modal-content .fi-in-entry-label {
+    @apply text-primary-700;
+}
+
+/*
+ * Pagination
+ */
+.fi-pagination-records-per-page-select-ctn {
+    @apply border border-primary-700 rounded-lg;
+}
+
+.fi-pagination-previous-btn {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+.fi-pagination-next-btn {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+/*
+ * Input
+ */
+.fi-input-wrp-label {
+    @apply text-primary-700;
+}
+
+/*
+ * Breadcrums
+ */
+.fi-breadcrumbs {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+
+}
+.fi-breadcrumbs-item-label {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+.fi-breadcrumbs-item-separator {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+/*
+ * Tables
+ */
+.fi-ta-header-cell-sort-btn {
+    @apply text-primary-700;
+}
+
+.fi-ta-header-cell-sort-btn .fi-icon {
+    @apply text-primary-700;
+}
+
+.fi-ta-row {
+    @apply border-b border-primary-700 rounded-lg;
+}
+
+.fi-dropdown-trigger {
+    @apply text-primary-700;
+}
+
+.fi-ta-header-toolbar .fi-icon {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+/*
+ * Buttons
+ */
+.fi-ac-icon-btn-action {
+    @apply text-primary-700;
+    @apply hover:text-primary-500;
+}
+
+.fi-ta-search-field .fi-icon {
+    @apply text-primary-700;
+}
+
+/*
+ * User menu
+ */
+.fi-user-menu .fi-icon {
+    @apply text-primary-700;
+}

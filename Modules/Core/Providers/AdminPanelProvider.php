@@ -23,8 +23,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\DocumentGroups\DocumentGroupResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
@@ -36,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/company/invoiceplane.css')
             ->login()
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
@@ -118,7 +119,7 @@ class AdminPanelProvider extends PanelProvider
                         NavigationGroup::make('Document Groups')
                             //->icon('heroicon-o-archive-box')
                             ->items([
-                                ...DocumentGroupResource::getNavigationItems(),
+                                ...NumberingResource::getNavigationItems(),
                             ]),
                         /*NavigationGroup::make('Payment Methods')
                             ->icon('heroicon-o-credit-card')
@@ -157,7 +158,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->resources([
                 CompanyResource::class,
-                DocumentGroupResource::class,
+                NumberingResource::class,
                 EmailTemplateResource::class,
                 TaxRateResource::class,
                 UserResource::class,
