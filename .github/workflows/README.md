@@ -152,6 +152,32 @@ Tests Docker Compose configuration.
 
 Provides a quick setup for development environments.
 
+### 9. Crowdin Translation Sync (`crowdin-sync.yml`)
+
+**Trigger:**
+- Scheduled: Weekly on Sundays at 2:00 AM UTC
+- Manual dispatch with action type selection
+
+**Purpose:** Automates translation synchronization with Crowdin
+
+**What it does:**
+1. **Uploads source files** - Pushes English translation files to Crowdin
+2. **Downloads translations** - Retrieves translated files from Crowdin
+3. **Creates pull request** - Automated PR with translation updates
+
+**Action Types:**
+- `upload-sources` - Upload source translation files only
+- `download-translations` - Download translated files only (default)
+- `sync-bidirectional` - Both upload and download
+
+**Required Secrets:**
+- `CROWDIN_PROJECT_ID` - Your Crowdin project ID
+- `CROWDIN_PERSONAL_TOKEN` - Your Crowdin personal access token
+
+**Required Permissions:**
+- `contents: write` - For creating branches and commits
+- `pull-requests: write` - For creating pull requests
+
 ## Dependency Management
 
 ### GitHub Dependabot
