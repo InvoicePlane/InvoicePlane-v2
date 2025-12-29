@@ -155,7 +155,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(CustomField::class);
     }
 
-    public function documentGroups(): HasMany
+    public function numberings(): HasMany
     {
         return $this->hasMany(Numbering::class);
     }
