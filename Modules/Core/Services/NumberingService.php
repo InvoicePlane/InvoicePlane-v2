@@ -413,7 +413,7 @@ class NumberingService
     protected function getNumberingForeignKeyForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Customer', 'Expense', 'Invoice', 'Payment', 'Project', 'Quote', 'Task' => 'numbering_id',
+            'Invoice', 'Quote' => 'numbering_id',
             default => null,
         };
     }
