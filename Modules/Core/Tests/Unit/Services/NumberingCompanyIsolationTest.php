@@ -9,7 +9,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
 use Modules\Projects\Models\Task;
-use Modules/Projects\Support\TaskNumberGenerator;
+use Modules\Projects\Support\TaskNumberGenerator;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Support\ExpenseNumberGenerator;
 use PHPUnit\Framework\Attributes\Group;
