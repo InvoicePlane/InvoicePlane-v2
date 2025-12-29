@@ -101,10 +101,10 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})'
+          commit-message: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})"
           branch: automated/yarn-update-${{ github.run_number }}
           delete-branch: true
-          title: 'chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})'
+          title: "chore(deps): Update Yarn dependencies (${{ github.event.inputs.update_type || 'common-packages' }})"
           body: |
             ## Yarn Dependency Update
             
