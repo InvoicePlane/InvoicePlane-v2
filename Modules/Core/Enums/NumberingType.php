@@ -6,7 +6,13 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum NumberingType: string implements LabeledEnum
 {
-    case PROJECT = 'Project';
+    case CUSTOMER = 'Customer';
+    case EXPENSE  = 'Expense';
+    case INVOICE  = 'Invoice';
+    case PAYMENT  = 'Payment';
+    case PROJECT  = 'Project';
+    case QUOTE    = 'Quote';
+    case TASK     = 'Task';
 
     public static function values(): array
     {
@@ -16,21 +22,39 @@ enum NumberingType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::PROJECT => 'Project',
+            self::CUSTOMER => 'Customer',
+            self::EXPENSE  => 'Expense',
+            self::INVOICE  => 'Invoice',
+            self::PAYMENT  => 'Payment',
+            self::PROJECT  => 'Project',
+            self::QUOTE    => 'Quote',
+            self::TASK     => 'Task',
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::PROJECT => 'info',
+            self::CUSTOMER => 'primary',
+            self::EXPENSE  => 'warning',
+            self::INVOICE  => 'success',
+            self::PAYMENT  => 'info',
+            self::PROJECT  => 'secondary',
+            self::QUOTE    => 'purple',
+            self::TASK     => 'gray',
         };
     }
 
     public function prefix(): string
     {
         return match ($this) {
-            self::PROJECT => 'PRJ',
+            self::CUSTOMER => 'CUS',
+            self::EXPENSE  => 'EXP',
+            self::INVOICE  => 'INV',
+            self::PAYMENT  => 'PAY',
+            self::PROJECT  => 'PRJ',
+            self::QUOTE    => 'QUO',
+            self::TASK     => 'TSK',
         };
     }
 }

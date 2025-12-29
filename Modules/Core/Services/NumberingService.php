@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Clients\Models\Customer;
 use Modules\Core\DataTransferObjects\NumberingUpdateResult;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
+use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
+use Modules\Projects\Models\Task;
+use Modules\Quotes\Models\Quote;
 use Throwable;
 
 class NumberingService
@@ -82,7 +88,13 @@ class NumberingService
 
     public function hasNumberingsInUse(): bool
     {
-        return Project::query()->whereNotNull(Project::NUMBERING_ID)->exists();
+        return Customer::query()->whereNotNull('numbering_id')->exists()
+            || Expense::query()->whereNotNull('numbering_id')->exists()
+            || Invoice::query()->whereNotNull('numbering_id')->exists()
+            || Payment::query()->whereNotNull('numbering_id')->exists()
+            || Project::query()->whereNotNull(Project::NUMBERING_ID)->exists()
+            || Quote::query()->whereNotNull('numbering_id')->exists()
+            || Task::query()->whereNotNull('numbering_id')->exists();
     }
 
     /**
@@ -334,8 +346,14 @@ class NumberingService
     protected function getModelClassForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Project' => Project::class,
-            default   => null,
+            'Customer' => Customer::class,
+            'Expense'  => Expense::class,
+            'Invoice'  => Invoice::class,
+            'Payment'  => Payment::class,
+            'Project'  => Project::class,
+            'Quote'    => Quote::class,
+            'Task'     => Task::class,
+            default    => null,
         };
     }
 
@@ -349,16 +367,22 @@ class NumberingService
     protected function getNumberFieldForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Project' => 'project_number',
-            default   => null,
+            'Customer' => 'customer_number',
+            'Expense'  => 'expense_number',
+            'Invoice'  => 'invoice_number',
+            'Payment'  => 'payment_number',
+            'Project'  => 'project_number',
+            'Quote'    => 'quote_number',
+            'Task'     => 'task_number',
+            default    => null,
         };
     }
 
     protected function getNumberingForeignKeyForType($type): ?string
     {
         return match ($type->value ?? $type) {
-            'Project' => 'numbering_id',
-            default   => null,
+            'Customer', 'Expense', 'Invoice', 'Payment', 'Project', 'Quote', 'Task' => 'numbering_id',
+            default => null,
         };
     }
 
