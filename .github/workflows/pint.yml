@@ -29,14 +29,11 @@ jobs:
       - name: Run Laravel Pint
         id: pint_run
         run: |
-          echo "Running Laravel Pint..."
+          echo "Running Laravel Pint (this may take a couple of minutes)..."
           set +e  # Don't exit on error
-          vendor/bin/pint > pint_output.log 2>&1
-          PINT_EXIT_CODE=$?
+          vendor/bin/pint 2>&1 | tee pint_output.log
+          PINT_EXIT_CODE=${PIPESTATUS[0]}
           set -e  # Re-enable exit on error
-          
-          # Display the output
-          cat pint_output.log
           
           # Store exit code for later steps
           echo "exit_code=$PINT_EXIT_CODE" >> $GITHUB_OUTPUT
