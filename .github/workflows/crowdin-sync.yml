@@ -29,7 +29,7 @@ permissions:
 # 2. Add the token as a repository secret named 'PAT_TOKEN'
 #    at https://github.com/OWNER/REPO/settings/secrets/actions
 #
-# See: https://github.com/crowdin/github-action#github_token
+# See: https://github.com/crowdin/github-action
 
 jobs:
   crowdin-sync:
