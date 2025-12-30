@@ -24,7 +24,8 @@ class SetTenantFromQueryString
 
         if (
             /* @var User $user */
-            $user?->companies->contains('id', $company->id || $user->hasAnyRole(UserRole::elevated()))
+            $user?->companies->contains('id', $company->id)
+            || $user?->hasAnyRole(UserRole::elevated())
         ) {
             session(['current_company_id' => $company->id]);
             filament()->setTenant($company);
