@@ -5,7 +5,6 @@ namespace Modules\Products\Tests\Feature;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\ProductUnits\Pages\CreateProductUnit;
 use Modules\Products\Filament\Company\Resources\ProductUnits\Pages\EditProductUnit;

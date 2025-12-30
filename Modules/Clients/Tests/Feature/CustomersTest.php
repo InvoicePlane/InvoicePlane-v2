@@ -11,7 +11,6 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;

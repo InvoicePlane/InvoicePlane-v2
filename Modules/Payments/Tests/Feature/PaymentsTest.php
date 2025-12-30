@@ -6,7 +6,6 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Core\Tests\TestDecimal;
 use Modules\Invoices\Enums\InvoiceStatus;

@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
