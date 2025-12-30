@@ -53,6 +53,11 @@ package-lock.json
 /todo.txt
 /unit_depr.txt
 
+# PHPStan
+/phpstan.json
+/phpstan-report.md
+/stan.txt
+
 # IDEs / Editors
 /.fleet/
 /.aider/
