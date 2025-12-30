@@ -203,8 +203,8 @@ jobs:
           echo "Generating Version Tag" | tee -a "$LOG_FILE"
           echo "=========================================" | tee -a "$LOG_FILE"
           
-          # Get the latest tag or start with v0.0.0
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          # Get the latest tag or start with v2.0.0-alpha.1
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v2.0.0-alpha.1")
           echo "Previous tag: ${PREVIOUS_TAG}" | tee -a "$LOG_FILE"
           
           # Extract version numbers and suffix
@@ -248,7 +248,7 @@ jobs:
               ;;
             beta)
               # Validate not downgrading from stable
-              if [ -z "$ALPHA_NUM" ] && [ -z "$BETA_NUM" ] && [ "$PREVIOUS_TAG" != "v0.0.0" ]; then
+              if [ -z "$ALPHA_NUM" ] && [ -z "$BETA_NUM" ] && [ "$PREVIOUS_TAG" != "v2.0.0-alpha.1" ]; then
                 echo "ERROR: Cannot switch from stable to beta. Current version is stable, use stable release type." | tee -a "$LOG_FILE"
                 exit 1
               fi
@@ -298,7 +298,7 @@ jobs:
           echo "**Release Type:** ${{ env.RELEASE_TYPE }}" >> RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           
-          if [ "$PREVIOUS_TAG" = "v0.0.0" ]; then
+          if [ "$PREVIOUS_TAG" = "v2.0.0-alpha.1" ]; then
             echo "## Initial Release" >> RELEASE_NOTES.md
             echo "" >> RELEASE_NOTES.md
             echo "This is the first release of InvoicePlane v2." >> RELEASE_NOTES.md
