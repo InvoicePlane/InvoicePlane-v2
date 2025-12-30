@@ -44,8 +44,8 @@ class NumberingForm
                                         Select::make('type')
                                             ->label(trans('ip.numbering_type'))
                                             ->options(array_combine(
-                                                array_map(fn ($case) => $case->value, NumberingType::cases()),
-                                                array_map(fn ($case) => $case->label(), NumberingType::cases())
+                                                array_map(fn (NumberingType $case): string => $case->value, NumberingType::cases()),
+                                                array_map(fn (NumberingType $case): string => $case->label(), NumberingType::cases())
                                             ))
                                             ->required()
                                             ->reactive()

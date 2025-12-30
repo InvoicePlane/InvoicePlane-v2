@@ -48,7 +48,7 @@ class EditNumbering extends EditRecord
     /**
      * @throws Throwable
      */
-    protected function handleRecordUpdate(Numbering|Model $record, array $data): mixed
+    protected function handleRecordUpdate(Numbering|Model $record, array $data): Numbering
     {
         return app(NumberingService::class)->updateNumbering($record, $data);
     }

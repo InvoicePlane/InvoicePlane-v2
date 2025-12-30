@@ -24,17 +24,14 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ListPayments::class)]
 class PaymentsTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_payments(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -47,11 +44,11 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        Payment::factory()->for($company)->create($payload);
+        Payment::factory()->for($this->company)->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListPayments::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListPayments::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /*if (app()->runningUnitTests()) {
             dump($payload);
@@ -80,9 +77,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_creates_a_payment_through_a_modal(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -132,12 +128,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_through_a_modal_without_required_invoice_id(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
-            'customer_id' => $customer->id,
-            'user_id'     => $this->user->id,
-        ]);
+        $customer = Relation::factory()->for($this->company)->create();
 
         $payload = [
             'customer_id'    => $customer->id,
@@ -178,9 +169,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_method(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($this->user->companies()->first())->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -223,9 +213,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_status(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -272,9 +261,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_through_a_modal_without_required_paid_at(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -317,9 +305,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_through_a_modal_without_required_amount(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -349,15 +336,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_payment_through_a_modal(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
 
         $payment = Payment::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create([
                 'invoice_id'     => $invoice->id,
                 'customer_id'    => $customer->id,
@@ -405,9 +391,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_creates_a_payment(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -456,12 +441,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_without_required_invoice_id(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
-            'customer_id' => $customer->id,
-            'user_id'     => $this->user->id,
-        ]);
+        $customer = Relation::factory()->for($this->company)->create();
 
         $payload = [
             'customer_id'    => $customer->id,
@@ -501,9 +481,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_without_required_payment_method(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -545,9 +524,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_without_required_payment_status(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -593,9 +571,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_without_required_paid_at(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -637,9 +614,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_payment_without_required_amount(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
@@ -668,15 +644,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_payment(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
 
         $payment = Payment::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create([
                 'invoice_id'     => $invoice->id,
                 'customer_id'    => $customer->id,
@@ -708,15 +683,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     public function it_deletes_a_payment(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
 
         $payment = Payment::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->for($invoice)
             ->create([
                 'customer_id'    => $customer->id,
@@ -744,16 +718,15 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('Still can delete payment if invoice is paid');
 
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id'    => $customer->id,
             'user_id'        => $this->user->id,
             'invoice_status' => InvoiceStatus::PAID->value,
         ]);
 
         $payment = Payment::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->for($invoice)
             ->create([
                 'customer_id'    => $customer->id,
@@ -783,15 +756,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('record for delete action cannot be null');
 
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->customer()->for($company)->create();
-        $invoice  = Invoice::factory()->for($company)->create([
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
             'user_id'     => $this->user->id,
         ]);
 
         $payment = Payment::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->for($invoice)
             ->create([
                 'customer_id'    => $customer->id,

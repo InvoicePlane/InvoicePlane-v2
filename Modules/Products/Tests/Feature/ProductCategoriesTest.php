@@ -31,12 +31,12 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         ];
 
         $record = ProductCategory::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProductCategories::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListProductCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component->assertSuccessful()
@@ -67,7 +67,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('product_categories', array_merge(
-            ['company_id' => $this->user->companies()->first()->id],
+            ['company_id' => $this->company->id],
             $payload
         ));
     }
@@ -105,9 +105,8 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_product_category_through_a_modal(): void
     {
         /* arrange */
-        $company         = $this->user->companies()->first();
         $productCategory = ProductCategory::factory()
-            ->for($company)
+            ->for($this->company)
             ->create(['category_name' => 'Old Cat']);
 
         $payload = ['category_name' => 'Updated Category'];
@@ -195,7 +194,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_product_category(): void
     {
         /* arrange */
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Old Cat']);
+        $record  = ProductCategory::factory()->for($this->company)->create(['category_name' => 'Old Cat']);
         $payload = ['category_name' => 'Updated Category'];
 
         /* act */
@@ -218,9 +217,8 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_deletes_a_product_category(): void
     {
         /* arrange */
-        $company         = $this->user->companies()->first();
         $productCategory = ProductCategory::factory()
-            ->for($company)
+            ->for($this->company)
             ->create(['category_name' => 'Category to Delete']);
 
         /* act */
@@ -241,7 +239,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
-        $productCategory = ProductCategory::factory()->for($this->user->companies()->first())->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productCategory->delete();
 
         /* act */

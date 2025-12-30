@@ -18,8 +18,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ListContacts::class)]
 class ContactsTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     #region smoke
     #[Test]
     #[Group('smoke')]
@@ -134,7 +132,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $relation = Relation::factory()
-            ->for($this->user->companies()->first(), 'company')
+            ->for($this->company, 'company')
             ->create();
 
         $payload = [
@@ -165,7 +163,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $relation = Relation::factory()
-            ->for($this->user->companies()->first(), 'company')
+            ->for($this->company, 'company')
             ->create();
 
         $payload = [
@@ -205,7 +203,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
         ];
 
         $contact = Contact::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->for($relation)
             ->create($payload);
 
@@ -237,7 +235,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $relation = Relation::factory()
-            ->for($this->user->companies()->first(), 'company')
+            ->for($this->company, 'company')
             ->create();
 
         $payload = [
@@ -289,7 +287,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $relation = Relation::factory()
-            ->for($this->user->companies()->first(), 'company')
+            ->for($this->company, 'company')
             ->create();
 
         $payload = [
@@ -314,7 +312,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $relation = Relation::factory()
-            ->for($this->user->companies()->first(), 'company')
+            ->for($this->company, 'company')
             ->create();
 
         $payload = [

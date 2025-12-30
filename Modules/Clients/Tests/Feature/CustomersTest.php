@@ -20,8 +20,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ListRelations::class)]
 class CustomersTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     #region smoke
     #[Test]
     #[Group('smoke')]
@@ -40,11 +38,11 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
         ];
 
-        $customer = Relation::factory()->for($this->user->companies()->first())->create($payload);
+        $customer = Relation::factory()->for($this->company)->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListRelations::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListRelations::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component->assertSuccessful();
@@ -223,7 +221,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         ];
 
         $customer = Relation::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create($original);
 
         $updatedData = [
@@ -377,7 +375,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('foreign key contact');
 
         /* arrange */
-        $customer = Relation::factory()->for($this->user->companies()->first())->create([
+        $customer = Relation::factory()->for($this->company)->create([
             'company_name'  => 'Delete Me',
             'relation_type' => RelationType::CUSTOMER,
         ]);
@@ -398,7 +396,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $customer = Relation::factory()->for($this->user->companies()->first())->create([
+        $customer = Relation::factory()->for($this->company)->create([
             'company_name'  => 'Delete Me',
             'relation_type' => RelationType::CUSTOMER,
         ]);

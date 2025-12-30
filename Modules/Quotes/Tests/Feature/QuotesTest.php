@@ -27,8 +27,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ListQuotes::class)]
 class QuotesTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -40,10 +38,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->company;
         $user     = $this->user;
-        $prospect = Relation::factory()->for($company)->prospect()->create();
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
         $quote = Quote::factory()
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'quote_number' => 'Q-0001',
                 'prospect_id'  => $prospect->id,
@@ -68,14 +66,13 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_quote_through_a_modal(): void
     {
-        $company       = $this->user->companies()->first();
-        $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($company)->create();
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        $taxRate         = TaxRate::factory()->for($company)->create();
-        $productCategory = ProductCategory::factory()->for($company)->create();
-        $productUnit     = ProductUnit::factory()->for($company)->create();
-        $product         = Product::factory()->for($company)->create([
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
             'category_id'   => $productCategory->id,
             'unit_id'       => $productUnit->id,
             'tax_rate_id'   => $taxRate->id,
@@ -134,13 +131,12 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_a_quote_through_a_modal_without_required_prospect(): void
     {
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $documentGroup = Numbering::factory()->for($company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        $taxRate         = TaxRate::factory()->for($company)->create();
-        $productCategory = ProductCategory::factory()->for($company)->create();
-        $productUnit     = ProductUnit::factory()->for($company)->create();
-        $product         = Product::factory()->for($company)->create([
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
             'category_id'   => $productCategory->id,
             'unit_id'       => $productUnit->id,
             'tax_rate_id'   => $taxRate->id,
@@ -301,14 +297,13 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('revisit quote_item_subtotal');
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($company)->create();
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        $taxRate         = TaxRate::factory()->for($company)->create();
-        $productCategory = ProductCategory::factory()->for($company)->create();
-        $productUnit     = ProductUnit::factory()->for($company)->create();
-        $product         = Product::factory()->for($company)->create([
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
             'category_id'   => $productCategory->id,
             'unit_id'       => $productUnit->id,
             'tax_rate_id'   => $taxRate->id,
@@ -499,14 +494,13 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_quote(): void
     {
-        $company       = $this->user->companies()->first();
-        $prospect      = Relation::factory()->for($company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($company)->create();
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        $taxRate         = TaxRate::factory()->for($company)->create();
-        $productCategory = ProductCategory::factory()->for($company)->create();
-        $productUnit     = ProductUnit::factory()->for($company)->create();
-        $product         = Product::factory()->for($company)->create([
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
             'category_id'   => $productCategory->id,
             'unit_id'       => $productUnit->id,
             'tax_rate_id'   => $taxRate->id,
@@ -603,7 +597,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_quote_without_required_quote_number(): void
     {
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -640,7 +634,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_quote_without_required_quote_status(): void
     {
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -679,7 +673,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('quote_discount_percent missing, even though it is set');
 
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -719,7 +713,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('revisit quote_item_subtotal');
 
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -758,7 +752,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('revisit quote_tax_total');
 
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -798,7 +792,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('revisit quote_total');
 
         /* arrange */
-        $prospect = Relation::factory()->for($this->user->companies()->first())->create(['relation_type' => 'prospect']);
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
@@ -827,10 +821,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->company;
         $user     = $this->user;
-        $prospect = Relation::factory()->for($company)->prospect()->create();
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
         $quote = Quote::factory()
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'quote_number' => 'Q-0001',
                 'prospect_id'  => $prospect->id,
@@ -857,10 +851,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->company;
         $user     = $this->user;
-        $prospect = Relation::factory()->for($company)->prospect()->create();
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
         $quote = Quote::factory()
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'quote_number' => 'Q-0001',
                 'prospect_id'  => $prospect->id,
@@ -888,7 +882,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->company;
         $user     = $this->user;
-        $customer = Relation::factory()->for($company)->customer()->create();
+        $customer = Relation::factory()->for($this->company)->customer()->create();
 
         $invoice = Invoice::factory()
             ->for($this->company)
@@ -899,7 +893,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ]);
 
         $quote = Quote::factory()
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'quote_number' => 'Q-0001',
                 'prospect_id'  => $customer->id,
@@ -927,10 +921,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $company  = $this->company;
         $user     = $this->user;
-        $prospect = Relation::factory()->for($company)->prospect()->create();
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
         $quote = Quote::factory()
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'quote_number' => 'Q-0001',
                 'prospect_id'  => $prospect->id,

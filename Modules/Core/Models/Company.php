@@ -4,6 +4,7 @@ namespace Modules\Core\Models;
 
 use Filament\Models\Contracts\HasCurrentTenantLabel;
 use Filament\Models\Contracts\HasName;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -89,7 +90,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function customerAdmins(): BelongsToMany
+    public function customerAdmins(): Builder
     {
         return $this->users()
             ->whereHas('roles', function ($query) {
