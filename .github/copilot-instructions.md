@@ -68,6 +68,11 @@ php artisan queue:work
 - For local development, you can use `QUEUE_CONNECTION=sync` in `.env`
 - For production, use Redis or database queue driver with Supervisor
 
+**GitHub Actions Automation:**
+- Automated dependency updates require `PAT_TOKEN` secret (Personal Access Token with `repo` and `workflow` scopes)
+- Set up at: Settings → Secrets and variables → Actions
+- See `.github/workflows/README.md` for detailed setup instructions
+
 ## Related Documentation
 
 - **Installation:** `.github/INSTALLATION.md`
