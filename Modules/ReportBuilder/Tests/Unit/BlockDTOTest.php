@@ -43,7 +43,8 @@ class BlockDTOTest extends TestCase
     public function it_can_set_and_get_position(): void
     {
         /* arrange */
-        $position = new GridPositionDTO(0, 0, 6, 4);
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         /* act */
         $dto = new BlockDTO();
@@ -193,7 +194,8 @@ class BlockDTOTest extends TestCase
     public function it_can_create_system_block(): void
     {
         /* arrange */
-        $position = new GridPositionDTO(0, 0, 6, 4);
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
         $config = ['show_vat_id' => true];
 
         /* act */
@@ -213,7 +215,8 @@ class BlockDTOTest extends TestCase
     public function it_can_create_cloned_block(): void
     {
         /* arrange */
-        $position = new GridPositionDTO(0, 0, 6, 4);
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         /* act */
         $original = new BlockDTO();
@@ -249,7 +252,8 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function setters_return_self_for_method_chaining(): void
     {
-        $position = new GridPositionDTO(0, 0, 6, 4);
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         $dto = (new BlockDTO())
             ->setId('block_test')

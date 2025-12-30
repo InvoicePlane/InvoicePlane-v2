@@ -33,7 +33,30 @@ class GridPositionDTO
 
     //region Constructor
 
-    public function __construct(int $x, int $y, int $width, int $height)
+    /**
+     * GridPositionDTO constructor.
+     *
+     * No-arg constructor following DTO guidelines.
+     * Use setters or static factory methods to populate the DTO.
+     */
+    public function __construct()
+    {
+        // No-arg constructor following DTO guidelines
+    }
+
+    /**
+     * Static factory method to create a GridPositionDTO with all values.
+     *
+     * @param int $x      X coordinate
+     * @param int $y      Y coordinate
+     * @param int $width  Width
+     * @param int $height Height
+     *
+     * @return self
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function create(int $x, int $y, int $width, int $height): self
     {
         if ($x < 0 || $y < 0) {
             throw new InvalidArgumentException('x and y must be >= 0');
@@ -41,10 +64,14 @@ class GridPositionDTO
         if ($width <= 0 || $height <= 0) {
             throw new InvalidArgumentException('width and height must be > 0');
         }
-        $this->x      = $x;
-        $this->y      = $y;
-        $this->width  = $width;
-        $this->height = $height;
+
+        $dto = new self();
+        $dto->x      = $x;
+        $dto->y      = $y;
+        $dto->width  = $width;
+        $dto->height = $height;
+
+        return $dto;
     }
 
     //endregion
