@@ -8,26 +8,27 @@ jobs:
     name: Quickstart Bootstrap & Smoke Tests
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mariadb:10.6
-        env:
-          MYSQL_DATABASE: testing
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    # MySQL service commented out - smoke tests should not require database setup
+    # services:
+    #   mysql:
+    #     image: mariadb:10.6
+    #     env:
+    #       MYSQL_DATABASE: testing
+    #       MYSQL_ROOT_PASSWORD: root
+    #     ports:
+    #       - 3306:3306
+    #     options: >-
+    #       --health-cmd="mysqladmin ping"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=5
 
     env:
-      DB_CONNECTION: mysql
-      DB_DATABASE: testing
-      DB_USERNAME: root
-      DB_PASSWORD: root
-      DB_HOST: 127.0.0.1
+      # DB_CONNECTION: mysql
+      # DB_DATABASE: testing
+      # DB_USERNAME: root
+      # DB_PASSWORD: root
+      # DB_HOST: 127.0.0.1
       APP_ENV: testing
 
     steps:
