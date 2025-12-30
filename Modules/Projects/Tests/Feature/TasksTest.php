@@ -470,7 +470,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->create(['name' => '::taxrate_name::']);
 
         $payload = [
-            'company_id' => $company->id,
+            'company_id' => $this->company->id,
             // 'project_id' intentionally omitted
             'tax_rate_id' => $taxRate->id,
             'assigned_to' => $this->user->id,

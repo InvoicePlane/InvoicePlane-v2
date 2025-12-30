@@ -129,10 +129,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $customer = Relation::factory()->for($this->company)->create();
-        $invoice  = Invoice::factory()->for($this->company)->create([
-            'customer_id' => $customer->id,
-            'user_id'     => $this->user->id,
-        ]);
 
         $payload = [
             'customer_id'    => $customer->id,
@@ -446,10 +442,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $customer = Relation::factory()->for($this->company)->create();
-        $invoice  = Invoice::factory()->for($this->company)->create([
-            'customer_id' => $customer->id,
-            'user_id'     => $this->user->id,
-        ]);
 
         $payload = [
             'customer_id'    => $customer->id,

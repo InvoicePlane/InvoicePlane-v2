@@ -28,7 +28,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
 
         $payload = [
-            'company_id'     => $company->id,
+            'company_id'     => $this->company->id,
             'customer_id'    => $customer->id,
             'project_status' => ProjectStatus::ACTIVE->value,
             'project_name'   => 'Test Project',
@@ -41,7 +41,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProjects::class, ['tenant' => Str::lower($company->search_code)]);
+            ->test(ListProjects::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component->assertSuccessful();
@@ -89,7 +89,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('projects', array_merge(
-            ['company_id' => $company->id],
+            ['company_id' => $this->company->id],
             $payload
         ));
     }
@@ -110,10 +110,10 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_project_through_a_modal_without_required_status(): void
     {
         /* arrange */
-        $customer = Relation::factory()->create(['company_name' => '::client_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::client_name::']);
 
         $payload = [
-            'company_id'   => $company->id,
+            'company_id'   => $this->company->id,
             'customer_id'  => $customer->id,
             'project_name' => 'Website Redesign',
             'start_at'     => '2025-05-01',
@@ -150,7 +150,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_project_through_a_modal_without_required_project_name(): void
     {
         $customer = Relation::factory()
-            ->for($company, 'company')
+            ->for($this->company, 'company')
             ->create(['company_name' => '::client_name::']);
 
         $payload = [
@@ -311,7 +311,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->create(['company_name' => '::company_name::']);
 
         $payload = [
-            'company_id'   => $company->id,
+            'company_id'   => $this->company->id,
             'customer_id'  => $customer->id,
             'project_name' => 'Website Redesign',
             'start_at'     => '2025-05-01',
@@ -348,10 +348,10 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_project_name(): void
     {
-        $customer = Relation::factory()->create(['company_name' => '::company_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
 
         $payload = [
-            'company_id'     => $company->id,
+            'company_id'     => $this->company->id,
             'customer_id'    => $customer->id,
             'project_status' => 'active',
             'start_at'       => '2025-05-01',
