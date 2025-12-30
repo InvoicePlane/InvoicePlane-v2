@@ -37,6 +37,16 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Check for package-lock.json conflicts
         id: lockfile-check
         run: |
@@ -149,12 +159,31 @@ jobs:
           echo "========================================="
 
       - name: Build assets
+        id: build-assets
+        continue-on-error: true
         run: |
           echo "========================================="
           echo "Building production assets..."
           echo "========================================="
-          yarn build
-          echo "✓ Build completed successfully"
+          
+          # Check if vendor directory exists
+          if [ ! -d "vendor" ]; then
+            echo "⚠️  WARNING: vendor directory not found!"
+            echo "⚠️  Composer dependencies may be missing"
+            echo "⚠️  Build may fail, but we will continue to commit yarn.lock"
+            echo "build_success=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Try to build assets (wrapped in conditional to handle errors)
+          if yarn build 2>&1; then
+            echo "✓ Build completed successfully"
+            echo "build_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Build failed, but continuing to commit yarn.lock changes"
+            echo "build_success=false" >> $GITHUB_OUTPUT
+            exit 0  # Don't fail the step so we can still commit yarn.lock
+          fi
+          
           echo "========================================="
 
       - name: Check for changes
@@ -205,9 +234,11 @@ jobs:
             
             ### Checks Performed
             
-            - [x] Assets built successfully
+            - ${{ steps.build-assets.outputs.build_success == 'true' && '[x]' || '[ ]' }} Assets built successfully
             - [x] Dependencies installed and verified
             - [x] Lock file conflicts checked
+            
+            ${{ steps.build-assets.outputs.build_success == 'false' && '⚠️ **Note:** Assets build failed. This may be due to missing vendor dependencies. Please review and rebuild manually if needed.' || '' }}
             
             ### Security Audit
             
