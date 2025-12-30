@@ -7,19 +7,20 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+    # MySQL service commented out - tests use SQLite in-memory instead
+    # services:
+    #   mysql:
+    #     image: mysql:8
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: root
+    #       MYSQL_DATABASE: testing
+    #     ports:
+    #       - 3306:3306
+    #     options: >-
+    #       --health-cmd="mysqladmin ping --silent"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
@@ -34,13 +35,10 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Copy .env.testing
-        run: cp .env.testing.example .env.testing
-
-      - name: Wait for MySQL to be ready
+      - name: Prepare Laravel environment
         run: |
-          echo "Waiting for MySQL..."
-          sleep 15
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
 
       #- name: Run Laravel migrations
       #  run: php artisan migrate --force --env=testing
