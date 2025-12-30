@@ -12,7 +12,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": true,
+            "liborm85/composer-vendor-cleaner": true
         }
     },
     "minimum-stability": "dev",
@@ -90,6 +91,43 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "vendor-cleaner": {
+            "exclude-dir": [
+                "tests",
+                "Tests",
+                "test",
+                "Test",
+                "docs",
+                "doc",
+                "examples",
+                "example",
+                ".github"
+            ],
+            "exclude-file": [
+                ".gitignore",
+                ".gitattributes",
+                ".editorconfig",
+                ".php_cs",
+                ".php_cs.dist",
+                ".php-cs-fixer.php",
+                ".php-cs-fixer.dist.php",
+                "phpunit.xml",
+                "phpunit.xml.dist",
+                "phpstan.neon",
+                "phpstan.neon.dist",
+                "psalm.xml",
+                "psalm.xml.dist",
+                ".travis.yml",
+                ".scrutinizer.yml",
+                "README.md",
+                "readme.md",
+                "CHANGELOG.md",
+                "changelog.md",
+                "CONTRIBUTING.md",
+                "LICENSE",
+                "LICENCE"
+            ]
         }
     }
 }
