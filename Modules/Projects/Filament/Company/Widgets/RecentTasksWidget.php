@@ -15,10 +15,12 @@ class RecentTasksWidget extends TableWidget
 
     protected static ?int $sort = 4;
 
-    /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Task::query()->latest()->limit(10);
+        /** @var Builder<Task> $query */
+        $query = Task::query()->latest()->limit(10);
+
+        return $query;
     }
 
     protected function getTableColumns(): array

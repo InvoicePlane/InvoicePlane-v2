@@ -16,10 +16,12 @@ class RecentProjectsWidget extends TableWidget
 
     protected static ?int $sort = 3;
 
-    /** @phpstan-ignore-next-line */
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Project::query()->latest()->limit(10);
+        /** @var Builder<Project> $query */
+        $query = Project::query()->latest()->limit(10);
+
+        return $query;
     }
 
     protected function getTableColumns(): array

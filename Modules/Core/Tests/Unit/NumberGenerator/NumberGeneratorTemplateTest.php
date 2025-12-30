@@ -22,7 +22,9 @@ class NumberGeneratorTemplateTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->company = Company::factory()->create();
+        /** @var Company $company */
+        $company = Company::factory()->create();
+        $this->company = $company;
     }
 
     #[Test]
