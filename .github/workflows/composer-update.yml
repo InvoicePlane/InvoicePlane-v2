@@ -123,6 +123,11 @@ jobs:
           php -r '
           $old = json_decode(file_get_contents("/tmp/composer.lock.old"), true);
           $new = json_decode(file_get_contents("composer.lock"), true);
+          $composerJson = json_decode(file_get_contents("composer.json"), true);
+          
+          // Get direct dependencies from composer.json
+          $directDeps = array_keys($composerJson["require"] ?? []);
+          $directDevDeps = array_keys($composerJson["require-dev"] ?? []);
           
           $oldPackages = [];
           foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $pkg) {
@@ -134,29 +139,61 @@ jobs:
               $newPackages[$pkg["name"]] = $pkg["version"];
           }
           
-          $changes = [];
+          $directChanges = [];
+          $transientChanges = [];
           
           // Check for new and updated packages
           foreach ($newPackages as $name => $newVersion) {
+              $isDirect = in_array($name, $directDeps) || in_array($name, $directDevDeps);
+              
               if (!isset($oldPackages[$name])) {
-                  $changes[] = "$name: (new) → $newVersion";
+                  $change = "$name: (new) → $newVersion";
+                  if ($isDirect) {
+                      $directChanges[] = $change;
+                  } else {
+                      $transientChanges[] = $change;
+                  }
               } elseif ($oldPackages[$name] !== $newVersion) {
-                  $changes[] = "$name: {$oldPackages[$name]} → $newVersion";
+                  $change = "$name: {$oldPackages[$name]} → $newVersion";
+                  if ($isDirect) {
+                      $directChanges[] = $change;
+                  } else {
+                      $transientChanges[] = $change;
+                  }
               }
           }
           
           // Check for removed packages using array key lookup
           foreach ($oldPackages as $name => $version) {
               if (!isset($newPackages[$name])) {
-                  $changes[] = "$name: $version → (removed)";
+                  $isDirect = in_array($name, $directDeps) || in_array($name, $directDevDeps);
+                  $change = "$name: $version → (removed)";
+                  if ($isDirect) {
+                      $directChanges[] = $change;
+                  } else {
+                      $transientChanges[] = $change;
+                  }
               }
           }
           
-          if (empty($changes)) {
+          if (empty($directChanges) && empty($transientChanges)) {
               echo "No package changes detected\n";
           } else {
-              foreach ($changes as $change) {
-                  echo "$change\n";
+              if (!empty($directChanges)) {
+                  echo "## Direct Dependencies (from composer.json)\n\n";
+                  foreach ($directChanges as $change) {
+                      echo "$change\n";
+                  }
+              }
+              
+              if (!empty($transientChanges)) {
+                  if (!empty($directChanges)) {
+                      echo "\n";
+                  }
+                  echo "## Transient Dependencies (indirect)\n\n";
+                  foreach ($transientChanges as $change) {
+                      echo "$change\n";
+                  }
               }
           }
           ' > updated-packages.txt
