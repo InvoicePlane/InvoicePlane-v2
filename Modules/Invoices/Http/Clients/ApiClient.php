@@ -24,10 +24,8 @@ class ApiClient
      *
      * @return Response
      */
-    public function request(RequestMethod|string $method, string $uri, array $options = []): Response
+    public function request(RequestMethod $method, string $uri, array $options = []): Response
     {
-        $methodString = $method instanceof RequestMethod ? $method->value : mb_strtolower($method);
-
         $client = Http::timeout($options['timeout'] ?? 30);
 
         $client = $this->applyAuth($client, $options);
@@ -37,74 +35,9 @@ class ApiClient
             $client = $client->withHeaders($options['headers']);
         }
 
-        return $client
-            ->{$methodString}($uri, $options['payload'] ?? [])
+        return $clients 
+            ->{$method->value}($uri, $options['payload'] ?? [])
             ->throw();
-    }
-
-    /**
-     * Make a GET request.
-     *
-     * @param string               $uri     The URI to request
-     * @param array<string, mixed> $options Request options
-     *
-     * @return Response
-     */
-    public function get(string $uri, array $options = []): Response
-    {
-        return $this->request('get', $uri, $options);
-    }
-
-    /**
-     * Make a POST request.
-     *
-     * @param string               $uri     The URI to request
-     * @param array<string, mixed> $options Request options
-     *
-     * @return Response
-     */
-    public function post(string $uri, array $options = []): Response
-    {
-        return $this->request('post', $uri, $options);
-    }
-
-    /**
-     * Make a PUT request.
-     *
-     * @param string               $uri     The URI to request
-     * @param array<string, mixed> $options Request options
-     *
-     * @return Response
-     */
-    public function put(string $uri, array $options = []): Response
-    {
-        return $this->request('put', $uri, $options);
-    }
-
-    /**
-     * Make a PATCH request.
-     *
-     * @param string               $uri     The URI to request
-     * @param array<string, mixed> $options Request options
-     *
-     * @return Response
-     */
-    public function patch(string $uri, array $options = []): Response
-    {
-        return $this->request('patch', $uri, $options);
-    }
-
-    /**
-     * Make a DELETE request.
-     *
-     * @param string               $uri     The URI to request
-     * @param array<string, mixed> $options Request options
-     *
-     * @return Response
-     */
-    public function delete(string $uri, array $options = []): Response
-    {
-        return $this->request('delete', $uri, $options);
     }
 
     /**
@@ -120,7 +53,6 @@ class ApiClient
         $authType = match (true) {
             isset($options['bearer'])                                                                   => 'bearer',
             isset($options['auth']) && is_array($options['auth']) && count($options['auth']) >= 2       => 'basic',
-            isset($options['digest']) && is_array($options['digest']) && count($options['digest']) >= 2 => 'digest',
             default                                                                                     => null
         };
 
