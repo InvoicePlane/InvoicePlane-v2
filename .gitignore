@@ -36,6 +36,7 @@ vite.config.ts
 npm-debug.log
 yarn-error.log
 /yarn-upgr.txt
+package-lock.json
 
 # Pint
 /pint.txt
