@@ -150,11 +150,11 @@ jobs:
           LOG_FILE="${{ env.LOG_DIR }}/vendor-cleanup.log"
           
           echo "Installing composer-vendor-cleaner..." | tee -a "$LOG_FILE"
-          composer require liborm85/composer-vendor-cleaner --dev \
+          composer require liborm85/composer-vendor-cleaner \
             --no-interaction --no-update 2>&1 | tee -a "$LOG_FILE"
           
           echo "Running composer update (vendor cleaner will run automatically)..." | tee -a "$LOG_FILE"
-          composer update liborm85/composer-vendor-cleaner --no-interaction 2>&1 | tee -a "$LOG_FILE"
+          composer update liborm85/composer-vendor-cleaner --no-dev --no-interaction 2>&1 | tee -a "$LOG_FILE"
           echo "✓ Vendor directory optimized (cleaner ran automatically during update)" | tee -a "$LOG_FILE"
 
       # Step 5: Cleanup workspace
