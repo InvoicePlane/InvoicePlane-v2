@@ -10,6 +10,12 @@ use Modules\Core\Models\Numbering;
  * AbstractNumberGenerator.
  *
  * Base class for generating sequential numbers with customizable formatting.
+ * This is the foundation for all number generators in the system, including
+ * invoices, quotes, expenses, projects, tasks, payments, and customers.
+ *
+ * Child classes must define:
+ * - `$type` (required): The entity type identifier (e.g., 'Invoice', 'Quote', 'expenses')
+ * - `$groupName` (optional): Default numbering scheme name (e.g., 'Default Invoice Numbering')
  *
  * Features:
  * - Automatic number generation with configurable padding (e.g., PRJ-0001, PRJ-0023)
