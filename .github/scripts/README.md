@@ -206,6 +206,7 @@ Edit the script to adjust:
 
 ### Dependencies
 
-- PHP 7.4+ (uses `??` null coalescing operator)
+- PHP 8.2+ (project-wide minimum; uses `??` null coalescing operator and `str_contains()`)
 - PHPStan installed via Composer
 - JSON extension enabled (standard with PHP)
+- mbstring extension enabled (for multi-byte string handling)

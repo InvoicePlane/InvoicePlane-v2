@@ -119,12 +119,10 @@ echo "---\n\n";
 echo "### ✅ Actionable Checklist\n\n";
 echo "Use this checklist to track fixes:\n\n";
 
-$checklistNumber = 0;
 foreach ($errorsByFile as $filePath => $errors) {
     $shortPath = getShortPath($filePath);
     
     foreach ($errors as $error) {
-        $checklistNumber++;
         $line = $error['line'];
         $message = trimMessage($error['message'], 80);
         
@@ -140,19 +138,32 @@ echo "**Generated:** " . date('Y-m-d H:i:s') . " UTC\n";
  */
 function categorizeError(string $message): string
 {
-    if (stripos($message, 'return') !== false && stripos($message, 'should return') !== false) {
+    $normalizedMessage = strtolower($message);
+
+    $hasShouldReturn = str_contains($normalizedMessage, 'should return');
+    $hasMethod       = str_contains($normalizedMessage, 'method');
+    $hasCallTo       = str_contains($normalizedMessage, 'call to');
+    $hasProperty     = str_contains($normalizedMessage, 'property');
+    $hasType         = str_contains($normalizedMessage, 'type');
+    $hasExpects      = str_contains($normalizedMessage, 'expects');
+
+    // Prioritize explicit "should return" wording for return type issues
+    if ($hasShouldReturn) {
         return 'return_type_errors';
     }
-    
-    if (stripos($message, 'method') !== false || stripos($message, 'call to') !== false) {
+
+    // Method-related errors that are not already classified as return type errors
+    if ($hasMethod || $hasCallTo) {
         return 'method_errors';
     }
-    
-    if (stripos($message, 'property') !== false) {
+
+    // Property issues that are not part of method/return-type problems
+    if ($hasProperty && ! $hasMethod && ! $hasCallTo) {
         return 'property_errors';
     }
-    
-    if (stripos($message, 'type') !== false || stripos($message, 'expects') !== false) {
+
+    // Generic type expectations that are not already covered above
+    if (($hasType || $hasExpects) && ! $hasMethod && ! $hasCallTo && ! $hasProperty) {
         return 'type_errors';
     }
     
@@ -196,11 +207,30 @@ function getCategoryLabel(string $category): string
  */
 function getShortPath(string $path): string
 {
-    // Remove common prefixes
-    $path = str_replace('/home/runner/work/InvoicePlane-v2/InvoicePlane-v2/', '', $path);
-    $path = str_replace(getcwd() . '/', '', $path);
-    
-    return $path;
+    // Normalize path separators for consistency across environments
+    $normalizedPath = str_replace('\\', '/', $path);
+
+    // Derive project root based on this script's location: .github/scripts => project root is two levels up
+    $projectRoot = dirname(__DIR__, 2);
+    if (is_string($projectRoot) && $projectRoot !== '') {
+        $normalizedRoot = rtrim(str_replace('\\', '/', $projectRoot), '/') . '/';
+
+        if (str_starts_with($normalizedPath, $normalizedRoot)) {
+            $normalizedPath = substr($normalizedPath, strlen($normalizedRoot));
+        }
+    }
+
+    // Fallback: also try stripping the current working directory if it is a prefix
+    $cwd = getcwd();
+    if (is_string($cwd) && $cwd !== '') {
+        $normalizedCwd = rtrim(str_replace('\\', '/', $cwd), '/') . '/';
+
+        if (str_starts_with($normalizedPath, $normalizedCwd)) {
+            $normalizedPath = substr($normalizedPath, strlen($normalizedCwd));
+        }
+    }
+
+    return $normalizedPath;
 }
 
 /**
@@ -212,9 +242,9 @@ function trimMessage(string $message, int $maxLength = 150): string
     $message = preg_replace('/\s+/', ' ', $message);
     $message = trim($message);
     
-    // Truncate if too long
-    if (strlen($message) > $maxLength) {
-        $message = substr($message, 0, $maxLength - 3) . '...';
+    // Truncate if too long (multibyte-safe)
+    if (mb_strlen($message, 'UTF-8') > $maxLength) {
+        $message = mb_substr($message, 0, $maxLength - 3, 'UTF-8') . '...';
     }
     
     return $message;
