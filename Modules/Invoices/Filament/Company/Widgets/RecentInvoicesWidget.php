@@ -33,7 +33,10 @@ class RecentInvoicesWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Invoice::query()->recent();
+        /** @var Builder<Invoice> $query */
+        $query = Invoice::query()->recent();
+
+        return $query;
     }
 
     protected function getTableColumns(): array

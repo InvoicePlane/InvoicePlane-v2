@@ -33,7 +33,10 @@ class RecentQuotesWidget extends TableWidget
 
     protected function getTableQuery(): Builder|Relation|null
     {
-        return Quote::query()->recent();
+        /** @var Builder<Quote> $query */
+        $query = Quote::query()->recent();
+
+        return $query;
     }
 
     protected function getTableColumns(): array

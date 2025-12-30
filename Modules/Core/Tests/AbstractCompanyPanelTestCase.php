@@ -22,13 +22,17 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->withCompany([
+        /** @var User $user */
+        $user = User::factory()->withCompany([
             'search_code' => 'IVPLV2',
             'name'        => 'InvoicePlane Corporation',
             'slug'        => 'invoiceplane-corporation',
         ])->create();
+        $this->user = $user;
 
-        $this->company = Company::query()->where('search_code', 'IVPLV2')->firstOrFail();
+        /** @var Company $company */
+        $company = Company::query()->where('search_code', 'IVPLV2')->firstOrFail();
+        $this->company = $company;
 
         /*
          * quietly set tenant so it won't wine about user not being set yet.

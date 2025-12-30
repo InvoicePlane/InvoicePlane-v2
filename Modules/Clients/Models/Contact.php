@@ -24,7 +24,7 @@ use Modules\Core\Traits\BelongsToCompany;
  * @property bool|null             $default_to
  * @property bool|null             $default_cc
  * @property bool|null             $default_bcc
- * @property string|null           $gender
+ * @property Gender|null           $gender
  * @property Company               $company
  * @property Relation              $relation
  * @property Collection|Relation[] $relations

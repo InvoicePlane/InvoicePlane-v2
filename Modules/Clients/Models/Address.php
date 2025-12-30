@@ -14,7 +14,7 @@ use Modules\Core\Traits\BelongsToCompany;
 /**
  * @property int         $id
  * @property int         $company_id
- * @property string      $type
+ * @property AddressType $type
  * @property string|null $address_1
  * @property string|null $address_2
  * @property string|null $number

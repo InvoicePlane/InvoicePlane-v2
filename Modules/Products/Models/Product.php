@@ -22,7 +22,7 @@ use Modules\Quotes\Models\QuoteItem;
  * @property int                      $company_id
  * @property int                      $category_id
  * @property int|null                 $unit_id
- * @property string                   $type
+ * @property ProductType              $type
  * @property string|null              $code
  * @property string|null              $product_name
  * @property float|null               $price

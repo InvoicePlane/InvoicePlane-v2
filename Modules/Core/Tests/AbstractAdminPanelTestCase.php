@@ -22,9 +22,13 @@ abstract class AbstractAdminPanelTestCase extends BaseTestCase
 
         filament()->setCurrentPanel(filament()->getPanel('admin'));
 
-        $this->company = Company::factory()->create();
+        /** @var Company $company */
+        $company = Company::factory()->create();
+        $this->company = $company;
 
-        $this->superAdmin = User::factory()->create();
+        /** @var User $superAdmin */
+        $superAdmin = User::factory()->create();
+        $this->superAdmin = $superAdmin;
 
         session(['current_company_id' => $this->company->id]);
 
