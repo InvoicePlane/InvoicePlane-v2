@@ -114,9 +114,55 @@ jobs:
         if: steps.check-changes.outputs.changes_detected == 'true'
         id: updated-packages
         run: |
-          # Get list of updated packages by parsing the diff
-          # Extract added lines, remove the '+' prefix, and filter for name/version
-          git diff composer.lock | grep -E '^\+.*"(name|version)"' | sed 's/^+//' | sed 's/^[[:space:]]*//' | head -40 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
+          # Parse composer.lock to extract package name:version pairs
+          # Get the old version first
+          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo '{"packages":[],"packages-dev":[]}' > /tmp/composer.lock.old
+          
+          # Parse both old and new composer.lock files to get package changes
+          php -r '
+          $old = json_decode(file_get_contents("/tmp/composer.lock.old"), true);
+          $new = json_decode(file_get_contents("composer.lock"), true);
+          
+          $oldPackages = [];
+          foreach (array_merge($old["packages"] ?? [], $old["packages-dev"] ?? []) as $pkg) {
+              $oldPackages[$pkg["name"]] = $pkg["version"];
+          }
+          
+          $changes = [];
+          foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
+              $name = $pkg["name"];
+              $newVersion = $pkg["version"];
+              
+              if (!isset($oldPackages[$name])) {
+                  $changes[] = "$name: (new) → $newVersion";
+              } elseif ($oldPackages[$name] !== $newVersion) {
+                  $changes[] = "$name: {$oldPackages[$name]} → $newVersion";
+              }
+          }
+          
+          // Check for removed packages
+          foreach ($oldPackages as $name => $version) {
+              $found = false;
+              foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
+                  if ($pkg["name"] === $name) {
+                      $found = true;
+                      break;
+                  }
+              }
+              if (!$found) {
+                  $changes[] = "$name: $version → (removed)";
+              }
+          }
+          
+          if (empty($changes)) {
+              echo "No package changes detected\n";
+          } else {
+              foreach ($changes as $change) {
+                  echo "$change\n";
+              }
+          }
+          ' > updated-packages.txt
+          
           echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
           cat updated-packages.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
