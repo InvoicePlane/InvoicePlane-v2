@@ -116,7 +116,8 @@ jobs:
         run: |
           # Parse composer.lock to extract package name:version pairs
           # Get the old version first
-          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo '{"packages":[],"packages-dev":[]}' > /tmp/composer.lock.old
+          EMPTY_LOCK='{"packages":[],"packages-dev":[]}'
+          git show HEAD:composer.lock > /tmp/composer.lock.old 2>/dev/null || echo "$EMPTY_LOCK" > /tmp/composer.lock.old
           
           # Parse both old and new composer.lock files to get package changes
           php -r '
@@ -128,11 +129,15 @@ jobs:
               $oldPackages[$pkg["name"]] = $pkg["version"];
           }
           
-          $changes = [];
+          $newPackages = [];
           foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
-              $name = $pkg["name"];
-              $newVersion = $pkg["version"];
-              
+              $newPackages[$pkg["name"]] = $pkg["version"];
+          }
+          
+          $changes = [];
+          
+          // Check for new and updated packages
+          foreach ($newPackages as $name => $newVersion) {
               if (!isset($oldPackages[$name])) {
                   $changes[] = "$name: (new) → $newVersion";
               } elseif ($oldPackages[$name] !== $newVersion) {
@@ -140,16 +145,9 @@ jobs:
               }
           }
           
-          // Check for removed packages
+          // Check for removed packages using array key lookup
           foreach ($oldPackages as $name => $version) {
-              $found = false;
-              foreach (array_merge($new["packages"] ?? [], $new["packages-dev"] ?? []) as $pkg) {
-                  if ($pkg["name"] === $name) {
-                      $found = true;
-                      break;
-                  }
-              }
-              if (!$found) {
+              if (!isset($newPackages[$name])) {
                   $changes[] = "$name: $version → (removed)";
               }
           }
