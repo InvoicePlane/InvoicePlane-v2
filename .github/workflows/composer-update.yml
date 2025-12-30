@@ -116,7 +116,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           branch: automated/composer-update-${{ github.run_number }}
-          delete-branch: true
+          delete-branch: false
           title: "chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           body: |
             ## Composer Dependency Update
