@@ -114,7 +114,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenseCategories::class, ['record' => $record->id])
+            ->test(ListExpenseCategories::class)
             ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
