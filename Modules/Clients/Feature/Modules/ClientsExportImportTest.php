@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
-use Modules\Clients\Filament\Company\Resources\Clients\Pages\ListClients;
-use Modules\Clients\Models\Client;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,11 +25,11 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
-        $clients = Client::factory()->for($this->company)->count(3)->create();
+        $relations = Relation::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportCsvV2', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
@@ -52,11 +52,11 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
-        $clients = Client::factory()->for($this->company)->count(3)->create();
+        $relations = Relation::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
@@ -83,7 +83,7 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
@@ -105,13 +105,13 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
-        $client = Client::factory()->for($this->company)->create([
+        $relation = Relation::factory()->for($this->company)->create([
             'company_name' => 'ÜClient, "Test"',
         ]);
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
@@ -133,11 +133,11 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
-        $clients = Client::factory()->for($this->company)->count(3)->create();
+        $relations = Relation::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportCsvV1', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
@@ -159,11 +159,11 @@ class ClientsExportImportTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Queue::fake();
         Storage::fake('local');
-        $clients = Client::factory()->for($this->company)->count(3)->create();
+        $relations = Relation::factory()->for($this->company)->count(3)->create();
 
         /* Act */
         Livewire::actingAs($this->user)
-            ->test(ListClients::class)
+            ->test(ListRelations::class)
             ->callAction('exportExcelV1', data: [
                 'columnMap' => [
                     'company_name' => ['isEnabled' => true, 'label' => 'Company Name'],
