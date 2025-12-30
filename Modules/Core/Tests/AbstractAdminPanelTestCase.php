@@ -9,6 +9,7 @@ use Modules\Core\Models\User;
 
 abstract class AbstractAdminPanelTestCase extends BaseTestCase
 {
+    use CreatesApplication;
     use RefreshDatabase;
 
     protected ?User $superAdmin;

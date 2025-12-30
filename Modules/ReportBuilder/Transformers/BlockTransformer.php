@@ -45,7 +45,7 @@ class BlockTransformer
     public static function toDTO(array $blockData): BlockDTO
     {
         $positionData = $blockData['position'] ?? [];
-        $position     = new GridPositionDTO(
+        $position     = GridPositionDTO::create(
             $positionData['x'] ?? 0,
             $positionData['y'] ?? 0,
             $positionData['width'] ?? 1,

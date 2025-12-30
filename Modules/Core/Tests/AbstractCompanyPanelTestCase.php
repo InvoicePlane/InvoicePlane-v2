@@ -11,6 +11,7 @@ use Modules\Core\Models\User;
 
 abstract class AbstractCompanyPanelTestCase extends BaseTestCase
 {
+    use CreatesApplication;
     use RefreshDatabase;
 
     protected User $user;

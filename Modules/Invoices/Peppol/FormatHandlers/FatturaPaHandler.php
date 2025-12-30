@@ -94,7 +94,7 @@ class FatturaPaHandler extends BaseFormatHandler
             ],
             'ProgressivoInvio'    => $invoice->invoice_number,
             'FormatoTrasmissione' => 'FPR12', // FatturaPA 1.2 format
-            'CodiceDestinatario'  => $invoice->customer->peppol_id ?? '0000000',
+            'CodiceDestinatario'  => $invoice->customer?->peppol_id ?? '0000000',
         ];
     }
 
@@ -158,16 +158,16 @@ class FatturaPaHandler extends BaseFormatHandler
 
         return [
             'DatiAnagrafici' => [
-                'CodiceFiscale' => $customer->tax_code ?? '',
+                'CodiceFiscale' => $customer?->tax_code ?? '',
                 'Anagrafica'    => [
-                    'Denominazione' => $customer->company_name ?? $customer->customer_name,
+                    'Denominazione' => $customer?->company_name ?? $customer?->customer_name,
                 ],
             ],
             'Sede' => [
-                'Indirizzo' => $customer->street1 ?? '',
-                'CAP'       => $customer->zip ?? '',
-                'Comune'    => $customer->city ?? '',
-                'Nazione'   => $customer->country_code ?? 'IT',
+                'Indirizzo' => $customer?->street1 ?? '',
+                'CAP'       => $customer?->zip ?? '',
+                'Comune'    => $customer?->city ?? '',
+                'Nazione'   => $customer?->country_code ?? 'IT',
             ],
         ];
     }
@@ -337,7 +337,7 @@ class FatturaPaHandler extends BaseFormatHandler
         }
 
         // Customer must be in Italy or have Italian tax code for mandatory usage
-        if ($invoice->customer->country_code === 'IT' && ! $invoice->customer->tax_code) {
+        if ($invoice->customer?->country_code === 'IT' && ! $invoice->customer?->tax_code) {
             $errors[] = 'Customer tax code (Codice Fiscale) is required for Italian customers in FatturaPA format';
         }
 

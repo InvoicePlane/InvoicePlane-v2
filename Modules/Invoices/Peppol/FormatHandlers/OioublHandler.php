@@ -168,34 +168,34 @@ class OioublHandler extends BaseFormatHandler
         return [
             'party' => [
                 'endpoint_id' => [
-                    'value'     => $customer->peppol_id ?? '',
+                    'value'     => $customer?->peppol_id ?? '',
                     'scheme_id' => $endpointScheme->value,
                 ],
                 'party_identification' => [
                     'id' => [
-                        'value'     => $customer->peppol_id ?? '',
+                        'value'     => $customer?->peppol_id ?? '',
                         'scheme_id' => 'DK:CVR',
                     ],
                 ],
                 'party_name' => [
-                    'name' => $customer->company_name ?? $customer->customer_name,
+                    'name' => $customer?->company_name ?? $customer?->customer_name,
                 ],
                 'postal_address' => [
-                    'street_name'            => $customer->street1 ?? '',
-                    'additional_street_name' => $customer->street2 ?? '',
-                    'city_name'              => $customer->city ?? '',
-                    'postal_zone'            => $customer->zip ?? '',
+                    'street_name'            => $customer?->street1 ?? '',
+                    'additional_street_name' => $customer?->street2 ?? '',
+                    'city_name'              => $customer?->city ?? '',
+                    'postal_zone'            => $customer?->zip ?? '',
                     'country'                => [
-                        'identification_code' => $customer->country_code ?? 'DK',
+                        'identification_code' => $customer?->country_code ?? 'DK',
                     ],
                 ],
                 'party_legal_entity' => [
-                    'registration_name' => $customer->company_name ?? $customer->customer_name,
+                    'registration_name' => $customer?->company_name ?? $customer?->customer_name,
                 ],
                 'contact' => [
-                    'name'            => $customer->contact_name ?? '',
-                    'telephone'       => $customer->contact_phone ?? '',
-                    'electronic_mail' => $customer->contact_email ?? '',
+                    'name'            => $customer?->contact_name ?? '',
+                    'telephone'       => $customer?->contact_phone ?? '',
+                    'electronic_mail' => $customer?->contact_email ?? '',
                 ],
             ],
         ];
@@ -426,7 +426,7 @@ class OioublHandler extends BaseFormatHandler
         }
 
         // Customer must have Peppol ID for OIOUBL
-        if ( ! $invoice->customer->peppol_id) {
+        if ( ! $invoice->customer?->peppol_id) {
             $errors[] = 'Customer Peppol ID (CVR) is required for OIOUBL format';
         }
 

@@ -177,38 +177,38 @@ class EhfHandler extends BaseFormatHandler
         return [
             'party' => [
                 'endpoint_id' => [
-                    'value'     => $customer->peppol_id ?? '',
+                    'value'     => $customer?->peppol_id ?? '',
                     'scheme_id' => $endpointScheme->value,
                 ],
                 'party_identification' => [
                     'id' => [
-                        'value'     => $customer->organization_number ?? $customer->peppol_id ?? '',
+                        'value'     => $customer?->organization_number ?? $customer?->peppol_id ?? '',
                         'scheme_id' => 'NO:ORGNR',
                     ],
                 ],
                 'party_name' => [
-                    'name' => $customer->company_name ?? $customer->customer_name,
+                    'name' => $customer?->company_name ?? $customer?->customer_name,
                 ],
                 'postal_address' => [
-                    'street_name'            => $customer->street1 ?? '',
-                    'additional_street_name' => $customer->street2 ?? '',
-                    'city_name'              => $customer->city ?? '',
-                    'postal_zone'            => $customer->zip ?? '',
+                    'street_name'            => $customer?->street1 ?? '',
+                    'additional_street_name' => $customer?->street2 ?? '',
+                    'city_name'              => $customer?->city ?? '',
+                    'postal_zone'            => $customer?->zip ?? '',
                     'country'                => [
-                        'identification_code' => $customer->country_code ?? 'NO',
+                        'identification_code' => $customer?->country_code ?? 'NO',
                     ],
                 ],
                 'party_legal_entity' => [
-                    'registration_name' => $customer->company_name ?? $customer->customer_name,
+                    'registration_name' => $customer?->company_name ?? $customer?->customer_name,
                     'company_id'        => [
-                        'value'     => $customer->organization_number ?? $customer->peppol_id ?? '',
+                        'value'     => $customer?->organization_number ?? $customer?->peppol_id ?? '',
                         'scheme_id' => 'NO:ORGNR',
                     ],
                 ],
                 'contact' => [
-                    'name'            => $customer->contact_name ?? '',
-                    'telephone'       => $customer->contact_phone ?? '',
-                    'electronic_mail' => $customer->contact_email ?? '',
+                    'name'            => $customer?->contact_name ?? '',
+                    'telephone'       => $customer?->contact_phone ?? '',
+                    'electronic_mail' => $customer?->contact_email ?? '',
                 ],
             ],
         ];
@@ -229,11 +229,11 @@ class EhfHandler extends BaseFormatHandler
             'actual_delivery_date' => $invoice->invoiced_at->format('Y-m-d'),
             'delivery_location'    => [
                 'address' => [
-                    'street_name' => $invoice->customer->street1 ?? '',
-                    'city_name'   => $invoice->customer->city ?? '',
-                    'postal_zone' => $invoice->customer->zip ?? '',
+                    'street_name' => $invoice->customer?->street1 ?? '',
+                    'city_name'   => $invoice->customer?->city ?? '',
+                    'postal_zone' => $invoice->customer?->zip ?? '',
                     'country'     => [
-                        'identification_code' => $invoice->customer->country_code ?? 'NO',
+                        'identification_code' => $invoice->customer?->country_code ?? 'NO',
                     ],
                 ],
             ],
@@ -460,7 +460,7 @@ class EhfHandler extends BaseFormatHandler
         }
 
         // Customer must have organization number or Peppol ID
-        if ( ! $invoice->customer->organization_number && ! $invoice->customer->peppol_id) {
+        if ( ! $invoice->customer?->organization_number && ! $invoice->customer?->peppol_id) {
             $errors[] = 'Customer organization number or Peppol ID is required for EHF format';
         }
 
@@ -477,7 +477,7 @@ class EhfHandler extends BaseFormatHandler
     protected function getBuyerReference(Invoice $invoice): string
     {
         // EHF requires buyer reference for routing
-        return $invoice->customer->reference ?? $invoice->reference ?? '';
+        return $invoice->customer?->reference ?? $invoice->reference ?? '';
     }
 
     /**

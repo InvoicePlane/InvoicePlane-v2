@@ -125,11 +125,11 @@ enum PeppolDocumentFormat: string
         return match ($country) {
             'ES'    => [self::FACTURAE_32, self::UBL_21, self::PEPPOL_BIS_30],
             'IT'    => [self::FATTURAPA_12, self::UBL_21, self::PEPPOL_BIS_30],
-            'FR'    => [self::FACTURX_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
+            'FR'    => [self::FACTURX_10, self::FACTURX, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
             'DE'    => [self::ZUGFERD_20, self::ZUGFERD_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
             'AT'    => [self::CII, self::UBL_21, self::PEPPOL_BIS_30],
             'DK'    => [self::OIOUBL, self::UBL_21, self::PEPPOL_BIS_30],
-            'NO'    => [self::EHF, self::UBL_21, self::PEPPOL_BIS_30],
+            'NO'    => [self::EHF_30, self::EHF, self::UBL_21, self::PEPPOL_BIS_30],
             default => [self::PEPPOL_BIS_30, self::UBL_21, self::CII],
         };
     }
@@ -153,6 +153,8 @@ enum PeppolDocumentFormat: string
             self::OIOUBL        => 'OIOUBL (Denmark)',
             self::EHF           => 'EHF (Norway)',
             self::PEPPOL_BIS_30 => 'PEPPOL BIS Billing 3.0',
+            self::EHF_30        => 'EHF 3.0 (Norway)',
+            self::FACTURX       => 'Factur-X (France/Germany)',
         };
     }
 
@@ -175,6 +177,8 @@ enum PeppolDocumentFormat: string
             self::OIOUBL        => 'Danish UBL-based format with national extensions.',
             self::EHF           => 'Norwegian UBL-based format used in public procurement.',
             self::PEPPOL_BIS_30 => 'Pan-European Public Procurement Online standard.',
+            self::EHF_30        => 'Norwegian EHF 3.0 format for Peppol network.',
+            self::FACTURX       => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
         };
     }
 

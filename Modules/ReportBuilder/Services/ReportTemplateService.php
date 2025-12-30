@@ -252,7 +252,7 @@ class ReportTemplateService
                 throw new InvalidArgumentException("Block at index {$index} must have a 'config' array");
             }
 
-            $positionDTO = new GridPositionDTO(
+            $positionDTO = GridPositionDTO::create(
                 $position['x'],
                 $position['y'],
                 $position['width'],
@@ -387,7 +387,7 @@ class ReportTemplateService
         string $label,
         string $dataSource
     ): BlockDTO {
-        $position = new GridPositionDTO($x, $y, $width, $height);
+        $position = GridPositionDTO::create($x, $y, $width, $height);
 
         $block = new BlockDTO();
         $block->setId($id)

@@ -24,10 +24,8 @@ class ApiClient
      *
      * @return Response
      */
-    public function request(RequestMethod|string $method, string $uri, array $options = []): Response
+    public function request(RequestMethod $method, string $uri, array $options = []): Response
     {
-        $methodString = $method instanceof RequestMethod ? $method->value : mb_strtolower($method);
-
         $client = Http::timeout($options['timeout'] ?? 30);
 
         $client = $this->applyAuth($client, $options);
@@ -37,8 +35,8 @@ class ApiClient
             $client = $client->withHeaders($options['headers']);
         }
 
-        return $client
-            ->{$methodString}($uri, $options['payload'] ?? [])
+        return $clients 
+            ->{$method->value}($uri, $options['payload'] ?? [])
             ->throw();
     }
 
@@ -55,7 +53,6 @@ class ApiClient
         $authType = match (true) {
             isset($options['bearer'])                                                                   => 'bearer',
             isset($options['auth']) && is_array($options['auth']) && count($options['auth']) >= 2       => 'basic',
-            isset($options['digest']) && is_array($options['digest']) && count($options['digest']) >= 2 => 'digest',
             default                                                                                     => null
         };
 
