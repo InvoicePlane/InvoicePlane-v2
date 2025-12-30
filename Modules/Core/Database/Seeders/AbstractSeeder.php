@@ -75,11 +75,13 @@ abstract class AbstractSeeder extends Seeder
 
     protected function findOrCreateNumbering(?int $companyId): Numbering
     {
+        /** @var Numbering|null $documentGroup */
         $documentGroup = Numbering::query()->where('company_id', $this->companyId)
             ->inRandomOrder()
             ->first();
 
         if ( ! $documentGroup) {
+            /** @var Numbering $documentGroup */
             $documentGroup = Numbering::factory()->state([
                 'company_id' => $companyId,
             ])

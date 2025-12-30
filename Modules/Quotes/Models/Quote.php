@@ -27,7 +27,7 @@ use Modules\Quotes\Enums\QuoteStatus;
  * @property int|null               $numbering_id
  * @property int                    $user_id
  * @property string                 $quote_number
- * @property string                 $quote_status
+ * @property QuoteStatus            $quote_status
  * @property Carbon|null            $quoted_at
  * @property Carbon|null            $quote_expires_at
  * @property float                  $quote_discount_amount
