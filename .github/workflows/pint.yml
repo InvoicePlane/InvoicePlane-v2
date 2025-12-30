@@ -48,8 +48,8 @@ jobs:
             PINT_MODE="dirty"
             echo "Running Laravel Pint in dirty mode (checking only changed files)..."
           else
-            # Manual runs use the selected mode
-            PINT_MODE="${{ github.event.inputs.mode }}"
+            # Manual runs use the selected mode (default to dirty if not set)
+            PINT_MODE="${{ github.event.inputs.mode || 'dirty' }}"
             if [[ "$PINT_MODE" == "full" ]]; then
               echo "Running Laravel Pint in full mode (this may take over 2 minutes)..."
             else
