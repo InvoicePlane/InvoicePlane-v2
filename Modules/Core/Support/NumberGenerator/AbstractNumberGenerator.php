@@ -14,7 +14,7 @@ use Modules\Core\Models\Numbering;
  * invoices, quotes, expenses, projects, tasks, payments, and customers.
  *
  * Child classes must define:
- * - `$type` (required): The entity type identifier (e.g., 'Invoice', 'Quote', 'expenses')
+ * - `$type` (required): The entity type identifier (e.g., 'Invoice', 'Quote', 'Project')
  * - `$groupName` (optional): Default numbering scheme name (e.g., 'Default Invoice Numbering')
  *
  * Features:
