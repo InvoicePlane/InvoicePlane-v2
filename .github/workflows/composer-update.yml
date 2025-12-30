@@ -169,8 +169,6 @@ jobs:
             dependencies
             composer
             automated-pr
-          reviewers: |
-            ${{ github.repository_owner }}
 
       - name: No changes detected
         if: steps.check-changes.outputs.changes_detected == 'false'
