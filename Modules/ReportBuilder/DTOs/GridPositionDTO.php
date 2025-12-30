@@ -41,7 +41,10 @@ class GridPositionDTO
      */
     public function __construct()
     {
-        // No-arg constructor following DTO guidelines
+        $this->x      = 0;
+        $this->y      = 0;
+        $this->width  = 0;
+        $this->height = 0;
     }
 
     /**
