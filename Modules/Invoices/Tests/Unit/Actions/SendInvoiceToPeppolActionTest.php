@@ -221,6 +221,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
      */
     protected function createMockInvoice(string $status = 'sent'): Invoice
     {
+        /** @var Relation $customer */
         $customer = Relation::factory()->make([
             'company_name'  => 'Test Customer',
             'customer_name' => 'Test Customer',
@@ -236,6 +237,7 @@ class SendInvoiceToPeppolActionTest extends TestCase
             ]),
         ]);
 
+        /** @var Invoice $invoice */
         $invoice = Invoice::factory()->make([
             'invoice_number'        => 'INV-2024-001',
             'invoice_status'        => $status,
@@ -249,7 +251,6 @@ class SendInvoiceToPeppolActionTest extends TestCase
         $invoice->setRelation('customer', $customer);
         $invoice->setRelation('invoiceItems', $items);
 
-        /* @var Invoice $invoice */
         return $invoice;
     }
 }
