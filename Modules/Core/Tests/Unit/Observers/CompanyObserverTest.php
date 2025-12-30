@@ -16,6 +16,7 @@ class CompanyObserverTest extends AbstractTestCase
     #[Group('unit')]
     public function it_bootstraps_default_data_when_company_is_created(): void
     {
+        /* Arrange */
         /* Act */
         $company = Company::create([
             'search_code' => 'IVPLV2',
