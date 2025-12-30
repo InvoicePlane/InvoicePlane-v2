@@ -1,0 +1,45 @@
+{
+    "advisories": {
+        "filament/filament": [
+            {
+                "advisoryId": "PKSA-yb9k-ykqx-p2zw",
+                "packageName": "filament/filament",
+                "affectedVersions": ">=4.0.0,<4.3.1",
+                "title": "Filament multi-factor authentication (app) recovery codes can be used multiple times",
+                "cve": "CVE-2025-67507",
+                "link": "https://github.com/advisories/GHSA-pvcv-q3q7-266g",
+                "reportedAt": "2025-12-09T17:19:10+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-pvcv-q3q7-266g"
+                    }
+                ],
+                "severity": "high"
+            }
+        ],
+        "symfony/http-foundation": [
+            {
+                "advisoryId": "PKSA-365x-2zjk-pt47",
+                "packageName": "symfony/http-foundation",
+                "affectedVersions": ">=2.0.0,<3.0.0|>=3.0.0,<4.0.0|>=4.0.0,<5.0.0|>=5.0.0,<5.1.0|>=5.1.0,<5.2.0|>=5.2.0,<5.3.0|>=5.3.0,<5.4.0|>=5.4.0,<5.4.50|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.29|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.3.7",
+                "title": "CVE-2025-64500: Incorrect parsing of PATH_INFO can lead to limited authorization bypass",
+                "cve": "CVE-2025-64500",
+                "link": "https://symfony.com/blog/cve-2025-64500-incorrect-parsing-of-path-info-can-lead-to-limited-authorization-bypass",
+                "reportedAt": "2025-11-12T11:09:14+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-3rg7-wf37-54rm"
+                    },
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/http-foundation/CVE-2025-64500.yaml"
+                    }
+                ],
+                "severity": "high"
+            }
+        ]
+    },
+    "abandoned": []
+}
