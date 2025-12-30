@@ -21,7 +21,7 @@
         "php": "^8.2",
         "doctrine/dbal": "^4.3",
         "filament/actions": "^4.0",
-        "filament/filament": "^4.0",
+        "filament/filament": "^4.3.1",
         "filament/forms": "^4.0",
         "filament/infolists": "^4.0",
         "filament/notifications": "^4.0",
