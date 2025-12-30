@@ -149,9 +149,16 @@ jobs:
           
           LOG_FILE="${{ env.LOG_DIR }}/vendor-cleanup.log"
           
+          echo "Configuring composer to allow vendor-cleaner plugin..." | tee -a "$LOG_FILE"
+          composer config --no-plugins allow-plugins.liborm85/composer-vendor-cleaner true
+          
           echo "Installing composer-vendor-cleaner..." | tee -a "$LOG_FILE"
           composer require liborm85/composer-vendor-cleaner \
             --no-interaction --no-update 2>&1 | tee -a "$LOG_FILE"
+          
+          echo "Configuring vendor-cleaner exclusions..." | tee -a "$LOG_FILE"
+          composer config extra.vendor-cleaner.exclude-dir '["doc", "docs", "example", "examples", "Test", "test", "Tests", "tests"]'
+          composer config extra.vendor-cleaner.exclude-file '["CHANGELOG.md", "changelog.md", "CONTRIBUTING.md", "LICENSE", "LICENCE", "README.md", "readme.md", "phpunit.xml", "phpunit.xml.dist", ".gitignore"]'
           
           echo "Running composer update (vendor cleaner will run automatically)..." | tee -a "$LOG_FILE"
           composer update liborm85/composer-vendor-cleaner --no-dev --no-interaction 2>&1 | tee -a "$LOG_FILE"
