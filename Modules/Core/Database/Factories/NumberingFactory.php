@@ -28,7 +28,7 @@ class NumberingFactory extends AbstractFactory
             'left_pad'   => $this->faker->numberBetween(3, 6),
             'format'     => '{{prefix}}-{{number}}',
             'prefix'     => $numberingType->prefix(),
-            'last_id'    => null,
+            'last_id'    => 0,
         ];
     }
 }
