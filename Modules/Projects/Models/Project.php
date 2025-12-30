@@ -20,7 +20,7 @@ use Modules\Projects\Enums\ProjectStatus;
  * @property int               $company_id
  * @property int               $customer_id
  * @property int|null          $numbering_id
- * @property string            $project_status
+ * @property ProjectStatus     $project_status
  * @property string|null       $project_name
  * @property string|null       $project_number
  * @property Carbon|null       $start_at

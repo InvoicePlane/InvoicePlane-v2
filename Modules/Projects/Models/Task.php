@@ -23,7 +23,7 @@ use Modules\Projects\Enums\TaskStatus;
  * @property int|null     $tax_rate_id
  * @property int|null     $assigned_to
  * @property string|null  $task_number
- * @property string       $task_status
+ * @property TaskStatus   $task_status
  * @property string|null  $task_name
  * @property float|null   $task_price
  * @property Carbon|null  $due_at

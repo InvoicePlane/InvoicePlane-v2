@@ -29,8 +29,8 @@ use Modules\Quotes\Models\Quote;
  * @property int                         $id
  * @property int                         $company_id
  * @property int|null                    $primary_contact_id
- * @property string                      $relation_type
- * @property string                      $relation_status
+ * @property RelationType                $relation_type
+ * @property RelationStatus              $relation_status
  * @property string                      $relation_number
  * @property string                      $company_name
  * @property string|null                 $trading_name

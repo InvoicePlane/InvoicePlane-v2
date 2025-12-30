@@ -22,7 +22,7 @@ use Modules\Quotes\Models\QuoteItem;
 /**
  * @property int                      $id
  * @property int                      $company_id
- * @property string                   $tax_rate_type
+ * @property TaxRateType              $tax_rate_type
  * @property bool                     $is_active
  * @property string                   $code
  * @property string                   $name

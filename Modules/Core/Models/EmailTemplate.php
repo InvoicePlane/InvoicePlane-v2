@@ -10,11 +10,11 @@ use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
- * @property int         $id
- * @property int         $company_id
- * @property string|null $title
- * @property string|null $type
- * @property string      $body
+ * @property int                 $id
+ * @property int                 $company_id
+ * @property string|null         $title
+ * @property EmailTemplateType|null $type
+ * @property string              $body
  * @property string|null $subject
  * @property string|null $from_name
  * @property string|null $from_email
