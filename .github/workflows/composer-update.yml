@@ -114,8 +114,9 @@ jobs:
         if: steps.check-changes.outputs.changes_detected == 'true'
         id: updated-packages
         run: |
-          # Get list of updated packages
-          git diff composer.lock | grep -E '^\+.*"(name|version)"' | head -20 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
+          # Get list of updated packages by parsing the diff
+          # Extract added lines, remove the '+' prefix, and filter for name/version
+          git diff composer.lock | grep -E '^\+.*"(name|version)"' | sed 's/^+//' | sed 's/^[[:space:]]*//' | head -40 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
           echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
           cat updated-packages.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
