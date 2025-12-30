@@ -175,13 +175,12 @@ jobs:
           fi
           
           # Try to build assets (wrapped in conditional to handle errors)
-          if yarn build 2>&1; then
+          if yarn build; then
             echo "✓ Build completed successfully"
             echo "build_success=true" >> $GITHUB_OUTPUT
           else
             echo "❌ Build failed, but continuing to commit yarn.lock changes"
             echo "build_success=false" >> $GITHUB_OUTPUT
-            exit 0  # Don't fail the step so we can still commit yarn.lock
           fi
           
           echo "========================================="
