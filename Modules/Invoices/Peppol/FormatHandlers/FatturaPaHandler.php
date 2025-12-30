@@ -158,16 +158,16 @@ class FatturaPaHandler extends BaseFormatHandler
 
         return [
             'DatiAnagrafici' => [
-                'CodiceFiscale' => $customer->tax_code ?? '',
+                'CodiceFiscale' => $customer?->tax_code ?? '',
                 'Anagrafica'    => [
-                    'Denominazione' => $customer->company_name ?? $customer->customer_name,
+                    'Denominazione' => $customer?->company_name ?? $customer?->customer_name,
                 ],
             ],
             'Sede' => [
-                'Indirizzo' => $customer->street1 ?? '',
-                'CAP'       => $customer->zip ?? '',
-                'Comune'    => $customer->city ?? '',
-                'Nazione'   => $customer->country_code ?? 'IT',
+                'Indirizzo' => $customer?->street1 ?? '',
+                'CAP'       => $customer?->zip ?? '',
+                'Comune'    => $customer?->city ?? '',
+                'Nazione'   => $customer?->country_code ?? 'IT',
             ],
         ];
     }

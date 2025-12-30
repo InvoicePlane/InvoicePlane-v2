@@ -177,38 +177,38 @@ class EhfHandler extends BaseFormatHandler
         return [
             'party' => [
                 'endpoint_id' => [
-                    'value'     => $customer->peppol_id ?? '',
+                    'value'     => $customer?->peppol_id ?? '',
                     'scheme_id' => $endpointScheme->value,
                 ],
                 'party_identification' => [
                     'id' => [
-                        'value'     => $customer->organization_number ?? $customer->peppol_id ?? '',
+                        'value'     => $customer?->organization_number ?? $customer?->peppol_id ?? '',
                         'scheme_id' => 'NO:ORGNR',
                     ],
                 ],
                 'party_name' => [
-                    'name' => $customer->company_name ?? $customer->customer_name,
+                    'name' => $customer?->company_name ?? $customer?->customer_name,
                 ],
                 'postal_address' => [
-                    'street_name'            => $customer->street1 ?? '',
-                    'additional_street_name' => $customer->street2 ?? '',
-                    'city_name'              => $customer->city ?? '',
-                    'postal_zone'            => $customer->zip ?? '',
+                    'street_name'            => $customer?->street1 ?? '',
+                    'additional_street_name' => $customer?->street2 ?? '',
+                    'city_name'              => $customer?->city ?? '',
+                    'postal_zone'            => $customer?->zip ?? '',
                     'country'                => [
-                        'identification_code' => $customer->country_code ?? 'NO',
+                        'identification_code' => $customer?->country_code ?? 'NO',
                     ],
                 ],
                 'party_legal_entity' => [
-                    'registration_name' => $customer->company_name ?? $customer->customer_name,
+                    'registration_name' => $customer?->company_name ?? $customer?->customer_name,
                     'company_id'        => [
-                        'value'     => $customer->organization_number ?? $customer->peppol_id ?? '',
+                        'value'     => $customer?->organization_number ?? $customer?->peppol_id ?? '',
                         'scheme_id' => 'NO:ORGNR',
                     ],
                 ],
                 'contact' => [
-                    'name'            => $customer->contact_name ?? '',
-                    'telephone'       => $customer->contact_phone ?? '',
-                    'electronic_mail' => $customer->contact_email ?? '',
+                    'name'            => $customer?->contact_name ?? '',
+                    'telephone'       => $customer?->contact_phone ?? '',
+                    'electronic_mail' => $customer?->contact_email ?? '',
                 ],
             ],
         ];
