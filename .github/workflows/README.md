@@ -172,9 +172,95 @@ Runs the PHPUnit test suite against a MySQL database.
 
 ### 5. Laravel Pint (`pint.yml`)
 
-**Trigger:** Manual dispatch only
+**Trigger:** 
+- Automatically on pull requests targeting `master` or `develop` branches
+- Manual dispatch
 
-Runs Laravel Pint for code formatting checks.
+**Purpose:** Ensures consistent PHP code style across the codebase using Laravel Pint (PSR-12 standard)
+
+**What it does:**
+1. **Checks out the PR branch** - Gets the latest code from the pull request
+2. **Sets up PHP environment** - Installs PHP 8.2 with required extensions
+3. **Installs dependencies** - Runs `composer install`
+4. **Runs Laravel Pint** - Automatically fixes code style issues
+5. **Commits changes** - Pushes formatted code back to the PR (if changes were made)
+6. **Reports parse errors** - Identifies files with syntax errors that couldn't be formatted
+
+**Best Practices:**
+
+**When to use Pint:**
+- **Before committing** - Run `vendor/bin/pint` locally before pushing code
+- **On every PR** - The workflow automatically runs on PRs to master/develop
+- **Manual cleanup** - Use workflow_dispatch to format the entire codebase
+- **After merging** - Run manually if formatting conflicts occur
+
+**Local Development:**
+```bash
+# Format all files
+vendor/bin/pint
+
+# Format specific files/directories
+vendor/bin/pint app/Models
+vendor/bin/pint Modules/Invoices
+
+# Check without modifying files (dry-run)
+vendor/bin/pint --test
+
+# See what changes Pint would make
+vendor/bin/pint --test -v
+```
+
+**Pre-commit Hook (Recommended):**
+
+To automatically format code before each commit, add this to `.git/hooks/pre-commit`:
+
+```bash
+#!/bin/sh
+# Run Laravel Pint on staged PHP files
+php vendor/bin/pint $(git diff --cached --name-only --diff-filter=ACM | grep '\.php$')
+```
+
+Make it executable: `chmod +x .git/hooks/pre-commit`
+
+**IDE Integration:**
+
+- **PHPStorm/IntelliJ:** Configure as External Tool or File Watcher
+- **VS Code:** Install "Laravel Pint" extension for automatic formatting
+- **Sublime Text:** Use "Laravel Pint" package
+
+**Configuration:**
+
+Pint uses the configuration in `pint.json` which follows PSR-12 with custom rules:
+- Short array syntax
+- Single quotes for strings
+- Aligned operators (=, =>)
+- Ordered imports and class elements
+- Strict null coalescing
+- And more...
+
+See `pint.json` for complete rule set.
+
+**Handling Parse Errors:**
+
+If Pint reports parse errors:
+1. Review the workflow output to identify files with syntax errors (marked with `!`)
+2. Fix the syntax errors manually
+3. Re-run Pint locally or via the workflow
+4. Formatted files are still committed even if some files have errors
+
+**Why Run on PRs:**
+
+Running Pint automatically on PRs ensures:
+- ✅ Consistent code style across all contributions
+- ✅ No style-related review comments needed
+- ✅ Cleaner git history (style fixes separate from logic changes)
+- ✅ Reduced merge conflicts related to formatting
+- ✅ Faster code reviews (focus on logic, not style)
+
+**Workflow Permissions:**
+- `contents: write` - Required to commit and push formatting changes
+
+**Note:** The workflow only runs on PRs targeting `master` or `develop` branches to avoid unnecessary runs on feature branches. You can always trigger it manually for any branch using workflow_dispatch.
 
 ### 6. PHPStan (`phpstan.yml`)
 

@@ -1,7 +1,11 @@
 name: Laravel Pint
 
 on:
-  workflow_dispatch:  # Manual only — does not run automatically
+  workflow_dispatch:  # Allows manual triggering
+  pull_request:
+    branches:
+      - master
+      - develop
 
 permissions:
   contents: write
