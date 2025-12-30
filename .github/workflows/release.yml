@@ -151,8 +151,7 @@ jobs:
           
           echo "Installing composer-vendor-cleaner..." | tee -a "$LOG_FILE"
           composer require liborm85/composer-vendor-cleaner --dev \
-            --no-interaction --no-update 2>&1 | tee -a "$LOG_FILE"
-          composer update liborm85/composer-vendor-cleaner --no-interaction 2>&1 | tee -a "$LOG_FILE"
+            --no-interaction 2>&1 | tee -a "$LOG_FILE"
           echo "Running vendor cleanup..." | tee -a "$LOG_FILE"
           composer vendor-cleaner 2>&1 | tee -a "$LOG_FILE"
           echo "✓ Vendor directory optimized" | tee -a "$LOG_FILE"
