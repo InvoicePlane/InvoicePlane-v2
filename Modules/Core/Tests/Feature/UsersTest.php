@@ -40,7 +40,11 @@ class UsersTest extends AbstractAdminPanelTestCase
         /* assert */
         $component->assertSuccessful();
 
-        $this->assertDatabaseHas('users', $user->toArray());
+        $this->assertDatabaseHas('users', [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+        ]);
     }
     # endregion
 

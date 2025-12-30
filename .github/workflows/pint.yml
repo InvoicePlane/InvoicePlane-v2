@@ -2,6 +2,15 @@ name: Laravel Pint
 
 on:
   workflow_dispatch:  # Allows manual triggering
+    inputs:
+      mode:
+        description: 'Pint mode to run'
+        required: true
+        default: 'dirty'
+        type: choice
+        options:
+          - dirty
+          - full
   pull_request:
     branches:
       - master
@@ -33,9 +42,27 @@ jobs:
       - name: Run Laravel Pint
         id: pint_run
         run: |
-          echo "Running Laravel Pint (this may take a couple of minutes)..."
+          # Determine which mode to run
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # PRs always run in dirty mode (only check changed files)
+            PINT_MODE="dirty"
+            echo "Running Laravel Pint in dirty mode (checking only changed files)..."
+          else
+            # Manual runs use the selected mode (default to dirty if not set)
+            PINT_MODE="${{ github.event.inputs.mode || 'dirty' }}"
+            if [[ "$PINT_MODE" == "full" ]]; then
+              echo "Running Laravel Pint in full mode (this may take over 2 minutes)..."
+            else
+              echo "Running Laravel Pint in dirty mode (checking only changed files)..."
+            fi
+          fi
+          
           set +e  # Don't exit on error
-          vendor/bin/pint 2>&1 | tee pint_output.log
+          if [[ "$PINT_MODE" == "dirty" ]]; then
+            vendor/bin/pint --dirty 2>&1 | tee pint_output.log
+          else
+            vendor/bin/pint 2>&1 | tee pint_output.log
+          fi
           PINT_EXIT_CODE=${PIPESTATUS[0]}
           set -e  # Re-enable exit on error
           

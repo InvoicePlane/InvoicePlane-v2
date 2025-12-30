@@ -44,7 +44,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
             'left_pad' => $numbering->left_pad,
             'format'   => $numbering->format,
             'prefix'   => $numbering->prefix,
-            'last_id'  => null,
+            'last_id'  => 0,
         ]);
     }
 

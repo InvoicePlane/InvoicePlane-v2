@@ -31,7 +31,7 @@ updates:
         update-types:
           - "patch"
 
-  # npm/Yarn - JavaScript dependencies
+  # Yarn - JavaScript dependencies (uses npm ecosystem)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
