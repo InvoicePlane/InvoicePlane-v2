@@ -35,7 +35,7 @@ class ApiClient
             $client = $client->withHeaders($options['headers']);
         }
 
-        return $clients 
+        return $clients
             ->{$method->value}($uri, $options['payload'] ?? [])
             ->throw();
     }
@@ -51,9 +51,9 @@ class ApiClient
     private function applyAuth(PendingRequest $client, array $options): PendingRequest
     {
         $authType = match (true) {
-            isset($options['bearer'])                                                                   => 'bearer',
-            isset($options['auth']) && is_array($options['auth']) && count($options['auth']) >= 2       => 'basic',
-            default                                                                                     => null
+            isset($options['bearer'])                                                             => 'bearer',
+            isset($options['auth']) && is_array($options['auth']) && count($options['auth']) >= 2 => 'basic',
+            default                                                                               => null
         };
 
         return match ($authType) {

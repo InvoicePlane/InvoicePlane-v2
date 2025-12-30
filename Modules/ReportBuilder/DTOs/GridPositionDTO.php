@@ -68,7 +68,7 @@ class GridPositionDTO
             throw new InvalidArgumentException('width and height must be > 0');
         }
 
-        $dto = new self();
+        $dto         = new self();
         $dto->x      = $x;
         $dto->y      = $y;
         $dto->width  = $width;

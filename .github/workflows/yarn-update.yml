@@ -208,8 +208,8 @@ jobs:
         if: steps.check-changes.outputs.changes_detected == 'true'
         id: updated-packages
         run: |
-          # Get list of updated packages
-          git diff yarn.lock | grep -E '^\+  ' | grep -v '^\+  version' | head -20 > updated-packages.txt || echo "Multiple packages updated" > updated-packages.txt
+          # Generate readable package update report
+          node .github/scripts/generate-package-update-report.cjs
           echo "UPDATED_PACKAGES<<EOF" >> $GITHUB_OUTPUT
           cat updated-packages.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
