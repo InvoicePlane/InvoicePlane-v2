@@ -49,8 +49,8 @@ function parseYarnLockDiff() {
             // Detect package name (can be context line or added/removed)
             // Package names can be quoted ("package@version":) or unquoted (package@version:)
             // In git diff, context lines start with space, additions with +, removals with -
-            // Match lines ending with : that could be package headers
-            if (line.match(/^[ +-].+:$/)) {
+            // Match yarn.lock package entry lines: either "package@version": or package@version:
+            if (line.match(/^[ +-]([^@\s"]+(@[^:]+)?|"[^"]+"):$/)) {
                 // Extract package name - handle both quoted and unquoted
                 let packageName;
                 
@@ -92,10 +92,14 @@ function parseYarnLockDiff() {
                     
                     // If we have both versions, record the update
                     if (oldVersion && newVersion && oldVersion !== newVersion && currentPackage) {
-                        // Only record if not already recorded or if this is a different version pair
-                        const existingUpdate = updates.get(currentPackage);
-                        if (!existingUpdate || (existingUpdate.from !== oldVersion || existingUpdate.to !== newVersion)) {
-                            updates.set(currentPackage, { from: oldVersion, to: newVersion });
+                        // Basic version format validation (allows semver and other common formats)
+                        const versionRegex = /^[\d.]+[-+a-zA-Z0-9.]*$/;
+                        if (versionRegex.test(oldVersion) && versionRegex.test(newVersion)) {
+                            // Only record if not already recorded or if this is a different version pair
+                            const existingUpdate = updates.get(currentPackage);
+                            if (!existingUpdate || (existingUpdate.from !== oldVersion || existingUpdate.to !== newVersion)) {
+                                updates.set(currentPackage, { from: oldVersion, to: newVersion });
+                            }
                         }
                         // Reset version tracking but keep currentPackage for potential additional entries
                         oldVersion = null;
@@ -182,11 +186,10 @@ function generateReport() {
 // Main execution
 try {
     const report = generateReport();
-    console.log(report);
     
     // Write to file
     fs.writeFileSync('updated-packages.txt', report);
-    console.log('\n✓ Report saved to updated-packages.txt');
+    console.log('✓ Report saved to updated-packages.txt');
 } catch (error) {
     console.error('Fatal error:', error.message);
     process.exit(1);
