@@ -171,7 +171,6 @@ jobs:
             echo "⚠️  WARNING: vendor directory not found!"
             echo "⚠️  Composer dependencies may be missing"
             echo "⚠️  Build may fail, but we will continue to commit yarn.lock"
-            echo "build_success=false" >> $GITHUB_OUTPUT
           fi
           
           # Try to build assets (wrapped in conditional to handle errors)
