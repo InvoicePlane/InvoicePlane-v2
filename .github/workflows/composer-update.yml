@@ -87,7 +87,7 @@ jobs:
       - name: Update Composer dependencies (All)
         if: github.event.inputs.update_type == 'all-dependencies'
         run: |
-          composer update --prefer-stable --no-interaction
+          composer bump && composer update
 
       # - name: Run smoke tests
       #   run: |
