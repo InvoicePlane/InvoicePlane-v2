@@ -12,7 +12,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": true,
+            "liborm85/composer-vendor-cleaner": true
         }
     },
     "minimum-stability": "dev",
@@ -29,6 +30,7 @@
         "filament/tables": "^4.0",
         "filament/widgets": "^4.0",
         "laravel/framework": "^12.26",
+        "liborm85/composer-vendor-cleaner": "^1.7",
         "maatwebsite/excel": "^3.1",
         "maennchen/zipstream-php": "^3.0 <3.2",
         "nwidart/laravel-modules": "^12.0",
@@ -90,6 +92,43 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "vendor-cleaner": {
+            "exclude-dir": [
+                ".github",
+                "doc",
+                "docs",
+                "example",
+                "examples",
+                "Test",
+                "test",
+                "Tests",
+                "tests"
+            ],
+            "exclude-file": [
+                ".editorconfig",
+                ".gitattributes",
+                ".gitignore",
+                ".php-cs-fixer.dist.php",
+                ".php-cs-fixer.php",
+                ".php_cs",
+                ".php_cs.dist",
+                ".scrutinizer.yml",
+                ".travis.yml",
+                "CHANGELOG.md",
+                "changelog.md",
+                "CONTRIBUTING.md",
+                "LICENSE",
+                "LICENCE",
+                "phpstan.neon",
+                "phpstan.neon.dist",
+                "phpunit.xml",
+                "phpunit.xml.dist",
+                "psalm.xml",
+                "psalm.xml.dist",
+                "README.md",
+                "readme.md"
+            ]
         }
     }
 }
