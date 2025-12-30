@@ -229,11 +229,11 @@ class EhfHandler extends BaseFormatHandler
             'actual_delivery_date' => $invoice->invoiced_at->format('Y-m-d'),
             'delivery_location'    => [
                 'address' => [
-                    'street_name' => $invoice->customer->street1 ?? '',
-                    'city_name'   => $invoice->customer->city ?? '',
-                    'postal_zone' => $invoice->customer->zip ?? '',
+                    'street_name' => $invoice->customer?->street1 ?? '',
+                    'city_name'   => $invoice->customer?->city ?? '',
+                    'postal_zone' => $invoice->customer?->zip ?? '',
                     'country'     => [
-                        'identification_code' => $invoice->customer->country_code ?? 'NO',
+                        'identification_code' => $invoice->customer?->country_code ?? 'NO',
                     ],
                 ],
             ],
@@ -460,7 +460,7 @@ class EhfHandler extends BaseFormatHandler
         }
 
         // Customer must have organization number or Peppol ID
-        if ( ! $invoice->customer->organization_number && ! $invoice->customer->peppol_id) {
+        if ( ! $invoice->customer?->organization_number && ! $invoice->customer?->peppol_id) {
             $errors[] = 'Customer organization number or Peppol ID is required for EHF format';
         }
 
@@ -477,7 +477,7 @@ class EhfHandler extends BaseFormatHandler
     protected function getBuyerReference(Invoice $invoice): string
     {
         // EHF requires buyer reference for routing
-        return $invoice->customer->reference ?? $invoice->reference ?? '';
+        return $invoice->customer?->reference ?? $invoice->reference ?? '';
     }
 
     /**

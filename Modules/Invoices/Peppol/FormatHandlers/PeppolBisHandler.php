@@ -164,7 +164,7 @@ class PeppolBisHandler extends BaseFormatHandler
         $errors = [];
 
         // PEPPOL BIS specific validation
-        if ( ! $invoice->customer->peppol_id) {
+        if ( ! $invoice->customer?->peppol_id) {
             $errors[] = 'Customer must have a Peppol ID for PEPPOL BIS format';
         }
 

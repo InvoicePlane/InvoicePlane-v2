@@ -54,7 +54,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     public function supports(Invoice $invoice): bool
     {
         // Check if customer's country matches format requirements
-        $customerCountry = $invoice->customer->country_code ?? null;
+        $customerCountry = $invoice->customer?->country_code ?? null;
 
         // Mandatory formats must be used for their countries
         if ($this->format->isMandatoryFor($customerCountry)) {
@@ -144,7 +144,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     protected function getEndpointScheme(Invoice $invoice): PeppolEndpointScheme
     {
-        $countryCode = $invoice->customer->country_code ?? null;
+        $countryCode = $invoice->customer?->country_code ?? null;
 
         return PeppolEndpointScheme::forCountry($countryCode);
     }

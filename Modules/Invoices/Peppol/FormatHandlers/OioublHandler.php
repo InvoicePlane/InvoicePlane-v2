@@ -426,7 +426,7 @@ class OioublHandler extends BaseFormatHandler
         }
 
         // Customer must have Peppol ID for OIOUBL
-        if ( ! $invoice->customer->peppol_id) {
+        if ( ! $invoice->customer?->peppol_id) {
             $errors[] = 'Customer Peppol ID (CVR) is required for OIOUBL format';
         }
 

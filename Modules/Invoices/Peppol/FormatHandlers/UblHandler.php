@@ -78,7 +78,7 @@ class UblHandler extends BaseFormatHandler
         $errors = [];
 
         // UBL requires certain fields
-        if ( ! $invoice->customer->peppol_id && config('invoices.peppol.validation.require_customer_peppol_id')) {
+        if ( ! $invoice->customer?->peppol_id && config('invoices.peppol.validation.require_customer_peppol_id')) {
             $errors[] = 'Customer Peppol ID is required for UBL format';
         }
 
