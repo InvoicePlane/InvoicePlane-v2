@@ -20,6 +20,17 @@ permissions:
   contents: write
   pull-requests: write
 
+# Note: This workflow requires a Personal Access Token (PAT) to create pull requests.
+# The default GITHUB_TOKEN has restricted permissions and cannot create PRs that trigger other workflows.
+# 
+# To configure the required secret:
+# 1. Create a Personal Access Token (classic) with 'repo' and 'workflow' scopes
+#    at https://github.com/settings/tokens
+# 2. Add the token as a repository secret named 'PAT_TOKEN'
+#    at https://github.com/OWNER/REPO/settings/secrets/actions
+#
+# See: https://github.com/peter-evans/create-pull-request#action-inputs
+
 jobs:
   update-composer-dependencies:
     runs-on: ubuntu-latest
@@ -113,7 +124,7 @@ jobs:
         if: steps.check-changes.outputs.changes_detected == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
           branch: automated/composer-update-${{ github.run_number }}
           delete-branch: false

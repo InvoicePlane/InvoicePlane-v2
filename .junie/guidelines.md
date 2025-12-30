@@ -451,6 +451,35 @@ php artisan queue:work # For exports
 
 ---
 
+## GitHub Actions & Automation
+
+### Automated Workflows
+
+InvoicePlane v2 uses GitHub Actions for automated dependency management and CI/CD:
+
+- **Composer Update** - Automated PHP dependency updates
+- **Yarn Update** - Automated JavaScript dependency updates
+- **Crowdin Sync** - Automated translation synchronization
+- **Release** - Automated production releases
+
+### Required Secrets
+
+Automation workflows require repository secrets to function:
+
+**PAT_TOKEN** (Personal Access Token):
+- Required for: Composer Update, Yarn Update workflows
+- Reason: Default `GITHUB_TOKEN` cannot create PRs that trigger other workflows
+- Scopes needed: `repo` and `workflow`
+- Setup: Settings → Secrets and variables → Actions → New repository secret
+
+**CROWDIN_PROJECT_ID** and **CROWDIN_PERSONAL_TOKEN**:
+- Required for: Crowdin Sync, Release workflows
+- Setup: Settings → Secrets and variables → Actions
+
+For detailed setup instructions, see `.github/workflows/README.md` and `.github/MAINTENANCE.md`.
+
+---
+
 ## Performance Optimization
 
 ### Query Optimization

@@ -256,6 +256,24 @@ These workflows can be triggered manually or on a schedule to:
 - Run tests
 - Create pull requests with updates
 
+**Required Setup:**
+
+Both workflows require a Personal Access Token (PAT) to create pull requests. The default `GITHUB_TOKEN` has restricted permissions and cannot create PRs that trigger other workflows.
+
+To configure the required `PAT_TOKEN` secret:
+
+1. Create a Personal Access Token (classic) at [GitHub Settings > Developer settings > Personal access tokens (classic)](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Give it a descriptive name like "InvoicePlane Automation"
+4. Select the `repo` and `workflow` scopes
+5. Generate and copy the token
+6. Go to your repository **Settings** → **Secrets and variables** → **Actions**
+7. Click "New repository secret"
+8. Name: `PAT_TOKEN`, Value: paste your token
+9. Click "Add secret"
+
+For detailed workflow documentation, see `.github/workflows/README.md`.
+
 ### Crowdin Translation Sync
 
 InvoicePlane v2 includes a GitHub Actions workflow for automated translation management:

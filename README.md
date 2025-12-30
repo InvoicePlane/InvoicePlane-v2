@@ -79,6 +79,7 @@ For detailed setup instructions, see [INSTALLATION.md](.github/INSTALLATION.md).
 - **[Upgrade Guide](.github/UPGRADE.md)** - Upgrading from previous versions
 - **[Security Policy](.github/SECURITY.md)** - Reporting security vulnerabilities
 - **[Peppol Architecture](PEPPOL_ARCHITECTURE.md)** - E-invoicing system details
+- **[Workflows README](.github/workflows/README.md)** - GitHub Actions automation and secrets setup
 
 ---
 
