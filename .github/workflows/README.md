@@ -95,6 +95,27 @@ Artifacts are also available in the Actions tab for 90 days.
 - `patch-minor` - Patch and minor version updates
 - `all-dependencies` - All updates including major versions
 
+**Required Secrets:**
+
+This workflow requires a Personal Access Token (PAT) to create pull requests:
+
+- `PAT_TOKEN` - A GitHub Personal Access Token with `repo` and `workflow` scopes
+
+To create and configure the PAT:
+1. Go to [GitHub Settings > Developer settings > Personal access tokens (classic)](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Give it a descriptive name like "InvoicePlane Automation"
+4. Select the `repo` and `workflow` scopes
+5. Generate and copy the token
+6. Go to your repository Settings > Secrets and variables > Actions
+7. Click "New repository secret"
+8. Name: `PAT_TOKEN`, Value: paste your token
+9. Click "Add secret"
+
+**Why is a PAT required?**
+
+The default `GITHUB_TOKEN` has restricted permissions and cannot create pull requests that trigger other workflows (like CI tests). This is a GitHub security measure. Using a PAT with appropriate scopes allows the workflow to create PRs that will trigger other workflows.
+
 **Required Permissions:**
 - `contents: write` - For creating branches and commits
 - `pull-requests: write` - For creating pull requests
@@ -117,6 +138,27 @@ Artifacts are also available in the Actions tab for 90 days.
 - `security-only` - Only security fixes (default for scheduled runs)
 - `patch-minor` - Patch and minor version updates
 - `all-dependencies` - All updates including major versions
+
+**Required Secrets:**
+
+This workflow requires a Personal Access Token (PAT) to create pull requests:
+
+- `PAT_TOKEN` - A GitHub Personal Access Token with `repo` and `workflow` scopes
+
+To create and configure the PAT:
+1. Go to [GitHub Settings > Developer settings > Personal access tokens (classic)](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Give it a descriptive name like "InvoicePlane Automation"
+4. Select the `repo` and `workflow` scopes
+5. Generate and copy the token
+6. Go to your repository Settings > Secrets and variables > Actions
+7. Click "New repository secret"
+8. Name: `PAT_TOKEN`, Value: paste your token
+9. Click "Add secret"
+
+**Why is a PAT required?**
+
+The default `GITHUB_TOKEN` has restricted permissions and cannot create pull requests that trigger other workflows (like CI tests). This is a GitHub security measure. Using a PAT with appropriate scopes allows the workflow to create PRs that will trigger other workflows.
 
 **Required Permissions:**
 - `contents: write` - For creating branches and commits
