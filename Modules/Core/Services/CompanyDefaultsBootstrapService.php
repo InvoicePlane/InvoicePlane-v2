@@ -40,7 +40,7 @@ class CompanyDefaultsBootstrapService
                 'type'       => NumberingType::INVOICE->value,
                 'name'       => NumberingType::INVOICE->label(),
             ],
-            $documentGroupData
+            $numberingData
         );
 
         // Create default email template
