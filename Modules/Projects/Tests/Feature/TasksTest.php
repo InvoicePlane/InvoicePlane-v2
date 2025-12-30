@@ -28,11 +28,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_lists_tasks(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'project_name' => '::project_name::',
             ]);
@@ -58,7 +57,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTasks::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListTasks::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component
@@ -90,11 +89,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_creates_a_task_through_a_modal(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'project_name' => '::project_name::',
             ]);
@@ -149,11 +147,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_through_a_modal_without_required_task_name(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'project_name' => '::project_name::',
             ]);
@@ -201,10 +198,9 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_through_a_modal_without_required_project(): void
     {
         /* arrange */
-        $company = $this->user->companies()->first();
 
         $taxRate = TaxRate::factory()
-            ->for($company)
+            ->for($this->company)
             ->create(['name' => '::taxrate_name::']);
 
         $payload = [
@@ -248,11 +244,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_through_a_modal_without_required_tax_rate(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'project_name' => '::project_name::',
             ]);
@@ -301,11 +296,10 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_task_through_a_modal(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Customer::factory()->for($company)->create(['company_name' => '::customer_name::']);
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
-            ->for($company)
+            ->for($this->company)
             ->create([
                 'project_name' => '::project_name::',
             ]);
@@ -470,10 +464,9 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_task_without_required_project(): void
     {
         /* arrange */
-        $company = $this->user->companies()->first();
 
         $taxRate = TaxRate::factory()
-            ->for($company)
+            ->for($this->company)
             ->create(['name' => '::taxrate_name::']);
 
         $payload = [

@@ -18,8 +18,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ListExpenseCategories::class)]
 class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -35,12 +33,12 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         ];
 
         $record = ExpenseCategory::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenseCategories::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListExpenseCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component->assertSuccessful();
@@ -109,7 +107,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_updates_an_expense_category_through_a_modal(): void
     {
         /* arrange */
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
+        $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
         /* act */
@@ -187,7 +185,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_updates_an_expense_category(): void
     {
         /* arrange */
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
+        $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
         /* act */
@@ -210,7 +208,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     public function it_deletes_an_expense_category(): void
     {
         /* arrange */
-        $expenseCategory = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -229,7 +227,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
-        $expenseCategory = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
         $expenseCategory->delete();
 
         /* act */

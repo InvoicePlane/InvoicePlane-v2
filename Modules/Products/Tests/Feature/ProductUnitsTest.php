@@ -19,8 +19,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProductUnitResource::class)]
 class ProductUnitsTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -29,12 +27,12 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         /* arrange */
         $payload = ['unit_name' => 'Box'];
         $record  = ProductUnit::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProductUnits::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListProductUnits::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component->assertSuccessful()
@@ -101,7 +99,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $productUnit = ProductUnit::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create(['unit_name' => 'Old Unit', 'unit_name_plrl' => 'kgs']);
 
         $payload = [
@@ -128,9 +126,9 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
         /* arrange */
-        $record = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'X']);
+        $record = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'X']);
 
-        $tenant  = Str::lower($this->user->companies()->first()->search_code);
+        $tenant  = Str::lower($this->company->search_code);
         $payload = ['unit_name' => null];
 
         /* act */
@@ -211,7 +209,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_product_unit(): void
     {
         /* arrange */
-        $record  = ProductUnit::factory()->for($this->user->companies()->first())->create(['unit_name' => 'Old Unit']);
+        $record  = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'Old Unit']);
         $payload = ['unit_name' => 'Updated Unit'];
 
         /* act */
@@ -235,7 +233,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     {
         /* arrange */
         $productUnit = ProductUnit::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create();
 
         /* act */
@@ -256,7 +254,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* arrange */
-        $productUnit = ProductUnit::factory()->for($this->user->companies()->first())->create();
+        $productUnit = ProductUnit::factory()->for($this->company)->create();
         $productUnit->delete();
 
         /* act */

@@ -28,7 +28,7 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
             'slug'        => 'invoiceplane-corporation',
         ])->create();
 
-        $this->company = Company::query()->where('search_code', 'IVPLV2')->first();
+        $this->company = Company::query()->where('search_code', 'IVPLV2')->firstOrFail();
 
         /*
          * quietly set tenant so it won't wine about user not being set yet.

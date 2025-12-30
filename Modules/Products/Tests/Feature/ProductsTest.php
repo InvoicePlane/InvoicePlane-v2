@@ -24,8 +24,6 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(ProductResource::class)]
 class ProductsTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -59,7 +57,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProducts::class, ['tenant' => Str::lower($this->user->companies()->first()->search_code)]);
+            ->test(ListProducts::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* assert */
         $component

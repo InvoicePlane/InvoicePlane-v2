@@ -25,8 +25,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_lists_projects(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
 
         $payload = [
             'company_id'     => $company->id,
@@ -38,7 +37,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Test Description',
         ];
 
-        $project = Project::factory()->for($company)->create($payload);
+        $project = Project::factory()->for($this->company)->create($payload);
 
         /* act */
         $component = Livewire::actingAs($this->user)
@@ -67,8 +66,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_project_through_a_modal(): void
     {
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
 
         /* arrange */
         $payload = [
@@ -112,7 +110,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_project_through_a_modal_without_required_status(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
         $customer = Relation::factory()->create(['company_name' => '::client_name::']);
 
         $payload = [
@@ -152,7 +149,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_through_a_modal_without_required_project_name(): void
     {
-        $company  = $this->user->companies()->first();
         $customer = Relation::factory()
             ->for($company, 'company')
             ->create(['company_name' => '::client_name::']);
@@ -223,9 +219,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_updates_a_project_through_a_modal(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
-        $project  = Project::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
+        $project  = Project::factory()->for($this->company)->create([
             'project_name'   => 'Old Project Name',
             'customer_id'    => $customer->id,
             'project_status' => ProjectStatus::ACTIVE->value,
@@ -270,8 +265,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_project(): void
     {
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
 
         /* arrange */
         $payload = [
@@ -312,9 +306,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_project_without_required_status(): void
     {
         /* arrange */
-        $company  = $this->user->companies()->first();
         $customer = Relation::factory()
-            ->for($company)
+            ->for($this->company)
             ->create(['company_name' => '::company_name::']);
 
         $payload = [
@@ -355,7 +348,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_project_name(): void
     {
-        $company  = $this->user->companies()->first();
         $customer = Relation::factory()->create(['company_name' => '::company_name::']);
 
         $payload = [
@@ -459,9 +451,8 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_project(): void
     {
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->for($company)->create(['company_name' => 'Test Client']);
-        $project  = Project::factory()->for($company)->create([
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => 'Test Client']);
+        $project  = Project::factory()->for($this->company)->create([
             'project_name'   => 'Project to Delete',
             'customer_id'    => $customer->id,
             'project_status' => ProjectStatus::ACTIVE->value,
