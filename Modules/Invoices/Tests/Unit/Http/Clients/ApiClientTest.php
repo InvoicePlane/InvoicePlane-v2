@@ -41,8 +41,8 @@ class ApiClientTest extends TestCase
         $this->assertEquals(['success' => true], $response->json());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.example.com/test' &&
-                   $request->method() === 'GET';
+            return $request->url() === 'https://api.example.com/test'
+                   && $request->method() === 'GET';
         });
     }
 
@@ -63,9 +63,9 @@ class ApiClientTest extends TestCase
         $this->assertEquals(['id' => 123], $response->json());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.example.com/create' &&
-                   $request->method() === 'POST' &&
-                   $request->data() === ['name' => 'Test'];
+            return $request->url() === 'https://api.example.com/create'
+                   && $request->method() === 'POST'
+                   && $request->data() === ['name' => 'Test'];
         });
     }
 
@@ -85,8 +85,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.example.com/update/1' &&
-                   $request->method() === 'PUT';
+            return $request->url() === 'https://api.example.com/update/1'
+                   && $request->method() === 'PUT';
         });
     }
 
@@ -106,8 +106,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.example.com/patch/1' &&
-                   $request->method() === 'PATCH';
+            return $request->url() === 'https://api.example.com/patch/1'
+                   && $request->method() === 'PATCH';
         });
     }
 
@@ -126,8 +126,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.example.com/delete/1' &&
-                   $request->method() === 'DELETE';
+            return $request->url() === 'https://api.example.com/delete/1'
+                   && $request->method() === 'DELETE';
         });
     }
 
@@ -159,8 +159,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('X-API-Key') &&
-                   $request->header('X-API-Key')[0] === 'secret123';
+            return $request->hasHeader('X-API-Key')
+                   && $request->header('X-API-Key')[0] === 'secret123';
         });
     }
 
@@ -196,8 +196,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('Authorization') &&
-                   str_contains($request->header('Authorization')[0], 'Bearer token123');
+            return $request->hasHeader('Authorization')
+                   && str_contains($request->header('Authorization')[0], 'Bearer token123');
         });
     }
 
@@ -217,8 +217,8 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('Authorization') &&
-                   str_contains($request->header('Authorization')[0], 'Basic');
+            return $request->hasHeader('Authorization')
+                   && str_contains($request->header('Authorization')[0], 'Basic');
         });
     }
 
@@ -294,9 +294,9 @@ class ApiClientTest extends TestCase
         $this->assertTrue($response->successful());
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('X-API-Key') &&
-                   $request->hasHeader('X-Custom-Header') &&
-                   $request->hasHeader('Accept');
+            return $request->hasHeader('X-API-Key')
+                   && $request->hasHeader('X-Custom-Header')
+                   && $request->hasHeader('Accept');
         });
     }
 }

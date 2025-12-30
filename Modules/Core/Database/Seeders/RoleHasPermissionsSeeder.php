@@ -40,8 +40,8 @@ class RoleHasPermissionsSeeder extends Seeder
                 $newPermissions    = array_unique(array_merge($newPermissions, $customPermissions));
             }
 
-            if (count(array_diff($newPermissions, $currentPermissions)) > 0 ||
-                count(array_diff($currentPermissions, $newPermissions)) > 0) {
+            if (count(array_diff($newPermissions, $currentPermissions)) > 0
+                || count(array_diff($currentPermissions, $newPermissions)) > 0) {
                 $role->syncPermissions($newPermissions);
                 $rolesUpdated++;
 

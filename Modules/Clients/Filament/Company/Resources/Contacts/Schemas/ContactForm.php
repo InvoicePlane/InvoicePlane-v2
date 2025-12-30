@@ -74,8 +74,8 @@ class ContactForm
                                 Placeholder::make('primary_email')
                                     ->label(trans('ip.email'))
                                     ->content(
-                                        fn (?Contact $record = null) => $record ?
-                                            optional($record->communications)
+                                        fn (?Contact $record = null) => $record
+                                            ? optional($record->communications)
                                                 ->where('communication_type', CommunicationType::EMAIL->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'
@@ -85,8 +85,8 @@ class ContactForm
                                 Placeholder::make('primary_phone')
                                     ->label(trans('ip.phone'))
                                     ->content(
-                                        fn (?Contact $record = null) => $record ?
-                                            optional($record->communications)
+                                        fn (?Contact $record = null) => $record
+                                            ? optional($record->communications)
                                                 ->where('communication_type', CommunicationType::PHONE->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'

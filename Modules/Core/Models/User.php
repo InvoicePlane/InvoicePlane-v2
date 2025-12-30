@@ -170,17 +170,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     {
         // SuperAdmin, Admin, Assistance can access any panel
         if (
-            $this->hasRole(UserRole::SUPER_ADMIN->value) ||
-            $this->hasRole(UserRole::ADMIN->value) ||
-            $this->hasRole(UserRole::ASSIST->value)
+            $this->hasRole(UserRole::SUPER_ADMIN->value)
+            || $this->hasRole(UserRole::ADMIN->value)
+            || $this->hasRole(UserRole::ASSIST->value)
         ) {
             return true;
         }
 
         // UserAdmin and User can only access the 'company' panel
         if ($panel->getId() === 'company') {
-            return $this->hasRole(UserRole::CUSTOMER_ADMIN->value) ||
-                $this->hasRole(UserRole::CUSTOMER->value);
+            return $this->hasRole(UserRole::CUSTOMER_ADMIN->value)
+                || $this->hasRole(UserRole::CUSTOMER->value);
         }
 
         // All other roles or panels not explicitly allowed

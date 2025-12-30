@@ -59,10 +59,10 @@ class DocumentsClientTest extends TestCase
         $this->assertEquals('DOC-789', $response->json('document_id'));
 
         Http::assertSent(function ($request) use ($documentData) {
-            return $request->url() === 'https://api.e-invoice.be/api/documents' &&
-                   $request->method() === 'POST' &&
-                   $request->hasHeader('X-API-Key') &&
-                   $request->data() === $documentData;
+            return $request->url() === 'https://api.e-invoice.be/api/documents'
+                   && $request->method() === 'POST'
+                   && $request->hasHeader('X-API-Key')
+                   && $request->data() === $documentData;
         });
     }
 
@@ -83,8 +83,8 @@ class DocumentsClientTest extends TestCase
         $this->assertEquals('DOC-123', $response->json('document_id'));
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-123' &&
-                   $request->method() === 'GET';
+            return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-123'
+                   && $request->method() === 'GET';
         });
     }
 
@@ -128,8 +128,8 @@ class DocumentsClientTest extends TestCase
         $this->assertCount(2, $response->json('documents'));
 
         Http::assertSent(function ($request) {
-            return str_contains($request->url(), 'status=submitted') &&
-                   str_contains($request->url(), 'limit=10');
+            return str_contains($request->url(), 'status=submitted')
+                   && str_contains($request->url(), 'limit=10');
         });
     }
 
@@ -146,8 +146,8 @@ class DocumentsClientTest extends TestCase
         $this->assertEquals(204, $response->status());
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-999' &&
-                   $request->method() === 'DELETE';
+            return $request->url() === 'https://api.e-invoice.be/api/documents/DOC-999'
+                   && $request->method() === 'DELETE';
         });
     }
 
@@ -161,8 +161,8 @@ class DocumentsClientTest extends TestCase
         $this->client->submitDocument(['test' => 'data']);
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('X-API-Key') &&
-                   $request->header('X-API-Key')[0] === 'test-api-key-12345';
+            return $request->hasHeader('X-API-Key')
+                   && $request->header('X-API-Key')[0] === 'test-api-key-12345';
         });
     }
 
@@ -176,8 +176,8 @@ class DocumentsClientTest extends TestCase
         $this->client->submitDocument(['test' => 'data']);
 
         Http::assertSent(function ($request) {
-            return $request->hasHeader('Content-Type') &&
-                   str_contains($request->header('Content-Type')[0] ?? '', 'application/json');
+            return $request->hasHeader('Content-Type')
+                   && str_contains($request->header('Content-Type')[0] ?? '', 'application/json');
         });
     }
 

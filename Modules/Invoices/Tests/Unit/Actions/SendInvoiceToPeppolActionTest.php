@@ -103,8 +103,8 @@ class SendInvoiceToPeppolActionTest extends TestCase
         Http::assertSent(function ($request) {
             $data = $request->data();
 
-            return isset($data['customer_peppol_id']) &&
-                   $data['customer_peppol_id'] === 'BE:0123456789';
+            return isset($data['customer_peppol_id'])
+                   && $data['customer_peppol_id'] === 'BE:0123456789';
         });
     }
 

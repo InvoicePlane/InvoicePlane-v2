@@ -269,9 +269,9 @@ abstract class AbstractNumberGenerator
 
         // Monthly reset (2) - Reset at the start of each month
         if (
-            $numbering->reset_number === 2 &&
-            ($numbering->last_year < $now->year ||
-                ($numbering->last_year === $now->year && $numbering->last_month < $now->month))
+            $numbering->reset_number === 2
+            && ($numbering->last_year < $now->year
+                || ($numbering->last_year === $now->year && $numbering->last_month < $now->month))
         ) {
             if (config('app.extreme_logging')) {
                 Log::info('NumberGenerator: Applying monthly reset', [
@@ -290,11 +290,11 @@ abstract class AbstractNumberGenerator
 
         // Weekly reset (3) - Reset at the start of each week
         if (
-            $numbering->reset_number === 3 &&
-            ($numbering->last_year < $now->year ||
-                ($numbering->last_year === $now->year &&
-                    ($numbering->last_month < $now->month ||
-                        ($numbering->last_month === $now->month && $numbering->last_week < $now->weekOfYear))))
+            $numbering->reset_number === 3
+            && ($numbering->last_year < $now->year
+                || ($numbering->last_year === $now->year
+                    && ($numbering->last_month < $now->month
+                        || ($numbering->last_month === $now->month && $numbering->last_week < $now->weekOfYear))))
         ) {
             if (config('app.extreme_logging')) {
                 Log::info('NumberGenerator: Applying weekly reset', [

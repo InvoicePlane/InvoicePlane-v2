@@ -97,9 +97,9 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Log::shouldHaveReceived('info')
             ->with('HTTP Request', Mockery::on(function ($arg) {
-                return isset($arg['method']) &&
-                       isset($arg['uri']) &&
-                       $arg['method'] === 'GET';
+                return isset($arg['method'])
+                       && isset($arg['uri'])
+                       && $arg['method'] === 'GET';
             }));
 
         Log::shouldHaveReceived('info')
@@ -164,10 +164,10 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Log::shouldHaveReceived('info')
             ->with('HTTP Request', Mockery::on(function ($arg) {
-                return isset($arg['options']['headers']['Authorization']) &&
-                       $arg['options']['headers']['Authorization'] === '***REDACTED***' &&
-                       $arg['options']['headers']['X-API-Key'] === '***REDACTED***' &&
-                       $arg['options']['headers']['Content-Type'] === 'application/json';
+                return isset($arg['options']['headers']['Authorization'])
+                       && $arg['options']['headers']['Authorization'] === '***REDACTED***'
+                       && $arg['options']['headers']['X-API-Key'] === '***REDACTED***'
+                       && $arg['options']['headers']['Content-Type'] === 'application/json';
             }));
     }
 
@@ -187,8 +187,8 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Log::shouldHaveReceived('info')
             ->with('HTTP Request', Mockery::on(function ($arg) {
-                return isset($arg['options']['auth']) &&
-                       $arg['options']['auth'] === ['***REDACTED***', '***REDACTED***'];
+                return isset($arg['options']['auth'])
+                       && $arg['options']['auth'] === ['***REDACTED***', '***REDACTED***'];
             }));
     }
 
@@ -302,8 +302,8 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Log::shouldHaveReceived('error')
             ->with('HTTP Connection Error', Mockery::on(function ($arg) {
-                return isset($arg['message']) &&
-                       str_contains($arg['message'], 'Network error');
+                return isset($arg['message'])
+                       && str_contains($arg['message'], 'Network error');
             }));
     }
 
@@ -326,8 +326,8 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         Log::shouldHaveReceived('error')
             ->with('HTTP Unexpected Error', Mockery::on(function ($arg) {
-                return isset($arg['message']) &&
-                       str_contains($arg['message'], 'Unexpected error');
+                return isset($arg['message'])
+                       && str_contains($arg['message'], 'Unexpected error');
             }));
     }
 }

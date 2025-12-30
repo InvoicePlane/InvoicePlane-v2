@@ -24,7 +24,7 @@ class MerchantClient extends Model
 
     protected $guarded = [];
 
-    public static function getByKey($driver, $clientId, $key): static | string
+    public static function getByKey($driver, $clientId, $key): static|string
     {
         $setting = self::query()->where('driver', $driver)
             ->where('customer_id', $clientId)

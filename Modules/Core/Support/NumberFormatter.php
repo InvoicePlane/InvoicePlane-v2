@@ -19,7 +19,7 @@ class NumberFormatter
         return rtrim(rtrim($formatted, '0'), '.');
     }
 
-    public static function unformat($number, $currency = null): float | string
+    public static function unformat($number, $currency = null): float|string
     {
         $currency = $currency ?: config('ip.currency');
 

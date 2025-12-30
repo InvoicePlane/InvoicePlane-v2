@@ -311,8 +311,8 @@ class NumberingService
         ]);
 
         throw new RuntimeException(
-            "Unable to resolve numbering collision after {$maxAttempts} attempts for numbering '{$numbering->name}' (ID: {$numbering->id}). " .
-            'Please review existing numbers or adjust the numbering format.'
+            "Unable to resolve numbering collision after {$maxAttempts} attempts for numbering '{$numbering->name}' (ID: {$numbering->id}). "
+            . 'Please review existing numbers or adjust the numbering format.'
         );
     }
 

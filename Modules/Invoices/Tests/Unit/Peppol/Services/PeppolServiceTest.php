@@ -163,8 +163,8 @@ class PeppolServiceTest extends TestCase
         Http::assertSent(function ($request) {
             $data = $request->data();
 
-            return isset($data['invoice_number']) &&
-                   isset($data['issue_date'], $data['customer'], $data['invoice_lines'], $data['legal_monetary_total']);
+            return isset($data['invoice_number'])
+                   && isset($data['issue_date'], $data['customer'], $data['invoice_lines'], $data['legal_monetary_total']);
         });
     }
 
@@ -180,8 +180,8 @@ class PeppolServiceTest extends TestCase
         Http::assertSent(function ($request) {
             $data = $request->data();
 
-            return isset($data['customer']['endpoint_id']) &&
-                   $data['customer']['endpoint_id'] === 'BE:0123456789';
+            return isset($data['customer']['endpoint_id'])
+                   && $data['customer']['endpoint_id'] === 'BE:0123456789';
         });
     }
 

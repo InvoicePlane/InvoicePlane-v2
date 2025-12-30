@@ -59,8 +59,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
             $actualInvoiceDate = Carbon::parse($formData['invoiced_at']);
             $this->assertTrue(
                 $actualInvoiceDate->diffInSeconds($expectedDate) <= 1,
-                'Invoice date should be within 1 second of current time. Expected: ' . $expectedDate->toDateTimeString() .
-                ', Actual: ' . $actualInvoiceDate->toDateTimeString()
+                'Invoice date should be within 1 second of current time. Expected: ' . $expectedDate->toDateTimeString()
+                . ', Actual: ' . $actualInvoiceDate->toDateTimeString()
             );
         }
 
@@ -214,8 +214,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
             foreach ($populatedDates as $field => $date) {
                 $this->assertTrue(
                     $date->diffInSeconds($firstDate) <= 1,
-                    "All date fields should be populated within 1 second of each other. Field {$field} differs by " .
-                    $date->diffInSeconds($firstDate) . ' seconds'
+                    "All date fields should be populated within 1 second of each other. Field {$field} differs by "
+                    . $date->diffInSeconds($firstDate) . ' seconds'
                 );
             }
         }

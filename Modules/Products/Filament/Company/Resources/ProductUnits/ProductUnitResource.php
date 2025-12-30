@@ -20,7 +20,7 @@ class ProductUnitResource extends BaseResource
     //'heroicon-o-squares-2x2'
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaperAirplane;
 
-    protected static string|null|UnitEnum $navigationGroup = 'Resources';
+    protected static string|UnitEnum|null $navigationGroup = 'Resources';
 
     protected static ?int $navigationSort = 50;
 

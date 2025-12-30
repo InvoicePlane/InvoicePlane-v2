@@ -22,7 +22,7 @@ class MerchantPayment extends Model
 
     protected $guarded = [];
 
-    public static function getByKey($driver, $paymentId, $key): static | string
+    public static function getByKey($driver, $paymentId, $key): static|string
     {
         $setting = self::query()->where('driver', $driver)
             ->where('payment_id', $paymentId)

@@ -19,7 +19,7 @@ class ProductCategoryResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBoxXMark;
 
-    protected static string|null|UnitEnum $navigationGroup = 'Resources';
+    protected static string|UnitEnum|null $navigationGroup = 'Resources';
 
     protected static ?int $navigationSort = 40;
 

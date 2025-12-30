@@ -28,7 +28,7 @@ class Settings extends Page implements HasTable, HasForms
 
     public array $settings = [];
 
-    protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-server-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-server-stack';
 
     protected string $view = 'core::filament.admin.pages.settings';
 
