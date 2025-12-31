@@ -24,8 +24,13 @@ class TaskFactory extends AbstractFactory
                 ->value('id');
 
             if ($customerId === null) {
+                $company = \Modules\Core\Models\Company::find($task->company_id);
+                if ($company === null) {
+                    return;
+                }
+
                 $customer = \Modules\Clients\Models\Relation::factory()
-                    ->for(\Modules\Core\Models\Company::find($task->company_id))
+                    ->for($company)
                     ->customer()
                     ->create();
 
