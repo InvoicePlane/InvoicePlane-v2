@@ -33,6 +33,8 @@ class SettingsTest extends AbstractAdminPanelTestCase
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
+        Numbering::where('company_id', $this->company1->id)->delete();
+        Numbering::where('company_id', $this->company2->id)->delete();
         $group1Company1 = Numbering::factory()->for($this->company1)->create([
             'name'       => 'Invoice Group Company 1',
             'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
