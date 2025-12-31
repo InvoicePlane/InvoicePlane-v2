@@ -33,22 +33,19 @@ class SettingsTest extends AbstractAdminPanelTestCase
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
-        $group1Company1 = Numbering::factory()->create([
-            'company_id' => $this->company1->id,
+        $group1Company1 = Numbering::factory()->for($this->company1)->create([
             'name'       => 'Invoice Group Company 1',
-            'type'       => 'invoice',
+            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
-        $group2Company1 = Numbering::factory()->create([
-            'company_id' => $this->company1->id,
+        $group2Company1 = Numbering::factory()->for($this->company1)->create([
             'name'       => 'Quote Group Company 1',
-            'type'       => 'quote',
+            'type'       => \Modules\Core\Enums\NumberingType::QUOTE->value,
         ]);
 
-        $group1Company2 = Numbering::factory()->create([
-            'company_id' => $this->company2->id,
+        $group1Company2 = Numbering::factory()->for($this->company2)->create([
             'name'       => 'Invoice Group Company 2',
-            'type'       => 'invoice',
+            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         session(['current_company_id' => $this->company1->id]);
@@ -91,7 +88,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         /* arrange */
         Numbering::factory()->for($this->company1)->create([
             'name' => 'Test Group',
-            'type' => 'invoice',
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         session()->forget('current_company_id');
@@ -138,16 +135,14 @@ class SettingsTest extends AbstractAdminPanelTestCase
     public function it_switches_company_context_properly(): void
     {
         /* arrange */
-        $group1 = Numbering::factory()->create([
-            'company_id' => $this->company1->id,
+        $group1 = Numbering::factory()->for($this->company1)->create([
             'name'       => 'Group Company 1',
-            'type'       => 'invoice',
+            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
-        $group2 = Numbering::factory()->create([
-            'company_id' => $this->company2->id,
+        $group2 = Numbering::factory()->for($this->company2)->create([
             'name'       => 'Group Company 2',
-            'type'       => 'invoice',
+            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         /* act */

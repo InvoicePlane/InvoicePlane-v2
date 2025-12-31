@@ -69,12 +69,14 @@ class HttpClientExceptionHandler
      */
     public function request(RequestMethod|string $method, string $uri, array $options = []): Response
     {
-        $methodString = $method instanceof RequestMethod ? $method->value : $method;
+        // Convert string to RequestMethod enum if necessary
+        $methodEnum = $method instanceof RequestMethod ? $method : RequestMethod::from(strtoupper($method));
+        $methodString = $methodEnum->value;
 
         try {
             $this->logRequest($methodString, $uri, $options);
 
-            $response = $this->client->request($method, $uri, $options);
+            $response = $this->client->request($methodEnum, $uri, $options);
 
             $this->logResponse($methodString, $uri, $response->status(), $response->json() ?? $response->body());
 
