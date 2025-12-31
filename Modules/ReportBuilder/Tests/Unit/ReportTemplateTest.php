@@ -19,7 +19,9 @@ class ReportTemplateTest extends TestCase
     {
         parent::setUp();
 
-        $this->company = Company::factory()->create(['name' => 'Test Company']);
+        /** @var Company $company */
+        $company = Company::factory()->create(['name' => 'Test Company']);
+        $this->company = $company;
     }
 
     #[Test]
@@ -28,6 +30,16 @@ class ReportTemplateTest extends TestCase
     {
         /* arrange */
         // No setup needed
+
+        /* act */
+        $template = ReportTemplate::create([
+            'company_id'    => $this->company->id,
+            'name'          => 'Professional Invoice',
+            'slug'          => 'professional_invoice',
+            'template_type' => 'invoice',
+            'is_system'     => false,
+            'is_active'     => true,
+        ]);
 
         /* assert */
         $this->assertDatabaseHas('report_templates', [
@@ -49,6 +61,16 @@ class ReportTemplateTest extends TestCase
         /* arrange */
         // No setup needed
 
+        /* act */
+        $template = ReportTemplate::create([
+            'company_id'    => $this->company->id,
+            'name'          => 'System Template',
+            'slug'          => 'system_template',
+            'template_type' => 'invoice',
+            'is_system'     => true,
+            'is_active'     => false,
+        ]);
+
         /* assert */
         $this->assertTrue($template->is_system);
         $this->assertFalse($template->is_active);
@@ -62,6 +84,16 @@ class ReportTemplateTest extends TestCase
     {
         /* arrange */
         // No setup needed
+
+        /* act */
+        $template = ReportTemplate::create([
+            'company_id'    => $this->company->id,
+            'name'          => 'Test Template',
+            'slug'          => 'test_template',
+            'template_type' => 'invoice',
+            'is_system'     => false,
+            'is_active'     => true,
+        ]);
 
         /* assert */
         $this->assertInstanceOf(Company::class, $template->company);

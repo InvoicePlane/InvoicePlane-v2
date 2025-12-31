@@ -500,6 +500,147 @@ For detailed setup instructions, see `.github/workflows/README.md` and `.github/
 
 ---
 
+## PHPStan Type Safety Rules
+
+### Critical: Avoiding Float Array Keys
+**Problem:** Floats used directly as array keys cause PHPStan errors due to precision issues.
+
+**Solution:** Cast floats to strings when using as array keys:
+```php
+// ❌ WRONG - Float as array key
+$rate = 21.0;
+$taxGroups[$rate] = ['base' => 0, 'amount' => 0];
+
+// ✅ CORRECT - Cast to string for array key
+$rate = 21.0;
+$rateKey = (string) $rate;
+$taxGroups[$rateKey] = ['base' => 0, 'amount' => 0];
+
+// When iterating, cast back to float for calculations
+foreach ($taxGroups as $rateKey => $group) {
+    $rate = (float) $rateKey;
+    // Use $rate for calculations and comparisons
+}
+```
+
+### DTO Constructor Invocation
+**Problem:** DTOs with no-arg constructors being called with parameters.
+
+**Solution:** Use static factory methods instead:
+```php
+// ❌ WRONG - Calling constructor with parameters
+$dto = new GridPositionDTO(0, 0, 6, 4);
+
+// ✅ CORRECT - Use static factory method
+$dto = GridPositionDTO::create(0, 0, 6, 4);
+```
+
+### Test Variable Definition
+**Problem:** Tests asserting on undefined variables (missing "act" section).
+
+**Solution:** Always include all three test sections:
+```php
+#[Test]
+public function it_creates_user(): void
+{
+    /* Arrange */
+    $data = ['name' => 'John', 'email' => 'john@example.com'];
+    
+    /* Act */
+    $user = $this->service->createUser($data);  // ❗ Must define variable before assert
+    
+    /* Assert */
+    $this->assertInstanceOf(User::class, $user);
+}
+```
+
+### Property Type Consistency
+**Problem:** Child class properties have different types than parent.
+
+**Solution:** Match parent class property types exactly:
+```php
+// ❌ WRONG - Nullable when parent is not
+class ChildResource extends ParentResource
+{
+    protected static ?string $navigationGroup = 'Reports';  // Parent expects string
+}
+
+// ✅ CORRECT - Match parent type
+class ChildResource extends ParentResource
+{
+    protected static string $navigationGroup = 'Reports';
+}
+```
+
+### Mock Object Type Hints
+**Problem:** Using stdClass for mocks when proper type is expected.
+
+**Solution:** Use PHPStan suppression for test mocks:
+```php
+// When mocking with stdClass in tests
+$customer = new stdClass();
+$customer->name = 'Test';
+
+/** @phpstan-ignore-next-line */
+$invoice->customer = $customer;  // Property expects Customer model
+```
+
+### Import Statements
+**Problem:** Using class aliases without proper imports.
+
+**Solution:** Always import from the correct namespace:
+```php
+// ❌ WRONG - Bare class name
+use Log;
+
+// ✅ CORRECT - Full namespace
+use Illuminate\Support\Facades\Log;
+```
+
+### Method Return Types
+**Problem:** Method return types don't match what the method actually returns.
+
+**Solution:** Use type annotations or suppressions when needed:
+```php
+// When factory returns Collection but method expects Model
+protected function createCompany(): Company
+{
+    /** @var Company $company */
+    $company = Company::factory()->create();
+    return $company;
+}
+
+// Or use PHPStan suppression for complex cases
+/** @phpstan-ignore-next-line */
+return $this->query->get();
+```
+
+### PHPDoc Annotations
+**Problem:** Invalid PHPDoc syntax causing PHPStan errors.
+
+**Solution:** Use correct PHPDoc/PHPStan syntax:
+```php
+// ❌ WRONG - Invalid PHPDoc syntax
+/** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
+
+// ✅ CORRECT - Valid syntax
+/** @SuppressWarnings PHPMD.UnusedFormalParameter */
+
+// Or use PHPStan-specific suppression
+/** @phpstan-ignore-next-line */
+```
+
+### Static vs Non-Static Properties
+**Problem:** Child class makes parent property static or vice versa.
+
+**Solution:** Keep property modifiers consistent with parent:
+```php
+// If parent class has non-static $view, child must also be non-static
+// Use PHPStan suppression if framework requires static
+/** @phpstan-ignore-next-line */
+protected static string $view = 'view.name';
+```
+
 ## Common Pitfalls to Avoid
 
 1. Don't use `$fillable` in models
@@ -512,6 +653,11 @@ For detailed setup instructions, see `.github/workflows/README.md` and `.github/
 8. Don't use `updateOrCreate`—use repository upsert methods
 9. Don't nest conditions deeply—use early returns
 10. Don't duplicate logic—centralize in traits
+11. **Don't use floats as array keys**—cast to string first
+12. **Don't call DTO constructors with parameters**—use static factory methods
+13. **Don't write tests without "act" sections**—always define variables before asserting
+14. **Don't mismatch parent/child property types**—keep types consistent
+15. **Don't forget proper imports**—always use full namespaces
 
 ---
 
@@ -525,11 +671,17 @@ Before submitting code, verify:
 - [ ] Transformers used for DTO ↔ Model conversions
 - [ ] Tests use `it_` prefix and `#[Test]` attribute
 - [ ] Tests have Arrange/Act/Assert comments
+- [ ] **All test variables are defined in "act" section before assertions**
 - [ ] No `$fillable` in models
 - [ ] No JSON/ENUM in migrations
 - [ ] Type hints used throughout
+- [ ] **Floats cast to strings when used as array keys**
+- [ ] **DTO static factory methods used instead of constructor calls**
+- [ ] **Property types match parent class types exactly**
+- [ ] **All imports use full namespace paths (no bare class names)**
 - [ ] Early returns instead of nested conditions
 - [ ] Fakes used instead of mocks in tests
+- [ ] **Test mocks use PHPStan suppressions when type mismatches**
 - [ ] Export tests use Queue/Storage fakes
 - [ ] Code formatted with `vendor/bin/pint`
 - [ ] Static analysis passes (`vendor/bin/phpstan`)

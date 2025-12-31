@@ -42,7 +42,10 @@ class GridPositionDTOTest extends TestCase
     public function it_can_set_and_get_width(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new GridPositionDTO();
+
+        /* act */
+        $dto->setWidth(6);
 
         /* assert */
         $this->assertEquals(6, $dto->getWidth());
@@ -53,7 +56,10 @@ class GridPositionDTOTest extends TestCase
     public function it_can_set_and_get_height(): void
     {
         /* arrange */
-        // No setup needed
+        $dto = new GridPositionDTO();
+
+        /* act */
+        $dto->setHeight(4);
 
         /* assert */
         $this->assertEquals(4, $dto->getHeight());

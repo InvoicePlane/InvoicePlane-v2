@@ -137,12 +137,29 @@ php artisan queue:work
  - Place happy paths last in test cases.
  - Reusable logic (e.g., fixtures, setup) must live in abstract test cases, not inline.
  - Tests have inline comment blocks above sections (/* Arrange */, /* Act */, /* Assert */).
+ - **CRITICAL:** All tests MUST have an "act" section where variables are defined BEFORE assertions.
  - Tests must be meaningful - avoid simple "ok" checks; validate actual behavior and data.
  - Use data providers for testing multiple scenarios with the same logic.
  - **NEVER extend `Tests\TestCase`** - all tests must extend one of the abstract test cases from `Modules/Core/Tests/`:
    - `AbstractTestCase` - Basic test case with application bootstrap
    - `AbstractAdminPanelTestCase` - For admin panel tests with RefreshDatabase
    - `AbstractCompanyPanelTestCase` - For company panel tests with multi-tenancy
+
+**Test Structure Example:**
+```php
+#[Test]
+public function it_creates_invoice(): void
+{
+    /* Arrange */
+    $data = ['number' => 'INV-001', 'total' => 100.00];
+    
+    /* Act */
+    $invoice = $this->service->createInvoice($data);  // ❗ Define variable here
+    
+    /* Assert */
+    $this->assertInstanceOf(Invoice::class, $invoice);  // Use it here
+}
+```
 
 ### Export System Rules
 
@@ -184,3 +201,79 @@ php artisan queue:work
 - **Validate inputs** at the start of methods and abort/throw exceptions early.
 - **Extract complex conditions** into well-named methods.
 - **Use meaningful method names** that describe what they do.
+
+## PHPStan Type Safety Guidelines
+
+### Float Array Keys (CRITICAL)
+**Never use floats directly as array keys** - they cause PHPStan errors and precision issues:
+
+```php
+// ❌ WRONG
+$rate = 21.0;
+$taxGroups[$rate] = ['base' => 0];
+
+// ✅ CORRECT
+$rate = 21.0;
+$rateKey = (string) $rate;
+$taxGroups[$rateKey] = ['base' => 0];
+
+// When iterating, cast back to float
+foreach ($taxGroups as $rateKey => $group) {
+    $rate = (float) $rateKey;
+    // Use $rate for calculations
+}
+```
+
+### DTO Constructor Usage
+**Always use static factory methods**, never call DTO constructors with parameters:
+
+```php
+// ❌ WRONG
+$dto = new GridPositionDTO(0, 0, 6, 4);
+
+// ✅ CORRECT
+$dto = GridPositionDTO::create(0, 0, 6, 4);
+```
+
+### Property Type Consistency
+**Match parent class property types exactly**:
+
+```php
+// ❌ WRONG - Parent expects string
+protected static ?string $navigationGroup = 'Reports';
+
+// ✅ CORRECT
+protected static string $navigationGroup = 'Reports';
+```
+
+### Import Statements
+**Always use full namespace imports**:
+
+```php
+// ❌ WRONG
+use Log;
+
+// ✅ CORRECT
+use Illuminate\Support\Facades\Log;
+```
+
+### Test Mocks
+**Use PHPStan suppressions for test mocks with type mismatches**:
+
+```php
+$customer = new stdClass();
+/** @phpstan-ignore-next-line */
+$invoice->customer = $customer;
+```
+
+### Factory Return Types
+**Add type hints when factories return Collection but method expects Model**:
+
+```php
+protected function createCompany(): Company
+{
+    /** @var Company $company */
+    $company = Company::factory()->create();
+    return $company;
+}
+```

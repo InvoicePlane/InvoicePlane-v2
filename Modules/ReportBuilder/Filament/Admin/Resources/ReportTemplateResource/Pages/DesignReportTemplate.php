@@ -23,6 +23,7 @@ class DesignReportTemplate extends Page
 
     protected static string $resource = ReportTemplateResource::class;
 
+    /** @phpstan-ignore-next-line */
     protected static string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
@@ -39,7 +40,7 @@ class DesignReportTemplate extends Page
         }
 
         $gridSnapper = app(GridSnapperService::class);
-        $positionDTO = new GridPositionDTO(
+        $positionDTO = GridPositionDTO::create(
             $position['x'] ?? 0,
             $position['y'] ?? 0,
             $position['width'] ?? 1,
@@ -65,7 +66,7 @@ class DesignReportTemplate extends Page
     {
         $blockId = 'block_' . $blockType . '_' . Str::random(8);
 
-        $position = new GridPositionDTO(0, 0, 6, 4);
+        $position = GridPositionDTO::create(0, 0, 6, 4);
 
         $block = new BlockDTO();
         $block->setId($blockId)
@@ -93,7 +94,7 @@ class DesignReportTemplate extends Page
         if ($originalBlock['isCloned'] === false && $originalBlock['isCloneable'] === true) {
             $newBlockId = 'block_' . $originalBlock['type'] . '_' . Str::random(8);
 
-            $position = new GridPositionDTO(
+            $position = GridPositionDTO::create(
                 $originalBlock['position']['x'] + 1,
                 $originalBlock['position']['y'] + 1,
                 $originalBlock['position']['width'],

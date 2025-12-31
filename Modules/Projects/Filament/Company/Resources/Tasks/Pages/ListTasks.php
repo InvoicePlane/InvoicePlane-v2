@@ -58,6 +58,7 @@ class ListTasks extends ListRecords
 
     protected function getTableQuery(): Builder|Relation|null
     {
+        /** @var Builder $query */
         $query = Task::query()
             ->orderByRaw("
                 CASE task_status
@@ -72,7 +73,6 @@ class ListTasks extends ListRecords
             ")
             ->orderBy('due_at', 'asc');
 
-        /* @var Builder $query */
         return $query;
     }
 }

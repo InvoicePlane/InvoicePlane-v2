@@ -309,21 +309,23 @@ class EhfHandler extends BaseFormatHandler
 
         foreach ($invoice->invoiceItems as $item) {
             $rate = $this->getTaxRate($item);
+            $rateKey = (string) $rate;
 
-            if ( ! isset($taxGroups[$rate])) {
-                $taxGroups[$rate] = [
+            if ( ! isset($taxGroups[$rateKey])) {
+                $taxGroups[$rateKey] = [
                     'base'   => 0,
                     'amount' => 0,
                 ];
             }
 
-            $taxGroups[$rate]['base'] += $item->subtotal;
-            $taxGroups[$rate]['amount'] += $item->subtotal * ($rate / 100);
+            $taxGroups[$rateKey]['base'] += $item->subtotal;
+            $taxGroups[$rateKey]['amount'] += $item->subtotal * ($rate / 100);
         }
 
         $taxSubtotals = [];
 
-        foreach ($taxGroups as $rate => $group) {
+        foreach ($taxGroups as $rateKey => $group) {
+            $rate = (float) $rateKey;
             $taxSubtotals[] = [
                 'taxable_amount' => [
                     'value'       => number_format($group['base'], 2, '.', ''),
