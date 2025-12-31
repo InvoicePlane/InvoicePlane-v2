@@ -121,4 +121,11 @@ class GridPositionDTOTest extends TestCase
         $this->assertEquals(500, $dto->getWidth());
         $this->assertEquals(300, $dto->getHeight());
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_creates_grid_position(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

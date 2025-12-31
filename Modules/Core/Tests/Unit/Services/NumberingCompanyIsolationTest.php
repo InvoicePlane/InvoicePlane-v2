@@ -242,4 +242,12 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         $newNumber = $generator->forNumberingId($numbering->id)->generate();
         $this->assertEquals('TSK-45534', $newNumber);
     }
+
+    #[Test]
+    #[Group('numbering')]
+    #[Group('company-isolation')]
+    public function it_isolates_numbering_per_company(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

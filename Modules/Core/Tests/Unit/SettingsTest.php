@@ -247,4 +247,11 @@ class SettingsTest extends AbstractAdminPanelTestCase
         $this->assertContains('updates', $tabIds);
         $this->assertCount(4, $tabIds);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_persists_settings(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

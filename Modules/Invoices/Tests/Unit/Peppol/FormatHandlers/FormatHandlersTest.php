@@ -294,4 +294,10 @@ class FormatHandlersTest extends TestCase
 
         return $invoice;
     }
+
+    #[Test]
+    public function it_formats_document(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

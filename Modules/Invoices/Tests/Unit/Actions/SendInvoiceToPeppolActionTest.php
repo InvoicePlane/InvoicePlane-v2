@@ -253,4 +253,10 @@ class SendInvoiceToPeppolActionTest extends TestCase
 
         return $invoice;
     }
+
+    #[Test]
+    public function it_sends_invoice(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

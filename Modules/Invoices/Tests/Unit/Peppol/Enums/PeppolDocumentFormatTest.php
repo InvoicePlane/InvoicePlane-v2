@@ -202,4 +202,10 @@ class PeppolDocumentFormatTest extends TestCase
         $this->assertArrayHasKey('ubl_2.4', $options);
         $this->assertArrayHasKey('fatturapa_1.2', $options);
     }
+
+    #[Test]
+    public function it_rejects_invalid_format(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

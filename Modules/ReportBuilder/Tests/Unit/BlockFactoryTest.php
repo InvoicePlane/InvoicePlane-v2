@@ -102,4 +102,11 @@ class BlockFactoryTest extends TestCase
             $this->assertNotNull($handler);
         }
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_creates_block(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

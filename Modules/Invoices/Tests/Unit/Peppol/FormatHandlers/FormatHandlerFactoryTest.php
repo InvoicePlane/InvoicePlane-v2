@@ -140,4 +140,10 @@ class FormatHandlerFactoryTest extends TestCase
 
         $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
     }
+
+    #[Test]
+    public function it_resolves_handler(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

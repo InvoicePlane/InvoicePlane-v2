@@ -46,4 +46,11 @@ class CompanyObserverTest extends AbstractTestCase
             'company_id' => $company->id,
         ]);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_creates_related_entities(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

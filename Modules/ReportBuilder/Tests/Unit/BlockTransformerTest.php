@@ -274,4 +274,11 @@ class BlockTransformerTest extends TestCase
         $this->assertEquals($originalData['isCloned'], $convertedData['isCloned']);
         $this->assertEquals($originalData['clonedFrom'], $convertedData['clonedFrom']);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_transforms_block(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

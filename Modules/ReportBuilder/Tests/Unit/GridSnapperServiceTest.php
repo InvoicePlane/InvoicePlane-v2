@@ -196,4 +196,11 @@ class GridSnapperServiceTest extends TestCase
         /* assert */
         $this->assertFalse($service->validate($position));
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_snaps_to_grid(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

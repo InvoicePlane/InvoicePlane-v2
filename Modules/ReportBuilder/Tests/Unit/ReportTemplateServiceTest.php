@@ -247,4 +247,11 @@ class ReportTemplateServiceTest extends TestCase
         $this->assertInstanceOf(BlockDTO::class, $blocks[0]);
         $this->assertEquals('block_1', $blocks[0]->getId());
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_creates_template(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

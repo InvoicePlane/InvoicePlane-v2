@@ -273,4 +273,12 @@ class NumberGeneratorTemplateTest extends AbstractTestCase
         $this->assertEquals('PRJ-2025-000099', $number1);
         $this->assertEquals('PRJ-2025-000100', $number2);
     }
+
+    #[Test]
+    #[Group('numbering')]
+    #[Group('templates')]
+    public function it_applies_the_correct_template(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

@@ -152,4 +152,11 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
         /* Assert */
         $this->assertFalse($isApplied);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_increments_numbers_correctly(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

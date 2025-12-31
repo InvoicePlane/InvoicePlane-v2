@@ -330,4 +330,10 @@ class HttpClientExceptionHandlerTest extends TestCase
                        && str_contains($arg['message'], 'Unexpected error');
             }));
     }
+
+    #[Test]
+    public function it_handles_http_exceptions(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

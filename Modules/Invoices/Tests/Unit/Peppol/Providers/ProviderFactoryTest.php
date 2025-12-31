@@ -190,4 +190,10 @@ class ProviderFactoryTest extends TestCase
 
         $this->assertInstanceOf(ProviderInterface::class, $provider);
     }
+
+    #[Test]
+    public function it_resolves_provider(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }

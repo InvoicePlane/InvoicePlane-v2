@@ -355,4 +355,11 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertCount(1, $otherCompanyGroups, 'Other company should have its document group');
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }
+
+    #[Test]
+    #[Group('date-auto-population')]
+    public function it_populates_date_fields(): void
+    {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+    }
 }
