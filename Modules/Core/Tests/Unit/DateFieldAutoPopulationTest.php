@@ -46,7 +46,9 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
      */
     protected function createTestNumbering(): Numbering
     {
-        return Numbering::factory()->for($this->company)->create();
+        /** @var Numbering $numbering */
+        $numbering = Numbering::factory()->for($this->company)->create();
+        return $numbering;
     }
 
     #[Test]
