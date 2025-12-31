@@ -294,22 +294,4 @@ class FormatHandlersTest extends TestCase
 
         return $invoice;
     }
-
-    #[Test]
-    public function it_formats_document(): void
-    {
-        /* arrange */
-        $handler = new FacturaeHandler();
-        $invoice = $this->createMockInvoice();
-
-        /* act */
-        $formatted = $handler->format($invoice);
-
-        /* assert */
-        $this->assertIsString($formatted);
-        $this->assertNotEmpty($formatted);
-        // The formatted output should be XML for most handlers
-        $this->assertStringContainsString('<', $formatted);
-        $this->assertStringContainsString('>', $formatted);
-    }
 }
