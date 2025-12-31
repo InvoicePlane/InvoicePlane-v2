@@ -42,11 +42,9 @@ class Settings extends Page implements HasTable, HasForms
         $this->settings['currency_symbol'] ??= '$';
         $this->settings['currency_symbol_placement'] ??= 'before';
         $this->settings['custom_title'] ??= '';
-        $this->settings['custom_title'] ??= '';
-        $this->settings['date_format'] ??= 'd-M-Y';
+        $this->settings['date_format'] ??= 'Y-m-d';
         $this->settings['default_country'] ??= 'US';
         $this->settings['default_decimals_for_items'] ??= '2';
-        $this->settings['disable_sidebar'] ??= false;
         $this->settings['disable_sidebar'] ??= false;
         $this->settings['disable_the_quickactions'] ??= false;
         $this->settings['display_responsive_item_list'] ??= true;
@@ -65,6 +63,44 @@ class Settings extends Page implements HasTable, HasForms
         $this->settings['theme'] ??= 'default';
         $this->settings['use_monospace_amounts'] ??= false;
         $this->settings['use_monospace_font_for_amounts'] ??= true;
+        $this->settings['auto_check_updates'] ??= true;
+        $this->settings['auto_install_security_updates'] ??= false;
+        $this->settings['update_channel'] ??= 'stable';
+        $this->settings['update_check_interval'] ??= 24;
+        
+        $this->form->fill($this->settings);
+    }
+    
+    public function submit(): void
+    {
+        $this->settings = $this->form->getState();
+        
+        // Here you would save settings to database or config
+        // For now, just keep them in memory
+    }
+    
+    protected function getFormStatePath(): ?string
+    {
+        return 'settings';
+    }
+    
+    protected function getCachedFormActions(): array
+    {
+        return $this->getFormActions();
+    }
+    
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->submit('submit'),
+        ];
+    }
+    
+    protected function hasFullWidthFormActions(): bool
+    {
+        return false;
     }
 
     protected function getFormSchema(): array
@@ -254,8 +290,13 @@ class Settings extends Page implements HasTable, HasForms
                                 ->schema([
                                     Select::make('settings.default_invoice_group')
                                         ->label(trans('ip.default_invoice_group'))
-                                        //->options([])
-                                        ->options(fn () => Numbering::pluck('name', 'id'))
+                                        ->options(function () {
+                                            $companyId = session('current_company_id');
+                                            if (!$companyId) {
+                                                return [];
+                                            }
+                                            return Numbering::where('company_id', $companyId)->pluck('name', 'id');
+                                        })
                                         ->placeholder(trans('ip.none')),
 
                                     RichEditor::make('settings.default_invoice_terms')
@@ -657,8 +698,39 @@ class Settings extends Page implements HasTable, HasForms
                     Tab::make(trans('ip.updates'))
                         ->schema([
                             Section::make(trans('ip.update_check'))
-                                ->columns(1)
+                                ->columns(2)
                                 ->schema([
+                                    Toggle::make('settings.auto_check_updates')
+                                        ->label('Auto Check Updates')
+                                        ->default(true),
+                                    
+                                    Toggle::make('settings.auto_install_security_updates')
+                                        ->label('Auto Install Security Updates')
+                                        ->default(false),
+                                    
+                                    Select::make('settings.update_channel')
+                                        ->label('Update Channel')
+                                        ->options([
+                                            'stable' => 'Stable',
+                                            'beta' => 'Beta',
+                                            'alpha' => 'Alpha',
+                                        ])
+                                        ->default('stable')
+                                        ->required(),
+                                    
+                                    TextInput::make('settings.update_check_interval')
+                                        ->label('Update Check Interval (hours)')
+                                        ->numeric()
+                                        ->minValue(1)
+                                        ->maxValue(168)
+                                        ->default(24)
+                                        ->required(),
+                                    
+                                    TextInput::make('settings.update_notification_email')
+                                        ->label('Update Notification Email')
+                                        ->email()
+                                        ->nullable(),
+                                    
                                     TextInput::make('settings.current_version')
                                         ->string()
                                         ->placeholder('1.6.3')
