@@ -31,8 +31,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_filters_numberings_by_current_company_id(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $group1Company1 = Numbering::factory()->create([
             'company_id' => $this->company1->id,
             'name'       => 'Invoice Group Company 1',
@@ -53,6 +52,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         session(['current_company_id' => $this->company1->id]);
 
+        /* act */
         $component = Livewire::test(Settings::class);
 
         $formSchema = $component->instance()->getFormSchema();
@@ -73,6 +73,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         $options = $documentGroupField->getOptions();
 
+        /* assert */
         $this->assertArrayHasKey($group1Company1->id, $options);
         $this->assertArrayHasKey($group2Company1->id, $options);
         $this->assertArrayNotHasKey($group1Company2->id, $options);
@@ -85,8 +86,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_handles_no_current_company_id_in_session(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         Numbering::factory()->for($this->company1)->create([
             'name' => 'Test Group',
             'type' => 'invoice',
@@ -94,9 +94,12 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         session()->forget('current_company_id');
 
+        /* act */
         $component = Livewire::test(Settings::class);
 
         $formSchema = $component->instance()->getFormSchema();
+
+        /* assert */
         $this->assertNotEmpty($formSchema);
     }
 
@@ -104,10 +107,10 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_returns_empty_options_when_no_numberings_exist(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
+        /* act */
         $component = Livewire::test(Settings::class);
 
         $formSchema  = $component->instance()->getFormSchema();
@@ -122,6 +125,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         $options = $documentGroupField->getOptions();
 
+        /* assert */
         $this->assertEmpty($options);
     }
 
@@ -129,8 +133,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_switches_company_context_properly(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $group1 = Numbering::factory()->create([
             'company_id' => $this->company1->id,
             'name'       => 'Group Company 1',
@@ -143,12 +146,14 @@ class SettingsTest extends AbstractAdminPanelTestCase
             'type'       => 'invoice',
         ]);
 
+        /* act */
         session(['current_company_id' => $this->company1->id]);
         $component1 = Livewire::test(Settings::class);
 
         session(['current_company_id' => $this->company2->id]);
         $component2 = Livewire::test(Settings::class);
 
+        /* assert */
         // Verify each component shows only its company's groups
         // This would require accessing the form options, but the important
         // thing is that no errors are thrown during company switching
@@ -159,14 +164,15 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_loads_default_settings_properly(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
+        /* act */
         $component = Livewire::test(Settings::class);
 
         $settings = $component->instance()->settings;
 
+        /* assert */
         $this->assertEquals('USD', $settings['currency_code']);
         $this->assertEquals('$', $settings['currency_symbol']);
         $this->assertEquals('before', $settings['currency_symbol_placement']);
@@ -184,12 +190,12 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_validates_update_check_interval_boundaries(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
         $component = Livewire::test(Settings::class);
 
+        /* act & assert */
         $component->set('settings.update_check_interval', 0);
         $component->call('submit');
 
@@ -210,12 +216,12 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_validates_email_format_for_notifications(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
         $component = Livewire::test(Settings::class);
 
+        /* act & assert */
         $component->set('settings.update_notification_email', 'invalid-email');
         $component->call('submit');
 
@@ -231,16 +237,17 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_has_all_required_tabs(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
+        /* act */
         $component  = Livewire::test(Settings::class);
         $formSchema = $component->instance()->getFormSchema();
 
         $tabs   = $formSchema[0]->getChildComponents();
         $tabIds = collect($tabs)->map(fn ($tab) => $tab->getId())->toArray();
 
+        /* assert */
         $this->assertContains('general', $tabIds);
         $this->assertContains('invoices', $tabIds);
         $this->assertContains('quotes', $tabIds);
