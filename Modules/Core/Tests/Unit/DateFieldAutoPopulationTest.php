@@ -91,7 +91,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
-    #[Group('failed')]
     public function it_auto_populates_task_date_fields_on_create_form(): void
     {
         /* arrange */
@@ -143,7 +142,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
-    #[Group('failed')]
     public function it_auto_populates_payment_date_fields_on_create_form(): void
     {
         /* arrange */
@@ -344,10 +342,12 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
-    #[Group('failed')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
+        // Clean up any default numberings created by CompanyObserver during setup
+        Numbering::where('company_id', $this->company->id)->delete();
+        
         $otherCompany           = Company::factory()->create();
         $currentCompanyDocGroup = Numbering::factory()->for($this->company)->create(['name' => 'Current Company Group']);
         $otherCompanyDocGroup   = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
@@ -364,24 +364,13 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         /* assert */
         // The form should only show document groups belonging to the current company
         $availableNumberings = Numbering::where('company_id', $this->company->id)->get();
-        $this->assertGreaterThanOrEqual(1, $availableNumberings->count(), 'Should have at least one document group for current company');
-        $this->assertTrue(
-            $availableNumberings->contains('id', $currentCompanyDocGroup->id),
-            'Should include the created document group for current company'
-        );
+        $this->assertCount(1, $availableNumberings, 'Should only have document groups for current company');
+        $this->assertEquals($currentCompanyDocGroup->id, $availableNumberings->first()->id);
 
-        // Verify that the other company's document group is not accessible in current company's list
-        $this->assertFalse(
-            $availableNumberings->contains('id', $otherCompanyDocGroup->id),
-            'Should not include document groups from other companies'
-        );
+        // Verify that the other company's document group is not accessible
+        $allDocGroups = Numbering::all();
+        $this->assertCount(2, $allDocGroups, 'Should have total of 2 document groups');
 
-        // Verify that all numberings for current company belong to current company
-        foreach ($availableNumberings as $numbering) {
-            $this->assertEquals($this->company->id, $numbering->company_id, 'All numberings should belong to current company');
-        }
-
-        // Verify that the other company's document group exists separately
         $otherCompanyGroups = Numbering::where('company_id', $otherCompany->id)->get();
         $this->assertCount(1, $otherCompanyGroups, 'Other company should have its document group');
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
