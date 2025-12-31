@@ -248,6 +248,44 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Group('company-isolation')]
     public function it_isolates_numbering_per_company(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* Arrange */
+        Carbon::setTestNow('2025-12-29');
+
+        $company1 = Company::factory()->create();
+        $company2 = Company::factory()->create();
+
+        $numbering1 = Numbering::factory()->for($company1)->create([
+            'type'     => NumberingType::TASK->value,
+            'format'   => 'TSK-{{number}}',
+            'prefix'   => 'TSK',
+            'next_id'  => 1,
+            'left_pad' => 4,
+        ]);
+
+        $numbering2 = Numbering::factory()->for($company2)->create([
+            'type'     => NumberingType::TASK->value,
+            'format'   => 'TSK-{{number}}',
+            'prefix'   => 'TSK',
+            'next_id'  => 1,
+            'left_pad' => 4,
+        ]);
+
+        $generator1 = new TaskNumberGenerator($company1->id);
+        $generator2 = new TaskNumberGenerator($company2->id);
+
+        /* Act */
+        $number1 = $generator1->forNumberingId($numbering1->id)->generate();
+        $number2 = $generator2->forNumberingId($numbering2->id)->generate();
+
+        /* Assert */
+        // Both should generate independent numbers
+        $this->assertEquals('TSK-0001', $number1);
+        $this->assertEquals('TSK-0001', $number2);
+        
+        // Verify numbering is isolated - updating numbering1 shouldn't affect numbering2
+        $numbering1->refresh();
+        $numbering2->refresh();
+        $this->assertEquals(2, $numbering1->next_id);
+        $this->assertEquals(2, $numbering2->next_id);
     }
 }

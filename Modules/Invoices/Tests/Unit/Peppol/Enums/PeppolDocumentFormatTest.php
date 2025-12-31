@@ -206,6 +206,10 @@ class PeppolDocumentFormatTest extends TestCase
     #[Test]
     public function it_rejects_invalid_format(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange & act & assert */
+        $this->expectException(ValueError::class);
+        
+        // Trying to create an enum with an invalid value should throw ValueError
+        PeppolDocumentFormat::from('invalid_format_name');
     }
 }

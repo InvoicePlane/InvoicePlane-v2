@@ -252,6 +252,24 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_persists_settings(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        session(['current_company_id' => $this->company1->id]);
+
+        $component = Livewire::test(Settings::class);
+
+        /* act */
+        $component->set('settings.currency_code', 'EUR');
+        $component->set('settings.currency_symbol', '€');
+        $component->set('settings.date_format', 'd/m/Y');
+        $component->call('submit');
+
+        /* assert */
+        $component->assertHasNoErrors();
+        
+        // Verify settings are persisted (they would be saved to a settings table or config)
+        $settings = $component->get('settings');
+        $this->assertEquals('EUR', $settings['currency_code']);
+        $this->assertEquals('€', $settings['currency_symbol']);
+        $this->assertEquals('d/m/Y', $settings['date_format']);
     }
 }

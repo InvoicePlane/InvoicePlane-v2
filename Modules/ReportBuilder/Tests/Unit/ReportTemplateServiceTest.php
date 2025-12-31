@@ -34,8 +34,6 @@ class ReportTemplateServiceTest extends TestCase
     #[Group('unit')]
     public function it_creates_template(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
-
         /* arrange */
         $company = new \stdClass();
         $company->id = 1;

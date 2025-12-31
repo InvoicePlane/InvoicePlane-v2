@@ -298,6 +298,18 @@ class FormatHandlersTest extends TestCase
     #[Test]
     public function it_formats_document(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $handler = new FacturaeHandler();
+        $invoice = $this->createMockInvoice();
+
+        /* act */
+        $formatted = $handler->format($invoice);
+
+        /* assert */
+        $this->assertIsString($formatted);
+        $this->assertNotEmpty($formatted);
+        // The formatted output should be XML for most handlers
+        $this->assertStringContainsString('<', $formatted);
+        $this->assertStringContainsString('>', $formatted);
     }
 }

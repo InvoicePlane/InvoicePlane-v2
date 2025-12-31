@@ -277,6 +277,21 @@ class PeppolServiceTest extends TestCase
     #[Test]
     public function it_processes_invoice(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $invoice = $this->createMockInvoice();
+
+        /* act */
+        $result = $this->service->sendInvoiceToPeppol($invoice, [
+            'customer_peppol_id' => 'BE:0123456789',
+            'format'             => 'ubl_2.4',
+        ]);
+
+        /* assert */
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('success', $result);
+        $this->assertArrayHasKey('document_id', $result);
+        $this->assertArrayHasKey('status', $result);
+        $this->assertTrue($result['success']);
+        $this->assertNotEmpty($result['document_id']);
     }
 }

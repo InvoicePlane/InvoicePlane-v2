@@ -51,6 +51,27 @@ class CompanyObserverTest extends AbstractTestCase
     #[Group('unit')]
     public function it_creates_related_entities(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* Arrange */
+        /* Act */
+        $company = Company::create([
+            'search_code' => 'TEST123',
+            'name'        => 'Test Company',
+            'slug'        => 'test-company',
+        ]);
+
+        /* Assert */
+        // Verify that all related entities are created
+        $this->assertDatabaseHas('email_templates', ['company_id' => $company->id]);
+        $this->assertDatabaseHas('tax_rates', ['company_id' => $company->id]);
+        $this->assertDatabaseHas('numbering', ['company_id' => $company->id]);
+        $this->assertDatabaseHas('product_categories', ['company_id' => $company->id]);
+        $this->assertDatabaseHas('product_units', ['company_id' => $company->id]);
+        $this->assertDatabaseHas('expense_categories', ['company_id' => $company->id]);
+        
+        // Verify the company exists
+        $this->assertDatabaseHas('companies', [
+            'id'   => $company->id,
+            'name' => 'Test Company',
+        ]);
     }
 }

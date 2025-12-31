@@ -144,6 +144,14 @@ class FormatHandlerFactoryTest extends TestCase
     #[Test]
     public function it_resolves_handler(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $format = PeppolDocumentFormat::UBL_24;
+
+        /* act */
+        $handler = FormatHandlerFactory::create($format);
+
+        /* assert */
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+        $this->assertInstanceOf(UblHandler::class, $handler);
     }
 }

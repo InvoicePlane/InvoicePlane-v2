@@ -334,6 +334,13 @@ class HttpClientExceptionHandlerTest extends TestCase
     #[Test]
     public function it_handles_http_exceptions(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        Http::fake([
+            'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
+        ]);
+
+        /* act & assert */
+        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->handler->get('test');
     }
 }

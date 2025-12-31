@@ -279,6 +279,27 @@ class NumberGeneratorTemplateTest extends AbstractTestCase
     #[Group('templates')]
     public function it_applies_the_correct_template(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* Arrange */
+        Carbon::setTestNow('2025-12-29');
+
+        $numbering = Numbering::factory()->for($this->company)->create([
+            'type'     => NumberingType::PROJECT->value,
+            'name'     => 'Template Test',
+            'format'   => '{{prefix}}-{{year}}-{{month}}-{{number}}',
+            'prefix'   => 'TST',
+            'next_id'  => 5,
+            'left_pad' => 3,
+        ]);
+
+        $generator = new ProjectNumberGenerator($this->company->id);
+
+        /* Act */
+        $number = $generator->forNumberingId($numbering->id)->generate();
+
+        /* Assert */
+        $this->assertEquals('TST-2025-12-005', $number);
+        $this->assertStringContainsString('TST', $number);
+        $this->assertStringContainsString('2025', $number);
+        $this->assertStringContainsString('12', $number);
     }
 }

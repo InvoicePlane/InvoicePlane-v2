@@ -275,6 +275,26 @@ class BlockDTOTest extends TestCase
     #[Group('unit')]
     public function it_creates_block_dto(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
+
+        /* act */
+        $dto = new BlockDTO();
+        $dto->setId('test_block')
+            ->setType('header_company')
+            ->setPosition($position)
+            ->setConfig(['key' => 'value'])
+            ->setLabel('Test Block')
+            ->setIsCloneable(true);
+
+        /* assert */
+        $this->assertInstanceOf(BlockDTO::class, $dto);
+        $this->assertEquals('test_block', $dto->getId());
+        $this->assertEquals('header_company', $dto->getType());
+        $this->assertEquals($position, $dto->getPosition());
+        $this->assertEquals(['key' => 'value'], $dto->getConfig());
+        $this->assertEquals('Test Block', $dto->getLabel());
+        $this->assertTrue($dto->getIsCloneable());
     }
 }

@@ -276,6 +276,27 @@ class DocumentsClientTest extends TestCase
     #[Test]
     public function it_creates_document(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        Http::fake([
+            'https://api.e-invoice.be/api/documents' => Http::response([
+                'document_id' => 'DOC-NEW-123',
+                'status'      => 'created',
+            ], 201),
+        ]);
+
+        $documentData = [
+            'invoice_number' => 'INV-TEST-001',
+            'customer'       => ['name' => 'Test Customer'],
+            'amount'         => 100.00,
+        ];
+
+        /* act */
+        $response = $this->client->submitDocument($documentData);
+
+        /* assert */
+        $this->assertTrue($response->successful());
+        $this->assertEquals(201, $response->status());
+        $this->assertEquals('DOC-NEW-123', $response->json('document_id'));
+        $this->assertEquals('created', $response->json('status'));
     }
 }

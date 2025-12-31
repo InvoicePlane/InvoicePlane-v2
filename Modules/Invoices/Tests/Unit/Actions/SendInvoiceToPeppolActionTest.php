@@ -257,6 +257,19 @@ class SendInvoiceToPeppolActionTest extends TestCase
     #[Test]
     public function it_sends_invoice(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $invoice = $this->createMockInvoice('sent');
+
+        /* act */
+        $result = $this->action->execute($invoice, [
+            'customer_peppol_id' => 'BE:0123456789',
+        ]);
+
+        /* assert */
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('success', $result);
+        $this->assertArrayHasKey('document_id', $result);
+        $this->assertTrue($result['success']);
+        $this->assertNotEmpty($result['document_id']);
     }
 }

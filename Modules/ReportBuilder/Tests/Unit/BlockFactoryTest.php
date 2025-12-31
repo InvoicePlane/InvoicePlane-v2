@@ -107,6 +107,14 @@ class BlockFactoryTest extends TestCase
     #[Group('unit')]
     public function it_creates_block(): void
     {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+        /* arrange */
+        $blockType = 'header_company';
+
+        /* act */
+        $block = BlockFactory::make($blockType);
+
+        /* assert */
+        $this->assertNotNull($block);
+        $this->assertInstanceOf(HeaderCompanyBlockHandler::class, $block);
     }
 }
