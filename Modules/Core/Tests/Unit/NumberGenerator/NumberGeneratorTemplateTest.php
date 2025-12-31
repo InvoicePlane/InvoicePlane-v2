@@ -273,4 +273,5 @@ class NumberGeneratorTemplateTest extends AbstractTestCase
         $this->assertEquals('PRJ-2025-000099', $number1);
         $this->assertEquals('PRJ-2025-000100', $number2);
     }
+
 }

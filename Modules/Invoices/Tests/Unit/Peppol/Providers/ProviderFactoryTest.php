@@ -190,4 +190,22 @@ class ProviderFactoryTest extends TestCase
 
         $this->assertInstanceOf(ProviderInterface::class, $provider);
     }
+
+    #[Test]
+    public function it_resolves_provider(): void
+    {
+        /* arrange */
+        $integration = new PeppolIntegration([
+            'provider_name' => 'storecove',
+            'company_id'    => 1,
+            'enabled'       => true,
+        ]);
+
+        /* act */
+        $provider = ProviderFactory::make($integration);
+
+        /* assert */
+        $this->assertInstanceOf(ProviderInterface::class, $provider);
+        $this->assertInstanceOf(StorecoveProvider::class, $provider);
+    }
 }

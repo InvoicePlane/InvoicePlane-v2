@@ -46,4 +46,5 @@ class CompanyObserverTest extends AbstractTestCase
             'company_id' => $company->id,
         ]);
     }
+
 }

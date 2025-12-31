@@ -330,4 +330,17 @@ class HttpClientExceptionHandlerTest extends TestCase
                        && str_contains($arg['message'], 'Unexpected error');
             }));
     }
+
+    #[Test]
+    public function it_handles_http_exceptions(): void
+    {
+        /* arrange */
+        Http::fake([
+            'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
+        ]);
+
+        /* act & assert */
+        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->handler->get('test');
+    }
 }

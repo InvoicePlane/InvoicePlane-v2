@@ -202,4 +202,14 @@ class PeppolDocumentFormatTest extends TestCase
         $this->assertArrayHasKey('ubl_2.4', $options);
         $this->assertArrayHasKey('fatturapa_1.2', $options);
     }
+
+    #[Test]
+    public function it_rejects_invalid_format(): void
+    {
+        /* arrange & act & assert */
+        $this->expectException(ValueError::class);
+        
+        // Trying to create an enum with an invalid value should throw ValueError
+        PeppolDocumentFormat::from('invalid_format_name');
+    }
 }

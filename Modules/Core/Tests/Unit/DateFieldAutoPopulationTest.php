@@ -355,4 +355,5 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertCount(1, $otherCompanyGroups, 'Other company should have its document group');
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }
+
 }

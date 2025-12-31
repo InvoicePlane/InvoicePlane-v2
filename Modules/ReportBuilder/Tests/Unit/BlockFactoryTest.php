@@ -102,4 +102,19 @@ class BlockFactoryTest extends TestCase
             $this->assertNotNull($handler);
         }
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_creates_block(): void
+    {
+        /* arrange */
+        $blockType = 'header_company';
+
+        /* act */
+        $block = BlockFactory::make($blockType);
+
+        /* assert */
+        $this->assertNotNull($block);
+        $this->assertInstanceOf(HeaderCompanyBlockHandler::class, $block);
+    }
 }

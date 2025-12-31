@@ -196,4 +196,27 @@ class GridSnapperServiceTest extends TestCase
         /* assert */
         $this->assertFalse($service->validate($position));
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_snaps_to_grid(): void
+    {
+        /* arrange */
+        $service = new GridSnapperService(12);
+
+        $position = new GridPositionDTO();
+        $position->setX(1)->setY(1)->setWidth(5)->setHeight(3);
+
+        /* act */
+        $snapped = $service->snap($position);
+
+        /* assert */
+        $this->assertInstanceOf(GridPositionDTO::class, $snapped);
+        // Verify values are within grid constraints
+        $this->assertLessThanOrEqual(12, $snapped->getX() + $snapped->getWidth());
+        $this->assertGreaterThanOrEqual(0, $snapped->getX());
+        $this->assertGreaterThanOrEqual(0, $snapped->getY());
+        $this->assertGreaterThan(0, $snapped->getWidth());
+        $this->assertGreaterThan(0, $snapped->getHeight());
+    }
 }

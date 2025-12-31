@@ -274,4 +274,30 @@ class BlockTransformerTest extends TestCase
         $this->assertEquals($originalData['isCloned'], $convertedData['isCloned']);
         $this->assertEquals($originalData['clonedFrom'], $convertedData['clonedFrom']);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_transforms_block(): void
+    {
+        /* arrange */
+        $position = new GridPositionDTO();
+        $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
+
+        $dto = new BlockDTO();
+        $dto->setId('test_block')
+            ->setType('header_company')
+            ->setPosition($position)
+            ->setConfig(['test' => true]);
+
+        /* act */
+        $array = BlockTransformer::toArray($dto);
+
+        /* assert */
+        $this->assertIsArray($array);
+        $this->assertEquals('test_block', $array['id']);
+        $this->assertEquals('header_company', $array['type']);
+        $this->assertIsArray($array['position']);
+        $this->assertEquals(0, $array['position']['x']);
+        $this->assertEquals(6, $array['position']['width']);
+    }
 }

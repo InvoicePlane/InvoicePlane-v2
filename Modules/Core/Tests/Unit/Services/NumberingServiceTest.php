@@ -152,4 +152,41 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
         /* Assert */
         $this->assertFalse($isApplied);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_increments_numbers_correctly(): void
+    {
+        /* Arrange */
+        $numbering = Numbering::factory()->create([
+            'type'     => NumberingType::PROJECT->value,
+            'name'     => 'Test Numbering',
+            'next_id'  => 10,
+            'left_pad' => 4,
+            'format'   => '{{prefix}}-{{number}}',
+            'prefix'   => 'PRJ',
+        ]);
+
+        /* Act */
+        $preview1 = $this->service->previewNextFormattedNumber($numbering);
+        
+        // Simulate generating a number (incrementing next_id)
+        $numbering->next_id = 11;
+        $numbering->save();
+        
+        $preview2 = $this->service->previewNextFormattedNumber($numbering);
+        
+        $numbering->next_id = 12;
+        $numbering->save();
+        
+        $preview3 = $this->service->previewNextFormattedNumber($numbering);
+
+        /* Assert */
+        $this->assertEquals('PRJ-0010', $preview1);
+        $this->assertEquals('PRJ-0011', $preview2);
+        $this->assertEquals('PRJ-0012', $preview3);
+        
+        // Verify the numbering increments correctly
+        $this->assertEquals(12, $numbering->next_id);
+    }
 }

@@ -12,47 +12,65 @@ class DateHelpersTest extends AbstractTestCase
     #[Test]
     public function it_format_date_returns_formatted_date(): void
     {
-        $this->markTestIncomplete();
-
+        /* arrange */
         $date = Carbon::create(2025, 7, 14);
-        $this->assertEquals('2025-07-14', DateHelpers::formatDate($date));
+
+        /* act */
+        $result = DateHelpers::formatDate($date);
+
+        /* assert */
+        $this->assertEquals('2025-07-14', $result);
     }
 
     #[Test]
     public function it_format_date_returns_dash_for_null(): void
     {
-        $this->markTestIncomplete();
+        /* arrange */
+        $date = null;
 
-        $this->assertEquals('-', DateHelpers::formatDate(null));
+        /* act */
+        $result = DateHelpers::formatDate($date);
+
+        /* assert */
+        $this->assertEquals('-', $result);
     }
 
     #[Test]
     public function it_format_since_returns_since_for_past_date(): void
     {
-        $this->markTestIncomplete();
+        /* arrange */
+        $date = now()->subDays(3);
 
-        $date   = now()->subDays(3);
+        /* act */
         $result = DateHelpers::formatSince($date);
+
+        /* assert */
         $this->assertStringContainsString('ago', $result);
     }
 
     #[Test]
     public function it_format_since_returns_in_for_future_date(): void
     {
-        $this->markTestIncomplete();
+        /* arrange */
+        $date = now()->addDays(5);
 
-        $date   = now()->addDays(5);
+        /* act */
         $result = DateHelpers::formatSince($date);
+
+        /* assert */
         $this->assertStringContainsString('in', $result);
     }
 
     #[Test]
     public function it_format_since_returns_date_for_large_difference(): void
     {
-        $this->markTestIncomplete();
+        /* arrange */
+        $date = now()->subDays(400);
 
-        $date   = now()->subDays(400);
+        /* act */
         $result = DateHelpers::formatSince($date);
+
+        /* assert */
         $this->assertEquals(DateHelpers::formatDate($date), $result);
     }
 }
