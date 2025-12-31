@@ -54,17 +54,17 @@ class ReportTemplateService
     /**
      * Create a new report template.
      *
-     * @param Company              $company      The company owning the template
-     * @param string               $name         The template name
-     * @param ReportTemplateType   $templateType The template type (e.g., 'invoice', 'quote')
-     * @param array                $blocks       Array of block data
+     * @param Company                        $company      The company owning the template
+     * @param string                         $name         The template name
+     * @param string|ReportTemplateType      $templateType The template type (e.g., 'invoice', 'quote')
+     * @param array                          $blocks       Array of block data
      *
      * @return ReportTemplate The created template
      */
     public function createTemplate(
         Company $company,
         string $name,
-        ReportTemplateType $templateType,
+        string|ReportTemplateType $templateType,
         array $blocks
     ): ReportTemplate {
         $this->validateBlocks($blocks);
@@ -73,7 +73,9 @@ class ReportTemplateService
         $template->company_id    = $company->id;
         $template->name          = $name;
         $template->slug          = $this->makeUniqueSlug($company, $name);
-        $template->template_type = $templateType;
+        $template->template_type = is_string($templateType) 
+            ? ReportTemplateType::from($templateType) 
+            : $templateType;
         $template->is_system     = false;
         $template->is_active     = true;
         $template->save();

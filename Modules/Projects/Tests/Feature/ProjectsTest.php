@@ -45,7 +45,15 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertSuccessful();
-        $this->assertDatabaseHas('projects', $payload);
+        $this->assertDatabaseHas('projects', [
+            'company_id'     => $payload['company_id'],
+            'customer_id'    => $payload['customer_id'],
+            'project_status' => $payload['project_status'],
+            'project_name'   => $payload['project_name'],
+            'start_at'       => $payload['start_at'] . ' 00:00:00',
+            'end_at'         => $payload['end_at'] . ' 00:00:00',
+            'description'    => $payload['description'],
+        ]);
     }
     # endregion
 
