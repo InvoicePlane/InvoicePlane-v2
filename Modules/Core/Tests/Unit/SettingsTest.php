@@ -51,7 +51,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         session(['current_company_id' => $this->company1->id]);
 
         /* act */
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         $formSchema = $component->instance()->getFormSchema();
         $tabs       = $formSchema[0]->getChildComponents();
@@ -94,7 +94,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         session()->forget('current_company_id');
 
         /* act */
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         $formSchema = $component->instance()->getFormSchema();
 
@@ -111,7 +111,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         session(['current_company_id' => $this->company1->id]);
 
         /* act */
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         $formSchema  = $component->instance()->getFormSchema();
         $tabs        = $formSchema[0]->getChildComponents();
@@ -147,10 +147,10 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         /* act */
         session(['current_company_id' => $this->company1->id]);
-        $component1 = Livewire::test(Settings::class);
+        $component1 = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         session(['current_company_id' => $this->company2->id]);
-        $component2 = Livewire::test(Settings::class);
+        $component2 = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         /* assert */
         // Verify each component shows only its company's groups
@@ -168,7 +168,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         session(['current_company_id' => $this->company1->id]);
 
         /* act */
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         $settings = $component->instance()->settings;
 
@@ -194,7 +194,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         /* act & assert */
         $component->set('settings.update_check_interval', 0);
@@ -221,7 +221,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         /* act & assert */
         $component->set('settings.update_notification_email', 'invalid-email');
@@ -244,7 +244,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         session(['current_company_id' => $this->company1->id]);
 
         /* act */
-        $component  = Livewire::test(Settings::class);
+        $component  = Livewire::actingAs($this->superAdmin)->test(Settings::class);
         $formSchema = $component->instance()->getFormSchema();
 
         $tabs   = $formSchema[0]->getChildComponents();
@@ -266,7 +266,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
         /* arrange */
         session(['current_company_id' => $this->company1->id]);
 
-        $component = Livewire::test(Settings::class);
+        $component = Livewire::actingAs($this->superAdmin)->test(Settings::class);
 
         /* act */
         $component->set('settings.currency_code', 'EUR');
