@@ -102,7 +102,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     public function it_generates_formatted_number_preview(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $numbering = Numbering::factory()->for($this->company)->create([
             'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 42,
@@ -146,7 +146,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     public function it_checks_if_numbering_is_applied(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $numbering = Numbering::factory()->for($this->company)->create([
             'type'    => NumberingType::PROJECT->value,
             'name'    => 'Test Numbering',
             'next_id' => 1,
@@ -165,7 +165,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     public function it_increments_numbers_correctly(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $numbering = Numbering::factory()->for($this->company)->create([
             'type'     => NumberingType::PROJECT->value,
             'name'     => 'Test Numbering',
             'next_id'  => 10,
