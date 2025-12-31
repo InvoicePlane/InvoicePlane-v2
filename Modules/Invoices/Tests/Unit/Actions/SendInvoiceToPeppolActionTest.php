@@ -2,11 +2,12 @@
 
 namespace Modules\Invoices\Tests\Unit\Actions;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Actions\SendInvoiceToPeppolAction;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
@@ -20,8 +21,10 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests the action that coordinates invoice transmission to Peppol.
  * Uses fakes for HTTP responses and database interactions.
  */
-class SendInvoiceToPeppolActionTest extends TestCase
+class SendInvoiceToPeppolActionTest extends AbstractTestCase
 {
+    use RefreshDatabase;
+    
     protected SendInvoiceToPeppolAction $action;
 
     protected function setUp(): void
