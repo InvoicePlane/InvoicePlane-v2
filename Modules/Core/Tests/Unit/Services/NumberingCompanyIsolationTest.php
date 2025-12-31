@@ -118,6 +118,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
+    #[Group('failed')]
     public function it_allows_changing_expense_numbering_with_year_month(): void
     {
         /* Arrange */
@@ -204,6 +205,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('troubleshooting')]
+    #[Group('failed')]
     public function it_recalculates_next_id_when_set_to_lower_value_for_troubleshooting(): void
     {
         /* Arrange */

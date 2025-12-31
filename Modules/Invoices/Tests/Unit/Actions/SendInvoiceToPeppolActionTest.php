@@ -53,6 +53,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failed')]
     public function it_executes_successfully_with_valid_invoice(): void
     {
         $invoice = $this->createMockInvoice('sent');

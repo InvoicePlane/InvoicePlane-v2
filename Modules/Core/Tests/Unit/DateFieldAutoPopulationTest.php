@@ -73,6 +73,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_auto_populates_task_date_fields_on_create_form(): void
     {
         /* arrange */
@@ -127,6 +128,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_auto_populates_payment_date_fields_on_create_form(): void
     {
         /* arrange */
@@ -327,6 +329,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
