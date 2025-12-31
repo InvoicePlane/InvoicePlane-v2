@@ -27,7 +27,11 @@ class QuoteFactory extends AbstractFactory
         $quotedAt  = fake()->dateTimeBetween('-1 year', 'now');
         $expiresAt = (clone $quotedAt)->modify('+' . fake()->numberBetween(7, 180) . ' days');
 
+        $companyId = $this->resolveCompanyId();
+
         return [
+            'prospect_id'            => $this->resolveForeignKey(\Modules\Clients\Models\Relation::class, $companyId),
+            'user_id'                => $this->resolveForeignKey(\Modules\Core\Models\User::class, $companyId),
             'quote_number'           => 'Q-' . now()->year . '-' . fake()->unique()->numberBetween(1, 9999),
             'quote_status'           => fake()->randomElement(QuoteStatus::cases())->value,
             'quoted_at'              => $quotedAt,

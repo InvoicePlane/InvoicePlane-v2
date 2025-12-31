@@ -22,7 +22,11 @@ class InvoiceFactory extends AbstractFactory
         $taxTotal = $subtotal * $taxRate;
         $total    = $subtotal + $taxTotal;
 
+        $companyId = $this->resolveCompanyId();
+
         return [
+            'customer_id'              => $this->resolveForeignKey(\Modules\Clients\Models\Relation::class, $companyId),
+            'user_id'                  => $this->resolveForeignKey(\Modules\Core\Models\User::class, $companyId),
             'invoice_number'           => $this->faker->unique()->numerify('INV-###-####'),
             'invoice_status'           => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'invoice_sign'             => $sign,

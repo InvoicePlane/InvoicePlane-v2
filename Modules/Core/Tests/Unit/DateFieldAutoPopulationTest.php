@@ -76,7 +76,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_auto_populates_task_date_fields_on_create_form(): void
     {
         /* arrange */
-        $project      = Project::factory()->for($this->company)->create();
+        $customer     = Relation::factory()->for($this->company)->customer()->create();
+        $project      = Project::factory()->for($this->company)->for($customer, 'customer')->create();
         $expectedDate = Carbon::now();
 
         /* act */
@@ -129,7 +130,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_auto_populates_payment_date_fields_on_create_form(): void
     {
         /* arrange */
-        $invoice      = Invoice::factory()->for($this->company)->create();
+        $customer     = Relation::factory()->for($this->company)->customer()->create();
+        $invoice      = Invoice::factory()->for($this->company)->for($customer, 'customer')->create();
         $expectedDate = Carbon::now();
 
         /* act */
