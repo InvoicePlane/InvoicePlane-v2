@@ -135,6 +135,8 @@ class SettingsTest extends AbstractAdminPanelTestCase
     public function it_switches_company_context_properly(): void
     {
         /* arrange */
+        Numbering::where('company_id', $this->company1->id)->delete();
+        Numbering::where('company_id', $this->company2->id)->delete();
         $group1 = Numbering::factory()->for($this->company1)->create([
             'name'       => 'Group Company 1',
             'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,

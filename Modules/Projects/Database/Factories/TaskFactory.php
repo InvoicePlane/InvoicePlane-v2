@@ -10,11 +10,38 @@ class TaskFactory extends AbstractFactory
 {
     protected $model = Task::class;
 
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Task $task): void {
+            if ($task->company_id === null || $task->customer_id !== null) {
+                return;
+            }
+
+            $customerId = \Modules\Clients\Models\Relation::query()
+                ->where('company_id', $task->company_id)
+                ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                ->inRandomOrder()
+                ->value('id');
+
+            if ($customerId === null) {
+                $customer = \Modules\Clients\Models\Relation::factory()
+                    ->for(\Modules\Core\Models\Company::find($task->company_id))
+                    ->customer()
+                    ->create();
+
+                $customerId = $customer->id;
+            }
+
+            $task->customer_id = $customerId;
+            $task->save();
+        });
+    }
+
     public function definition(): array
     {
         $companyId = $this->resolveCompanyId();
-        
-        // Get or create a customer for this company
+
+        // Get a customer for this company if one already exists
         $customerId = null;
         if ($companyId) {
             $customerId = \Modules\Clients\Models\Relation::query()
@@ -22,16 +49,7 @@ class TaskFactory extends AbstractFactory
                 ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
                 ->inRandomOrder()
                 ->value('id');
-                
-            if (!$customerId) {
-                $customer = \Modules\Clients\Models\Relation::factory()
-                    ->for(\Modules\Core\Models\Company::find($companyId))
-                    ->customer()
-                    ->create();
-                $customerId = $customer->id;
-            }
         }
-        
         return [
             'company_id'  => $companyId,
             'customer_id' => $customerId,
