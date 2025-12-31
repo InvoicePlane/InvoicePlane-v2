@@ -130,8 +130,7 @@ foreach ($errorsByFile as $filePath => $errors) {
     }
 }
 
-echo "\n---\n\n";
-echo "**Generated:** " . date('Y-m-d H:i:s') . " UTC\n";
+echo "\n---\n";
 
 /**
  * Categorize error based on message content
