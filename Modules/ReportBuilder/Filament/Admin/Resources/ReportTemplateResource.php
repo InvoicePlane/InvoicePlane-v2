@@ -14,6 +14,7 @@ use Modules\ReportBuilder\Filament\Admin\Resources\ReportTemplateResource\Pages\
 use Modules\ReportBuilder\Filament\Admin\Resources\ReportTemplateResource\Schemas\ReportTemplateForm;
 use Modules\ReportBuilder\Filament\Admin\Resources\ReportTemplateResource\Tables\ReportTemplatesTable;
 use Modules\ReportBuilder\Models\ReportTemplate;
+use UnitEnum;
 
 class ReportTemplateResource extends Resource
 {
@@ -21,7 +22,7 @@ class ReportTemplateResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static string $navigationGroup = 'Reports';
+    protected static string|UnitEnum|null $navigationGroup = 'Reports';
 
     protected static ?int $navigationSort = 10;
 
