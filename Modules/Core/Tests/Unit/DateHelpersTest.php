@@ -60,7 +60,7 @@ class DateHelpersTest extends AbstractTestCase
         $result = DateHelpers::formatSince($date);
 
         /* assert */
-        $this->assertStringContainsString('in', $result);
+        $this->assertStringContainsString('from now', $result);
     }
 
     #[Test]
