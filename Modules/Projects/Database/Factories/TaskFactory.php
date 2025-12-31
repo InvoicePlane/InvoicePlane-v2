@@ -12,7 +12,29 @@ class TaskFactory extends AbstractFactory
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        
+        // Get or create a customer for this company
+        $customerId = null;
+        if ($companyId) {
+            $customerId = \Modules\Clients\Models\Relation::query()
+                ->where('company_id', $companyId)
+                ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                ->inRandomOrder()
+                ->value('id');
+                
+            if (!$customerId) {
+                $customer = \Modules\Clients\Models\Relation::factory()
+                    ->for(\Modules\Core\Models\Company::find($companyId))
+                    ->customer()
+                    ->create();
+                $customerId = $customer->id;
+            }
+        }
+        
         return [
+            'company_id'  => $companyId,
+            'customer_id' => $customerId,
             'task_number' => $this->faker->unique()->numerify('TSK-#####'),
             'assigned_to' => null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,

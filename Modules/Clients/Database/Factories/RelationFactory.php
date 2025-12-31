@@ -33,6 +33,7 @@ class RelationFactory extends AbstractFactory
             ]);
 
         return [
+            'company_id'      => $this->resolveCompanyId(),
             'relation_type'   => $relationType,
             'relation_status' => $this->faker->randomElement(RelationStatus::cases())->value,
             'relation_number' => $this->faker->bothify('??######'),
