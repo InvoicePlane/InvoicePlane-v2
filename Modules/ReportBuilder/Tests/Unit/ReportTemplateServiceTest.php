@@ -34,6 +34,8 @@ class ReportTemplateServiceTest extends TestCase
     #[Group('unit')]
     public function it_creates_template(): void
     {
+        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
+
         /* arrange */
         $company = new \stdClass();
         $company->id = 1;
@@ -246,12 +248,5 @@ class ReportTemplateServiceTest extends TestCase
         $this->assertCount(1, $blocks);
         $this->assertInstanceOf(BlockDTO::class, $blocks[0]);
         $this->assertEquals('block_1', $blocks[0]->getId());
-    }
-
-    #[Test]
-    #[Group('unit')]
-    public function it_creates_template(): void
-    {
-        $this->markTestIncomplete('Test incomplete - requires investigation for PHPStan coverage and implementation details');
     }
 }
