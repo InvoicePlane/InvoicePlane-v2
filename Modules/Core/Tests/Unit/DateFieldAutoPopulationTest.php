@@ -33,13 +33,29 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         // No need to create them again
     }
 
+    /**
+     * Create a test customer for the current company.
+     */
+    protected function createTestCustomer(): Relation
+    {
+        return Relation::factory()->for($this->company)->customer()->create();
+    }
+
+    /**
+     * Create a test numbering for the current company.
+     */
+    protected function createTestNumbering(): Numbering
+    {
+        return Numbering::factory()->for($this->company)->create();
+    }
+
     #[Test]
     #[Group('date-auto-population')]
     public function it_auto_populates_invoice_date_fields_on_create_form(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
 
         $expectedDate = Carbon::now();
 
@@ -73,10 +89,12 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_auto_populates_task_date_fields_on_create_form(): void
     {
         /* arrange */
-        $project      = Project::factory()->for($this->company)->create();
+        $customer     = $this->createTestCustomer();
+        $project      = Project::factory()->for($this->company)->for($customer, 'customer')->create();
         $expectedDate = Carbon::now();
 
         /* act */
@@ -102,8 +120,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_auto_populates_quote_date_fields_on_create_form(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -126,10 +144,12 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_auto_populates_payment_date_fields_on_create_form(): void
     {
         /* arrange */
-        $invoice      = Invoice::factory()->for($this->company)->create();
+        $customer     = $this->createTestCustomer();
+        $invoice      = Invoice::factory()->for($this->company)->for($customer, 'customer')->create();
         $expectedDate = Carbon::now();
 
         /* act */
@@ -159,8 +179,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $originalTimezone = config('app.timezone');
         config(['app.timezone' => 'America/New_York']);
 
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
         $expectedDate  = Carbon::now('America/New_York');
 
         /* act */
@@ -188,8 +208,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_handles_multiple_date_fields_consistently(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -227,8 +247,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_handles_date_field_auto_population_during_high_load(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
         $components    = [];
         $startTime     = Carbon::now();
 
@@ -260,8 +280,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_maintains_date_precision_across_different_formats(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
         $expectedDate  = Carbon::now();
 
         /* act */
@@ -298,8 +318,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     public function it_handles_date_auto_population_with_invalid_session_data(): void
     {
         /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $customer      = $this->createTestCustomer();
+        $documentGroup = $this->createTestNumbering();
 
         // Simulate corrupted or invalid session data
         session(['corrupted_date' => 'invalid-date-string']);
@@ -325,6 +345,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
+    #[Group('failed')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
@@ -332,7 +353,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $currentCompanyDocGroup = Numbering::factory()->for($this->company)->create(['name' => 'Current Company Group']);
         $otherCompanyDocGroup   = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
 
-        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $customer = $this->createTestCustomer();
 
         /* act */
         $component = Livewire::actingAs($this->user)

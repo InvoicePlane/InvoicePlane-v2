@@ -29,6 +29,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* arrange */
@@ -84,6 +85,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_handles_no_current_company_id_in_session(): void
     {
         /* arrange */
@@ -105,6 +107,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_returns_empty_options_when_no_numberings_exist(): void
     {
         /* arrange */
@@ -131,6 +134,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_switches_company_context_properly(): void
     {
         /* arrange */
@@ -162,6 +166,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_loads_default_settings_properly(): void
     {
         /* arrange */
@@ -188,6 +193,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_validates_update_check_interval_boundaries(): void
     {
         /* arrange */
@@ -214,6 +220,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_validates_email_format_for_notifications(): void
     {
         /* arrange */
@@ -235,6 +242,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_has_all_required_tabs(): void
     {
         /* arrange */
@@ -257,6 +265,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
+    #[Group('failed')]
     public function it_persists_settings(): void
     {
         /* arrange */

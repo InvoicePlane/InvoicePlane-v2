@@ -20,7 +20,10 @@ class ProjectFactory extends AbstractFactory
             ? $this->faker->optional(0.7)->dateTimeBetween($startDate, '+2 years')
             : null;
 
+        $companyId = $this->resolveCompanyId();
+
         return [
+            'customer_id'    => $this->resolveForeignKey(\Modules\Clients\Models\Relation::class, $companyId),
             'project_number' => $this->faker->unique()->numerify('PRJ-#####'),
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),
