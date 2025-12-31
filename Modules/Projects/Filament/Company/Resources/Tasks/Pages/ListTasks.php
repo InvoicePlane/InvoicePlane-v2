@@ -60,14 +60,15 @@ class ListTasks extends ListRecords
     {
         $query = Task::query()
             ->orderByRaw("
-                FIELD(task_status,
-                    'not_started',
-                    'open',
-                    'in_progress',
-                    'completed',
-                    'paid',
-                    'cancelled'
-                )
+                CASE task_status
+                    WHEN 'not_started' THEN 1
+                    WHEN 'open' THEN 2
+                    WHEN 'in_progress' THEN 3
+                    WHEN 'completed' THEN 4
+                    WHEN 'paid' THEN 5
+                    WHEN 'cancelled' THEN 6
+                    ELSE 7
+                END
             ")
             ->orderBy('due_at', 'asc');
 
