@@ -110,6 +110,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
     public function it_returns_empty_options_when_no_numberings_exist(): void
     {
         /* arrange */
+        Numbering::where('company_id', $this->company1->id)->delete();
         session(['current_company_id' => $this->company1->id]);
 
         /* act */
