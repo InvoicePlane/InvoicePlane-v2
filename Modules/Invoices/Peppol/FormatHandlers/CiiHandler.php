@@ -281,17 +281,19 @@ class CiiHandler extends BaseFormatHandler
         $taxGroups = [];
         foreach ($invoice->items as $item) {
             $rate = $item->tax_rate ?? 0;
-            if ( ! isset($taxGroups[$rate])) {
-                $taxGroups[$rate] = [
+            $rateKey = (string) $rate;
+            if ( ! isset($taxGroups[$rateKey])) {
+                $taxGroups[$rateKey] = [
                     'basis'  => 0,
                     'amount' => 0,
                 ];
             }
-            $taxGroups[$rate]['basis'] += $item->subtotal;
-            $taxGroups[$rate]['amount'] += $item->tax_total;
+            $taxGroups[$rateKey]['basis'] += $item->subtotal;
+            $taxGroups[$rateKey]['amount'] += $item->tax_total;
         }
 
-        foreach ($taxGroups as $rate => $group) {
+        foreach ($taxGroups as $rateKey => $group) {
+            $rate = (float) $rateKey;
             $taxTotals[] = [
                 'CalculatedAmount'      => number_format($group['amount'], 2, '.', ''),
                 'TypeCode'              => 'VAT',
