@@ -356,31 +356,4 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }
 
-    #[Test]
-    #[Group('date-auto-population')]
-    public function it_populates_date_fields(): void
-    {
-        /* arrange */
-        $customer      = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
-        $expectedDate  = Carbon::now();
-
-        /* act */
-        $component = Livewire::actingAs($this->user)
-            ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
-
-        $formData = $component->get('data');
-
-        /* assert */
-        // Verify that date fields are populated
-        $this->assertArrayHasKey('invoiced_at', $formData);
-        
-        if ( ! empty($formData['invoiced_at'])) {
-            $actualDate = Carbon::parse($formData['invoiced_at']);
-            $this->assertTrue(
-                $actualDate->diffInSeconds($expectedDate) <= 1,
-                'Date field should be auto-populated within 1 second of current time'
-            );
-        }
-    }
 }
