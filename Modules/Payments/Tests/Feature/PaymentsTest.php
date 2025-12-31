@@ -55,7 +55,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertSuccessful();
-        $this->assertDatabaseHas('payments', $payload);
+        $this->assertDatabaseHas('payments', [
+            'invoice_id'     => $payload['invoice_id'],
+            'customer_id'    => $payload['customer_id'],
+            'payment_method' => $payload['payment_method'],
+            'payment_amount' => $payload['payment_amount'],
+            'paid_at'        => $payload['paid_at'] . ' 00:00:00',
+        ]);
     }
     # endregion
 
