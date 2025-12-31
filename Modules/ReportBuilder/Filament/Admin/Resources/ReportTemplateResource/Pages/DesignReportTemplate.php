@@ -23,8 +23,7 @@ class DesignReportTemplate extends Page
 
     protected static string $resource = ReportTemplateResource::class;
 
-    /** @phpstan-ignore-next-line */
-    protected static string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
+    protected string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
     {
