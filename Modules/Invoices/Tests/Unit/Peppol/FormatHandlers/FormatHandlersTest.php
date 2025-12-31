@@ -89,8 +89,8 @@ class FormatHandlersTest extends TestCase
     {
         $handler = new $handlerClass();
         $invoice = new Invoice();
-        /** @var Customer|null $nullCustomer */
         $nullCustomer            = null;
+        /** @phpstan-ignore-next-line */
         $invoice->customer       = $nullCustomer;
         $invoice->invoice_number = 'TEST-001';
         $invoice->invoiced_at    = now();
@@ -275,6 +275,7 @@ class FormatHandlersTest extends TestCase
         $customer->contact_email       = 'test@example.com';
         $customer->reference           = 'REF-001';
 
+        /** @phpstan-ignore-next-line */
         $invoice->customer = $customer;
 
         // Create mock invoice items

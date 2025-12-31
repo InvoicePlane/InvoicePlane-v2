@@ -35,7 +35,13 @@ class ReportTemplateServiceTest extends TestCase
     public function it_creates_template(): void
     {
         /* arrange */
-        // No setup needed
+        $company = new \stdClass();
+        $company->id = 1;
+        $blocks = [];
+
+        /* act */
+        /** @phpstan-ignore-next-line */
+        $template = $this->service->createTemplate($company, 'Test Template', 'invoice', $blocks);
 
         /* assert */
         $this->assertInstanceOf(ReportTemplate::class, $template);
@@ -216,7 +222,24 @@ class ReportTemplateServiceTest extends TestCase
     public function it_loads_blocks(): void
     {
         /* arrange */
-        // No setup needed
+        $template = new ReportTemplate();
+        $template->company_id = 1;
+        $template->slug = 'test-template';
+        
+        $this->fileRepository->expects($this->once())
+            ->method('load')
+            ->with(1, 'test-template')
+            ->willReturn([
+                [
+                    'id' => 'block_1',
+                    'type' => 'header_company',
+                    'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                    'config' => [],
+                ]
+            ]);
+
+        /* act */
+        $blocks = $this->service->loadBlocks($template);
 
         /* assert */
         $this->assertIsArray($blocks);

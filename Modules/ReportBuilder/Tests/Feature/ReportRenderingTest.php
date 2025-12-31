@@ -183,6 +183,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
 
     protected function createCompanyContext(): Company
     {
+        /** @var Company $company */
         $company = Company::factory()->create();
         $user    = User::factory()->create();
         $user->companies()->attach($company);

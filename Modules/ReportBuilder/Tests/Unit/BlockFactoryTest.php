@@ -20,6 +20,9 @@ class BlockFactoryTest extends TestCase
         /* arrange */
         // No setup needed
 
+        /* act */
+        $handler = BlockFactory::make('header_company');
+
         /* assert */
         $this->assertInstanceOf(HeaderCompanyBlockHandler::class, $handler);
     }
@@ -31,6 +34,9 @@ class BlockFactoryTest extends TestCase
         /* arrange */
         // No setup needed
 
+        /* act */
+        $handler = BlockFactory::make('detail_items');
+
         /* assert */
         $this->assertInstanceOf(DetailItemsBlockHandler::class, $handler);
     }
@@ -41,6 +47,9 @@ class BlockFactoryTest extends TestCase
     {
         /* arrange */
         // No setup needed
+
+        /* act */
+        $handler = BlockFactory::make('footer_notes');
 
         /* assert */
         $this->assertInstanceOf(FooterNotesBlockHandler::class, $handler);
@@ -65,6 +74,9 @@ class BlockFactoryTest extends TestCase
     {
         /* arrange */
         // No setup needed
+
+        /* act */
+        $blockTypes = BlockFactory::all();
 
         /* assert */
         $this->assertIsArray($blockTypes);
