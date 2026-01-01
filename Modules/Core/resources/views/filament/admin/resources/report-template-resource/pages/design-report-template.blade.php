@@ -19,6 +19,7 @@
             editingBlock: null,
             availableFields: @js($this->getAvailableFields()),
             openBlockModal(block) {
+                console.log('Opening block modal for:', block);
                 this.editingBlock = JSON.parse(JSON.stringify(block));
                 // Ensure editingBlock has a fields array in config
                 if (!this.editingBlock.config) this.editingBlock.config = {};
@@ -26,13 +27,16 @@
 
                 // Load the latest system configuration for this block type to ensure we have the latest fields
                 const systemBlocks = @js($systemBlocksArray);
+                console.log('System blocks available:', systemBlocks);
                 if (systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
+                    console.log('Found global config for:', this.editingBlock.type);
                     // This implies we are editing the GLOBAL block definition.
                     this.editingBlock.config = JSON.parse(JSON.stringify(systemBlocks[this.editingBlock.type].config));
                     if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
                 }
 
                 this.isModalOpen = true;
+                console.log('isModalOpen is now:', this.isModalOpen);
             },
             closeBlockModal() {
                 this.isModalOpen = false;
@@ -307,7 +311,7 @@
                                                                   class="w-6 h-6 text-white/90"/>
                                                 <button
                                                     type="button"
-                                                    x-on:click.stop.prevent="openBlockModal(block)"
+                                                    x-on:click.stop.prevent="console.log('Edit clicked for:', block); openBlockModal(block)"
                                                     class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2"
                                                     title="Configure Fields"
                                                 >
