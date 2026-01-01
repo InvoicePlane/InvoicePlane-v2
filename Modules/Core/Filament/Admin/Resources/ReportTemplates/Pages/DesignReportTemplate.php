@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\ReportTemplateResource\Pages;
+namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
-use Modules\Core\Filament\Admin\Resources\ReportTemplate\ReportTemplateResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Models\ReportTemplate;
 use Modules\Core\Services\GridSnapperService;
 use Modules\Core\Services\ReportTemplateService;
@@ -23,7 +23,7 @@ class DesignReportTemplate extends Page
 
     protected static string $resource = ReportTemplateResource::class;
 
-    protected string $view = 'reportbuilder::filament.admin.resources.report-template-resource.pages.design-report-template';
+    protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
     {

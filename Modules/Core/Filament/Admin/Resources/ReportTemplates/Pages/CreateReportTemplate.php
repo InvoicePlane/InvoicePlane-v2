@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\ReportTemplateResource\Pages;
+namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Filament\Admin\Resources\ReportTemplate\ReportTemplateResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Models\Company;
 use Modules\Core\Services\ReportTemplateService;
 

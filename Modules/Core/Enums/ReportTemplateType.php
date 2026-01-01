@@ -6,9 +6,8 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum ReportTemplateType: string implements LabeledEnum
 {
-    case INVOICE  = 'invoice';
-    case QUOTE    = 'quote';
-    case ESTIMATE = 'estimate';
+    case INVOICE = 'invoice';
+    case QUOTE   = 'quote';
 
     public static function values(): array
     {
@@ -18,18 +17,16 @@ enum ReportTemplateType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::INVOICE  => trans('ip.invoice'),
-            self::QUOTE    => trans('ip.quote'),
-            self::ESTIMATE => trans('ip.estimate'),
+            self::INVOICE => trans('ip.invoice'),
+            self::QUOTE   => trans('ip.quote'),
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::INVOICE  => 'success',
-            self::QUOTE    => 'info',
-            self::ESTIMATE => 'warning',
+            self::INVOICE => 'success',
+            self::QUOTE   => 'info',
         };
     }
 }

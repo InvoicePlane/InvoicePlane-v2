@@ -1,10 +1,9 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\ReportTemplateResource\Schemas;
+namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Schemas;
 
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -33,10 +32,6 @@ class ReportTemplateForm
                                             ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
                                     ),
                             ]),
-                        Textarea::make('description')
-                            ->label(trans('ip.description'))
-                            ->rows(3)
-                            ->maxLength(1000),
                         Grid::make(2)
                             ->schema([
                                 Checkbox::make('is_active')

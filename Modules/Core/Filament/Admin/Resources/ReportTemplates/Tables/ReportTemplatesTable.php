@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\ReportTemplateResource\Tables;
+namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -101,7 +101,7 @@ class ReportTemplatesTable
                                 $record->company,
                                 $record->name . ' (Copy)',
                                 $record->template_type,
-                                array_map(fn ($block) => (array) $block, $blocks)
+                                array_map(static fn ($block) => (array) $block, $blocks)
                             );
                         })
                         ->visible(fn (ReportTemplate $record) => $record->isCloneable()),

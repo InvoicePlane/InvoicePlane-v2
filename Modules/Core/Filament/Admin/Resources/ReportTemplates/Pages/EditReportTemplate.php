@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\ReportTemplateResource\Pages;
+namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Filament\Admin\Resources\ReportTemplate\ReportTemplateResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Services\ReportTemplateService;
 
 class EditReportTemplate extends EditRecord

@@ -20,15 +20,7 @@ class ReportTemplate extends Model
 {
     use BelongsToCompany;
 
-    protected $fillable = [
-        'company_id',
-        'name',
-        'slug',
-        'description',
-        'template_type',
-        'is_system',
-        'is_active',
-    ];
+    public $timestamps = false;
 
     protected $casts = [
         'is_system'     => 'boolean',

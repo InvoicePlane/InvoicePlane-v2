@@ -25,7 +25,7 @@ use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
-use Modules\Core\Filament\Admin\Resources\ReportTemplate\ReportTemplateResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
@@ -107,17 +107,17 @@ class AdminPanelProvider extends PanelProvider
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->groups([
-                        NavigationGroup::make('Companies')
+                        NavigationGroup::make(trans('ip.companies'))
                             //->icon('heroicon-o-building-office')
                             ->items([
                                 //...CompanyResource::getNavigationItems(),
                             ]),
-                        NavigationGroup::make('Email Templates')
+                        NavigationGroup::make(trans('ip.email_templates'))
                             //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...EmailTemplateResource::getNavigationItems(),
                             ]),
-                        NavigationGroup::make('Document Groups')
+                        NavigationGroup::make(trans('ip.numberings'))
                             //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...NumberingResource::getNavigationItems(),
@@ -127,7 +127,7 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 ...PaymentMethodResource::getNavigationItems(),
                             ]),*/
-                        NavigationGroup::make('Tax Rates')
+                        NavigationGroup::make(trans('ip.tax_rates'))
                             //->icon('heroicon-o-receipt-percent')
                             ->items([
                                 ...TaxRateResource::getNavigationItems(),
@@ -145,7 +145,13 @@ class AdminPanelProvider extends PanelProvider
                                 ...ImportResource::getNavigationItems(),
                             ]),*/
 
-                        NavigationGroup::make('Users & Roles')
+                        NavigationGroup::make(trans('ip.report_builder'))
+                            //->icon('heroicon-o-receipt-percent')
+                            ->items([
+                                ...ReportTemplateResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make(trans('ip.users_roles'))
                             //->icon('heroicon-o-users')
                             ->items([
                                 ...UserResource::getNavigationItems(),
