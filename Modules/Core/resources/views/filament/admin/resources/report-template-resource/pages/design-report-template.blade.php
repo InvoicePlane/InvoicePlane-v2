@@ -67,29 +67,34 @@
         }"
         class="flex flex-col gap-6"
     >
-        <div class="flex items-center justify-between">
-            <div class="flex gap-2">
+        <div
+            class="flex items-center justify-between bg-white dark:bg-gray-900 px-6 py-4 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
+            <div class="flex items-center gap-4">
+                <h1 class="text-xl font-bold">@lang('ip.design_report_template')</h1>
+            </div>
+            <div class="flex gap-3">
+                <x-filament::button
+                    color="gray"
+                    tag="a"
+                    icon="heroicon-m-x-mark"
+                    :href="static::getResource()::getUrl('index')"
+                >
+                    @lang('ip.cancel')
+                </x-filament::button>
+
                 <x-filament::button
                     wire:click="save"
                     color="primary"
                     icon="heroicon-m-check"
                 >
-                    Save Template
-                </x-filament::button>
-
-                <x-filament::button
-                    color="gray"
-                    tag="a"
-                    :href="static::getResource()::getUrl('index')"
-                >
-                    Cancel
+                    @lang('ip.save_template')
                 </x-filament::button>
             </div>
         </div>
 
         <div class="grid grid-cols-12 gap-6 items-start">
             {{-- Canvas Area --}}
-            <div class="col-span-9 space-y-8">
+            <div class="col-span-12 lg:col-span-9 space-y-8">
                 @php
                     $bands = [
                         'header' => 'Header',
@@ -155,7 +160,7 @@
             </div>
 
             {{-- Sidebar: Available Blocks --}}
-            <div class="col-span-3 space-y-4 sticky top-6">
+            <div class="col-span-12 lg:col-span-3 space-y-4 lg:sticky lg:top-6">
                 <x-filament::section>
                     <x-slot name="heading">@lang('ip.available_blocks')</x-slot>
                     <div class="grid grid-cols-1 gap-2">
