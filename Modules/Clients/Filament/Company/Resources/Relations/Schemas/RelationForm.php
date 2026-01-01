@@ -93,37 +93,6 @@ class RelationForm
                                                 TextInput::make('relation_number')
                                                     ->label(trans('ip.relation_number'))
                                                     ->required(),
-
-                                                Fieldset::make(trans('ip.client_information'))
-                                                    ->extraAttributes([
-                                                        'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
-                                                    ])
-                                                    ->schema([
-                                                        Placeholder::make('company_name_display')
-                                                            ->label(trans('ip.company_name'))
-                                                            ->content(fn (Get $get) => $get('company_name') ?: '-'),
-
-                                                        Placeholder::make('trading_name_display')
-                                                            ->label(trans('ip.trading_name'))
-                                                            ->content(fn (Get $get) => $get('trading_name') ?: '-'),
-
-                                                        Placeholder::make('relation_type_display')
-                                                            ->label(trans('ip.type'))
-                                                            ->content(function (Get $get) {
-                                                                $type = $get('relation_type');
-                                                                if ( ! $type) {
-                                                                    return '-';
-                                                                }
-
-                                                                if ($type instanceof RelationType) {
-                                                                    return $type->label();
-                                                                }
-
-                                                                $typeEnum = RelationType::tryFrom($type);
-
-                                                                return $typeEnum ? $typeEnum->label() : '-';
-                                                            }),
-                                                    ]),
                                             ]),
                                     ]),
                             ])
@@ -152,27 +121,78 @@ class RelationForm
                                                 DatePicker::make('registered_at')
                                                     ->label(trans('ip.date'))
                                                     ->required(),
+                                            ]),
+                                    ]),
+                            ])
+                            ->columnSpan(1),
+                    ]),
+                Grid::make(2)
+                    ->columnSpanFull()
+                    ->schema([
+                        //
+                        // LEFT COLUMN: just a placeholder summary of “Client (Type)”
+                        //
+                        Group::make()
+                            ->schema([
+                                Fieldset::make(trans('ip.client_information'))
+                                    ->extraAttributes([
+                                        'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
+                                    ])
+                                    ->schema([
+                                        Placeholder::make('company_name_display')
+                                            ->label(trans('ip.company_name'))
+                                            ->content(fn (Get $get) => $get('company_name') ?: '-'),
 
-                                                Select::make('primary_contact_id')
-                                                    ->label(trans('ip.primary_contact'))
-                                                    ->options(
-                                                        fn (): array => Contact::query()
-                                                            ->orderBy('first_name')
-                                                            ->orderBy('last_name')
-                                                            ->get()
-                                                            ->pluck('full_name', 'id')
-                                                            ->toArray()
-                                                    )
-                                                    ->searchable()
-                                                    ->preload()
-                                                    ->createOptionForm([
-                                                        TextInput::make('first_name')
-                                                            ->label(trans('ip.first'))
-                                                            ->required(),
-                                                        TextInput::make('last_name')
-                                                            ->label(trans('ip.last'))
-                                                            ->required(),
-                                                    ]),
+                                        Placeholder::make('trading_name_display')
+                                            ->label(trans('ip.trading_name'))
+                                            ->content(fn (Get $get) => $get('trading_name') ?: '-'),
+
+                                        Placeholder::make('relation_type_display')
+                                            ->label(trans('ip.type'))
+                                            ->content(function (Get $get) {
+                                                $type = $get('relation_type');
+                                                if ( ! $type) {
+                                                    return '-';
+                                                }
+
+                                                if ($type instanceof RelationType) {
+                                                    return $type->label();
+                                                }
+
+                                                $typeEnum = RelationType::tryFrom($type);
+
+                                                return $typeEnum ? $typeEnum->label() : '-';
+                                            }),
+                                    ])->columnSpan(2),
+                            ])
+                            ->columnSpan(1),
+
+                        //
+                        // RIGHT COLUMN: all the real inputs, in a 2-column grid
+                        //
+                        Schemas\Components\Group::make()
+                            ->schema([
+                                Fieldset::make(trans('ip.contact_details'))
+                                    ->schema([
+                                        Select::make('primary_contact_id')
+                                            ->label(trans('ip.primary_contact'))
+                                            ->options(
+                                                fn (): array => Contact::query()
+                                                    ->orderBy('first_name')
+                                                    ->orderBy('last_name')
+                                                    ->get()
+                                                    ->pluck('full_name', 'id')
+                                                    ->toArray()
+                                            )
+                                            ->searchable()
+                                            ->preload()
+                                            ->createOptionForm([
+                                                TextInput::make('first_name')
+                                                    ->label(trans('ip.first'))
+                                                    ->required(),
+                                                TextInput::make('last_name')
+                                                    ->label(trans('ip.last'))
+                                                    ->required(),
                                             ]),
                                     ]),
                             ])

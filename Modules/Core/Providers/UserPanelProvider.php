@@ -26,7 +26,7 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->viteTheme('resources/css/filament/company/invoiceplane.css')
+            ->viteTheme('resources/css/filament/company/nord.css')
             ->login()
             ->passwordReset()
             ->emailVerification()
