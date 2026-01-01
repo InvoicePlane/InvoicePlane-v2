@@ -134,8 +134,8 @@
 
                 {{-- Design Area (Left) - 75% width --}}
                 <div
-                    class="space-y-8 p-1 rounded-2xl border-2 border-dashed border-[#4c566a] dark:border-[#81a1c1]"
-                    style="background-color: #2e3440 !important; min-width: 0 !important; max-width: none !important;"
+                    class="space-y-8 rounded-2xl border-2 border-dashed border-[#4c566a] dark:border-[#81a1c1]"
+                    style="background-color: #2e3440 !important; min-width: 0 !important; max-width: none !important; padding: 40px !important;"
                     :style="document.documentElement.classList.contains('dark') ? 'background-color: #1b2027 !important' : 'background-color: #2e3440 !important'"
                 >
                     <template x-for="(band, idx) in bands" :key="band.key">
@@ -153,13 +153,12 @@
                             </div>
 
                             <div
-                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors flex flex-wrap gap-6 p-8 items-start content-start"
+                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors gap-6 p-8 items-start content-start"
                                 :class="{
                                     'border-primary-400 bg-primary-500/5': hoveredBand === idx,
                                     'border-[#4c566a]/30 dark:border-white/10': hoveredBand !== idx,
-                                    'flex-row': band.key === 'group_header',
-                                    'flex-col': band.key !== 'group_header'
                                 }"
+                                style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 1.5rem !important;"
                                 x-on:dragover.prevent="hoveredBand = idx"
                                 x-on:dragleave="hoveredBand = null"
                                 x-on:drop.prevent="
@@ -175,7 +174,8 @@
                             >
                                 <template x-if="band.blocks.length === 0">
                                     <div
-                                        class="w-full flex flex-col items-center justify-center py-6 text-[#4c566a] dark:text-gray-500 italic pointer-events-none opacity-60">
+                                        class="w-full flex flex-col items-center justify-center py-6 text-[#4c566a] dark:text-gray-500 italic pointer-events-none opacity-60"
+                                        style="grid-column: span 2 !important;">
                                         <x-filament::icon name="heroicon-m-arrow-down-tray"
                                                           class="w-8 h-8 mb-2"/>
                                         <span class="text-sm font-bold">Drop blocks here</span>
@@ -187,7 +187,7 @@
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
                                         class="group relative flex items-center gap-3 px-5 py-4 bg-[#bf616a] dark:bg-[#bf616a] border-b-4 border-[#8b454c] rounded-xl cursor-grab active:cursor-grabbing hover:translate-y-[-2px] transition-all shadow-md"
-                                        :style="band.key === 'group_header' ? 'width: calc(50% - 1.5rem); flex-shrink: 0;' : 'width: 100%;'"
+                                        style="grid-column: span 1 !important; width: 100% !important;"
                                     >
                                         <x-filament::icon name="heroicon-m-bars-2"
                                                           class="w-5 h-5 text-white/80"/>
@@ -209,10 +209,11 @@
                 </div>
 
                 {{-- Sidebar: Available Blocks (Right) - 25% width --}}
-                <div class="sticky top-6 p-1"
-                     style="min-width: 0 !important;">
+                <div class="sticky"
+                     style="min-width: 0 !important; padding: 40px !important;">
                     <div
-                        class="bg-white dark:bg-gray-900 border-b-4 border-gray-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden">
+                        class="bg-white dark:bg-gray-900 border-b-4 border-gray-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden"
+                        style="padding: 4px !important;">
                         <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5">
                             <h3 class="font-black text-[#2e3440] dark:text-white flex items-center gap-3 uppercase tracking-wider">
                                 <x-filament::icon name="heroicon-m-squares-plus" class="w-6 h-6 text-[#5e81ac]"/>
