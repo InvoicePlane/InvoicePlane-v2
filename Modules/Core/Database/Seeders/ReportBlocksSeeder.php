@@ -95,6 +95,7 @@ class ReportBlocksSeeder extends Seeder
                 'width'        => $block['width'],
                 'data_source'  => $block['data_source'],
                 'default_band' => $block['default_band'],
+                'config'       => array_merge($block['config'], ['fields' => []]),
             ]);
 
             // Ensure directory exists

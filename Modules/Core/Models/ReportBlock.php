@@ -13,5 +13,6 @@ class ReportBlock extends Model
         'is_active' => 'boolean',
         'is_system' => 'boolean',
         'width'     => ReportBlockWidth::class,
+        'config'    => 'array',
     ];
 }

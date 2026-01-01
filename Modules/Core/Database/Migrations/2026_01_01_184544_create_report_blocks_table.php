@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->string('width')->default('half'); // half or full
             $table->string('data_source')->default('custom');
             $table->string('default_band')->default('header');
+            $table->json('config')->nullable();
         });
     }
 

@@ -15,120 +15,7 @@
                 { name: 'Detail Group Footer Band', key: 'group_footer', color: '#e5e9f0', darkColor: '#2e3440', border: '#81a1c1', blocks: [] },
                 { name: 'Footer Band', key: 'footer', color: '#eceff4', darkColor: '#3b4252', border: '#8fbcbb', blocks: [] },
             ],
-            isModalOpen: false,
-            editingBlock: null,
-            availableFields: @js($this->getAvailableFields()),
             systemBlockDefinitions: @js($systemBlocksArray),
-            openBlockModal(block) {
-                console.log('Opening block modal for:', JSON.parse(JSON.stringify(block)));
-                this.editingBlock = JSON.parse(JSON.stringify(block));
-
-                // Ensure type is set if it's somehow missing but id starts with block_ or looks like a system block id
-                if (!this.editingBlock.type && this.editingBlock.id) {
-                    if (this.editingBlock.id.startsWith('block_')) {
-                        const parts = this.editingBlock.id.split('_');
-                        if (parts.length >= 2) {
-                            this.editingBlock.type = parts[1];
-                            console.log('Recovered type from ID (prefixed):', this.editingBlock.type);
-                        }
-                    } else if (this.systemBlockDefinitions[this.editingBlock.id]) {
-                        this.editingBlock.type = this.editingBlock.id;
-                        console.log('Recovered type from ID (raw system id):', this.editingBlock.type);
-                    }
-                }
-
-                // Ensure editingBlock has a fields array in config
-                if (!this.editingBlock.config) this.editingBlock.config = {};
-                if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
-
-                // Load the latest system configuration for this block type to ensure we have the latest fields
-                const systemBlocks = this.systemBlockDefinitions;
-                console.log('System blocks available:', systemBlocks);
-                if (this.editingBlock.type && systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
-                    console.log('Found global config for:', this.editingBlock.type);
-                    // This implies we are editing the GLOBAL block definition.
-                    this.editingBlock.config = JSON.parse(JSON.stringify(systemBlocks[this.editingBlock.type].config));
-                    if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
-                }
-
-                this.isModalOpen = true;
-                console.log('isModalOpen is now:', this.isModalOpen);
-
-                this.$nextTick(() => {
-                    const modalEl = document.getElementById('block-config-modal-root');
-                    console.log('Modal root element:', modalEl);
-                    if (modalEl) {
-                        console.log('Modal display style:', window.getComputedStyle(modalEl).display);
-                        console.log('Modal z-index:', window.getComputedStyle(modalEl).zIndex);
-                        // Force visibility if display is none
-                        if (window.getComputedStyle(modalEl).display === 'none' && this.isModalOpen) {
-                            console.log('Modal is hidden by CSS! Attempting to force show.');
-                            modalEl.style.setProperty('display', 'flex', 'important');
-                            modalEl.style.setProperty('opacity', '1', 'important');
-                        }
-                    } else {
-                        console.log('Modal root element NOT FOUND in DOM after teleport');
-                    }
-                });
-            },
-            closeBlockModal() {
-                this.isModalOpen = false;
-                this.editingBlock = null;
-            },
-            saveBlockModal() {
-                // Update the block in the bands
-                this.bands.forEach(band => {
-                    const idx = band.blocks.findIndex(b => b.id === this.editingBlock.id);
-                    if (idx !== -1) {
-                        band.blocks[idx].config = this.editingBlock.config;
-                    }
-                });
-
-                // Save the block definition to the system JSON via Livewire
-                this.$wire.saveBlockConfiguration(this.editingBlock.type, this.editingBlock.config);
-
-                new FilamentNotification()
-                    .title('Block configuration saved')
-                    .success()
-                    .send();
-
-                this.closeBlockModal();
-            },
-            addFieldToBlock(fieldId) {
-                if (!this.editingBlock.config.fields.find(f => f.id === fieldId)) {
-                    const field = this.availableFields.find(f => f.id === fieldId);
-                    this.editingBlock.config.fields.push(field);
-                }
-            },
-            removeFieldFromBlock(fieldId) {
-                this.editingBlock.config.fields = this.editingBlock.config.fields.filter(f => f.id !== fieldId);
-            },
-            moveField(index, direction) {
-                const fields = this.editingBlock.config.fields;
-                const newIndex = index + direction;
-                if (newIndex >= 0 && newIndex < fields.length) {
-                    const temp = fields[index];
-                    fields[index] = fields[newIndex];
-                    fields[newIndex] = temp;
-                }
-            },
-            draggedFieldIdx: null,
-            fieldHoverIdx: null,
-            onFieldDragStart(index) {
-                this.draggedFieldIdx = index;
-            },
-            onFieldDragOver(index) {
-                this.fieldHoverIdx = index;
-            },
-            onFieldDrop(index) {
-                if (this.draggedFieldIdx !== null && this.draggedFieldIdx !== index) {
-                    const fields = this.editingBlock.config.fields;
-                    const movedItem = fields.splice(this.draggedFieldIdx, 1)[0];
-                    fields.splice(index, 0, movedItem);
-                }
-                this.draggedFieldIdx = null;
-                this.fieldHoverIdx = null;
-            },
             init() {
                 window.reportBuilder = this;
                 try {
@@ -347,7 +234,7 @@
                                                                   class="w-6 h-6 text-white/90"/>
                                                 <button
                                                     type="button"
-                                                    @click.stop="console.log('Edit button clicked for:', block); openBlockModal(block)"
+                                                    @click.stop="$wire.mountAction('configureBlock', { blockType: block.type })"
                                                     class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2 relative z-20"
                                                     title="Configure Fields"
                                                 >
@@ -367,7 +254,7 @@
                                         </div>
                                         <div
                                             class="w-full cursor-pointer"
-                                            @click.stop="console.log('Block label area clicked for:', block); openBlockModal(block)"
+                                            @click.stop="$wire.mountAction('configureBlock', { blockType: block.type })"
                                         >
                                             <span
                                                 class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full"
@@ -419,123 +306,8 @@
                 </div>
             </div>
 
-            <template x-teleport="body">
-                <div
-                    x-show="isModalOpen"
-                    id="block-config-modal-root"
-                    class="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                    style="z-index: 99999 !important;"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0"
-                    @keydown.escape.window="closeBlockModal()"
-                >
-                    <div
-                        class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
-                        @click.away="closeBlockModal()"
-                    >
-                        {{-- Modal Header --}}
-                        <div class="px-8 py-6 bg-[#527397] flex items-center justify-between">
-                            <div>
-                                <h3 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-3">
-                                    <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-6 h-6"/>
-                                    Configure <span x-text="editingBlock?.label"></span>
-                                </h3>
-                            </div>
-                            <button @click="closeBlockModal()"
-                                    class="text-white/80 hover:text-white transition-colors">
-                                <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
-                            </button>
-                        </div>
-
-                        {{-- Modal Body --}}
-                        <div class="p-8 grid grid-cols-2 gap-8">
-                            {{-- Left Side: Available Fields --}}
-                            <div>
-                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">
-                                    Available
-                                    Fields</h4>
-                                <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
-                                    <template x-for="field in availableFields" :key="field.id">
-                                        <div
-                                            class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group hover:border-primary-500 transition-colors cursor-pointer"
-                                            @click="addFieldToBlock(field.id)"
-                                        >
-                                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
-                                                  x-text="field.label"></span>
-                                            <x-filament::icon name="heroicon-m-plus-circle"
-                                                              class="w-5 h-5 text-gray-400 group-hover:text-primary-500"/>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
-
-                            {{-- Right Side: Active Fields (Drag & Drop Area) --}}
-                            <div
-                                class="bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 p-6 flex flex-col"
-                            >
-                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Active
-                                    Fields
-                                    (Order)</h4>
-
-                                <div class="flex-1 space-y-3 min-h-[200px]">
-                                    <template x-if="editingBlock?.config?.fields?.length === 0">
-                                        <div
-                                            class="flex flex-col items-center justify-center h-full text-gray-400 italic">
-                                            <p class="text-sm">No fields added yet.</p>
-                                            <p class="text-xs mt-1">Click a field on the left to add it.</p>
-                                        </div>
-                                    </template>
-
-                                    <template x-for="(field, index) in editingBlock?.config?.fields"
-                                              :key="field.id">
-                                        <div
-                                            draggable="true"
-                                            @dragstart="onFieldDragStart(index)"
-                                            @dragover.prevent="onFieldDragOver(index)"
-                                            @drop="onFieldDrop(index)"
-                                            class="flex items-center justify-between p-4 bg-[#5e81ac] text-white rounded-xl shadow-md border-b-4 border-[#435b7a] cursor-move transition-all"
-                                            :class="fieldHoverIdx === index ? 'ring-2 ring-white border-white' : ''"
-                                        >
-                                            <div class="flex items-center gap-3">
-                                                <x-filament::icon name="heroicon-m-bars-3"
-                                                                  class="w-5 h-5 text-white/60"/>
-                                                <span class="text-sm font-black uppercase tracking-tight"
-                                                      x-text="field.label"></span>
-                                            </div>
-                                            <button @click="removeFieldFromBlock(field.id)"
-                                                    class="text-white/60 hover:text-white transition-colors">
-                                                <x-filament::icon name="heroicon-m-minus-circle" class="w-5 h-5"/>
-                                            </button>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Modal Footer --}}
-                        <div
-                            class="px-8 py-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
-                            <x-filament::button
-                                color="gray"
-                                @click="closeBlockModal()"
-                            >
-                                Cancel
-                            </x-filament::button>
-                            <x-filament::button
-                                color="primary"
-                                @click="saveBlockModal()"
-                                style="background-color: #ebcb8b !important; color: #2e3440 !important;"
-                            >
-                                Save Configuration
-                            </x-filament::button>
-                        </div>
-                    </div>
-                </div>
-            </template>
         </div>
     </div>
+
+    <x-filament-actions::modals/>
 </x-filament-panels::page>

@@ -25,6 +25,7 @@ use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Filament\Admin\Resources\ReportBlocks\ReportBlockResource;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
@@ -149,6 +150,7 @@ class AdminPanelProvider extends PanelProvider
                             //->icon('heroicon-o-receipt-percent')
                             ->items([
                                 ...ReportTemplateResource::getNavigationItems(),
+                                ...ReportBlockResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make(trans('ip.users_roles'))

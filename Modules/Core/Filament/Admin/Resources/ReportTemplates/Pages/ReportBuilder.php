@@ -2,19 +2,27 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
+use Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas\ReportBlockForm;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
+use Modules\Core\Models\ReportBlock;
 use Modules\Core\Models\ReportTemplate;
 use Modules\Core\Services\GridSnapperService;
 use Modules\Core\Services\ReportTemplateService;
 use Modules\Core\Transformers\BlockTransformer;
 
-class ReportBuilder extends Page
+class ReportBuilder extends Page implements HasActions
 {
+    use InteractsWithActions;
+
     public ReportTemplate $record;
 
     public array $blocks = [];
@@ -34,6 +42,34 @@ class ReportBuilder extends Page
     {
         $this->record = $record;
         $this->loadBlocks();
+    }
+
+    public function configureBlockAction(): Action
+    {
+        return Action::make('configureBlock')
+            ->form(fn (array $arguments) => ReportBlockForm::configure(app(Schema::class)))
+            ->fillForm(function (array $arguments) {
+                $blockType = $arguments['blockType'] ?? null;
+                if ( ! $blockType) {
+                    return [];
+                }
+                $block = ReportBlock::where('block_type', $blockType)->first();
+
+                return $block ? $block->toArray() : [];
+            })
+            ->action(function (array $data, array $arguments) {
+                $blockType = $arguments['blockType'] ?? null;
+                if ( ! $blockType) {
+                    return;
+                }
+                $block = ReportBlock::where('block_type', $blockType)->first();
+                if ($block) {
+                    $block->update($data);
+                    $this->dispatch('block-config-saved');
+                }
+            })
+            ->modalWidth('4xl')
+            ->slideOver();
     }
 
     #[On('drag-block')]
@@ -191,7 +227,7 @@ class ReportBuilder extends Page
     public function saveBlockConfiguration(string $blockType, array $config): void
     {
         $service = app(ReportTemplateService::class);
-        $dbBlock = \Modules\Core\Models\ReportBlock::where('block_type', $blockType)->first();
+        $dbBlock = ReportBlock::where('block_type', $blockType)->first();
 
         if ($dbBlock) {
             $service->saveBlockConfig($dbBlock, $config);

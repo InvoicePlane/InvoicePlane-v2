@@ -3,7 +3,6 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Core\DTOs\BlockDTO;
@@ -322,23 +321,11 @@ class ReportTemplateService
      */
     public function getBlockConfig(ReportBlock $block): array
     {
-        if ( ! $block->filename) {
-            return [];
-        }
-
-        $path = 'report_blocks/' . $block->filename;
-
-        if ( ! Storage::disk('local')->exists($path)) {
-            return [];
-        }
-
-        $json = Storage::disk('local')->get($path);
-
-        return json_decode($json, true) ?: [];
+        return $block->config ?: [];
     }
 
     /**
-     * Save block configuration to JSON file.
+     * Save block configuration to database.
      *
      * @param ReportBlock $block
      * @param array       $config
@@ -347,15 +334,8 @@ class ReportTemplateService
      */
     public function saveBlockConfig(ReportBlock $block, array $config): void
     {
-        if ( ! $block->filename) {
-            $block->filename = Str::slug($block->name) . '.json';
-            $block->save();
-        }
-
-        $path = 'report_blocks/' . $block->filename;
-        $json = json_encode($config, JSON_PRETTY_PRINT);
-
-        Storage::disk('local')->put($path, $json);
+        $block->config = $config;
+        $block->save();
     }
 
     /**
