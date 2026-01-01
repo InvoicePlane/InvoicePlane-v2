@@ -172,8 +172,9 @@ class ReportBuilder extends Page
                 // Ensure the block data has all necessary fields before passing to service
                 if ( ! isset($block['type'])) {
                     $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
-                    if (isset($systemBlocks[$block['id']])) {
-                        $block = BlockTransformer::toArray($systemBlocks[$block['id']]);
+                    $type         = str_replace('block_', '', $block['id']);
+                    if (isset($systemBlocks[$type])) {
+                        $block = BlockTransformer::toArray($systemBlocks[$type]);
                     }
                 }
 
@@ -185,6 +186,35 @@ class ReportBuilder extends Page
         $service      = app(ReportTemplateService::class);
         $service->persistBlocks($this->record, $this->blocks);
         $this->dispatch('blocks-saved');
+    }
+
+    public function saveBlockConfiguration(string $blockType, array $config): void
+    {
+        $service = app(ReportTemplateService::class);
+        $dbBlock = \Modules\Core\Models\ReportBlock::where('block_type', $blockType)->first();
+
+        if ($dbBlock) {
+            $service->saveBlockConfig($dbBlock, $config);
+            $this->dispatch('block-config-saved');
+        }
+    }
+
+    public function getAvailableFields(): array
+    {
+        return [
+            ['id' => 'company_name', 'label' => 'Company Name'],
+            ['id' => 'company_address', 'label' => 'Company Address'],
+            ['id' => 'company_phone', 'label' => 'Company Phone'],
+            ['id' => 'company_email', 'label' => 'Company Email'],
+            ['id' => 'client_name', 'label' => 'Client Name'],
+            ['id' => 'client_address', 'label' => 'Client Address'],
+            ['id' => 'invoice_number', 'label' => 'Invoice Number'],
+            ['id' => 'invoice_date', 'label' => 'Invoice Date'],
+            ['id' => 'invoice_total', 'label' => 'Invoice Total'],
+            ['id' => 'item_description', 'label' => 'Item Description'],
+            ['id' => 'item_quantity', 'label' => 'Item Quantity'],
+            ['id' => 'item_price', 'label' => 'Item Price'],
+        ];
     }
 
     /**

@@ -3,12 +3,15 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
+use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\ReportBlock;
 use Modules\Core\Models\ReportTemplate;
 use Modules\Core\Repositories\ReportTemplateFileRepository;
 use Modules\Core\Transformers\BlockTransformer;
@@ -278,126 +281,81 @@ class ReportTemplateService
     }
 
     /**
-     * Get system-defined blocks.
+     * Get system-defined blocks from database.
      *
-     * @return array array of system BlockDTO objects indexed by type
-     *               $bands = [
-     *               'header' => 'Header',
-     *               'group_header' => 'Group Detail Header',
-     *               'details' => 'Details',
-     *               'group_footer' => 'Group Detail Footer',
-     *               'footer' => 'Footer',
-     *               ];
+     * @return array array of BlockDTO objects indexed by type
      */
     public function getSystemBlocks(): array
     {
-        $blocks = [];
+        $blocks   = [];
+        $dbBlocks = ReportBlock::where('is_active', true)->get();
 
-        $blocks['company_header'] = $this->createSystemBlock(
-            'block_company_header',
-            'company_header',
-            0,
-            0,
-            6,
-            4,
-            ['show_vat_id' => true, 'show_phone' => true, 'font_size' => 10],
-            trans('ip.company_header'),
-            'company',
-            'group_header'
-        );
+        foreach ($dbBlocks as $dbBlock) {
+            $config = $this->getBlockConfig($dbBlock);
 
-        $blocks['client_header'] = $this->createSystemBlock(
-            'block_client_header',
-            'client_header',
-            6,
-            0,
-            6,
-            4,
-            ['show_address' => true, 'show_phone' => true, 'font_size' => 10],
-            trans('ip.client_header'),
-            'client',
-            band: 'group_header'
-        );
+            // Map widths to grid units for the designer
+            $width = $dbBlock->width === ReportBlockWidth::HALF ? 6 : 12;
 
-        $blocks['header_invoice_meta'] = $this->createSystemBlock(
-            'block_header_invoice_meta',
-            'header_invoice_meta',
-            0,
-            4,
-            12,
-            2,
-            ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
-            trans('ip.invoice_metadata'),
-            'invoice',
-            band: 'group_header'
-        );
-
-        $blocks['detail_items'] = $this->createSystemBlock(
-            'block_detail_items',
-            'detail_items',
-            0,
-            6,
-            12,
-            6,
-            ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
-            trans('ip.invoice_items'),
-            'invoice',
-            'details'
-        );
-
-        $blocks['detail_item_tax'] = $this->createSystemBlock(
-            'block_detail_item_tax',
-            'detail_item_tax',
-            0,
-            12,
-            12,
-            2,
-            ['show_tax_name' => true, 'show_tax_rate' => true],
-            trans('ip.item_tax_details'),
-            'invoice',
-            'details'
-        );
-
-        $blocks['footer_totals'] = $this->createSystemBlock(
-            'block_footer_totals',
-            'footer_totals',
-            6,
-            14,
-            6,
-            4,
-            ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
-            trans('ip.invoice_totals'),
-            'invoice',
-            'group_footer'
-        );
-
-        $blocks['footer_notes'] = $this->createSystemBlock(
-            'block_footer_notes',
-            'footer_notes',
-            0,
-            14,
-            6,
-            4,
-            ['font_size' => 9],
-            trans('ip.footer_notes'),
-            'invoice',
-            'footer'
-        );
-
-        $blocks['footer_qr_code'] = $this->createSystemBlock(
-            'block_footer_qr_code',
-            'footer_qr_code',
-            0,
-            18,
-            4,
-            4,
-            ['size' => 100],
-            trans('ip.qr_code'),
-            'invoice',
-            'footer'
-        );
+            $blocks[$dbBlock->block_type] = $this->createSystemBlock(
+                'block_' . $dbBlock->block_type,
+                $dbBlock->block_type,
+                0,
+                0,
+                $width,
+                4,
+                $config,
+                $dbBlock->name,
+                'custom', // Default data source
+                'header'  // Default band
+            );
+        }
 
         return $blocks;
+    }
+
+    /**
+     * Get block configuration from JSON file.
+     *
+     * @param ReportBlock $block
+     *
+     * @return array
+     */
+    public function getBlockConfig(ReportBlock $block): array
+    {
+        if ( ! $block->filename) {
+            return [];
+        }
+
+        $path = 'report_blocks/' . $block->filename;
+
+        if ( ! Storage::disk('local')->exists($path)) {
+            return [];
+        }
+
+        $json = Storage::disk('local')->get($path);
+
+        return json_decode($json, true) ?: [];
+    }
+
+    /**
+     * Save block configuration to JSON file.
+     *
+     * @param ReportBlock $block
+     * @param array       $config
+     *
+     * @return void
+     */
+    public function saveBlockConfig(ReportBlock $block, array $config): void
+    {
+        if ( ! $block->filename) {
+            $block->filename = Str::slug($block->name) . '.json';
+            $block->save();
+        }
+
+        $path = 'report_blocks/' . $block->filename;
+        $json = json_encode($config, JSON_PRETTY_PRINT);
+
+        Storage::disk('local')->put($path, $json);
     }
 
     /**
