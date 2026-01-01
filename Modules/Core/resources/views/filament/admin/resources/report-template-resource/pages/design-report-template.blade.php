@@ -3,35 +3,8 @@
     $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
 @endphp
 <x-filament-panels::page>
-    <div class="w-full">
-        {{-- Header Bar --}}
-        <div class="flex items-center justify-between w-full mb-4 fi-header"
-             style="padding: 44px; background: #527397 !important;">
-            <span class="ml-2 font-medium text-white">Report Builder</span>
-            <div class="flex gap-2 ml-auto">
-                <x-filament::button
-                    wire:click="save"
-                    color="primary"
-                    icon="heroicon-m-check"
-                    class="font-bold"
-                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
-                >
-                    Save Report
-                </x-filament::button>
-                <x-filament::button
-                    color="gray"
-                    tag="a"
-                    :href="static::getResource()::getUrl('index')"
-                    class="font-bold"
-                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
-                >
-                    Close Builder
-                </x-filament::button>
-            </div>
-        </div>
-        {{-- Main Content: 2 Columns --}}
-        <div
-            x-data="{
+    <div class="w-full"
+         x-data="{
             bands: [
                 { name: 'Header Band', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
                 { name: 'Detail Group Header Band', color: '#eceff4', border: '#8fbcbb', blocks: [] },
@@ -86,14 +59,40 @@
                 this.bands = [...this.bands];
             },
             saveTemplate() {
-                // TODO: Implement AJAX or Livewire call to save the template
                 if (window.Livewire) {
-                    window.Livewire.find(document.querySelector('[wire\:id]')?.getAttribute('wire:id'))?.call('saveTemplate', this.bands);
-                } else {
-                    window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Save not implemented yet.' } }));
+                    window.Livewire.find(document.querySelector('[wire\\:id]')?.getAttribute('wire:id'))?.call('saveTemplate', this.bands);
                 }
+                console.log('Bands to save:', JSON.stringify(this.bands, null, 2));
             },
         }"
+    >
+        {{-- Header Bar --}}
+        <div class="flex items-center justify-between w-full mb-4 fi-header"
+             style="padding: 44px; background: #527397 !important;">
+            <span class="ml-2 font-medium text-white">Report Builder</span>
+            <div class="flex gap-2 ml-auto">
+                <x-filament::button
+                    x-on:click.prevent="saveTemplate()"
+                    color="primary"
+                    icon="heroicon-m-check"
+                    class="font-bold"
+                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
+                >
+                    Save Report
+                </x-filament::button>
+                <x-filament::button
+                    color="gray"
+                    tag="a"
+                    :href="static::getResource()::getUrl('index')"
+                    class="font-bold"
+                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
+                >
+                    Close Builder
+                </x-filament::button>
+            </div>
+        </div>
+        {{-- Main Content: 2 Columns --}}
+        <div
             class="flex w-full max-w-full min-h-screen gap-6 border-4 border-primary-500 relative z-50 box-border"
             style="display: flex !important; width: 100%; max-width: 100%; min-height: 100vh; gap: 1.5rem; border: 4px solid #3b82f6; position: relative; z-index: 50; box-sizing: border-box;">
             <div
