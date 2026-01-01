@@ -186,21 +186,27 @@
                                     <div
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
-                                        class="group relative flex items-center gap-3 px-5 py-4 bg-[#bf616a] dark:bg-[#bf616a] border-b-4 border-[#8b454c] rounded-xl cursor-grab active:cursor-grabbing hover:translate-y-[-2px] transition-all shadow-md"
+                                        class="group relative flex flex-col items-start gap-2 px-6 py-6 bg-[#bf616a] dark:bg-[#bf616a] border-4 border-dotted border-white/40 rounded-2xl cursor-grab active:cursor-grabbing hover:translate-y-[-4px] transition-all shadow-xl min-h-[100px]"
                                         style="grid-column: span 1 !important; width: 100% !important;"
                                     >
-                                        <x-filament::icon name="heroicon-m-bars-2"
-                                                          class="w-5 h-5 text-white/80"/>
-                                        <span class="text-sm font-bold text-white uppercase tracking-tight"
-                                              x-text="block.label"></span>
-
-                                        <button
-                                            type="button"
-                                            x-on:click="addBlockToAvailable(block.id, idx)"
-                                            class="ml-2 p-1 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
-                                        >
-                                            <x-filament::icon name="heroicon-m-x-mark" class="w-4 h-4"/>
-                                        </button>
+                                        <div class="flex items-center justify-between w-full mb-2">
+                                            <x-filament::icon name="heroicon-m-bars-2"
+                                                              class="w-6 h-6 text-white/90"/>
+                                            <button
+                                                type="button"
+                                                x-on:click="addBlockToAvailable(block.id, idx)"
+                                                class="p-1.5 bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner"
+                                            >
+                                                <x-filament::icon name="heroicon-m-x-mark" class="w-5 h-5"/>
+                                            </button>
+                                        </div>
+                                        <span
+                                            class="text-sm font-black text-white uppercase tracking-wider whitespace-nowrap overflow-hidden text-ellipsis w-full"
+                                            x-html="block.label.replace(/ /g, '&nbsp;')"></span>
+                                        <div class="mt-auto pt-2 w-full border-t border-white/10">
+                                            <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest"
+                                                  x-text="block.type || 'block'"></span>
+                                        </div>
                                     </div>
                                 </template>
                             </div>
