@@ -4,17 +4,32 @@
 @endphp
 <x-filament-panels::page>
     <div class="w-full">
-        <!-- Header Bar -->
-        <div
-            class="flex items-center justify-between w-full bg-gray-100 px-4 py-1 rounded-md mb-4 border-b border-gray-200"
-            style="padding: 24px;">
-            <span class="font-medium text-lg text-gray-700">Report Builder</span>
-            <x-filament::button type="button" color="primary"
-                                style="box-shadow: 0 1px 2px #0002; float: right !important;">
-                Save Template
-            </x-filament::button>
+        {{-- Header Bar --}}
+        <div class="flex items-center justify-between w-full mb-4"
+             style="padding: 44px; background: #527397 !important;">
+            <span class="ml-2 font-medium text-white">Report Builder</span>
+            <div class="flex gap-2 ml-auto">
+                <x-filament::button
+                    wire:click="save"
+                    color="primary"
+                    icon="heroicon-m-check"
+                    class="font-bold"
+                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
+                >
+                    Save Report
+                </x-filament::button>
+                <x-filament::button
+                    color="gray"
+                    tag="a"
+                    :href="static::getResource()::getUrl('index')"
+                    class="font-bold"
+                    style="box-shadow: 0 1px 2px #0002; float: right !important;"
+                >
+                    Close Builder
+                </x-filament::button>
+            </div>
         </div>
-        <!-- Main Content: 2 Columns -->
+        {{-- Main Content: 2 Columns --}}
         <div
             x-data="{
             bands: [
@@ -69,6 +84,14 @@
                 const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId) };
                 this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
                 this.bands = [...this.bands];
+            },
+            saveTemplate() {
+                // TODO: Implement AJAX or Livewire call to save the template
+                if (window.Livewire) {
+                    window.Livewire.find(document.querySelector('[wire\:id]')?.getAttribute('wire:id'))?.call('saveTemplate', this.bands);
+                } else {
+                    window.dispatchEvent(new CustomEvent('notify', { detail: { message: 'Save not implemented yet.' } }));
+                }
             },
         }"
             class="flex w-full max-w-full min-h-screen gap-6 border-4 border-primary-500 relative z-50 box-border"
@@ -127,15 +150,16 @@
             </div>
             <div class="col-span-12 md:col-span-3">
                 <div class="rounded-lg shadow bg-white p-4 border border-blue-200">
-                    <div class="font-semibold text-base mb-2 text-gray-700">
-                        {{ __('Available Blocks (Alpine & Nord)') }}
+                    <div class="font-semibold text-base mb-2 text-gray-700"
+                         style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">
+                        @lang('ip.available_blocks')
                     </div>
                     <ul class="space-y-2">
                         <template x-for="block in blocks" :key="block.id">
                             <li>
                                 <div
                                     class="cursor-grab flex items-center px-2 py-1 rounded"
-                                    style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #bf616a;"
+                                    style="background: #145390 !important; color: #eceff4 !important; font-weight: 400 !important; border-radius: 0.5rem !important; padding: 0.5rem 1rem !important; display: flex !important; align-items: center !important; margin-right: 0.5rem !important; margin-bottom: 0.5rem !important; border: 1px solid #bf616a !important;"
                                     draggable="true"
                                     x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', '');"
                                 >

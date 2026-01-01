@@ -1,6 +1,6 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@source '../../../../app/Filament/Tenant/**/*';
+@source '../../../../Modules/**/resources/views/**/*';
 @source '../../../../resources/views/filament/tenant/**/*';
 
 @theme {

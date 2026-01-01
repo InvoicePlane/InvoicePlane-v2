@@ -25,11 +25,6 @@ class DesignReportTemplate extends Page
 
     protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
 
-    /*public function getMaxContentWidth(): \Filament\Support\Enums\Width|string|null
-    {
-        return \Filament\Support\Enums\Width::Full;
-    }*/
-
     public function mount(ReportTemplate $record): void
     {
         $this->record = $record;
