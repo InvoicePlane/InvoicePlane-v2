@@ -10,11 +10,11 @@ inputs:
     required: false
     default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
   composer-flags:
-    description: 'Flags for composer install command (e.g., --no-dev --optimize-autoloader). Ignored if composer-args is provided.'
+    description: 'Flags appended to the composer install command (e.g., --no-dev --optimize-autoloader). Used only when composer-args is empty.'
     required: false
     default: '--no-interaction --prefer-dist --optimize-autoloader'
   composer-args:
-    description: 'Complete arguments for composer install (overrides composer-flags if provided). Use when you need full control over install command.'
+    description: 'Complete argument list passed directly to composer install. When non-empty, this overrides composer-flags and is used as-is.'
     required: false
     default: ''
   working-directory:

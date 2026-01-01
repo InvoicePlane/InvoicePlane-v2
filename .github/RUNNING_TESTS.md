@@ -230,6 +230,6 @@ php artisan view:clear
 
 ## See Also
 
-- [CONTRIBUTING.md](.github/CONTRIBUTING.md) - Guidelines for contributing tests
-- [TEST_GENERATION_SUMMARY.md](.github/TEST_GENERATION_SUMMARY.md) - Test generation documentation
-- [PEPPOL_TESTS_SUMMARY.md](.github/PEPPOL_TESTS_SUMMARY.md) - Peppol-specific test documentation
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Guidelines for contributing tests
+- [TEST_GENERATION_SUMMARY.md](TEST_GENERATION_SUMMARY.md) - Test generation documentation
+- [PEPPOL_TESTS_SUMMARY.md](PEPPOL_TESTS_SUMMARY.md) - Peppol-specific test documentation

@@ -31,6 +31,8 @@ A reusable composite action that sets up PHP and installs Composer dependencies 
 - `yarn-update.yml` - Frontend dependency updates
 - `quickstart.yml` - Smoke tests
 
+**Note:** `release.yml` uses manual Composer caching (not this composite action) due to its custom production build flags (`--no-dev`).
+
 ## Available Workflows
 
 ### 1. Production Release (`release.yml`)
