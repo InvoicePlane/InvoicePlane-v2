@@ -28,7 +28,7 @@ class ReportBlocksSeeder extends Seeder
             [
                 'block_type' => 'header_invoice_meta',
                 'name'       => 'Invoice Metadata',
-                'width'      => ReportBlockWidth::HALF,
+                'width'      => ReportBlockWidth::FULL,
             ],
             [
                 'block_type' => 'invoice_items',
@@ -38,17 +38,17 @@ class ReportBlocksSeeder extends Seeder
             [
                 'block_type' => 'invoice_item_tax',
                 'name'       => 'Item Tax Details',
-                'width'      => ReportBlockWidth::HALF,
+                'width'      => ReportBlockWidth::FULL,
             ],
             [
-                'block_type' => 'invoice_totals',
+                'block_type' => 'footer_totals',
                 'name'       => 'Invoice Totals',
                 'width'      => ReportBlockWidth::HALF,
             ],
             [
                 'block_type' => 'footer_notes',
                 'name'       => 'Footer Notes',
-                'width'      => ReportBlockWidth::FULL,
+                'width'      => ReportBlockWidth::HALF,
             ],
             [
                 'block_type' => 'footer_qr_code',

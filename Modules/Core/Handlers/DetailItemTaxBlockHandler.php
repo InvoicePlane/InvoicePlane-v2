@@ -29,7 +29,7 @@ class DetailItemTaxBlockHandler implements BlockHandlerInterface
             return $html;
         }
 
-        $html .= '<div class="item-tax-details">';
+        $html .= '<div class="invoice-tax-details">';
         $html .= '<h4>Tax Details</h4>';
         $html .= '<table class="tax-table" width="100%">';
         $html .= '<thead><tr>';
