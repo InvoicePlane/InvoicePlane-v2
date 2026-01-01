@@ -63,6 +63,19 @@ class DesignReportTemplate extends Page
     #[On('add-block')]
     public function addBlock(string $blockType): void
     {
+        $service      = app(ReportTemplateService::class);
+        $systemBlocks = $service->getSystemBlocks();
+
+        if (isset($systemBlocks[$blockType])) {
+            $blockDto = $systemBlocks[$blockType];
+            $blockId  = 'block_' . $blockType . '_' . Str::random(8);
+            $blockDto->setId($blockId);
+
+            $this->blocks[$blockId] = BlockTransformer::toArray($blockDto);
+
+            return;
+        }
+
         $blockId = 'block_' . $blockType . '_' . Str::random(8);
 
         $position = GridPositionDTO::create(0, 0, 6, 4);

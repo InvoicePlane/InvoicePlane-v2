@@ -273,7 +273,7 @@ class ReportTemplateService
      *
      * @return array Array of system BlockDTO objects indexed by type
      */
-    private function getSystemBlocks(): array
+    public function getSystemBlocks(): array
     {
         $blocks = [];
 
