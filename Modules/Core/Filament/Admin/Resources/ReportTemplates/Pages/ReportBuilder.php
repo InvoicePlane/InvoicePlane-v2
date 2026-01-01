@@ -8,6 +8,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Modules\Core\DTOs\BlockDTO;
@@ -60,7 +61,7 @@ class ReportBuilder extends Page
                 // but wait, $this->blocks is currently used for layout.
                 // The global ReportBlock is the source of truth for the block definition.
 
-                $block = ReportBlock::where('block_type', $blockType)->first();
+                $block = ReportBlock::query()->where('block_type', $blockType)->first();
 
                 if ( ! $block) {
                     return [
@@ -96,7 +97,7 @@ class ReportBuilder extends Page
                     return;
                 }
 
-                $block = ReportBlock::where('block_type', $blockType)->first();
+                $block = ReportBlock::query()->where('block_type', $blockType)->first();
 
                 if ( ! $block) {
                     $schema->fill([
@@ -139,7 +140,7 @@ class ReportBuilder extends Page
                     $this->dispatch('block-config-saved');
                 }
             })
-            ->modalWidth('4xl')
+            ->modalWidth(Width::FiveExtraLarge)
             ->slideOver();
     }
 
