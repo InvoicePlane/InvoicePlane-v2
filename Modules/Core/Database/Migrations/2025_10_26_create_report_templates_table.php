@@ -12,10 +12,10 @@ return new class () extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->boolean('is_system')->default(false);
             $table->boolean('is_active')->default(true);
+            $table->string('template_type');
             $table->string('name');
             $table->string('slug');
-            $table->text('description')->nullable();
-            $table->string('template_type');
+            $table->string('filename')->nullable();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->unique(['company_id', 'slug']);

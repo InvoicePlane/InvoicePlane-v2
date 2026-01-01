@@ -3,6 +3,7 @@
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
 use Filament\Resources\Pages\Page;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Modules\Core\DTOs\BlockDTO;
@@ -21,14 +22,23 @@ class DesignReportTemplate extends Page
 
     public string $selectedBlockId = '';
 
+    /**
+     * The template filename, loaded from the database (or model).
+     *
+     * @var string|null
+     */
+    protected ?string $templateFilename = null;
+
     protected static string $resource = ReportTemplateResource::class;
 
     protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
     {
-        $this->record = $record;
+        $this->record           = $record;
+        $this->templateFilename = $this->getTemplateFilenameFromDatabase();
         $this->loadBlocks();
+        $this->loadTemplate();
     }
 
     #[On('drag-block')]
@@ -161,7 +171,39 @@ class DesignReportTemplate extends Page
         $service->persistBlocks($this->record, $this->blocks);
 
         $this->dispatch('blocks-saved');
-        $this->redirect(static::getResource()::getUrl('index'));
+        // Stay on the design page after saving
+        // $this->redirect(static::getResource()::getUrl('index'));
+    }
+
+    /**
+     * Loads the template blocks from the filesystem using the template filename.
+     */
+    protected function loadTemplate(): void
+    {
+        if ( ! $this->templateFilename) {
+            return;
+        }
+        $templatePath = 'report_templates/' . $this->templateFilename;
+        if (Storage::disk('local')->exists($templatePath)) {
+            $json   = Storage::disk('local')->get($templatePath);
+            $blocks = json_decode($json, true);
+            if (is_array($blocks)) {
+                $this->blocks = [];
+                foreach ($blocks as $block) {
+                    $this->blocks[$block['id']] = $block;
+                }
+            }
+        }
+    }
+
+    /**
+     * Example method to get the template filename from the database/model.
+     * Replace this with actual logic to retrieve the filename for the current template/record.
+     */
+    protected function getTemplateFilenameFromDatabase(): ?string
+    {
+        // Example: assuming $this->record has a 'template_filename' attribute
+        return $this->record->template_filename ?? null;
     }
 
     protected function loadBlocks(): void

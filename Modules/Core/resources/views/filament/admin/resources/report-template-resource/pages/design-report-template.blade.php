@@ -5,7 +5,7 @@
 <x-filament-panels::page>
     <div class="w-full">
         {{-- Header Bar --}}
-        <div class="flex items-center justify-between w-full mb-4"
+        <div class="flex items-center justify-between w-full mb-4 fi-header"
              style="padding: 44px; background: #527397 !important;">
             <span class="ml-2 font-medium text-white">Report Builder</span>
             <div class="flex gap-2 ml-auto">

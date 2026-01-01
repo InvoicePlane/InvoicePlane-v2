@@ -445,7 +445,7 @@ class ReportTemplateService
         $slug = $base;
         $i    = 2;
 
-        while (ReportTemplate::where('company_id', $company->id)->where('slug', $slug)->exists()) {
+        while (ReportTemplate::query()->where('company_id', $company->id)->where('slug', $slug)->exists()) {
             $slug = "{$base}-{$i}";
             $i++;
         }
