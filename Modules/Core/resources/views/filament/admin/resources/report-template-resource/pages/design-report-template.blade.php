@@ -20,8 +20,23 @@
             availableFields: @js($this->getAvailableFields()),
             systemBlockDefinitions: @js($systemBlocksArray),
             openBlockModal(block) {
-                console.log('Opening block modal for:', block);
+                console.log('Opening block modal for:', JSON.parse(JSON.stringify(block)));
                 this.editingBlock = JSON.parse(JSON.stringify(block));
+
+                // Ensure type is set if it's somehow missing but id starts with block_ or looks like a system block id
+                if (!this.editingBlock.type && this.editingBlock.id) {
+                    if (this.editingBlock.id.startsWith('block_')) {
+                        const parts = this.editingBlock.id.split('_');
+                        if (parts.length >= 2) {
+                            this.editingBlock.type = parts[1];
+                            console.log('Recovered type from ID (prefixed):', this.editingBlock.type);
+                        }
+                    } else if (this.systemBlockDefinitions[this.editingBlock.id]) {
+                        this.editingBlock.type = this.editingBlock.id;
+                        console.log('Recovered type from ID (raw system id):', this.editingBlock.type);
+                    }
+                }
+
                 // Ensure editingBlock has a fields array in config
                 if (!this.editingBlock.config) this.editingBlock.config = {};
                 if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
@@ -29,7 +44,7 @@
                 // Load the latest system configuration for this block type to ensure we have the latest fields
                 const systemBlocks = this.systemBlockDefinitions;
                 console.log('System blocks available:', systemBlocks);
-                if (systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
+                if (this.editingBlock.type && systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
                     console.log('Found global config for:', this.editingBlock.type);
                     // This implies we are editing the GLOBAL block definition.
                     this.editingBlock.config = JSON.parse(JSON.stringify(systemBlocks[this.editingBlock.type].config));
@@ -390,8 +405,10 @@
             {{-- Block Configuration Modal --}}
             <div
                 x-show="isModalOpen"
-                class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                class="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                 x-cloak
+                style="display: none;"
+                x-init="$watch('isModalOpen', value => { if (value) { $el.style.display = 'flex' } else { $el.style.display = 'none' } })"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
