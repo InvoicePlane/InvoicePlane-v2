@@ -403,113 +403,118 @@
             </div>
 
             {{-- Block Configuration Modal --}}
-            <div
-                x-show="isModalOpen"
-                class="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                x-cloak
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-            >
+            <template x-teleport="body">
                 <div
-                    class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
-                    @click.away="closeBlockModal()"
+                    x-show="isModalOpen"
+                    class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
                 >
-                    {{-- Modal Header --}}
-                    <div class="px-8 py-6 bg-[#527397] flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-3">
-                                <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-6 h-6"/>
-                                Configure <span x-text="editingBlock?.label"></span>
-                            </h3>
-                        </div>
-                        <button @click="closeBlockModal()" class="text-white/80 hover:text-white transition-colors">
-                            <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
-                        </button>
-                    </div>
-
-                    {{-- Modal Body --}}
-                    <div class="p-8 grid grid-cols-2 gap-8">
-                        {{-- Left Side: Available Fields --}}
-                        <div>
-                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Available
-                                Fields</h4>
-                            <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
-                                <template x-for="field in availableFields" :key="field.id">
-                                    <div
-                                        class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group hover:border-primary-500 transition-colors cursor-pointer"
-                                        @click="addFieldToBlock(field.id)"
-                                    >
-                                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
-                                              x-text="field.label"></span>
-                                        <x-filament::icon name="heroicon-m-plus-circle"
-                                                          class="w-5 h-5 text-gray-400 group-hover:text-primary-500"/>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-
-                        {{-- Right Side: Active Fields (Drag & Drop Area) --}}
-                        <div
-                            class="bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 p-6 flex flex-col"
-                        >
-                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Active Fields
-                                (Order)</h4>
-
-                            <div class="flex-1 space-y-3 min-h-[200px]">
-                                <template x-if="editingBlock?.config?.fields?.length === 0">
-                                    <div class="flex flex-col items-center justify-center h-full text-gray-400 italic">
-                                        <p class="text-sm">No fields added yet.</p>
-                                        <p class="text-xs mt-1">Click a field on the left to add it.</p>
-                                    </div>
-                                </template>
-
-                                <template x-for="(field, index) in editingBlock?.config?.fields" :key="field.id">
-                                    <div
-                                        draggable="true"
-                                        @dragstart="onFieldDragStart(index)"
-                                        @dragover.prevent="onFieldDragOver(index)"
-                                        @drop="onFieldDrop(index)"
-                                        class="flex items-center justify-between p-4 bg-[#5e81ac] text-white rounded-xl shadow-md border-b-4 border-[#435b7a] cursor-move transition-all"
-                                        :class="fieldHoverIdx === index ? 'ring-2 ring-white border-white' : ''"
-                                    >
-                                        <div class="flex items-center gap-3">
-                                            <x-filament::icon name="heroicon-m-bars-3" class="w-5 h-5 text-white/60"/>
-                                            <span class="text-sm font-black uppercase tracking-tight"
-                                                  x-text="field.label"></span>
-                                        </div>
-                                        <button @click="removeFieldFromBlock(field.id)"
-                                                class="text-white/60 hover:text-white transition-colors">
-                                            <x-filament::icon name="heroicon-m-minus-circle" class="w-5 h-5"/>
-                                        </button>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Modal Footer --}}
                     <div
-                        class="px-8 py-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
-                        <x-filament::button
-                            color="gray"
-                            @click="closeBlockModal()"
-                        >
-                            Cancel
-                        </x-filament::button>
-                        <x-filament::button
-                            color="primary"
-                            @click="saveBlockModal()"
-                            style="background-color: #ebcb8b !important; color: #2e3440 !important;"
-                        >
-                            Save Configuration
-                        </x-filament::button>
+                        class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
+                        @click.away="closeBlockModal()"
+                    >
+                        {{-- Modal Header --}}
+                        <div class="px-8 py-6 bg-[#527397] flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-3">
+                                    <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-6 h-6"/>
+                                    Configure <span x-text="editingBlock?.label"></span>
+                                </h3>
+                            </div>
+                            <button @click="closeBlockModal()" class="text-white/80 hover:text-white transition-colors">
+                                <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
+                            </button>
+                        </div>
+
+                        {{-- Modal Body --}}
+                        <div class="p-8 grid grid-cols-2 gap-8">
+                            {{-- Left Side: Available Fields --}}
+                            <div>
+                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Available
+                                    Fields</h4>
+                                <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
+                                    <template x-for="field in availableFields" :key="field.id">
+                                        <div
+                                            class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group hover:border-primary-500 transition-colors cursor-pointer"
+                                            @click="addFieldToBlock(field.id)"
+                                        >
+                                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
+                                                  x-text="field.label"></span>
+                                            <x-filament::icon name="heroicon-m-plus-circle"
+                                                              class="w-5 h-5 text-gray-400 group-hover:text-primary-500"/>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            {{-- Right Side: Active Fields (Drag & Drop Area) --}}
+                            <div
+                                class="bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 p-6 flex flex-col"
+                            >
+                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Active
+                                    Fields
+                                    (Order)</h4>
+
+                                <div class="flex-1 space-y-3 min-h-[200px]">
+                                    <template x-if="editingBlock?.config?.fields?.length === 0">
+                                        <div
+                                            class="flex flex-col items-center justify-center h-full text-gray-400 italic">
+                                            <p class="text-sm">No fields added yet.</p>
+                                            <p class="text-xs mt-1">Click a field on the left to add it.</p>
+                                        </div>
+                                    </template>
+
+                                    <template x-for="(field, index) in editingBlock?.config?.fields" :key="field.id">
+                                        <div
+                                            draggable="true"
+                                            @dragstart="onFieldDragStart(index)"
+                                            @dragover.prevent="onFieldDragOver(index)"
+                                            @drop="onFieldDrop(index)"
+                                            class="flex items-center justify-between p-4 bg-[#5e81ac] text-white rounded-xl shadow-md border-b-4 border-[#435b7a] cursor-move transition-all"
+                                            :class="fieldHoverIdx === index ? 'ring-2 ring-white border-white' : ''"
+                                        >
+                                            <div class="flex items-center gap-3">
+                                                <x-filament::icon name="heroicon-m-bars-3"
+                                                                  class="w-5 h-5 text-white/60"/>
+                                                <span class="text-sm font-black uppercase tracking-tight"
+                                                      x-text="field.label"></span>
+                                            </div>
+                                            <button @click="removeFieldFromBlock(field.id)"
+                                                    class="text-white/60 hover:text-white transition-colors">
+                                                <x-filament::icon name="heroicon-m-minus-circle" class="w-5 h-5"/>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Modal Footer --}}
+                        <div
+                            class="px-8 py-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
+                            <x-filament::button
+                                color="gray"
+                                @click="closeBlockModal()"
+                            >
+                                Cancel
+                            </x-filament::button>
+                            <x-filament::button
+                                color="primary"
+                                @click="saveBlockModal()"
+                                style="background-color: #ebcb8b !important; color: #2e3440 !important;"
+                            >
+                                Save Configuration
+                            </x-filament::button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
     </div>
 </x-filament-panels::page>
