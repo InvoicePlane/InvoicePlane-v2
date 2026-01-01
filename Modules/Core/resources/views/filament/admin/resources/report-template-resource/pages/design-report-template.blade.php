@@ -73,6 +73,23 @@
                     fields[newIndex] = temp;
                 }
             },
+            draggedFieldIdx: null,
+            fieldHoverIdx: null,
+            onFieldDragStart(index) {
+                this.draggedFieldIdx = index;
+            },
+            onFieldDragOver(index) {
+                this.fieldHoverIdx = index;
+            },
+            onFieldDrop(index) {
+                if (this.draggedFieldIdx !== null && this.draggedFieldIdx !== index) {
+                    const fields = this.editingBlock.config.fields;
+                    const movedItem = fields.splice(this.draggedFieldIdx, 1)[0];
+                    fields.splice(index, 0, movedItem);
+                }
+                this.draggedFieldIdx = null;
+                this.fieldHoverIdx = null;
+            },
             init() {
                 const loadedBlocks = @js($blocks);
 
@@ -97,77 +114,85 @@
                     });
                 }
             },
-        blocks: [
-        @foreach($systemBlocks as $type => $blockDto)
-            { id: '{{ $type }}', label: '{{ $blockDto->getLabel() }}' },
-        @endforeach
-        ],
-        hoveredBand: null,
-        dragBlockId: null,
-        dragSourceBandIdx: null,
-        addBlockToBand(bandIdx, blockId, sourceBandIdx = null) {
-        if (!blockId) return;
-        let block = null;
-        if (sourceBandIdx === null) {
-        // From available blocks
-        const blockIdx = this.blocks.findIndex(b => b.id === blockId);
-        if (blockIdx === -1) return;
-        // Create a deep copy and give it a unique ID if it doesn't have one that looks like a real block ID
-        // Real block IDs start with 'block_'
-        const sourceBlock = this.blocks[blockIdx];
+            blocks: [
+                @foreach($systemBlocks as $type => $blockDto)
+                    { id: '{{ $type }}', label: '{{ $blockDto->getLabel() }}' },
+                @endforeach
+            ],
+            hoveredBand: null,
+            dragBlockId: null,
+            dragSourceBandIdx: null,
+            addBlockToBand(bandIdx, blockId, sourceBandIdx = null) {
+                if (!blockId) return;
+                let block = null;
+                if (sourceBandIdx === null) {
+                    // From available blocks
+                    const blockIdx = this.blocks.findIndex(b => b.id === blockId);
+                    if (blockIdx === -1) return;
+                    // Create a deep copy and give it a unique ID if it doesn't have one that looks like a real block ID
+                    // Real block IDs start with 'block_'
+                    const sourceBlock = this.blocks[blockIdx];
 
-        // Find block width from systemBlocks
-        const systemBlocks = @js($systemBlocks);
-        const systemBlock = systemBlocks[sourceBlock.id] || null;
-        const position = systemBlock ? systemBlock.position : { x: 0, y: 0, width: 6, height: 4 };
+                    // Find block width from systemBlocks
+                    const systemBlocks = @js($systemBlocks);
+                    const systemBlock = systemBlocks[sourceBlock.id] || null;
+                    const position = systemBlock ? systemBlock.position : {x: 0, y: 0, width: 6, height: 4};
 
-        block = {
-        ...sourceBlock,
-        id: 'block_' + sourceBlock.id + '_' + Math.random().toString(36).substr(2, 9),
-        type: sourceBlock.id,
-        position: position,
-        config: systemBlock ? systemBlock.config : { fields: [] }
-        };
-        // We don't splice from available blocks, allow multiple uses
-        } else {
-        // From another band
-        const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
-        if (blockIdx === -1) return;
-        block = this.bands[sourceBandIdx].blocks[blockIdx];
-        const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b =>
-        b.id !== blockId) };
-        this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
-        this.bands = [...this.bands];
-        }
-        // Add block to target band
-        if (this.bands[bandIdx]) {
-        const updatedBand = { ...this.bands[bandIdx], blocks: [...this.bands[bandIdx].blocks, block] };
-        this.bands.splice(bandIdx, 1, updatedBand);
-        this.bands = [...this.bands];
-        this.$nextTick(() => {});
-        }
-        },
-        addBlockToAvailable(blockId, sourceBandIdx) {
-        if (!blockId || sourceBandIdx === null) return;
-        const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
-        if (blockIdx === -1) return;
-        // When removing from a band, just delete it (it's an instance)
-        const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b =>
-        b.id !== blockId) };
-        this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
-        this.bands = [...this.bands];
-        },
-        save() {
-        const bandsToSave = this.bands.map(band => ({
-        ...band,
-        blocks: band.blocks.map(block => {
-        // Ensure block has the correct band key before saving
-        return { ...block, band: band.key };
-        })
-        }));
-        this.$wire.save(bandsToSave);
-        console.log('Bands to save:', JSON.stringify(bandsToSave, null, 2));
-        },
+                    block = {
+                        ...sourceBlock,
+                        id: 'block_' + sourceBlock.id + '_' + Math.random().toString(36).substr(2, 9),
+                        type: sourceBlock.id,
+                        position: position,
+                        config: systemBlock ? systemBlock.config : {fields: []}
+                    };
+                    // We don't splice from available blocks, allow multiple uses
+                } else {
+                    // From another band
+                    const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
+                    if (blockIdx === -1) return;
+                    block = this.bands[sourceBandIdx].blocks[blockIdx];
+                    const updatedSourceBand = {
+                        ...this.bands[sourceBandIdx],
+                        blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId)
+                    };
+                    this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
+                    this.bands = [...this.bands];
+                }
+                // Add block to target band
+                if (this.bands[bandIdx]) {
+                    const updatedBand = {
+                        ...this.bands[bandIdx],
+                        blocks: [...this.bands[bandIdx].blocks, block]
+                    };
+                    this.bands.splice(bandIdx, 1, updatedBand);
+                    this.bands = [...this.bands];
+                    this.$nextTick(() => {
+                    });
+                }
+            },
+            addBlockToAvailable(blockId, sourceBandIdx) {
+                if (!blockId || sourceBandIdx === null) return;
+                const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
+                if (blockIdx === -1) return;
+                // When removing from a band, just delete it (it's an instance)
+                const updatedSourceBand = {
+                    ...this.bands[sourceBandIdx],
+                    blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId)
+                };
+                this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
+                this.bands = [...this.bands];
+            },
+            save() {
+                const bandsToSave = this.bands.map(band => ({
+                    ...band,
+                    blocks: band.blocks.map(block => {
+                        // Ensure block has the correct band key before saving
+                        return {...block, band: band.key};
+                    })
+                }));
+                this.$wire.save(bandsToSave);
+                console.log('Bands to save:', JSON.stringify(bandsToSave, null, 2));
+            },
         }"
         >
             {{-- Header Bar --}}
@@ -333,117 +358,113 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- Block Configuration Modal --}}
-        <div
-            x-show="isModalOpen"
-            class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            x-cloak
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-        >
+            {{-- Block Configuration Modal --}}
             <div
-                class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
-                @click.away="closeBlockModal()"
+                x-show="isModalOpen"
+                class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                x-cloak
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
             >
-                {{-- Modal Header --}}
-                <div class="px-8 py-6 bg-[#527397] flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-3">
-                            <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-6 h-6"/>
-                            Configure <span x-text="editingBlock?.label"></span>
-                        </h3>
-                    </div>
-                    <button @click="closeBlockModal()" class="text-white/80 hover:text-white transition-colors">
-                        <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
-                    </button>
-                </div>
-
-                {{-- Modal Body --}}
-                <div class="p-8 grid grid-cols-2 gap-8">
-                    {{-- Left Side: Available Fields --}}
-                    <div>
-                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Available
-                            Fields</h4>
-                        <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
-                            <template x-for="field in availableFields" :key="field.id">
-                                <div
-                                    class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group hover:border-primary-500 transition-colors cursor-pointer"
-                                    @click="addFieldToBlock(field.id)"
-                                >
-                                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
-                                          x-text="field.label"></span>
-                                    <x-filament::icon name="heroicon-m-plus-circle"
-                                                      class="w-5 h-5 text-gray-400 group-hover:text-primary-500"/>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-
-                    {{-- Right Side: Active Fields (Drag & Drop Area) --}}
-                    <div
-                        class="bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 p-6 flex flex-col"
-                    >
-                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Active Fields
-                            (Order)</h4>
-
-                        <div class="flex-1 space-y-3 min-h-[200px]">
-                            <template x-if="editingBlock?.config?.fields?.length === 0">
-                                <div class="flex flex-col items-center justify-center h-full text-gray-400 italic">
-                                    <p class="text-sm">No fields added yet.</p>
-                                    <p class="text-xs mt-1">Click a field on the left to add it.</p>
-                                </div>
-                            </template>
-
-                            <template x-for="(field, index) in editingBlock?.config?.fields" :key="field.id">
-                                <div
-                                    class="flex items-center justify-between p-4 bg-[#5e81ac] text-white rounded-xl shadow-md border-b-4 border-[#435b7a]"
-                                >
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex flex-col gap-1">
-                                            <button @click="moveField(index, -1)" class="text-white/60 hover:text-white"
-                                                    :disabled="index === 0">
-                                                <x-filament::icon name="heroicon-m-chevron-up" class="w-4 h-4"/>
-                                            </button>
-                                            <button @click="moveField(index, 1)" class="text-white/60 hover:text-white"
-                                                    :disabled="index === editingBlock.config.fields.length - 1">
-                                                <x-filament::icon name="heroicon-m-chevron-down" class="w-4 h-4"/>
-                                            </button>
-                                        </div>
-                                        <span class="text-sm font-black uppercase tracking-tight"
-                                              x-text="field.label"></span>
-                                    </div>
-                                    <button @click="removeFieldFromBlock(field.id)"
-                                            class="text-white/60 hover:text-white transition-colors">
-                                        <x-filament::icon name="heroicon-m-minus-circle" class="w-5 h-5"/>
-                                    </button>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Modal Footer --}}
                 <div
-                    class="px-8 py-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
-                    <x-filament::button
-                        color="gray"
-                        @click="closeBlockModal()"
-                    >
-                        Cancel
-                    </x-filament::button>
-                    <x-filament::button
-                        color="primary"
-                        @click="saveBlockModal()"
-                        style="background-color: #ebcb8b !important; color: #2e3440 !important;"
-                    >
-                        Save Configuration
-                    </x-filament::button>
+                    class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
+                    @click.away="closeBlockModal()"
+                >
+                    {{-- Modal Header --}}
+                    <div class="px-8 py-6 bg-[#527397] flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-black text-white uppercase tracking-wider flex items-center gap-3">
+                                <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-6 h-6"/>
+                                Configure <span x-text="editingBlock?.label"></span>
+                            </h3>
+                        </div>
+                        <button @click="closeBlockModal()" class="text-white/80 hover:text-white transition-colors">
+                            <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
+                        </button>
+                    </div>
+
+                    {{-- Modal Body --}}
+                    <div class="p-8 grid grid-cols-2 gap-8">
+                        {{-- Left Side: Available Fields --}}
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Available
+                                Fields</h4>
+                            <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
+                                <template x-for="field in availableFields" :key="field.id">
+                                    <div
+                                        class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group hover:border-primary-500 transition-colors cursor-pointer"
+                                        @click="addFieldToBlock(field.id)"
+                                    >
+                                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
+                                              x-text="field.label"></span>
+                                        <x-filament::icon name="heroicon-m-plus-circle"
+                                                          class="w-5 h-5 text-gray-400 group-hover:text-primary-500"/>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Right Side: Active Fields (Drag & Drop Area) --}}
+                        <div
+                            class="bg-gray-50 dark:bg-black/20 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 p-6 flex flex-col"
+                        >
+                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Active Fields
+                                (Order)</h4>
+
+                            <div class="flex-1 space-y-3 min-h-[200px]">
+                                <template x-if="editingBlock?.config?.fields?.length === 0">
+                                    <div class="flex flex-col items-center justify-center h-full text-gray-400 italic">
+                                        <p class="text-sm">No fields added yet.</p>
+                                        <p class="text-xs mt-1">Click a field on the left to add it.</p>
+                                    </div>
+                                </template>
+
+                                <template x-for="(field, index) in editingBlock?.config?.fields" :key="field.id">
+                                    <div
+                                        draggable="true"
+                                        @dragstart="onFieldDragStart(index)"
+                                        @dragover.prevent="onFieldDragOver(index)"
+                                        @drop="onFieldDrop(index)"
+                                        class="flex items-center justify-between p-4 bg-[#5e81ac] text-white rounded-xl shadow-md border-b-4 border-[#435b7a] cursor-move transition-all"
+                                        :class="fieldHoverIdx === index ? 'ring-2 ring-white border-white' : ''"
+                                    >
+                                        <div class="flex items-center gap-3">
+                                            <x-filament::icon name="heroicon-m-bars-3" class="w-5 h-5 text-white/60"/>
+                                            <span class="text-sm font-black uppercase tracking-tight"
+                                                  x-text="field.label"></span>
+                                        </div>
+                                        <button @click="removeFieldFromBlock(field.id)"
+                                                class="text-white/60 hover:text-white transition-colors">
+                                            <x-filament::icon name="heroicon-m-minus-circle" class="w-5 h-5"/>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Modal Footer --}}
+                    <div
+                        class="px-8 py-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
+                        <x-filament::button
+                            color="gray"
+                            @click="closeBlockModal()"
+                        >
+                            Cancel
+                        </x-filament::button>
+                        <x-filament::button
+                            color="primary"
+                            @click="saveBlockModal()"
+                            style="background-color: #ebcb8b !important; color: #2e3440 !important;"
+                        >
+                            Save Configuration
+                        </x-filament::button>
+                    </div>
                 </div>
             </div>
         </div>

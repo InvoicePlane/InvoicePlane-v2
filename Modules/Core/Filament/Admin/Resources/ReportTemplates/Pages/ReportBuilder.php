@@ -206,14 +206,23 @@ class ReportBuilder extends Page
             ['id' => 'company_address', 'label' => 'Company Address'],
             ['id' => 'company_phone', 'label' => 'Company Phone'],
             ['id' => 'company_email', 'label' => 'Company Email'],
+            ['id' => 'company_vat_id', 'label' => 'Company VAT ID'],
             ['id' => 'client_name', 'label' => 'Client Name'],
             ['id' => 'client_address', 'label' => 'Client Address'],
+            ['id' => 'client_phone', 'label' => 'Client Phone'],
+            ['id' => 'client_email', 'label' => 'Client Email'],
             ['id' => 'invoice_number', 'label' => 'Invoice Number'],
             ['id' => 'invoice_date', 'label' => 'Invoice Date'],
+            ['id' => 'invoice_due_date', 'label' => 'Due Date'],
+            ['id' => 'invoice_subtotal', 'label' => 'Subtotal'],
+            ['id' => 'invoice_tax_total', 'label' => 'Tax Total'],
             ['id' => 'invoice_total', 'label' => 'Invoice Total'],
             ['id' => 'item_description', 'label' => 'Item Description'],
             ['id' => 'item_quantity', 'label' => 'Item Quantity'],
             ['id' => 'item_price', 'label' => 'Item Price'],
+            ['id' => 'item_tax_name', 'label' => 'Item Tax Name'],
+            ['id' => 'item_tax_rate', 'label' => 'Item Tax Rate'],
+            ['id' => 'footer_notes', 'label' => 'Notes'],
         ];
     }
 

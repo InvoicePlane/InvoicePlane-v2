@@ -305,8 +305,8 @@ class ReportTemplateService
                 4,
                 $config,
                 $dbBlock->name,
-                'custom', // Default data source
-                'header'  // Default band
+                $dbBlock->data_source,
+                $dbBlock->default_band
             );
         }
 
