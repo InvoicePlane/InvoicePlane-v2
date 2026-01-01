@@ -6,12 +6,24 @@
     <div class="w-full"
          x-data="{
             bands: [
-                { name: 'Header Band', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
-                { name: 'Detail Group Header Band', color: '#eceff4', border: '#8fbcbb', blocks: [] },
-                { name: 'Details Band', color: '#d8dee9', border: '#5e81ac', blocks: [] },
-                { name: 'Detail Group Footer Band', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
-                { name: 'Footer Band', color: '#eceff4', border: '#8fbcbb', blocks: [] },
+                { name: 'Header Band', key: 'header', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
+                { name: 'Detail Group Header Band', key: 'group_header', color: '#eceff4', border: '#8fbcbb', blocks: [] },
+                { name: 'Details Band', key: 'details', color: '#d8dee9', border: '#5e81ac', blocks: [] },
+                { name: 'Detail Group Footer Band', key: 'group_footer', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
+                { name: 'Footer Band', key: 'footer', color: '#eceff4', border: '#8fbcbb', blocks: [] },
             ],
+            init() {
+                const loadedBlocks = @js($blocks);
+                Object.values(loadedBlocks).forEach(block => {
+                    const band = this.bands.find(b => b.key === block.band);
+                    if (band) {
+                        band.blocks.push(block);
+                    } else {
+                        // Default to header if band not found
+                        this.bands[0].blocks.push(block);
+                    }
+                });
+            },
             blocks: [
                 @foreach($systemBlocks as $type => $blockDto)
                     { id: '{{ $type }}', label: '{{ $blockDto->getLabel() }}' },
@@ -27,9 +39,15 @@
                     // From available blocks
                     const blockIdx = this.blocks.findIndex(b => b.id === blockId);
                     if (blockIdx === -1) return;
-                    block = this.blocks[blockIdx];
-                    this.blocks.splice(blockIdx, 1);
-                    this.blocks = [...this.blocks];
+                    // Create a deep copy and give it a unique ID if it doesn't have one that looks like a real block ID
+                    // Real block IDs start with 'block_'
+                    const sourceBlock = this.blocks[blockIdx];
+                    block = {
+                        ...sourceBlock,
+                        id: 'block_' + sourceBlock.id + '_' + Math.random().toString(36).substr(2, 9),
+                        type: sourceBlock.id
+                    };
+                    // We don't splice from available blocks, allow multiple uses
                 } else {
                     // From another band
                     const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
@@ -51,16 +69,21 @@
                 if (!blockId || sourceBandIdx === null) return;
                 const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
                 if (blockIdx === -1) return;
-                const block = this.bands[sourceBandIdx].blocks[blockIdx];
-                this.blocks.push(block);
-                this.blocks = [...this.blocks];
+                // When removing from a band, just delete it (it's an instance)
                 const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId) };
                 this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
                 this.bands = [...this.bands];
             },
             save() {
-                this.$wire.save(this.bands);
-                console.log('Bands to save:', JSON.stringify(this.bands, null, 2));
+                const bandsToSave = this.bands.map(band => ({
+                    ...band,
+                    blocks: band.blocks.map(block => {
+                        // Ensure block has the correct band key before saving
+                        return { ...block, band: band.key };
+                    })
+                }));
+                this.$wire.save(bandsToSave);
+                console.log('Bands to save:', JSON.stringify(bandsToSave, null, 2));
             },
         }"
     >
@@ -122,7 +145,11 @@
                             hoveredBand = null;
                             const blockId = event.dataTransfer.getData('blockId');
                             const sourceBandIdx = event.dataTransfer.getData('sourceBandIdx');
-                            addBlockToBand(idx, blockId, sourceBandIdx !== '' ? Number(sourceBandIdx) : null);
+                            if (sourceBandIdx === 'available') {
+                                addBlockToBand(idx, blockId, null);
+                            } else if (sourceBandIdx !== '') {
+                                addBlockToBand(idx, blockId, Number(sourceBandIdx));
+                            }
                         "
                         >
                             <span x-text="band.name + ' (Drop here)'" style="margin-right: 1rem;"></span>
@@ -158,7 +185,7 @@
                                     class="cursor-grab flex items-center px-2 py-1 rounded"
                                     style="background: #145390 !important; color: #eceff4 !important; font-weight: 400 !important; border-radius: 0.5rem !important; padding: 0.5rem 1rem !important; display: flex !important; align-items: center !important; margin-right: 0.5rem !important; margin-bottom: 0.5rem !important; border: 1px solid #bf616a !important;"
                                     draggable="true"
-                                    x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', '');"
+                                    x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', 'available');"
                                 >
                                     <x-filament::icon name="heroicon-m-plus" class="w-4 h-4 mr-2 text-white"/>
                                     <span class="text-white text-sm" x-text="block.label"></span>

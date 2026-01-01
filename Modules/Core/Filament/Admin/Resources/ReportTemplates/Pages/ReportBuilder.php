@@ -3,7 +3,6 @@
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
 use Filament\Resources\Pages\Page;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Modules\Core\DTOs\BlockDTO;
@@ -22,23 +21,14 @@ class ReportBuilder extends Page
 
     public string $selectedBlockId = '';
 
-    /**
-     * The template filename, loaded from the database (or model).
-     *
-     * @var string|null
-     */
-    protected ?string $templateFilename = null;
-
     protected static string $resource = ReportTemplateResource::class;
 
     protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
 
     public function mount(ReportTemplate $record): void
     {
-        $this->record           = $record;
-        $this->templateFilename = $this->getTemplateFilenameFromDatabase();
+        $this->record = $record;
         $this->loadBlocks();
-        $this->loadTemplate();
     }
 
     #[On('drag-block')]
@@ -170,12 +160,21 @@ class ReportBuilder extends Page
     {
         // Flatten bands into blocks with band assignment
         $blocks = [];
-        foreach ($bands as $bandIdx => $band) {
+        foreach ($bands as $band) {
             if ( ! isset($band['blocks'])) {
                 continue;
             }
             foreach ($band['blocks'] as $block) {
-                $block['band']        = $band['name'] ?? (string) $bandIdx;
+                // Ensure the block data has all necessary fields before passing to service
+                // If it's a new block from 'available blocks', it might only have id and label
+                if ( ! isset($block['type'])) {
+                    $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
+                    if (isset($systemBlocks[$block['id']])) {
+                        $block = BlockTransformer::toArray($systemBlocks[$block['id']]);
+                    }
+                }
+
+                $block['band']        = $band['key'] ?? 'header';
                 $blocks[$block['id']] = $block;
             }
         }
@@ -186,36 +185,8 @@ class ReportBuilder extends Page
     }
 
     /**
-     * Loads the template blocks from the filesystem using the template filename.
+     * Loads the template blocks from the filesystem via the service.
      */
-    protected function loadTemplate(): void
-    {
-        if ( ! $this->templateFilename) {
-            return;
-        }
-        $templatePath = 'report_templates/' . $this->templateFilename;
-        if (Storage::disk('local')->exists($templatePath)) {
-            $json   = Storage::disk('local')->get($templatePath);
-            $blocks = json_decode($json, true);
-            if (is_array($blocks)) {
-                $this->blocks = [];
-                foreach ($blocks as $block) {
-                    $this->blocks[$block['id']] = $block;
-                }
-            }
-        }
-    }
-
-    /**
-     * Example method to get the template filename from the database/model.
-     * Replace this with actual logic to retrieve the filename for the current template/record.
-     */
-    protected function getTemplateFilenameFromDatabase(): ?string
-    {
-        // Example: assuming $this->record has a 'template_filename' attribute
-        return $this->record->template_filename ?? null;
-    }
-
     protected function loadBlocks(): void
     {
         $service   = app(ReportTemplateService::class);
