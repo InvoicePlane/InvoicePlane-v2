@@ -5,10 +5,8 @@ namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -22,7 +20,7 @@ use Modules\Core\Services\GridSnapperService;
 use Modules\Core\Services\ReportTemplateService;
 use Modules\Core\Transformers\BlockTransformer;
 
-class ReportBuilder extends Page implements HasActions, HasSchemas
+class ReportBuilder extends Page
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
@@ -51,7 +49,7 @@ class ReportBuilder extends Page implements HasActions, HasSchemas
     public function configureBlockAction(): Action
     {
         return Action::make('configureBlock')
-            ->form(fn (Schema $schema) => ReportBlockForm::configure($schema))
+            ->schema(fn (Schema $schema) => ReportBlockForm::configure($schema))
             ->fillForm(function (array $arguments) {
                 $blockType = $arguments['blockType'] ?? null;
                 if ( ! $blockType) {
@@ -65,19 +63,70 @@ class ReportBuilder extends Page implements HasActions, HasSchemas
                 $block = ReportBlock::where('block_type', $blockType)->first();
 
                 if ( ! $block) {
-                    return [];
+                    return [
+                        'name'         => '',
+                        'width'        => 'full',
+                        'block_type'   => $blockType,
+                        'data_source'  => '',
+                        'default_band' => '',
+                        'is_active'    => true,
+                    ];
                 }
 
                 $data = $block->toArray();
+
+                // Ensure all fields are present for entanglement
+                $data['name'] ??= '';
+                $data['block_type'] ??= $blockType;
+                $data['data_source'] ??= '';
+                $data['default_band'] ??= '';
+                $data['is_active'] = (bool) ($data['is_active'] ?? true);
 
                 // If it's a BackedEnum (width), we need to ensure it's the value
                 if (isset($data['width']) && $data['width'] instanceof BackedEnum) {
                     $data['width'] = $data['width']->value;
                 }
-
-                \Illuminate\Support\Facades\Log::info('Filling form for block ' . $blockType, $data);
+                $data['width'] ??= 'full';
 
                 return $data;
+            })
+            ->mountUsing(function (Schema $schema, array $arguments) {
+                $blockType = $arguments['blockType'] ?? null;
+                if ( ! $blockType) {
+                    return;
+                }
+
+                $block = ReportBlock::where('block_type', $blockType)->first();
+
+                if ( ! $block) {
+                    $schema->fill([
+                        'name'         => '',
+                        'width'        => 'full',
+                        'block_type'   => $blockType,
+                        'data_source'  => '',
+                        'default_band' => '',
+                        'is_active'    => true,
+                    ]);
+
+                    return;
+                }
+
+                $data = $block->toArray();
+
+                // Ensure all fields are present for entanglement
+                $data['name'] ??= '';
+                $data['block_type'] ??= $blockType;
+                $data['data_source'] ??= '';
+                $data['default_band'] ??= '';
+                $data['is_active'] = (bool) ($data['is_active'] ?? true);
+
+                // If it's a BackedEnum (width), we need to ensure it's the value
+                if (isset($data['width']) && $data['width'] instanceof BackedEnum) {
+                    $data['width'] = $data['width']->value;
+                }
+                $data['width'] ??= 'full';
+
+                $schema->fill($data);
             })
             ->action(function (array $data, array $arguments) {
                 $blockType = $arguments['blockType'] ?? null;
