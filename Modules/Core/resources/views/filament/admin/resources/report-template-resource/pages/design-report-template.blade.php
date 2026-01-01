@@ -102,7 +102,7 @@
             {{-- Header Bar --}}
             <div
                 class="flex items-center justify-between w-full mb-6 pb-4 border-b border-gray-200 dark:border-white/10 fi-header"
-                style="padding: 24px; background: #527397 !important; border-radius: 12px; margin-bottom: 2rem;">
+                style="padding: 12px; background: #527397 !important; border-radius: 12px; margin-bottom: 2rem;">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-white">Report Designer</h2>
                     <p class="text-sm text-gray-200">Design your report layout by dragging and dropping
@@ -140,20 +140,21 @@
                 >
                     <template x-for="(band, idx) in bands" :key="band.key">
                         <div
-                            class="relative p-6 bg-white dark:bg-gray-900 border border-gray-300 dark:border-white/10 rounded-xl shadow-sm transition-all mb-8"
+                            class="relative bg-white dark:bg-gray-900 border border-gray-300 dark:border-white/10 rounded-xl shadow-sm transition-all mb-8"
                             :class="hoveredBand === idx ? 'ring-2 ring-primary-500 border-transparent' : ''"
                             :style="document.documentElement.classList.contains('dark') ? { backgroundColor: band.darkColor, borderColor: band.border } : { backgroundColor: band.color, borderColor: band.border }"
                         >
                             {{-- Band Header (Floating-style Label) --}}
                             <div
-                                class="absolute -top-3 left-6 px-3 py-1 text-xs font-black uppercase tracking-widest text-white rounded-lg shadow-sm z-10"
+                                class="absolute left-6 text-xs font-black tracking-widest text-white rounded-lg shadow-sm z-10"
                                 :style="{ backgroundColor: band.border }"
+                                style="padding:12px !important;"
                             >
                                 <span x-text="band.name"></span>
                             </div>
 
                             <div
-                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors gap-6 p-8 items-start content-start"
+                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors gap-6 items-start content-start"
                                 :class="{
                                     'border-primary-400 bg-primary-500/5': hoveredBand === idx,
                                     'border-[#4c566a]/30 dark:border-white/10': hoveredBand !== idx,
@@ -186,27 +187,25 @@
                                     <div
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
-                                        class="group relative flex flex-col items-start gap-2 px-6 py-6 bg-[#bf616a] dark:bg-[#bf616a] border-4 border-dotted border-white/40 rounded-2xl cursor-grab active:cursor-grabbing hover:translate-y-[-4px] transition-all shadow-xl min-h-[100px]"
-                                        style="grid-column: span 1 !important; width: 100% !important;"
+                                        class="group relative flex flex-col items-start bg-[#bf616a] dark:bg-[#bf616a] rounded-2xl cursor-grab active:cursor-grabbing hover:translate-y-[-4px] transition-all shadow-xl min-h-[100px]"
+                                        style="padding:4px !important; grid-column: span 1 !important; width: 100% !important; border: 4px dotted rgba(255, 255, 255, 0.4) !important; justify-content: flex-start !important;"
                                     >
-                                        <div class="flex items-center justify-between w-full mb-2">
+                                        <div class="flex items-center justify-between w-full mb-1">
                                             <x-filament::icon name="heroicon-m-bars-2"
                                                               class="w-6 h-6 text-white/90"/>
                                             <button
                                                 type="button"
                                                 x-on:click="addBlockToAvailable(block.id, idx)"
-                                                class="p-1.5 bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner"
+                                                class="bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner"
+                                                style="float:right !important;"
                                             >
-                                                <x-filament::icon name="heroicon-m-x-mark" class="w-5 h-5"/>
+                                                X
                                             </button>
                                         </div>
                                         <span
-                                            class="text-sm font-black text-white uppercase tracking-wider whitespace-nowrap overflow-hidden text-ellipsis w-full"
+                                            class="text-sm font-black text-white tracking-wider overflow-hidden text-ellipsis w-full"
+                                            style="white-space: nowrap !important; align-self: flex-start !important;"
                                             x-html="block.label.replace(/ /g, '&nbsp;')"></span>
-                                        <div class="mt-auto pt-2 w-full border-t border-white/10">
-                                            <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest"
-                                                  x-text="block.type || 'block'"></span>
-                                        </div>
                                     </div>
                                 </template>
                             </div>
@@ -216,31 +215,34 @@
 
                 {{-- Sidebar: Available Blocks (Right) - 25% width --}}
                 <div class="sticky"
-                     style="min-width: 0 !important; padding: 40px !important;">
+                     style="min-width: 0 !important; padding: 12px !important;">
                     <div
                         class="bg-white dark:bg-gray-900 border-b-4 border-gray-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden"
-                        style="padding: 4px !important;">
-                        <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5">
+                        style="padding: 2px !important;">
+                        <div class="border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5">
                             <h3 class="font-black text-[#2e3440] dark:text-white flex items-center gap-3 uppercase tracking-wider">
                                 <x-filament::icon name="heroicon-m-squares-plus" class="w-6 h-6 text-[#5e81ac]"/>
                                 @lang('ip.available_blocks')
                             </h3>
                         </div>
 
-                        <div class="p-6 bg-white dark:bg-gray-900">
+                        <div class="bg-white dark:bg-gray-900">
                             <div class="grid grid-cols-1 gap-4">
                                 <template x-for="block in blocks" :key="block.id">
                                     <div
-                                        class="group flex items-center gap-4 px-5 py-4 bg-[#5e81ac] dark:bg-[#5e81ac] border-b-4 border-[#435b7a] rounded-xl cursor-grab active:cursor-grabbing hover:brightness-110 transition-all shadow-lg"
+                                        class="group flex flex-col items-start gap-2 bg-[#5e81ac] dark:bg-[#5e81ac] border-b-4 border-[#435b7a] rounded-xl cursor-grab active:cursor-grabbing hover:brightness-110 transition-all shadow-lg min-h-[80px]"
                                         draggable="true"
+                                        style="padding:12px !important; width: 100% !important; justify-content: flex-start !important;"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', 'available');"
                                     >
                                         <div
-                                            class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-white/20 rounded-lg text-white group-hover:bg-white/30 transition-colors">
-                                            <x-filament::icon name="heroicon-m-plus" class="w-6 h-6"/>
+                                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-white/20 rounded-lg text-white group-hover:bg-white/30 transition-colors">
+                                            <x-filament::icon name="heroicon-m-plus" class="w-5 h-5"/>
                                         </div>
-                                        <span class="text-sm font-black text-white uppercase tracking-tight"
-                                              x-text="block.label"></span>
+                                        <span
+                                            class="text-sm font-black text-white uppercase tracking-tight overflow-hidden text-ellipsis w-full"
+                                            style="white-space: nowrap !important; align-self: flex-start !important;"
+                                            x-html="block.label.replace(/ /g, '&nbsp;')"></span>
                                     </div>
                                 </template>
                             </div>
@@ -249,7 +251,7 @@
 
                     {{-- Help Card --}}
                     <div
-                        class="mt-8 p-6 bg-[#ebcb8b] rounded-2xl border-b-4 border-[#d08770] shadow-lg">
+                        class="bg-[#ebcb8b] rounded-2xl border-b-4 border-[#d08770] shadow-lg">
                         <div class="flex gap-4">
                             <x-filament::icon name="heroicon-m-light-bulb"
                                               class="w-6 h-6 text-[#bf616a]"/>
