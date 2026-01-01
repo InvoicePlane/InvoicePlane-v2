@@ -7,8 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages\DesignReportTemplate;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages\ListReportTemplates;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages\ReportBuilder;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\Schemas\ReportTemplateForm;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\Tables\ReportTemplatesTable;
 use Modules\Core\Models\ReportTemplate;
@@ -39,7 +39,7 @@ class ReportTemplateResource extends Resource
     {
         return [
             'index'  => ListReportTemplates::route('/'),
-            'design' => DesignReportTemplate::route('/{record}/design'),
+            'design' => ReportBuilder::route('/{record}/design'),
         ];
     }
 }

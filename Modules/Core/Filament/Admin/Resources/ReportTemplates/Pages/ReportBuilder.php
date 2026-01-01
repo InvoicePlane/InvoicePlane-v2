@@ -14,7 +14,7 @@ use Modules\Core\Services\GridSnapperService;
 use Modules\Core\Services\ReportTemplateService;
 use Modules\Core\Transformers\BlockTransformer;
 
-class DesignReportTemplate extends Page
+class ReportBuilder extends Page
 {
     public ReportTemplate $record;
 
@@ -169,6 +169,8 @@ class DesignReportTemplate extends Page
     {
         $service = app(ReportTemplateService::class);
         $service->persistBlocks($this->record, $this->blocks);
+
+        dd('save called', $this->blocks);
 
         $this->dispatch('blocks-saved');
         // Stay on the design page after saving
