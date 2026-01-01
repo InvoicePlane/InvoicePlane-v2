@@ -34,21 +34,23 @@ class BlockDTO
 {
     //region Properties
 
-    private string $id;
+    private string $id = '';
 
-    private string $type;
+    private string $type = '';
 
-    private GridPositionDTO $position;
+    private ?GridPositionDTO $position = null;
 
-    private array $config;
+    private array $config = [];
 
     private ?string $label = null;
 
-    private bool $isCloneable;
+    private bool $isCloneable = false;
 
     private ?string $dataSource = null;
 
-    private bool $isCloned;
+    private string $band = 'header';
+
+    private bool $isCloned = false;
 
     private ?string $clonedFrom = null;
 
@@ -80,11 +82,21 @@ class BlockDTO
         $dto = new self();
         $dto->setId($newId);
         $dto->setType($original->getType());
-        $dto->setPosition($original->getPosition());
+
+        $originalPosition = $original->getPosition();
+        $newPosition      = GridPositionDTO::create(
+            $originalPosition->getX(),
+            $originalPosition->getY(),
+            $originalPosition->getWidth(),
+            $originalPosition->getHeight()
+        );
+
+        $dto->setPosition($newPosition);
         $dto->setConfig($original->getConfig());
         $dto->setLabel($original->getLabel());
         $dto->setIsCloneable($original->getIsCloneable());
         $dto->setDataSource($original->getDataSource());
+        $dto->setBand($original->getBand());
         $dto->setIsCloned(true);
         $dto->setClonedFrom($original->getId());
 
@@ -105,7 +117,7 @@ class BlockDTO
         return $this->type;
     }
 
-    public function getPosition(): GridPositionDTO
+    public function getPosition(): ?GridPositionDTO
     {
         return $this->position;
     }
@@ -203,6 +215,18 @@ class BlockDTO
     public function setClonedFrom(?string $clonedFrom): self
     {
         $this->clonedFrom = $clonedFrom;
+
+        return $this;
+    }
+
+    public function getBand(): string
+    {
+        return $this->band;
+    }
+
+    public function setBand(string $band): self
+    {
+        $this->band = $band;
 
         return $this;
     }

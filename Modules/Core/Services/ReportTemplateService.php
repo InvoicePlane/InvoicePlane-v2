@@ -322,7 +322,8 @@ class ReportTemplateService
             6,
             ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
             'Invoice Items',
-            'invoice'
+            'invoice',
+            'details'
         );
 
         $blocks['detail_item_tax'] = $this->createSystemBlock(
@@ -334,7 +335,8 @@ class ReportTemplateService
             2,
             ['show_tax_name' => true, 'show_tax_rate' => true],
             'Item Tax Details',
-            'invoice'
+            'invoice',
+            'details'
         );
 
         $blocks['footer_totals'] = $this->createSystemBlock(
@@ -346,7 +348,8 @@ class ReportTemplateService
             4,
             ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
             'Invoice Totals',
-            'invoice'
+            'invoice',
+            'footer'
         );
 
         $blocks['footer_notes'] = $this->createSystemBlock(
@@ -358,7 +361,8 @@ class ReportTemplateService
             4,
             ['font_size' => 9],
             'Footer Notes',
-            'invoice'
+            'invoice',
+            'footer'
         );
 
         $blocks['footer_qr_code'] = $this->createSystemBlock(
@@ -370,7 +374,8 @@ class ReportTemplateService
             4,
             ['size' => 100],
             'QR Code',
-            'invoice'
+            'invoice',
+            'footer'
         );
 
         return $blocks;
@@ -388,7 +393,8 @@ class ReportTemplateService
         int $height,
         array $config,
         string $label,
-        string $dataSource
+        string $dataSource,
+        string $band = 'header'
     ): BlockDTO {
         $position = GridPositionDTO::create($x, $y, $width, $height);
 
@@ -400,6 +406,7 @@ class ReportTemplateService
             ->setLabel($label)
             ->setIsCloneable(true)
             ->setDataSource($dataSource)
+            ->setBand($band)
             ->setIsCloned(false)
             ->setClonedFrom(null);
 

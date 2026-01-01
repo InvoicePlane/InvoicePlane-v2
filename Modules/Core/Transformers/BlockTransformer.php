@@ -60,6 +60,7 @@ class BlockTransformer
             ->setLabel($blockData['label'] ?? null)
             ->setIsCloneable($blockData['isCloneable'] ?? false)
             ->setDataSource($blockData['dataSource'] ?? null)
+            ->setBand($blockData['band'] ?? 'header')
             ->setIsCloned($blockData['isCloned'] ?? false)
             ->setClonedFrom($blockData['clonedFrom'] ?? null);
 
@@ -76,16 +77,17 @@ class BlockTransformer
         return [
             'id'       => $dto->getId(),
             'type'     => $dto->getType(),
-            'position' => [
+            'position' => $position ? [
                 'x'      => $position->getX(),
                 'y'      => $position->getY(),
                 'width'  => $position->getWidth(),
                 'height' => $position->getHeight(),
-            ],
+            ] : null,
             'config'      => $dto->getConfig(),
             'label'       => $dto->getLabel(),
             'isCloneable' => $dto->getIsCloneable(),
             'dataSource'  => $dto->getDataSource(),
+            'band'        => $dto->getBand(),
             'isCloned'    => $dto->getIsCloned(),
             'clonedFrom'  => $dto->getClonedFrom(),
         ];

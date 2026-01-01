@@ -58,6 +58,10 @@ class DesignReportTemplate extends Page
             'width'  => $snappedPosition->getWidth(),
             'height' => $snappedPosition->getHeight(),
         ];
+
+        if (isset($position['band'])) {
+            $this->blocks[$blockId]['band'] = $position['band'];
+        }
     }
 
     #[On('add-block')]
