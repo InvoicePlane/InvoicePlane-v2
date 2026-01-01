@@ -209,4 +209,31 @@ class ReportTemplateFileRepositoryTest extends AbstractAdminPanelTestCase
         $this->assertCount(1, $resultCompany2);
         $this->assertContains('template_company_2', $resultCompany2);
     }
+
+    #[Test]
+    public function it_handles_grouped_blocks(): void
+    {
+        /* Arrange */
+        $groupedData = [
+            'header' => [
+                ['id' => 'block1', 'band' => 'header', 'type' => 'test'],
+            ],
+            'details' => [
+                ['id' => 'block2', 'band' => 'details', 'type' => 'test'],
+            ],
+        ];
+
+        Storage::disk('report_templates')->put(
+            '1/grouped.json',
+            json_encode($groupedData)
+        );
+
+        /* Act */
+        $blocks = $this->repository->get(1, 'grouped');
+
+        /* Assert */
+        $this->assertCount(2, $blocks);
+        $this->assertEquals('block1', $blocks[0]['id']);
+        $this->assertEquals('block2', $blocks[1]['id']);
+    }
 }

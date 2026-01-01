@@ -144,20 +144,29 @@ class ReportTemplateService
      */
     public function persistBlocks(ReportTemplate $template, array $blocks): void
     {
-        $blocksArray = [];
+        $groupedBlocks = [
+            'header'       => [],
+            'group_header' => [],
+            'details'      => [],
+            'group_footer' => [],
+            'footer'       => [],
+        ];
 
         foreach ($blocks as $block) {
-            if ($block instanceof BlockDTO) {
-                $blocksArray[] = BlockTransformer::toArray($block);
+            $blockArray = $block instanceof BlockDTO ? BlockTransformer::toArray($block) : $block;
+            $band       = $blockArray['band'] ?? 'header';
+
+            if (isset($groupedBlocks[$band])) {
+                $groupedBlocks[$band][] = $blockArray;
             } else {
-                $blocksArray[] = $block;
+                $groupedBlocks['header'][] = $blockArray;
             }
         }
 
         $this->fileRepository->save(
             $template->company_id,
             $template->slug,
-            $blocksArray
+            $groupedBlocks
         );
     }
 

@@ -155,10 +155,9 @@ class ReportBuilder extends Page
         );
     }
 
-    // Only this save method should exist and it must be public
     public function save($bands): void
     {
-        // Flatten bands into blocks with band assignment
+        // $bands is already grouped by band from Alpine.js
         $blocks = [];
         foreach ($bands as $band) {
             if ( ! isset($band['blocks'])) {
@@ -166,7 +165,6 @@ class ReportBuilder extends Page
             }
             foreach ($band['blocks'] as $block) {
                 // Ensure the block data has all necessary fields before passing to service
-                // If it's a new block from 'available blocks', it might only have id and label
                 if ( ! isset($block['type'])) {
                     $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
                     if (isset($systemBlocks[$block['id']])) {

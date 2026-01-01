@@ -14,15 +14,26 @@
             ],
             init() {
                 const loadedBlocks = @js($blocks);
-                Object.values(loadedBlocks).forEach(block => {
-                    const band = this.bands.find(b => b.key === block.band);
-                    if (band) {
-                        band.blocks.push(block);
-                    } else {
-                        // Default to header if band not found
-                        this.bands[0].blocks.push(block);
-                    }
-                });
+
+                // If loadedBlocks is already grouped by band (associative array/object)
+                if (loadedBlocks && typeof loadedBlocks === 'object' && !Array.isArray(loadedBlocks) && Object.keys(loadedBlocks).some(key => ['header', 'group_header', 'details', 'group_footer', 'footer'].includes(key))) {
+                    this.bands.forEach(band => {
+                        if (loadedBlocks[band.key]) {
+                            band.blocks = loadedBlocks[band.key];
+                        }
+                    });
+                } else {
+                    // Fallback for flat array (backward compatibility)
+                    Object.values(loadedBlocks).forEach(block => {
+                        const band = this.bands.find(b => b.key === block.band);
+                        if (band) {
+                            band.blocks.push(block);
+                        } else {
+                            // Default to header if band not found
+                            this.bands[0].blocks.push(block);
+                        }
+                    });
+                }
             },
             blocks: [
                 @foreach($systemBlocks as $type => $blockDto)

@@ -65,7 +65,25 @@ class ReportTemplateFileRepository
             return [];
         }
 
-        return is_array($decoded) ? $decoded : [];
+        if ( ! is_array($decoded)) {
+            return [];
+        }
+
+        // Handle grouped structure (new) vs flat array (old)
+        if ($this->isGrouped($decoded)) {
+            $flattened = [];
+            foreach ($decoded as $bandBlocks) {
+                if (is_array($bandBlocks)) {
+                    foreach ($bandBlocks as $block) {
+                        $flattened[] = $block;
+                    }
+                }
+            }
+
+            return $flattened;
+        }
+
+        return $decoded;
     }
 
     /**
@@ -122,6 +140,27 @@ class ReportTemplateFileRepository
         return array_map(function ($file) {
             return pathinfo($file, PATHINFO_FILENAME);
         }, $files);
+    }
+
+    /**
+     * Check if the blocks array is grouped by band.
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isGrouped(array $data): bool
+    {
+        // If it's an associative array and keys are known bands, it's grouped
+        $bands = ['header', 'group_header', 'details', 'group_footer', 'footer'];
+
+        foreach (array_keys($data) as $key) {
+            if (in_array($key, $bands, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
