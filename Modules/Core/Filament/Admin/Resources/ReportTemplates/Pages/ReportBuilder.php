@@ -25,6 +25,11 @@ class ReportBuilder extends Page
 
     protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
 
+    public function getMaxContentWidth(): string
+    {
+        return 'full';
+    }
+
     public function mount(ReportTemplate $record): void
     {
         $this->record = $record;
