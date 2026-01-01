@@ -7,7 +7,7 @@
         <!-- Header Bar -->
         <div
             class="flex items-center justify-between w-full bg-gray-100 px-4 py-1 rounded-md mb-4 border-b border-gray-200"
-            style="padding: 4px;">
+            style="padding: 24px;">
             <span class="font-medium text-lg text-gray-700">Report Builder</span>
             <x-filament::button type="button" color="primary"
                                 style="box-shadow: 0 1px 2px #0002; float: right !important;">
@@ -23,6 +23,11 @@
                 { name: 'Details Band', color: '#d8dee9', border: '#5e81ac', blocks: [] },
                 { name: 'Detail Group Footer Band', color: '#e5e9f0', border: '#81a1c1', blocks: [] },
                 { name: 'Footer Band', color: '#eceff4', border: '#8fbcbb', blocks: [] },
+            ],
+            blocks: [
+                @foreach($systemBlocks as $type => $blockDto)
+                    { id: '{{ $type }}', label: '{{ $blockDto->getLabel() }}' },
+                @endforeach
             ],
             hoveredBand: null,
             dragBlockId: null,
@@ -126,19 +131,19 @@
                         {{ __('Available Blocks (Alpine & Nord)') }}
                     </div>
                     <ul class="space-y-2">
-                        @foreach($systemBlocks as $type => $blockDto)
+                        <template x-for="block in blocks" :key="block.id">
                             <li>
                                 <div
                                     class="cursor-grab flex items-center px-2 py-1 rounded"
                                     style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #bf616a;"
                                     draggable="true"
-                                    x-on:dragstart="event.dataTransfer.setData('blockId', '{{ $type }}'); event.dataTransfer.setData('sourceBandIdx', '');"
+                                    x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', '');"
                                 >
                                     <x-filament::icon name="heroicon-m-plus" class="w-4 h-4 mr-2 text-white"/>
-                                    <span class="text-white text-sm">{{ $blockDto->getLabel() }}</span>
+                                    <span class="text-white text-sm" x-text="block.label"></span>
                                 </div>
                             </li>
-                        @endforeach
+                        </template>
                     </ul>
                 </div>
             </div>
