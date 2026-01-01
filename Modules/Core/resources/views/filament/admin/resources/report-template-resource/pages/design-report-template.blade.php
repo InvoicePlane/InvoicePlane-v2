@@ -98,7 +98,7 @@
             style="display: flex !important; width: 100%; max-width: 100%; min-height: 100vh; gap: 1.5rem; border: 4px solid #3b82f6; position: relative; z-index: 50; box-sizing: border-box;">
             <div
                 style="flex: 1 1 0; padding: 1.5rem; border: 1px solid #000; background: #ebcb8b; color: #2e3440; border-radius: 1rem; min-width: 0; box-sizing: border-box;">
-                <div style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Design (Alpine & Nord)
+                <div style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Design Area
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     <template x-for="(band, idx) in bands" :key="band.name">
