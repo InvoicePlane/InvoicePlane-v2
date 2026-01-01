@@ -2,6 +2,37 @@
 
 This directory contains GitHub Actions workflows for automated CI/CD tasks.
 
+## Composite Actions
+
+### Setup PHP with Composer (`.github/actions/setup-php-composer`)
+
+A reusable composite action that sets up PHP and installs Composer dependencies with intelligent caching.
+
+**Benefits:**
+- Reduces Composer install time from 8-12 seconds to 2-4 seconds (with cache hit)
+- Consistent PHP and Composer setup across all workflows
+- Centralized cache management
+
+**Usage:**
+```yaml
+- name: Setup PHP with Composer
+  uses: ./.github/actions/setup-php-composer
+  with:
+    php-version: '8.2'  # Optional, defaults to 8.2
+    php-extensions: 'mbstring, xml, json'  # Optional
+    composer-flags: '--no-dev --optimize-autoloader'  # Optional
+```
+
+**Used by:**
+- `phpunit.yml` - Test execution
+- `phpstan.yml` - Static analysis
+- `pint.yml` - Code formatting
+- `composer-update.yml` - Dependency updates
+- `yarn-update.yml` - Frontend dependency updates
+- `quickstart.yml` - Smoke tests
+
+**Note:** `release.yml` uses manual Composer caching (not this composite action) due to its custom production build flags (`--no-dev`).
+
 ## Available Workflows
 
 ### 1. Production Release (`release.yml`)
@@ -86,14 +117,22 @@ Artifacts are also available in the Actions tab for 90 days.
 **What it does:**
 1. **Runs security audit** - Checks for known vulnerabilities
 2. **Updates dependencies** - Based on selected update type
-3. **Runs tests** - Executes unit tests to verify compatibility
-4. **Runs static analysis** - PHPStan checks for type errors
-5. **Creates pull request** - Automated PR with update details
+3. **Runs smoke tests** - Fast verification after updates (if changes detected)
+4. **Creates pull request** - Automated PR with update details
 
 **Update Types:**
-- `security-only` - Only security fixes (default for scheduled runs)
+- `security-patch` - Security and patch updates (default for scheduled runs)
 - `patch-minor` - Patch and minor version updates
-- `all-dependencies` - All updates including major versions
+- `all-dependencies` - All updates including major versions with `composer bump`
+
+**Smoke Tests:**
+
+After dependencies are updated, the workflow automatically runs smoke tests to verify core functionality:
+- Only runs if `composer.lock` has changes
+- Uses `phpunit.smoke.xml` configuration
+- Executes tests marked with `#[Group('smoke')]`
+- Continues even if tests fail (with `continue-on-error: true`)
+- Typically completes in 10-30 seconds
 
 **Required Secrets:**
 

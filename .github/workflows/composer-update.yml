@@ -41,26 +41,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
-          extensions: mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql
-          coverage: none
-
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql'
 
       - name: Run Composer audit
         id: audit
@@ -89,18 +74,6 @@ jobs:
         run: |
           composer bump && composer update
 
-      # - name: Run smoke tests
-      #   run: |
-      #     cp .env.example .env
-      #     php artisan key:generate
-      #     php artisan test --group=smoke
-
-      # - name: Run static analysis
-      #   run: vendor/bin/phpstan analyse --no-progress --error-format=github || true
-
-      # - name: Run code formatting
-      #   run: vendor/bin/pint --test || true
-
       - name: Check for changes
         id: check-changes
         run: |
@@ -109,6 +82,14 @@ jobs:
           else
             echo "changes_detected=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Run smoke tests
+        if: steps.check-changes.outputs.changes_detected == 'true'
+        run: |
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
+          php artisan test --configuration=phpunit.smoke.xml --env=testing
+        continue-on-error: true
 
       - name: Get updated packages
         if: steps.check-changes.outputs.changes_detected == 'true'
