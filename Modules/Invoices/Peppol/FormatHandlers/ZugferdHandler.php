@@ -451,7 +451,7 @@ class ZugferdHandler extends BaseFormatHandler
         $taxes     = [];
 
         foreach ($taxGroups as $rateKey => $group) {
-            $rate = (float) $rateKey;
+            $rate    = (float) $rateKey;
             $taxes[] = [
                 'CalculatedAmount' => [
                     '@currencyID' => $this->getCurrencyCode($invoice),
@@ -487,7 +487,7 @@ class ZugferdHandler extends BaseFormatHandler
         $taxes     = [];
 
         foreach ($taxGroups as $rateKey => $group) {
-            $rate = (float) $rateKey;
+            $rate    = (float) $rateKey;
             $taxes[] = [
                 'ram:CalculatedAmount'      => number_format($group['amount'], 2, '.', ''),
                 'ram:TypeCode'              => 'VAT',
@@ -516,7 +516,7 @@ class ZugferdHandler extends BaseFormatHandler
         $taxGroups = [];
 
         foreach ($invoice->invoiceItems as $item) {
-            $rate = $this->getTaxRate($item);
+            $rate    = $this->getTaxRate($item);
             $rateKey = (string) $rate;
 
             if ( ! isset($taxGroups[$rateKey])) {

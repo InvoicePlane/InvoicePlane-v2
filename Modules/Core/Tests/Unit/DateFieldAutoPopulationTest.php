@@ -33,24 +33,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         // No need to create them again
     }
 
-    /**
-     * Create a test customer for the current company.
-     */
-    protected function createTestCustomer(): Relation
-    {
-        return Relation::factory()->for($this->company)->customer()->create();
-    }
-
-    /**
-     * Create a test numbering for the current company.
-     */
-    protected function createTestNumbering(): Numbering
-    {
-        /** @var Numbering $numbering */
-        $numbering = Numbering::factory()->for($this->company)->create();
-        return $numbering;
-    }
-
     #[Test]
     #[Group('date-auto-population')]
     public function it_auto_populates_invoice_date_fields_on_create_form(): void
@@ -347,7 +329,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         /* arrange */
         // Clean up any default numberings created by CompanyObserver during setup
         Numbering::where('company_id', $this->company->id)->delete();
-        
+
         $otherCompany           = Company::factory()->create();
         $currentCompanyDocGroup = Numbering::factory()->for($this->company)->create(['name' => 'Current Company Group']);
         $otherCompanyDocGroup   = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
@@ -376,4 +358,22 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }
 
+    /**
+     * Create a test customer for the current company.
+     */
+    protected function createTestCustomer(): Relation
+    {
+        return Relation::factory()->for($this->company)->customer()->create();
+    }
+
+    /**
+     * Create a test numbering for the current company.
+     */
+    protected function createTestNumbering(): Numbering
+    {
+        /** @var Numbering $numbering */
+        $numbering = Numbering::factory()->for($this->company)->create();
+
+        return $numbering;
+    }
 }

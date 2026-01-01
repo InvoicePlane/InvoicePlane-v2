@@ -280,7 +280,7 @@ class CiiHandler extends BaseFormatHandler
         // Group taxes by rate
         $taxGroups = [];
         foreach ($invoice->items as $item) {
-            $rate = $item->tax_rate ?? 0;
+            $rate    = $item->tax_rate ?? 0;
             $rateKey = (string) $rate;
             if ( ! isset($taxGroups[$rateKey])) {
                 $taxGroups[$rateKey] = [
@@ -293,7 +293,7 @@ class CiiHandler extends BaseFormatHandler
         }
 
         foreach ($taxGroups as $rateKey => $group) {
-            $rate = (float) $rateKey;
+            $rate        = (float) $rateKey;
             $taxTotals[] = [
                 'CalculatedAmount'      => number_format($group['amount'], 2, '.', ''),
                 'TypeCode'              => 'VAT',

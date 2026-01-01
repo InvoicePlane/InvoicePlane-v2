@@ -36,18 +36,18 @@ class SettingsTest extends AbstractAdminPanelTestCase
         Numbering::where('company_id', $this->company1->id)->delete();
         Numbering::where('company_id', $this->company2->id)->delete();
         $group1Company1 = Numbering::factory()->for($this->company1)->create([
-            'name'       => 'Invoice Group Company 1',
-            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
+            'name' => 'Invoice Group Company 1',
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         $group2Company1 = Numbering::factory()->for($this->company1)->create([
-            'name'       => 'Quote Group Company 1',
-            'type'       => \Modules\Core\Enums\NumberingType::QUOTE->value,
+            'name' => 'Quote Group Company 1',
+            'type' => \Modules\Core\Enums\NumberingType::QUOTE->value,
         ]);
 
         $group1Company2 = Numbering::factory()->for($this->company2)->create([
-            'name'       => 'Invoice Group Company 2',
-            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
+            'name' => 'Invoice Group Company 2',
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         session(['current_company_id' => $this->company1->id]);
@@ -141,13 +141,13 @@ class SettingsTest extends AbstractAdminPanelTestCase
         Numbering::where('company_id', $this->company1->id)->delete();
         Numbering::where('company_id', $this->company2->id)->delete();
         $group1 = Numbering::factory()->for($this->company1)->create([
-            'name'       => 'Group Company 1',
-            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
+            'name' => 'Group Company 1',
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         $group2 = Numbering::factory()->for($this->company2)->create([
-            'name'       => 'Group Company 2',
-            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
+            'name' => 'Group Company 2',
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
         /* act */
@@ -281,7 +281,7 @@ class SettingsTest extends AbstractAdminPanelTestCase
 
         /* assert */
         $component->assertHasNoErrors();
-        
+
         // Verify settings are persisted (they would be saved to a settings table or config)
         $settings = $component->get('settings');
         $this->assertEquals('EUR', $settings['currency_code']);

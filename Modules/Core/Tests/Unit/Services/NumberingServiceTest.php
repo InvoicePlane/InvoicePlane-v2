@@ -176,23 +176,23 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $preview1 = $this->service->previewNextFormattedNumber($numbering);
-        
+
         // Simulate generating a number (incrementing next_id)
         $numbering->next_id = 11;
         $numbering->save();
-        
+
         $preview2 = $this->service->previewNextFormattedNumber($numbering);
-        
+
         $numbering->next_id = 12;
         $numbering->save();
-        
+
         $preview3 = $this->service->previewNextFormattedNumber($numbering);
 
         /* Assert */
         $this->assertEquals('PRJ-0010', $preview1);
         $this->assertEquals('PRJ-0011', $preview2);
         $this->assertEquals('PRJ-0012', $preview3);
-        
+
         // Verify the numbering increments correctly
         $this->assertEquals(12, $numbering->next_id);
     }

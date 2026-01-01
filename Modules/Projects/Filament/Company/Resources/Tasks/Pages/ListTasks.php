@@ -73,7 +73,7 @@ class ListTasks extends ListRecords
             ")
             ->orderBy('due_at', 'asc');
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         return $query;
     }
 }

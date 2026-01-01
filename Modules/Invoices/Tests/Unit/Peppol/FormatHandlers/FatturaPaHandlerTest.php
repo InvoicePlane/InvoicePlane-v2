@@ -149,7 +149,7 @@ class FatturaPaHandlerTest extends TestCase
         $customer->city          = 'Roma';
         $customer->zip           = '00100';
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         $invoice->customer = $customer;
 
         // Create mock invoice items

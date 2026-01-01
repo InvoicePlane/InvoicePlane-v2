@@ -12,6 +12,7 @@ use Modules\ReportBuilder\Services\ReportTemplateService;
 use Modules\ReportBuilder\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 
 class ReportTemplateServiceTest extends TestCase
 {
@@ -35,9 +36,9 @@ class ReportTemplateServiceTest extends TestCase
     public function it_creates_template(): void
     {
         /* arrange */
-        $company = new \stdClass();
+        $company     = new stdClass();
         $company->id = 1;
-        $blocks = [];
+        $blocks      = [];
 
         /* act */
         /** @phpstan-ignore-next-line */
@@ -222,20 +223,20 @@ class ReportTemplateServiceTest extends TestCase
     public function it_loads_blocks(): void
     {
         /* arrange */
-        $template = new ReportTemplate();
+        $template             = new ReportTemplate();
         $template->company_id = 1;
-        $template->slug = 'test-template';
-        
+        $template->slug       = 'test-template';
+
         $this->fileRepository->expects($this->once())
             ->method('load')
             ->with(1, 'test-template')
             ->willReturn([
                 [
-                    'id' => 'block_1',
-                    'type' => 'header_company',
+                    'id'       => 'block_1',
+                    'type'     => 'header_company',
                     'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                    'config' => [],
-                ]
+                    'config'   => [],
+                ],
             ]);
 
         /* act */

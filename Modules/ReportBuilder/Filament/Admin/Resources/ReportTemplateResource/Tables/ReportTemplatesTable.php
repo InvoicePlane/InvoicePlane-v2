@@ -83,13 +83,13 @@ class ReportTemplatesTable
                         })
                         ->modalWidth('full')
                         ->visible(fn (ReportTemplate $record) => ! $record->is_system),
-                    /** @phpstan-ignore-next-line */
+                    /* @phpstan-ignore-next-line */
                     Action::make('design')
                         ->label(trans('ip.design'))
                         ->icon(Heroicon::OutlinedPaintBrush)
                         ->url(fn (ReportTemplate $record) => route('filament.admin.resources.report-templates.design', ['record' => $record->id]))
                         ->visible(fn (ReportTemplate $record) => ! $record->is_system),
-                    /** @phpstan-ignore-next-line */
+                    /* @phpstan-ignore-next-line */
                     Action::make('clone')
                         ->label(trans('ip.clone'))
                         ->icon(Heroicon::OutlinedDocumentDuplicate)

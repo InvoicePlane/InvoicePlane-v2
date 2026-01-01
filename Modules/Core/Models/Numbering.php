@@ -93,7 +93,7 @@ class Numbering extends Model
             return null;
         }
 
-        $trimmed = trim($format);
+        $trimmed = mb_trim($format);
 
         if ($trimmed === '') {
             return null;

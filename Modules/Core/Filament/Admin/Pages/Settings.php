@@ -67,28 +67,28 @@ class Settings extends Page implements HasTable, HasForms
         $this->settings['auto_install_security_updates'] ??= false;
         $this->settings['update_channel'] ??= 'stable';
         $this->settings['update_check_interval'] ??= 24;
-        
+
         $this->form->fill($this->settings);
     }
-    
+
     public function submit(): void
     {
         $this->settings = $this->form->getState();
-        
+
         // Here you would save settings to database or config
         // For now, just keep them in memory
     }
-    
+
     protected function getFormStatePath(): ?string
     {
         return 'settings';
     }
-    
+
     protected function getCachedFormActions(): array
     {
         return $this->getFormActions();
     }
-    
+
     protected function getFormActions(): array
     {
         return [
@@ -97,7 +97,7 @@ class Settings extends Page implements HasTable, HasForms
                 ->submit('submit'),
         ];
     }
-    
+
     protected function hasFullWidthFormActions(): bool
     {
         return false;
@@ -292,9 +292,10 @@ class Settings extends Page implements HasTable, HasForms
                                         ->label(trans('ip.default_invoice_group'))
                                         ->options(function () {
                                             $companyId = session('current_company_id');
-                                            if (!$companyId) {
+                                            if ( ! $companyId) {
                                                 return [];
                                             }
+
                                             return Numbering::where('company_id', $companyId)->pluck('name', 'id');
                                         })
                                         ->placeholder(trans('ip.none')),
@@ -703,21 +704,21 @@ class Settings extends Page implements HasTable, HasForms
                                     Toggle::make('settings.auto_check_updates')
                                         ->label('Auto Check Updates')
                                         ->default(true),
-                                    
+
                                     Toggle::make('settings.auto_install_security_updates')
                                         ->label('Auto Install Security Updates')
                                         ->default(false),
-                                    
+
                                     Select::make('settings.update_channel')
                                         ->label('Update Channel')
                                         ->options([
                                             'stable' => 'Stable',
-                                            'beta' => 'Beta',
-                                            'alpha' => 'Alpha',
+                                            'beta'   => 'Beta',
+                                            'alpha'  => 'Alpha',
                                         ])
                                         ->default('stable')
                                         ->required(),
-                                    
+
                                     TextInput::make('settings.update_check_interval')
                                         ->label('Update Check Interval (hours)')
                                         ->numeric()
@@ -725,12 +726,12 @@ class Settings extends Page implements HasTable, HasForms
                                         ->maxValue(168)
                                         ->default(24)
                                         ->required(),
-                                    
+
                                     TextInput::make('settings.update_notification_email')
                                         ->label('Update Notification Email')
                                         ->email()
                                         ->nullable(),
-                                    
+
                                     TextInput::make('settings.current_version')
                                         ->string()
                                         ->placeholder('1.6.3')

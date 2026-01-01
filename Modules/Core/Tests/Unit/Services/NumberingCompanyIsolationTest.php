@@ -225,7 +225,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         // Note: Tasks don't have numbering_id FK, they just store the generated number
         for ($i = 1; $i <= 5; $i++) {
             Task::factory()->for($company)->create([
-                'task_number' => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
+                'task_number' => 'TSK-' . mb_str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
             ]);
         }
 
@@ -283,7 +283,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         // Both should generate independent numbers
         $this->assertEquals('TSK-0001', $number1);
         $this->assertEquals('TSK-0001', $number2);
-        
+
         // Verify numbering is isolated - updating numbering1 shouldn't affect numbering2
         $numbering1->refresh();
         $numbering2->refresh();

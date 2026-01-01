@@ -25,7 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
 class SendInvoiceToPeppolActionTest extends AbstractTestCase
 {
     use RefreshDatabase;
-    
+
     protected SendInvoiceToPeppolAction $action;
 
     protected function setUp(): void
@@ -217,6 +217,25 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
         $this->action->cancel('DOC-DELIVERED');
     }
 
+    #[Test]
+    public function it_sends_invoice(): void
+    {
+        /* arrange */
+        $invoice = $this->createMockInvoice('sent');
+
+        /* act */
+        $result = $this->action->execute($invoice, [
+            'customer_peppol_id' => 'BE:0123456789',
+        ]);
+
+        /* assert */
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('success', $result);
+        $this->assertArrayHasKey('document_id', $result);
+        $this->assertTrue($result['success']);
+        $this->assertNotEmpty($result['document_id']);
+    }
+
     /**
      * Create a mock invoice for testing.
      *
@@ -257,24 +276,5 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
         $invoice->setRelation('invoiceItems', $items);
 
         return $invoice;
-    }
-
-    #[Test]
-    public function it_sends_invoice(): void
-    {
-        /* arrange */
-        $invoice = $this->createMockInvoice('sent');
-
-        /* act */
-        $result = $this->action->execute($invoice, [
-            'customer_peppol_id' => 'BE:0123456789',
-        ]);
-
-        /* assert */
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('success', $result);
-        $this->assertArrayHasKey('document_id', $result);
-        $this->assertTrue($result['success']);
-        $this->assertNotEmpty($result['document_id']);
     }
 }

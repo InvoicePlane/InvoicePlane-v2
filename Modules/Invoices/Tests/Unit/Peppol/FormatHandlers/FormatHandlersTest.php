@@ -87,10 +87,10 @@ class FormatHandlersTest extends TestCase
     #[DataProvider('handlerProvider')]
     public function it_validates_missing_customer($handlerClass): void
     {
-        $handler = new $handlerClass();
-        $invoice = new Invoice();
-        $nullCustomer            = null;
-        /** @phpstan-ignore-next-line */
+        $handler      = new $handlerClass();
+        $invoice      = new Invoice();
+        $nullCustomer = null;
+        /* @phpstan-ignore-next-line */
         $invoice->customer       = $nullCustomer;
         $invoice->invoice_number = 'TEST-001';
         $invoice->invoiced_at    = now();
@@ -275,7 +275,7 @@ class FormatHandlersTest extends TestCase
         $customer->contact_email       = 'test@example.com';
         $customer->reference           = 'REF-001';
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         $invoice->customer = $customer;
 
         // Create mock invoice items

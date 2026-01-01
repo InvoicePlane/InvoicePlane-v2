@@ -284,7 +284,7 @@ class FacturaeHandler extends BaseFormatHandler
         $taxGroups = [];
 
         foreach ($invoice->invoiceItems as $item) {
-            $rate = $this->getTaxRate($item);
+            $rate    = $this->getTaxRate($item);
             $rateKey = (string) $rate;
 
             if ( ! isset($taxGroups[$rateKey])) {
@@ -301,7 +301,7 @@ class FacturaeHandler extends BaseFormatHandler
         $taxes = [];
 
         foreach ($taxGroups as $rateKey => $group) {
-            $rate = (float) $rateKey;
+            $rate    = (float) $rateKey;
             $taxes[] = [
                 'Tax' => [
                     'TaxTypeCode' => '01', // IVA (VAT)

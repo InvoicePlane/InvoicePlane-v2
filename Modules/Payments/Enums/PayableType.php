@@ -3,7 +3,6 @@
 namespace Modules\Payments\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
-use Modules\Invoices\Models\Invoice;
 
 enum PayableType: string implements LabeledEnum
 {

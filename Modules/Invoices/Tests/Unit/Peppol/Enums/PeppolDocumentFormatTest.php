@@ -208,7 +208,7 @@ class PeppolDocumentFormatTest extends TestCase
     {
         /* arrange & act & assert */
         $this->expectException(ValueError::class);
-        
+
         // Trying to create an enum with an invalid value should throw ValueError
         PeppolDocumentFormat::from('invalid_format_name');
     }

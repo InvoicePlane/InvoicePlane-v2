@@ -31,7 +31,7 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
         $this->user = $user;
 
         /** @var Company $company */
-        $company = Company::query()->where('search_code', 'IVPLV2')->firstOrFail();
+        $company       = Company::query()->where('search_code', 'IVPLV2')->firstOrFail();
         $this->company = $company;
 
         /*

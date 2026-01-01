@@ -70,7 +70,7 @@ class HttpClientExceptionHandler
     public function request(RequestMethod|string $method, string $uri, array $options = []): Response
     {
         // Convert string to RequestMethod enum if necessary
-        $methodEnum = $method instanceof RequestMethod ? $method : RequestMethod::from(strtolower($method));
+        $methodEnum   = $method instanceof RequestMethod ? $method : RequestMethod::from(mb_strtolower($method));
         $methodString = $methodEnum->value;
 
         try {

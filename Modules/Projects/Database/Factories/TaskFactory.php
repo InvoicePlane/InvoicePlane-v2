@@ -55,6 +55,7 @@ class TaskFactory extends AbstractFactory
                 ->inRandomOrder()
                 ->value('id');
         }
+
         return [
             'company_id'  => $companyId,
             'customer_id' => $customerId,

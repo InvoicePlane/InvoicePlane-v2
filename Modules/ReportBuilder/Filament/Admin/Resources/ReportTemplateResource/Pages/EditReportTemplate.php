@@ -40,7 +40,7 @@ class EditReportTemplate extends EditRecord
     {
         return [
             DeleteAction::make()
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line */
                 ->visible(fn () => ! $this->record->is_system)
                 ->action(function () {
                     app(ReportTemplateService::class)->deleteTemplate($this->record);

@@ -221,7 +221,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
         /** @var Company $company */
         $company = Company::factory()->create();
         /** @var User $user */
-        $user    = User::factory()->create();
+        $user = User::factory()->create();
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 

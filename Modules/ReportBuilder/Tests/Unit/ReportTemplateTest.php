@@ -20,7 +20,7 @@ class ReportTemplateTest extends TestCase
         parent::setUp();
 
         /** @var Company $company */
-        $company = Company::factory()->create(['name' => 'Test Company']);
+        $company       = Company::factory()->create(['name' => 'Test Company']);
         $this->company = $company;
     }
 

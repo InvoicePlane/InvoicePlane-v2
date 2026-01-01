@@ -271,7 +271,7 @@ class FatturaPaHandler extends BaseFormatHandler
         $taxGroups = [];
 
         foreach ($invoice->invoiceItems as $item) {
-            $rate = $this->getVatRate($item);
+            $rate    = $this->getVatRate($item);
             $rateKey = (string) $rate;
 
             if ( ! isset($taxGroups[$rateKey])) {
@@ -288,7 +288,7 @@ class FatturaPaHandler extends BaseFormatHandler
         $summary = [];
 
         foreach ($taxGroups as $rateKey => $group) {
-            $rate = (float) $rateKey;
+            $rate      = (float) $rateKey;
             $summary[] = [
                 'AliquotaIVA'       => number_format($rate, 2, '.', ''),
                 'ImponibileImporto' => number_format($group['base'], 2, '.', ''),

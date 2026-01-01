@@ -3,8 +3,6 @@
 namespace Modules\Core\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
-use Modules\Core\Support\Results\Invoices;
-use Modules\Core\Support\Results\Quotes;
 
 enum DocumentGroupType: string implements LabeledEnum
 {
