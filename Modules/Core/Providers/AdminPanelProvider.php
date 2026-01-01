@@ -171,6 +171,7 @@ class AdminPanelProvider extends PanelProvider
                 EmailTemplateResource::class,
                 TaxRateResource::class,
                 ReportTemplateResource::class,
+                ReportBlockResource::class,
                 UserResource::class,
             ])
             ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')

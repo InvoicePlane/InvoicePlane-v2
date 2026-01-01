@@ -2,9 +2,10 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportBlocks\Pages;
 
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\ReportBlockResource;
+use Modules\Core\Services\ReportBlockService;
 
 class ListReportBlocks extends ListRecords
 {
@@ -13,7 +14,11 @@ class ListReportBlocks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make()
+                ->action(function (array $data) {
+                    app(ReportBlockService::class)->createReportBlock($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

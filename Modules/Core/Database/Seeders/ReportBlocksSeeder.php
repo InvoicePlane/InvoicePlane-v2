@@ -10,9 +10,6 @@ use Modules\Core\Models\ReportBlock;
 
 class ReportBlocksSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $blocks = [
@@ -83,7 +80,7 @@ class ReportBlocksSeeder extends Seeder
         ];
 
         foreach ($blocks as $block) {
-            $filename = Str::slug($block['name']) . '.json';
+            $filename = Str::slug($block['name']);
 
             ReportBlock::create([
                 'is_active'    => true,
@@ -95,7 +92,6 @@ class ReportBlocksSeeder extends Seeder
                 'width'        => $block['width'],
                 'data_source'  => $block['data_source'],
                 'default_band' => $block['default_band'],
-                'config'       => array_merge($block['config'], ['fields' => []]),
             ]);
 
             // Ensure directory exists

@@ -2,9 +2,14 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportBlocks\Tables;
 
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Models\ReportBlock;
+use Modules\Core\Services\ReportBlockService;
 
 class ReportBlocksTable
 {
@@ -31,9 +36,16 @@ class ReportBlocksTable
                     ->boolean()
                     ->sortable(),
             ])
-            ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+            ->recordActions([
+                ActionGroup::make([
+                    EditAction::make()->action(function (ReportBlock $record, array $data) {
+                        app(ReportBlockService::class)->updateReportBlock($record, $data);
+                    })->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (ReportBlock $record, array $data) {
+                            app(ReportBlockService::class)->deleteReportBlock($record);
+                        }),
+                ]),
             ]);
     }
 }

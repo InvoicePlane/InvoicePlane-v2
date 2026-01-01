@@ -2,66 +2,51 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas;
 
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\ReportBlockWidth;
-use Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages\ReportBuilder;
 
 class ReportBlockForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('name')
-                ->required()
-                ->maxLength(255),
-            TextInput::make('block_type')
-                ->required()
-                ->maxLength(255),
-            TextInput::make('slug')
-                ->required()
-                ->unique(ignoreRecord: true)
-                ->maxLength(255),
-            TextInput::make('filename')
-                ->maxLength(255),
-            Select::make('width')
-                ->options(ReportBlockWidth::class)
-                ->required(),
-            TextInput::make('data_source')
-                ->required()
-                ->maxLength(255),
-            TextInput::make('default_band')
-                ->required()
-                ->maxLength(255),
-            Toggle::make('is_active')
-                ->default(true),
-            Toggle::make('is_system')
-                ->default(false),
-            Repeater::make('config.fields')
+            Section::make('General')
                 ->schema([
-                    Select::make('id')
-                        ->options(function () {
-                            $fields  = (new ReportBuilder())->getAvailableFields();
-                            $options = [];
-                            foreach ($fields as $field) {
-                                $options[$field['id']] = $field['label'];
-                            }
-
-                            return $options;
-                        })
+                    TextInput::make('name')
                         ->required()
-                        ->live()
-                        ->afterStateUpdated(fn ($state, callable $set) => $set('label', (new ReportBuilder())->getAvailableFields()[array_search($state, array_column((new ReportBuilder())->getAvailableFields(), 'id'))]['label'] ?? '')),
-                    TextInput::make('label')
-                        ->required(),
-                ])
-                ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
-                ->reorderable()
-                ->collapsible()
-                ->grid(2),
+                        ->maxLength(255),
+                ]),
         ]);
+    }
+
+    protected static function getAvailableFields(): array
+    {
+        return [
+            'company_name'      => 'Company Name',
+            'company_address'   => 'Company Address',
+            'company_phone'     => 'Company Phone',
+            'company_email'     => 'Company Email',
+            'company_vat_id'    => 'Company VAT ID',
+            'client_name'       => 'Client Name',
+            'client_address'    => 'Client Address',
+            'client_phone'      => 'Client Phone',
+            'client_email'      => 'Client Email',
+            'invoice_number'    => 'Invoice Number',
+            'invoice_date'      => 'Invoice Date',
+            'invoice_due_date'  => 'Due Date',
+            'invoice_subtotal'  => 'Subtotal',
+            'invoice_tax_total' => 'Tax Total',
+            'invoice_total'     => 'Invoice Total',
+            'item_description'  => 'Item Description',
+            'item_quantity'     => 'Item Quantity',
+            'item_price'        => 'Item Price',
+            'item_tax_name'     => 'Item Tax Name',
+            'item_tax_rate'     => 'Item Tax Rate',
+            'footer_notes'      => 'Notes',
+        ];
     }
 }
