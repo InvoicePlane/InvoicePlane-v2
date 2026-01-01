@@ -8,6 +8,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\Models\ReportBlock;
 
 class ReportBlockForm
 {
@@ -23,12 +24,10 @@ class ReportBlockForm
                         ->options(ReportBlockWidth::class)
                         ->required(),
                     Select::make('block_type')
-                        ->options([
-                            'text'  => 'Text',
-                            'image' => 'Image',
-                            'table' => 'Table',
-                        ])
+                        ->options(ReportBlock::query()->pluck('block_type', 'block_type')->toArray())
                         ->required(),
+                    TextInput::make('data_source'),
+                    TextInput::make('default_band'),
                     Toggle::make('is_active')
                         ->default(true),
                 ]),

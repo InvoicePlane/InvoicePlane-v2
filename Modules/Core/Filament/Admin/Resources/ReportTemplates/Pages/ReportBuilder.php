@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -56,9 +57,27 @@ class ReportBuilder extends Page implements HasActions, HasSchemas
                 if ( ! $blockType) {
                     return [];
                 }
+
+                // Try to find the block in our local blocks array first if it has specific config
+                // but wait, $this->blocks is currently used for layout.
+                // The global ReportBlock is the source of truth for the block definition.
+
                 $block = ReportBlock::where('block_type', $blockType)->first();
 
-                return $block ? $block->toArray() : [];
+                if ( ! $block) {
+                    return [];
+                }
+
+                $data = $block->toArray();
+
+                // If it's a BackedEnum (width), we need to ensure it's the value
+                if (isset($data['width']) && $data['width'] instanceof BackedEnum) {
+                    $data['width'] = $data['width']->value;
+                }
+
+                \Illuminate\Support\Facades\Log::info('Filling form for block ' . $blockType, $data);
+
+                return $data;
             })
             ->action(function (array $data, array $arguments) {
                 $blockType = $arguments['blockType'] ?? null;

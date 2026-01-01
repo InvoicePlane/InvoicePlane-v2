@@ -234,7 +234,7 @@
                                                                   class="w-6 h-6 text-white/90"/>
                                                 <button
                                                     type="button"
-                                                    @click.stop="$wire.mountAction('configureBlock', { blockType: block.type })"
+                                                    @click.stop="console.log('Clicked block for config:', block.id, block.type); $wire.mountAction('configureBlock', { blockType: block.type })"
                                                     class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2 relative z-20"
                                                     title="Configure Fields"
                                                 >
@@ -254,7 +254,7 @@
                                         </div>
                                         <div
                                             class="w-full cursor-pointer"
-                                            @click.stop="$wire.mountAction('configureBlock', { blockType: block.type })"
+                                            @click.stop="console.log('Clicked block:', block.id); $wire.mountAction('configureBlock', { blockType: block.type })"
                                         >
                                             <span
                                                 class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full"
