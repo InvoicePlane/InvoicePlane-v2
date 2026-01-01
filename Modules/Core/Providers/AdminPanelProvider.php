@@ -25,6 +25,7 @@ use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplate\ReportTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
@@ -161,6 +162,7 @@ class AdminPanelProvider extends PanelProvider
                 NumberingResource::class,
                 EmailTemplateResource::class,
                 TaxRateResource::class,
+                ReportTemplateResource::class,
                 UserResource::class,
             ])
             ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
