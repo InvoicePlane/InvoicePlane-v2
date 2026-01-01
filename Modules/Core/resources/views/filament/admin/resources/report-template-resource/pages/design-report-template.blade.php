@@ -74,10 +74,12 @@
                          style="color: #888; font-size: 0.95rem; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
                         No blocks in this band
                     </div>
-                    <div x-for="block in band.blocks" :key="block.id"
-                         style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
-                        <span x-text="block.label"></span>
-                    </div>
+                    <template x-for="block in band.blocks" :key="block.id">
+                        <div
+                            style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                            <span x-text="block.label"></span>
+                        </div>
+                    </template>
                 </div>
             </template>
         </div>
