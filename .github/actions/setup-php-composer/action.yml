@@ -6,19 +6,19 @@ inputs:
     required: false
     default: '8.2'
   php-extensions:
-    description: 'PHP extensions to install'
+    description: 'PHP extensions to install (comma-separated)'
     required: false
     default: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
   composer-flags:
-    description: 'Additional flags for composer install'
+    description: 'Flags for composer install command (e.g., --no-dev --optimize-autoloader). Ignored if composer-args is provided.'
     required: false
     default: '--no-interaction --prefer-dist --optimize-autoloader'
   composer-args:
-    description: 'Full composer install command arguments (overrides composer-flags)'
+    description: 'Complete arguments for composer install (overrides composer-flags if provided). Use when you need full control over install command.'
     required: false
     default: ''
   working-directory:
-    description: 'Working directory for composer install'
+    description: 'Working directory for composer commands'
     required: false
     default: '.'
 

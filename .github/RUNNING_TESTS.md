@@ -145,17 +145,20 @@ php artisan test --filter ".*creates.*"
 
 ## Parallel Testing
 
-For faster test execution, use ParaTest (requires installation):
+For faster test execution, ParaTest can be used (if installed in the project):
 
 ```bash
-# Install ParaTest
-composer require --dev brianium/paratest
-
-# Run tests in parallel
+# Run tests in parallel (if ParaTest is available)
 ./vendor/bin/paratest
 
-# Run with specific processes
+# Run with specific number of processes
 ./vendor/bin/paratest --processes=4
+```
+
+**Note:** ParaTest should be added to `composer.json` as a dev dependency if parallel testing is needed:
+
+```bash
+composer require --dev brianium/paratest
 ```
 
 ## Configuration Files
