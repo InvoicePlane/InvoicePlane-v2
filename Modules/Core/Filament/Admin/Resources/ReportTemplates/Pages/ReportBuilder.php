@@ -165,17 +165,8 @@ class ReportBuilder extends Page
         );
     }
 
-    public function save(): void
-    {
-        $service = app(ReportTemplateService::class);
-        $service->persistBlocks($this->record, $this->blocks);
-
-        $this->dispatch('blocks-saved');
-        // Stay on the design page after saving
-        // $this->redirect(static::getResource()::getUrl('index'));
-    }
-
-    public function saveTemplate($bands): void
+    // Only this save method should exist and it must be public
+    public function save($bands): void
     {
         // Flatten bands into blocks with band assignment
         $blocks = [];

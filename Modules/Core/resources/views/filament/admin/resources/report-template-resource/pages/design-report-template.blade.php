@@ -58,10 +58,8 @@
                 this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
                 this.bands = [...this.bands];
             },
-            saveTemplate() {
-                if (window.Livewire) {
-                    window.Livewire.find(document.querySelector('[wire\\:id]')?.getAttribute('wire:id'))?.call('saveTemplate', this.bands);
-                }
+            save() {
+                this.$wire.save(this.bands);
                 console.log('Bands to save:', JSON.stringify(this.bands, null, 2));
             },
         }"
@@ -72,7 +70,7 @@
             <span class="ml-2 font-medium text-white">Report Builder</span>
             <div class="flex gap-2 ml-auto">
                 <x-filament::button
-                    x-on:click.prevent="saveTemplate()"
+                    x-on:click.prevent="save()"
                     color="primary"
                     icon="heroicon-m-check"
                     class="font-bold"
