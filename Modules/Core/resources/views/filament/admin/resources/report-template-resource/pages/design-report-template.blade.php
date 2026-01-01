@@ -68,9 +68,22 @@
         class="flex flex-col gap-6"
     >
         <div
-            class="flex items-center justify-between bg-white dark:bg-gray-900 px-6 py-4 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
+            class="flex items-center justify-between bg-white dark:bg-gray-900 px-6 py-4 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm mb-2">
             <div class="flex items-center gap-4">
-                <h1 class="text-xl font-bold">@lang('ip.design_report_template')</h1>
+                <div class="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+                    <x-filament::icon
+                        icon="heroicon-m-swatch"
+                        class="w-6 h-6 text-primary-600 dark:text-primary-400"
+                    />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-gray-950 dark:text-white">
+                        @lang('ip.design_report_template')
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Drag and drop blocks to design your report layout
+                    </p>
+                </div>
             </div>
             <div class="flex gap-3">
                 <x-filament::button
@@ -78,6 +91,7 @@
                     tag="a"
                     icon="heroicon-m-x-mark"
                     :href="static::getResource()::getUrl('index')"
+                    outlined
                 >
                     @lang('ip.cancel')
                 </x-filament::button>
@@ -86,6 +100,7 @@
                     wire:click="save"
                     color="primary"
                     icon="heroicon-m-check"
+                    class="shadow-sm"
                 >
                     @lang('ip.save_template')
                 </x-filament::button>
@@ -110,14 +125,18 @@
                         class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm"
                     >
                         <div
-                            class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 px-4 py-2 flex items-center justify-between">
-                            <span
-                                class="text-xs font-bold uppercase tracking-wider text-gray-500">{{ $bandLabel }}</span>
+                            class="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-primary-500"></div>
+                                <span
+                                    class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{{ $bandLabel }}</span>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-medium">12-Column Grid</span>
                         </div>
 
                         <div
                             id="band-{{ $bandKey }}"
-                            class="relative min-h-[120px] w-full p-1 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:20px_20px]"
+                            class="relative min-h-[160px] w-full p-1 report-designer-grid"
                             style="display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 40px; gap: 0;"
                         >
                             @foreach($blocks as $blockId => $block)
@@ -125,7 +144,7 @@
                                     <div
                                         wire:key="{{ $blockId }}"
                                         @mousedown="startDragging($event, '{{ $blockId }}')"
-                                        class="absolute border-2 transition-all duration-75 cursor-move flex flex-col bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm rounded overflow-hidden {{ $selectedBlockId === $blockId ? 'border-primary-500 z-30 ring-2 ring-primary-500/20' : 'border-gray-200 dark:border-gray-700 z-10 hover:border-gray-300 dark:hover:border-gray-600' }}"
+                                        class="absolute border-2 transition-all duration-75 cursor-move flex flex-col bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm rounded-lg overflow-hidden {{ $selectedBlockId === $blockId ? 'border-primary-500 z-30 ring-2 ring-primary-500/20 shadow-md scale-[1.02]' : 'border-gray-200 dark:border-gray-700 z-10 hover:border-gray-300 dark:hover:border-gray-600' }}"
                                         style="
                                                 left: calc({{ $block['position']['x'] }} * 100% / 12);
                                                 top: calc({{ $block['position']['y'] }} * 40px);
@@ -134,21 +153,24 @@
                                                 touch-action: none;
                                             "
                                     >
-                                        <div class="flex-1 flex flex-col p-[4px]">
+                                        <div class="flex-1 flex flex-col p-2">
                                             <div class="flex items-center justify-between mb-1">
-                                                <span
-                                                    class="text-[10px] font-bold text-gray-400 uppercase truncate">{{ $block['type'] }}</span>
-                                                <div class="flex gap-1">
+                                                <div class="flex items-center gap-1.5 min-w-0">
+                                                    <span
+                                                        class="text-[10px] font-bold text-gray-400 uppercase tracking-tight truncate">{{ $block['type'] }}</span>
+                                                </div>
+                                                <div class="flex gap-1 shrink-0">
                                                     @if($block['isCloned'])
                                                         <x-filament::icon
                                                             icon="heroicon-m-square-2-stack"
-                                                            class="w-3 h-3 text-gray-400"
+                                                            class="w-3.5 h-3.5 text-gray-400"
                                                         />
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="flex-1 flex items-center justify-center text-center">
-                                                <span class="text-sm font-medium">{{ $block['label'] }}</span>
+                                            <div class="flex-1 flex items-center justify-center text-center px-1">
+                                                <span
+                                                    class="text-sm font-semibold text-gray-700 dark:text-gray-200 leading-tight">{{ $block['label'] }}</span>
                                             </div>
                                         </div>
                                     </div>
