@@ -318,7 +318,7 @@ class ReportTemplateService
             12,
             2,
             ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
-            'Invoice Metadata',
+            trans('ip.invoice_metadata'),
             'invoice',
             band: 'group_header'
         );
@@ -331,7 +331,7 @@ class ReportTemplateService
             12,
             6,
             ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
-            'Invoice Items',
+            trans('ip.invoice_items'),
             'invoice',
             'details'
         );
@@ -344,7 +344,7 @@ class ReportTemplateService
             12,
             2,
             ['show_tax_name' => true, 'show_tax_rate' => true],
-            'Item Tax Details',
+            trans('ip.item_tax_details'),
             'invoice',
             'details'
         );
@@ -357,7 +357,7 @@ class ReportTemplateService
             6,
             4,
             ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
-            'Invoice Totals',
+            trans('ip.invoice_totals'),
             'invoice',
             'group_footer'
         );
@@ -370,7 +370,7 @@ class ReportTemplateService
             6,
             4,
             ['font_size' => 9],
-            'Footer Notes',
+            trans('ip.footer_notes'),
             'invoice',
             'footer'
         );
@@ -383,7 +383,7 @@ class ReportTemplateService
             4,
             4,
             ['size' => 100],
-            'QR Code',
+            trans('ip.qr_code'),
             'invoice',
             'footer'
         );

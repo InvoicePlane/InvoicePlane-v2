@@ -107,16 +107,16 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-12 gap-6 items-start">
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
             {{-- Canvas Area --}}
-            <div class="col-span-12 lg:col-span-9 space-y-8">
+            <div class="flex-1 w-full lg:w-3/4 space-y-8">
                 @php
                     $bands = [
-                        'header' => 'Header',
-                        'group_header' => 'Group Detail Header',
-                        'details' => 'Details',
-                        'group_footer' => 'Group Detail Footer',
-                        'footer' => 'Footer',
+                        'header' => trans('ip.header'),
+                        'group_header' => trans('ip.group_detail_header'),
+                        'details' => trans('ip.details'),
+                        'group_footer' => trans('ip.group_detail_footer'),
+                        'footer' => trans('ip.footer'),
                     ];
                 @endphp
 
@@ -131,7 +131,7 @@
                                 <span
                                     class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">{{ $bandLabel }}</span>
                             </div>
-                            <span class="text-[10px] text-gray-400 font-medium">12-Column Grid</span>
+                            <span class="text-[10px] text-gray-400 font-medium">@lang('ip.twelve_column_grid')</span>
                         </div>
 
                         <div
@@ -182,7 +182,7 @@
             </div>
 
             {{-- Sidebar: Available Blocks --}}
-            <div class="col-span-12 lg:col-span-3 space-y-4 lg:sticky lg:top-6">
+            <div class="w-full lg:w-1/4 space-y-4 lg:sticky lg:top-6">
                 <x-filament::section>
                     <x-slot name="heading">@lang('ip.available_blocks')</x-slot>
                     <div class="grid grid-cols-1 gap-2">
@@ -209,7 +209,7 @@
                         <x-slot name="heading">@lang('ip.block_settings')</x-slot>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-sm font-medium">Label</label>
+                                <label class="text-sm font-medium">@lang('ip.label')</label>
                                 <x-filament::input
                                     type="text"
                                     wire:model="blocks.{{ $selectedBlockId }}.label"
@@ -218,8 +218,8 @@
 
                             @if(isset($blocks[$selectedBlockId]['config']) && count($blocks[$selectedBlockId]['config']) > 0)
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Block
-                                        Configuration</label>
+                                    <label
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300">@lang('ip.block_configuration')</label>
                                     <div
                                         class="space-y-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                         @foreach($blocks[$selectedBlockId]['config'] as $key => $value)
@@ -256,7 +256,7 @@
                                     size="sm"
                                     icon="heroicon-m-squares-plus"
                                 >
-                                    Clone
+                                    @lang('ip.clone')
                                 </x-filament::button>
 
                                 <x-filament::button
@@ -265,7 +265,7 @@
                                     size="sm"
                                     icon="heroicon-m-trash"
                                 >
-                                    Delete
+                                    @lang('ip.delete')
                                 </x-filament::button>
                             </div>
                         </div>
