@@ -18,6 +18,7 @@
             isModalOpen: false,
             editingBlock: null,
             availableFields: @js($this->getAvailableFields()),
+            systemBlockDefinitions: @js($systemBlocksArray),
             openBlockModal(block) {
                 console.log('Opening block modal for:', block);
                 this.editingBlock = JSON.parse(JSON.stringify(block));
@@ -26,7 +27,7 @@
                 if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
 
                 // Load the latest system configuration for this block type to ensure we have the latest fields
-                const systemBlocks = @js($systemBlocksArray);
+                const systemBlocks = this.systemBlockDefinitions;
                 console.log('System blocks available:', systemBlocks);
                 if (systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
                     console.log('Found global config for:', this.editingBlock.type);
@@ -97,34 +98,37 @@
                 this.fieldHoverIdx = null;
             },
             init() {
-                const loadedBlocks = @js($blocks);
+                window.reportBuilder = this;
+                try {
+                    const loadedBlocks = @js($blocks);
+                    console.log('Initializing with loaded blocks:', loadedBlocks);
 
-                // If loadedBlocks is already grouped by band (associative array/object)
-                if (loadedBlocks && typeof loadedBlocks === 'object' && !Array.isArray(loadedBlocks) &&
-                    Object.keys(loadedBlocks).some(key => ['header', 'group_header', 'details', 'group_footer', 'footer'].includes(key))) {
-                    this.bands.forEach(band => {
-                        if (loadedBlocks[band.key]) {
-                            band.blocks = loadedBlocks[band.key];
-                        }
-                    });
-                } else {
-                    // Fallback for flat array (backward compatibility)
-                    Object.values(loadedBlocks).forEach(block => {
-                        const band = this.bands.find(b => b.key === block.band);
-                        if (band) {
-                            band.blocks.push(block);
-                        } else {
-                            // Default to header if band not found
-                            this.bands[0].blocks.push(block);
-                        }
-                    });
+                    // If loadedBlocks is already grouped by band (associative array/object)
+                    if (loadedBlocks && typeof loadedBlocks === 'object' && !Array.isArray(loadedBlocks) &&
+                        Object.keys(loadedBlocks).some(key => ['header', 'group_header', 'details', 'group_footer', 'footer'].includes(key))) {
+                        this.bands.forEach(band => {
+                            if (loadedBlocks[band.key]) {
+                                band.blocks = loadedBlocks[band.key];
+                            }
+                        });
+                    } else {
+                        // Fallback for flat array (backward compatibility)
+                        Object.values(loadedBlocks).forEach(block => {
+                            const band = this.bands.find(b => b.key === block.band);
+                            if (band) {
+                                band.blocks.push(block);
+                            } else {
+                                // Default to header if band not found
+                                this.bands[0].blocks.push(block);
+                            }
+                        });
+                    }
+                    console.log('Initialization complete. Bands:', JSON.parse(JSON.stringify(this.bands)));
+                } catch (e) {
+                    console.error('Error during initialization:', e);
                 }
             },
-            blocks: [
-                @foreach($systemBlocks as $type => $blockDto)
-                    { id: '{{ $type }}', label: '{{ $blockDto->getLabel() }}' },
-                @endforeach
-            ],
+            availableBlocks: @js(array_values(array_map(fn($type, $blockDto) => ['id' => $type, 'label' => $blockDto->getLabel()], array_keys($systemBlocks), $systemBlocks))),
             hoveredBand: null,
             dragBlockId: null,
             dragSourceBandIdx: null,
@@ -133,14 +137,14 @@
                 let block = null;
                 if (sourceBandIdx === null) {
                     // From available blocks
-                    const blockIdx = this.blocks.findIndex(b => b.id === blockId);
+                    const blockIdx = this.availableBlocks.findIndex(b => b.id === blockId);
                     if (blockIdx === -1) return;
                     // Create a deep copy and give it a unique ID if it doesn't have one that looks like a real block ID
                     // Real block IDs start with 'block_'
-                    const sourceBlock = this.blocks[blockIdx];
+                    const sourceBlock = this.availableBlocks[blockIdx];
 
                     // Find block width from systemBlocks
-                    const systemBlocks = @js($systemBlocksArray);
+                    const systemBlocks = this.systemBlockDefinitions;
                     const systemBlock = systemBlocks[sourceBlock.id] || null;
                     const position = systemBlock ? systemBlock.position : {x: 0, y: 0, width: 6, height: 4};
 
@@ -311,8 +315,8 @@
                                                                   class="w-6 h-6 text-white/90"/>
                                                 <button
                                                     type="button"
-                                                    x-on:click.stop.prevent="console.log('Edit clicked for:', block); openBlockModal(block)"
-                                                    class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2"
+                                                    @click.stop="console.log('Edit button clicked for:', block); openBlockModal(block)"
+                                                    class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2 relative z-20"
                                                     title="Configure Fields"
                                                 >
                                                     <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-4 h-4"/>
@@ -331,7 +335,7 @@
                                         </div>
                                         <div
                                             class="w-full cursor-pointer"
-                                            x-on:click.prevent="openBlockModal(block)"
+                                            @click.stop="console.log('Block label area clicked for:', block); openBlockModal(block)"
                                         >
                                             <span
                                                 class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full"
@@ -360,7 +364,7 @@
 
                         <div class="bg-white dark:bg-gray-900">
                             <div class="grid grid-cols-1 gap-4">
-                                <template x-for="block in blocks" :key="block.id">
+                                <template x-for="block in availableBlocks" :key="block.id">
                                     <div
                                         class="group flex flex-col items-start gap-2 bg-[#5e81ac] dark:bg-[#5e81ac] border-b-4 border-[#435b7a] rounded-xl cursor-grab active:cursor-grabbing hover:brightness-110 transition-all shadow-lg min-h-[80px]"
                                         draggable="true"
