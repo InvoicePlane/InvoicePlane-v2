@@ -53,6 +53,23 @@
 
                 this.isModalOpen = true;
                 console.log('isModalOpen is now:', this.isModalOpen);
+
+                this.$nextTick(() => {
+                    const modalEl = document.getElementById('block-config-modal-root');
+                    console.log('Modal root element:', modalEl);
+                    if (modalEl) {
+                        console.log('Modal display style:', window.getComputedStyle(modalEl).display);
+                        console.log('Modal z-index:', window.getComputedStyle(modalEl).zIndex);
+                        // Force visibility if display is none
+                        if (window.getComputedStyle(modalEl).display === 'none' && this.isModalOpen) {
+                            console.log('Modal is hidden by CSS! Attempting to force show.');
+                            modalEl.style.setProperty('display', 'flex', 'important');
+                            modalEl.style.setProperty('opacity', '1', 'important');
+                        }
+                    } else {
+                        console.log('Modal root element NOT FOUND in DOM after teleport');
+                    }
+                });
             },
             closeBlockModal() {
                 this.isModalOpen = false;
@@ -402,21 +419,22 @@
                 </div>
             </div>
 
-            {{-- Block Configuration Modal --}}
             <template x-teleport="body">
                 <div
                     x-show="isModalOpen"
-                    class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                    x-cloak
+                    id="block-config-modal-root"
+                    class="fixed inset-0 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    style="z-index: 99999 !important;"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100"
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
+                    @keydown.escape.window="closeBlockModal()"
                 >
                     <div
-                        class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden"
+                        class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
                         @click.away="closeBlockModal()"
                     >
                         {{-- Modal Header --}}
@@ -427,7 +445,8 @@
                                     Configure <span x-text="editingBlock?.label"></span>
                                 </h3>
                             </div>
-                            <button @click="closeBlockModal()" class="text-white/80 hover:text-white transition-colors">
+                            <button @click="closeBlockModal()"
+                                    class="text-white/80 hover:text-white transition-colors">
                                 <x-filament::icon name="heroicon-m-x-mark" class="w-8 h-8"/>
                             </button>
                         </div>
@@ -436,7 +455,8 @@
                         <div class="p-8 grid grid-cols-2 gap-8">
                             {{-- Left Side: Available Fields --}}
                             <div>
-                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Available
+                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">
+                                    Available
                                     Fields</h4>
                                 <div class="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto pr-2">
                                     <template x-for="field in availableFields" :key="field.id">
@@ -470,7 +490,8 @@
                                         </div>
                                     </template>
 
-                                    <template x-for="(field, index) in editingBlock?.config?.fields" :key="field.id">
+                                    <template x-for="(field, index) in editingBlock?.config?.fields"
+                                              :key="field.id">
                                         <div
                                             draggable="true"
                                             @dragstart="onFieldDragStart(index)"
