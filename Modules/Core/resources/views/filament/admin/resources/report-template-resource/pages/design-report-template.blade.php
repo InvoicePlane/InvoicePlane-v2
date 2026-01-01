@@ -19,24 +19,28 @@
             const blockIdx = this.blocks.findIndex(b => b.id === blockId);
             if (blockIdx === -1) return;
             const block = this.blocks[blockIdx];
-            // Add block to band (before removing from blocks)
+            // Add block to band (replace band object for Alpine reactivity)
             if (this.bands[bandIdx]) {
-                this.bands[bandIdx].blocks.push(block);
-                // Force Alpine reactivity for nested array
+                // Create a new band object and a new blocks array
+                const updatedBand = { ...this.bands[bandIdx], blocks: [...this.bands[bandIdx].blocks, block] };
+                // Replace the band in the bands array
+                this.bands.splice(bandIdx, 1, updatedBand);
+                // Replace the bands array reference for Alpine reactivity
                 this.bands = [...this.bands];
+                // Debug: log bands after drop
+                console.log('Bands after drop:', JSON.stringify(this.bands));
+                // Force Alpine to update UI
+                this.$nextTick(() => {});
             } else {
-                // If bandIdx is invalid, restore block to available blocks
                 return;
             }
             this.blocks.splice(blockIdx, 1);
             this.blocks = [...this.blocks];
-            // Debug log
-            console.log('Block dropped:', block, 'into band:', this.bands[bandIdx].name);
         },
     }"
     style="display: flex !important; width: 100%; max-width: 100%; min-height: 100vh; gap: 1.5rem; border: 4px solid #3b82f6; position: relative; z-index: 50; box-sizing: border-box;">
     <div
-        style="flex: 1 1 0%; padding: 1.5rem; border: 1px solid #000; background: #ebcb8b; color: #2e3440; border-radius: 1rem; min-width: 0; box-sizing: border-box;">
+        style="flex: 1 1 0; padding: 1.5rem; border: 1px solid #000; background: #ebcb8b; color: #2e3440; border-radius: 1rem; min-width: 0; box-sizing: border-box;">
         <div style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Design (Alpine & Nord)</div>
         <div style="display: flex; flex-direction: column; gap: 1rem;">
             <template x-for="(band, idx) in bands" :key="band.name">
@@ -65,25 +69,21 @@
                         addBlockToBand(idx, blockId);
                     "
                 >
-                    <span x-text="band.name + ' (Drop here)'" style="margin-right: 1rem;"/>
-                    <template x-if="band.blocks.length === 0">
-                        <div
-                            style="color: #888; font-size: 0.95rem; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
-                            No blocks in this band
-                        </div>
-                    </template>
-                    <template x-for="block in band.blocks" :key="block.id">
-                        <div
-                            style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
-                            <span x-text="block.label"></span>
-                        </div>
-                    </template>
+                    <span x-text="band.name + ' (Drop here)'" style="margin-right: 1rem;"></span>
+                    <div x-show="band.blocks.length === 0"
+                         style="color: #888; font-size: 0.95rem; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                        No blocks in this band
+                    </div>
+                    <div x-for="block in band.blocks" :key="block.id"
+                         style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                        <span x-text="block.label"></span>
+                    </div>
                 </div>
             </template>
         </div>
     </div>
     <div
-        style="flex: 1 1 0%; max-width: 20rem; padding: 1.5rem; border: 1px solid #000; background: #bf616a; color: #eceff4; border-radius: 1rem; min-width: 0; position: sticky; top: 1.5rem; box-sizing: border-box;">
+        style="flex: 1 1 0; max-width: 20rem; padding: 1.5rem; border: 1px solid #000; background: #bf616a; color: #eceff4; border-radius: 1rem; min-width: 0; position: sticky; top: 1.5rem; box-sizing: border-box;">
         <div style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Available Blocks (Alpine & Nord)</div>
         <ul style="list-style: none; padding: 0; margin: 0;">
             <template x-for="block in blocks" :key="block.id">
