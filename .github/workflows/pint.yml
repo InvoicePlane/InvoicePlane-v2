@@ -31,13 +31,11 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
         with:
-          php-version: 8.2
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+          php-version: '8.2'
+          composer-flags: '--prefer-dist --no-interaction --no-progress'
 
       - name: Run Laravel Pint
         id: pint_run

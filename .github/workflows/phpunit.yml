@@ -25,15 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.3'
-          extensions: mbstring, bcmath, pdo_mysql
-          coverage: none
-
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
       - name: Prepare Laravel environment
         run: |

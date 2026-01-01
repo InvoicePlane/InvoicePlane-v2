@@ -48,15 +48,11 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.2'
-          extensions: mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql
-          coverage: none
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql'
 
       - name: Check for package-lock.json conflicts
         id: lockfile-check

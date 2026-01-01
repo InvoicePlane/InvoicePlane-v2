@@ -73,12 +73,12 @@ For detailed setup instructions, see [INSTALLATION.md](.github/INSTALLATION.md).
 
 - **[Installation Guide](.github/INSTALLATION.md)** - Complete setup instructions
 - **[Contributing Guide](.github/CONTRIBUTING.md)** - How to contribute code
-- **[Testing Guide](RUNNING_TESTS.md)** - Running and writing tests
+- **[Testing Guide](.github/RUNNING_TESTS.md)** - Running and writing tests
 - **[Maintenance Guide](.github/MAINTENANCE.md)** - Dependency management and security updates
 - **[Seeding Guide](.github/SEEDING.md)** - Database seeding instructions
 - **[Upgrade Guide](.github/UPGRADE.md)** - Upgrading from previous versions
 - **[Security Policy](.github/SECURITY.md)** - Reporting security vulnerabilities
-- **[Peppol Architecture](PEPPOL_ARCHITECTURE.md)** - E-invoicing system details
+- **[Peppol Architecture](.github/PEPPOL_ARCHITECTURE.md)** - E-invoicing system details
 - **[Workflows README](.github/workflows/README.md)** - GitHub Actions automation and secrets setup
 
 ---
@@ -134,7 +134,7 @@ We welcome community contributions!
 To learn how to contribute code, create modules, write tests, or help translate the app:
 
 - Read the [Contributing Guide](.github/CONTRIBUTING.md)
-- Follow the [Module Checklist](CHECKLIST.md) to avoid duplication
+- Follow the [Module Checklist](.github/CHECKLIST.md) to avoid duplication
 - Review the [Junie Guidelines](.junie/guidelines.md) for coding standards
 - Check [Copilot Instructions](.github/copilot-instructions.md) for AI assistance
 
