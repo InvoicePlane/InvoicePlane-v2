@@ -13,29 +13,44 @@
         ],
         hoveredBand: null,
         dragBlockId: null,
-        addBlockToBand(bandIdx, blockId) {
+        dragSourceBandIdx: null,
+        addBlockToBand(bandIdx, blockId, sourceBandIdx = null) {
             if (!blockId) return;
-            // Find and remove block from available blocks
-            const blockIdx = this.blocks.findIndex(b => b.id === blockId);
-            if (blockIdx === -1) return;
-            const block = this.blocks[blockIdx];
-            // Add block to band (replace band object for Alpine reactivity)
-            if (this.bands[bandIdx]) {
-                // Create a new band object and a new blocks array
-                const updatedBand = { ...this.bands[bandIdx], blocks: [...this.bands[bandIdx].blocks, block] };
-                // Replace the band in the bands array
-                this.bands.splice(bandIdx, 1, updatedBand);
-                // Replace the bands array reference for Alpine reactivity
-                this.bands = [...this.bands];
-                // Debug: log bands after drop
-                console.log('Bands after drop:', JSON.stringify(this.bands));
-                // Force Alpine to update UI
-                this.$nextTick(() => {});
+            let block = null;
+            if (sourceBandIdx === null) {
+                // From available blocks
+                const blockIdx = this.blocks.findIndex(b => b.id === blockId);
+                if (blockIdx === -1) return;
+                block = this.blocks[blockIdx];
+                this.blocks.splice(blockIdx, 1);
+                this.blocks = [...this.blocks];
             } else {
-                return;
+                // From another band
+                const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
+                if (blockIdx === -1) return;
+                block = this.bands[sourceBandIdx].blocks[blockIdx];
+                const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId) };
+                this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
+                this.bands = [...this.bands];
             }
-            this.blocks.splice(blockIdx, 1);
+            // Add block to target band
+            if (this.bands[bandIdx]) {
+                const updatedBand = { ...this.bands[bandIdx], blocks: [...this.bands[bandIdx].blocks, block] };
+                this.bands.splice(bandIdx, 1, updatedBand);
+                this.bands = [...this.bands];
+                this.$nextTick(() => {});
+            }
+        },
+        addBlockToAvailable(blockId, sourceBandIdx) {
+            if (!blockId || sourceBandIdx === null) return;
+            const blockIdx = this.bands[sourceBandIdx].blocks.findIndex(b => b.id === blockId);
+            if (blockIdx === -1) return;
+            const block = this.bands[sourceBandIdx].blocks[blockIdx];
+            this.blocks.push(block);
             this.blocks = [...this.blocks];
+            const updatedSourceBand = { ...this.bands[sourceBandIdx], blocks: this.bands[sourceBandIdx].blocks.filter(b => b.id !== blockId) };
+            this.bands.splice(sourceBandIdx, 1, updatedSourceBand);
+            this.bands = [...this.bands];
         },
     }"
     style="display: flex !important; width: 100%; max-width: 100%; min-height: 100vh; gap: 1.5rem; border: 4px solid #3b82f6; position: relative; z-index: 50; box-sizing: border-box;">
@@ -66,17 +81,23 @@
                     x-on:drop.prevent="
                         hoveredBand = null;
                         const blockId = event.dataTransfer.getData('blockId');
-                        addBlockToBand(idx, blockId);
+                        const sourceBandIdx = event.dataTransfer.getData('sourceBandIdx');
+                        addBlockToBand(idx, blockId, sourceBandIdx !== '' ? Number(sourceBandIdx) : null);
                     "
                 >
                     <span x-text="band.name + ' (Drop here)'" style="margin-right: 1rem;"></span>
-                    <div x-show="band.blocks.length === 0"
-                         style="color: #888; font-size: 0.95rem; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
-                        No blocks in this band
-                    </div>
-                    <template x-for="block in band.blocks" :key="block.id">
+                    <template x-if="band.blocks.length === 0">
                         <div
-                            style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                            style="color: #888; font-size: 0.95rem; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                            No blocks in this band
+                        </div>
+                    </template>
+                    <template x-for="(block, blockIdx) in band.blocks" :key="block.id">
+                        <div
+                            :draggable="true"
+                            x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
+                            style="background: #bf616a; color: #eceff4; border-radius: 0.5rem; padding: 0.5rem 1rem; display: inline-block; font-weight: normal; margin-right: 0.5rem; margin-bottom: 0.5rem; cursor: grab;"
+                        >
                             <span x-text="block.label"></span>
                         </div>
                     </template>
@@ -92,12 +113,25 @@
                 <li
                     :id="block.id"
                     draggable="true"
-                    x-on:dragstart="event.dataTransfer.setData('blockId', block.id)"
+                    x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', '');"
                     style="background: #fff; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.75rem 1rem; box-shadow: 0 1px 2px 0 #0001; color: #000; margin-bottom: 0.5rem; cursor: grab; font-weight: bold;"
                 >
                     <span x-text="block.label"></span>
                 </li>
             </template>
         </ul>
+        <div
+            style="margin-top: 2rem; padding: 1rem; background: #eceff4; color: #2e3440; border-radius: 0.5rem; border: 2px dashed #8fbcbb; text-align: center; cursor: pointer;"
+            x-on:dragover.prevent
+            x-on:drop.prevent="
+                const blockId = event.dataTransfer.getData('blockId');
+                const sourceBandIdx = event.dataTransfer.getData('sourceBandIdx');
+                if (blockId && sourceBandIdx !== '') {
+                    addBlockToAvailable(blockId, Number(sourceBandIdx));
+                }
+            "
+        >
+            Drop block here to return to Available Blocks
+        </div>
     </div>
 </div>
