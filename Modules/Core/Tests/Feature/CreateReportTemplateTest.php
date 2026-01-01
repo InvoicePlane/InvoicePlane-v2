@@ -33,8 +33,8 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
      *   "template_type": "invoice",
      *   "blocks": [
      *     {
-     *       "id": "block_header_company",
-     *       "type": "header_company",
+     *       "id": "block_company_header",
+     *       "type": "company_header",
      *       "position": {"x": 0, "y": 0, "width": 6, "height": 4},
      *       "config": {"show_vat_id": true},
      *       "label": "Company Header",
@@ -53,8 +53,8 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $blocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true],
                 'label'       => 'Company Header',
@@ -96,8 +96,8 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $blocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true],
                 'label'       => 'Company Header',
@@ -128,7 +128,7 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $this->assertIsArray($savedBlocks);
         $this->assertCount(1, $savedBlocks);
-        $this->assertEquals('block_header_company', $savedBlocks[0]['id']);
+        $this->assertEquals('block_company_header', $savedBlocks[0]['id']);
     }
 
     #[Test]
@@ -184,8 +184,8 @@ class CreateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $blocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => [],
                 'label'       => 'Company Header',

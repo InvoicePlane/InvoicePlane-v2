@@ -30,7 +30,7 @@ class ReportTemplateFileRepositoryTest extends AbstractAdminPanelTestCase
         $blocksArray  = [
             [
                 'id'          => 'block_1',
-                'type'        => 'header_company',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true, 'show_phone' => true],
                 'is_cloned'   => false,
@@ -54,7 +54,7 @@ class ReportTemplateFileRepositoryTest extends AbstractAdminPanelTestCase
         $blocksArray  = [
             [
                 'id'          => 'block_header',
-                'type'        => 'header_company',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 12, 'height' => 2],
                 'config'      => ['font_size' => 10],
                 'is_cloned'   => false,

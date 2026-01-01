@@ -29,8 +29,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
      * {
      *   "blocks": [
      *     {
-     *       "id": "block_header_company",
-     *       "type": "header_company",
+     *       "id": "block_company_header",
+     *       "type": "company_header",
      *       "position": {"x": 2, "y": 2, "width": 8, "height": 6},
      *       "config": {"show_vat_id": false},
      *       "label": "Updated Company Header",
@@ -52,8 +52,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $initialBlocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true],
                 'label'       => 'Company Header',
@@ -73,8 +73,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $updatedBlocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 2, 'y' => 2, 'width' => 8, 'height' => 6],
                 'config'      => ['show_vat_id' => false],
                 'label'       => 'Updated Company Header',
@@ -121,8 +121,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $blocksWithValidPosition = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => [],
                 'label'       => 'Company Header',
@@ -160,8 +160,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $initialBlocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => [],
                 'label'       => 'Company Header',
@@ -181,8 +181,8 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
 
         $updatedBlocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => [],
                 'label'       => 'Company Header',
@@ -218,7 +218,7 @@ class UpdateReportTemplateTest extends AbstractAdminPanelTestCase
         $savedBlocks = json_decode($fileContents, true);
 
         $this->assertCount(2, $savedBlocks);
-        $this->assertEquals('block_header_company', $savedBlocks[0]['id']);
+        $this->assertEquals('block_company_header', $savedBlocks[0]['id']);
         $this->assertEquals('block_footer_totals', $savedBlocks[1]['id']);
     }
 }

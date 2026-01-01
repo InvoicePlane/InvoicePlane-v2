@@ -63,7 +63,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $this->expectExceptionMessage("must have an 'id'");
         $blocks = [
             [
-                'type'     => 'header_company',
+                'type'     => 'company_header',
                 'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'   => [],
             ],
@@ -104,7 +104,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $blocks = [
             [
                 'id'     => 'block_1',
-                'type'   => 'header_company',
+                'type'   => 'company_header',
                 'config' => [],
             ],
         ];
@@ -124,7 +124,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $blocks = [
             [
                 'id'       => 'block_1',
-                'type'     => 'header_company',
+                'type'     => 'company_header',
                 'position' => ['x' => 0, 'y' => 0],
                 'config'   => [],
             ],
@@ -145,7 +145,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $blocks = [
             [
                 'id'       => 'block_1',
-                'type'     => 'header_company',
+                'type'     => 'company_header',
                 'position' => ['x' => -1, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'   => [],
             ],
@@ -163,12 +163,12 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         /* act */
         $position->setX(6)->setY(0)->setWidth(6)->setHeight(4);
 
-        $cloned = $this->service->cloneSystemBlock('header_company', 'block_cloned', $position);
+        $cloned = $this->service->cloneSystemBlock('company_header', 'block_cloned', $position);
 
         /* assert */
         $this->assertInstanceOf(BlockDTO::class, $cloned);
         $this->assertEquals('block_cloned', $cloned->getId());
-        $this->assertEquals('header_company', $cloned->getType());
+        $this->assertEquals('company_header', $cloned->getType());
         $this->assertTrue($cloned->getIsCloned());
         $this->assertEquals(6, $cloned->getPosition()->getX());
     }
@@ -207,7 +207,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         /* assert */
         $block = new BlockDTO();
         $block->setId('block_1')
-            ->setType('header_company')
+            ->setType('company_header')
             ->setPosition($position)
             ->setConfig([])
             ->setIsCloneable(true)
@@ -233,7 +233,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
             ->willReturn([
                 [
                     'id'       => 'block_1',
-                    'type'     => 'header_company',
+                    'type'     => 'company_header',
                     'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                     'config'   => [],
                 ],

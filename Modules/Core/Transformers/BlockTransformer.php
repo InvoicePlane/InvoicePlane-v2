@@ -13,8 +13,8 @@ use Modules\Core\DTOs\GridPositionDTO;
  *
  * Full JSON Block Structure Example:
  * {
- *   "id": "block_header_company",
- *   "type": "header_company",
+ *   "id": "block_company_header",
+ *   "type": "company_header",
  *   "position": {
  *     "x": 0,
  *     "y": 0,

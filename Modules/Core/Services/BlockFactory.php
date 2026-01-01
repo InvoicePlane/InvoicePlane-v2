@@ -33,7 +33,7 @@ class BlockFactory
     public static function make(string $type): BlockHandlerInterface
     {
         return match ($type) {
-            'header_company'      => app(HeaderCompanyBlockHandler::class),
+            'company_header'      => app(HeaderCompanyBlockHandler::class),
             'header_client'       => app(HeaderClientBlockHandler::class),
             'header_invoice_meta' => app(HeaderInvoiceMetaBlockHandler::class),
             'detail_items'        => app(DetailItemsBlockHandler::class),
@@ -54,7 +54,7 @@ class BlockFactory
     {
         return [
             [
-                'type'        => 'header_company',
+                'type'        => 'company_header',
                 'label'       => 'Company Header',
                 'category'    => 'header',
                 'description' => 'Display company information including name, VAT, phone, and address',

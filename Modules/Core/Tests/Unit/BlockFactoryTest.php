@@ -15,13 +15,13 @@ class BlockFactoryTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     #[Group('unit')]
-    public function it_creates_header_company_handler(): void
+    public function it_creates_company_header_handler(): void
     {
         /* arrange */
         // No setup needed
 
         /* act */
-        $handler = BlockFactory::make('header_company');
+        $handler = BlockFactory::make('company_header');
 
         /* assert */
         $this->assertInstanceOf(HeaderCompanyBlockHandler::class, $handler);
@@ -108,7 +108,7 @@ class BlockFactoryTest extends AbstractAdminPanelTestCase
     public function it_creates_block(): void
     {
         /* arrange */
-        $blockType = 'header_company';
+        $blockType = 'company_header';
 
         /* act */
         $block = BlockFactory::make($blockType);

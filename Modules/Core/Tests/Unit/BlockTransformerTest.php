@@ -17,8 +17,8 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
     {
         /* arrange */
         $blockData = [
-            'id'       => 'block_header_company',
-            'type'     => 'header_company',
+            'id'       => 'block_company_header',
+            'type'     => 'company_header',
             'position' => [
                 'x'      => 0,
                 'y'      => 0,
@@ -41,8 +41,8 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
 
         /* assert */
         $this->assertInstanceOf(BlockDTO::class, $dto);
-        $this->assertEquals('block_header_company', $dto->getId());
-        $this->assertEquals('header_company', $dto->getType());
+        $this->assertEquals('block_company_header', $dto->getId());
+        $this->assertEquals('company_header', $dto->getType());
         $this->assertInstanceOf(GridPositionDTO::class, $dto->getPosition());
         $this->assertEquals(0, $dto->getPosition()->getX());
         $this->assertEquals(0, $dto->getPosition()->getY());
@@ -94,8 +94,8 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
         $dto = new BlockDTO();
-        $dto->setId('block_header_company')
-            ->setType('header_company')
+        $dto->setId('block_company_header')
+            ->setType('company_header')
             ->setPosition($position)
             ->setConfig(['show_vat_id' => true])
             ->setLabel('Company Header')
@@ -109,8 +109,8 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
 
         /* assert */
         $this->assertIsArray($array);
-        $this->assertEquals('block_header_company', $array['id']);
-        $this->assertEquals('header_company', $array['type']);
+        $this->assertEquals('block_company_header', $array['id']);
+        $this->assertEquals('company_header', $array['type']);
         $this->assertIsArray($array['position']);
         $this->assertEquals(0, $array['position']['x']);
         $this->assertEquals(0, $array['position']['y']);
@@ -285,7 +285,7 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
 
         $dto = new BlockDTO();
         $dto->setId('test_block')
-            ->setType('header_company')
+            ->setType('company_header')
             ->setPosition($position)
             ->setConfig(['test' => true]);
 
@@ -295,7 +295,7 @@ class BlockTransformerTest extends AbstractAdminPanelTestCase
         /* assert */
         $this->assertIsArray($array);
         $this->assertEquals('test_block', $array['id']);
-        $this->assertEquals('header_company', $array['type']);
+        $this->assertEquals('company_header', $array['type']);
         $this->assertIsArray($array['position']);
         $this->assertEquals(0, $array['position']['x']);
         $this->assertEquals(6, $array['position']['width']);

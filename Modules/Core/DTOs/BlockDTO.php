@@ -10,8 +10,8 @@ namespace Modules\Core\DTOs;
  *
  * Example JSON:
  * {
- *   "id": "block_header_company",
- *   "type": "header_company",
+ *   "id": "block_company_header",
+ *   "type": "company_header",
  *   "position": {
  *     "x": 0,
  *     "y": 0,

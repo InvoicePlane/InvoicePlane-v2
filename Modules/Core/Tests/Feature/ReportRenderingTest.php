@@ -34,7 +34,7 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
      * @payload
      * {
      *   "blocks": [
-     *     {"id": "block_header_company", "type": "header_company", "position": {"x": 0, "y": 0, "width": 6, "height": 4}},
+     *     {"id": "block_company_header", "type": "company_header", "position": {"x": 0, "y": 0, "width": 6, "height": 4}},
      *     {"id": "block_detail_items", "type": "detail_items", "position": {"x": 0, "y": 6, "width": 12, "height": 6}}
      *   ],
      *   "data": {"company": {"name": "Test Company"}, "items": []}
@@ -47,8 +47,8 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
 
         $blocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true],
                 'label'       => 'Company Header',
@@ -102,8 +102,8 @@ class ReportRenderingTest extends AbstractAdminPanelTestCase
 
         $blocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => [],
                 'label'       => 'Company Header',

@@ -18,10 +18,10 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         $dto = new BlockDTO();
 
         /* act */
-        $dto->setId('block_header_company');
+        $dto->setId('block_company_header');
 
         /* assert */
-        $this->assertEquals('block_header_company', $dto->getId());
+        $this->assertEquals('block_company_header', $dto->getId());
     }
 
     #[Test]
@@ -32,10 +32,10 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         $dto = new BlockDTO();
 
         /* act */
-        $dto->setType('header_company');
+        $dto->setType('company_header');
 
         /* assert */
-        $this->assertEquals('header_company', $dto->getType());
+        $this->assertEquals('company_header', $dto->getType());
     }
 
     #[Test]
@@ -199,10 +199,10 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         $config = ['show_vat_id' => true];
 
         /* act */
-        $dto = BlockDTO::system('header_company', $position, $config);
+        $dto = BlockDTO::system('company_header', $position, $config);
 
         /* assert */
-        $this->assertEquals('header_company', $dto->getType());
+        $this->assertEquals('company_header', $dto->getType());
         $this->assertEquals($position, $dto->getPosition());
         $this->assertEquals($config, $dto->getConfig());
         $this->assertTrue($dto->getIsCloneable());
@@ -221,7 +221,7 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         /* act */
         $original = new BlockDTO();
         $original->setId('block_original')
-            ->setType('header_company')
+            ->setType('company_header')
             ->setPosition($position)
             ->setConfig(['show_vat_id' => true])
             ->setLabel('Original Label')
@@ -234,7 +234,7 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
 
         /* assert */
         $this->assertEquals('block_cloned', $cloned->getId());
-        $this->assertEquals('header_company', $cloned->getType());
+        $this->assertEquals('company_header', $cloned->getType());
         $this->assertEquals($position, $cloned->getPosition());
         $this->assertEquals(['show_vat_id' => true], $cloned->getConfig());
         $this->assertEquals('Original Label', $cloned->getLabel());
@@ -282,7 +282,7 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         /* act */
         $dto = new BlockDTO();
         $dto->setId('test_block')
-            ->setType('header_company')
+            ->setType('company_header')
             ->setPosition($position)
             ->setConfig(['key' => 'value'])
             ->setLabel('Test Block')
@@ -291,7 +291,7 @@ class BlockDTOTest extends AbstractAdminPanelTestCase
         /* assert */
         $this->assertInstanceOf(BlockDTO::class, $dto);
         $this->assertEquals('test_block', $dto->getId());
-        $this->assertEquals('header_company', $dto->getType());
+        $this->assertEquals('company_header', $dto->getType());
         $this->assertEquals($position, $dto->getPosition());
         $this->assertEquals(['key' => 'value'], $dto->getConfig());
         $this->assertEquals('Test Block', $dto->getLabel());

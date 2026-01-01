@@ -22,8 +22,8 @@ use Throwable;
  *
  * Block JSON Structure:
  * {
- *   "id": "block_header_company",
- *   "type": "header_company",
+ *   "id": "block_company_header",
+ *   "type": "company_header",
  *   "position": {"x": 0, "y": 0, "width": 6, "height": 4},
  *   "config": {
  *     "show_vat_id": true,
@@ -271,34 +271,43 @@ class ReportTemplateService
     /**
      * Get system-defined blocks.
      *
-     * @return array Array of system BlockDTO objects indexed by type
+     * @return array array of system BlockDTO objects indexed by type
+     *               $bands = [
+     *               'header' => 'Header',
+     *               'group_header' => 'Group Detail Header',
+     *               'details' => 'Details',
+     *               'group_footer' => 'Group Detail Footer',
+     *               'footer' => 'Footer',
+     *               ];
      */
     public function getSystemBlocks(): array
     {
         $blocks = [];
 
-        $blocks['header_company'] = $this->createSystemBlock(
-            'block_header_company',
-            'header_company',
+        $blocks['company_header'] = $this->createSystemBlock(
+            'block_company_header',
+            'company_header',
             0,
             0,
             6,
             4,
             ['show_vat_id' => true, 'show_phone' => true, 'font_size' => 10],
-            'Company Header',
-            'company'
+            trans('ip.company_header'),
+            'company',
+            'group_header'
         );
 
-        $blocks['header_client'] = $this->createSystemBlock(
-            'block_header_client',
-            'header_client',
+        $blocks['client_header'] = $this->createSystemBlock(
+            'block_client_header',
+            'client_header',
             6,
             0,
             6,
             4,
             ['show_address' => true, 'show_phone' => true, 'font_size' => 10],
-            'Client Header',
-            'client'
+            trans('ip.client_header'),
+            'client',
+            band: 'group_header'
         );
 
         $blocks['header_invoice_meta'] = $this->createSystemBlock(
@@ -310,7 +319,8 @@ class ReportTemplateService
             2,
             ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
             'Invoice Metadata',
-            'invoice'
+            'invoice',
+            band: 'group_header'
         );
 
         $blocks['detail_items'] = $this->createSystemBlock(
@@ -349,7 +359,7 @@ class ReportTemplateService
             ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
             'Invoice Totals',
             'invoice',
-            'footer'
+            'group_footer'
         );
 
         $blocks['footer_notes'] = $this->createSystemBlock(
@@ -383,6 +393,14 @@ class ReportTemplateService
 
     /**
      * Create a system block.
+     * bands:
+     * $bands = [
+     * 'header' => 'Header',
+     * 'group_header' => 'Group Detail Header',
+     * 'details' => 'Details',
+     * 'group_footer' => 'Group Detail Footer',
+     * 'footer' => 'Footer',
+     * ];.
      */
     private function createSystemBlock(
         string $id,

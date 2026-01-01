@@ -26,8 +26,8 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
     /**
      * @payload
      * {
-     *   "blockType": "header_company",
-     *   "newId": "block_header_company_cloned",
+     *   "blockType": "company_header",
+     *   "newId": "block_company_header_cloned",
      *   "position": {"x": 1, "y": 1, "width": 6, "height": 4}
      * }
      */
@@ -39,8 +39,8 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
-        $blockType = 'header_company';
-        $newId     = 'block_header_company_cloned';
+        $blockType = 'company_header';
+        $newId     = 'block_company_header_cloned';
 
         $position = new GridPositionDTO();
         $position->setX(1)->setY(1)->setWidth(6)->setHeight(4);
@@ -52,7 +52,7 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $this->assertEquals($newId, $clonedBlock->getId());
         $this->assertEquals($blockType, $clonedBlock->getType());
         $this->assertTrue($clonedBlock->isCloned());
-        $this->assertEquals('block_header_company', $clonedBlock->getClonedFrom());
+        $this->assertEquals('block_company_header', $clonedBlock->getClonedFrom());
         $this->assertEquals(1, $clonedBlock->getPosition()->getX());
         $this->assertEquals(1, $clonedBlock->getPosition()->getY());
     }
@@ -69,8 +69,8 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
 
         $systemBlocks = [
             [
-                'id'          => 'block_header_company',
-                'type'        => 'header_company',
+                'id'          => 'block_company_header',
+                'type'        => 'company_header',
                 'position'    => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
                 'config'      => ['show_vat_id' => true],
                 'label'       => 'Company Header',
@@ -106,9 +106,9 @@ class BlockCloningTest extends AbstractAdminPanelTestCase
         $user->companies()->attach($company);
         session(['current_company_id' => $company->id]);
 
-        $blockType     = 'header_company';
-        $firstCloneId  = 'block_header_company_custom_1';
-        $secondCloneId = 'block_header_company_custom_2';
+        $blockType     = 'company_header';
+        $firstCloneId  = 'block_company_header_custom_1';
+        $secondCloneId = 'block_company_header_custom_2';
 
         $position1 = new GridPositionDTO();
         $position1->setX(0)->setY(0)->setWidth(6)->setHeight(4);
