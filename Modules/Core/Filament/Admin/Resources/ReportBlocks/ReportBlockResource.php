@@ -7,6 +7,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\ReportBlocks\Pages\EditReportBlock;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\Pages\ListReportBlocks;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas\ReportBlockForm;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\Tables\ReportBlocksTable;
@@ -32,6 +33,7 @@ class ReportBlockResource extends Resource
     {
         return [
             'index' => ListReportBlocks::route('/'),
+            'edit'  => EditReportBlock::route('/{record}/edit'),
         ];
     }
 }

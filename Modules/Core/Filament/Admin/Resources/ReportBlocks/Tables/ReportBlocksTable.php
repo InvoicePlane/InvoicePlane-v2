@@ -36,11 +36,9 @@ class ReportBlocksTable
                     ->boolean()
                     ->sortable(),
             ])
-            ->recordActions([
+            ->actions([
                 ActionGroup::make([
-                    EditAction::make()->action(function (ReportBlock $record, array $data) {
-                        app(ReportBlockService::class)->updateReportBlock($record, $data);
-                    })->modalWidth('full'),
+                    EditAction::make(),
                     DeleteAction::make('delete')
                         ->action(function (ReportBlock $record, array $data) {
                             app(ReportBlockService::class)->deleteReportBlock($record);

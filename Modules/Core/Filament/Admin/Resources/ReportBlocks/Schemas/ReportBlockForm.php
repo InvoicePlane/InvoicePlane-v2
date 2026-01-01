@@ -19,6 +19,18 @@ class ReportBlockForm
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
+                    Select::make('width')
+                        ->options(ReportBlockWidth::class)
+                        ->required(),
+                    Select::make('block_type')
+                        ->options([
+                            'text'  => 'Text',
+                            'image' => 'Image',
+                            'table' => 'Table',
+                        ])
+                        ->required(),
+                    Toggle::make('is_active')
+                        ->default(true),
                 ]),
         ]);
     }

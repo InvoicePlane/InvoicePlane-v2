@@ -6,6 +6,8 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -19,9 +21,10 @@ use Modules\Core\Services\GridSnapperService;
 use Modules\Core\Services\ReportTemplateService;
 use Modules\Core\Transformers\BlockTransformer;
 
-class ReportBuilder extends Page implements HasActions
+class ReportBuilder extends Page implements HasActions, HasSchemas
 {
     use InteractsWithActions;
+    use InteractsWithSchemas;
 
     public ReportTemplate $record;
 
@@ -47,7 +50,7 @@ class ReportBuilder extends Page implements HasActions
     public function configureBlockAction(): Action
     {
         return Action::make('configureBlock')
-            ->form(fn (array $arguments) => ReportBlockForm::configure(app(Schema::class)))
+            ->form(fn (Schema $schema) => ReportBlockForm::configure($schema))
             ->fillForm(function (array $arguments) {
                 $blockType = $arguments['blockType'] ?? null;
                 if ( ! $blockType) {
