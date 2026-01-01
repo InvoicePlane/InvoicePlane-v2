@@ -1,6 +1,8 @@
 @php
     use Modules\Core\Services\ReportTemplateService;
+    use Modules\Core\Transformers\BlockTransformer;
     $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
+    $systemBlocksArray = array_map(fn($block) => BlockTransformer::toArray($block), $systemBlocks);
 @endphp
 <x-filament-panels::page>
     <div class="w-full" style="max-width: 100% !important;">
@@ -23,7 +25,7 @@
                 if (!this.editingBlock.config.fields) this.editingBlock.config.fields = [];
 
                 // Load the latest system configuration for this block type to ensure we have the latest fields
-                const systemBlocks = @js($systemBlocks);
+                const systemBlocks = @js($systemBlocksArray);
                 if (systemBlocks[this.editingBlock.type] && systemBlocks[this.editingBlock.type].config) {
                     // This implies we are editing the GLOBAL block definition.
                     this.editingBlock.config = JSON.parse(JSON.stringify(systemBlocks[this.editingBlock.type].config));
@@ -134,7 +136,7 @@
                     const sourceBlock = this.blocks[blockIdx];
 
                     // Find block width from systemBlocks
-                    const systemBlocks = @js($systemBlocks);
+                    const systemBlocks = @js($systemBlocksArray);
                     const systemBlock = systemBlocks[sourceBlock.id] || null;
                     const position = systemBlock ? systemBlock.position : {x: 0, y: 0, width: 6, height: 4};
 
@@ -231,7 +233,8 @@
                     <div>
                         <p class="text-xs font-black text-[#2e3440] uppercase tracking-widest">Pro Tip</p>
                         <p class="text-sm text-[#4c566a] font-medium leading-relaxed">Drag blocks into any band to build
-                            your layout. Click on a block to configure its fields and appearance!</p>
+                            your layout. Use the <strong>Edit</strong> button on any block to configure its fields and
+                            appearance globally!</p>
                     </div>
                 </div>
             </div>
@@ -295,25 +298,42 @@
                                     <div
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
-                                        x-on:click="openBlockModal(block)"
                                         class="group relative flex flex-col items-start bg-[#bf616a] dark:bg-[#bf616a] rounded-2xl cursor-grab active:cursor-grabbing hover:translate-y-[-4px] transition-all shadow-xl min-h-[100px]"
                                         :style="'padding:40px !important; width: 100% !important; border: 4px dotted rgba(255, 255, 255, 0.4) !important; justify-content: flex-start !important; grid-column: span ' + (block.position && block.position.width > 6 ? '2' : '1') + ' !important;'"
                                     >
                                         <div class="flex items-center justify-between w-full mb-1">
-                                            <x-filament::icon name="heroicon-m-bars-2"
-                                                              class="w-6 h-6 text-white/90"/>
+                                            <div class="flex items-center gap-2">
+                                                <x-filament::icon name="heroicon-m-bars-2"
+                                                                  class="w-6 h-6 text-white/90"/>
+                                                <button
+                                                    type="button"
+                                                    x-on:click.stop.prevent="openBlockModal(block)"
+                                                    class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2"
+                                                    title="Configure Fields"
+                                                >
+                                                    <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-4 h-4"/>
+                                                    <span
+                                                        class="text-[10px] font-bold uppercase tracking-tighter">Edit</span>
+                                                </button>
+                                            </div>
                                             <button
                                                 type="button"
                                                 x-on:click.stop="addBlockToAvailable(block.id, idx)"
                                                 class="bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner p-1"
+                                                title="Remove Block"
                                             >
                                                 <x-filament::icon name="heroicon-m-x-mark" class="w-5 h-5"/>
                                             </button>
                                         </div>
-                                        <span
-                                            class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full"
-                                            style="white-space: nowrap !important; align-self: flex-start !important;"
-                                            x-html="block.label.replace(/ /g, '&nbsp;')"></span>
+                                        <div
+                                            class="w-full cursor-pointer"
+                                            x-on:click.prevent="openBlockModal(block)"
+                                        >
+                                            <span
+                                                class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full"
+                                                style="white-space: nowrap !important; align-self: flex-start !important;"
+                                                x-html="block.label.replace(/ /g, '&nbsp;')"></span>
+                                        </div>
                                     </div>
                                 </template>
                             </div>
