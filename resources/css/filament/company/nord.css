@@ -327,3 +327,93 @@
 .dark .report-designer-grid {
     background-image: radial-gradient(var(--color-polarnight-400) 1px, transparent 1px);
 }
+
+/* Report Builder Custom Layout Classes */
+.report-builder-layout {
+    @apply grid grid-cols-12 gap-6 w-full;
+}
+
+.report-builder-main-area {
+    @apply col-span-9;
+}
+
+.report-builder-sidebar {
+    @apply col-span-3 sticky top-4;
+}
+
+/* Report Builder Band Container */
+.report-band-container {
+    @apply mb-4 p-3 bg-white dark:bg-gray-900 border-b-4 rounded-2xl shadow-xl overflow-hidden;
+}
+
+.report-band-header {
+    @apply border-b bg-gray-50 dark:bg-gray-800/50 p-4 flex items-center justify-between;
+}
+
+.report-band-title {
+    @apply font-black flex items-center gap-3 uppercase tracking-wider text-sm;
+}
+
+.report-band-content {
+    @apply bg-white dark:bg-gray-900 p-4;
+}
+
+/* Report Builder Blocks Grid - 2 column layout within bands */
+.report-band-blocks-grid {
+    @apply grid grid-cols-2 gap-4 report-designer-grid p-6 rounded-xl min-h-[200px];
+}
+
+/* Report Builder Block Styles */
+.report-block-item {
+    @apply group relative flex flex-col items-start rounded-2xl cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-all shadow-xl min-h-[100px] p-10 border-4 border-dashed border-white/40;
+}
+
+.report-block-header {
+    @apply flex items-center justify-between w-full mb-1;
+}
+
+.report-block-edit-button {
+    @apply bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner px-2 py-1 flex items-center gap-1 relative z-20;
+}
+
+.report-block-remove-button {
+    @apply bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner p-1;
+}
+
+.report-block-label {
+    @apply text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full whitespace-nowrap self-start;
+}
+
+/* Available Blocks Sidebar */
+.available-blocks-container {
+    @apply bg-white dark:bg-gray-900 border-b-4 border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden p-1;
+}
+
+.available-blocks-header {
+    @apply border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4;
+}
+
+.available-blocks-grid {
+    @apply grid grid-cols-1 gap-4;
+}
+
+.available-block-item {
+    @apply group flex flex-col items-start gap-2 bg-primary-500 dark:bg-primary-600 border-b-4 border-primary-700 dark:border-primary-800 rounded-xl cursor-grab active:cursor-grabbing hover:brightness-110 transition-all shadow-lg min-h-[80px] p-3 w-full;
+}
+
+/* Report Block Width Classes - specific column span utilities */
+.report-block-width-full {
+    @apply col-span-2;
+}
+
+.report-block-width-two-thirds {
+    @apply col-span-2;
+}
+
+.report-block-width-half {
+    @apply col-span-1;
+}
+
+.report-block-width-one-third {
+    @apply col-span-1;
+}

@@ -171,13 +171,13 @@
             </div>
 
             {{-- Main Content: Grid layout for side-by-side design --}}
-            <div class="w-full grid grid-cols-12 gap-8 items-start">
+            <div class="report-builder-layout">
 
                 {{-- Design Area (Left) - 9 columns --}}
-                <div class="col-span-9 space-y-8 rounded-2xl border-2 border-dashed border-gray-400 dark:border-gray-600 bg-gray-800 dark:bg-gray-950 p-10">
+                <div class="report-builder-main-area space-y-8 rounded-2xl border-2 border-dashed border-gray-400 dark:border-gray-600 bg-gray-800 dark:bg-gray-950 p-10">
                     <template x-for="(band, idx) in bands" :key="band.key">
                         <div
-                            class="relative bg-white dark:bg-gray-900 border-2 rounded-xl shadow-sm transition-all mb-8"
+                            class="fi-section relative bg-white dark:bg-gray-900 border-2 rounded-xl shadow-sm transition-all mb-8"
                             :class="[
                                 hoveredBand === idx ? 'ring-2 ring-primary-500 border-transparent' : 'border-gray-300 dark:border-gray-700',
                                 band.colorClass
@@ -192,7 +192,7 @@
                             </div>
 
                             <div
-                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors grid grid-cols-2 gap-6 items-start content-start p-6"
+                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors report-band-blocks-grid"
                                 :class="{
                                     'border-primary-400 bg-primary-500/5': hoveredBand === idx,
                                     'border-gray-300/30 dark:border-gray-700/30': hoveredBand !== idx,
@@ -212,7 +212,7 @@
                             >
                                 <template x-if="band.blocks.length === 0">
                                     <div class="col-span-2 flex flex-col items-center justify-center py-6 text-gray-500 dark:text-gray-400 italic pointer-events-none opacity-60">
-                                        <x-filament::icon name="heroicon-m-arrow-down-tray" class="w-8 h-8 mb-2"/>
+                                        <x-filament::icon name="heroicon-m-arrow-down-tray" class="fi-icon w-8 h-8 mb-2"/>
                                         <span class="text-sm font-bold">Drop blocks here</span>
                                     </div>
                                 </template>
@@ -221,33 +221,33 @@
                                     <div
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
-                                        class="group relative flex flex-col items-start bg-danger-500 dark:bg-danger-600 rounded-2xl cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-all shadow-xl min-h-[100px] p-10 border-4 border-dashed border-white/40"
+                                        class="report-block-item"
                                         :class="'col-span-' + (block.position && block.position.width >= 8 ? '2' : '1')"
                                     >
-                                        <div class="flex items-center justify-between w-full mb-1">
+                                        <div class="report-block-header">
                                             <div class="flex items-center gap-2">
-                                                <x-filament::icon name="heroicon-m-bars-2" class="w-6 h-6 text-white/90"/>
+                                                <x-filament::icon name="heroicon-m-bars-2" class="fi-icon w-6 h-6 text-white/90"/>
                                                 <button
                                                     type="button"
                                                     @click.stop="console.log('Clicked block for config:', block.id, block.slug); $wire.mountAction('configureBlock', { blockSlug: block.slug })"
-                                                    class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner px-2 py-1 flex items-center gap-1 relative z-20"
+                                                    class="report-block-edit-button fi-btn"
                                                     title="Edit Block"
                                                 >
-                                                    <x-filament::icon name="heroicon-m-pencil" class="w-4 h-4"/>
+                                                    <x-filament::icon name="heroicon-m-pencil" class="fi-icon w-4 h-4"/>
                                                     <span class="text-[10px] font-bold uppercase tracking-tighter">Edit</span>
                                                 </button>
                                             </div>
                                             <button
                                                 type="button"
                                                 x-on:click.stop="addBlockToAvailable(block.id, idx)"
-                                                class="bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner p-1"
+                                                class="report-block-remove-button fi-btn"
                                                 title="Remove Block"
                                             >
-                                                <x-filament::icon name="heroicon-m-x-mark" class="w-5 h-5"/>
+                                                <x-filament::icon name="heroicon-m-x-mark" class="fi-icon w-5 h-5"/>
                                             </button>
                                         </div>
                                         <div class="w-full cursor-pointer" @click.stop="console.log('Clicked block:', block.id); $wire.mountAction('configureBlock', { blockSlug: block.slug })">
-                                            <span class="text-sm font-black text-white uppercase tracking-wider overflow-hidden text-ellipsis w-full whitespace-nowrap self-start" x-html="block.label.replace(/ /g, '&nbsp;')"></span>
+                                            <span class="report-block-label" x-html="block.label.replace(/ /g, '&nbsp;')"></span>
                                         </div>
                                     </div>
                                 </template>
@@ -257,25 +257,25 @@
                 </div>
 
                 {{-- Sidebar: Available Blocks (Right) - 3 columns --}}
-                <div class="col-span-3 sticky top-4 p-3">
-                    <div class="bg-white dark:bg-gray-900 border-b-4 border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden p-1">
-                        <div class="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
-                            <h3 class="font-black text-gray-900 dark:text-white flex items-center gap-3 uppercase tracking-wider text-sm">
-                                <x-filament::icon name="heroicon-m-squares-plus" class="w-6 h-6 text-primary-600 dark:text-primary-500"/>
+                <div class="report-builder-sidebar">
+                    <div class="available-blocks-container">
+                        <div class="available-blocks-header">
+                            <h3 class="fi-section-header-heading font-black text-gray-900 dark:text-white flex items-center gap-3 uppercase tracking-wider text-sm">
+                                <x-filament::icon name="heroicon-m-squares-plus" class="fi-icon w-6 h-6 text-primary-600 dark:text-primary-500"/>
                                 @lang('ip.available_blocks')
                             </h3>
                         </div>
 
-                        <div class="bg-white dark:bg-gray-900 p-4">
-                            <div class="grid grid-cols-1 gap-4">
+                        <div class="report-band-content">
+                            <div class="available-blocks-grid">
                                 <template x-for="block in availableBlocks" :key="block.id">
                                     <div
-                                        class="group flex flex-col items-start gap-2 bg-primary-500 dark:bg-primary-600 border-b-4 border-primary-700 dark:border-primary-800 rounded-xl cursor-grab active:cursor-grabbing hover:brightness-110 transition-all shadow-lg min-h-[80px] p-3 w-full"
+                                        class="available-block-item"
                                         draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', 'available');"
                                     >
                                         <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-white/20 rounded-lg text-white group-hover:bg-white/30 transition-colors">
-                                            <x-filament::icon name="heroicon-m-plus" class="w-5 h-5"/>
+                                            <x-filament::icon name="heroicon-m-plus" class="fi-icon w-5 h-5"/>
                                         </div>
                                         <span class="text-sm font-black text-white uppercase tracking-tight overflow-hidden text-ellipsis w-full whitespace-nowrap self-start" x-html="block.label.replace(/ /g, '&nbsp;')"></span>
                                     </div>
