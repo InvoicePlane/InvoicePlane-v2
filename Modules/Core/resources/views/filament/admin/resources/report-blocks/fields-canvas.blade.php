@@ -49,7 +49,7 @@
         {{-- Available Fields Sidebar --}}
         <div class="col-span-3">
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                <h4 class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Available Fields</h4>
+                <h4 class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">@lang('ip.available_fields')</h4>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
                     Drag fields to the canvas to configure block layout
                 </p>

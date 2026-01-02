@@ -19,7 +19,7 @@ class ReportFieldService
             foreach ($sourceFields as $field) {
                 $fields[] = [
                     'id' => $field['id'],
-                    'label' => $field['label'],
+                    'label' => __($field['label']),
                     'source' => $source,
                     'format' => $field['format'] ?? null,
                 ];
@@ -47,7 +47,7 @@ class ReportFieldService
         return array_map(function ($field) use ($source) {
             return [
                 'id' => $field['id'],
-                'label' => $field['label'],
+                'label' => __($field['label']),
                 'source' => $source,
                 'format' => $field['format'] ?? null,
             ];
