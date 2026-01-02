@@ -31,11 +31,11 @@ enum ReportBand: string
     public function getColorClass(): string
     {
         return match ($this) {
-            self::HEADER => 'bg-warning-500 dark:bg-warning-600',
-            self::GROUP_HEADER => 'bg-danger-500 dark:bg-danger-600',
+            self::HEADER => 'bg-success-500 dark:bg-success-600',
+            self::GROUP_HEADER => 'bg-info-500 dark:bg-info-600',
             self::DETAILS => 'bg-primary-500 dark:bg-primary-600',
-            self::GROUP_FOOTER => 'bg-success-500 dark:bg-success-600',
-            self::FOOTER => 'bg-info-500 dark:bg-info-600',
+            self::GROUP_FOOTER => 'bg-info-500 dark:bg-info-600',
+            self::FOOTER => 'bg-success-500 dark:bg-success-600',
         };
     }
 
