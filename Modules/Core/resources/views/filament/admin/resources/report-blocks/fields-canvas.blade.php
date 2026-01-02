@@ -14,14 +14,23 @@
             ];
         }
     }
+
+    // Load existing canvas fields from Livewire state if available
+    $initialCanvasFields = [];
+
+    if (isset($this) && property_exists($this, 'data')) {
+        $initialCanvasFields = (array) data_get($this->data, 'fields', []);
+    }
 @endphp
 
 <div x-data="{
-    canvasFields: [],
+    canvasFields: @js($initialCanvasFields),
     availableFields: @js($availableFields),
     init() {
-        // Load existing fields from wire state if available
-        this.canvasFields = [];
+        // Ensure canvasFields is an array; it is pre-populated from wire state if available
+        if (!Array.isArray(this.canvasFields)) {
+            this.canvasFields = [];
+        }
     },
     addFieldToCanvas(fieldId) {
         const field = this.availableFields.find(f => f.id === fieldId);

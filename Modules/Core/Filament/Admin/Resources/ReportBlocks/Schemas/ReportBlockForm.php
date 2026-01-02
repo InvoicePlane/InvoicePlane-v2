@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas;
 
-use Filament\Forms\Components\Section as FormsSection;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
