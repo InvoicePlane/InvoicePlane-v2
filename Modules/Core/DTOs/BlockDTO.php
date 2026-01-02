@@ -184,9 +184,6 @@ class BlockDTO
         return $this;
     }
 
-        return $this;
-    }
-
     public function setPosition(GridPositionDTO $position): self
     {
         $this->position = $position;

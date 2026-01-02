@@ -38,7 +38,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'test-block';
         $block->filename = 'test-block';
         $block->width = ReportBlockWidth::FULL;
-        $block->config = [];
 
         $fields = [
             ['id' => 'company_name', 'label' => 'Company Name', 'x' => 0, 'y' => 0],
@@ -70,7 +69,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'test-block';
         $block->filename = 'test-block';
         $block->width = ReportBlockWidth::FULL;
-        $block->config = [];
 
         $fields = [
             ['id' => 'invoice_number', 'label' => 'Invoice Number', 'x' => 100, 'y' => 0],
@@ -103,7 +101,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'nonexistent-block';
         $block->filename = 'nonexistent-block';
         $block->width = ReportBlockWidth::HALF;
-        $block->config = [];
 
         /* Act */
         $fields = $this->service->loadBlockFields($block);
@@ -126,7 +123,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'new-block';
         $block->filename = 'new-block';
         $block->width = ReportBlockWidth::HALF;
-        $block->config = [];
 
         $fields = [
             ['id' => 'test_field', 'label' => 'Test Field', 'x' => 0, 'y' => 0],
@@ -153,7 +149,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'config-block';
         $block->filename = 'config-block';
         $block->width = ReportBlockWidth::FULL;
-        $block->config = ['show_vat_id' => true, 'font_size' => 12];
 
         $fields = [
             ['id' => 'field1', 'label' => 'Field 1'],
@@ -184,7 +179,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'slug-block';
         $block->filename = null;
         $block->width = ReportBlockWidth::HALF;
-        $block->config = [];
 
         $fields = [
             ['id' => 'test', 'label' => 'Test'],
@@ -210,7 +204,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'overwrite-block';
         $block->filename = 'overwrite-block';
         $block->width = ReportBlockWidth::FULL;
-        $block->config = [];
 
         $initialFields = [
             ['id' => 'field1', 'label' => 'Field 1'],
@@ -244,7 +237,6 @@ class ReportBlockServiceFieldsTest extends AbstractAdminPanelTestCase
         $block->slug = 'structure-block';
         $block->filename = 'structure-block';
         $block->width = ReportBlockWidth::TWO_THIRDS;
-        $block->config = [];
 
         $fields = [
             [

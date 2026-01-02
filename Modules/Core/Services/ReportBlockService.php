@@ -78,14 +78,19 @@ class ReportBlockService extends BaseService
             Storage::disk('local')->makeDirectory('report_blocks');
         }
 
-        // Prepare the configuration
-        $config = $block->config ?? [];
+        // Load existing config from JSON file if it exists, otherwise start fresh
+        $filename = $block->filename ?: $block->slug;
+        $path = 'report_blocks/' . $filename . '.json';
+        
+        $config = [];
+        if (Storage::disk('local')->exists($path)) {
+            $content = Storage::disk('local')->get($path);
+            $config = json_decode($content, true) ?? [];
+        }
+        
         $config['fields'] = $fields;
 
         // Save to JSON file
-        $filename = $block->filename ?: $block->slug;
-        $path = 'report_blocks/' . $filename . '.json';
-
         Storage::disk('local')->put($path, json_encode($config, JSON_PRETTY_PRINT));
     }
 
@@ -124,7 +129,7 @@ class ReportBlockService extends BaseService
         $path = 'report_blocks/' . $filename . '.json';
 
         if (!Storage::disk('local')->exists($path)) {
-            return $block->config ?? [];
+            return [];
         }
 
         $content = Storage::disk('local')->get($path);
