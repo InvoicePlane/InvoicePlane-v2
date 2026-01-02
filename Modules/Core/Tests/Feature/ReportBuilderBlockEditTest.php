@@ -143,12 +143,12 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         Log::shouldReceive('info')
-            ->twice()
+            ->once()
             ->with('Block data for edit:', \Mockery::type('array'))
             ->andReturnNull();
 
         Log::shouldReceive('info')
-            ->twice()
+            ->once()
             ->with('Mounting block config with data:', \Mockery::type('array'))
             ->andReturnNull();
 

@@ -84,6 +84,7 @@ class BlockDTO
         $dto = new self();
         $dto->setId($newId);
         $dto->setType($original->getType());
+        $dto->setSlug($original->getSlug());
 
         $originalPosition = $original->getPosition();
         $newPosition      = GridPositionDTO::create(

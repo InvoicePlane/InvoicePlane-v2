@@ -106,15 +106,17 @@ The drag/drop canvas supports:
 ## Database Changes
 
 ### Migration: report_blocks table
-Added `config` column for storing block configuration:
+Updated default values and column comments:
 ```php
-$table->text('config')->nullable(); // JSON configuration
+// Updated width column to support 4 options
+$table->string('width')->default('half'); // one_third, half, two_thirds, or full
+
+// Added data_source default
+$table->string('data_source')->default('invoice');
 ```
 
-Updated width column comment:
-```php
-$table->string('width')->default('half'); // one_third, half, two_thirds, or full
-```
+**Note on Configuration Storage:**
+Block field configurations are **not** stored in the database. Instead, they are stored as JSON files in the filesystem at `storage/app/report_blocks/{slug}.json`. This separates the block metadata (in database) from the field layout configuration (in files), allowing for easier version control and more flexible configuration management.
 
 ## Testing
 
