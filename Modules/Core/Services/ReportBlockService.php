@@ -110,10 +110,22 @@ class ReportBlockService extends BaseService
             return [];
         }
 
-        $content = Storage::disk('local')->get($path);
-        $config = json_decode($content, true);
-
-        return $config['fields'] ?? [];
+        try {
+            $content = Storage::disk('local')->get($path);
+            $config = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            
+            if (!is_array($config)) {
+                return [];
+            }
+            
+            return $config['fields'] ?? [];
+        } catch (\JsonException $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to load block fields', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
     }
 
     /**
@@ -132,9 +144,17 @@ class ReportBlockService extends BaseService
             return [];
         }
 
-        $content = Storage::disk('local')->get($path);
-        $config = json_decode($content, true);
-
-        return $config ?? [];
+        try {
+            $content = Storage::disk('local')->get($path);
+            $config = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            
+            return is_array($config) ? $config : [];
+        } catch (\JsonException $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to load block configuration', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
     }
 }

@@ -168,7 +168,11 @@ class ReportBuilder extends Page
                     $block->update($data);
 
                     // Save fields to JSON file via service
-                    if (!empty($fields) || isset($data['fields'])) {
+                // Save fields to JSON file via service
+                if (!empty($fields)) {
+                    $service = app(\Modules\Core\Services\ReportBlockService::class);
+                    $service->saveBlockFields($block, $fields);
+                }
                         $service = app(\Modules\Core\Services\ReportBlockService::class);
                         $service->saveBlockFields($block, $fields);
                     }
