@@ -226,7 +226,7 @@
                                         :draggable="true"
                                         x-on:dragstart="event.dataTransfer.setData('blockId', block.id); event.dataTransfer.setData('sourceBandIdx', idx);"
                                         class="group relative flex flex-col items-start bg-[#bf616a] dark:bg-[#bf616a] rounded-2xl cursor-grab active:cursor-grabbing hover:translate-y-[-4px] transition-all shadow-xl min-h-[100px]"
-                                        :style="'padding:40px !important; width: 100% !important; border: 4px dotted rgba(255, 255, 255, 0.4) !important; justify-content: flex-start !important; grid-column: span ' + (block.position && block.position.width > 6 ? '2' : '1') + ' !important;'"
+                                        :style="'padding:40px !important; width: 100% !important; border: 4px dotted rgba(255, 255, 255, 0.4) !important; justify-content: flex-start !important; grid-column: span ' + (block.position && block.position.width >= 12 ? '2' : (block.position && block.position.width >= 8 ? '2' : (block.position && block.position.width >= 6 ? '1' : '1'))) + ' !important;'"
                                     >
                                         <div class="flex items-center justify-between w-full mb-1">
                                             <div class="flex items-center gap-2">

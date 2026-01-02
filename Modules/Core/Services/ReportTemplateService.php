@@ -292,8 +292,8 @@ class ReportTemplateService
         foreach ($dbBlocks as $dbBlock) {
             $config = $this->getBlockConfig($dbBlock);
 
-            // Map widths to grid units for the designer
-            $width = $dbBlock->width === ReportBlockWidth::HALF ? 6 : 12;
+            // Map widths to grid units for the designer using the enum method
+            $width = $dbBlock->width->getGridWidth();
 
             $blocks[$dbBlock->block_type] = $this->createSystemBlock(
                 'block_' . $dbBlock->block_type,

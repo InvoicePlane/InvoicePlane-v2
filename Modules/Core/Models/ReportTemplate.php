@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Traits\BelongsToCompany;
@@ -19,6 +20,7 @@ use Modules\Core\Traits\BelongsToCompany;
 class ReportTemplate extends Model
 {
     use BelongsToCompany;
+    use HasFactory;
 
     public $timestamps = false;
 
@@ -50,5 +52,13 @@ class ReportTemplate extends Model
     public function getFilePath(): string
     {
         return "{$this->company_id}/{$this->slug}.json";
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Modules\Core\Database\Factories\ReportTemplateFactory
+    {
+        return \Modules\Core\Database\Factories\ReportTemplateFactory::new();
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas;
 
+use Filament\Forms\Components\Section as FormsSection;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\ReportBlockWidth;
@@ -31,6 +33,14 @@ class ReportBlockForm
                     Toggle::make('is_active')
                         ->default(true),
                 ]),
+            Section::make('Field Configuration')
+                ->schema([
+                    ViewField::make('fields_canvas')
+                        ->view('core::filament.admin.resources.report-blocks.fields-canvas')
+                        ->label('Drag fields to canvas')
+                        ->helperText('Drag available fields to the canvas to configure block layout'),
+                ])
+                ->collapsible(),
         ]);
     }
 

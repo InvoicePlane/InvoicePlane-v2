@@ -15,9 +15,10 @@ return new class () extends Migration {
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('filename')->nullable();
-            $table->string('width')->default('half'); // half or full
+            $table->string('width')->default('half'); // one_third, half, two_thirds, or full
             $table->string('data_source')->default('custom');
             $table->string('default_band')->default('header');
+            $table->text('config')->nullable(); // JSON configuration
         });
     }
 

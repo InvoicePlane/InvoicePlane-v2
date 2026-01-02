@@ -57,10 +57,8 @@ class ReportBuilder extends Page
                     return [];
                 }
 
-                // Try to find the block in our local blocks array first if it has specific config
-                // but wait, $this->blocks is currently used for layout.
-                // The global ReportBlock is the source of truth for the block definition.
-
+                // Look up the block using block_type
+                // This ensures we get the correct record from the database
                 $block = ReportBlock::query()->where('block_type', $blockType)->first();
 
                 if ( ! $block) {
@@ -89,6 +87,9 @@ class ReportBuilder extends Page
                 }
                 $data['width'] ??= 'full';
 
+                // Debug output - will show in Livewire component response
+                \Illuminate\Support\Facades\Log::info('Block data for edit:', $data);
+
                 return $data;
             })
             ->mountUsing(function (Schema $schema, array $arguments) {
@@ -97,6 +98,7 @@ class ReportBuilder extends Page
                     return;
                 }
 
+                // Look up the block using block_type
                 $block = ReportBlock::query()->where('block_type', $blockType)->first();
 
                 if ( ! $block) {
@@ -127,6 +129,9 @@ class ReportBuilder extends Page
                 }
                 $data['width'] ??= 'full';
 
+                // Debug output - will show in Livewire component response
+                \Illuminate\Support\Facades\Log::info('Mounting block config with data:', $data);
+
                 $schema->fill($data);
             })
             ->action(function (array $data, array $arguments) {
@@ -136,7 +141,19 @@ class ReportBuilder extends Page
                 }
                 $block = ReportBlock::where('block_type', $blockType)->first();
                 if ($block) {
+                    // Extract fields from data if present
+                    $fields = $data['fields'] ?? [];
+                    unset($data['fields']); // Remove fields from main data to avoid saving to DB
+
+                    // Update block record
                     $block->update($data);
+
+                    // Save fields to JSON file via service
+                    if (!empty($fields) || isset($data['fields'])) {
+                        $service = app(\Modules\Core\Services\ReportBlockService::class);
+                        $service->saveBlockFields($block, $fields);
+                    }
+
                     $this->dispatch('block-config-saved');
                 }
             })
