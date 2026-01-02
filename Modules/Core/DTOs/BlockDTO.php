@@ -37,6 +37,8 @@ class BlockDTO
     private string $id = '';
 
     private string $type = '';
+    
+    private ?string $slug = null;
 
     private ?GridPositionDTO $position = null;
 
@@ -116,6 +118,11 @@ class BlockDTO
     {
         return $this->type;
     }
+    
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
 
     public function getPosition(): ?GridPositionDTO
     {
@@ -166,6 +173,16 @@ class BlockDTO
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+    
+    public function setSlug(?string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
 
         return $this;
     }

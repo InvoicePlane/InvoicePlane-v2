@@ -9,7 +9,9 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\Enums\ReportDataSource;
 use Modules\Core\Models\ReportBlock;
 
 class ReportBlockForm
@@ -28,8 +30,12 @@ class ReportBlockForm
                     Select::make('block_type')
                         ->options(ReportBlock::query()->pluck('block_type', 'block_type')->toArray())
                         ->required(),
-                    TextInput::make('data_source'),
-                    TextInput::make('default_band'),
+                    Select::make('data_source')
+                        ->options(ReportDataSource::class)
+                        ->required(),
+                    Select::make('default_band')
+                        ->options(ReportBand::class)
+                        ->required(),
                     Toggle::make('is_active')
                         ->default(true),
                 ]),
@@ -42,32 +48,5 @@ class ReportBlockForm
                 ])
                 ->collapsible(),
         ]);
-    }
-
-    protected static function getAvailableFields(): array
-    {
-        return [
-            'company_name'      => 'Company Name',
-            'company_address'   => 'Company Address',
-            'company_phone'     => 'Company Phone',
-            'company_email'     => 'Company Email',
-            'company_vat_id'    => 'Company VAT ID',
-            'client_name'       => 'Client Name',
-            'client_address'    => 'Client Address',
-            'client_phone'      => 'Client Phone',
-            'client_email'      => 'Client Email',
-            'invoice_number'    => 'Invoice Number',
-            'invoice_date'      => 'Invoice Date',
-            'invoice_due_date'  => 'Due Date',
-            'invoice_subtotal'  => 'Subtotal',
-            'invoice_tax_total' => 'Tax Total',
-            'invoice_total'     => 'Invoice Total',
-            'item_description'  => 'Item Description',
-            'item_quantity'     => 'Item Quantity',
-            'item_price'        => 'Item Price',
-            'item_tax_name'     => 'Item Tax Name',
-            'item_tax_rate'     => 'Item Tax Rate',
-            'footer_notes'      => 'Notes',
-        ];
     }
 }

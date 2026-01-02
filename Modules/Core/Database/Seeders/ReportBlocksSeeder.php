@@ -5,7 +5,9 @@ namespace Modules\Core\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\Enums\ReportDataSource;
 use Modules\Core\Models\ReportBlock;
 
 class ReportBlocksSeeder extends Seeder
@@ -17,77 +19,79 @@ class ReportBlocksSeeder extends Seeder
                 'block_type'   => 'company_header',
                 'name'         => 'Company Header',
                 'width'        => ReportBlockWidth::HALF,
-                'data_source'  => 'company',
-                'default_band' => 'group_header',
+                'data_source'  => ReportDataSource::COMPANY,
+                'default_band' => ReportBand::GROUP_HEADER,
                 'config'       => ['show_vat_id' => true, 'show_phone' => true, 'font_size' => 10],
             ],
             [
                 'block_type'   => 'client_header',
                 'name'         => 'Customer Header',
                 'width'        => ReportBlockWidth::HALF,
-                'data_source'  => 'client',
-                'default_band' => 'group_header',
+                'data_source'  => ReportDataSource::CUSTOMER,
+                'default_band' => ReportBand::GROUP_HEADER,
                 'config'       => ['show_address' => true, 'show_phone' => true, 'font_size' => 10],
             ],
             [
                 'block_type'   => 'header_invoice_meta',
                 'name'         => 'Invoice Metadata',
                 'width'        => ReportBlockWidth::FULL,
-                'data_source'  => 'invoice',
-                'default_band' => 'group_header',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::GROUP_HEADER,
                 'config'       => ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
             ],
             [
                 'block_type'   => 'invoice_items',
                 'name'         => 'Invoice Items',
                 'width'        => ReportBlockWidth::FULL,
-                'data_source'  => 'invoice',
-                'default_band' => 'details',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::DETAILS,
                 'config'       => ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
             ],
             [
                 'block_type'   => 'invoice_item_tax',
                 'name'         => 'Item Tax Details',
                 'width'        => ReportBlockWidth::FULL,
-                'data_source'  => 'invoice',
-                'default_band' => 'details',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::DETAILS,
                 'config'       => ['show_tax_name' => true, 'show_tax_rate' => true],
             ],
             [
                 'block_type'   => 'footer_totals',
                 'name'         => 'Invoice Totals',
                 'width'        => ReportBlockWidth::HALF,
-                'data_source'  => 'invoice',
-                'default_band' => 'group_footer',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::GROUP_FOOTER,
                 'config'       => ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
             ],
             [
                 'block_type'   => 'footer_notes',
                 'name'         => 'Footer Notes',
                 'width'        => ReportBlockWidth::HALF,
-                'data_source'  => 'invoice',
-                'default_band' => 'footer',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::FOOTER,
                 'config'       => ['font_size' => 9],
             ],
             [
                 'block_type'   => 'footer_qr_code',
                 'name'         => 'QR Code',
                 'width'        => ReportBlockWidth::HALF,
-                'data_source'  => 'invoice',
-                'default_band' => 'footer',
+                'data_source'  => ReportDataSource::INVOICE,
+                'default_band' => ReportBand::FOOTER,
                 'config'       => ['size' => 100],
             ],
         ];
 
         foreach ($blocks as $block) {
-            $filename = Str::slug($block['name']);
+            $baseSlug = Str::slug($block['name']);
+            $slug = $baseSlug . '-' . Str::random(8);
+            $filename = $slug;
 
             ReportBlock::create([
                 'is_active'    => true,
                 'is_system'    => true,
                 'block_type'   => $block['block_type'],
                 'name'         => $block['name'],
-                'slug'         => Str::slug($block['name']),
+                'slug'         => $slug,
                 'filename'     => $filename,
                 'width'        => $block['width'],
                 'data_source'  => $block['data_source'],
@@ -100,7 +104,7 @@ class ReportBlocksSeeder extends Seeder
             }
 
             // Save default config to JSON if it doesn't exist
-            $path = 'report_blocks/' . $filename;
+            $path = 'report_blocks/' . $filename . '.json';
             if ( ! Storage::disk('local')->exists($path)) {
                 $config           = $block['config'];
                 $config['fields'] = []; // Start with no fields as requested for drag/drop

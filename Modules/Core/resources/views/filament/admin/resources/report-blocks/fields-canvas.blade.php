@@ -1,27 +1,19 @@
 @php
-    $availableFields = [
-        ['id' => 'company_name', 'label' => 'Company Name'],
-        ['id' => 'company_address', 'label' => 'Company Address'],
-        ['id' => 'company_phone', 'label' => 'Company Phone'],
-        ['id' => 'company_email', 'label' => 'Company Email'],
-        ['id' => 'company_vat_id', 'label' => 'Company VAT ID'],
-        ['id' => 'client_name', 'label' => 'Client Name'],
-        ['id' => 'client_address', 'label' => 'Client Address'],
-        ['id' => 'client_phone', 'label' => 'Client Phone'],
-        ['id' => 'client_email', 'label' => 'Client Email'],
-        ['id' => 'invoice_number', 'label' => 'Invoice Number'],
-        ['id' => 'invoice_date', 'label' => 'Invoice Date'],
-        ['id' => 'invoice_due_date', 'label' => 'Due Date'],
-        ['id' => 'invoice_subtotal', 'label' => 'Subtotal'],
-        ['id' => 'invoice_tax_total', 'label' => 'Tax Total'],
-        ['id' => 'invoice_total', 'label' => 'Invoice Total'],
-        ['id' => 'item_description', 'label' => 'Item Description'],
-        ['id' => 'item_quantity', 'label' => 'Item Quantity'],
-        ['id' => 'item_price', 'label' => 'Item Price'],
-        ['id' => 'item_tax_name', 'label' => 'Item Tax Name'],
-        ['id' => 'item_tax_rate', 'label' => 'Item Tax Rate'],
-        ['id' => 'footer_notes', 'label' => 'Notes'],
-    ];
+    // Load available fields from config grouped by data source
+    $availableFieldsConfig = config('report-fields');
+    $availableFields = [];
+    
+    // Flatten all fields from all data sources
+    foreach ($availableFieldsConfig as $source => $fields) {
+        foreach ($fields as $field) {
+            $availableFields[] = [
+                'id' => $field['id'],
+                'label' => $field['label'],
+                'source' => $source,
+                'format' => $field['format'] ?? null,
+            ];
+        }
+    }
 @endphp
 
 <div x-data="{
@@ -59,14 +51,19 @@
         <div class="col-span-3">
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                 <h4 class="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Available Fields</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                    Drag fields to the canvas to configure block layout
+                </p>
                 <div class="space-y-2 max-h-96 overflow-y-auto">
                     <template x-for="field in availableFields" :key="field.id">
                         <div
                             draggable="true"
                             @dragstart="event.dataTransfer.setData('fieldId', field.id)"
                             class="bg-blue-500 text-white rounded px-3 py-2 text-sm cursor-grab active:cursor-grabbing hover:bg-blue-600 transition-colors"
-                            x-text="field.label"
-                        ></div>
+                        >
+                            <div class="font-medium" x-text="field.label"></div>
+                            <div class="text-xs opacity-75" x-text="'Source: ' + field.source"></div>
+                        </div>
                     </template>
                 </div>
             </div>

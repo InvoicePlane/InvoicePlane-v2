@@ -52,20 +52,19 @@ class ReportBuilder extends Page
         return Action::make('configureBlock')
             ->schema(fn (Schema $schema) => ReportBlockForm::configure($schema))
             ->fillForm(function (array $arguments) {
-                $blockType = $arguments['blockType'] ?? null;
-                if ( ! $blockType) {
+                $blockSlug = $arguments['blockSlug'] ?? null;
+                if ( ! $blockSlug) {
                     return [];
                 }
 
-                // Look up the block using block_type
-                // This ensures we get the correct record from the database
-                $block = ReportBlock::query()->where('block_type', $blockType)->first();
+                // Look up the block using slug (very unique identifier)
+                $block = ReportBlock::query()->where('slug', $blockSlug)->first();
 
                 if ( ! $block) {
                     return [
                         'name'         => '',
                         'width'        => 'full',
-                        'block_type'   => $blockType,
+                        'block_type'   => '',
                         'data_source'  => '',
                         'default_band' => '',
                         'is_active'    => true,
@@ -76,9 +75,19 @@ class ReportBuilder extends Page
 
                 // Ensure all fields are present for entanglement
                 $data['name'] ??= '';
-                $data['block_type'] ??= $blockType;
+                $data['block_type'] ??= '';
+                
+                // Handle enum conversions for form
+                if (isset($data['data_source']) && $data['data_source'] instanceof BackedEnum) {
+                    $data['data_source'] = $data['data_source']->value;
+                }
                 $data['data_source'] ??= '';
+                
+                if (isset($data['default_band']) && $data['default_band'] instanceof BackedEnum) {
+                    $data['default_band'] = $data['default_band']->value;
+                }
                 $data['default_band'] ??= '';
+                
                 $data['is_active'] = (bool) ($data['is_active'] ?? true);
 
                 // If it's a BackedEnum (width), we need to ensure it's the value
@@ -88,24 +97,24 @@ class ReportBuilder extends Page
                 $data['width'] ??= 'full';
 
                 // Debug output - will show in Livewire component response
-                \Illuminate\Support\Facades\Log::info('Block data for edit:', $data);
+                \Illuminate\Support\Facades\Log::info('Block data for edit (slug: ' . $blockSlug . '):', $data);
 
                 return $data;
             })
             ->mountUsing(function (Schema $schema, array $arguments) {
-                $blockType = $arguments['blockType'] ?? null;
-                if ( ! $blockType) {
+                $blockSlug = $arguments['blockSlug'] ?? null;
+                if ( ! $blockSlug) {
                     return;
                 }
 
-                // Look up the block using block_type
-                $block = ReportBlock::query()->where('block_type', $blockType)->first();
+                // Look up the block using slug (very unique identifier)
+                $block = ReportBlock::query()->where('slug', $blockSlug)->first();
 
                 if ( ! $block) {
                     $schema->fill([
                         'name'         => '',
                         'width'        => 'full',
-                        'block_type'   => $blockType,
+                        'block_type'   => '',
                         'data_source'  => '',
                         'default_band' => '',
                         'is_active'    => true,
@@ -118,9 +127,19 @@ class ReportBuilder extends Page
 
                 // Ensure all fields are present for entanglement
                 $data['name'] ??= '';
-                $data['block_type'] ??= $blockType;
+                $data['block_type'] ??= '';
+                
+                // Handle enum conversions for form
+                if (isset($data['data_source']) && $data['data_source'] instanceof BackedEnum) {
+                    $data['data_source'] = $data['data_source']->value;
+                }
                 $data['data_source'] ??= '';
+                
+                if (isset($data['default_band']) && $data['default_band'] instanceof BackedEnum) {
+                    $data['default_band'] = $data['default_band']->value;
+                }
                 $data['default_band'] ??= '';
+                
                 $data['is_active'] = (bool) ($data['is_active'] ?? true);
 
                 // If it's a BackedEnum (width), we need to ensure it's the value
@@ -130,16 +149,16 @@ class ReportBuilder extends Page
                 $data['width'] ??= 'full';
 
                 // Debug output - will show in Livewire component response
-                \Illuminate\Support\Facades\Log::info('Mounting block config with data:', $data);
+                \Illuminate\Support\Facades\Log::info('Mounting block config (slug: ' . $blockSlug . '):', $data);
 
                 $schema->fill($data);
             })
             ->action(function (array $data, array $arguments) {
-                $blockType = $arguments['blockType'] ?? null;
-                if ( ! $blockType) {
+                $blockSlug = $arguments['blockSlug'] ?? null;
+                if ( ! $blockSlug) {
                     return;
                 }
-                $block = ReportBlock::where('block_type', $blockType)->first();
+                $block = ReportBlock::where('slug', $blockSlug)->first();
                 if ($block) {
                     // Extract fields from data if present
                     $fields = $data['fields'] ?? [];

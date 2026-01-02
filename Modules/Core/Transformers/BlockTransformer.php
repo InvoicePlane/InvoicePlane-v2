@@ -55,6 +55,7 @@ class BlockTransformer
         $dto = new BlockDTO();
         $dto->setId($blockData['id'] ?? '')
             ->setType($blockData['type'] ?? '')
+            ->setSlug($blockData['slug'] ?? null)
             ->setPosition($position)
             ->setConfig($blockData['config'] ?? [])
             ->setLabel($blockData['label'] ?? null)
@@ -77,6 +78,7 @@ class BlockTransformer
         return [
             'id'       => $dto->getId(),
             'type'     => $dto->getType(),
+            'slug'     => $dto->getSlug(),
             'position' => $position ? [
                 'x'      => $position->getX(),
                 'y'      => $position->getY(),

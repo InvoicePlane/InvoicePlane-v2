@@ -298,14 +298,15 @@ class ReportTemplateService
             $blocks[$dbBlock->block_type] = $this->createSystemBlock(
                 'block_' . $dbBlock->block_type,
                 $dbBlock->block_type,
+                $dbBlock->slug,
                 0,
                 0,
                 $width,
                 4,
                 $config,
                 $dbBlock->name,
-                $dbBlock->data_source,
-                $dbBlock->default_band
+                $dbBlock->data_source->value,
+                $dbBlock->default_band->value
             );
         }
 
@@ -352,6 +353,7 @@ class ReportTemplateService
     private function createSystemBlock(
         string $id,
         string $type,
+        ?string $slug,
         int $x,
         int $y,
         int $width,
@@ -366,6 +368,7 @@ class ReportTemplateService
         $block = new BlockDTO();
         $block->setId($id)
             ->setType($type)
+            ->setSlug($slug)
             ->setPosition($position)
             ->setConfig($config)
             ->setLabel($label)
