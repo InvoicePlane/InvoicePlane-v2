@@ -414,10 +414,6 @@ $message = trans('ip.payment_successful');
 
 **Blade Templates:**
 ```blade
-{{-- ❌ WRONG --}}
-{{ __('ip.total') }}
-@lang('ip.total')
-
 {{-- ✅ CORRECT --}}
 {{ trans('ip.total') }}
 @lang('ip.total')  {{-- @lang() is acceptable in Blade --}}
@@ -429,6 +425,40 @@ $message = trans('ip.payment_successful');
 - Use snake_case for key names
 - Group related translations logically
 - Example keys: `ip.invoice_total`, `ip.payment_method`, `ip.report_field_company_name`
+
+### UI Text Translation Requirements
+**ALL user-facing text must be translatable:**
+
+**Form Fields:**
+```php
+// Labels
+TextInput::make('name')
+    ->label(trans('ip.field_label'))
+
+// Placeholders
+TextInput::make('email')
+    ->placeholder(trans('ip.email_placeholder'))
+
+// Helper Text
+TextInput::make('vat_id')
+    ->helperText(trans('ip.vat_id_help'))
+
+// Section Titles
+Section::make(trans('ip.section_general'))
+```
+
+**Required Translation Coverage:**
+- ✅ Form field labels
+- ✅ Form placeholders
+- ✅ Helper text and hints
+- ✅ Tips and tooltips
+- ✅ Button labels
+- ✅ Section titles
+- ✅ Table column headers
+- ✅ Success/error messages
+- ✅ Validation messages
+- ✅ Menu items
+- ✅ Page titles
 
 ### Service Translation Pattern
 When services load translatable content from config files:

@@ -1027,5 +1027,17 @@ return [
     'report_field_footer_notes'           => 'Footer Notes',
     'report_field_page_number'            => 'Page Number',
     'report_field_total_pages'            => 'Total Pages',
+
+    // Report Block Form Labels
+    'report_block_section_general'              => 'General',
+    'report_block_section_field_configuration'  => 'Field Configuration',
+    'report_block_name'                         => 'Block Name',
+    'report_block_width'                        => 'Width',
+    'report_block_type'                         => 'Block Type',
+    'report_block_data_source'                  => 'Data Source',
+    'report_block_default_band'                 => 'Default Band',
+    'report_block_is_active'                    => 'Active',
+    'report_block_fields_canvas_label'          => 'Drag fields to canvas',
+    'report_block_fields_canvas_help'           => 'Drag available fields to the canvas to configure block layout',
     #endregion
 ];

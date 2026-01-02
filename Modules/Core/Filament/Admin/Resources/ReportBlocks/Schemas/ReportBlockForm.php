@@ -18,32 +18,38 @@ class ReportBlockForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('General')
+            Section::make(trans('ip.report_block_section_general'))
                 ->schema([
                     TextInput::make('name')
+                        ->label(trans('ip.report_block_name'))
                         ->required()
                         ->maxLength(255),
                     Select::make('width')
+                        ->label(trans('ip.report_block_width'))
                         ->options(ReportBlockWidth::class)
                         ->required(),
                     Select::make('block_type')
+                        ->label(trans('ip.report_block_type'))
                         ->options(ReportBlock::query()->pluck('block_type', 'block_type')->toArray())
                         ->required(),
                     Select::make('data_source')
+                        ->label(trans('ip.report_block_data_source'))
                         ->options(ReportDataSource::class)
                         ->required(),
                     Select::make('default_band')
+                        ->label(trans('ip.report_block_default_band'))
                         ->options(ReportBand::class)
                         ->required(),
                     Toggle::make('is_active')
+                        ->label(trans('ip.report_block_is_active'))
                         ->default(true),
                 ]),
-            Section::make('Field Configuration')
+            Section::make(trans('ip.report_block_section_field_configuration'))
                 ->schema([
                     ViewField::make('fields_canvas')
                         ->view('core::filament.admin.resources.report-blocks.fields-canvas')
-                        ->label('Drag fields to canvas')
-                        ->helperText('Drag available fields to the canvas to configure block layout'),
+                        ->label(trans('ip.report_block_fields_canvas_label'))
+                        ->helperText(trans('ip.report_block_fields_canvas_help')),
                 ])
                 ->collapsible(),
         ]);

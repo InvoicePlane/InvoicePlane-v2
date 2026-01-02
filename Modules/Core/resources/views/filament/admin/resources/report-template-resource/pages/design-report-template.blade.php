@@ -231,9 +231,9 @@
                                                     type="button"
                                                     @click.stop="console.log('Clicked block for config:', block.id, block.slug); $wire.mountAction('configureBlock', { blockSlug: block.slug })"
                                                     class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner px-2 py-1 flex items-center gap-1 relative z-20"
-                                                    title="Configure Fields"
+                                                    title="Edit Block"
                                                 >
-                                                    <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-4 h-4"/>
+                                                    <x-filament::icon name="heroicon-m-pencil" class="w-4 h-4"/>
                                                     <span class="text-[10px] font-bold uppercase tracking-tighter">Edit</span>
                                                 </button>
                                             </div>

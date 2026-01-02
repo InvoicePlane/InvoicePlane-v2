@@ -5,7 +5,10 @@ namespace Modules\Core\Services;
 class ReportFieldService
 {
     /**
-     * Get all available fields for report blocks grouped by data source.
+     * Get all available fields for report blocks.
+     *
+     * Fields are stored in a flat array structure in the config file,
+     * so no nested looping is required.
      *
      * @return array
      */
@@ -14,16 +17,14 @@ class ReportFieldService
         $config = config('report-fields', []);
         $fields = [];
 
-        // Flatten all fields from all data sources
-        foreach ($config as $source => $sourceFields) {
-            foreach ($sourceFields as $field) {
-                $fields[] = [
-                    'id' => $field['id'],
-                    'label' => trans($field['label']),
-                    'source' => $source,
-                    'format' => $field['format'] ?? null,
-                ];
-            }
+        // Config is already flat, just translate labels
+        foreach ($config as $field) {
+            $fields[] = [
+                'id' => $field['id'],
+                'label' => trans($field['label']),
+                'source' => $field['source'],
+                'format' => $field['format'] ?? null,
+            ];
         }
 
         return $fields;
@@ -39,28 +40,39 @@ class ReportFieldService
     public function getFieldsBySource(string $source): array
     {
         $config = config('report-fields', []);
+        $fields = [];
 
-        if (!isset($config[$source])) {
-            return [];
+        // Filter fields by source
+        foreach ($config as $field) {
+            if ($field['source'] === $source) {
+                $fields[] = [
+                    'id' => $field['id'],
+                    'label' => trans($field['label']),
+                    'source' => $field['source'],
+                    'format' => $field['format'] ?? null,
+                ];
+            }
         }
 
-        return array_map(function ($field) use ($source) {
-            return [
-                'id' => $field['id'],
-                'label' => trans($field['label']),
-                'source' => $source,
-                'format' => $field['format'] ?? null,
-            ];
-        }, $config[$source]);
+        return $fields;
     }
 
     /**
-     * Get all data sources.
+     * Get all unique data sources from fields.
      *
      * @return array
      */
     public function getDataSources(): array
     {
-        return array_keys(config('report-fields', []));
+        $config = config('report-fields', []);
+        $sources = [];
+
+        foreach ($config as $field) {
+            if (!in_array($field['source'], $sources, true)) {
+                $sources[] = $field['source'];
+            }
+        }
+
+        return $sources;
     }
 }
