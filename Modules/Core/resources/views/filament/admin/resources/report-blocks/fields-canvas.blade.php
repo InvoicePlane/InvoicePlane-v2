@@ -1,19 +1,9 @@
 @php
-    // Load available fields from config grouped by data source
-    $availableFieldsConfig = config('report-fields');
-    $availableFields = [];
+    use Modules\Core\Services\ReportFieldService;
     
-    // Flatten all fields from all data sources
-    foreach ($availableFieldsConfig as $source => $fields) {
-        foreach ($fields as $field) {
-            $availableFields[] = [
-                'id' => $field['id'],
-                'label' => $field['label'],
-                'source' => $source,
-                'format' => $field['format'] ?? null,
-            ];
-        }
-    }
+    // Load available fields from service
+    $fieldService = app(ReportFieldService::class);
+    $availableFields = $fieldService->getAvailableFields();
 
     // Load existing canvas fields from Livewire state if available
     $initialCanvasFields = [];
