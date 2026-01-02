@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Core\Enums\ReportBand;
+use Modules\Core\Enums\ReportBlockType;
 use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportDataSource;
 use Modules\Core\Models\ReportBlock;
@@ -16,7 +17,7 @@ class ReportBlocksSeeder extends Seeder
     {
         $blocks = [
             [
-                'block_type'   => 'company_header',
+                'block_type'   => ReportBlockType::ADDRESS,
                 'name'         => 'Company Header',
                 'width'        => ReportBlockWidth::HALF,
                 'data_source'  => ReportDataSource::COMPANY,
@@ -24,7 +25,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_vat_id' => true, 'show_phone' => true, 'font_size' => 10],
             ],
             [
-                'block_type'   => 'client_header',
+                'block_type'   => ReportBlockType::ADDRESS,
                 'name'         => 'Customer Header',
                 'width'        => ReportBlockWidth::HALF,
                 'data_source'  => ReportDataSource::CUSTOMER,
@@ -32,7 +33,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_address' => true, 'show_phone' => true, 'font_size' => 10],
             ],
             [
-                'block_type'   => 'header_invoice_meta',
+                'block_type'   => ReportBlockType::METADATA,
                 'name'         => 'Invoice Metadata',
                 'width'        => ReportBlockWidth::FULL,
                 'data_source'  => ReportDataSource::INVOICE,
@@ -40,7 +41,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
             ],
             [
-                'block_type'   => 'invoice_items',
+                'block_type'   => ReportBlockType::DETAILS,
                 'name'         => 'Invoice Items',
                 'width'        => ReportBlockWidth::FULL,
                 'data_source'  => ReportDataSource::INVOICE,
@@ -48,7 +49,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
             ],
             [
-                'block_type'   => 'invoice_item_tax',
+                'block_type'   => ReportBlockType::DETAILS,
                 'name'         => 'Item Tax Details',
                 'width'        => ReportBlockWidth::FULL,
                 'data_source'  => ReportDataSource::INVOICE,
@@ -56,7 +57,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_tax_name' => true, 'show_tax_rate' => true],
             ],
             [
-                'block_type'   => 'footer_totals',
+                'block_type'   => ReportBlockType::TOTALS,
                 'name'         => 'Invoice Totals',
                 'width'        => ReportBlockWidth::HALF,
                 'data_source'  => ReportDataSource::INVOICE,
@@ -64,7 +65,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
             ],
             [
-                'block_type'   => 'footer_notes',
+                'block_type'   => ReportBlockType::METADATA,
                 'name'         => 'Footer Notes',
                 'width'        => ReportBlockWidth::HALF,
                 'data_source'  => ReportDataSource::INVOICE,
@@ -72,7 +73,7 @@ class ReportBlocksSeeder extends Seeder
                 'config'       => ['font_size' => 9],
             ],
             [
-                'block_type'   => 'footer_qr_code',
+                'block_type'   => ReportBlockType::METADATA,
                 'name'         => 'QR Code',
                 'width'        => ReportBlockWidth::HALF,
                 'data_source'  => ReportDataSource::INVOICE,

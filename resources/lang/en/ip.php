@@ -1039,5 +1039,15 @@ return [
     'report_block_is_active'                    => 'Active',
     'report_block_fields_canvas_label'          => 'Drag fields to canvas',
     'report_block_fields_canvas_help'           => 'Drag available fields to the canvas to configure block layout',
+    
+    // Report Block Types
+    'report_block_type_address'                 => 'Address Block',
+    'report_block_type_address_desc'            => 'Group of fields laid out for addresses (company name, address, city, etc.)',
+    'report_block_type_details'                 => 'Details Block',
+    'report_block_type_details_desc'            => 'Detail rows like invoice items or line items',
+    'report_block_type_metadata'                => 'Metadata Block',
+    'report_block_type_metadata_desc'           => 'Block for dates, notes, QR codes, and other metadata',
+    'report_block_type_totals'                  => 'Totals Block',
+    'report_block_type_totals_desc'             => 'Block for displaying subtotals, taxes, and grand totals',
     #endregion
 ];

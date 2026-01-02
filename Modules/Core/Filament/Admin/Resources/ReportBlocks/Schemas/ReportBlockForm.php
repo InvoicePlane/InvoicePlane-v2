@@ -9,9 +9,9 @@ use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\ReportBand;
+use Modules\Core\Enums\ReportBlockType;
 use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportDataSource;
-use Modules\Core\Models\ReportBlock;
 
 class ReportBlockForm
 {
@@ -30,7 +30,7 @@ class ReportBlockForm
                         ->required(),
                     Select::make('block_type')
                         ->label(trans('ip.report_block_type'))
-                        ->options(ReportBlock::query()->pluck('block_type', 'block_type')->toArray())
+                        ->options(ReportBlockType::class)
                         ->required(),
                     Select::make('data_source')
                         ->label(trans('ip.report_block_data_source'))
