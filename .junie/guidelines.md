@@ -397,6 +397,54 @@ public function it_sends_invoice_to_peppol_successfully(): void
 
 ---
 
+## Internationalization & Translations
+
+### Translation Function Usage
+**CRITICAL:** InvoicePlane v2 uses `trans()` for all translations, NOT `__()`.
+
+```php
+// ❌ WRONG - Do not use __()
+$label = __('ip.invoice_total');
+$message = __('ip.payment_successful');
+
+// ✅ CORRECT - Always use trans()
+$label = trans('ip.invoice_total');
+$message = trans('ip.payment_successful');
+```
+
+**Blade Templates:**
+```blade
+{{-- ❌ WRONG --}}
+{{ __('ip.total') }}
+@lang('ip.total')
+
+{{-- ✅ CORRECT --}}
+{{ trans('ip.total') }}
+@lang('ip.total')  {{-- @lang() is acceptable in Blade --}}
+```
+
+### Translation Key Conventions
+- Main translation file: `resources/lang/en/ip.php`
+- Prefix all keys with `ip.` for InvoicePlane-specific translations
+- Use snake_case for key names
+- Group related translations logically
+- Example keys: `ip.invoice_total`, `ip.payment_method`, `ip.report_field_company_name`
+
+### Service Translation Pattern
+When services load translatable content from config files:
+```php
+// Load from config and translate
+$label = trans(config('some-config.label'));
+
+// In service methods
+public function getTranslatedLabel(): string
+{
+    return trans($this->configKey);
+}
+```
+
+---
+
 ## Development Workflow
 
 ### Commands

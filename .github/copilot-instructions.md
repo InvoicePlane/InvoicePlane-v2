@@ -202,6 +202,24 @@ public function it_creates_invoice(): void
 - **Extract complex conditions** into well-named methods.
 - **Use meaningful method names** that describe what they do.
 
+### Internationalization & Translations
+
+**CRITICAL:** InvoicePlane v2 uses `trans()` for all translations, NOT `__()`.
+
+```php
+// ❌ WRONG - Do not use __()
+$label = __('ip.invoice_total');
+
+// ✅ CORRECT - Always use trans()
+$label = trans('ip.invoice_total');
+```
+
+**Translation Key Conventions:**
+- Main translation file: `resources/lang/en/ip.php`
+- Prefix keys with `ip.` (e.g., `ip.invoice_total`, `ip.payment_method`)
+- Use snake_case for key names
+- In Blade: Use `{{ trans('ip.key') }}` or `@lang('ip.key')`
+
 ## PHPStan Type Safety Guidelines
 
 ### Float Array Keys (CRITICAL)
