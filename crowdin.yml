@@ -16,9 +16,9 @@ preserve_hierarchy: true
 
 files:
   # Define which files to translate and where to place translations
-  # Using %locale% to match Laravel's standard (e.g., de_DE, pt_BR, zh_CN)
+  # Using %locale_with_underscore% to match Laravel's standard (e.g., de_DE, pt_BR, zh_CN)
   - source: /resources/lang/en/**/*.php
-    translation: /resources/lang/%locale%/**/%original_file_name%
+    translation: /resources/lang/%locale_with_underscore%/**/%original_file_name%
     
     # OPTIONAL SETTINGS PER FILE PATTERN:
     # ------------------------------------
@@ -87,6 +87,44 @@ files:
     #   locale:
     #     de: de-DE
     #     fr: fr-FR
+    
+    # Language mapping for InvoicePlane v2 (Laravel standard)
+    # Maps Crowdin language codes to Laravel locale format (underscore-separated)
+    languages_mapping:
+      locale:
+        ar: ar_SA      # Arabic (Saudi Arabia)
+        az: az_AZ      # Azerbaijani
+        ca: ca_ES      # Catalan
+        cs: cs_CZ      # Czech
+        da: da_DK      # Danish
+        de: de_DE      # German
+        el: el_GR      # Greek
+        es-AR: es_AR   # Spanish (Argentina)
+        es-ES: es_ES   # Spanish (Spain)
+        et: et_EE      # Estonian
+        fa: fa_IR      # Persian
+        fi: fi_FI      # Finnish
+        fr: fr_FR      # French
+        hr: hr_HR      # Croatian
+        id: id_ID      # Indonesian
+        it: it_IT      # Italian
+        ja: ja_JP      # Japanese
+        ko: ko_KR      # Korean
+        lt: lt_LT      # Lithuanian
+        lv: lv_LV      # Latvian
+        nl: nl_NL      # Dutch
+        no: no_NO      # Norwegian
+        pl: pl_PL      # Polish
+        pt-BR: pt_BR   # Portuguese (Brazil)
+        pt-PT: pt_PT   # Portuguese (Portugal)
+        ro: ro_RO      # Romanian
+        sl: sl_SI      # Slovenian
+        sq: sq_AL      # Albanian
+        sv-SE: sv_SE   # Swedish
+        th: th_TH      # Thai
+        tr: tr_TR      # Turkish
+        vi: vi_VN      # Vietnamese
+        zh-CN: zh_CN   # Chinese (Simplified)
 
 # ============================================================================
 # ADDITIONAL TOP-LEVEL OPTIONS
