@@ -52,9 +52,6 @@ jobs:
           config: 'crowdin.yml'
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-        env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Download translations from Crowdin
         if: github.event.inputs.action == 'download-translations' || github.event.inputs.action == 'sync-bidirectional' || github.event_name == 'schedule'
@@ -93,8 +90,6 @@ jobs:
           project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
         env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Workflow summary
