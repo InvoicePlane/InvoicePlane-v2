@@ -1,5 +1,131 @@
+# Crowdin Configuration File
+# This file configures how Crowdin syncs translation files with the repository.
+# Documentation: https://support.crowdin.com/configuration-file/
+
+# ============================================================================
+# PROJECT SETTINGS
+# ============================================================================
+
+# preserve_hierarchy: Maintains the directory structure when uploading files
+# Default: false
 preserve_hierarchy: true
 
+# ============================================================================
+# FILE MAPPING
+# ============================================================================
+
 files:
+  # Define which files to translate and where to place translations
   - source: /resources/lang/en/**/*.php
     translation: /resources/lang/%language%/**/%original_file_name%
+    
+    # OPTIONAL SETTINGS PER FILE PATTERN:
+    # ------------------------------------
+    
+    # dest: Custom destination pattern (alternative to 'translation')
+    # Example: dest: /translations/%locale%/%file_name%
+    
+    # type: File type/parser to use
+    # Options: auto (default), php, json, xml, html, md, yml, properties, strings, etc.
+    # Example: type: php
+    
+    # update_option: How to update translations
+    # Options:
+    #   - update_as_unapproved (default): Import as suggestions
+    #   - update_without_changes: Keep existing translations, add new ones
+    # Example: update_option: update_as_unapproved
+    
+    # scheme: Defines the file structure
+    # Example: scheme: "identifier,source_phrase,context,translation"
+    
+    # first_line_contains_header: For CSV/spreadsheet files
+    # Example: first_line_contains_header: true
+    
+    # escape_quotes: Escape quotes in translations
+    # Options: 0 (no), 1 (single), 2 (double), 3 (both)
+    # Example: escape_quotes: 3
+    
+    # escape_special_characters: Escape special chars in translations
+    # Options: 0 (disabled), 1 (enabled)
+    # Example: escape_special_characters: 1
+    
+    # translate_attributes: For XML/HTML - translate attributes
+    # Example: translate_attributes: 1
+    
+    # translate_content: For XML/HTML - translate content
+    # Example: translate_content: 1
+    
+    # translatable_elements: List of XML/HTML elements to translate
+    # Example: translatable_elements: ["/path/to/element", "/path/to/another"]
+    
+    # content_segmentation: Split content into segments
+    # Options: 0 (disabled), 1 (enabled)
+    # Example: content_segmentation: 1
+    
+    # skip_untranslated_strings: Don't export untranslated strings
+    # Options: true/false
+    # Example: skip_untranslated_strings: false
+    
+    # skip_untranslated_files: Don't export files with untranslated strings
+    # Options: true/false
+    # Example: skip_untranslated_files: false
+    
+    # export_only_approved: Export only approved translations
+    # Options: true/false
+    # Example: export_only_approved: false
+    
+    # labels: Tag files with labels for organization
+    # Example: labels: ["backend", "laravel"]
+    
+    # excluded_target_languages: Languages to exclude for this file pattern
+    # Example: excluded_target_languages: ["de", "fr"]
+    
+    # languages_mapping: Custom language code mapping
+    # Example:
+    # languages_mapping:
+    #   locale:
+    #     de: de-DE
+    #     fr: fr-FR
+
+# ============================================================================
+# ADDITIONAL TOP-LEVEL OPTIONS
+# ============================================================================
+
+# commit_message: Custom commit message for Crowdin commits
+# Placeholders: %original_file_name%, %language%, %original_path%
+# Example: commit_message: "New translations %original_file_name% (%language%)"
+
+# append_commit_message: Add to default commit message instead of replacing
+# Example: append_commit_message: "[skip ci]"
+
+# ============================================================================
+# PLACEHOLDER REFERENCE
+# ============================================================================
+# Available placeholders for 'translation' pattern:
+#
+# %language%              - Crowdin language code (e.g., "de", "fr", "pt-BR")
+# %locale%                - Locale code with underscore (e.g., "de_DE", "pt_BR")
+# %locale_with_underscore% - Same as %locale%
+# %two_letters_code%      - Two-letter language code (e.g., "de", "fr")
+# %three_letters_code%    - Three-letter language code (e.g., "deu", "fra")
+# %android_code%          - Android locale code (e.g., "de", "pt-rBR")
+# %osx_code%              - macOS locale code (e.g., "de", "pt-BR")
+# %osx_locale%            - macOS locale (e.g., "de.lproj", "pt_BR.lproj")
+# 
+# %original_file_name%    - Original filename with extension
+# %file_extension%        - File extension only
+# %file_name%             - Filename without extension
+# %original_path%         - Original path from source
+#
+# Example patterns:
+# - /resources/lang/%language%/**/%original_file_name%
+# - /locales/%locale%/%file_name%.%file_extension%
+# - /translations/%two_letters_code%/%original_path%
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# - The project_id and api_token are passed via GitHub Actions secrets
+# - Files are synced bidirectionally: sources uploaded, translations downloaded
+# - Glob patterns (**) match any directory depth, (*) matches within one level
+# - Changes to this file require re-running the Crowdin sync workflow
