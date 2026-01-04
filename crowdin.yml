@@ -16,8 +16,9 @@ preserve_hierarchy: true
 
 files:
   # Define which files to translate and where to place translations
+  # Using %locale% to match Laravel's standard (e.g., de_DE, pt_BR, zh_CN)
   - source: /resources/lang/en/**/*.php
-    translation: /resources/lang/%language%/**/%original_file_name%
+    translation: /resources/lang/%locale%/**/%original_file_name%
     
     # OPTIONAL SETTINGS PER FILE PATTERN:
     # ------------------------------------
@@ -99,28 +100,280 @@ files:
 # Example: append_commit_message: "[skip ci]"
 
 # ============================================================================
-# PLACEHOLDER REFERENCE
+# PLACEHOLDER REFERENCE - COMPREHENSIVE GUIDE
 # ============================================================================
-# Available placeholders for 'translation' pattern:
+# Available placeholders for 'translation' pattern with extensive examples:
 #
-# %language%              - Crowdin language code (e.g., "de", "fr", "pt-BR")
-# %locale%                - Locale code with underscore (e.g., "de_DE", "pt_BR")
-# %locale_with_underscore% - Same as %locale%
-# %two_letters_code%      - Two-letter language code (e.g., "de", "fr")
-# %three_letters_code%    - Three-letter language code (e.g., "deu", "fra")
-# %android_code%          - Android locale code (e.g., "de", "pt-rBR")
-# %osx_code%              - macOS locale code (e.g., "de", "pt-BR")
-# %osx_locale%            - macOS locale (e.g., "de.lproj", "pt_BR.lproj")
-# 
-# %original_file_name%    - Original filename with extension
-# %file_extension%        - File extension only
-# %file_name%             - Filename without extension
-# %original_path%         - Original path from source
+# ──────────────────────────────────────────────────────────────────────────
+# LANGUAGE CODE PLACEHOLDERS
+# ──────────────────────────────────────────────────────────────────────────
 #
-# Example patterns:
-# - /resources/lang/%language%/**/%original_file_name%
-# - /locales/%locale%/%file_name%.%file_extension%
-# - /translations/%two_letters_code%/%original_path%
+# %language%
+#   Description: Crowdin's native language code
+#   Format: Language code with optional region (hyphen-separated)
+#   Examples:
+#     - German: "de"
+#     - German (Germany): "de" (Crowdin may use "de-DE" for specific regions)
+#     - Spanish (Spain): "es-ES"
+#     - Spanish (Argentina): "es-AR"
+#     - Portuguese (Brazil): "pt-BR"
+#     - Portuguese (Portugal): "pt-PT"
+#     - Chinese (Simplified): "zh-CN"
+#     - Chinese (Traditional): "zh-TW"
+#   Use case: When you want Crowdin's default language codes
+#   Pattern example: /resources/lang/%language%/messages.php
+#   Result: /resources/lang/pt-BR/messages.php
+#
+# %locale%
+#   Description: Locale code with underscore (RECOMMENDED FOR LARAVEL)
+#   Format: Language_REGION with underscore separator
+#   Examples:
+#     - German (Germany): "de_DE"
+#     - Spanish (Spain): "es_ES"
+#     - Spanish (Argentina): "es_AR"
+#     - Portuguese (Brazil): "pt_BR"
+#     - Portuguese (Portugal): "pt_PT"
+#     - Chinese (Simplified): "zh_CN"
+#     - Chinese (Traditional): "zh_TW"
+#     - French (France): "fr_FR"
+#     - Italian (Italy): "it_IT"
+#     - Japanese (Japan): "ja_JP"
+#     - Korean (Korea): "ko_KR"
+#     - Dutch (Netherlands): "nl_NL"
+#     - Polish (Poland): "pl_PL"
+#     - Russian (Russia): "ru_RU"
+#     - Swedish (Sweden): "sv_SE"
+#     - Turkish (Turkey): "tr_TR"
+#     - Vietnamese (Vietnam): "vi_VN"
+#   Use case: Laravel standard, database locales, framework conventions
+#   Pattern example: /resources/lang/%locale%/messages.php
+#   Result: /resources/lang/pt_BR/messages.php ✓ (Laravel standard)
+#
+# %locale_with_underscore%
+#   Description: Identical to %locale%
+#   Format: Language_REGION with underscore separator
+#   Examples: Same as %locale% above
+#   Use case: Explicit naming when you want to emphasize underscore format
+#   Pattern example: /locales/%locale_with_underscore%/strings.php
+#   Result: /locales/de_DE/strings.php
+#
+# %two_letters_code%
+#   Description: ISO 639-1 two-letter language code (no region)
+#   Format: Two lowercase letters
+#   Examples:
+#     - German: "de"
+#     - Spanish: "es"
+#     - Portuguese: "pt"
+#     - Chinese: "zh"
+#     - French: "fr"
+#     - Italian: "it"
+#     - Japanese: "ja"
+#     - Korean: "ko"
+#     - Dutch: "nl"
+#     - Polish: "pl"
+#     - Russian: "ru"
+#     - Swedish: "sv"
+#     - Turkish: "tr"
+#     - Vietnamese: "vi"
+#     - Arabic: "ar"
+#     - Czech: "cs"
+#     - Danish: "da"
+#     - Finnish: "fi"
+#     - Greek: "el"
+#     - Norwegian: "no"
+#     - Romanian: "ro"
+#     - Thai: "th"
+#   Use case: Simple language-only paths, no regional variants
+#   Pattern example: /lang/%two_letters_code%/app.php
+#   Result: /lang/pt/app.php (loses Brazil vs Portugal distinction)
+#
+# %three_letters_code%
+#   Description: ISO 639-2/T three-letter language code
+#   Format: Three lowercase letters
+#   Examples:
+#     - German: "deu" (Deutsch)
+#     - Spanish: "spa" (Español)
+#     - Portuguese: "por" (Português)
+#     - Chinese: "zho" (中文)
+#     - French: "fra" (Français)
+#     - Italian: "ita" (Italiano)
+#     - Japanese: "jpn" (日本語)
+#     - Korean: "kor" (한국어)
+#     - Dutch: "nld" (Nederlands)
+#     - Polish: "pol" (Polski)
+#     - Russian: "rus" (Русский)
+#     - Swedish: "swe" (Svenska)
+#     - Turkish: "tur" (Türkçe)
+#     - Vietnamese: "vie" (Tiếng Việt)
+#     - Arabic: "ara" (العربية)
+#   Use case: Systems requiring ISO 639-2 codes, bibliographic systems
+#   Pattern example: /translations/%three_letters_code%/text.php
+#   Result: /translations/deu/text.php
+#
+# %android_code%
+#   Description: Android resource locale code
+#   Format: Language with optional region (r-prefix)
+#   Examples:
+#     - German: "de"
+#     - German (Germany): "de"
+#     - Portuguese (Brazil): "pt-rBR"
+#     - Portuguese (Portugal): "pt-rPT"
+#     - Spanish (Spain): "es-rES"
+#     - Spanish (Argentina): "es-rAR"
+#     - Chinese (Simplified): "zh-rCN"
+#     - Chinese (Traditional, Taiwan): "zh-rTW"
+#     - Chinese (Traditional, Hong Kong): "zh-rHK"
+#   Use case: Android app development, values-{locale} directories
+#   Pattern example: /app/src/main/res/values-%android_code%/strings.xml
+#   Result: /app/src/main/res/values-pt-rBR/strings.xml
+#
+# %osx_code%
+#   Description: macOS/iOS locale code
+#   Format: Language with optional region (hyphen-separated)
+#   Examples:
+#     - German: "de"
+#     - Portuguese (Brazil): "pt-BR"
+#     - Spanish (Spain): "es-ES"
+#     - Chinese (Simplified): "zh-Hans" or "zh-CN"
+#     - Chinese (Traditional): "zh-Hant" or "zh-TW"
+#   Use case: macOS/iOS app development
+#   Pattern example: /Resources/%osx_code%.lproj/Localizable.strings
+#   Result: /Resources/pt-BR.lproj/Localizable.strings
+#
+# %osx_locale%
+#   Description: macOS locale with .lproj extension
+#   Format: Language code with .lproj suffix
+#   Examples:
+#     - German: "de.lproj"
+#     - Portuguese (Brazil): "pt_BR.lproj" or "pt-BR.lproj"
+#     - Spanish: "es.lproj"
+#     - Chinese (Simplified): "zh_CN.lproj"
+#   Use case: macOS/iOS localization bundles
+#   Pattern example: /Resources/%osx_locale%/Localizable.strings
+#   Result: /Resources/pt_BR.lproj/Localizable.strings
+#
+# ──────────────────────────────────────────────────────────────────────────
+# FILE COMPONENT PLACEHOLDERS
+# ──────────────────────────────────────────────────────────────────────────
+#
+# %original_file_name%
+#   Description: Complete filename including extension
+#   Examples:
+#     - "messages.php"
+#     - "validation.php"
+#     - "auth.php"
+#     - "passwords.php"
+#   Use case: Maintain exact source filenames in translations
+#   Pattern example: /lang/%locale%/%original_file_name%
+#   Result: /lang/de_DE/messages.php
+#
+# %file_name%
+#   Description: Filename without extension
+#   Examples:
+#     - "messages" (from messages.php)
+#     - "validation" (from validation.php)
+#     - "auth" (from auth.php)
+#   Use case: When you want to add different extension or suffix
+#   Pattern example: /lang/%locale%/%file_name%.json
+#   Result: /lang/de_DE/messages.json (changed extension)
+#
+# %file_extension%
+#   Description: File extension only (without dot)
+#   Examples:
+#     - "php"
+#     - "json"
+#     - "yml"
+#     - "xml"
+#   Use case: Dynamic extension handling
+#   Pattern example: /lang/%locale%/%file_name%.%file_extension%
+#   Result: /lang/de_DE/messages.php
+#
+# %original_path%
+#   Description: Relative path from source, excluding filename
+#   Examples:
+#     - For source: /resources/lang/en/subfolder/file.php
+#     - Result: "subfolder" (path component between source and filename)
+#   Use case: Preserving directory structure from source
+#   Pattern example: /resources/lang/%locale%/%original_path%/%original_file_name%
+#   Result: /resources/lang/de_DE/subfolder/file.php
+#
+# ──────────────────────────────────────────────────────────────────────────
+# COMPLETE PATTERN EXAMPLES FOR COMMON USE CASES
+# ──────────────────────────────────────────────────────────────────────────
+#
+# Laravel Standard (RECOMMENDED):
+#   Pattern: /resources/lang/%locale%/**/%original_file_name%
+#   Examples:
+#     - en → de_DE: /resources/lang/en/messages.php → /resources/lang/de_DE/messages.php
+#     - en → pt_BR: /resources/lang/en/auth.php → /resources/lang/pt_BR/auth.php
+#     - en → zh_CN: /resources/lang/en/validation.php → /resources/lang/zh_CN/validation.php
+#
+# Simple Two-Letter Code:
+#   Pattern: /lang/%two_letters_code%/%original_file_name%
+#   Examples:
+#     - en → de: /lang/en/messages.php → /lang/de/messages.php
+#     - en → pt: /lang/en/auth.php → /lang/pt/auth.php
+#     - en → zh: /lang/en/validation.php → /lang/zh/validation.php
+#
+# JSON Translations:
+#   Pattern: /resources/lang/%locale%.json
+#   Examples:
+#     - en.json → de_DE.json
+#     - en.json → pt_BR.json
+#     - en.json → zh_CN.json
+#
+# Nested with Original Path:
+#   Pattern: /locales/%locale%/%original_path%/%file_name%.%file_extension%
+#   Examples:
+#     - /locales/en/admin/messages.php → /locales/de_DE/admin/messages.php
+#     - /locales/en/frontend/auth.php → /locales/pt_BR/frontend/auth.php
+#
+# ──────────────────────────────────────────────────────────────────────────
+# LANGUAGE MAPPING REFERENCE (InvoicePlane v1 → Laravel Standard)
+# ──────────────────────────────────────────────────────────────────────────
+#
+# If you need to map Crowdin language codes to Laravel standard format,
+# use the languages_mapping option in your file configuration:
+#
+# Example configuration:
+#   languages_mapping:
+#     locale:
+#       ar: ar_SA      # Arabic (Saudi Arabia)
+#       az: az_AZ      # Azerbaijani
+#       ca: ca_ES      # Catalan
+#       cs: cs_CZ      # Czech
+#       da: da_DK      # Danish
+#       de: de_DE      # German
+#       el: el_GR      # Greek
+#       es-AR: es_AR   # Spanish (Argentina)
+#       es-ES: es_ES   # Spanish (Spain)
+#       et: et_EE      # Estonian
+#       fa: fa_IR      # Persian
+#       fi: fi_FI      # Finnish
+#       fr: fr_FR      # French
+#       hr: hr_HR      # Croatian
+#       id: id_ID      # Indonesian
+#       it: it_IT      # Italian
+#       ja: ja_JP      # Japanese
+#       ko: ko_KR      # Korean
+#       lt: lt_LT      # Lithuanian
+#       lv: lv_LV      # Latvian
+#       nl: nl_NL      # Dutch
+#       no: no_NO      # Norwegian
+#       pl: pl_PL      # Polish
+#       pt-BR: pt_BR   # Portuguese (Brazil)
+#       pt-PT: pt_PT   # Portuguese (Portugal)
+#       ro: ro_RO      # Romanian
+#       sl: sl_SI      # Slovenian
+#       sq: sq_AL      # Albanian
+#       sv-SE: sv_SE   # Swedish
+#       th: th_TH      # Thai
+#       tr: tr_TR      # Turkish
+#       vi: vi_VN      # Vietnamese
+#       zh-CN: zh_CN   # Chinese (Simplified)
+#
+# Note: With %locale% placeholder, most mappings are automatic.
+# Custom mappings are only needed for special cases or legacy support.
 
 # ============================================================================
 # NOTES
