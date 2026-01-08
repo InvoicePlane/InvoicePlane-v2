@@ -1,0 +1,353 @@
+
+   WARN  Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest
+  ! it returns correct mime type → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it returns correct file extension → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it transforms invoice correctly → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it validates basic invoice fields → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it validates missing customer → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it validates missing invoice number → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it validates missing items → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+  ! it generates xml → Data set "Facturae (Spain)" provided by Modules\Invoices\Tests\Unit\Peppol\FormatHandlers\FormatHandlersTest::handlerProvider has more arguments (2) than the test method accepts (1)
+
+   FAIL  Modules\Core\Tests\Unit\Services\NumberingCompanyIsolationTest
+  ⨯ it allows changing expense numbering with year month                 0.23s  
+  ⨯ it recalculates next id when set to lower value for troubleshooting  0.02s  
+
+   FAIL  Modules\Core\Tests\Unit\Services\NumberingServiceTest
+  ⨯ it creates a numbering                                               0.03s  
+  ⨯ it auto sets prefix from type when not provided                      0.02s  
+  ⨯ it converts starting id to next id                                   0.02s  
+  ✓ it generates formatted number preview                                0.02s  
+  ⨯ it deletes numbering when not in use                                 0.02s  
+  ✓ it checks if numbering is applied                                    0.02s  
+  ✓ it increments numbers correctly                                      0.02s  
+
+   FAIL  Modules\Core\Tests\Unit\SettingsTest
+  ⨯ it filters numberings by current company id                          0.08s  
+  ⨯ it handles no current company id in session                          0.05s  
+  ⨯ it returns empty options when no numberings exist                    0.06s  
+  ⨯ it switches company context properly                                 0.05s  
+  ⨯ it loads default settings properly                                   0.06s  
+  ⨯ it validates update check interval boundaries                        0.05s  
+  ⨯ it validates email format for notifications                          0.05s  
+  ⨯ it has all required tabs                                             0.06s  
+  ⨯ it persists settings                                                 0.05s  
+
+   FAIL  Modules\Invoices\Tests\Unit\Actions\SendInvoiceToPeppolActionTest
+  ⨯ it executes successfully with valid invoice                          0.03s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingCompanyIsolationTest >…    
+  Failed asserting that null matches expected 'EXP-0001'.
+
+  at Modules/Core/Tests/Unit/Services/NumberingCompanyIsolationTest.php:154
+    150▕         // Generate third number with new format
+    151▕         $thirdNumber = $generator->forNumberingId($numbering->id)->generate();
+    152▕ 
+    153▕         /* Assert */
+  ➜ 154▕         $this->assertEquals('EXP-0001', $firstNumber);
+    155▕         $this->assertEquals('EXP-0002', $secondNumber);
+    156▕         $this->assertEquals('EXP-2025-12-0003', $thirdNumber); // Number continues
+    157▕     }
+    158▕
+
+  1   Modules/Core/Tests/Unit/Services/NumberingCompanyIsolationTest.php:154
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingCompany…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: tasks.customer_id (Connection: sqlite, SQL: insert into "tasks" ("company_id", "customer_id", "task_number", "assigned_to", "task_status", "task_name", "task_price", "due_at", "description") values (17, ?, TSK-45529, ?, cancelled, autem perferendis pariatur, 80.4045, 2025-05-12 00:00:00, ?))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+18 vendor frames [22m
+  19  Modules/Core/Tests/Unit/Services/NumberingCompanyIsolationTest.php:227
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingService…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: numbering.last_id (Connection: sqlite, SQL: insert into "numbering" ("type", "name", "next_id", "left_pad", "format", "prefix", "company_id", "last_id") values (Project, Test Numbering, 1, 4, PRJ-{{number}}, PRJ, 1, ?))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+16 vendor frames [22m
+  17  Modules/Core/Services/NumberingService.php:31
+      [2m+3 vendor frames [22m
+  21  Modules/Core/Services/NumberingService.php:26
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingService…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: numbering.last_id (Connection: sqlite, SQL: insert into "numbering" ("type", "name", "next_id", "left_pad", "company_id", "last_id", "prefix") values (Project, Test Numbering, 1, 4, 1, ?, PRJ))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+16 vendor frames [22m
+  17  Modules/Core/Services/NumberingService.php:31
+      [2m+3 vendor frames [22m
+  21  Modules/Core/Services/NumberingService.php:26
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingService…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: numbering.last_id (Connection: sqlite, SQL: insert into "numbering" ("type", "name", "left_pad", "company_id", "next_id", "last_id", "prefix") values (Project, Project Numbering, 4, 1, 100, ?, PRJ))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+16 vendor frames [22m
+  17  Modules/Core/Services/NumberingService.php:31
+      [2m+3 vendor frames [22m
+  21  Modules/Core/Services/NumberingService.php:26
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\Services\NumberingService…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: numbering.company_id (Connection: sqlite, SQL: insert into "numbering" ("company_id", "type", "name", "next_id", "left_pad", "format", "prefix", "last_id") values (?, Project, Test Numbering, 1, 3, {{prefix}}-{{number}}, PAY, 0))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+18 vendor frames [22m
+  19  Modules/Core/Tests/Unit/Services/NumberingServiceTest.php:127
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it filters…   ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+35 vendor frames [22m
+  60  Modules/Core/Tests/Unit/SettingsTest.php:56
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it handles…   ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:99
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it returns…   ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:117
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it switches…  ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:155
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it loads de…  ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:176
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it validate…  ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:202
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it validate…  ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:229
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it has all…   ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:252
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Core\Tests\Unit\SettingsTest > it persists…  ViewException   
+  Unable to locate a class or view for component [filament-panels::form.actions]. (View: /data/Projects/ivplv2/Modules/Core/resources/views/filament/admin/pages/settings.blade.php)
+
+  at vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php:315
+    311▕         if (Str::startsWith($component, 'mail::')) {
+    312▕             return $component;
+    313▕         }
+    314▕ 
+  ➜ 315▕         throw new InvalidArgumentException(
+    316▕             "Unable to locate a class or view for component [{$component}]."
+    317▕         );
+    318▕     }
+    319▕
+
+      [2m+23 vendor frames [22m
+  24  storage/framework/views/de79b4abf489da38abd7c88b7c8b2888.php:11
+      [2m+33 vendor frames [22m
+  58  Modules/Core/Tests/Unit/SettingsTest.php:274
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Modules\Invoices\Tests\Unit\Actions\SendInvoiceTo…  QueryException   
+  SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: relations.company_id (Connection: sqlite, SQL: insert into "relations" ("company_id", "relation_type", "relation_status", "relation_number", "company_name", "trading_name", "unique_name", "id_number", "coc_number", "vat_number", "currency_code", "language", "registered_at") values (?, prospect, inactive, xf804416, Bogan-Thiel, Bogan-Thiel PLC, bogan-thiel-plc, ?, ?, LU093840255, ?, ?, 2024-10-29))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:826
+    822▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    823▕                 );
+    824▕             }
+    825▕ 
+  ➜ 826▕             throw new QueryException(
+    827▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    828▕             );
+    829▕         }
+    830▕     }
+
+      [2m+27 vendor frames [22m
+  28  Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php:265
+  29  Modules/Invoices/Tests/Unit/Actions/SendInvoiceToPeppolActionTest.php:60
+
+
+  Tests:    16 failed, 8 warnings, 3 passed (7 assertions)
+  Duration: 1.06s
+

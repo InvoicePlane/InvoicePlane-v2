@@ -68,7 +68,7 @@ class Contact extends Model
 
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return mb_trim($this->first_name . ' ' . $this->last_name);
     }
 
     public function getPrimaryEmailAttribute(): ?string
