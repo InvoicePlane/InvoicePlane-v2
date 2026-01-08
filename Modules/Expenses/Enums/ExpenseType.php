@@ -3,9 +3,13 @@
 namespace Modules\Expenses\Enums;
 
 use Modules\Core\Contracts\LabeledEnum;
+use Modules\Core\Traits\HasOptions;
 
 enum ExpenseType: string implements LabeledEnum
 {
+    use HasOptions;
+
+    case FIXED       = 'fixed';
     case ONE_TIME    = 'one_time';
     case RECURRING   = 'recurring';
     case TRAVEL      = 'travel';
@@ -25,6 +29,7 @@ enum ExpenseType: string implements LabeledEnum
             self::TRAVEL      => 'Travel',
             self::UTILITY     => 'Utility',
             self::MAINTENANCE => 'Maintenance',
+            self::FIXED       => 'Fixed',
         };
     }
 
@@ -36,6 +41,7 @@ enum ExpenseType: string implements LabeledEnum
             self::TRAVEL      => 'yellow',
             self::UTILITY     => 'purple',
             self::MAINTENANCE => 'red',
+            self::FIXED       => 'sky',
         };
     }
 }

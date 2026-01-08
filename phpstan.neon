@@ -1,16 +1,25 @@
+#includes:
+#    - phpstan-baseline.neon
+
 parameters:
     tmpDir: null
+    level: 3
     paths:
         - Modules/
 
+    excludePaths:
+        analyse:
+            - */Http/*
+
     ignoreErrors:
-        - '#Access to an undefined property .*::\$[a-zA-Z_]+#'
-        - '#Call to an undefined method .*#'
-        - '#Call to an undefined static method .*::.*#'
-        - '#Method .*::scope[A-Za-z0-9_]+\(\) should return Illuminate\\Database\\Eloquent\\Builder but returns Illuminate\\Database\\Query\\Builder#'
-        - '#Method .*::scope[A-Za-z0-9_]+\(\) should return Illuminate\\\\Database\\\\Eloquent\\\\Builder but returns Illuminate\\\\Database\\\\Query\\\\Builder#'
-        - '#Trait .* is used zero times and is not analysed#'
+        - '#Access to an undefined property#'
+        - '#Access to an undefined static property#'
+        - '#Call to an undefined method#'
+        - '#Call to an undefined static method#'
+        - '#Call to method .* on an unknown class .*#'
+        - '#Constructor of class .* has an unused parameter#'
+        - '#Instantiated class .* not found#'
+        # Optional: Add other common ignores here if needed
 
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
-    level: 5

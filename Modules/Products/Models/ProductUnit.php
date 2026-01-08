@@ -2,52 +2,64 @@
 
 namespace Modules\Products\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Modules\Core\Models\Company;
+use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\ExpenseItem;
+use Modules\Invoices\Models\InvoiceItem;
 use Modules\Products\Database\Factories\ProductUnitFactory;
+use Modules\Quotes\Models\QuoteItem;
 
 /**
- * @property int         $id
- * @property int         $company_id
- * @property string      $unit_name
- * @property string      $unit_name_plrl
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Company     $company
- * @property Product[]   $products
+ * @property int                      $id
+ * @property int                      $company_id
+ * @property string|null              $unit_name
+ * @property string|null              $unit_name_plrl
+ * @property Company                  $company
+ * @property Collection|ExpenseItem[] $expense_items
+ * @property Collection|InvoiceItem[] $invoice_items
+ * @property Collection|Product[]     $products
+ * @property Collection|QuoteItem[]   $quote_items
  */
 class ProductUnit extends Model
 {
-    //use BelongsToCompany;
+    use BelongsToCompany;
     use HasFactory;
 
     public $timestamps = false;
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
-    public function company(): BelongsTo
+    public function expense_items(): HasMany
     {
-        return $this->belongsTo(Company::class);
+        return $this->hasMany(ExpenseItem::class, 'unit_id');
+    }
+
+    public function invoice_items(): HasMany
+    {
+        return $this->hasMany(InvoiceItem::class);
     }
 
     public function products(): HasMany
     {
-        return $this->hasMany(Item::class, 'unit_id');
+        return $this->hasMany(Product::class, 'unit_id');
     }
 
-    //
-    // Factory
-    //
-
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProductUnitFactory::new();

@@ -2,7 +2,9 @@
 
 namespace Modules\Clients\Enums;
 
-enum RelationType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum RelationType: string implements LabeledEnum
 {
     case CUSTOMER = 'customer';
     case LEAD     = 'lead';
@@ -18,9 +20,9 @@ enum RelationType: string implements \Modules\Core\Contracts\LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::CUSTOMER => 'Customer',
-            self::VENDOR   => 'Vendor',
-            self::PROSPECT => 'Prospect',
+            self::CUSTOMER => trans('ip.customer'),
+            self::VENDOR   => trans('ip.vendor'),
+            self::PROSPECT => trans('ip.prospect'),
             self::PARTNER  => 'Partner',
             self::LEAD     => 'Lead',
         };

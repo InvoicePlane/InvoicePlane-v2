@@ -2,16 +2,18 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Models\EmailTemplate;
 
-class EmailTemplateFactory extends Factory
+class EmailTemplateFactory extends AbstractFactory
 {
     protected $model = EmailTemplate::class;
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+
         return [
             'title'      => $this->faker->sentence(),
             'type'       => $this->faker->randomElement(EmailTemplateType::cases())->value,

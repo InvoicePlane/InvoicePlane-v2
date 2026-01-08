@@ -8,13 +8,13 @@ use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int         $id
+ * @property int         $company_id
  * @property int         $custom_field_id
  * @property string      $fieldable_type
  * @property int         $fieldable_id
  * @property string      $custom_field_value
- * @property mixed       $created_at
- * @property mixed       $updated_at
- * @property CustomField $customField
+ * @property Company     $company
+ * @property CustomField $custom_field
  */
 class CustomFieldValue extends Model
 {

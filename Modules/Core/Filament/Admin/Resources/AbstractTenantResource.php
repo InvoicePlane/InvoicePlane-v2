@@ -17,7 +17,7 @@ abstract class AbstractTenantResource extends Resource
         $set('subtotal', number_format($subtotal, 2, '.', ''));
     }
 
-    public static function updateGrandTotal(callable $set, callable $get, string $itemsField = 'items', string $subtotalField = 'subtotal', string $grandTotalField = 'item_subtotal'): void
+    public static function updateGrandTotal(callable $set, callable $get, string $itemsField = 'products', string $subtotalField = 'subtotal', string $grandTotalField = 'item_subtotal'): void
     {
         $items = $get($itemsField) ?? [];
 

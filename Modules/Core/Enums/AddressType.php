@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum AddressType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum AddressType: string implements LabeledEnum
 {
     case BILLING  = 'billing';
     case SHIPPING = 'shipping';

@@ -2,21 +2,15 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Products\Models\ProductCategory;
 
-class ProductCategoryFactory extends Factory
+class ProductCategoryFactory extends AbstractFactory
 {
     protected $model = ProductCategory::class;
 
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-            ?: Company::factory()->create();
-
         static $categories = [
             'Accounting Services',
             'Cloud Hosting',
@@ -36,8 +30,7 @@ class ProductCategoryFactory extends Factory
         ];
 
         return [
-            'company_id'    => $company->id,
-            'category_name' => $this->faker->unique()->randomElement($categories),
+            'category_name' => $this->faker->randomElement($categories),
             'description'   => null,
         ];
     }

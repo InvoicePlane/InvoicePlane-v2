@@ -2,18 +2,19 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Products\Models\ProductUnit;
 
-class Product_UnitsSeeder extends Seeder
+class ProductUnitsSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'ProdUnits';
+
+    protected int    $defaultCount = 2;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            ProductUnit::factory()->count(random_int(2, 5))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        ProductUnit::factory()
+            ->state(['company_id' => $this->companyId])
+            ->create();
     }
 }
