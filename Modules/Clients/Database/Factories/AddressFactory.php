@@ -27,7 +27,7 @@ class AddressFactory extends AbstractFactory
         return [
             'address_type'      => fake()->randomElement(AddressType::cases())->value,
             'address_1'         => fake()->streetAddress,
-            'address_2'         => fake()->optional(0.7)->secondaryAddress,
+            'address_2'         => fake()->optional(0.7)->numerify('Apt ##'),
             'number'            => fake()->buildingNumber,
             'postal_code'       => fake()->postcode,
             'city'              => fake()->city,
