@@ -2,139 +2,290 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\CreateCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\EditCompany;
-use Modules\Core\Filament\Admin\Resources\CompanyResource\Pages\ListCompanies;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\CreateCompany;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\EditCompany;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
 use Modules\Core\Models\Company;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(CompanyResource::class)]
-
-class CompaniesTest extends AbstractTestCase
+#[CoversClass(ListCompanies::class)]
+class CompaniesTest extends AbstractAdminPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\CompanyResource.
-     *
-     * @payload
-     * {
-     * "search_code": "Example",
-     * "name": "Example",
-     * "slug": "Example",
-     * "vat_number": "Example",
-     * "id_number": "Example",
-     * "coc_number": "Example"
+     * @payload ['name' => 'Acme LLC']
+     */
+    #[Group('crud')]
+    public function it_lists_companies(): void
+    {
+        /* arrange */
+        $company = Company::factory()->create(['name' => 'Acme LLC']);
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class);
+
+        /* assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('companies', $company->toArray());
+    }
+    # endregion
+
+    # region modals
+    #[Test]
+    #[Group('modals')]
+    public function it_creates_a_company_through_a_modal(): void
+    {
+        /* arrange */
+        $payload = [
+            'search_code' => 'IVPLV2',
+            'name'        => 'InvoicePlane LLC',
+            'slug'        => 'invoiceplane_llc',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertSuccessful();
+        $component->assertHasNoFormErrors();
+        $this->assertDatabaseHas('companies', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "name": "InvoicePlane Corp"
+     * }
+     */
+    public function it_fails_to_create_company_through_a_modal_without_required_search_code(): void
+    {
+        /* arrange */
+        $payload = ['name' => 'InvoicePlane Corp'];
+
+        /* act & assert */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['search_code' => 'required']);
+
+        $this->assertDatabaseMissing('companies', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "search_code": "IVPLV2",
+     *   "slug": "slug_should_be_generated"
+     * }
+     */
+    public function it_fails_to_create_company_through_a_modal_without_required_name(): void
+    {
+        /* arrange */
+        $payload = [
+            'search_code' => 'IVPLV2',
+            'slug'        => 'slug_should_be_generated',
+        ];
+
+        /* act & assert */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['name' => 'required']);
+
+        $this->assertDatabaseMissing('companies', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "name": "Updated Corp"
+     * }
+     */
+    public function it_updates_a_company_through_a_modal(): void
+    {
+        /* arrange */
+        $company = Company::factory()->create([
+            'search_code' => 'OLDCODE',
+            'name'        => 'Old Name',
+        ]);
+
+        $updatedData = [
+            'search_code' => 'NEWCODE',
+            'name'        => 'Updated Corp',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction(TestAction::make('edit')->table($company), $updatedData)
+            ->fillForm($updatedData)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('companies', array_merge(
+            ['id' => $company->id],
+            $updatedData
+        ));
+    }
+    # endregion
+
+    # region crud
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "search_code": "IVPLV2",
+     *   "name": "InvoicePlane Corp"
      * }
      */
     public function it_creates_a_company(): void
     {
-        $this->markTestIncomplete();
-
-        //$this->actingAs(User::factory()->create());
-
+        /* arrange */
         $payload = [
-            'search_code' => 'Example',
-            'name'        => 'Example',
-            'slug'        => 'Example',
-            'vat_number'  => 'Example',
-            'id_number'   => 'Example',
-            'coc_number'  => 'Example',
+            'search_code' => 'IVPLV2',
+            'name'        => 'InvoicePlane LLC',
+            'slug'        => 'invoiceplane_llc',
         ];
 
-        Livewire::test(CreateCompany::class)
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateCompany::class)
             ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+            ->call('create');
+
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('companies', $payload);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * \Modules\Core\Filament\Admin\Resources\CompanyResource.
-     *
-     * @payload
-     * {
-     * "search_code": "Example",
-     * "name": "Example",
-     * "slug": "Example",
-     * "vat_number": "Example",
-     * "id_number": "Example",
-     * "coc_number": "Example"
-     * }
-     */
+    public function it_fails_to_create_company_when_search_code_missing(): void
+    {
+        /* arrange */
+        $payload = ['name' => 'InvoicePlane Corp'];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateCompany::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
+        /* assert */
+        $component
+            ->assertHasFormErrors(['search_code']);
+
+        $this->assertDatabaseMissing('companies', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_company_without_required_name(): void
+    {
+        /* arrange */
+        $payload = [
+            'search_code' => 'IVPLV2',
+            'slug'        => 'slug_should_be_generated',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateCompany::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['name']);
+
+        $this->assertDatabaseMissing('companies', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_updates_a_company(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        /* arrange */
+        $company = Company::factory()->create(['name' => 'Old Name']);
 
-        //$this->actingAs(User::factory()->create());
+        $payload = ['name' => 'InvoicePlane Corp'];
 
-        $record = Company::factory()->create();
-
-        $payload = [
-            'search_code' => 'Example',
-            'name'        => 'Example',
-            'slug'        => 'Example',
-            'vat_number'  => 'Example',
-            'id_number'   => 'Example',
-            'coc_number'  => 'Example',
-        ];
-
-        Livewire::test(EditCompany::class, ['record' => $record->getKey()])
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditCompany::class, ['record' => $company->id])
             ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+            ->call('save');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('companies', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\CompanyResource.
-     *
-     * @payload
-     * {
-     * "search_code": "Example",
-     * "name": "Example",
-     * "slug": "Example",
-     * "vat_number": "Example",
-     * "id_number": "Example",
-     * "coc_number": "Example"
+     * @payload {
+     *   "id": "<id>"
      * }
      */
     public function it_deletes_a_company(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        $this->markTestIncomplete('do not delete companies yet');
 
-        //$this->actingAs(User::factory()->create());
+        /* arrange */
+        $company = Company::factory()->create([
+            'search_code' => 'TODELETE',
+            'name'        => 'Company to Delete',
+        ]);
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin)
+            ->test(ListCompanies::class)
+            ->mountAction(TestAction::make('delete')->table($company))
+            ->callMountedAction();
 
-        $record = Company::factory()->create();
-
-        Livewire::test(ListCompanies::class)
-            ->callTableAction('delete', $record);
-
-        $this->assertDatabaseMissing('companies', ['id' => $record->id]);
+        /* assert */
+        $this->assertDatabaseMissing('companies', ['id' => $company->id]);
     }
+    # endregion
 
-    // endregion
+    #region multi-tenancy
+    # endregion
 
-    // region usp
-
-    // endregion
+    #region spicy
+    # endregion
 }

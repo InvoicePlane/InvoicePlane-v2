@@ -11,8 +11,9 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id');
+            $table->string('project_number')->nullable();
             $table->string('project_status');
-            $table->string('project_name');
+            $table->string('project_name')->nullable()->comment('nullable for legacy reason but does not make sense');
             $table->date('start_at')->nullable();
             $table->date('end_at')->nullable();
 

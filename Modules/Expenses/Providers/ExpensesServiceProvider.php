@@ -6,8 +6,12 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
+use Modules\Expenses\Models\ExpenseItem;
 use Modules\Expenses\Observers\ExpenseCategoryObserver;
+use Modules\Expenses\Observers\ExpenseItemObserver;
 use Modules\Expenses\Observers\ExpenseObserver;
+use Modules\Quotes\Providers\EventServiceProvider;
+use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -25,11 +29,11 @@ class ExpensesServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
-        $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
 
         Expense::observe(ExpenseObserver::class);
+        ExpenseItem::observe(ExpenseItemObserver::class);
         ExpenseCategory::observe(ExpenseCategoryObserver::class);
     }
 

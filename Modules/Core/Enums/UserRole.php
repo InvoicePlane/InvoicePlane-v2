@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum UserRole: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum UserRole: string implements LabeledEnum
 {
     case SUPER_ADMIN    = 'super_admin';
     case ADMIN          = 'admin';
@@ -13,6 +15,23 @@ enum UserRole: string implements \Modules\Core\Contracts\LabeledEnum
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
+    }
+
+    public static function elevated(): array
+    {
+        return [
+            self::SUPER_ADMIN->value,
+            self::ADMIN->value,
+            self::ASSIST->value,
+        ];
+    }
+
+    public static function nonAdmin(): array
+    {
+        return [
+            self::CUSTOMER_ADMIN->value,
+            self::CUSTOMER->value,
+        ];
     }
 
     public function label(): string

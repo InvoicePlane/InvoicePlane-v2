@@ -2,11 +2,11 @@
 
 namespace Modules\Core\Helpers;
 
-use Modules\Core\Contracts\LabeledEnum;
+use BackedEnum;
 
 class EnumHelper
 {
-    public static function safeEnum(string $enumClass, mixed $value): ?LabeledEnum
+    public static function safeEnum(string $enumClass, mixed $value): ?BackedEnum
     {
         if ( ! enum_exists($enumClass)) {
             return null;
@@ -20,6 +20,10 @@ class EnumHelper
             return null;
         }
 
-        return $enumClass::tryFrom($value);
+        if (is_subclass_of($enumClass, BackedEnum::class)) {
+            return $enumClass::tryFrom($value);
+        }
+
+        return null;
     }
 }

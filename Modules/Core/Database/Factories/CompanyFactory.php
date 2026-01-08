@@ -10,7 +10,6 @@ use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company as CompanyModel;
 
 class CompanyFactory extends Factory
@@ -28,31 +27,30 @@ class CompanyFactory extends Factory
 
         $companyName = $this->faker->unique()->company;
 
-        return [
-            'search_code' => mb_strtoupper(Str::random(5)),
-            'name'        => $companyName,
-            'slug'        => Str::slug($companyName),
-            'vat_number'  => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
-            'id_number'   => $this->faker->optional()->numerify('#########'),
-            'coc_number'  => $this->faker->optional()->numerify('#########'),
+        $logos = [
+            'logos/company1.png',
+            'logos/company2.png',
+            'logos/company3.png',
+            null, // 25% chance of no logo
         ];
-    }
 
-    public function admin(): self
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_type' => UserRole::ADMIN->value,
-            ];
-        });
-    }
+        $templates = [
+            'classic',
+            'default',
+            'minimal',
+            'modern',
+        ];
 
-    public function guestReadOnly(): self
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_type' => UserRole::CUSTOMER->value,
-            ];
-        });
+        return [
+            'search_code'      => mb_strtolower($this->faker->bothify('?????')),
+            'name'             => $companyName,
+            'slug'             => Str::slug($companyName),
+            'vat_number'       => $this->faker->optional(0.8)->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
+            'id_number'        => $this->faker->optional(0.7)->numerify('#########'),
+            'coc_number'       => $this->faker->optional(0.9)->numerify('#########'),
+            'logo'             => $this->faker->optional(0.75)->randomElement($logos),
+            'quote_template'   => $this->faker->randomElement($templates),
+            'invoice_template' => $this->faker->randomElement($templates),
+        ];
     }
 }

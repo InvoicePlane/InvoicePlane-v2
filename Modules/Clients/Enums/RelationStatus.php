@@ -17,8 +17,8 @@ enum RelationStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::ACTIVE   => 'Customer',
-            self::INACTIVE => 'Lead',
+            self::ACTIVE   => trans('ip.active'),
+            self::INACTIVE => trans('ip.inactive'),
         };
     }
 
@@ -26,7 +26,7 @@ enum RelationStatus: string implements LabeledEnum
     {
         return match ($this) {
             self::ACTIVE   => 'primary',
-            self::INACTIVE => 'green',
+            self::INACTIVE => 'warning',
         };
     }
 }

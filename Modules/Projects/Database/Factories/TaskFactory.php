@@ -2,49 +2,69 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
-use Modules\Core\Models\User;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Projects\Enums\TaskStatus;
-use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 
-class TaskFactory extends Factory
+class TaskFactory extends AbstractFactory
 {
     protected $model = Task::class;
 
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Task $task): void {
+            if ($task->company_id === null || $task->customer_id !== null) {
+                return;
+            }
+
+            $customerId = \Modules\Clients\Models\Relation::query()
+                ->where('company_id', $task->company_id)
+                ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                ->inRandomOrder()
+                ->value('id');
+
+            if ($customerId === null) {
+                $company = \Modules\Core\Models\Company::find($task->company_id);
+                if ($company === null) {
+                    return;
+                }
+
+                $customer = \Modules\Clients\Models\Relation::factory()
+                    ->for($company)
+                    ->customer()
+                    ->create();
+
+                $customerId = $customer->id;
+            }
+
+            $task->customer_id = $customerId;
+            $task->save();
+        });
+    }
+
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-    ?: Company::factory()->create();
-        $customer = Relation::where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first() ?? Relation::factory()->create(['relation_type' => RelationType::CUSTOMER->value]);
+        $companyId = $this->resolveCompanyId();
 
-        $project = Project::where('customer_id', $customer->id)
-            ->inRandomOrder()
-            ->first() ?? Project::factory()->create();
-
-        $user    = User::query()->inRandomOrder()->first();
-        $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-
-        $price = $this->faker->randomFloat(2, 50, 500);
+        // Get a customer for this company if one already exists
+        $customerId = null;
+        if ($companyId) {
+            $customerId = \Modules\Clients\Models\Relation::query()
+                ->where('company_id', $companyId)
+                ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
+                ->inRandomOrder()
+                ->value('id');
+        }
 
         return [
-            'company_id'  => $company->id,
-            'customer_id' => $customer->id,
-            'project_id'  => $project->id,
-            'tax_rate_id' => $taxRate->id,
-            'assigned_to' => $this->faker->boolean(50) ? optional($user)->id : null,
+            'company_id'  => $companyId,
+            'customer_id' => $customerId,
+            'task_number' => $this->faker->unique()->numerify('TSK-#####'),
+            'assigned_to' => null,
             'task_status' => $this->faker->randomElement(TaskStatus::cases())->value,
-            'name'        => $this->faker->words(3, true),
+            'task_name'   => $this->faker->words(3, true),
+            'task_price'  => $this->faker->randomFloat(4, 0, 100),
             'due_at'      => $this->faker->dateTimeBetween('-3 year', '+2 year')->format('Y-m-d'),
-            'price'       => $price,
             'description' => null,
         ];
     }

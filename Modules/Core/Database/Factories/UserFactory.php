@@ -2,16 +2,15 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Modules\Core\Models\User;
+use Modules\Core\Traits\HasCompanyFactoryState;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Core\Models\User>
- */
-class UserFactory extends Factory
+class UserFactory extends AbstractFactory
 {
+    use HasCompanyFactoryState;
+
     protected $model = User::class;
 
     protected static ?string $password;

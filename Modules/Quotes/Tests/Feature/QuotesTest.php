@@ -2,294 +2,958 @@
 
 namespace Modules\Quotes\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\CreateQuote;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\EditQuote;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource\Pages\ListQuotes;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Numbering;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(QuoteResource::class)]
-class QuotesTest extends AbstractTestCase
+#[CoversClass(ListQuotes::class)]
+class QuotesTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
+    # region smoke
     #[Test]
     #[Group('smoke')]
+    /**
+     * @payload ['quote_number' => 'Q-0001']
+     */
     public function it_lists_quotes(): void
     {
-        $this->markTestIncomplete();
+        /* arrange */
+        $company  = $this->company;
+        $user     = $this->user;
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number' => 'Q-0001',
+                'prospect_id'  => $prospect->id,
+                'user_id'      => $user->id,
+                'quoted_at'    => now()->format('Y-m-d'),
+            ]);
 
-        Quote::factory()->create([
-            'company_id'   => $company->id,
-            'quote_number' => 'QUO-001',
+        /* act */
+        $component = Livewire::actingAs($user)
+            ->test(ListQuotes::class);
+
+        /* assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('quotes', [
+            'quote_number' => 'Q-0001',
+        ]);
+    }
+    # endregion
+
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_a_quote_through_a_modal(): void
+    {
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
         ]);
 
-        Livewire::test(ListQuotes::class)
-            ->assertSee('QUO-001');
-    }
-    // endregion
+        $payload = [
+            'quote_number'           => 'Q-0001',
+            'prospect_id'            => $prospect->id,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
+            'quote_tax_total'        => 60,
+            'quote_item_subtotal'    => 300,
+            'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
+                ],
+            ],
+        ];
 
-    // region crud
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        $component->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+            'quoteItems', 'quote_total', 'quote_item_subtotal',
+            'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
+        ]));
+    }
+
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
+     * @payload missing: prospect_id
+     * {
+     *   "quote_status": "draft",
+     *   "quoted_at": "2025-05-10",
+     *   "quote_expires_at": "2025-06-09"
+     * }
+     */
+    public function it_fails_to_create_a_quote_through_a_modal_without_required_prospect(): void
+    {
+        /* arrange */
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
+
+        $payload = [
+            'numbering_id'        => $documentGroup->id,
+            'quote_status'        => QuoteStatus::DRAFT->value,
+            'quoted_at'           => now()->format('Y-m-d'),
+            'quote_expires_at'    => now()->addDays(30)->format('Y-m-d'),
+            'quote_item_subtotal' => 0,
+            'quote_tax_total'     => 0,
+            'quote_total'         => 0,
+            'quoteItems'          => [
+                [
+                    'product_id' => $product->id,
+                    'quantity'   => 1,
+                    'price'      => 0,
+                    'subtotal'   => 0,
+                    'total'      => 0,
+                ],
+            ],
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['prospect_id' => 'required']);
+        $this->assertDatabaseMissing('quotes', Arr::except($payload, ['quoteItems']));
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_number
+     * {
+     *   "prospect_id": 1,
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_number(): void
+    {
+        /* arrange */
+        $prospect = Relation::factory()
+            ->for($this->company)
+            ->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'  => $prospect->id,
+            'quote_status' => QuoteStatus::DRAFT->value,
+            'quote_total'  => 120.00,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_number']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_status(): void
+    {
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-004',
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_status']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_discount_percent
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_discount_percent(): void
+    {
+        $this->markTestIncomplete('quote_discount_percent missing, even though it is set');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-005',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
+            'quote_discount_percent' => null, // or 0 or any default
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_discount_percent']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_item_subtotal
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_item_subtotal(): void
+    {
+        $this->markTestIncomplete('revisit quote_item_subtotal');
+
+        /* arrange */
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
+
+        $payload = [
+            'quote_number'           => 'Q-0001',
+            'prospect_id'            => $prospect->id,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
+            'quote_tax_total'        => 60,
+            'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
+                ],
+            ],
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_item_subtotal']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_tax_total
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_tax_total(): void
+    {
+        $this->markTestIncomplete('revisit quote_tax_total');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-007',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_total'            => 120,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_tax_total']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_total
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40
+     * }
+     */
+    public function it_fails_to_create_quote_through_a_modal_without_required_quote_total(): void
+    {
+        $this->markTestIncomplete('revisit quote_tax_total');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-008',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => null,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_total']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_status
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_updates_a_quote_through_a_modal(): void
+    {
+        /* arrange */
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number'           => 'Q-0001',
+                'prospect_id'            => $prospect->id,
+                'numbering_id'           => $documentGroup->id,
+                'user_id'                => $this->user->id,
+                'quote_status'           => QuoteStatus::DRAFT->value,
+                'quoted_at'              => now()->format('Y-m-d'),
+                'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+                'quote_discount_amount'  => 0.0000,
+                'quote_discount_percent' => 0.0000,
+                'quote_tax_total'        => 60,
+                'quote_item_subtotal'    => 300,
+                'quote_total'            => 360,
+            ]);
+
+        $payload = ['quote_status' => QuoteStatus::SENT];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class, ['record' => $quote->id])
+            ->mountAction(TestAction::make('edit')->table($quote), $payload)
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', [
+            'id'           => $quote->id,
+            'quote_status' => QuoteStatus::SENT->value,
+        ]);
+    }
+    # endregion
+
+    # region crud
+    #[Test]
+    #[Group('crud')]
+    /**
      * @payload
      * {
-     *   "company_id": 1,
-     *   "prospect_id": 2,
-     *   "document_group_id": 3,
-     *   "user_id": 4,
-     *   "quote_number": "QUO-001",
-     *   "quote_status": "draft",
-     *   "quoted_at": "2025-04-30",
-     *   "quote_expires_at": "2025-05-30",
-     *   "quote_discount_amount": "10.00",
-     *   "quote_discount_percent": "5.00",
-     *   "quote_item_tax_total": "2.50",
-     *   "quote_item_subtotal": "50.00",
-     *   "quote_tax_total": "2.50",
-     *   "quote_total": "52.50",
-     *   "quote_password": "secret123",
-     *   "quote_url_key": "abc123"
+     *   "quote_number": "Q-2025-001"
      * }
      */
     public function it_creates_a_quote(): void
     {
-        $this->markTestIncomplete();
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
-            'company_id'             => $company->id,
-            'prospect_id'            => 2,
-            'document_group_id'      => 3,
-            'user_id'                => 4,
-            'quote_number'           => 'QUO-001',
-            'quote_status'           => 'draft',
-            'quoted_at'              => '2025-04-30',
-            'quote_expires_at'       => '2025-05-30',
-            'quote_discount_amount'  => 10.00,
-            'quote_discount_percent' => 5.00,
-            'quote_item_tax_total'   => 2.50,
-            'quote_item_subtotal'    => 50.00,
-            'quote_tax_total'        => 2.50,
-            'quote_total'            => 52.50,
-            'quote_password'         => 'secret123',
-            'quote_url_key'          => 'abc123',
+            'quote_number'           => 'Q-0001',
+            'prospect_id'            => $prospect->id,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
+            'quote_tax_total'        => 60,
+            'quote_item_subtotal'    => 300,
+            'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
+                ],
+            ],
         ];
 
-        Livewire::test(CreateQuote::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
             ->fillForm($payload)
             ->call('create')
             ->assertHasNoFormErrors();
+
+        /* assert */
+        $component
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+            'quoteItems', 'quote_total', 'quote_item_subtotal',
+            'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
+        ]));
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
-     * @payload
+     * @payload missing: prospect_id
      * {
-     *   "company_id": 1,
-     *   "prospect_id": 2,
-     *   "document_group_id": 3,
-     *   "user_id": 4,
-     *   "quote_number": "QUO-001",
-     *   "quoted_at": "2025-04-30",
-     *   "quote_expires_at": "2025-05-30",
-     *   "quote_discount_amount": "10.00",
-     *   "quote_discount_percent": "5.00",
-     *   "quote_item_tax_total": "2.50",
-     *   "quote_item_subtotal": "50.00",
-     *   "quote_tax_total": "2.50",
-     *   "quote_total": "52.50",
-     *   "quote_password": "secret123",
-     *   "quote_url_key": "abc123"
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
      * }
      */
-    public function it_fails_to_create_quote_without_status(): void
+    public function it_fails_to_create_quote_without_required_prospect(): void
     {
-        $this->markTestIncomplete();
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
+        /* arrange */
         $payload = [
-            'company_id'   => $company->id,
-            'quote_number' => 'QUO-001',
+            'quote_number' => 'Q-9999',
+            'quote_date'   => '2024-10-01',
+            'customer_id'  => null,
         ];
 
-        Livewire::test(CreateQuote::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
             ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['quote_status' => 'required']);
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['prospect_id']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
+     * @payload missing: quote_number
      * {
-     * "company_id": "Value",
-     * "prospect_id": "Value",
-     * "document_group_id": "Value",
-     * "user_id": "Value",
-     * "quote_number": "Example",
-     * "quote_status": "Value",
-     * "quoted_at": "2025-04-30",
-     * "quote_expires_at": "2025-04-30",
-     * "quote_discount_amount": "9.99",
-     * "quote_discount_percent": "9.99",
-     * "quote_item_tax_total": "9.99",
-     * "quote_item_subtotal": "9.99",
-     * "quote_tax_total": "9.99",
-     * "quote_total": "9.99",
-     * "quote_password": "Example",
-     * "quote_url_key": "Example"
+     *   "prospect_id": 1,
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
      * }
      */
-    public function it_updates_a_quote(): void
+    public function it_fails_to_create_quote_without_required_quote_number(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = Quote::factory()->create();
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
-            'company_id'             => 'Value',
-            'prospect_id'            => 'Value',
-            'document_group_id'      => 'Value',
-            'user_id'                => 'Value',
-            'quote_number'           => 'Example',
-            'quote_status'           => 'Value',
-            'quoted_at'              => '2025-04-30',
-            'quote_expires_at'       => '2025-04-30',
-            'quote_discount_amount'  => 9.99,
-            'quote_discount_percent' => 9.99,
-            'quote_item_tax_total'   => 9.99,
-            'quote_item_subtotal'    => 9.99,
-            'quote_tax_total'        => 9.99,
-            'quote_total'            => 9.99,
-            'quote_password'         => 'Example',
-            'quote_url_key'          => 'Example',
+            'prospect_id'            => $prospect->id,
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
         ];
 
-        Livewire::test(EditQuote::class, ['record' => $record->getKey()])
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
             ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_number']);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload
+     * @payload missing: quote_status
      * {
-     * "company_id": "Value",
-     * "prospect_id": "Value",
-     * "document_group_id": "Value",
-     * "user_id": "Value",
-     * "quote_number": "Example",
-     * "quote_status": "Value",
-     * "quoted_at": "2025-04-30",
-     * "quote_expires_at": "2025-04-30",
-     * "quote_discount_amount": "9.99",
-     * "quote_discount_percent": "9.99",
-     * "quote_item_tax_total": "9.99",
-     * "quote_item_subtotal": "9.99",
-     * "quote_tax_total": "9.99",
-     * "quote_total": "9.99",
-     * "quote_password": "Example",
-     * "quote_url_key": "Example"
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
      * }
      */
+    public function it_fails_to_create_quote_without_required_quote_status(): void
+    {
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-004',
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_status']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_discount_percent
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_without_required_quote_discount_percent(): void
+    {
+        $this->markTestIncomplete('quote_discount_percent missing, even though it is set');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-005',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
+            'quote_discount_percent' => null, // or 0 or any default
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_discount_percent']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_item_subtotal
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_tax_total": 40,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_without_required_quote_item_subtotal(): void
+    {
+        $this->markTestIncomplete('revisit quote_item_subtotal');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-006',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_tax_total'        => 20,
+            'quote_total'            => 120,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_item_subtotal']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_tax_total
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_total": 240
+     * }
+     */
+    public function it_fails_to_create_quote_without_required_quote_tax_total(): void
+    {
+        $this->markTestIncomplete('revisit quote_tax_total');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-007',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_total'            => 120,
+            'quote_tax_total'        => null,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_tax_total']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: quote_total
+     * {
+     *   "prospect_id": 1,
+     *   "quote_number": "Q-2025-01",
+     *   "quote_status": "draft",
+     *   "quote_discount_percent": 5,
+     *   "quote_item_subtotal": 200,
+     *   "quote_tax_total": 40
+     * }
+     */
+    public function it_fails_to_create_quote_without_required_quote_total(): void
+    {
+        $this->markTestIncomplete('revisit quote_total');
+
+        /* arrange */
+        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+
+        $payload = [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-008',
+            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_discount_percent' => 5,
+            'quote_item_subtotal'    => 100,
+            'quote_tax_total'        => 20,
+            'quote_total'            => null,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['quote_total']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_quote(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        /* arrange */
+        $company  = $this->company;
+        $user     = $this->user;
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
-        //$this->actingAs(User::factory()->create());
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number' => 'Q-0001',
+                'prospect_id'  => $prospect->id,
+                'user_id'      => $user->id,
+                'quoted_at'    => now()->format('Y-m-d'),
+            ]);
 
-        $record = Quote::factory()->create();
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('delete')->table($quote))
+            ->callMountedAction();
 
-        Livewire::test(ListQuotes::class)
-            ->callTableAction('delete', $record);
-
-        $this->assertDatabaseMissing('quotes', ['id' => $record->id]);
+        /* assert */
+        $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
-    // endregion
 
-    // region usp
-    /**
-     * @payload ["quoteId" => $quote->id]
-     */
     #[Test]
-    #[Group('spicy')]
-    public function it_converts_a_quote_into_an_invoice(): void
+    #[Group('crud')]
+    public function it_fails_to_delete_approved_quote(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete('Still can delete approved quote');
 
-        $quote = Quote::factory()->create([
-            'total'  => 300,
-            'status' => 'approved',
-        ]);
+        /* arrange */
+        $company  = $this->company;
+        $user     = $this->user;
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
 
-        $component = Livewire::test(ConvertQuoteToInvoice::class, ['quoteId' => $quote->id])
-            ->fillForm(['due_date' => now()->addWeek()->toDateString()])
-            ->call('convert');
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number' => 'Q-0001',
+                'prospect_id'  => $prospect->id,
+                'user_id'      => $user->id,
+                'quote_status' => QuoteStatus::APPROVED,
+                'quoted_at'    => now()->format('Y-m-d'),
+            ]);
 
-        $component
-            ->assertHasNoFormErrors()
-            ->assertEmitted('quoteConverted')
-            ->assertRedirect(route('invoices.edit', ['invoice' => Invoice::latest()->first()->id]));
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('delete')->table($quote))
+            ->callMountedAction();
 
-        $invoice = Invoice::latest()->first();
-
-        if (app()->isLocal()) {
-            dump($invoice);
-        }
-
-        $this->assertDatabaseHas('invoices', [
-            'id'     => $invoice->id,
-            'amount' => $quote->total,
-        ]);
-        $this->assertDatabaseHas('quotes', [
-            'id'     => $quote->id,
-            'status' => 'converted',
-        ]);
+        /* assert */
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
     }
-    // endregion
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_delete_if_linked_paid_invoice(): void
+    {
+        $this->markTestIncomplete('no column invoice_id which is weird');
+
+        /* arrange */
+        $company  = $this->company;
+        $user     = $this->user;
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+
+        $invoice = Invoice::factory()
+            ->for($this->company)
+            ->create([
+                'customer_id'    => $customer->id,
+                'user_id'        => $user->id,
+                'invoice_status' => InvoiceStatus::PAID->value,
+            ]);
+
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number' => 'Q-0001',
+                'prospect_id'  => $customer->id,
+                'invoice_id'   => $invoice->id,
+                'user_id'      => $user->id,
+                'quoted_at'    => now()->format('Y-m-d'),
+            ]);
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('delete')->table($quote))
+            ->callMountedAction();
+
+        /* assert */
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_delete_quote_that_was_already_deleted(): void
+    {
+        $this->markTestIncomplete('record to deleteAction cannot be null');
+
+        /* arrange */
+        $company  = $this->company;
+        $user     = $this->user;
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+
+        $quote = Quote::factory()
+            ->for($this->company)
+            ->create([
+                'quote_number' => 'Q-0001',
+                'prospect_id'  => $prospect->id,
+                'user_id'      => $user->id,
+                'quoted_at'    => now()->format('Y-m-d'),
+            ]);
+        $quote->delete();
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('delete')->table($quote))
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasErrors();
+
+        $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
+    }
+    # endregion
+
+    # region multi-tenancy
+    # endregion
+
+    # region spicy
+    #[Test]
+    #[Group('crud')]
+    public function widget_shows_only_current_tenant_quotes(): void
+    {
+        $this->markTestIncomplete('Should assert widget only shows quotes for the current tenant.');
+    }
+    # endregion
 }
