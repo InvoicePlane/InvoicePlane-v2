@@ -29,6 +29,7 @@ class AddressFactoryTest extends AbstractTestCase
         );
         
         // If address_2 is not null, it should match the pattern "Apt ##"
+        // numerify('Apt ##') always generates exactly 2 digits (e.g., "Apt 05", "Apt 99")
         if ($address->address_2 !== null) {
             $this->assertMatchesRegularExpression('/^Apt \d{2}$/', $address->address_2);
         }
@@ -51,6 +52,7 @@ class AddressFactoryTest extends AbstractTestCase
             $this->assertNotNull($address->address_1);
             
             // Verify address_2 is either null or matches expected pattern
+            // numerify('Apt ##') always generates exactly 2 digits (e.g., "Apt 05", "Apt 99")
             if ($address->address_2 !== null) {
                 $this->assertMatchesRegularExpression('/^Apt \d{2}$/', $address->address_2);
             }
