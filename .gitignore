@@ -1,4 +1,24 @@
-# Build artifacts
+# Laravel – Core
+/public/fonts/
+/public/storage/
+/storage/framework/
+/storage/generated-json/
+/storage/logs/
+/vendor/
+
+.env*
+/storage/*.key
+
+# Laravel – Modules (ignored generated sources)
+/Modules/*/resources/views/**
+Modules/**/Controllers/
+Modules/**/Http/Controllers/
+Modules/**/Http/Requests/
+Modules/**/Resources/
+
+# Vite / Filament / Livewire
+/.vite
+/livewire-tmp/
 /public/assets/
 /public/build/
 /public/css/
@@ -6,28 +26,44 @@
 /public/js/
 /public/vendor/filament/
 
-# Laravel
-/public/storage
-/storage/*.key
-/vendor/
-/.env*
+vite.config.js
+vite.config.ts
 
-# Node/Vite
+# Node / Yarn
 /node_modules/
 
-# PHPUnit / Test tools
+npm-debug.log
+yarn-error.log
+/yarn-upgr.txt
+
+# Pint
+/pint.txt
+
+# PHPUnit / Pest
 /.phpunit.cache
-/phpunit.result.cache
+/.phpunit.result.cache
+/depr.txt
+/htmloutput.txt
+/phpunit.txt
+/pif.txt
 /puf.txt
+/test.txt
+/todo.txt
+/unit_depr.txt
 
 # IDEs / Editors
 /.fleet/
+/.aider/
+/.aider.conf.yml
 /.idea/
 /.nova/
+/.phpactor.json
 /.vscode/
 /.zed/
-/.phpactor.json
 
-# Misc
-npm-debug.log
-yarn-error.log
+# Misc / Dev
+/.docker/
+/.php-cs-fixer.cache
+*.sqlite
+/stan.txt
+/yarnpack.txt

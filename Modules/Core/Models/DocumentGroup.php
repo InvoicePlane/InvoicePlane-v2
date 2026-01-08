@@ -2,27 +2,36 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\DocumentGroupFactory;
 use Modules\Core\Enums\DocumentGroupType;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int     $id
- * @property int     $company_id
- * @property string  $name
- * @property string  $prefix
- * @property string  $format
- * @property mixed   $next_id
- * @property mixed   $created_at
- * @property mixed   $updated_at
- * @property Company $company
+ * @property int                           $id
+ * @property int                           $company_id
+ * @property string                        $type
+ * @property string                        $name
+ * @property string                        $group_identifier_format
+ * @property int                           $next_id
+ * @property int                           $left_pad
+ * @property string|null                   $format
+ * @property int                           $reset_number
+ * @property int                           $last_id
+ * @property int                           $last_year
+ * @property int                           $last_month
+ * @property int                           $last_week
+ * @property Company                       $company
+ * @property Collection|Invoice[]          $invoices
+ * @property Collection|Quote[]            $quotes
+ * @property Collection|RecurringInvoice[] $recurring_invoices
  */
 class DocumentGroup extends Model
 {
@@ -31,14 +40,19 @@ class DocumentGroup extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
-
     protected $casts = [
         'type' => DocumentGroupType::class,
     ];
 
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Static Methods
+    |--------------------------------------------------------------------------
+    */
     /**
-     * Return all of the “template–insertion” tags you want
+     * Return all the “template–insertion” tags you want
      * to offer in your form dropdown.
      */
     public static function availableTags(): array
@@ -52,11 +66,75 @@ class DocumentGroup extends Model
         ];
     }
 
-    public function company(): BelongsTo
+    public static function findIdByName($name)
     {
-        return $this->belongsTo(Company::class);
+        if ($group = self::where('name', $name)->first()) {
+            return $group->id;
+        }
     }
 
+    public static function generateNumber($id): array|string
+    {
+        $group = self::query()->find($id);
+
+        // Only check for resets if this group has been used.
+        if ($group->last_id != 0) {
+            // Check for yearly reset.
+            if ($group->reset_number == 1) {
+                if ($group->last_year != date('Y')) {
+                    $group->next_id = 1;
+                    $group->save();
+                }
+            } // Check for monthly reset.
+            elseif ($group->reset_number == 2) {
+                if ($group->last_month != date('m') || $group->last_year != date('Y')) {
+                    $group->next_id = 1;
+                    $group->save();
+                }
+            } // Check for weekly reset.
+            elseif ($group->reset_number == 3) {
+                if ($group->last_week != date('W') || $group->last_month != date('m') || $group->last_year != date('Y')) {
+                    $group->next_id = 1;
+                    $group->save();
+                }
+            }
+        }
+
+        $number = $group->format;
+
+        $number = str_replace('{NUMBER}', mb_str_pad($group->next_id, $group->left_pad, '0', STR_PAD_LEFT), $number);
+        $number = str_replace('{YEAR}', date('Y'), $number);
+        $number = str_replace('{MONTH}', date('m'), $number);
+        $number = str_replace('{WEEK}', date('W'), $number);
+        $number = str_replace('{MONTHSHORTNAME}', date('M'), $number);
+
+        $group->last_id    = $group->next_id;
+        $group->last_week  = date('W');
+        $group->last_month = date('m');
+        $group->last_year  = date('Y');
+        $group->save();
+
+        return $number;
+    }
+
+    public static function getList()
+    {
+        return self::orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    public static function incrementNextId($document): void
+    {
+        $group          = self::query()->find($document->group_id);
+        $group->last_id = $group->next_id;  // Setting last_id to old nex_id before increment
+        $group->next_id = $group->next_id + 1;
+        $group->save();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'document_group_id');
@@ -67,6 +145,16 @@ class DocumentGroup extends Model
         return $this->hasMany(Quote::class, 'document_group_id');
     }
 
+    public function recurringInvoices(): HasMany
+    {
+        return $this->hasMany(RecurringInvoice::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factories
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return DocumentGroupFactory::new();

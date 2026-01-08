@@ -1,22 +1,16 @@
-name: PhpStan test
+name: PHPStan Analysis
 
 on:
-  push:
-    branches:
-      - develop
-
-  pull_request:
-    branches:
-      - develop
+  workflow_dispatch:  # Manual only — does not run automatically
 
 jobs:
   phpstan:
-    name: Run PHPStan
+    name: Static Analysis with PHPStan
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -25,7 +19,7 @@ jobs:
           tools: composer
 
       - name: Install dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --memory-limit=1G

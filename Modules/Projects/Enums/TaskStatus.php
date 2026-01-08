@@ -2,13 +2,26 @@
 
 namespace Modules\Projects\Enums;
 
-enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
-{
-    case OPEN        = 'open';
-    case IN_PROGRESS = 'in_progress';
-    case COMPLETED   = 'completed';
-    case CANCELLED   = 'cancelled';
+use Modules\Core\Contracts\LabeledEnum;
 
+enum TaskStatus: string implements LabeledEnum
+{
+    case CANCELLED   = 'cancelled';
+    case COMPLETE    = 'complete';
+    case COMPLETED   = 'completed';
+    case IN_PROGRESS = 'in_progress';
+    case NOT_STARTED = 'not_started';
+    case OPEN        = 'open';
+    case PAID        = 'paid';
+
+    /**
+     * case NOT_STARTED = 1;
+     * case IN_PROGRESS = 2;.
+     *
+     * case COMPLETE = 3;
+     *
+     * case PAID = 4;
+     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -17,20 +30,26 @@ enum TaskStatus: string implements \Modules\Core\Contracts\LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::IN_PROGRESS => 'In Progress',
-            self::COMPLETED   => 'Completed',
-            self::OPEN        => 'Open',
-            self::CANCELLED   => 'Cancelled',
+            self::CANCELLED   => 'ip.cancelled',
+            self::COMPLETE    => 'ip.complete',
+            self::IN_PROGRESS => 'ip.in_progress',
+            self::NOT_STARTED => 'ip.not_started',
+            self::PAID        => 'ip.paid',
+            self::COMPLETED   => 'ip.completed',
+            self::OPEN        => 'ip.open',
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::IN_PROGRESS => 'info',
-            self::COMPLETED   => 'success',
-            self::OPEN        => 'gray',
             self::CANCELLED   => 'warning',
+            self::COMPLETED   => 'success',
+            self::IN_PROGRESS => 'info',
+            self::NOT_STARTED => 'gray',
+            self::PAID        => 'emerald',
+            self::COMPLETE    => 'success',
+            self::OPEN        => 'info',
         };
     }
 }

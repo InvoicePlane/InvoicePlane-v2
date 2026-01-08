@@ -2,13 +2,13 @@
 
 namespace Modules\Products\Listeners;
 
-use Modules\Products\Events\ItemWasUpdated;
+use Modules\Products\Events\ProductWasUpdated;
 
 class ProductWasUpdatedListener
 {
     public function __construct() {}
 
-    public function handle(ItemWasUpdated $event): void
+    public function handle(ProductWasUpdated $event): void
     {
         /**
          * #24: Just a placeholder.

@@ -2,7 +2,10 @@
 
 namespace Modules\Payments\Enums;
 
-enum PayableType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+use Modules\Invoices\Models\Invoice;
+
+enum PayableType: string implements LabeledEnum
 {
     case INVOICE = 'invoice';
 

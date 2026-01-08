@@ -11,7 +11,7 @@ class TaxRatesSeeder extends Seeder
     public function run(): void
     {
         Company::all()->each(function (Company $company): void {
-            TaxRate::factory()->count(random_int(2, 5))->create([
+            TaxRate::factory()->count(random_int(1, 2))->create([
                 'company_id' => $company->id,
             ]);
         });

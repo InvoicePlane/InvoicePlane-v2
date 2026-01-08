@@ -13,11 +13,11 @@ class QuotesSeeder extends Seeder
     {
         Company::all()->each(function (Company $company): void {
             foreach ([
-                ['quote_status' => 'draft', 'count' => 10],
-                ['quote_status' => 'sent', 'count' => 15],
-                ['quote_status' => 'viewed', 'count' => 25],
-                ['quote_status' => 'approved', 'count' => 30],
-                ['quote_status' => 'canceled', 'count' => 12],
+                ['quote_status' => 'draft', 'count' => 1],
+                ['quote_status' => 'sent', 'count' => 2],
+                ['quote_status' => 'viewed', 'count' => 2],
+                ['quote_status' => 'approved', 'count' => 3],
+                ['quote_status' => 'canceled', 'count' => 2],
             ] as $config) {
                 Quote::factory()
                     ->state(['company_id' => $company->id])
@@ -26,7 +26,7 @@ class QuotesSeeder extends Seeder
                     ->create()
                     ->each(function (Quote $quote): void {
                         QuoteItem::factory()
-                            ->count(random_int(2, 5))
+                            ->count(random_int(2, 3))
                             ->create(['quote_id' => $quote->id]);
                     });
             }

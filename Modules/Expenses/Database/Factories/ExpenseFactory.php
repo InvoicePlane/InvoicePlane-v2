@@ -11,13 +11,17 @@ use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Models\ExpenseCategory;
 
+/**
+ * @extends Factory<\Modules\Expenses\Models\Expense>
+ */
 class ExpenseFactory extends Factory
 {
     protected $model = Expense::class;
 
     public function definition(): array
     {
-        $customer = Relation::where('relation_type', RelationType::CUSTOMER->value)
+        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
             ->inRandomOrder()
             ->first() ?? Relation::factory()->create(['relation_type' => RelationType::CUSTOMER->value]);
 
@@ -31,22 +35,24 @@ class ExpenseFactory extends Factory
         $vendor = $this->faker->randomElement($vendors);
 
         return [
-            'company_id'  => Company::query()->inRandomOrder()->first()->id,
+            'company_id'  => $company->id,
             'customer_id' => $customer->id,
             'vendor_id'   => Relation::factory()->state([
                 'company_name' => $vendor,
-                'trading_name' => $this->faker->boolean(50)
+                'trading_name' => $this->faker->boolean(75)
                     ? "{$vendor} {$this->faker->companySuffix()}"
                     : $vendor,
                 'relation_type'   => RelationType::VENDOR->value,
-                'relation_number' => $this->faker->numerify('##########'),
+                'relation_number' => $this->faker->numerify('CUS-#####'),
                 'registered_at'   => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
             ]),
             'category_id'    => ExpenseCategory::query()->inRandomOrder()->first()->id,
+            'user_id'        => \Modules\Core\Models\User::query()->inRandomOrder()->first()->id,
             'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'expense_status' => $this->faker->randomElement(ExpenseStatus::cases())->value,
             'expense_type'   => $this->faker->randomElement(ExpenseType::cases())->value,
-            'expense_amount' => $this->faker->randomFloat(2, 10, 500),
+            'expensed_at'    => $this->faker->dateTimeBetween('-1 years', '-1 month')->format('Y-m-d'),
+            'expense_amount' => $this->faker->randomFloat(4, 10, 500),
             'description'    => null,
         ];
     }

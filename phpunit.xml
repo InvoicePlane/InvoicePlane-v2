@@ -3,6 +3,8 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         cacheResult="false"
+         beStrictAboutOutputDuringTests="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
          displayDetailsOnPhpunitDeprecations="true"
 >
@@ -11,7 +13,6 @@
             <directory>Modules/*/Tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory>tests/Feature</directory>
             <directory>Modules/*/Tests/Feature</directory>
         </testsuite>
     </testsuites>

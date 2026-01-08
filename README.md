@@ -1,15 +1,70 @@
-# ivplflmnt
+### Features
 
-## How to run
+- Invoice & Quote Management
+- Customer & Contact Handling
+- Payment Tracking & Reminders
+- Modular Architecture (Laravel + Filament)
+- Multi-Tenant Support via Filament Companies
+- Realtime UI with Livewire
 
-- Install dependencies `composer install`
-- Start a mysql/mariadb database or use the provided `docker compose up`
-- Seed the db `php artisan migrate --seed`
-- Start the laravel dev server `php artisan serve`
-- Open `http://127.0.0.1:8000/ivpl`
-- (Generate app key if needed)
-- (Create a user ?) `php artisan make:filament-user`
+---
 
-## E-mail
+### Installation
 
-You can use the mailcatcher app on `http://127.0.0.1:1080/`
+To install and run InvoicePlane V2 locally, see the [Installation Guide](INSTALLATION.md).
+
+Quick summary:
+
+```bash
+git clone https://github.com/InvoicePlane/InvoicePlane.git
+cd InvoicePlane
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+```
+
+For detailed steps, see: INSTALLATION.md
+
+
+---
+
+### Contributing
+
+We welcome community contributions!
+
+To learn how to contribute code, create modules, write tests, or help translate the app:
+
+Read the Contributing Guide
+
+Follow the Module Checklist to avoid duplication
+
+### Translations
+Use Crowdin to help with translations:
+https://translations.invoiceplane.com
+
+---
+
+Support & Community
+
+Discord: https://discord.gg/PPzD2hTrXt
+
+Forums: https://community.invoiceplane.com
+
+Issue Tracker: https://github.com/InvoicePlane/InvoicePlane/issues
+
+Documentation Wiki: https://wiki.invoiceplane.com
+
+---
+
+### Security
+
+See SECURITY.md for more info.
+
+
+---
+
+License
+
+InvoicePlane V2 is open-source software licensed under the MIT License.
+The InvoicePlane name and logo are protected trademarks of Kovah.de.

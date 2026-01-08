@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Modules\Core\Models\User;
+use Modules\Core\Traits\HasCompanyFactoryState;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Core\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
+    use HasCompanyFactoryState;
+
     protected $model = User::class;
 
     protected static ?string $password;

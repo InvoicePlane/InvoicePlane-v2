@@ -18,7 +18,7 @@ trait ApiTestTrait
 
     public function assertApiSuccess(): void
     {
-        $this->response->assertStatus(200);
+        $this->response->assertSuccessful();
         $this->response->assertJson(['success' => true]);
     }
 

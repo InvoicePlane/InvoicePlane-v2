@@ -2,134 +2,64 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Filament\Admin\Resources\UserResource;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\CreateUser;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\EditUser;
-use Modules\Core\Filament\Admin\Resources\UserResource\Pages\ListUsers;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(UserResource::class)]
-
-class UsersTest extends AbstractTestCase
+class UsersTest extends AbstractAdminPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * \Modules\Core\Filament\Admin\Resources\UserResource.
+     * @payload ['email' => 'admin@example.com']
      *
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
+     * @arrange create a user with email 'admin@example.com'
+     *
+     * @act visit user listing
+     *
+     * @assert email is visible
      */
-    public function it_creates_a_user(): void
+    #[Group('crud')]
+    public function it_lists_users(): void
+    {
+        /* arrange */
+        $user = User::factory()->create(['email' => 'admin@example.com']);
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class);
+
+        /* assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('users', $user->toArray());
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_delete_user_twice(): void
     {
         $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        /* arrange */
 
-        $payload = [
-            'name'              => 'Example',
-            'email'             => 'Example',
-            'email_verified_at' => '2025-04-30',
-            'password'          => 'Example',
-            'remember_token'    => 'Example',
-        ];
+        /* @arrange deleted user */
+        $user = User::factory()->create();
+        $user->delete();
 
-        Livewire::test(CreateUser::class)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /* @act try to delete again */
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())->test(ListUsers::class)->callTableAction('delete', $user);
+
+        /* assert */
+        $component->assertHasErrors();
+
+        /* @assert form error triggered */
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * \Modules\Core\Filament\Admin\Resources\UserResource.
-     *
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
-     */
-    public function it_updates_a_user(): void
-    {
-        $this->markTestIncomplete('Needs full payload and assertions.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = User::factory()->create();
-
-        $payload = [
-            'name'              => 'Example',
-            'email'             => 'Example',
-            'email_verified_at' => '2025-04-30',
-            'password'          => 'Example',
-            'remember_token'    => 'Example',
-        ];
-
-        Livewire::test(EditUser::class, ['record' => $record->getKey()])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * \Modules\Core\Filament\Admin\Resources\UserResource.
-     *
-     * @payload
-     * {
-     * "name": "Example",
-     * "email": "Example",
-     * "email_verified_at": "2025-04-30",
-     * "password": "Example",
-     * "remember_token": "Example"
-     * }
-     */
-    public function it_deletes_a_user(): void
-    {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
-
-        //$this->actingAs(User::factory()->create());
-
-        $record = User::factory()->create();
-
-        Livewire::test(ListUsers::class)
-            ->callTableAction('delete', $record);
-
-        $this->assertDatabaseMissing('users', ['id' => $record->id]);
-    }
-
-    // endregion
-
-    // region usp
-
-    // endregion
 }

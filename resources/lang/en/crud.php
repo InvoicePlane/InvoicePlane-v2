@@ -153,7 +153,7 @@ return [
                 'label'       => 'Quote discount percent',
                 'placeholder' => 'Quote discount percent',
             ],
-            'quote_url_key' => [
+            'url_key' => [
                 'label'       => 'Quote url key',
                 'placeholder' => 'Quote url key',
             ],

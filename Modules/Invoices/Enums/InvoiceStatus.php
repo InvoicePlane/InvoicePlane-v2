@@ -2,7 +2,9 @@
 
 namespace Modules\Invoices\Enums;
 
-enum InvoiceStatus: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum InvoiceStatus: string implements LabeledEnum
 {
     case DRAFT   = 'draft';
     case SENT    = 'sent';

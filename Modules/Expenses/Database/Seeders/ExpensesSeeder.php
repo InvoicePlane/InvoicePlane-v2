@@ -11,7 +11,7 @@ class ExpensesSeeder extends Seeder
     public function run(): void
     {
         Company::all()->each(function (Company $company): void {
-            Expense::factory()->count(random_int(2, 5))->create([
+            Expense::factory()->count(random_int(2, 3))->create([
                 'company_id' => $company->id,
             ]);
         });

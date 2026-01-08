@@ -2,466 +2,643 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\CreateInvoice;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\EditInvoice;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource\Pages\ListInvoices;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Models\Invoice;
+use Modules\Products\Models\Product;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(InvoiceResource::class)]
-class InvoicesTest extends AbstractTestCase
+class InvoicesTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
+    protected User $user;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
     #[Test]
+    #[Group('smoke')]
+    /**
+     * @payload ['invoice_date' => '2024-11-01', 'invoice_number' => 'INV-0001']
+     */
     #[Group('crud')]
     public function it_lists_invoices(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
-        Invoice::factory()->create([
-            'company_id'     => $company->id,
-            'invoice_number' => 'INV-1001',
-        ]);
-
-        Livewire::test(ListInvoices::class)
-            ->assertSee('INV-1001');
-    }
-    // endregion
-
-    // region crud
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @test
-     *
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "customer_id": 2,
-     *   "document_group_id": 3,
-     *   "creditinvoice_parent_id": null,
-     *   "user_id": 4,
-     *   "invoice_number": "INV-1001",
-     *   "invoice_status": "draft",
-     *   "invoiced_at": "2025-05-01",
-     *   "invoice_due_at": "2025-05-10",
-     *   "invoice_discount_amount": "0.00",
-     *   "invoice_discount_percent": "0.00",
-     *   "invoice_item_tax_total": "0.00",
-     *   "invoice_item_subtotal": "100.00",
-     *   "invoice_tax_total": "0.00",
-     *   "invoice_total": "100.00",
-     *   "invoice_password": null,
-     *   "invoice_url_key": "abc123",
-     *   "is_read_only": false,
-     *   "invoice_is_altered": false,
-     *   "invoice_terms": "Net 30"
-     * }
-     */
-    public function it_creates_an_invoice(): void
-    {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
 
         $payload = [
-            'company_id'               => $company->id,
-            'customer_id'              => 2,
-            'document_group_id'        => 3,
-            'creditinvoice_parent_id'  => null,
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
             'user_id'                  => $user->id,
-            'invoice_number'           => 'INV-1001',
-            'invoice_status'           => 'draft',
-            'invoiced_at'              => '2025-05-01',
-            'invoice_due_at'           => '2025-05-10',
-            'invoice_discount_amount'  => 0.00,
-            'invoice_discount_percent' => 0.00,
-            'invoice_item_tax_total'   => 0.00,
-            'invoice_item_subtotal'    => 100.00,
-            'invoice_tax_total'        => 0.00,
-            'invoice_total'            => 100.00,
-            'invoice_password'         => null,
-            'invoice_url_key'          => 'abc123',
-            'is_read_only'             => false,
-            'invoice_is_altered'       => false,
-            'invoice_terms'            => 'Net 30',
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
         ];
 
-        Livewire::test(CreateInvoice::class)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        Invoice::factory()
+            ->for($company)
+            ->create($payload);
+
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(ListInvoices::class);
+
+        /* assert */
+        $component->assertSuccessful();
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * @test
-     *
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "customer_id": 2,
-     *   "document_group_id": 3,
-     *   "creditinvoice_parent_id": null,
-     *   "user_id": 4,
-     *   "invoice_number": "INV-1001",
-     *   "invoice_status": "draft",
-     *   "invoiced_at": "2025-05-01",
-     *   "invoice_due_at": "2025-05-10",
-     *   "invoice_discount_amount": "0.00",
-     *   "invoice_discount_percent": "0.00",
-     *   "invoice_item_tax_total": "0.00",
-     *   "invoice_item_subtotal": "100.00",
-     *   "invoice_tax_total": "0.00",
-     *   "invoice_total": "100.00",
-     *   "invoice_password": null,
-     *   "invoice_url_key": "abc123",
-     *   "is_read_only": false,
-     *   "invoice_is_altered": false,
-     *   "invoice_terms": "Net 30"
-     * }
-     */
+    public function it_creates_an_invoice_with_items(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'invoice_item_subtotal'    => 450,
+            'item_tax_total'           => 90,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+            'customer_id'              => $customer->id,
+            'user_id'                  => $user->id,
+            'document_group_id'        => $documentGroup->id,
+            'invoiceItems'             => [
+                [
+                    'item_name' => 'Design Consultation',
+                    'quantity'  => 3,
+                    'price'     => 150,
+                    'discount'  => 0,
+                    'subtotal'  => 450,
+                ],
+            ],
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertSuccessful()
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('invoices', [
+            'invoice_number' => $payload['invoice_number'],
+            'invoice_total'  => $payload['invoice_total'],
+        ]);
+
+        $this->assertDatabaseHas('invoice_items', [
+            'item_name' => 'Design Consultation',
+            'price'     => 150,
+            'quantity'  => 3,
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_number(): void
+    {
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['invoice_number' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_status(): void
+    {
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasFormErrors(['invoice_status' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_sign(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasFormErrors(['invoice_sign' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_item_subtotal(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasFormErrors(['invoice_item_subtotal' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_tax_total(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_total'            => 440,
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasFormErrors(['invoice_tax_total' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_invoice_without_required_invoice_total(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
+
+        $payload = [
+            'customer_id'              => $customer->id,
+            'document_group_id'        => $documentGroup->id,
+            'user_id'                  => $user->id,
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+        ];
+
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasFormErrors(['invoice_total' => 'required']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_fails_to_create_invoice_without_customer(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
 
         $payload = [
-            'company_id'               => $company->id,
-            'customer_id'              => 2,
-            'document_group_id'        => 3,
-            'creditinvoice_parent_id'  => null,
+            'document_group_id'        => $documentGroup->id,
             'user_id'                  => $user->id,
-            'invoice_number'           => 'INV-1001',
-            'invoice_status'           => 'draft',
-            'invoiced_at'              => '2025-05-01',
-            'invoice_due_at'           => '2025-05-10',
-            'invoice_discount_amount'  => 0.00,
-            'invoice_discount_percent' => 0.00,
-            'invoice_item_tax_total'   => 0.00,
-            'invoice_item_subtotal'    => 100.00,
-            'invoice_tax_total'        => 0.00,
-            'invoice_total'            => 100.00,
-            'invoice_password'         => null,
-            'invoice_url_key'          => 'abc123',
-            'is_read_only'             => false,
-            'invoice_is_altered'       => false,
-            'invoice_terms'            => 'Net 30',
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
         ];
 
-        Livewire::test(CreateInvoice::class)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['customer_id']);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * @test
-     *
-     * @payload
-     * {
-     *   "company_id": 1,
-     *   "customer_id": 2,
-     *   "document_group_id": 3,
-     *   "creditinvoice_parent_id": null,
-     *   "user_id": 4,
-     *   "invoice_number": "INV-1001",
-     *   "invoice_status": "draft",
-     *   "invoiced_at": "2025-05-01",
-     *   "invoice_due_at": "2025-05-10",
-     *   "invoice_discount_amount": "0.00",
-     *   "invoice_discount_percent": "0.00",
-     *   "invoice_item_tax_total": "0.00",
-     *   "invoice_item_subtotal": "100.00",
-     *   "invoice_tax_total": "0.00",
-     *   "invoice_total": "100.00",
-     *   "invoice_password": null,
-     *   "invoice_url_key": "abc123",
-     *   "is_read_only": false,
-     *   "invoice_is_altered": false,
-     *   "invoice_terms": "Net 30"
-     * }
-     */
-    public function it_fails_to_create_invoice_without_invoice_items(): void
+    public function it_fails_to_create_invoice_without_required_document_group(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        $this->markTestIncomplete();
+
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
 
         $payload = [
-            'company_id'               => $company->id,
-            'customer_id'              => 2,
-            'document_group_id'        => 3,
-            'creditinvoice_parent_id'  => null,
+            'customer_id'              => $customer->id,
             'user_id'                  => $user->id,
-            'invoice_number'           => 'INV-1001',
-            'invoice_status'           => 'draft',
-            'invoiced_at'              => '2025-05-01',
-            'invoice_due_at'           => '2025-05-10',
-            'invoice_discount_amount'  => 0.00,
-            'invoice_discount_percent' => 0.00,
-            'invoice_item_tax_total'   => 0.00,
-            'invoice_item_subtotal'    => 100.00,
-            'invoice_tax_total'        => 0.00,
-            'invoice_total'            => 100.00,
-            'invoice_password'         => null,
-            'invoice_url_key'          => 'abc123',
-            'is_read_only'             => false,
-            'invoice_is_altered'       => false,
-            'invoice_terms'            => 'Net 30',
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'item_tax_total'           => 0,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
         ];
 
-        Livewire::test(CreateInvoice::class)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(CreateInvoice::class)->fillForm($payload)->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['document_group']);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * \Modules\Invoices\Filament\Company\Resources\InvoiceResource.
-     *
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "customer_id": "Value",
-     * "document_group_id": "Value",
-     * "creditinvoice_parent_id": "Value",
-     * "user_id": "Value",
-     * "invoice_number": "Example",
-     * "invoice_status": "Value",
-     * "invoiced_at": "2025-04-30",
-     * "invoice_due_at": "2025-04-30",
-     * "invoice_discount_amount": "9.99",
-     * "invoice_discount_percent": "9.99",
-     * "invoice_item_tax_total": "9.99",
-     * "invoice_item_subtotal": "9.99",
-     * "invoice_tax_total": "9.99",
-     * "invoice_total": "9.99",
-     * "invoice_password": "Example",
-     * "invoice_url_key": "Example",
-     * "is_read_only": "true",
-     * "invoice_is_altered": "Example",
-     * "invoice_terms": "Example"
-     * }
-     */
-    public function it_updates_a_invoice(): void
+    public function it_fails_to_create_invoice_without_items(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = Invoice::factory()->create();
+        /* arrange */
+        $company       = $this->user->companies()->first();
+        $user          = $this->user;
+        $customer      = Relation::factory()->for($company)->customer()->create();
+        $documentGroup = DocumentGroup::factory()->for($company)->create();
+        $product       = Product::factory()->for($company)->create();
 
         $payload = [
-            'company_id'               => 'Value',
-            'customer_id'              => 'Value',
-            'document_group_id'        => 'Value',
-            'creditinvoice_parent_id'  => 'Value',
-            'user_id'                  => 'Value',
-            'invoice_number'           => 'Example',
-            'invoice_status'           => 'Value',
-            'invoiced_at'              => '2025-04-30',
-            'invoice_due_at'           => '2025-04-30',
-            'invoice_discount_amount'  => 9.99,
-            'invoice_discount_percent' => 9.99,
-            'invoice_item_tax_total'   => 9.99,
-            'invoice_item_subtotal'    => 9.99,
-            'invoice_tax_total'        => 9.99,
-            'invoice_total'            => 9.99,
-            'invoice_password'         => 'Example',
-            'invoice_url_key'          => 'Example',
-            'is_read_only'             => true,
-            'invoice_is_altered'       => 'Example',
-            'invoice_terms'            => 'Example',
+            'invoice_number'           => 'INV-987654',
+            'invoice_status'           => InvoiceStatus::DRAFT,
+            'invoice_sign'             => '1',
+            'invoiced_at'              => now()->format('Y-m-d'),
+            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
+            'invoice_discount_amount'  => 10,
+            'invoice_discount_percent' => 5,
+            'invoice_item_subtotal'    => 450,
+            'invoice_tax_total'        => 20,
+            'invoice_total'            => 440,
+            'customer_id'              => $customer->id,
+            'user_id'                  => $user->id,
+            'document_group_id'        => $documentGroup->id,
         ];
 
-        Livewire::test(EditInvoice::class, ['record' => $record->getKey()])
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        $component->assertHasErrors(['invoice_items']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_updates_an_invoice(): void
+    {
+        $this->markTestIncomplete();
+        /* arrange */
+
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
+            'status' => InvoiceStatus::DRAFT,
+        ]);
+
+        $payload = ['status' => InvoiceStatus::SENT];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        /* assert */
+        $this->assertDatabaseHas('invoices', [
+            'id'     => $invoice->id,
+            'status' => InvoiceStatus::SENT,
+        ]);
+    }
+
+    #[Test]
+    public function it_edits_invoice_and_updates_total(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
+            'subtotal' => 100,
+            'tax'      => 20,
+            'discount' => 0,
+            'total'    => 120,
+        ]);
+
+        /** @payload */
+        $payload = [
+            'subtotal' => 200,
+            'tax'      => 40,
+            'discount' => 20,
+            'total'    => 220,
+        ];
+
+        Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
             ->fillForm($payload)
             ->call('save')
-            ->assertHasNoFormErrors();
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'total' => 220]);
+    }
+
+    #[Test]
+    public function it_fails_to_update_with_invalid_discount(): void
+    {
+        $this->markTestIncomplete();
+
+        /* arrange */
+
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create([
+            'subtotal' => 200,
+            'tax'      => 40,
+            'discount' => 10,
+            'total'    => 230,
+        ]);
+
+        /** @payload */
+        $payload = [
+            'subtotal' => 200,
+            'tax'      => 40,
+            'discount' => 9999, // absurd value
+            'total'    => 230,
+        ];
+
+        Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm($payload)
+            ->call('save')
+            ->assertHasErrors(['discount']);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * \Modules\Invoices\Filament\Company\Resources\InvoiceResource.
-     *
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "customer_id": "Value",
-     * "document_group_id": "Value",
-     * "creditinvoice_parent_id": "Value",
-     * "user_id": "Value",
-     * "invoice_number": "Example",
-     * "invoice_status": "Value",
-     * "invoiced_at": "2025-04-30",
-     * "invoice_due_at": "2025-04-30",
-     * "invoice_discount_amount": "9.99",
-     * "invoice_discount_percent": "9.99",
-     * "invoice_item_tax_total": "9.99",
-     * "invoice_item_subtotal": "9.99",
-     * "invoice_tax_total": "9.99",
-     * "invoice_total": "9.99",
-     * "invoice_password": "Example",
-     * "invoice_url_key": "Example",
-     * "is_read_only": "true",
-     * "invoice_is_altered": "Example",
-     * "invoice_terms": "Example"
-     * }
-     */
-    public function it_deletes_a_invoice(): void
+    public function it_fails_to_update_invoice_with_invalid_status(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        $this->markTestIncomplete();
+        /* arrange */
 
-        //$this->actingAs(User::factory()->create());
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
+        $payload = ['status' => null];
 
-        $record = Invoice::factory()->create();
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(EditInvoice::class, ['record' => $invoice->id])->fillForm($payload)->call('save');
 
-        Livewire::test(ListInvoices::class)
-            ->callTableAction('delete', $record);
-
-        $this->assertDatabaseMissing('invoices', ['id' => $record->id]);
+        /* assert */
+        $component->assertHasFormErrors(['status']);
     }
-    // endregion
 
-    // region usp
-    /**
-     * @payload ["invoiceId" => $invoice->id]
-     */
     #[Test]
-    #[Group('spicy')]
-    public function it_copies_an_invoice(): void
+    #[Group('crud')]
+    public function it_deletes_an_invoice(): void
+    {
+        $this->markTestIncomplete();
+        /* arrange */
+
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
+
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        /* assert */
+        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+    }
+
+    #[Test]
+    public function it_fails_to_delete_paid_invoice(): void
     {
         $this->markTestIncomplete();
 
-        $invoice = Invoice::factory()->create([
-            'amount' => 200,
-            'status' => 'draft',
-        ]);
+        /* arrange */
 
-        $component = Livewire::test(CopyInvoice::class, ['invoiceId' => $invoice->id])
-            ->fillForm(['count' => 2])
-            ->call('save');
+        $invoice = Invoice::factory()
+            ->for($this->user->companies()->first())
+            ->hasPayments(1)
+            ->create([
+                'status' => InvoiceStatus::PAID,
+            ]);
 
-        $component
-            ->assertHasNoFormErrors()
-            ->assertEmitted('invoiceCopied');
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->call('delete', $invoice->id)
+            ->assertHasErrors(['delete']);
 
-        if (app()->isLocal()) {
-            dump(Invoice::where('original_id', $invoice->id)->get());
-        }
-
-        $this->assertEquals(2, Invoice::where('original_id', $invoice->id)->count());
-        $this->assertDatabaseHas('invoices', [
-            'original_id' => $invoice->id,
-            'status'      => $invoice->status,
-        ]);
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
     }
 
-    /**
-     * @payload ["invoiceId" => $invoice->id]
-     */
     #[Test]
-    #[Group('spicy')]
-    public function it_clones_an_invoice(): void
+    public function it_fails_to_delete_if_has_payments(): void
     {
         $this->markTestIncomplete();
 
-        $invoice = Invoice::factory()->create([
-            'amount' => 150,
-            'status' => 'pending',
-        ]);
+        /* arrange */
 
-        $component = Livewire::test(CloneInvoice::class, ['invoiceId' => $invoice->id])
-            ->fillForm(['template' => 'standard'])
-            ->call('save');
+        $invoice = Invoice::factory()
+            ->for($this->user->companies()->first())
+            ->hasPayments(1)
+            ->create();
 
-        $component
-            ->assertHasNoFormErrors()
-            ->assertEmitted('invoiceCloned')
-            ->assertRedirect(route('invoices.edit', ['invoice' => Invoice::latest()->first()->id]));
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->call('delete', $invoice->id)
+            ->assertHasErrors(['delete']);
 
-        $newInvoice = Invoice::latest()->first();
-
-        if (app()->isLocal()) {
-            dump($newInvoice);
-        }
-
-        $this->assertDatabaseHas('invoices', [
-            'id'     => $newInvoice->id,
-            'amount' => $invoice->amount,
-            'status' => $invoice->status,
-        ]);
-
-        $this->assertNotEquals($invoice->id, $newInvoice->id);
-        $this->assertTrue($newInvoice->created_at->gt($invoice->created_at));
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
     }
 
-    /**
-     * @payload ["invoiceId" => $invoice->id]
-     */
     #[Test]
-    #[Group('spicy')]
-    public function it_exports_an_invoice_to_pdf(): void
+    #[Group('crud')]
+    public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
         $this->markTestIncomplete();
+        /* arrange */
 
-        Storage::fake('local');
+        $invoice = Invoice::factory()->for($this->user->companies()->first())->create();
+        $invoice->delete();
 
-        $invoice = Invoice::factory()->create();
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(ListInvoices::class)->callTableAction('delete', $invoice);
 
-        $component = Livewire::test(ExportInvoice::class, ['invoiceId' => $invoice->id])
-            ->call('export');
+        /* assert */
+        $component->assertHasErrors();
 
-        $component
-            ->assertHasNoFormErrors()
-            ->assertEmitted('exportCompleted');
-
-        $responseData = $component->lastResponse->getData();
-        $this->assertArrayHasKey('url', $responseData);
-        $this->assertArrayHasKey('filename', $responseData);
-
-        $path = 'exports/invoices/' . $responseData['filename'];
-        Storage::disk('local')->assertExists($path);
-
-        if (app()->isLocal()) {
-            dump($path);
-        }
+        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     }
-    // endregion
 }

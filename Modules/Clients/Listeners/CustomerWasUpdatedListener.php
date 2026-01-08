@@ -8,8 +8,5 @@ class CustomerWasUpdatedListener
 {
     public function __construct() {}
 
-    public function handle(Relation $event): void
-    {
-        $client = $event->client;
-    }
+    public function handle(Relation $event): void {}
 }

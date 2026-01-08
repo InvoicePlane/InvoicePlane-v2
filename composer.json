@@ -15,26 +15,34 @@
             "wikimedia/composer-merge-plugin": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "filament/filament": "^3.3.14",
-        "laravel/framework": "^12.12",
+        "doctrine/dbal": ">=4.2.3",
+        "filament/actions": "^4.0@alpha",
+        "filament/filament": "^4.0",
+        "filament/forms": "^4.0@alpha",
+        "filament/infolists": "^4.0@alpha",
+        "filament/notifications": "^4.0@alpha",
+        "filament/schemas": "^4.0@alpha",
+        "filament/tables": "^4.0@alpha",
+        "filament/widgets": "^4.0@alpha",
+        "laravel/framework": "^12.16",
         "nwidart/laravel-modules": "^12.0.3"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "driftingly/rector-laravel": "^2.0.4",
+        "driftingly/rector-laravel": "^2.0.5",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.4",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.22",
+        "laravel/pint": "^1.22.1",
         "laravel/tinker": "^2.10.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8",
-        "phpunit/phpunit": "^11.5.19",
-        "rector/rector": "^2.0.14"
+        "phpunit/phpunit": "^11.5.21",
+        "rector/rector": "^2.0.17"
     },
     "autoload": {
         "psr-4": {
@@ -65,8 +73,10 @@
             "@php artisan key:generate --ansi",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout"
+        "dev": [],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
         ]
     },
     "extra": {

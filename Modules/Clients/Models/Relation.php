@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,34 +14,46 @@ use Illuminate\Support\Carbon;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
-use Modules\Core\Models\Address;
-use Modules\Core\Models\Addressable;
-use Modules\Core\Models\Communication;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\RecurringInvoice;
+use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int       $id
- * @property int       $primary_contact_id
- * @property string    $relation_type
- * @property string    $relation_status
- * @property string    $relation_number
- * @property string    $company_name
- * @property string    $trading_name
- * @property string    $id_number
- * @property string    $coc_number
- * @property string    $vat_number
- * @property Carbon    $registered_at
- * @property mixed     $created_at
- * @property mixed     $updated_at
- * @property Invoice[] $invoices
- * @property Quote[]   $quotes
- * @property Project[] $projects
- * @property Contact   $contact
- * @property Task[]    $tasks
+ * @property int                           $id
+ * @property int                           $company_id
+ * @property int|null                      $primary_contact_id
+ * @property string                        $relation_type
+ * @property string                        $relation_status
+ * @property string                        $relation_number
+ * @property string                        $company_name
+ * @property string|null                   $trading_name
+ * @property string|null                   $unique_name
+ * @property string|null                   $id_number
+ * @property string|null                   $coc_number
+ * @property string|null                   $vat_number
+ * @property Carbon                        $registered_at
+ * @property mixed                         $created_at
+ * @property mixed                         $updated_at
+ * @property Invoice[]                     $invoices
+ * @property Quote[]                       $quotes
+ * @property Project[]                     $projects
+ * @property Contact                       $contact
+ * @property string|null                   $currency_code
+ * @property string|null                   $language
+ * @property Company                       $company
+ * @property Collection|Contact[]          $contacts
+ * @property Collection|Expense[]          $expenses
+ * @property Collection|Payment[]          $payments
+ * @property Collection|RecurringInvoice[] $recurring_invoices
+ * @property Collection|User[]             $users
+ * @property Task[]                        $tasks
  */
 class Relation extends Model
 {
@@ -51,12 +64,28 @@ class Relation extends Model
 
     protected $table = 'relations';
 
-    protected $guarded = [];
-
     protected $casts = [
         'relation_type'   => RelationType::class,
         'relation_status' => RelationStatus::class,
     ];
+
+    protected $guarded = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Static Methods
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function attachments(): void
+    {
+        // return $this->morphMany(Attachment, 'attachable');
+    }
 
     public function addressables(): MorphMany
     {
@@ -82,7 +111,7 @@ class Relation extends Model
 
     public function contacts(): HasMany
     {
-        return $this->hasMany(Contact::class, 'relation_id');
+        return $this->hasMany(Contact::class);
     }
 
     public function contact(): BelongsTo
@@ -90,28 +119,80 @@ class Relation extends Model
         return $this->belongsTo(Contact::class, 'primary_contact_id');
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'vendor_id');
+    }
+
     public function invoices(): HasMany
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasMany(Invoice::class, 'customer_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'customer_id');
+    }
+
+    public function primaryContact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class, 'primary_contact_id');
     }
 
     public function projects(): HasMany
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Project::class, 'customer_id');
     }
 
     public function quotes(): HasMany
     {
-        return $this->hasMany(Quote::class);
+        return $this->hasMany(Quote::class, 'prospect_id');
+    }
+
+    public function recurring_invoices(): HasMany
+    {
+        return $this->hasMany(RecurringInvoice::class, 'customer_id');
     }
 
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'customer_id');
     }
 
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getCustomerEmailAttribute()
+    {
+        return $this->email;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return RelationFactory::new();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Subqueries
+    |--------------------------------------------------------------------------
+    */
 }

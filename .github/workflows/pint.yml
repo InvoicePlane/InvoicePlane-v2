@@ -1,0 +1,24 @@
+name: Laravel Pint
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+jobs:
+  pint:
+    name: Code Style Check with Laravel Pint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run Laravel Pint
+        run: vendor/bin/pint --test

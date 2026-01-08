@@ -3,8 +3,10 @@
 namespace Modules\Core\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Models\Company;
 
 /**
  * Automatically scopes models to the currently authenticated user’s company,
@@ -28,9 +30,9 @@ trait BelongsToCompany
     /**
      * Relationship back to the Company model.
      */
-    public function company()
+    public function company(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Core\Models\Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     /**
@@ -44,7 +46,7 @@ trait BelongsToCompany
         }
 
         // Get current company ID from session
-        if (session()->has('current_company_id')) {
+        if (session()?->has('current_company_id')) {
             return session('current_company_id');
         }
 

@@ -2,223 +2,206 @@
 
 namespace Modules\Clients\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Livewire\Livewire;
-use Modules\Clients\Filament\Company\Resources\ContactResource;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\CreateContact;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\EditContact;
-use Modules\Clients\Filament\Company\Resources\ContactResource\Pages\ListContacts;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\CreateContact;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\EditContact;
+use Modules\Clients\Filament\Company\Resources\Contacts\Pages\ListContacts;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ContactResource::class)]
-
-class ContactsTest extends AbstractTestCase
+class ContactsTest extends AbstractCompanyPanelTestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-    use WithoutMiddleware;
+    protected User $user;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
+    #region smoke
     #[Test]
     #[Group('smoke')]
     /**
-     * @payload
-     * {
-     * "relation_id": 51,
-     * "first_name": "John",
-     * "last_name": "Doe",
-     * "gender": "male"
-     * }
+     * @payload ['relation_id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe', 'gender' => 'female']
      */
     public function it_lists_contacts(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-        $relation = Relation::factory()->create();
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
+        /* arrange */
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
 
         $payload = [
             'relation_id' => $relation->id,
-            'first_name'  => 'John',
+            'first_name'  => 'Jane',
             'last_name'   => 'Doe',
-            'gender'      => 'male',
+            'gender'      => 'female',
         ];
 
-        $contact = Contact::query()->create($payload);
+        Contact::factory()->for($this->user->companies()->first())->create($payload);
 
-        Livewire::test(ListContacts::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListContacts::class);
+
+        /* assert */
+        $component
             ->assertSuccessful()
-            ->assertSee($contact->first_name);
+            ->assertSee('Jane Doe');
+        $this->assertDatabaseHas('contacts', $payload);
     }
-    // endregion
+    # endregion
 
-    // region crud
+    # region crud
     #[Test]
-    #[Group('smoke')]
-    /**
-     * @payload
-     * {
-     * "relation_id": 51,
-     * "first_name": "John",
-     * "last_name": "Doe",
-     * "gender": "male"
-     * }
-     */
+    #[Group('crud')]
     public function it_creates_a_contact(): void
     {
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-        $relation = Relation::factory()->create();
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
+        /* arrange */
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
 
         $payload = [
             'relation_id' => $relation->id,
-            'first_name'  => 'John',
+            'first_name'  => 'Jane',
             'last_name'   => 'Doe',
-            'gender'      => 'male',
+            'gender'      => 'female',
         ];
 
-        Livewire::test(CreateContact::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
             ->fillForm($payload)
-            ->call('create')
+            ->call('create');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
             ->assertHasNoFormErrors();
-    }
 
-    #[Test]
-    #[Group('smoke')]
-    /**
-     * \Modules\Clients\Filament\Company\Resources\ContactResource.
-     *
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "relation_id": "Value",
-     * "first_name": "Example",
-     * "last_name": "Example",
-     * "gender": "Value"
-     * }
-     */
-    public function it_fails_to_creates_contact_when_relation_not_filled(): void
-    {
-        // Create a company and associate it with the current user
-        $company = Company::factory()->create();
-
-        $user = User::factory()->create();
-        $user->companies()->attach($company->id);
-
-        session(['current_company_id' => $company->id]);
-
-        $this->actingAs($user);
-
-        $payload = [
-            'relation_id' => 1,
-            'first_name'  => 'John',
-            'last_name'   => 'Doe',
-            'gender'      => 'male',
-        ];
-
-        Livewire::test(CreateContact::class)
-            ->fillForm($payload)
-            ->call('create')
-            ->assertHasErrors(['data.relation_id']);
-        if (app()->isLocal() || app()->runningUnitTests()) {
-            $errors      = Livewire::test(CreateContact::class)->errors();
-            $failedRules = Livewire::test(CreateContact::class)->failedRules();
-        }
+        $this->assertDatabaseHas('contacts', $payload);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * \Modules\Clients\Filament\Company\Resources\ContactResource.
-     *
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "relation_id": "Value",
-     * "first_name": "Example",
-     * "last_name": "Example",
-     * "gender": "Value"
-     * }
-     */
+    public function it_fails_when_relation_id_is_missing(): void
+    {
+        /* arrange */
+        $payload = [
+            //'relation_id' => $relation->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+            'gender'     => 'female',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['relation_id']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_when_first_name_is_missing(): void
+    {
+        /* arrange */
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
+
+        $payload = [
+            'relation_id' => $relation->id,
+            'last_name'   => 'Doe',
+            'gender'      => 'female',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['first_name']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_when_last_name_is_missing(): void
+    {
+        /* arrange */
+        $relation = Relation::factory()
+            ->for($this->user->companies()->first(), 'company')
+            ->create();
+
+        $payload = [
+            'relation_id' => $relation->id,
+            'first_name'  => 'Jane',
+            'gender'      => 'female',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateContact::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['last_name']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_updates_a_contact(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
-
-        $record = Contact::factory()->create();
-
+        /* arrange */
         $payload = [
-            'company_id'  => 'Value',
-            'relation_id' => 'Value',
-            'first_name'  => 'Example',
-            'last_name'   => 'Example',
-            'gender'      => 'Value',
+            'first_name' => 'Initial',
+            'last_name'  => 'Contact',
+            'gender'     => 'male',
         ];
 
-        Livewire::test(EditContact::class, ['record' => $record->getKey()])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        $contact = Contact::factory()->for($this->user->companies()->first())->create($payload);
+
+        $update = [
+            'first_name' => 'Updated',
+            'last_name'  => 'Contact',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(EditContact::class, ['record' => $contact->getKey()])->fillForm($update)->call('save');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('contacts', $update);
     }
 
     #[Test]
     #[Group('crud')]
-    /**
-     * \Modules\Clients\Filament\Company\Resources\ContactResource.
-     *
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "relation_id": "Value",
-     * "first_name": "Example",
-     * "last_name": "Example",
-     * "gender": "Value"
-     * }
-     */
     public function it_deletes_a_contact(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        $this->markTestIncomplete();
 
-        //$this->actingAs(User::factory()->create());
+        /* arrange */
 
-        $record = Contact::factory()->create();
+        $contact = Contact::factory()->for($this->user->companies()->first())->create();
 
-        Livewire::test(ListContacts::class)
-            ->callTableAction('delete', $record);
+        /* act */
+        $component = Livewire::actingAs($this->user)->test(ListContacts::class)->callTableAction('delete', $contact);
 
-        $this->assertDatabaseMissing('contacts', ['id' => $record->id]);
+        $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
     }
+    # endregion
 
-    // endregion
-
-    // region usp
-
-    // endregion
+    #region spicy
+    # endregion
 }

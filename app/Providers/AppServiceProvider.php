@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Filament\Tables\Actions\CreateAction as TableCreateAction;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Modules\Invoices\Models\Invoice;
 
@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'invoice' => Invoice::class,
         ]);
-
-        //TableEditAction::configureUsing(fn (TableEditAction $action) => $action->modalWidth('7xl'));
-        TableCreateAction::configureUsing(fn (TableCreateAction $action) => $action->modalWidth('7xl'));
+        /*DB::listen(function ($query) {
+            logger('SQL', [$query->sql, $query->bindings]);
+        });*/
     }
 }

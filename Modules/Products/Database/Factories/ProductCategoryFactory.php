@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\Company;
 use Modules\Products\Models\ProductCategory;
 
+/**
+ * @extends Factory<\Modules\Products\Models\ProductCategory>
+ */
 class ProductCategoryFactory extends Factory
 {
     protected $model = ProductCategory::class;
@@ -37,7 +40,7 @@ class ProductCategoryFactory extends Factory
 
         return [
             'company_id'    => $company->id,
-            'category_name' => $this->faker->unique()->randomElement($categories),
+            'category_name' => $this->faker->randomElement($categories),
             'description'   => null,
         ];
     }

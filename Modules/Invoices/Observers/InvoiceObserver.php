@@ -2,18 +2,24 @@
 
 namespace Modules\Invoices\Observers;
 
-use Illuminate\Support\Facades\Log;
+use Modules\Core\Observers\AbstractObserver;
 
-class InvoiceObserver
+class InvoiceObserver extends AbstractObserver
 {
-    public function creating($model): void
+    /*public static function boot(): void
     {
-        if (empty($model->company_id)) {
-            $companyId = session('current_company_id');
-            if ($companyId) {
-                $model->company_id = $companyId;
-                Log::debug('InvoiceObserver: Set company_id', ['company_id' => $companyId]);
-            }
-        }
-    }
+        parent::boot();
+
+        static::creating(function ($invoice): void {
+            //event(new InvoiceCreating($invoice));
+        });
+
+        static::created(function ($invoice): void {
+            //event(new InvoiceCreated($invoice));
+        });
+
+        static::deleted(function ($invoice): void {
+            //event(new InvoiceDeleted($invoice));
+        });
+    }*/
 }

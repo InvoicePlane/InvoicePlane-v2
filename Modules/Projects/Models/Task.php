@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
@@ -14,19 +16,22 @@ use Modules\Projects\Database\Factories\TaskFactory;
 use Modules\Projects\Enums\TaskStatus;
 
 /**
- * @property int      $id
- * @property int      $customer_id
- * @property int      $project_id
- * @property int      $assigned_to
- * @property string   $task_status
- * @property string   $task_name
- * @property string   $task_due_at
- * @property string   $task_description
- * @property mixed    $created_at
- * @property mixed    $updated_at
- * @property User     $user
- * @property Project  $project
- * @property Relation $customer
+ * @property int          $id
+ * @property int          $company_id
+ * @property int          $customer_id
+ * @property int|null     $project_id
+ * @property int|null     $tax_rate_id
+ * @property int|null     $assigned_to
+ * @property string       $task_status
+ * @property string|null  $task_name
+ * @property float|null   $task_price
+ * @property Carbon|null  $due_at
+ * @property string|null  $description
+ * @property User|null    $user
+ * @property Company      $company
+ * @property Relation     $relation
+ * @property Project|null $project
+ * @property TaxRate|null $tax_rate
  */
 class Task extends Model
 {
@@ -35,21 +40,22 @@ class Task extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
-
     protected $casts = [
-        'task_due_at' => 'date',
+        'due_at'      => 'datetime',
         'task_status' => TaskStatus::class,
     ];
+
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function taxRate(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(TaxRate::class, 'tax_rate_id');
+        return $this
+            ->belongsTo(Relation::class, 'customer_id');
     }
 
     public function project(): BelongsTo
@@ -57,9 +63,9 @@ class Task extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function customer(): BelongsTo
+    public function taxRate(): BelongsTo
     {
-        return $this->belongsTo(Relation::class, 'customer_id');
+        return $this->belongsTo(TaxRate::class, 'tax_rate_id');
     }
 
     protected static function newFactory(): Factory

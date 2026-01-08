@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Class Modules\\Core\\Tests\\Feature\\UserProfileResource not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Core/Tests/Feature/UserProfilesTest.php

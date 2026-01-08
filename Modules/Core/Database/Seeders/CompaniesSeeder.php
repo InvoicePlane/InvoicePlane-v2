@@ -3,6 +3,8 @@
 namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 
 class CompaniesSeeder extends Seeder
@@ -12,12 +14,12 @@ class CompaniesSeeder extends Seeder
         Company::factory()
             ->count(1)
             ->has(
-                /*Relation::factory()
-                    ->count(25)
+                Relation::factory()
+                    ->count(5)
                     ->state([
                         'relation_type' => RelationType::CUSTOMER->value,
                     ]),
-                'relations'*/
+                'relations'
             )
             ->create();
     }

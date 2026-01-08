@@ -6,6 +6,7 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum ExpenseType: string implements LabeledEnum
 {
+    case FIXED       = 'fixed';
     case ONE_TIME    = 'one_time';
     case RECURRING   = 'recurring';
     case TRAVEL      = 'travel';
@@ -25,6 +26,7 @@ enum ExpenseType: string implements LabeledEnum
             self::TRAVEL      => 'Travel',
             self::UTILITY     => 'Utility',
             self::MAINTENANCE => 'Maintenance',
+            self::FIXED       => 'Fixed',
         };
     }
 
@@ -36,6 +38,7 @@ enum ExpenseType: string implements LabeledEnum
             self::TRAVEL      => 'yellow',
             self::UTILITY     => 'purple',
             self::MAINTENANCE => 'red',
+            self::FIXED       => 'sky',
         };
     }
 }

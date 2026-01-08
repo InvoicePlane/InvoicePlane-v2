@@ -14,8 +14,10 @@ class CustomerFactory extends Factory
 
     public function definition(): array
     {
+        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+
         return [
-            'company_id'         => Company::query()->inRandomOrder()->first()->id,
+            'company_id'         => $company->id,
             'primary_contact_id' => null,
             'relation_type'      => $this->faker->randomElement(RelationType::cases())->value,
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,
@@ -25,7 +27,7 @@ class CustomerFactory extends Factory
             'id_number'          => $this->faker->optional()->numerify('#########'),
             'coc_number'         => $this->faker->optional()->numerify('#########'),
             'vat_number'         => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
-            'registered_at'      => $this->faker->dateTimeBetween('-10 years', '-1 month')->format('Y-m-d'),
+            'registered_at'      => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
         ];
     }
 

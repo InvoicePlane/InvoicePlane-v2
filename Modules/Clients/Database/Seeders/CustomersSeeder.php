@@ -22,7 +22,7 @@ class CustomersSeeder extends Seeder
             $company = $model;
 
             Relation::factory()
-                ->count(10)
+                ->count(4)
                 ->create([
                     'company_id'    => $company->id,
                     'relation_type' => RelationType::CUSTOMER->value,
@@ -59,7 +59,7 @@ class CustomersSeeder extends Seeder
                 });
 
             Relation::factory()
-                ->count(25)
+                ->count(5)
                 ->create([
                     'company_id'    => $company->id,
                     'relation_type' => RelationType::PROSPECT->value,
@@ -77,7 +77,7 @@ class CustomersSeeder extends Seeder
                 });
 
             Relation::factory()
-                ->count(12)
+                ->count(6)
                 ->create([
                     'company_id'    => $company->id,
                     'relation_type' => RelationType::VENDOR->value,

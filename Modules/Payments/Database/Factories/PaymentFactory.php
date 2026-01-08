@@ -3,11 +3,13 @@
 namespace Modules\Payments\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Invoices\Models\Invoice;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
-use Modules\Payments\Models\PaymentMethod;
 
 class PaymentFactory extends Factory
 {
@@ -15,24 +17,22 @@ class PaymentFactory extends Factory
 
     public function definition(): array
     {
-        $company       = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $paymentMethod = PaymentMethod::query()->inRandomOrder()->first() ?? PaymentMethod::factory()->create();
+        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
+            ->inRandomOrder()
+            ->first() ?? Relation::factory()->customer()->create();
 
-        $payableType = $this->faker->randomElement([
-            Invoice::class,
-        ]);
-        $payableId = match ($payableType) {
-            Invoice::class => Invoice::query()->inRandomOrder()->first()?->id,
-        } ?? null;
+        $invoice = Invoice::query()->inRandomOrder()->first() ?? Invoice::factory()->create();
 
         return [
-            'company_id'        => $company->id,
-            'payable_type'      => $payableType,
-            'payable_id'        => $payableId,
-            'payment_method_id' => $paymentMethod->id,
-            'payment_status'    => $this->faker->randomElement(PaymentStatus::cases())->value,
-            'paid_at'           => $this->faker->optional()->dateTimeBetween('-3 years', 'now'),
-            'payment_amount'    => $this->faker->randomFloat(2, 10, 500),
+            'company_id'         => $company->id,
+            'customer_id'        => $customer->id,
+            'invoice_id'         => $invoice->id,
+            'merchant_client_id' => null,
+            'payment_method'     => PaymentMethod::BANK_TRANSFER->value,
+            'payment_status'     => $this->faker->randomElement(PaymentStatus::cases())->value,
+            'paid_at'            => $this->faker->dateTimeBetween('-3 years', '-2 days'),
+            'payment_amount'     => $this->faker->randomFloat(4, 0, 1000),
         ];
     }
 
