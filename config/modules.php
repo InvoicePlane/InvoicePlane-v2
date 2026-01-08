@@ -29,7 +29,7 @@ return [
             'routes/web'      => 'routes/Web/web.php',
             'routes/api'      => 'routes/Api/api.php',
             'views/index'     => 'resources/views/index.blade.php',
-            'views/master'    => 'resources/views/layouts/master.blade.php',
+            'views/master'    => 'resources/views/components/layouts/master.blade.php',
             'scaffold/config' => 'config/config.php',
             'composer'        => 'composer.json',
             'assets/js/app'   => 'resources/assets/js/app.js',
@@ -133,26 +133,25 @@ return [
             'command'         => ['path' => 'Console', 'generate' => false],
             'component-class' => ['path' => 'View/Components', 'generate' => false],
             'emails'          => ['path' => 'Emails', 'generate' => false],
-            'event'           => ['path' => 'Events', 'generate' => false],
+            'event'           => ['path' => 'Events', 'generate' => true],
             'enums'           => ['path' => 'Enums', 'generate' => true],
             'exceptions'      => ['path' => 'Exceptions', 'generate' => false],
             'jobs'            => ['path' => 'Jobs', 'generate' => false],
-            'filament'        => ['path' => 'Filament/Resources', 'generate' => true],
-            'helpers'         => ['path' => 'Helpers', 'generate' => false],
+            'helpers'         => ['path' => 'Helpers', 'generate' => true],
             'interfaces'      => ['path' => 'Interfaces', 'generate' => false],
-            'listener'        => ['path' => 'Listeners', 'generate' => false],
+            'listener'        => ['path' => 'Listeners', 'generate' => true],
             'model'           => ['path' => 'Models', 'generate' => true],
             'notifications'   => ['path' => 'Notifications', 'generate' => false],
-            'observer'        => ['path' => 'Observers', 'generate' => false],
+            'observer'        => ['path' => 'Observers', 'generate' => true],
             'policies'        => ['path' => 'Policies', 'generate' => false],
             'provider'        => ['path' => 'Providers', 'generate' => true],
             'repository'      => ['path' => 'Repositories', 'generate' => false],
             'resource'        => ['path' => 'Transformers', 'generate' => false],
             'route-provider'  => ['path' => 'Providers', 'generate' => true],
-            'rules'           => ['path' => 'Rules', 'generate' => false],
-            'services'        => ['path' => 'Services', 'generate' => false],
-            'scopes'          => ['path' => 'Models/Scopes', 'generate' => false],
-            'traits'          => ['path' => 'Traits', 'generate' => false],
+            'rules'           => ['path' => 'Support', 'generate' => true],
+            'services'        => ['path' => 'Services', 'generate' => true],
+            'scopes'          => ['path' => 'Models/Scopes', 'generate' => true],
+            'traits'          => ['path' => 'Traits', 'generate' => true],
 
             // app/Http/
             'controller' => ['path' => 'Http/Controllers', 'generate' => false],
@@ -168,7 +167,7 @@ return [
             'seeder'    => ['path' => 'Database/Seeders', 'generate' => true],
 
             // lang/
-            'lang' => ['path' => 'resources/lang', 'generate' => false],
+            'lang' => ['path' => 'resources/lang', 'generate' => true],
 
             // resource/
             'assets'         => ['path' => 'resources/assets', 'generate' => false],
@@ -176,11 +175,11 @@ return [
             'views'          => ['path' => 'resources/views', 'generate' => true],
 
             // routes/
-            'routes' => ['path' => 'routes', 'generate' => true],
+            'routes' => ['path' => 'routes', 'generate' => false],
 
-            // tests/
-            'test-feature' => ['path' => 'tests/Feature', 'generate' => true],
-            'test-unit'    => ['path' => 'tests/Unit', 'generate' => true],
+            // Tests/
+            'test-feature' => ['path' => 'Tests/Feature', 'generate' => true],
+            'test-unit'    => ['path' => 'Tests/Unit', 'generate' => true],
         ],
     ],
 
@@ -271,7 +270,9 @@ return [
     */
     'register' => [
         'translations' => true,
-        // load files on boot or register method
+        /*
+         * load files on boot or register method
+         */
         'files' => 'register',
     ],
 

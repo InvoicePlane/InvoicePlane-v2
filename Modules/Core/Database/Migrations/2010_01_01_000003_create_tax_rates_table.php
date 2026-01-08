@@ -12,9 +12,11 @@ return new class () extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->string('tax_rate_type'); // TaxRateType Enum
             $table->boolean('is_active')->default(true);
-            $table->string('name');
             $table->string('code');
-            $table->decimal('rate', 5, 2);
+            $table->string('name');
+            $table->boolean('is_compound')->default(0);
+            $table->boolean('calculate_vat')->default(0);
+            $table->decimal('rate', 5, 2)->default(0.00);
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });

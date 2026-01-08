@@ -6,21 +6,33 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\MailQueue;
+use Modules\Core\Models\Note;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Database\Factories\PaymentFactory;
+use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 
 /**
- * @property int                             $id
- * @property int                             $company_id
- * @property int                             $payable_id
- * @property string                          $payable_type
- * @property int                             $payment_method_id
- * @property PaymentMethod                   $paymentMethod
- * @property \Illuminate\Support\Carbon|null $paid_at
- * @property float                           $payment_amount
- * @property string|null                     $payment_note
+ * @property int           $id
+ * @property int           $company_id
+ * @property int           $customer_id
+ * @property int|null      $invoice_id
+ * @property int|null      $merchant_client_id
+ * @property string|null   $payment_number
+ * @property PaymentMethod $payment_method
+ * @property PaymentStatus $payment_status
+ * @property Carbon|null   $paid_at
+ * @property float         $payment_amount
+ * @property string|null   $notes
+ * @property Company       $company
+ * @property Relation      $relation
+ * @property Invoice|null  $invoice
  */
 class Payment extends Model
 {
@@ -32,41 +44,84 @@ class Payment extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'payment_method' => PaymentMethod::class,
         'payment_status' => PaymentStatus::class,
         'paid_at'        => 'date',
-        'payment_amount' => 'decimal:2',
     ];
 
-    //
-    // Relationships (alphabetical)
-    //
-
-    public function paymentMethod(): BelongsTo
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(PaymentMethod::class);
+        return $this
+            ->belongsTo(Relation::class, 'customer_id');
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->belongsTo(Relation::class, 'customer_id');
     }
 
     public function invoice(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
-    //
-    // Accessors
-    //
-
-    public function getPayableReferenceAttribute(): ?string
+    public function mailQueue(): MorphMany
     {
-        return match ($this->payable_type) {
-            Invoice::class => $this->invoice?->invoice_number,
-            default        => null,
-        };
+        return $this->morphMany(MailQueue::class, 'mailable');
     }
 
-    //
-    // Factory
-    //
+    public function merchantClient(): BelongsTo
+    {
+        return $this->belongsTo(MerchantClient::class, 'merchant_client_id');
+    }
 
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'notable');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+    public function getFormattedAmountAttribute(): string
+    {
+        return number_format($this->payment_amount, 2, '.', ',');
+    }
+
+    public function getFormattedPaidAtAttribute(): ?string
+    {
+        return $this->paid_at?->format('Y-m-d H:i:s');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeRecent($query, $limit = 25)
+    {
+        return $query->orderBy('paid_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit($limit);
+    }
+
+    public function scopePaidBetween($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('paid_at', [$startDate, $endDate]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return PaymentFactory::new();

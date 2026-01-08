@@ -2,54 +2,55 @@
 
 namespace Modules\Invoices\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Core\Models\TaxRate;
-use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
-use Modules\Products\Models\Item;
-use Modules\Products\Models\ProductUnit;
 
-class InvoiceItemFactory extends Factory
+class InvoiceItemFactory extends AbstractFactory
 {
     protected $model = InvoiceItem::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Item::query()->inRandomOrder()->first() ?? Item::factory()->create();
-        $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        /** @phpstan-ignore-next-line */
+        $taxRateId = $attributes['tax_rate_id'] ?? null;
+        $taxRate   = $taxRateId
+            ? TaxRate::query()->find($taxRateId)
+            : null;
 
-        $quantity = $this->faker->randomFloat(2, 1, 20);
-        $price    = $this->faker->randomFloat(2, 10, 500);
-        $discount = $this->faker->randomFloat(2, 0, 50);
-        $subtotal = ($quantity * $price) - $discount;
+        /** @phpstan-ignore-next-line */
+        $taxPercent = $taxRate?->rate ?? 0;
+
+        $quantity = $this->faker->randomFloat(4, 1, 20);
+        $price    = $this->faker->randomFloat(4, 10, 500);
+        $discount = $this->faker->randomFloat(4, 0, 50);
+
+        $subtotal = round(($quantity * $price) - $discount, 2);
+        $taxTotal = round($subtotal * ($taxPercent / 100), 2);
+        $total    = round($subtotal + $taxTotal, 2);
 
         return [
-            'company_id'   => $company->id,
-            'invoice_id'   => Invoice::query()->inRandomOrder()->first()?->id,
-            'item_id'      => $item->id,
-            'unit_id'      => $unit->id,
-            'added_at'     => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
-            'item_name'    => $item->item_name,
-            'is_recurring' => false,
-            'quantity'     => $quantity,
-            'price'        => $price,
-            'discount'     => $discount,
-            'subtotal'     => $subtotal,
-            'tax_rate_id'  => $taxRate->id,
-            'order'        => $this->faker->numberBetween(1, 9999),
-            'description'  => null,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
+            'is_recurring'  => false,
+            'quantity'      => $quantity,
+            'price'         => $price,
+            'discount'      => $discount,
+            'subtotal'      => $subtotal,
+            'tax_1'         => $taxTotal,
+            'tax_2'         => null,
+            'tax_total'     => $taxTotal,
+            'total'         => $total,
+            'display_order' => $this->faker->numberBetween(1, 9999),
+            'description'   => null,
         ];
     }
 
     public function discounted(): static
     {
         return $this->state(function (array $attributes) {
-            $quantity = $this->faker->randomFloat(2, 1, 20);
-            $price    = $this->faker->randomFloat(2, 10, 500);
-            $discount = $this->faker->randomFloat(2, 50, $price * $quantity * 0.5);
+            $quantity = $this->faker->randomFloat(4, 1, 20);
+            $price    = $this->faker->randomFloat(4, 10, 500);
+            $discount = $this->faker->randomFloat(4, 50, $price * $quantity * 0.5);
             $subtotal = ($quantity * $price) - $discount;
 
             return [

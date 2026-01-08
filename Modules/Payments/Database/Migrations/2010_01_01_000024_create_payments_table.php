@@ -10,26 +10,20 @@ return new class () extends Migration {
         Schema::create('payments', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('invoice_id');
-            $table->unsignedBigInteger('payment_method_id')->index('payments_payment_method_id_foreign');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('invoice_id')->nullable();
+            $table->unsignedBigInteger('merchant_client_id')->nullable();
+            $table->string('payment_number')->nullable();
+            $table->string('payment_method');
             $table->string('payment_status');
-            $table->date('paid_at')->nullable()->default(null);
-            $table->decimal('payment_amount', 20);
+            $table->date('paid_at')->nullable();
+            $table->decimal('payment_amount', 20, 4);
+            $table->text('notes')->nullable();
 
-            $table->foreign('company_id')
-                ->references('id')
-                ->on('companies')
-                ->onDelete('cascade');
-            $table->foreign('invoice_id', 'payments_invoice_id_foreign')
-                ->references('id')
-                ->on('invoices')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
-            $table->foreign('payment_method_id', 'payments_payment_method_id_foreign')
-                ->references('id')
-                ->on('payment_methods')
-                ->onUpdate('cascade')
-                ->onDelete('restrict');
+            $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
+            $table->foreign('customer_id')->references('id')->on('relations')->restrictOnDelete();
+            $table->foreign('invoice_id')->references('id')->on('invoices')->nullOnDelete();
+            // $table->foreign('merchant_client_id')->references('id')->on('merchant_clients')->nullOnDelete();
         });
     }
 

@@ -2,28 +2,20 @@
 
 namespace Modules\Core\Database\Seeders;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\User;
 
-class UsersSeeder extends Seeder
+class UsersSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Users';
+
+    protected int $defaultCount = 15;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Model $model): void {
-            /** @var Company $company */
-            $company = $model;
-
-            User::factory()
-                ->count(random_int(15, 25))
-                ->create()
-                ->each(function (Model $model) use ($company): void {
-                    /** @var User $user */
-                    $user = $model;
-
-                    $user->companies()->attach($company->id);
-                });
-        });
+        $user = User::factory()->create();
+        $user->companies()->attach($this->companyId);
+        $role = collect(UserRole::nonAdmin())->random();
+        $user->assignRole($role);
     }
 }

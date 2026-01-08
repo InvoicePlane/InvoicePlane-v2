@@ -2,11 +2,14 @@
 
 namespace Modules\Core\Enums;
 
-enum DocumentGroupType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum DocumentGroupType: string implements LabeledEnum
 {
     case CREDIT_NOTES       = 'credit_notes';
     case CUSTOMERS          = 'customers';
     case DRAFTS             = 'drafts';
+    case EXPENSES           = 'expenses';
     case PRO_FORMA_INVOICES = 'pro_forma_invoices';
     case PROSPECTS          = 'prospects';
     case QUOTES             = 'quotes';
@@ -24,6 +27,7 @@ enum DocumentGroupType: string implements \Modules\Core\Contracts\LabeledEnum
             self::CREDIT_NOTES       => 'Credit Notes',
             self::CUSTOMERS          => 'Customers',
             self::DRAFTS             => 'Drafts',
+            self::EXPENSES           => 'Expenses',
             self::PRO_FORMA_INVOICES => 'Pro Forma Invoices',
             self::PROSPECTS          => 'Prospects',
             self::QUOTES             => 'Quotes',
@@ -38,6 +42,7 @@ enum DocumentGroupType: string implements \Modules\Core\Contracts\LabeledEnum
             self::CREDIT_NOTES       => 'maroon',
             self::CUSTOMERS          => 'info',
             self::DRAFTS             => 'gray',
+            self::EXPENSES           => 'secondary',
             self::PRO_FORMA_INVOICES => 'secondary',
             self::PROSPECTS          => 'emerald',
             self::QUOTES             => 'primary',
@@ -52,6 +57,7 @@ enum DocumentGroupType: string implements \Modules\Core\Contracts\LabeledEnum
             self::CREDIT_NOTES       => 'CRE',
             self::CUSTOMERS          => 'CST',
             self::DRAFTS             => 'DRA',
+            self::EXPENSES           => 'EXP',
             self::PRO_FORMA_INVOICES => 'PFI',
             self::PROSPECTS          => 'PRP',
             self::QUOTES             => 'QUO',

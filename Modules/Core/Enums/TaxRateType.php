@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Enums;
 
-enum TaxRateType: string implements \Modules\Core\Contracts\LabeledEnum
+use Modules\Core\Contracts\LabeledEnum;
+
+enum TaxRateType: string implements LabeledEnum
 {
     case EXCLUSIVE = 'exclusive';
     case INCLUSIVE = 'inclusive';
@@ -19,7 +21,7 @@ enum TaxRateType: string implements \Modules\Core\Contracts\LabeledEnum
         return match ($this) {
             self::EXCLUSIVE => 'Exclusive',
             self::INCLUSIVE => 'Inclusive',
-            self::ZERO      => 'Zero Rated',
+            self::ZERO      => 'Zero',
             self::EXEMPT    => 'Exempt',
         };
     }

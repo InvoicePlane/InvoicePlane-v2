@@ -10,8 +10,21 @@ enum QuoteStatus: string implements LabeledEnum
     case SENT     = 'sent';
     case VIEWED   = 'viewed';
     case APPROVED = 'approved';
-    case CANCELED = 'canceled';
+    case REJECTED = 'rejected';
 
+    /**
+     * case DRAFT = 1;.
+     *
+     * case SENT = 2;
+     *
+     * case VIEWED = 3;
+     *
+     * case APPROVED = 4;
+     *
+     * case REJECTED = 5;
+     *
+     * case CANCELED = 6;
+     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -20,11 +33,11 @@ enum QuoteStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT    => 'Draft',
-            self::SENT     => 'Sent',
-            self::VIEWED   => 'Viewed',
-            self::APPROVED => 'Approved',
-            self::CANCELED => 'Canceled',
+            self::DRAFT    => trans('ip.quote_status_draft'),
+            self::SENT     => trans('ip.quote_status_sent'),
+            self::VIEWED   => trans('ip.quote_status_viewed'),
+            self::APPROVED => trans('ip.quote_status_approved'),
+            self::REJECTED => trans('ip.quote_status_rejected'),
         };
     }
 
@@ -35,7 +48,7 @@ enum QuoteStatus: string implements LabeledEnum
             self::SENT     => 'green',
             self::VIEWED   => 'info',
             self::APPROVED => 'success',
-            self::CANCELED => 'danger',
+            self::REJECTED => 'danger',
         };
     }
 }

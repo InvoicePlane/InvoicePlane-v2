@@ -15,26 +15,35 @@
             "wikimedia/composer-merge-plugin": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
-        "filament/filament": "^3.3.14",
-        "laravel/framework": "^12.12",
-        "nwidart/laravel-modules": "^12.0.3"
+        "doctrine/dbal": ">=4.4.1",
+        "filament/actions": ">=4.4",
+        "filament/filament": ">=4.4",
+        "laravel/framework": ">=12.44",
+        "maatwebsite/excel": ">=3.1.67",
+        "maennchen/zipstream-php": ">=3.2.1",
+        "nwidart/laravel-modules": ">=12.0.4",
+        "spatie/laravel-permission": ">=6.24"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "driftingly/rector-laravel": "^2.0.4",
-        "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.4",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.22",
-        "laravel/tinker": "^2.10.1",
-        "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.8",
-        "phpunit/phpunit": "^11.5.19",
-        "rector/rector": "^2.0.14"
+        "barryvdh/laravel-debugbar": ">=3.16.3",
+        "brianium/paratest": ">=7.16",
+        "driftingly/rector-laravel": ">=2.1.9",
+        "fakerphp/faker": ">=1.24.1",
+        "larastan/larastan": ">=3.8.1",
+        "laravel/boost": ">=1.8.7",
+        "laravel/pail": ">=1.2.4",
+        "laravel/pint": "dev-feat/blade",
+        "laravel/sail": ">=1.51",
+        "laravel/tinker": ">=2.10.2",
+        "mockery/mockery": ">=1.6.12",
+        "nunomaduro/collision": ">=8.8.3",
+        "phpunit/phpunit": ">=12.5.4",
+        "rector/rector": ">=2.3",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
@@ -65,9 +74,12 @@
             "@php artisan key:generate --ansi",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout"
-        ]
+        "dev": [],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "aargh": "php artisan view:clear && php artisan config:clear && php artisan route:clear"
     },
     "extra": {
         "laravel": {
