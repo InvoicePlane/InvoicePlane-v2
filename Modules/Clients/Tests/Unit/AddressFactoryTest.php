@@ -20,7 +20,7 @@ class AddressFactoryTest extends AbstractTestCase
         /* Assert */
         $this->assertInstanceOf(Address::class, $address);
         $this->assertNotNull($address->address_1);
-        $this->assertContains($address->address_type, array_map(fn($case) => $case->value, AddressType::cases()));
+        $this->assertContains($address->address_type, array_column(AddressType::cases(), 'value'));
         
         // address_2 can be null or a string like "Apt 12"
         $this->assertTrue(
@@ -57,5 +57,23 @@ class AddressFactoryTest extends AbstractTestCase
                 $this->assertMatchesRegularExpression('/^Apt \d{2}$/', $address->address_2);
             }
         }
+    }
+
+    #[Test]
+    public function it_generates_address_2_with_approximately_70_percent_probability(): void
+    {
+        /* Arrange - Create large sample for probability testing */
+        $sampleSize = 100;
+
+        /* Act */
+        $addresses = Address::factory()->count($sampleSize)->make();
+
+        /* Assert */
+        $withAddress2 = $addresses->filter(fn ($address) => $address->address_2 !== null)->count();
+        $percentage = ($withAddress2 / $sampleSize) * 100;
+
+        // Allow 15% margin (55%-85% range) to account for randomness
+        $this->assertGreaterThanOrEqual(55, $percentage, 'address_2 should be present in approximately 70% of cases');
+        $this->assertLessThanOrEqual(85, $percentage, 'address_2 should be present in approximately 70% of cases');
     }
 }
