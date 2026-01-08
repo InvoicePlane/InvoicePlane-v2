@@ -2,20 +2,22 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 
-class CustomerFactory extends Factory
+class CustomerFactory extends AbstractFactory
 {
     protected $model = Relation::class;
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+
         return [
-            'company_id'         => Company::query()->inRandomOrder()->first()->id,
+            'company_id'         => $companyId,
             'primary_contact_id' => null,
             'relation_type'      => $this->faker->randomElement(RelationType::cases())->value,
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,
@@ -25,7 +27,7 @@ class CustomerFactory extends Factory
             'id_number'          => $this->faker->optional()->numerify('#########'),
             'coc_number'         => $this->faker->optional()->numerify('#########'),
             'vat_number'         => $this->faker->optional()->regexify('^(BE|NL|DE|FR|LU)\d{9}$'),
-            'registered_at'      => $this->faker->dateTimeBetween('-10 years', '-1 month')->format('Y-m-d'),
+            'registered_at'      => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
         ];
     }
 

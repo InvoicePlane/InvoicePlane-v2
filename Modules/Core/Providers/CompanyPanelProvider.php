@@ -2,55 +2,102 @@
 
 namespace Modules\Core\Providers;
 
+use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Widgets;
+use Filament\Support\Enums\Width;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\File;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Modules\Clients\Filament\Company\Resources\ContactResource;
-use Modules\Clients\Filament\Company\Resources\CustomerResource;
+use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
+use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategoryResource;
-use Modules\Expenses\Filament\Company\Resources\ExpenseResource;
-use Modules\Invoices\Filament\Company\Resources\InvoiceResource;
-use Modules\Invoices\Filament\Company\Resources\RecurringInvoiceResource;
-use Modules\Payments\Filament\Company\Resources\PaymentMethodResource;
-use Modules\Payments\Filament\Company\Resources\PaymentResource;
-use Modules\Products\Filament\Company\Resources\ItemResource;
-use Modules\Products\Filament\Company\Resources\ProductCategoryResource;
-use Modules\Products\Filament\Company\Resources\ProductUnitResource;
-use Modules\Projects\Filament\Company\Resources\ProjectResource;
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-use Modules\Quotes\Filament\Company\Resources\QuoteResource;
-use Nwidart\Modules\Facades\Module;
+use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Http\Middleware\ConfigureTenant;
+use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
+use Modules\Core\Http\Middleware\SetTenantFromQueryString;
+use Modules\Core\Models\Company;
+use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
+use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Invoices\Filament\Company\Widgets\RecentInvoicesWidget;
+use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
+use Modules\Products\Filament\Company\Resources\ProductCategories\ProductCategoryResource;
+use Modules\Products\Filament\Company\Resources\Products\ProductResource;
+use Modules\Products\Filament\Company\Resources\ProductUnits\ProductUnitResource;
+use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
+use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
+use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class CompanyPanelProvider extends PanelProvider
 {
-    public function panel(Panel $companyPanel): Panel
+    public function panel(Panel $panel): Panel
     {
-        /** @var \Filament\Panel $companyPanel */
-        $panel = $companyPanel
+        /** @var Panel $companyPanel */
+        $companyPanel = $panel
+            // #region Panel Configuration
+
+            ->default()
             ->id('company')
             ->path('')
-            ->default()
+            ->viteTheme('resources/css/filament/company/nord.css')
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
+            ->maxContentWidth(Width::Full)
             ->font('Poppins', provider: GoogleFontProvider::class)
+            ->unsavedChangesAlerts()
+            ->sidebarCollapsibleOnDesktop()
+            ->tenantMenu(false)
+            // #endregion
+
+            // #region Tenant Configuration
+            ->tenant(
+                Company::class,
+                slugAttribute: 'search_code',
+            )
+            ->homeUrl(function ($panel, $company) {
+                $tenant = request('tenant');
+                //\Filament\Facades\Filament::getTenant()?->search_code
+
+                return route('filament.company.pages.dashboard', ['tenant' => $tenant]);
+            })
+
+            ->tenantMiddleware([
+                SetTenantFromQueryString::class,
+                ConfigureTenant::class,
+                EnsureUserCanAccessCompany::class,
+            ], isPersistent: true)
+            // #endregion
+
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ])
+
             ->colors([
                 'primary' => [
                     50  => '#F2F7FD',
@@ -105,53 +152,81 @@ class CompanyPanelProvider extends PanelProvider
                     950 => '#0A2917',
                 ],
             ])
+            ->unsavedChangesAlerts()
+            ->sidebarCollapsibleOnDesktop()
+            ->resources([
+                ContactResource::class,
+                RelationResource::class,
+                ExpenseResource::class,
+                ExpenseCategoryResource::class,
+                InvoiceResource::class,
+                PaymentResource::class,
+                ProductResource::class,
+                ProductUnitResource::class,
+                ProductCategoryResource::class,
+                ProjectResource::class,
+                TaskResource::class,
+                QuoteResource::class,
+            ])
+            ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
+            ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
+            ->pages([
+                Dashboard::class,
+            ])
+            ->widgets([
+                RecentQuotesWidget::class,
+                RecentInvoicesWidget::class,
+                //RecentProjectsWidget::class,
+                //RecentTasksWidget::class,
+                //RecentExpensesWidget::class,
+                //RecentPaymentsWidget::class,
+            ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                $tenant = request('tenant');
+
                 return $builder
                     ->items([
                         NavigationItem::make('Dashboard')
                             ->icon('heroicon-o-home')
-                            ->url(route('filament.company.pages.dashboard'))
+                            ->url(route('filament.company.pages.dashboard', ['tenant' => $tenant]))
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.dashboard')),
                     ])
                     ->groups([
                         NavigationGroup::make('Customers')
-                            ->icon('heroicon-o-user-group')
+                            //->icon('heroicon-o-user-group')
                             ->items([
-                                ...CustomerResource::getNavigationItems(),
-                                ...ContactResource::getNavigationItems(),
-                            ]),
-
-                        NavigationGroup::make('Expenses')
-                            ->icon('heroicon-o-banknotes')
-                            ->items([
-                                ...ExpenseResource::getNavigationItems(),
-                                ...ExpenseCategoryResource::getNavigationItems(),
+                                ...RelationResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Quotes')
-                            ->icon('heroicon-o-document-text')
+                            //->icon('heroicon-o-document-text')
                             ->items([
                                 ...QuoteResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Invoices')
-                            ->icon('heroicon-o-banknotes')
+                            //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
-                                ...RecurringInvoiceResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make('Expenses')
+                            //->icon('heroicon-o-banknotes')
+                            ->items([
+                                ...ExpenseResource::getNavigationItems(),
+                                ...ExpenseCategoryResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Payments')
-                            ->icon('heroicon-o-currency-dollar')
+                            //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...PaymentResource::getNavigationItems(),
-                                ...PaymentMethodResource::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Resources')
-                            ->icon('heroicon-o-archive-box')
+                            //->icon('heroicon-o-archive-box')
                             ->items([
-                                ...ItemResource::getNavigationItems(),
+                                ...ProductResource::getNavigationItems(),
                                 ...ProductCategoryResource::getNavigationItems(),
                                 ...ProductUnitResource::getNavigationItems(),
 
@@ -160,66 +235,25 @@ class CompanyPanelProvider extends PanelProvider
                             ]),
                     ]);
             })
-            ->unsavedChangesAlerts()
-            ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(
-                in: app_path('Filament/Resources'),
-                for: 'App\\Filament\\Resources'
-            )
-            ->discoverPages(
-                in: app_path('Filament/Pages'),
-                for: 'App\\Filament\\Pages'
-            )
-            ->discoverWidgets(
-                in: app_path('Filament/Widgets'),
-                for: 'App\\Filament\\Widgets'
-            )
-            ->pages([
-                Dashboard::class,
-            ])
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label(__('change_password')),
-                MenuItem::make()->label(__('settings'))->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label(__('logout')),
-            ])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
+                Action::make('switch-company')
+                    ->label('Switch Company')
+                    ->icon('heroicon-o-building-office-2')
+                    ->modalHeading('Switch Company')
+                    ->modalContent(fn () => view('filament.company.widgets.switch-company-table')),
+                'profile' => fn (Action $action) => $action
+                    ->label(trans('ip.edit_profile'))
+                    ->icon('heroicon-o-user')
+                    ->url(EditProfile::getUrl()),
+                Action::make('settings')
+                    ->label(trans('ip.settings'))
+                    ->url('/admin/settings')
+                    ->icon('heroicon-o-cog-6-tooth'),
+                'logout' => fn (Action $action) => $action
+                    ->label(trans('ip.logout'))
+                    ->icon('heroicon-o-arrow-right-start-on-rectangle'),
             ]);
 
-        foreach (Module::collections() as $module) {
-            $name = $module->getName();
-            $base = module_path($name, 'Filament');
-
-            if (File::isDirectory("{$base}/Company/Resources")) {
-                $panel = $panel->discoverResources(
-                    in: "{$base}/Company/Resources",
-                    for: "Modules\\{$name}\\Filament\\Company\\Resources"
-                );
-            }
-
-            if (File::isDirectory("{$base}/Company/Pages")) {
-                $panel = $panel->discoverPages(
-                    in: "{$base}/Company/Pages",
-                    for: "Modules\\{$name}\\Filament\\Company\\Pages"
-                );
-            }
-        }
-
-        return $panel;
+        return $companyPanel;
     }
 }

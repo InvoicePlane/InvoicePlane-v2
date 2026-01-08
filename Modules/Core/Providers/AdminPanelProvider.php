@@ -10,22 +10,26 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Widgets;
+use Filament\Support\Enums\Width;
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Modules\Core\Filament\Admin\Resources\CompanyResource;
-use Modules\Core\Filament\Admin\Resources\DocumentGroupResource;
-use Modules\Core\Filament\Admin\Resources\EmailTemplateResource;
-use Modules\Core\Filament\Admin\Resources\TaxRateResource;
-use Modules\Core\Filament\Admin\Resources\UserResource;
+use Modules\Core\Filament\Admin\Pages\Dashboard;
+use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Filament\Admin\Resources\ReportBlocks\ReportBlockResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
+use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
+use Modules\Core\Filament\Pages\Auth\EditProfile;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -34,14 +38,16 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/company/nord.css')
             ->login()
+            ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
+            ->maxContentWidth(Width::Full)
             ->font(
                 'Poppins',
                 provider: GoogleFontProvider::class,
             )
-
             ->colors([
                 'primary' => [
                     50  => '#F2F7FD',
@@ -96,37 +102,34 @@ class AdminPanelProvider extends PanelProvider
                     950 => '#0A2917',
                 ],
             ])
+            ->pages([
+                Dashboard::class,
+            ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->items([
-                        NavigationItem::make('Dashboard')
-                            ->icon('heroicon-o-home')
-                            ->url(route('filament.admin.pages.dashboard'))
-                            ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard')),
-                    ])
                     ->groups([
-                        NavigationGroup::make('Companies')
-                            ->icon('heroicon-o-building-office')
+                        NavigationGroup::make(trans('ip.companies'))
+                            //->icon('heroicon-o-building-office')
                             ->items([
-                                ...CompanyResource::getNavigationItems(),
+                                //...CompanyResource::getNavigationItems(),
                             ]),
-                        NavigationGroup::make('Email Templates')
-                            ->icon('heroicon-o-archive-box')
+                        NavigationGroup::make(trans('ip.email_templates'))
+                            //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...EmailTemplateResource::getNavigationItems(),
                             ]),
-                        NavigationGroup::make('Document Groups')
-                            ->icon('heroicon-o-archive-box')
+                        NavigationGroup::make(trans('ip.numberings'))
+                            //->icon('heroicon-o-archive-box')
                             ->items([
-                                ...DocumentGroupResource::getNavigationItems(),
+                                ...NumberingResource::getNavigationItems(),
                             ]),
                         /*NavigationGroup::make('Payment Methods')
                             ->icon('heroicon-o-credit-card')
                             ->items([
                                 ...PaymentMethodResource::getNavigationItems(),
                             ]),*/
-                        NavigationGroup::make('Tax Rates')
-                            ->icon('heroicon-o-receipt-percent')
+                        NavigationGroup::make(trans('ip.tax_rates'))
+                            //->icon('heroicon-o-receipt-percent')
                             ->items([
                                 ...TaxRateResource::getNavigationItems(),
                             ]),
@@ -143,8 +146,15 @@ class AdminPanelProvider extends PanelProvider
                                 ...ImportResource::getNavigationItems(),
                             ]),*/
 
-                        NavigationGroup::make('Users & Roles')
-                            ->icon('heroicon-o-users')
+                        NavigationGroup::make(trans('ip.report_builder'))
+                            //->icon('heroicon-o-receipt-percent')
+                            ->items([
+                                ...ReportTemplateResource::getNavigationItems(),
+                                ...ReportBlockResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make(trans('ip.users_roles'))
+                            //->icon('heroicon-o-users')
                             ->items([
                                 ...UserResource::getNavigationItems(),
                                 //...RoleResource::getNavigationItems(),
@@ -155,29 +165,26 @@ class AdminPanelProvider extends PanelProvider
             })
             ->unsavedChangesAlerts()
             ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(
-                in: __DIR__ . '/../Filament/Admin/Resources',
-                for: 'Modules\\Core\\Filament\\Admin\\Resources'
-            )
-            ->discoverPages(
-                in: __DIR__ . '/../Filament/Admin/Pages',
-                for: 'Modules\\Core\\Filament\\Admin\\Pages'
-            )
-            ->discoverWidgets(
-                in: __DIR__ . '/../Filament/Admin/Widgets',
-                for: 'Modules\\Core\\Filament\\Admin\\Widgets'
-            )
-            ->pages([
-                Dashboard::class,
+            ->resources([
+                CompanyResource::class,
+                NumberingResource::class,
+                EmailTemplateResource::class,
+                TaxRateResource::class,
+                ReportTemplateResource::class,
+                ReportBlockResource::class,
+                UserResource::class,
             ])
+            ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
+            ->discoverWidgets(in: base_path('Modules/Core/Filament/Admin/Widgets'), for: 'Modules\Core\Filament\Admin\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                FilamentInfoWidget::class,
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()->label('Edit profile'),
                 MenuItem::make()
                     ->label('Settings')
+                    ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
                 'logout' => MenuItem::make()->label('Translate Sign Out'),
             ])

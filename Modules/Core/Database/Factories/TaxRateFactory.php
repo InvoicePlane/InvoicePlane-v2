@@ -2,16 +2,20 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
+use RuntimeException;
 
-class TaxRateFactory extends Factory
+class TaxRateFactory extends AbstractFactory
 {
     protected $model = TaxRate::class;
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+
         $rates = [
             ['name' => 'VAT Standard', 'rate' => 21.00],
             ['name' => 'VAT Reduced', 'rate' => 9.00],
@@ -26,12 +30,18 @@ class TaxRateFactory extends Factory
         ];
 
         $selected = $this->faker->randomElement($rates);
+        $company  = $this->company ?? Company::query()->inRandomOrder()->first();
+
+        if ( ! $company) {
+            throw new RuntimeException('No company available for TaxRate factory');
+        }
 
         return [
+            'company_id'    => $company->id,
             'tax_rate_type' => $this->faker->randomElement(TaxRateType::cases())->value,
             'is_active'     => $this->faker->boolean(90),
-            'name'          => $selected['name'],
             'code'          => mb_strtoupper($this->faker->unique()->bothify('TAX#####')),
+            'name'          => $selected['name'],
             'rate'          => $selected['rate'],
         ];
     }

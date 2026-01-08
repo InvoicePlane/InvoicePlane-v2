@@ -18,17 +18,14 @@ trait ApiTestTrait
 
     public function assertApiSuccess(): void
     {
-        $this->response->assertStatus(200);
+        $this->response->assertSuccessful();
         $this->response->assertJson(['success' => true]);
     }
 
     public function assertModelData(array $actualData, array $expectedData): void
     {
         foreach ($actualData as $key => $value) {
-            if ($key === 'client_date_created') {
-                dd($key);
-            }
-            if (in_array($key, ['created_at', 'updated_at', 'client_date_created', 'client_date_modified'])) {
+            if (in_array($key, ['client_date_created', 'client_date_modified'])) {
                 continue;
             }
             $this->assertEquals($actualData[$key], $expectedData[$key]);

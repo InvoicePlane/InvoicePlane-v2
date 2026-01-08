@@ -7,8 +7,9 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\TaxRate;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
-use Modules\Products\Models\Item;
+use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
+use RuntimeException;
 
 class ExpenseItemFactory extends Factory
 {
@@ -16,40 +17,121 @@ class ExpenseItemFactory extends Factory
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $item    = Item::query()->inRandomOrder()->first() ?? Item::factory()->create();
-        $unit    = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
 
-        $quantity = $this->faker->randomFloat(2, 1, 20);
-        $price    = $this->faker->randomFloat(2, 10, 500);
-        $discount = $this->faker->randomFloat(2, 0, 50);
+        if ( ! $company) {
+            throw new RuntimeException('No company available for ExpenseItem factory');
+        }
+
+        // Get an invoice that belongs to this company if needed
+        $invoiceId = null;
+        if ($this->faker->boolean(25)) {
+            $invoice = Invoice::query()
+                ->where('company_id', $company->id)
+                ->inRandomOrder()
+                ->first();
+
+            if ($invoice) {
+                $invoiceId = $invoice->id;
+            }
+        }
+
+        // Get a product that belongs to this company
+        $item = Product::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $item) {
+            $item = Product::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a unit that belongs to this company
+        $unit = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $unit) {
+            $unit = ProductUnit::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a tax rate that belongs to this company
+        $taxRate = TaxRate::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $taxRate) {
+            $taxRate = TaxRate::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a second tax rate 75% of the time that belongs to this company
+        $taxRate2 = null;
+        if ($this->faker->boolean(75)) {
+            $taxRate2 = TaxRate::query()
+                ->where('company_id', $company->id)
+                ->where('id', '!=', $taxRate->id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $taxRate2) {
+                $taxRate2 = TaxRate::factory()
+                    ->state(['company_id' => $company->id])
+                    ->create();
+            }
+        }
+
+        $quantity = $this->faker->randomFloat(4, 1, 20);
+        $price    = $this->faker->randomFloat(4, 10, 500);
+        $discount = $this->faker->randomFloat(4, 0, 50);
         $subtotal = ($quantity * $price) - $discount;
 
+        $taxCalc1 = ($taxRate->rate * $subtotal);
+        $taxCalc2 = ($taxRate2?->rate * $subtotal);
+
+        $taxCalcTotal = $taxCalc1 + $taxCalc2;
+
+        $total = $subtotal + $taxCalcTotal;
+
         return [
-            'company_id'   => $company->id,
-            'invoice_id'   => Invoice::query()->inRandomOrder()->first()?->id,
-            'item_id'      => $item->id,
-            'unit_id'      => $unit->id,
-            'added_at'     => $this->faker->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
-            'item_name'    => $item->item_name,
-            'is_recurring' => false,
-            'quantity'     => $quantity,
-            'price'        => $price,
-            'discount'     => $discount,
-            'subtotal'     => $subtotal,
-            'tax_rate_id'  => $taxRate->id,
-            'order'        => $this->faker->numberBetween(1, 9999),
-            'description'  => null,
+            'company_id'    => $company->id,
+            'invoice_id'    => $invoiceId,
+            'item_id'       => $item->id,
+            'unit_id'       => $unit->id,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', 'yesterday')->format('Y-m-d'),
+            'item_name'     => $item->item_name,
+            'is_recurring'  => false,
+            'quantity'      => $quantity,
+            'price'         => $price,
+            'discount'      => $discount,
+            'subtotal'      => $subtotal,
+            'tax_1'         => $taxCalc1,
+            'tax_2'         => $taxCalc2,
+            'tax_total'     => $taxCalcTotal,
+            'total'         => $total,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => $taxRate2?->id,
+            'display_order' => $this->faker->numberBetween(1, 9999),
+            'description'   => null,
         ];
     }
 
     public function discounted(): static
     {
         return $this->state(function (array $attributes) {
-            $quantity = $this->faker->randomFloat(2, 1, 20);
-            $price    = $this->faker->randomFloat(2, 10, 500);
-            $discount = $this->faker->randomFloat(2, 50, $price * $quantity * 0.5);
+            $quantity = $this->faker->randomFloat(4, 1, 20);
+            $price    = $this->faker->randomFloat(4, 10, 500);
+
+            $maxDiscount = $quantity * $price * 0.15;
+            $discount    = $this->faker->randomFloat(4, 0, $maxDiscount);
+
             $subtotal = ($quantity * $price) - $discount;
 
             return [

@@ -16,7 +16,7 @@ class GenerateObservers extends Command
         $modules = [
             'Clients'  => ['Contact', 'Customer'],
             'Projects' => ['Project', 'Task'],
-            'Products' => ['Product', 'ProductFamily', 'ProductUnit'],
+            'Products' => ['Product', 'ProductCategory', 'ProductUnit'],
             'Invoices' => ['Invoice'],
             'Quotes'   => ['Quote'],
             'Payments' => ['Payment'],

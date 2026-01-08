@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,47 +16,46 @@ use Modules\Projects\Database\Factories\ProjectFactory;
 use Modules\Projects\Enums\ProjectStatus;
 
 /**
- * @property int         $id
- * @property int         $company_id
- * @property int         $customer_id
- * @property string      $project_status
- * @property string      $name
- * @property Carbon|null $start_at
- * @property Carbon|null $end_at
- * @property string|null $description
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Company     $company
- * @property Relation    $customer
- * @property Task[]      $tasks
+ * @property int               $id
+ * @property int               $company_id
+ * @property int               $customer_id
+ * @property int|null          $numbering_id
+ * @property ProjectStatus     $project_status
+ * @property string|null       $project_name
+ * @property string|null       $project_number
+ * @property Carbon|null       $start_at
+ * @property Carbon|null       $end_at
+ * @property string|null       $description
+ * @property Company           $company
+ * @property Relation          $relation
+ * @property Collection|Task[] $tasks
  */
 class Project extends Model
 {
     use BelongsToCompany;
     use HasFactory;
 
+    public const NUMBERING_ID = 'numbering_id';
+
     public $timestamps = false;
+
+    protected $casts = [
+        'project_status' => ProjectStatus::class,
+        'start_at'       => 'date',
+        'end_at'         => 'date',
+    ];
 
     protected $guarded = [];
 
-    protected $casts = [
-        'start_at'       => 'date',
-        'end_at'         => 'date',
-        'project_status' => ProjectStatus::class,
-    ];
-
-    //
-    // Relationships (alphabetical)
-    //
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(Company::class);
-    }
-
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Relation::class, 'customer_id');
+        return $this
+            ->belongsTo(Relation::class, 'customer_id');
     }
 
     public function tasks(): HasMany
@@ -63,10 +63,37 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    //
-    // Factory
-    //
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeBillable($query)
+    {
+        return $query->where('is_billable', true);
+    }
+
+    public function scopeOverdue($query)
+    {
+        return $query->where('end_at', '<', now())
+            ->where('project_status', '!=', ProjectStatus::COMPLETED);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProjectFactory::new();

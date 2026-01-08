@@ -2,60 +2,347 @@
 
 namespace Modules\Projects\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\User;
-use Modules\Core\Tests\AbstractTestCase;
-use Modules\Projects\Filament\Company\Resources\TaskResource;
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\CreateTask;
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\EditTask;
-use Modules\Projects\Filament\Company\Resources\TaskResource\Pages\ListTasks;
+use Modules\Clients\Models\Customer;
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\TaxRate;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Projects\Enums\TaskStatus;
+use Modules\Projects\Filament\Company\Resources\Tasks\Pages\CreateTask;
+use Modules\Projects\Filament\Company\Resources\Tasks\Pages\EditTask;
+use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
+use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(TaskResource::class)]
-class TasksTest extends AbstractTestCase
+#[CoversClass(ListTasks::class)]
+class TasksTest extends AbstractCompanyPanelTestCase
 {
-    use WithFaker;
-    use WithoutMiddleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutExceptionHandling();
-    }
-
-    // region smoke
+    # region smoke
     #[Test]
     #[Group('smoke')]
     public function it_lists_tasks(): void
     {
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
-
-        Task::query()->create([
-            'company_id' => $company->id,
-            'name'       => 'Design Landing Page',
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()
+            ->for($customer, 'customer')
+            ->for($this->company)
+            ->create([
+                'project_name' => '::project_name::',
+            ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
         ]);
 
-        Livewire::test(ListTasks::class)
-            ->assertSee('Design Landing Page');
-    }
-    // endregion
+        $payload = [
+            'project_id'  => $project->id,
+            'task_name'   => '::task_name::',
+            'customer_id' => $customer->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => $this->user->id,
+            'task_status' => TaskStatus::OPEN->value,
+        ];
 
-    // region crud
+        $task = Task::factory()
+            ->for($this->company)
+            ->for($customer)
+            ->for($project)
+            ->for($taxRate, 'taxRate')
+            ->create($payload);
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class, ['tenant' => Str::lower($this->company->search_code)]);
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$task]);
+
+        $this->assertDatabaseHas('tasks', $payload);
+    }
+    # endregion
+
+    # region modals
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
+     * @payload
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
+     *   "tax_rate_id": 4,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "name": "Design Landing Page",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_creates_a_task_through_a_modal(): void
+    {
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()
+            ->for($customer, 'customer')
+            ->for($this->company)
+            ->create([
+                'project_name' => '::project_name::',
+            ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
+        ]);
+
+        $payload = [
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertNotSet('isSaving', true);
+
+        $this->assertDatabaseHas('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: name
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
+     *   "tax_rate_id": 4,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_through_a_modal_without_required_task_name(): void
+    {
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()
+            ->for($customer, 'customer')
+            ->for($this->company)
+            ->create([
+                'project_name' => '::project_name::',
+            ]);
+
+        $taxRate = TaxRate::factory()->create(['company_id' => $this->company->id]);
+
+        $payload = [
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        Livewire::actingAs($this->user)
+            ->test(ListTasks::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['task_name' => 'required']);
+
+        /* assert */
+        $this->assertDatabaseMissing('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: project_id
+     * {
+     *   "company_id": 1,
+     *   "tax_rate_id": 4,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "task_name": "Design Landing Page",
+     *   "task_price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_through_a_modal_without_required_project(): void
+    {
+        /* arrange */
+
+        $taxRate = TaxRate::factory()
+            ->for($this->company)
+            ->create(['name' => '::taxrate_name::']);
+
+        $payload = [
+            // 'project_id' intentionally omitted
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => '2025-06-01',
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['project_id' => 'required']);
+        $this->assertDatabaseMissing('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: tax_rate
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_through_a_modal_without_required_tax_rate(): void
+    {
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()
+            ->for($customer, 'customer')
+            ->for($this->company)
+            ->create([
+                'project_name' => '::project_name::',
+            ]);
+
+        $payload = [
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'assigned_to' => $this->user->id,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertHasFormErrors(['tax_rate_id' => 'required']);
+
+        $this->assertDatabaseMissing('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     * "company_id": "Value",
+     * "customer_id": "Value",
+     * "project_id": "Value",
+     * "tax_rate_id": "Value",
+     * "assigned_to": "Example",
+     * "task_status": "Value",
+     * "task_name": "Example",
+     * "price": "9.99",
+     * "due_at": "2025-04-30",
+     * "description": "Example"
+     * }
+     */
+    public function it_updates_a_task_through_a_modal(): void
+    {
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()
+            ->for($customer, 'customer')
+            ->for($this->company)
+            ->create([
+                'project_name' => '::project_name::',
+            ]);
+        $taxRate = TaxRate::factory()->create(['company_id' => $this->company->id]);
+
+        $task = Task::factory()
+            ->for($this->company)
+            ->for($customer)
+            ->for($project)
+            ->for($taxRate, 'taxRate')
+            ->create([
+                'assigned_to' => $this->user->id,
+                'tax_rate_id' => $taxRate->id,
+            ]);
+
+        $updatedData = [
+            'task_name'   => 'Updated Task Name',
+            'task_price'  => 199.99,
+            'description' => 'Updated description',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class, ['record' => $task->getKey()])
+            ->mountAction(TestAction::make('edit')->table($task), $updatedData)
+            ->fillForm($updatedData)
+            ->callMountedAction();
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', array_merge($updatedData, [
+            'id' => $task->getKey(),
+        ]));
+    }
+    # endregion
+
+    # region crud
+    #[Test]
+    #[Group('crud')]
+    /**
      * @payload
      * {
      *   "company_id": 1,
@@ -72,44 +359,147 @@ class TasksTest extends AbstractTestCase
      */
     public function it_creates_a_task(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        /* arrange */
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->create([
+            'customer_id'  => $customer->id,
+            'project_name' => '::project_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
+        ]);
 
         $payload = [
-            'company_id'  => $company->id,
-            'customer_id' => 2,
-            'project_id'  => 3,
-            'tax_rate_id' => 4,
-            'assigned_to' => 'john.doe@example.com',
-            'task_status' => 'in_progress',
-            'name'        => 'Design Landing Page',
-            'price'       => 150.00,
-            'due_at'      => '2025-05-20',
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
             'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateTask::class)
             ->fillForm($payload)
-            ->call('create')
-            ->assertHasNoFormErrors();
+            ->call('create');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @test
-     *
-     * @payload
+     * @payload missing: name
      * {
      *   "company_id": 1,
      *   "customer_id": 2,
      *   "project_id": 3,
      *   "tax_rate_id": 4,
+     *   "assigned_to": null,
+     *   "task_status": "in_progress",
+     *   "price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_without_required_name(): void
+    {
+        /* arrange */
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->create([
+            'customer_id'  => $customer->id,
+            'project_name' => '::project_name::',
+        ]);
+        $taxRate = TaxRate::factory()->create([
+            'name' => '::taxrate_name::',
+        ]);
+
+        $payload = [
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateTask::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['task_name' => 'required']);
+
+        $this->assertDatabaseMissing('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: project_id
+     * {
+     *   "company_id": 1,
+     *   "tax_rate_id": 4,
+     *   "assigned_to": "john.doe@example.com",
+     *   "task_status": "in_progress",
+     *   "task_name": "Design Landing Page",
+     *   "task_price": "150.00",
+     *   "due_at": "2025-05-20",
+     *   "description": "Create a responsive landing page"
+     * }
+     */
+    public function it_fails_to_create_task_without_required_project(): void
+    {
+        /* arrange */
+
+        $taxRate = TaxRate::factory()
+            ->for($this->company)
+            ->create(['name' => '::taxrate_name::']);
+
+        $payload = [
+            'company_id' => $this->company->id,
+            // 'project_id' intentionally omitted
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => $this->user->id,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => '2025-06-01',
+            'description' => 'Create a responsive landing page',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateTask::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['project_id' => 'required']);
+        $this->assertDatabaseMissing('tasks', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: tax_rate
+     * {
+     *   "company_id": 1,
+     *   "customer_id": 2,
+     *   "project_id": 3,
      *   "assigned_to": "john.doe@example.com",
      *   "task_status": "in_progress",
      *   "price": "150.00",
@@ -117,25 +507,36 @@ class TasksTest extends AbstractTestCase
      *   "description": "Create a responsive landing page"
      * }
      */
-    public function it_fails_to_create_task_without_name(): void
+    public function it_fails_to_create_task_without_required_tax_rate(): void
     {
-        $this->markTestIncomplete();
-
-        $company = Company::factory()->create();
-        $user    = User::factory()->create();
-        $user->companies()->attach($company->id);
-        session(['current_company_id' => $company->id]);
-        $this->actingAs($user);
+        /* arrange */
+        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->create([
+            'customer_id'  => $customer->id,
+            'project_name' => '::project_name::',
+        ]);
 
         $payload = [
-            'company_id' => $company->id,
-            'project_id' => 3,
+            'project_id'  => $project->id,
+            'customer_id' => $customer->id,
+            'assigned_to' => $this->user->id,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
         ];
 
-        Livewire::test(CreateTask::class)
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateTask::class)
             ->fillForm($payload)
-            ->call('create')
-            ->assertHasFormErrors(['name' => 'required']);
+            ->call('create');
+
+        /* assert */
+        $component->assertHasFormErrors(['tax_rate_id']);
+
+        $this->assertDatabaseMissing('tasks', $payload);
     }
 
     #[Test]
@@ -157,29 +558,53 @@ class TasksTest extends AbstractTestCase
      */
     public function it_updates_a_task(): void
     {
-        $this->markTestIncomplete('Needs full payload and assertions.');
+        /* arrange */
+        $customer = Relation::factory()->for($this->company)->create([
+            'company_name' => '::customer_name::',
+        ]);
 
-        //$this->actingAs(User::factory()->create());
+        $tax_rate = TaxRate::factory()->for($this->company)->create([
+            'name' => '::tax_rate_name::',
+            'rate' => '9',
+        ]);
 
-        $record = Task::factory()->create();
+        $project = Project::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'project_name' => '::project_name::',
+        ]);
 
-        $payload = [
-            'company_id'  => 'Value',
-            'customer_id' => 'Value',
-            'project_id'  => 'Value',
-            'tax_rate_id' => 'Value',
-            'assigned_to' => 'Example',
-            'task_status' => 'Value',
-            'name'        => 'Example',
-            'price'       => 9.99,
-            'due_at'      => '2025-04-30',
-            'description' => 'Example',
+        $taxRate = TaxRate::factory()->for($this->company)->create();
+
+        $task = Task::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'project_id'  => $project->id,
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => $this->user->id,
+            'task_status' => TaskStatus::IN_PROGRESS,
+            'task_name'   => 'Original Task Name',
+            'task_price'  => 199.99,
+            'due_at'      => '2025-07-01',
+            'description' => 'Original description',
+        ]);
+
+        $updatedData = [
+            'task_name' => 'Updated Task Name',
         ];
 
-        Livewire::test(EditTask::class, ['record' => $record->getKey()])
-            ->fillForm($payload)
-            ->call('save')
-            ->assertHasNoFormErrors();
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditTask::class, ['record' => $task->getKey()])
+            ->fillForm($updatedData)
+            ->call('save');
+
+        /* assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('tasks', array_merge($updatedData, [
+            'id' => $task->id,
+        ]));
     }
 
     #[Test]
@@ -193,7 +618,7 @@ class TasksTest extends AbstractTestCase
      * "tax_rate_id": "Value",
      * "assigned_to": "Example",
      * "task_status": "Value",
-     * "name": "Example",
+     * "task_name": "Example",
      * "price": "9.99",
      * "due_at": "2025-04-30",
      * "description": "Example"
@@ -201,19 +626,41 @@ class TasksTest extends AbstractTestCase
      */
     public function it_deletes_a_task(): void
     {
-        $this->markTestIncomplete('Delete test needs confirmation logic.');
+        /* arrange */
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->for($this->company)->for($customer)->create([
+            'project_name' => '::project_name::',
+        ]);
+        $taxRate = TaxRate::factory()->for($this->company)->create([
+            'name' => '::taxrate_name::',
+        ]);
 
-        //$this->actingAs(User::factory()->create());
+        $payload = [
+            'tax_rate_id' => $taxRate->id,
+            'assigned_to' => null,
+            'task_status' => TaskStatus::OPEN->value,
+            'task_name'   => 'Design Landing Page',
+            'task_price'  => 150.00,
+            'due_at'      => now()->addDays(5)->format('Y-m-d'),
+            'description' => 'Create a responsive landing page',
+        ];
 
-        $record = Task::factory()->create();
+        $task = Task::factory()->for($project)->for($customer)->create($payload);
 
-        Livewire::test(ListTasks::class)
-            ->callTableAction('delete', $record);
+        /* act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListTasks::class)
+            ->mountAction(TestAction::make('delete')->table($task))
+            ->callMountedAction();
 
-        $this->assertDatabaseMissing('tasks', ['id' => $record->id]);
+        /* assert */
+        $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
-    // endregion
+    # endregion
 
-    // region usp
-    // endregion
+    # region multi-tenancy
+    # endregion
+
+    # region spicy
+    # endregion
 }

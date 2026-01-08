@@ -2,22 +2,22 @@
 
 namespace Modules\Products\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Products\Database\Factories\ProductCategoryFactory;
 
 /**
- * @property int         $id
- * @property int         $company_id
- * @property string      $category_name
- * @property string|null $description
- * @property Company     $company
- * @property Item[]      $items
+ * @property int                  $id
+ * @property int                  $company_id
+ * @property string               $category_name
+ * @property string|null          $description
+ * @property Company              $company
+ * @property Collection|Product[] $products
  */
 class ProductCategory extends Model
 {
@@ -26,28 +26,26 @@ class ProductCategory extends Model
 
     public $timestamps = false;
 
-    protected $table = 'item_categories';
+    protected $table = 'product_categories';
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
-    public function company(): BelongsTo
+    public function products(): HasMany
     {
-        return $this->belongsTo(Company::class);
+        return $this->hasMany(Product::class, 'category_id');
     }
 
-    public function items(): HasMany
-    {
-        return $this->hasMany(Item::class, 'category_id');
-    }
-
-    //
-    // Factory
-    //
-
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProductCategoryFactory::new();
