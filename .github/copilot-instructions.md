@@ -202,46 +202,6 @@ public function it_creates_invoice(): void
 - **Extract complex conditions** into well-named methods.
 - **Use meaningful method names** that describe what they do.
 
-### Internationalization & Translations
-
-**CRITICAL:** InvoicePlane v2 uses `trans()` for all translations, NOT `__()`.
-
-```php
-// ❌ WRONG - Do not use __()
-$label = __('ip.invoice_total');
-
-// ✅ CORRECT - Always use trans()
-$label = trans('ip.invoice_total');
-```
-
-**Translation Key Conventions:**
-- Main translation file: `resources/lang/en/ip.php`
-- Prefix keys with `ip.` (e.g., `ip.invoice_total`, `ip.payment_method`)
-- Use snake_case for key names
-- In Blade: Use `{{ trans('ip.key') }}` or `@lang('ip.key')`
-
-**UI Text Translation Requirements:**
-ALL user-facing text must use trans():
-- Form field labels: `->label(trans('ip.field_label'))`
-- Placeholders: `->placeholder(trans('ip.placeholder'))`
-- Helper text: `->helperText(trans('ip.help_text'))`
-- Section titles: `Section::make(trans('ip.section_title'))`
-- Button labels: `trans('ip.button_text')`
-- Table headers: `trans('ip.column_name')`
-- Tooltips & hints: `trans('ip.tooltip')`
-- Success/error messages: `trans('ip.message')`
-
-**Example:**
-```php
-TextInput::make('name')
-    ->label(trans('ip.report_block_name'))
-    ->placeholder(trans('ip.report_block_name_placeholder'))
-    ->helperText(trans('ip.report_block_name_help'));
-
-Section::make(trans('ip.section_general'))
-    ->schema([...]);
-```
-
 ## PHPStan Type Safety Guidelines
 
 ### Float Array Keys (CRITICAL)

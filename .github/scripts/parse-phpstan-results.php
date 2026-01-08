@@ -2,8 +2,6 @@
 <?php
 
 /**
- * PHPStan Results Parser.
- *
  * This script parses PHPStan JSON output and generates a formatted, actionable report.
  * It groups errors by class, strips noise, and generates a markdown checklist suitable
  * for GitHub PR comments or Copilot context.

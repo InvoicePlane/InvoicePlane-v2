@@ -1,9 +1,4 @@
-@import 'tailwindcss';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-
-@source '../../../../Modules/**/resources/views/**/*';
-@source '../../../../Modules/**/*.php';
-@source '../../../../resources/views/filament/tenant/**/*';
 
 /*
 .dark .fi-body {
@@ -21,7 +16,6 @@
     @apply bg-blue-500;
 
     /* Collapse icon */
-
     .fi-topbar-close-collapse-sidebar-btn {
         @apply text-white;
         @apply hover:text-blue-600;
@@ -52,7 +46,6 @@
     }
 
     /* Sidebar items */
-
     .fi-sidebar-group-label {
         @apply text-white;
     }
@@ -162,7 +155,6 @@
     @apply hover:text-blue-500;
 
 }
-
 .fi-breadcrumbs-item-label {
     @apply text-blue-700;
     @apply hover:text-blue-500;

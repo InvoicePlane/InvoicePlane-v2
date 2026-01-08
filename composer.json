@@ -78,8 +78,7 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ],
-        "aargh": "php artisan view:clear && php artisan config:clear && php artisan route:clear"
+        ]
     },
     "extra": {
         "laravel": {

@@ -1,22 +1,9 @@
-@import 'tailwindcss';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@source '../../../../Modules/**/resources/views/**/*';
-@source '../../../../Modules/**/*.php';
+@source '../../../../app/Filament/Tenant/**/*';
 @source '../../../../resources/views/filament/tenant/**/*';
 
 @theme {
-    --color-primary-50: #F2F7FD;
-    --color-primary-100: #E3EFFB;
-    --color-primary-200: #C1DFF6;
-    --color-primary-300: #8FC0EE;
-    --color-primary-400: #429AE1;
-    --color-primary-500: #2684D1;
-    --color-primary-600: #1868B1;
-    --color-primary-700: #145390;
-    --color-primary-800: #154777;
-    --color-primary-900: #173C63;
-    --color-primary-950: #0F2742;
     --color-secondary-50: #E3E9F0;
     --color-secondary-100: #D1D7E0;
     --color-secondary-200: #A7B1C5;
@@ -121,7 +108,6 @@
     @apply bg-[var(--color-polarnight-700)];
 
     /* Collapse icon */
-
     .fi-topbar-close-collapse-sidebar-btn {
         @apply text-[var(--color-snowstorm-600)];
         @apply hover:text-[var(--color-frost-500)];
@@ -152,7 +138,6 @@
     }
 
     /* Sidebar items */
-
     .fi-sidebar-group-label {
         @apply text-[var(--color-snowstorm-600)];
     }
@@ -262,7 +247,6 @@
     @apply hover:text-[var(--color-frost-500)];
 
 }
-
 .fi-breadcrumbs-item-label {
     @apply text-[var(--color-frost-700)];
     @apply hover:text-[var(--color-frost-500)];
@@ -315,8 +299,3 @@
 .fi-user-menu .fi-icon {
     @apply text-[var(--color-frost-700)];
 }
-
-.fi-main {
-    @apply bg-[#ECEFF4] dark:bg-[#2E3440];
-}
-

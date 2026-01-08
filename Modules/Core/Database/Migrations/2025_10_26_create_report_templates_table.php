@@ -10,12 +10,13 @@ return new class () extends Migration {
         Schema::create('report_templates', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->boolean('is_system')->default(false);
-            $table->boolean('is_active')->default(true);
-            $table->string('template_type');
             $table->string('name');
             $table->string('slug');
-            $table->string('filename')->nullable();
+            $table->text('description')->nullable();
+            $table->string('template_type');
+            $table->boolean('is_system')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->unique(['company_id', 'slug']);
