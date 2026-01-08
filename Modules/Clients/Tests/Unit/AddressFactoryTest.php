@@ -69,7 +69,7 @@ class AddressFactoryTest extends AbstractTestCase
         $addresses = Address::factory()->count($sampleSize)->make();
 
         /* Assert */
-        $withAddress2 = $addresses->filter(fn ($address) => $address->address_2 !== null)->count();
+        $withAddress2 = $addresses->whereNotNull('address_2')->count();
         $percentage = ($withAddress2 / $sampleSize) * 100;
 
         // Allow 15% margin (55%-85% range) to account for randomness
