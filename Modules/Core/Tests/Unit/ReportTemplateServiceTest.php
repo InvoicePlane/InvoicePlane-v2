@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Unit;
 
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
@@ -26,7 +27,9 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
     {
         parent::setUp();
 
-        $this->fileRepository = $this->createMock(ReportTemplateFileRepository::class);
+        Storage::fake('report_templates');
+
+        $this->fileRepository = new ReportTemplateFileRepository();
         $this->gridSnapper    = new GridSnapperService(12);
         $this->service        = new ReportTemplateService($this->fileRepository, $this->gridSnapper);
     }
@@ -200,11 +203,8 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $template->slug       = 'test-template';
 
         $position = new GridPositionDTO();
-
-        /* act */
         $position->setX(0)->setY(0)->setWidth(6)->setHeight(4);
 
-        /* assert */
         $block = new BlockDTO();
         $block->setId('block_1')
             ->setType('company_header')
@@ -212,10 +212,19 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
             ->setConfig([])
             ->setIsCloneable(true)
             ->setIsCloned(false);
-        $this->fileRepository->expects($this->once())
-            ->method('save')
-            ->with(1, 'test-template', $this->isType('array'));
+
+        /* act */
         $this->service->persistBlocks($template, [$block]);
+
+        /* assert */
+        Storage::disk('report_templates')->assertExists('1/test-template.json');
+        $content = Storage::disk('report_templates')->get('1/test-template.json');
+        $data    = json_decode($content, true);
+
+        $this->assertIsArray($data);
+        $this->assertCount(1, $data);
+        $this->assertEquals('block_1', $data[0]['id']);
+        $this->assertEquals('company_header', $data[0]['type']);
     }
 
     #[Test]
@@ -227,17 +236,19 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $template->company_id = 1;
         $template->slug       = 'test-template';
 
-        $this->fileRepository->expects($this->once())
-            ->method('get')
-            ->with(1, 'test-template')
-            ->willReturn([
-                [
-                    'id'       => 'block_1',
-                    'type'     => 'company_header',
-                    'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
-                    'config'   => [],
-                ],
-            ]);
+        $fileData = [
+            [
+                'id'       => 'block_1',
+                'type'     => 'company_header',
+                'position' => ['x' => 0, 'y' => 0, 'width' => 6, 'height' => 4],
+                'config'   => [],
+            ],
+        ];
+
+        Storage::disk('report_templates')->put(
+            '1/test-template.json',
+            json_encode($fileData, JSON_PRETTY_PRINT)
+        );
 
         /* act */
         $blocks = $this->service->loadBlocks($template);
