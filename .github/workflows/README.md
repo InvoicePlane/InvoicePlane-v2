@@ -476,7 +476,7 @@ To debug specific steps:
 - Node.js 22 with Yarn caching
 
 **Known Issues Fixed:**
-- ✅ AddressFactory `stateAbbr` error fixed (uses `$this->faker` instead of `fake()`)
+- ✅ AddressFactory faker instance issue fixed (now uses `$this->faker` consistently)
 - ✅ Yarn EISDIR errors handled gracefully
 - ✅ All errors collected and reported at the end
 

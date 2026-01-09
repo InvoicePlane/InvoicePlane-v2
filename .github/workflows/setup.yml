@@ -265,7 +265,7 @@ jobs:
             echo "::error::Database seeding failed with exit code $EXIT_CODE"
             echo "STEP: Database Seeding" >> /tmp/setup_errors.log
             echo "ERROR: php artisan db:seed failed with exit code $EXIT_CODE" >> /tmp/setup_errors.log
-            echo "Possible causes: Seeder errors (e.g., stateAbbr issue), missing data, database constraints" >> /tmp/setup_errors.log
+            echo "Possible causes: Seeder errors, missing required data, database constraints, foreign key violations" >> /tmp/setup_errors.log
             echo "---" >> /tmp/setup_errors.log
             echo "seed_failed=true" >> $GITHUB_OUTPUT
           else
