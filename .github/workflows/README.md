@@ -471,7 +471,7 @@ To debug specific steps:
 - Useful for testing database setup
 
 **Infrastructure:**
-- MySQL 5.7 service container
+- MariaDB 10.6 service container
 - PHP 8.4 with required extensions
 - Node.js 22 with Yarn caching
 
