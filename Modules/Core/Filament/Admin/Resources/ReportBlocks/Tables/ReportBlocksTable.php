@@ -36,7 +36,7 @@ class ReportBlocksTable
                     ->boolean()
                     ->sortable(),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
                     DeleteAction::make('delete')
