@@ -228,7 +228,7 @@ class ReportTemplateServiceTest extends AbstractAdminPanelTestCase
         $template->slug       = 'test-template';
 
         $this->fileRepository->expects($this->once())
-            ->method('load')
+            ->method('get')
             ->with(1, 'test-template')
             ->willReturn([
                 [

@@ -26,7 +26,7 @@ class GridSnapperService
     {
         $x      = max(0, min($position->getX(), $this->gridSize - 1));
         $y      = max(0, $position->getY());
-        $width  = max(1, min($position->getWidth(), $this->gridSize - $position->getX()));
+        $width  = max(1, min($position->getWidth(), $this->gridSize - $x));
         $height = max(1, $position->getHeight());
 
         return GridPositionDTO::create($x, $y, $width, $height);
