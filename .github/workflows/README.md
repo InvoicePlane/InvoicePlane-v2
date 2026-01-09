@@ -403,13 +403,90 @@ See `.github/scripts/README.md` for detailed script documentation.
 
 Tests Docker Compose configuration.
 
-### 8. Quickstart (`quickstart.yml`)
+### 8. Setup & Install with Error Handling (`setup.yml`)
+
+**Trigger:** Manual dispatch only
+
+**Purpose:** Provides a complete application setup workflow with granular error handling and selective step execution for debugging
+
+**What it does:**
+1. **Yarn Install** - Installs JavaScript dependencies
+2. **Composer Install** - Installs PHP dependencies  
+3. **Environment Setup** - Copies `.env.example` to `.env`
+4. **Key Generation** - Runs `php artisan key:generate`
+5. **Database Migration** - Runs `php artisan migrate --force`
+6. **Database Seeding** - Runs `php artisan db:seed`
+
+**Key Features:**
+
+**Selective Step Execution:**
+- Each step can be individually enabled or disabled via workflow inputs
+- Allows running only specific steps for debugging
+- Default: All steps enabled
+
+**Error Handling:**
+- Uses `set +e` to continue execution after errors
+- Each step captures its exit code
+- Errors are logged to a central error report
+- Workflow continues even if steps fail
+- Final step reports all errors in a consolidated summary
+
+**Error Reporting:**
+- Errors logged with step name and exit code
+- Detailed error report at workflow end
+- GitHub Actions summary shows pass/fail status for each step
+- Individual step logs preserved for debugging
+
+**Usage:**
+
+To run the full setup:
+1. Go to **Actions** tab
+2. Select **Setup & Install with Error Handling**
+3. Click **Run workflow**
+4. Leave all options as "true" (default)
+5. Click **Run workflow**
+
+To debug specific steps:
+1. Go to **Actions** tab
+2. Select **Setup & Install with Error Handling**
+3. Click **Run workflow**
+4. Set unwanted steps to "false"
+5. Click **Run workflow**
+
+**Example Scenarios:**
+
+**Full Setup:**
+- All inputs set to `true` (default)
+- Runs complete installation from scratch
+
+**Debug Seeding Only:**
+- `run_seed`: `true`
+- All others: `false`
+- Useful for testing seeder changes
+
+**Debug Migration + Seeding:**
+- `run_migrate`: `true`
+- `run_seed`: `true`
+- All others: `false`
+- Useful for testing database setup
+
+**Infrastructure:**
+- MySQL 5.7 service container
+- PHP 8.4 with required extensions
+- Node.js 22 with Yarn caching
+
+**Known Issues Fixed:**
+- ✅ AddressFactory `stateAbbr` error fixed (uses `$this->faker` instead of `fake()`)
+- ✅ Yarn EISDIR errors handled gracefully
+- ✅ All errors collected and reported at the end
+
+### 9. Quickstart (`quickstart.yml`)
 
 **Trigger:** Manual dispatch only
 
 Provides a quick setup for development environments.
 
-### 9. Crowdin Translation Sync (`crowdin-sync.yml`)
+### 10. Crowdin Translation Sync (`crowdin-sync.yml`)
 
 **Trigger:**
 - Scheduled: Weekly on Sundays at 2:00 AM UTC
