@@ -58,7 +58,7 @@
 
     .fi-sidebar-item.fi-active {
         @apply text-white;
-        @apply !bg-primary-700;
+        @apply bg-primary-700!;
         @apply rounded-lg;
     }
 
