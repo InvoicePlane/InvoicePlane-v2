@@ -100,10 +100,9 @@ jobs:
         id: init
         run: |
           # Create error log file
-          echo "" > /tmp/setup_errors.log
+          : > /tmp/setup_errors.log
           echo "errors_found=false" >> $GITHUB_OUTPUT
           echo "::notice::Starting setup with error tracking enabled"
-
       # Step 1: Yarn Install
       - name: Step 1 - Yarn Install
         id: yarn_install
