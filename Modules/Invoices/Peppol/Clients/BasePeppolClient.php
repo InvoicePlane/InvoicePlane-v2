@@ -88,12 +88,12 @@ abstract class BasePeppolClient
         // Merge authentication headers with any existing headers
         // Auth headers are merged AFTER existing headers to ensure they take precedence
         // and cannot be overridden by caller-provided headers for security
-        $authHeaders = $this->getAuthenticationHeaders();
+        $authHeaders     = $this->getAuthenticationHeaders();
         $existingHeaders = $options['headers'] ?? [];
-        
+
         $options['headers'] = array_merge($existingHeaders, $authHeaders);
-        $options['timeout'] = $options['timeout'] ?? $this->getTimeout();
-        
+        $options['timeout'] ??= $this->getTimeout();
+
         return $options;
     }
 

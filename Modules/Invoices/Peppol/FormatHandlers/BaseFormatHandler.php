@@ -35,6 +35,15 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     }
 
     /**
+     * Format-specific validation logic.
+     *
+     * @param Invoice $invoice
+     *
+     * @return array<string> Validation errors
+     */
+    abstract protected function validateFormatSpecific(Invoice $invoice): array;
+
+    /**
      * Set the format for this handler.
      *
      * This method is called by the factory after instantiation.
@@ -49,15 +58,6 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     }
 
     /**
-     * Format-specific validation logic.
-     *
-     * @param Invoice $invoice
-     *
-     * @return array<string> Validation errors
-     */
-    abstract protected function validateFormatSpecific(Invoice $invoice): array;
-
-    /**
      * {@inheritdoc}
      */
     public function getFormat(): PeppolDocumentFormat
@@ -65,7 +65,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
         if ($this->format === null) {
             throw new RuntimeException('Format has not been set on this handler. Call setFormat() first.');
         }
-        
+
         return $this->format;
     }
 
@@ -75,7 +75,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     public function supports(Invoice $invoice): bool
     {
         $format = $this->getFormat();
-        
+
         // Check if customer's country matches format requirements
         $customerCountry = $invoice->customer?->country_code ?? null;
 
@@ -130,7 +130,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     public function getMimeType(): string
     {
         $format = $this->getFormat();
-        
+
         return $format->requiresPdfEmbedding()
             ? 'application/pdf'
             : 'application/xml';

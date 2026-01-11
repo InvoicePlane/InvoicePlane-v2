@@ -222,7 +222,7 @@ enum PeppolDocumentFormat: string
             self::FATTURAPA_12 => $country === 'IT',
             // Note: FACTURAE_32 is only mandatory for Spanish public administration
             // Not for all invoices in Spain, so we return false
-            default            => false,
+            default => false,
         };
     }
 }

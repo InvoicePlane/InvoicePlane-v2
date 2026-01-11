@@ -55,11 +55,11 @@ class FormatHandlerFactory
 
         /** @var BaseFormatHandler $handler */
         $handler = app($handlerClass);
-        
+
         // Set the format on the handler to ensure it matches what was requested
         // This is especially important for handlers that can handle multiple formats (UBL, ZUGFeRD)
         $handler->setFormat($format);
-        
+
         return $handler;
     }
 
