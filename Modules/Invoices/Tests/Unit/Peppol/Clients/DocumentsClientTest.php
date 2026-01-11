@@ -4,7 +4,7 @@ namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Verifies proper API integration and error handling.
  */
 #[Group('peppol')]
-class DocumentsClientTest extends TestCase
+class DocumentsClientTest extends AbstractTestCase
 {
     protected DocumentsClient $client;
 

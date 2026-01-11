@@ -7,7 +7,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mockery;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Http\RequestMethod;
@@ -22,7 +22,7 @@ use RuntimeException;
  * Uses HTTP fakes to simulate various scenarios.
  */
 #[Group('peppol')]
-class HttpClientExceptionHandlerTest extends TestCase
+class HttpClientExceptionHandlerTest extends AbstractTestCase
 {
     protected HttpClientExceptionHandler $handler;
 
