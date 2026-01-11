@@ -12,9 +12,11 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Support\ExpenseNumberGenerator;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Support\TaskNumberGenerator;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(NumberingService::class)]
 class NumberingCompanyIsolationTest extends AbstractTestCase
 {
     use RefreshDatabase;

@@ -7,9 +7,11 @@ use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(NumberingService::class)]
 class NumberingServiceTest extends AbstractAdminPanelTestCase
 {
     use RefreshDatabase;
