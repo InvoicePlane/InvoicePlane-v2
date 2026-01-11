@@ -72,7 +72,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     /**
      * @payload
      * {
@@ -349,7 +348,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     /**
      * @payload
      * {
