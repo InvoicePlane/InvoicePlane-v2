@@ -24,16 +24,9 @@ class FormatHandlerFactory
      */
     protected static array $handlers = [
         'cii'            => CiiHandler::class,
-        'ehf_3.0'        => EhfHandler::class,
-        'factur-x'       => FacturXHandler::class,
-        'facturae_3.2'   => FacturaeHandler::class,
-        'fatturapa_1.2'  => FatturapaHandler::class,
-        'oioubl'         => OioublHandler::class,
         'peppol_bis_3.0' => PeppolBisHandler::class,
         'ubl_2.1'        => UblHandler::class,
         'ubl_2.4'        => UblHandler::class,
-        'zugferd_1.0'    => ZugferdHandler::class,
-        'zugferd_2.0'    => ZugferdHandler::class,
     ];
 
     /**
@@ -92,15 +85,19 @@ class FormatHandlerFactory
                 $format = PeppolDocumentFormat::from($customer->peppol_format);
 
                 return self::create($format);
-            } catch (ValueError $e) {
-                // Invalid format, continue to fallback
+            } catch (ValueError | RuntimeException $e) {
+                // Invalid format or handler not available, continue to fallback
             }
         }
 
         // 2. Use mandatory format if required for country
         $recommendedFormat = PeppolDocumentFormat::recommendedForCountry($countryCode);
         if ($recommendedFormat->isMandatoryFor($countryCode)) {
-            return self::create($recommendedFormat);
+            try {
+                return self::create($recommendedFormat);
+            } catch (RuntimeException $e) {
+                // Mandatory format not available, fall through to default
+            }
         }
 
         // 3. Try recommended format
