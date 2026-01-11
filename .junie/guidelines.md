@@ -326,11 +326,29 @@ Each format handler implements:
 - `transform(Invoice $invoice, array $options): array` - Converts to format-specific structure
 - `getFormat(): PeppolDocumentFormat` - Returns format enum
 
-**Supported Formats:**
-- UBL 2.1 (Universal Business Language)
-- FatturaPA (Italian e-invoicing)
-- ZUGFeRD (German hybrid PDF/XML format)
-- Peppol BIS Billing 3.0
+**Supported Formats (11 total):**
+- **CII** (Cross Industry Invoice) - UN/CEFACT standard, common in Germany/France/Austria
+- **EHF 3.0** - Norwegian e-invoice format (Elektronisk Handelsformat)
+- **Factur-X** - French/German hybrid format (PDF with embedded XML)
+- **Facturae 3.2** - Spanish e-invoice format (mandatory for public administration)
+- **FatturaPA 1.2** - Italian e-invoice format (mandatory for all invoices in Italy)
+- **OIOUBL** - Danish e-invoice format
+- **PEPPOL BIS 3.0** - Default Peppol format for most European countries
+- **UBL 2.1** - Universal Business Language (most common for Peppol)
+- **UBL 2.4** - Updated UBL version with enhanced features
+- **ZUGFeRD 1.0** - German e-invoice format (PDF with embedded XML)
+- **ZUGFeRD 2.0** - Updated German format, compatible with Factur-X
+
+All format handlers are registered in `FormatHandlerFactory` and have comprehensive PHPUnit test coverage.
+The factory automatically selects the appropriate handler based on:
+1. Customer's preferred format (if set)
+2. Mandatory format for customer's country
+3. Recommended format for customer's country  
+4. Fallback to PEPPOL BIS 3.0
+
+**Format Selection Logging:**
+- Info level: Customer's preferred or recommended format unavailable
+- Warning level: Mandatory format for country unavailable (serious configuration issue)
 
 ### Service Layer Pattern
 ```php

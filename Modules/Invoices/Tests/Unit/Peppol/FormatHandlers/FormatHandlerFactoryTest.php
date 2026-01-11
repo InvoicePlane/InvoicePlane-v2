@@ -56,7 +56,6 @@ class FormatHandlerFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_creates_cii_handler(): void
     {
         $handler = FormatHandlerFactory::create(PeppolDocumentFormat::CII);
@@ -66,26 +65,93 @@ class FormatHandlerFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
+    public function it_creates_ehf_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::EHF_30);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\EhfHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_facturx_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::FACTURX);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\FacturXHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_facturae_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::FACTURAE_32);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\FacturaeHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_fatturapa_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::FATTURAPA_12);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\FatturaPaHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_oioubl_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::OIOUBL);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\OioublHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_zugferd_10_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::ZUGFERD_10);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\ZugferdHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
+    public function it_creates_zugferd_20_handler(): void
+    {
+        $handler = FormatHandlerFactory::create(PeppolDocumentFormat::ZUGFERD_20);
+
+        $this->assertInstanceOf(\Modules\Invoices\Peppol\FormatHandlers\ZugferdHandler::class, $handler);
+        $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
+    }
+
+    #[Test]
     public function it_throws_exception_for_unsupported_format(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No handler available for format');
 
-        FormatHandlerFactory::create(PeppolDocumentFormat::FATTURAPA_12);
+        // Create a mock format that doesn't exist
+        FormatHandlerFactory::make('nonexistent_format');
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_can_check_if_handler_exists(): void
     {
+        // Test all supported formats
         $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::PEPPOL_BIS_30));
         $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::UBL_21));
         $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::UBL_24));
         $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::CII));
-
-        $this->assertFalse(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::FATTURAPA_12));
-        $this->assertFalse(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::FACTURAE_32));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::EHF_30));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::FACTURX));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::FACTURAE_32));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::FATTURAPA_12));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::OIOUBL));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::ZUGFERD_10));
+        $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::ZUGFERD_20));
     }
 
     #[Test]
@@ -94,11 +160,21 @@ class FormatHandlerFactoryTest extends TestCase
         $handlers = FormatHandlerFactory::getRegisteredHandlers();
 
         $this->assertIsArray($handlers);
+        
+        // Check all handlers are registered
         $this->assertArrayHasKey('peppol_bis_3.0', $handlers);
         $this->assertArrayHasKey('ubl_2.1', $handlers);
         $this->assertArrayHasKey('ubl_2.4', $handlers);
         $this->assertArrayHasKey('cii', $handlers);
+        $this->assertArrayHasKey('ehf_3.0', $handlers);
+        $this->assertArrayHasKey('factur-x', $handlers);
+        $this->assertArrayHasKey('facturae_3.2', $handlers);
+        $this->assertArrayHasKey('fatturapa_1.2', $handlers);
+        $this->assertArrayHasKey('oioubl', $handlers);
+        $this->assertArrayHasKey('zugferd_1.0', $handlers);
+        $this->assertArrayHasKey('zugferd_2.0', $handlers);
 
+        // Verify some handler classes
         $this->assertEquals(PeppolBisHandler::class, $handlers['peppol_bis_3.0']);
         $this->assertEquals(UblHandler::class, $handlers['ubl_2.1']);
         $this->assertEquals(CiiHandler::class, $handlers['cii']);

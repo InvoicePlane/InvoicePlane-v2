@@ -22,12 +22,7 @@ class InvoiceObserver extends AbstractObserver
                 ->exists();
 
             if ($duplicate) {
-                throw ValidationException::withMessages([
-                    'invoice_number' => trans('ip.duplicate_invoice_number', [
-                        'number'  => $invoice->invoice_number,
-                        'company' => $invoice->company_id,
-                    ]),
-                ]);
+                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}' for company ID {$invoice->company_id}");
             }
         }
     }
