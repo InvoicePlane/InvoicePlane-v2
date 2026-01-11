@@ -49,7 +49,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering instanceof Numbering) {
-            $numbering = Numbering::find($numbering->id);
+            $numbering = Numbering::query()->find($numbering->id);
         }
 
         $generator = new TaskNumberGenerator($company->id);
@@ -94,7 +94,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering22 instanceof Numbering) {
-            $numbering22 = Numbering::find($numbering22->id);
+            $numbering22 = Numbering::query()->find($numbering22->id);
         }
         /** @var Numbering $numbering23 */
         $numbering23 = Numbering::factory()->for($company23)->create([
@@ -106,7 +106,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering23 instanceof Numbering) {
-            $numbering23 = Numbering::find($numbering23->id);
+            $numbering23 = Numbering::query()->find($numbering23->id);
         }
 
         $generator22 = new TaskNumberGenerator($company22->id);
@@ -148,7 +148,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering instanceof Numbering) {
-            $numbering = Numbering::find($numbering->id);
+            $numbering = Numbering::query()->find($numbering->id);
         }
 
         $generator = new ExpenseNumberGenerator($company->id);
@@ -192,7 +192,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering instanceof Numbering) {
-            $numbering = Numbering::find($numbering->id);
+            $numbering = Numbering::query()->find($numbering->id);
         }
 
         $generator = new TaskNumberGenerator($company->id);
@@ -242,14 +242,14 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 5,
         ]);
         if (!$numbering instanceof Numbering) {
-            $numbering = Numbering::find($numbering->id);
+            $numbering = Numbering::query()->find($numbering->id);
         }
 
         // Create existing task records to simulate real usage
         // Note: Tasks don't have numbering_id FK, they just store the generated number
         for ($i = 1; $i <= 5; $i++) {
             Task::factory()->for($company)->create([
-                'task_number' => 'TSK-' . mb_str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
+                'task_number' => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
             ]);
         }
 
@@ -289,7 +289,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering1 instanceof Numbering) {
-            $numbering1 = Numbering::find($numbering1->id);
+            $numbering1 = Numbering::query()->find($numbering1->id);
         }
         /** @var Numbering $numbering2 */
         $numbering2 = Numbering::factory()->for($company2)->create([
@@ -300,7 +300,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'left_pad' => 4,
         ]);
         if (!$numbering2 instanceof Numbering) {
-            $numbering2 = Numbering::find($numbering2->id);
+            $numbering2 = Numbering::query()->find($numbering2->id);
         }
 
         $generator1 = new TaskNumberGenerator($company1->id);

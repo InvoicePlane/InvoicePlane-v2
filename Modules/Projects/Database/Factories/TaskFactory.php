@@ -2,7 +2,9 @@
 
 namespace Modules\Projects\Database\Factories;
 
+use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\Company;
 use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Task;
 
@@ -17,19 +19,19 @@ class TaskFactory extends AbstractFactory
                 return;
             }
 
-            $customerId = \Modules\Clients\Models\Relation::query()
+            $customerId = Relation::query()
                 ->where('company_id', $task->company_id)
                 ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
                 ->inRandomOrder()
                 ->value('id');
 
             if ($customerId === null) {
-                $company = \Modules\Core\Models\Company::find($task->company_id);
+                $company = Company::query()->find($task->company_id);
                 if ($company === null) {
                     return;
                 }
 
-                $customer = \Modules\Clients\Models\Relation::factory()
+                $customer = Relation::factory()
                     ->for($company)
                     ->customer()
                     ->create();
@@ -45,17 +47,26 @@ class TaskFactory extends AbstractFactory
     public function definition(): array
     {
         $companyId = $this->resolveCompanyId();
-
+        if (!$companyId) {
+            $company = Company::factory()->create();
+            $companyId = $company->id;
+        }
         // Get a customer for this company if one already exists
         $customerId = null;
         if ($companyId) {
-            $customerId = \Modules\Clients\Models\Relation::query()
+            $customerId = Relation::query()
                 ->where('company_id', $companyId)
                 ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
                 ->inRandomOrder()
                 ->value('id');
+            if (!$customerId) {
+                $customer = Relation::factory()
+                    ->for(Company::query()->find($companyId))
+                    ->customer()
+                    ->create();
+                $customerId = $customer->id;
+            }
         }
-
         return [
             'company_id'  => $companyId,
             'customer_id' => $customerId,

@@ -186,7 +186,7 @@ abstract class AbstractNumberGenerator
 
         // Default format: prefix + padded number
         $pad      = max((int) ($numbering->left_pad ?? 0), 0);
-        $idPadded = mb_str_pad((string) $nextId, $pad, '0', STR_PAD_LEFT);
+        $idPadded = str_pad((string) $nextId, $pad, '0', STR_PAD_LEFT);
 
         return ($prefix ? $prefix . '-' : '') . $idPadded;
     }
