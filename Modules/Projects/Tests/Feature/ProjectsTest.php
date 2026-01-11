@@ -302,7 +302,13 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('projects', $payload);
+        $this->assertDatabaseHas('projects', array_merge(
+            $payload,
+            [
+                'start_at' => isset($payload['start_at']) ? $this->formatDateForDb($payload['start_at']) : null,
+                'end_at'   => isset($payload['end_at']) ? $this->formatDateForDb($payload['end_at']) : null,
+            ]
+        ));
     }
 
     #[Test]
@@ -489,4 +495,12 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
     # region spicy
     # endregion
+
+    /**
+     * Format a date string for DB assertion (adds ' 00:00:00' if not present).
+     */
+    private function formatDateForDb(string $date): string
+    {
+        return \Illuminate\Support\Str::contains($date, ':') ? $date : $date . ' 00:00:00';
+    }
 }

@@ -3,7 +3,6 @@
 namespace Modules\Projects\Tests\Feature;
 
 use Filament\Actions\Testing\TestAction;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Customer;
@@ -129,7 +128,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('tasks', array_merge(
             $payload,
             [
-                'due_at' => isset($payload['due_at']) ? Carbon::parse($payload['due_at'])->format('Y-m-d H:i:s') : null,
+                'due_at' => isset($payload['due_at']) ? $this->formatDateForDb($payload['due_at']) : null,
             ]
         ));
     }
@@ -401,7 +400,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('tasks', array_merge(
             $payload,
             [
-                'due_at' => isset($payload['due_at']) ? Carbon::parse($payload['due_at'])->format('Y-m-d H:i:s') : null,
+                'due_at' => isset($payload['due_at']) ? $this->formatDateForDb($payload['due_at']) : null,
             ]
         ));
     }
@@ -674,4 +673,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
     # region spicy
     # endregion
+
+    /**
+     * Format a date string for DB assertion (adds ' 00:00:00' if not present).
+     */
+    private function formatDateForDb(string $date): string
+    {
+        return \Illuminate\Support\Str::contains($date, ':') ? $date : $date . ' 00:00:00';
+    }
 }
