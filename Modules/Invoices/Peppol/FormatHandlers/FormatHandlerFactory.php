@@ -55,7 +55,8 @@ class FormatHandlerFactory
 
         $handler = app($handlerClass);
         
-        // Set the format on the handler if it extends BaseFormatHandler
+        // Set the format on the handler to ensure it matches what was requested
+        // This is especially important for handlers that can handle multiple formats (UBL, ZUGFeRD)
         if ($handler instanceof BaseFormatHandler) {
             $handler->setFormat($format);
         }

@@ -22,6 +22,18 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     protected PeppolDocumentFormat $format;
 
     /**
+     * Constructor.
+     *
+     * @param PeppolDocumentFormat|null $format The format this handler supports (optional)
+     */
+    public function __construct(?PeppolDocumentFormat $format = null)
+    {
+        if ($format !== null) {
+            $this->format = $format;
+        }
+    }
+
+    /**
      * Set the format for this handler.
      *
      * This method is called by the factory after instantiation.
