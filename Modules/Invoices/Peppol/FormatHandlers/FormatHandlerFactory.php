@@ -56,7 +56,7 @@ class FormatHandlerFactory
 
             return $handler;
         } catch (\Throwable $e) {
-            throw new RuntimeException("Failed to create handler for format: {$format->value}. {$e->getMessage()}", 0, $e);
+            throw new RuntimeException("Failed to create handler for format: {$format->value}", 0, $e);
         }
     }
 

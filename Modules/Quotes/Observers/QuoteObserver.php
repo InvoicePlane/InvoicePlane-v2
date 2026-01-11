@@ -22,7 +22,12 @@ class QuoteObserver extends AbstractObserver
                 ->exists();
 
             if ($duplicate) {
-                throw new RuntimeException("Duplicate quote number '{$quote->quote_number}' for company ID {$quote->company_id}");
+                throw new RuntimeException(
+                    trans('quotes.errors.duplicate_quote_number', [
+                        'quote_number' => $quote->quote_number,
+                        'company_id' => $quote->company_id,
+                    ])
+                );
             }
         }
     }
