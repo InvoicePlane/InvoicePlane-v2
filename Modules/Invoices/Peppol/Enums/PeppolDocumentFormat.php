@@ -159,8 +159,8 @@ enum PeppolDocumentFormat: string
             self::ZUGFERD_10    => 'German standard combining PDF with embedded XML invoice data.',
             self::ZUGFERD_20    => 'Updated ZUGFeRD compatible with Factur-X. Uses CII format.',
             self::OIOUBL        => 'Danish UBL-based format with national extensions.',
-            self::EHF_30        => 'Norwegian EHF 3.0 format for Peppol network.',
-            self::PEPPOL_BIS_30 => 'Default Peppol format for most countries. Based on UBL.',
+            self::EHF_30        => 'Norwegian EHF 3.0 format for PEPPOL network.',
+            self::PEPPOL_BIS_30 => 'Default PEPPOL format for most countries. Based on UBL.',
         };
     }
 
@@ -220,7 +220,8 @@ enum PeppolDocumentFormat: string
 
         return match ($this) {
             self::FATTURAPA_12 => $country === 'IT',
-            self::FACTURAE_32  => $country === 'ES', // For public administration
+            // Note: FACTURAE_32 is only mandatory for Spanish public administration
+            // Not for all invoices in Spain, so we return false
             default            => false,
         };
     }

@@ -58,7 +58,7 @@ trait LogsApiRequests
             return;
         }
 
-        Log::info('API Request', [
+        Log::info('HTTP Request', [
             'method'  => $method,
             'uri'     => $uri,
             'options' => $this->sanitizeForLogging($options),
@@ -81,7 +81,7 @@ trait LogsApiRequests
             return;
         }
 
-        Log::info('API Response', [
+        Log::info('HTTP Response', [
             'method' => $method,
             'uri'    => $uri,
             'status' => $status,
@@ -102,7 +102,7 @@ trait LogsApiRequests
      */
     protected function logError(string $type, string $method, string $uri, string $message, array $context = []): void
     {
-        Log::error("API {$type} Error", array_merge([
+        Log::error("HTTP {$type} Error", array_merge([
             'method'  => $method,
             'uri'     => $uri,
             'message' => $message,

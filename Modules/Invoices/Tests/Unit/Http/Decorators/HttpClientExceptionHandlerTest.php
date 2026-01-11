@@ -7,7 +7,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mockery;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Http\RequestMethod;
@@ -22,7 +22,7 @@ use RuntimeException;
  * Uses HTTP fakes to simulate various scenarios.
  */
 #[Group('peppol')]
-class HttpClientExceptionHandlerTest extends TestCase
+class HttpClientExceptionHandlerTest extends AbstractTestCase
 {
     protected HttpClientExceptionHandler $handler;
 
@@ -214,14 +214,6 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    public function it_forwards_method_calls_to_wrapped_client(): void
-    {
-        // This test is not applicable since ApiClient only exposes request().
-        $this->assertTrue(true);
-    }
-
-    #[Test]
-    #[Group('http_client_failing')]
     #[Group('failing')]
     public function it_makes_post_request_with_exception_handling(): void
     {
@@ -370,7 +362,7 @@ class HttpClientExceptionHandlerTest extends TestCase
             'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
         ]);
 
-        /* act & assert */
+        /* Act & Assert */
         $this->expectException(RequestException::class);
         $this->handler->request(RequestMethod::GET, 'test');
     }

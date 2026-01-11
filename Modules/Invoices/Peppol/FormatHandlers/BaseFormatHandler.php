@@ -5,6 +5,7 @@ namespace Modules\Invoices\Peppol\FormatHandlers;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 use Modules\Invoices\Peppol\Enums\PeppolEndpointScheme;
+use RuntimeException;
 
 /**
  * BaseFormatHandler - Abstract base class for invoice format handlers.
@@ -17,16 +18,32 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     /**
      * The format this handler supports.
      *
-     * @var PeppolDocumentFormat
+     * @var PeppolDocumentFormat|null
      */
-    protected PeppolDocumentFormat $format;
+    protected ?PeppolDocumentFormat $format = null;
 
     /**
      * Constructor.
      *
-     * @param PeppolDocumentFormat $format The format this handler supports
+     * @param PeppolDocumentFormat|null $format The format this handler supports (optional)
      */
-    public function __construct(PeppolDocumentFormat $format)
+    public function __construct(?PeppolDocumentFormat $format = null)
+    {
+        if ($format !== null) {
+            $this->format = $format;
+        }
+    }
+
+    /**
+     * Set the format for this handler.
+     *
+     * This method is called by the factory after instantiation.
+     *
+     * @param PeppolDocumentFormat $format The format this handler supports
+     *
+     * @return void
+     */
+    public function setFormat(PeppolDocumentFormat $format): void
     {
         $this->format = $format;
     }
@@ -45,6 +62,10 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     public function getFormat(): PeppolDocumentFormat
     {
+        if ($this->format === null) {
+            throw new RuntimeException('Format has not been set on this handler. Call setFormat() first.');
+        }
+        
         return $this->format;
     }
 
@@ -53,18 +74,20 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     public function supports(Invoice $invoice): bool
     {
+        $format = $this->getFormat();
+        
         // Check if customer's country matches format requirements
         $customerCountry = $invoice->customer?->country_code ?? null;
 
         // Mandatory formats must be used for their countries
-        if ($this->format->isMandatoryFor($customerCountry)) {
+        if ($format->isMandatoryFor($customerCountry)) {
             return true;
         }
 
         // Check if format is suitable for customer's country
         $suitableFormats = PeppolDocumentFormat::formatsForCountry($customerCountry);
 
-        return in_array($this->format, $suitableFormats, true);
+        return in_array($format, $suitableFormats, true);
     }
 
     /**
@@ -106,7 +129,9 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     public function getMimeType(): string
     {
-        return $this->format->requiresPdfEmbedding()
+        $format = $this->getFormat();
+        
+        return $format->requiresPdfEmbedding()
             ? 'application/pdf'
             : 'application/xml';
     }
@@ -116,7 +141,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
      */
     public function getFileExtension(): string
     {
-        return $this->format->extension();
+        return $this->getFormat()->extension();
     }
 
     /**
