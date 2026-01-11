@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
@@ -195,14 +194,10 @@ class DocumentsClientTest extends TestCase
             ], 422),
         ]);
 
-        try {
-            $this->client->submitDocument([]);
-            $this->fail('Expected RequestException was not thrown.');
-        } catch (RequestException $e) {
-            $response = $e->response;
-            $this->assertEquals(422, $response->status());
-            $this->assertEquals('Validation failed', $response->json('error'));
-        }
+        $response = $this->client->submitDocument([]);
+        $this->assertFalse($response->successful());
+        $this->assertEquals(422, $response->status());
+        $this->assertEquals('Validation failed', $response->json('error'));
     }
 
     #[Test]
@@ -215,14 +210,10 @@ class DocumentsClientTest extends TestCase
             ], 401),
         ]);
 
-        try {
-            $this->client->getDocument('DOC-123');
-            $this->fail('Expected RequestException was not thrown.');
-        } catch (RequestException $e) {
-            $response = $e->response;
-            $this->assertEquals(401, $response->status());
-            $this->assertEquals('Invalid API key', $response->json('error'));
-        }
+        $response = $this->client->getDocument('DOC-123');
+        $this->assertFalse($response->successful());
+        $this->assertEquals(401, $response->status());
+        $this->assertEquals('Invalid API key', $response->json('error'));
     }
 
     #[Test]
@@ -235,14 +226,10 @@ class DocumentsClientTest extends TestCase
             ], 404),
         ]);
 
-        try {
-            $this->client->getDocument('INVALID');
-            $this->fail('Expected RequestException was not thrown.');
-        } catch (RequestException $e) {
-            $response = $e->response;
-            $this->assertEquals(404, $response->status());
-            $this->assertEquals('Document not found', $response->json('error'));
-        }
+        $response = $this->client->getDocument('INVALID');
+        $this->assertFalse($response->successful());
+        $this->assertEquals(404, $response->status());
+        $this->assertEquals('Document not found', $response->json('error'));
     }
 
     #[Test]
@@ -255,14 +242,10 @@ class DocumentsClientTest extends TestCase
             ], 500),
         ]);
 
-        try {
-            $this->client->submitDocument(['test' => 'data']);
-            $this->fail('Expected RequestException was not thrown.');
-        } catch (RequestException $e) {
-            $response = $e->response;
-            $this->assertEquals(500, $response->status());
-            $this->assertEquals('Internal server error', $response->json('error'));
-        }
+        $response = $this->client->submitDocument(['test' => 'data']);
+        $this->assertFalse($response->successful());
+        $this->assertEquals(500, $response->status());
+        $this->assertEquals('Internal server error', $response->json('error'));
     }
 
     #[Test]
@@ -275,14 +258,10 @@ class DocumentsClientTest extends TestCase
             ], 429),
         ]);
 
-        try {
-            $this->client->submitDocument(['test' => 'data']);
-            $this->fail('Expected RequestException was not thrown.');
-        } catch (RequestException $e) {
-            $response = $e->response;
-            $this->assertEquals(429, $response->status());
-            $this->assertEquals('Too many requests', $response->json('error'));
-        }
+        $response = $this->client->submitDocument(['test' => 'data']);
+        $this->assertFalse($response->successful());
+        $this->assertEquals(429, $response->status());
+        $this->assertEquals('Too many requests', $response->json('error'));
     }
 
     #[Test]
