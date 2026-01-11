@@ -113,7 +113,7 @@ abstract class AbstractNumberGenerator
                 Log::error('No numbering scheme found for type: ' . $this->type . ', company: ' . $this->companyId);
 
                 // Return null for missing numbering scheme, allowing caller to handle gracefully
-                return null;
+                return;
             }
 
             if (config('app.extreme_logging')) {
