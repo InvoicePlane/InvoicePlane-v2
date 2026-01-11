@@ -50,7 +50,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering instanceof Numbering) {
+        if ( ! $numbering instanceof Numbering) {
             $numbering = Numbering::query()->find($numbering->id);
         }
 
@@ -95,7 +95,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering22 instanceof Numbering) {
+        if ( ! $numbering22 instanceof Numbering) {
             $numbering22 = Numbering::query()->find($numbering22->id);
         }
         /** @var Numbering $numbering23 */
@@ -107,7 +107,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering23 instanceof Numbering) {
+        if ( ! $numbering23 instanceof Numbering) {
             $numbering23 = Numbering::query()->find($numbering23->id);
         }
 
@@ -142,14 +142,20 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         /** @var Numbering $numbering */
         $numbering = Numbering::factory()->for($company)->create([
-            'type'     => NumberingType::EXPENSE->value,
-            'name'     => 'Expense Numbering',
-            'format'   => 'EXP-{{number}}',
-            'prefix'   => 'EXP',
-            'next_id'  => 1,
-            'left_pad' => 4,
+            'type'         => NumberingType::EXPENSE->value,
+            'name'         => 'Expense Numbering',
+            'format'       => 'EXP-{{number}}',
+            'prefix'       => NumberingType::EXPENSE->prefix(),
+            'next_id'      => 1,
+            'left_pad'     => 4,
+            'reset_number' => 0, // Ensure no reset occurs
+            'last_id'      => 0,
+            'last_year'    => 2025,
+            'last_month'   => 12,
+            'last_week'    => 52,
         ]);
-        if (!$numbering instanceof Numbering) {
+
+        if ( ! $numbering instanceof Numbering) {
             $numbering = Numbering::query()->find($numbering->id);
         }
 
@@ -167,6 +173,8 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         // Generate third number with new format
         $thirdNumber = $generator->forNumberingId($numbering->id)->generate();
+
+        dd($firstNumber, $secondNumber, $thirdNumber);
 
         /* Assert */
         $this->assertEquals('EXP-0001', $firstNumber);
@@ -193,7 +201,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering instanceof Numbering) {
+        if ( ! $numbering instanceof Numbering) {
             $numbering = Numbering::query()->find($numbering->id);
         }
 
@@ -243,7 +251,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'last_id'  => 45533,
             'left_pad' => 5,
         ]);
-        if (!$numbering instanceof Numbering) {
+        if ( ! $numbering instanceof Numbering) {
             $numbering = Numbering::query()->find($numbering->id);
         }
 
@@ -251,7 +259,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         // Note: Tasks don't have numbering_id FK, they just store the generated number
         for ($i = 1; $i <= 5; $i++) {
             Task::factory()->for($company)->create([
-                'task_number' => 'TSK-' . str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
+                'task_number' => 'TSK-' . mb_str_pad(45528 + $i, 5, '0', STR_PAD_LEFT),
             ]);
         }
 
@@ -290,7 +298,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering1 instanceof Numbering) {
+        if ( ! $numbering1 instanceof Numbering) {
             $numbering1 = Numbering::query()->find($numbering1->id);
         }
         /** @var Numbering $numbering2 */
@@ -301,7 +309,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-        if (!$numbering2 instanceof Numbering) {
+        if ( ! $numbering2 instanceof Numbering) {
             $numbering2 = Numbering::query()->find($numbering2->id);
         }
 
@@ -322,5 +330,35 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         $numbering2->refresh();
         $this->assertEquals(2, $numbering1->next_id);
         $this->assertEquals(2, $numbering2->next_id);
+    }
+
+    #[Test]
+    #[Group('numbering')]
+    #[Group('company-isolation')]
+    public function it_returns_fallback_when_type_mismatch(): void
+    {
+        /* Arrange */
+        Carbon::setTestNow('2025-12-29');
+        $company = Company::factory()->create(['id' => 99]);
+        /** @var Numbering $numbering */
+        $numbering = Numbering::factory()->for($company)->create([
+            'type'     => 'Expense', // Correct type
+            'name'     => 'Expense Numbering',
+            'format'   => 'EXP-{{number}}',
+            'prefix'   => 'EXP',
+            'next_id'  => 1,
+            'left_pad' => 4,
+        ]);
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
+        // Simulate generator with wrong type
+        $generator = new class ($company->id) extends \Modules\Core\Support\NumberGenerator\AbstractNumberGenerator {
+            protected string $type = 'expense'; // Lowercase, does not match Numbering
+        };
+        /* Act */
+        $result = $generator->forNumberingId($numbering->id)->generate();
+        /* Assert */
+        $this->assertEquals('what the hell?', $result);
     }
 }

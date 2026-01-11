@@ -5,8 +5,10 @@ namespace Modules\Core\Tests\Unit;
 use Illuminate\Support\Carbon;
 use Modules\Core\Support\DateHelpers;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(DateHelpers::class)]
 class DateHelpersTest extends AbstractTestCase
 {
     #[Test]

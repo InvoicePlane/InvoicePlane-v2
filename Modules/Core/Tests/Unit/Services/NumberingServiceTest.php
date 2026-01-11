@@ -131,7 +131,7 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
     public function it_deletes_numbering_when_not_in_use(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $numbering = Numbering::factory()->for($this->company)->create([
             'type'    => NumberingType::PROJECT->value,
             'name'    => 'Test Numbering',
             'next_id' => 1,

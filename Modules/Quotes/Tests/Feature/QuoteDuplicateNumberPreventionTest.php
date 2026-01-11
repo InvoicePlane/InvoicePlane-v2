@@ -6,9 +6,12 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Support\QuoteNumberGenerator;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
+#[CoversClass(QuoteNumberGenerator::class)]
 class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 {
     #[Test]

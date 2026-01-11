@@ -64,19 +64,19 @@ abstract class AbstractNumberGenerator
         return $this;
     }
 
-    public function forNumberingId(int $groupId): self
+    public function forNumberingId(int $numberingId): self
     {
         if (config('app.extreme_logging')) {
             Log::debug('NumberGenerator: Setting group ID', [
                 'previous_group_id' => $this->groupId,
-                'new_group_id'      => $groupId,
+                'new_group_id'      => $numberingId,
                 'type'              => $this->type,
                 'company_id'        => $this->companyId,
                 'trace'             => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
             ]);
         }
 
-        $this->groupId = $groupId;
+        $this->groupId = $numberingId;
 
         return $this;
     }
@@ -112,7 +112,8 @@ abstract class AbstractNumberGenerator
 
                 Log::error('No numbering scheme found for type: ' . $this->type . ', company: ' . $this->companyId);
 
-                return;
+                // Return null for missing numbering scheme, allowing caller to handle gracefully
+                return null;
             }
 
             if (config('app.extreme_logging')) {
@@ -130,7 +131,6 @@ abstract class AbstractNumberGenerator
             // Note: For new numbering schemes (last_id = 0), reset logic is applied
             // to ensure consistent behavior across all uses
             $this->checkAndResetCounter($numbering);
-
             $number = $this->formatNumber($numbering);
 
             if (config('app.extreme_logging')) {
@@ -186,7 +186,7 @@ abstract class AbstractNumberGenerator
 
         // Default format: prefix + padded number
         $pad      = max((int) ($numbering->left_pad ?? 0), 0);
-        $idPadded = str_pad((string) $nextId, $pad, '0', STR_PAD_LEFT);
+        $idPadded = mb_str_pad((string) $nextId, $pad, '0', STR_PAD_LEFT);
 
         return ($prefix ? $prefix . '-' : '') . $idPadded;
     }
