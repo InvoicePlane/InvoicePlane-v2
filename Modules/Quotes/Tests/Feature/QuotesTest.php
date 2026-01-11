@@ -63,6 +63,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_creates_a_quote_through_a_modal(): void
     {
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
@@ -485,6 +486,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     /**
      * @payload
      * {

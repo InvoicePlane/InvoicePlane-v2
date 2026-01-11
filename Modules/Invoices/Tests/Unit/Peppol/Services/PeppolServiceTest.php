@@ -6,7 +6,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests the PeppolService using fakes for HTTP responses.
  * Includes both passing and failing test cases.
  */
-class PeppolServiceTest extends TestCase
+class PeppolServiceTest extends AbstractAdminPanelTestCase
 {
     protected PeppolService $service;
 
