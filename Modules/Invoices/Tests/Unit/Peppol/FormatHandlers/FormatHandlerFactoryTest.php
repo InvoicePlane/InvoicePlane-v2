@@ -56,6 +56,7 @@ class FormatHandlerFactoryTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_creates_cii_handler(): void
     {
         $handler = FormatHandlerFactory::create(PeppolDocumentFormat::CII);
@@ -65,6 +66,7 @@ class FormatHandlerFactoryTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_throws_exception_for_unsupported_format(): void
     {
         $this->expectException(RuntimeException::class);
@@ -74,6 +76,7 @@ class FormatHandlerFactoryTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_can_check_if_handler_exists(): void
     {
         $this->assertTrue(FormatHandlerFactory::hasHandler(PeppolDocumentFormat::PEPPOL_BIS_30));

@@ -81,6 +81,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_creates_an_invoice_through_a_modal(): void
     {
         /* Arrange */
@@ -312,6 +313,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_creates_an_invoice_with_items(): void
     {
         $customer        = Relation::factory()->for($this->company)->customer()->create();

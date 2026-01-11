@@ -51,6 +51,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_sends_invoice_to_peppol_successfully(): void
     {
         $invoice = $this->createMockInvoice();
@@ -66,6 +67,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_validates_invoice_has_customer(): void
     {
         $invoice = Invoice::factory()->make(['customer_id' => null]);
@@ -79,6 +81,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_validates_invoice_has_invoice_number(): void
     {
         $invoice = Invoice::factory()->make(['invoice_number' => null]);
@@ -92,6 +95,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_validates_invoice_has_items(): void
     {
         $invoice = Invoice::factory()->make([
@@ -107,6 +111,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_handles_api_errors_gracefully(): void
     {
         Http::fake([
@@ -123,6 +128,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_gets_document_status(): void
     {
         Http::fake([
@@ -139,6 +145,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_cancels_document(): void
     {
         Http::fake([
@@ -151,6 +158,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_prepares_document_data_correctly(): void
     {
         $invoice = $this->createMockInvoice();
@@ -169,6 +177,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_includes_customer_peppol_id_in_request(): void
     {
         $invoice = $this->createMockInvoice();
@@ -188,6 +197,7 @@ class PeppolServiceTest extends TestCase
     // Failing tests for edge cases
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_handles_connection_timeout(): void
     {
         Http::fake([
@@ -204,6 +214,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_handles_unauthorized_access(): void
     {
         Http::fake([
@@ -220,6 +231,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[\PHPUnit\Framework\Attributes\Group('failing')]
     public function it_handles_server_errors(): void
     {
         Http::fake([

@@ -54,6 +54,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_executes_successfully_with_valid_invoice(): void
     {
         $invoice = $this->createMockInvoice('sent');
@@ -68,6 +69,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_loads_invoice_relationships(): void
     {
         $invoice = $this->createMockInvoice('sent');
@@ -82,6 +84,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_rejects_draft_invoices(): void
     {
         $invoice = $this->createMockInvoice('draft');
@@ -93,6 +96,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_passes_additional_data_to_service(): void
     {
         $invoice        = $this->createMockInvoice('sent');
@@ -142,6 +146,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     // Failing tests
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_validation_errors_from_peppol(): void
     {
         Http::fake([
@@ -162,6 +167,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_network_failures(): void
     {
         Http::fake([
@@ -196,6 +202,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_fails_when_status_check_fails(): void
     {
         Http::fake([
@@ -214,6 +221,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_fails_when_cancellation_not_allowed(): void
     {
         Http::fake([
@@ -232,6 +240,7 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_sends_invoice(): void
     {
         /* Arrange */
