@@ -84,6 +84,11 @@ class PeppolService
             $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
 
+            // If response is not successful, throw exception
+            if ( ! $response->successful()) {
+                $response->throw();
+            }
+
             $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
             return [

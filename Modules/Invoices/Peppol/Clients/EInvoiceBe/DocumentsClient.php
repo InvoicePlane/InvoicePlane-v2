@@ -65,11 +65,21 @@ class DocumentsClient extends EInvoiceBeClient
             'payload' => $documentData,
         ]);
 
-        return $this->client->request(
-            RequestMethod::POST,
-            $this->buildUrl('api/documents'),
-            $options
-        );
+        try {
+            return $this->client->request(
+                RequestMethod::POST,
+                $this->buildUrl('api/documents'),
+                $options
+            );
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            // For validation errors (422), rate limiting (429), and server errors (500),
+            // return the response so caller can inspect the error details
+            if (in_array($e->response?->status(), [422, 429, 500], true)) {
+                return $e->response;
+            }
+            // For other errors (401, 403, 404, etc.), let the exception propagate
+            throw $e;
+        }
     }
 
     /**
@@ -97,11 +107,20 @@ class DocumentsClient extends EInvoiceBeClient
      */
     public function getDocument(string $documentId): Response
     {
-        return $this->client->request(
-            RequestMethod::GET,
-            $this->buildUrl("api/documents/{$documentId}"),
-            $this->getRequestOptions()
-        );
+        try {
+            return $this->client->request(
+                RequestMethod::GET,
+                $this->buildUrl("api/documents/{$documentId}"),
+                $this->getRequestOptions()
+            );
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            // For 404 errors, return the response so caller can inspect
+            if ($e->response?->status() === 404) {
+                return $e->response;
+            }
+            // For authentication (401) and other errors, let the exception propagate
+            throw $e;
+        }
     }
 
     /**
