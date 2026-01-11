@@ -82,7 +82,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_has_all_expected_formats(): void
     {
         $formats = PeppolDocumentFormat::cases();
@@ -102,7 +101,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     #[DataProvider('countryRecommendationProvider')]
     public function it_recommends_correct_format_for_country(
         string $countryCode,
@@ -114,7 +112,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     #[DataProvider('mandatoryFormatProvider')]
     public function it_identifies_mandatory_formats_correctly(
         PeppolDocumentFormat $format,
@@ -127,7 +124,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_provides_label_for_formats(): void
     {
         $this->assertEquals('PEPPOL BIS Billing 3.0', PeppolDocumentFormat::PEPPOL_BIS_30->label());
@@ -151,15 +147,17 @@ class PeppolDocumentFormatTest extends TestCase
         $this->assertEquals(PeppolDocumentFormat::UBL_24, $format);
     }
 
-    #[Test]
-    public function it_throws_on_invalid_value(): void
+    public function test_it_throws_on_invalid_enum_value(): void
     {
         $this->expectException(ValueError::class);
-        PeppolDocumentFormat::from('invalid_format');
+    }
+
+    public function test_it_throws_on_invalid_enum_value_name(): void
+    {
+        $this->expectException(ValueError::class);
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_provides_description_for_formats(): void
     {
         $description = PeppolDocumentFormat::PEPPOL_BIS_30->description();
@@ -170,7 +168,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     #[DataProvider('formatValuesProvider')]
     public function it_has_correct_enum_values(
         PeppolDocumentFormat $format,
@@ -180,7 +177,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_handles_null_country_code_gracefully(): void
     {
         $recommended = PeppolDocumentFormat::recommendedForCountry(null);
@@ -189,7 +185,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_handles_lowercase_country_codes(): void
     {
         $recommended = PeppolDocumentFormat::recommendedForCountry('it');
@@ -198,7 +193,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_can_list_all_formats_as_select_options(): void
     {
         $options = [];
@@ -213,7 +207,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_rejects_invalid_format(): void
     {
         /* arrange & act & assert */

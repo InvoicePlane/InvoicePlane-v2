@@ -38,7 +38,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_submits_document_successfully(): void
     {
         Http::fake([
@@ -68,7 +67,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_gets_document_by_id(): void
     {
         Http::fake([
@@ -91,7 +89,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_gets_document_status(): void
     {
         Http::fake([
@@ -112,7 +109,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_lists_documents_with_filters(): void
     {
         Http::fake([
@@ -138,7 +134,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_cancels_document(): void
     {
         Http::fake([
@@ -157,7 +152,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_includes_authentication_header(): void
     {
         Http::fake([
@@ -173,7 +167,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_sets_correct_content_type(): void
     {
         Http::fake([
@@ -272,7 +265,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_handles_network_timeouts(): void
     {
         Http::fake([
@@ -287,7 +279,6 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_creates_document(): void
     {
         /* Arrange */
