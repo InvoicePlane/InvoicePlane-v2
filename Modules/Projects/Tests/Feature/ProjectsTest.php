@@ -60,7 +60,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     /**
      * @payload
      * {
@@ -99,7 +98,14 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $this->assertDatabaseHas('projects', array_merge(
             ['company_id' => $this->company->id],
-            $payload
+            [
+                'customer_id'    => $payload['customer_id'],
+                'project_status' => $payload['project_status'],
+                'project_name'   => $payload['project_name'],
+                'start_at'       => isset($payload['start_at']) && mb_strlen($payload['start_at']) === 10 ? $payload['start_at'] . ' 00:00:00' : $payload['start_at'],
+                'end_at'         => isset($payload['end_at']) && mb_strlen($payload['end_at']) === 10 ? $payload['end_at'] . ' 00:00:00' : $payload['end_at'],
+                'description'    => $payload['description'],
+            ]
         ));
     }
 
@@ -260,7 +266,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     /**
      * @payload
      * {

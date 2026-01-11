@@ -3,6 +3,7 @@
 namespace Modules\Projects\Tests\Feature;
 
 use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Customer;
@@ -126,7 +127,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertNotSet('isSaving', true);
 
-        $this->assertDatabaseHas('tasks', $payload);
+        $this->assertDatabaseHas('tasks', array_merge(
+            $payload,
+            [
+                'due_at' => isset($payload['due_at']) ? Carbon::parse($payload['due_at'])->format('Y-m-d H:i:s') : null,
+            ]
+        ));
     }
 
     #[Test]
@@ -394,7 +400,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('tasks', $payload);
+        $this->assertDatabaseHas('tasks', array_merge(
+            $payload,
+            [
+                'due_at' => isset($payload['due_at']) ? Carbon::parse($payload['due_at'])->format('Y-m-d H:i:s') : null,
+            ]
+        ));
     }
 
     #[Test]

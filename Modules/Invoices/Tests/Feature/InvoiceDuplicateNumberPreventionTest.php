@@ -118,6 +118,6 @@ class InvoiceDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $this->assertEquals('INV-2025-0001', $invoice->invoice_number);
-        $this->assertEquals('paid', $invoice->invoice_status);
+        $this->assertEquals('paid', $invoice->invoice_status->value);
     }
 }
