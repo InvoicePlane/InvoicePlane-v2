@@ -20,15 +20,9 @@
     "require": {
         "php": "^8.2",
         "doctrine/dbal": ">=4.4.1",
-<<<<<<< Updated upstream
-        "filament/actions": ">=4.4",
-        "filament/filament": ">=4.4",
-        "laravel/framework": ">=12.44",
-=======
-        "filament/actions": ">=4.5.1",
-        "filament/filament": ">=4.5.1",
+        "filament/actions": ">=4.5.2",
+        "filament/filament": ">=4.5.2",
         "laravel/framework": ">=12.0",
->>>>>>> Stashed changes
         "maatwebsite/excel": ">=3.1.67",
         "maennchen/zipstream-php": ">=3.1.2",
         "nwidart/laravel-modules": ">=12.0.4",
@@ -36,24 +30,15 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": ">=3.16.3",
-<<<<<<< Updated upstream
-        "brianium/paratest": ">=7.16",
-=======
         "brianium/paratest": ">=7.8.5",
->>>>>>> Stashed changes
         "driftingly/rector-laravel": ">=2.1.9",
         "fakerphp/faker": ">=1.24.1",
         "larastan/larastan": ">=3.8.1",
-        "laravel/boost": ">=1.8.7",
+        "laravel/boost": ">=1.8.9",
         "laravel/pail": ">=1.2.4",
         "laravel/pint": "dev-feat/blade",
-<<<<<<< Updated upstream
-        "laravel/sail": ">=1.51",
-        "laravel/tinker": ">=2.10.2",
-=======
         "laravel/sail": ">=1.52",
         "laravel/tinker": ">=2.11",
->>>>>>> Stashed changes
         "mockery/mockery": ">=1.6.12",
         "nunomaduro/collision": ">=8.8.3",
         "phpunit/phpunit": ">=11.5.46",
