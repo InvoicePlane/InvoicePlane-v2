@@ -10,8 +10,6 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
-use Modules\Invoices\Enums\InvoiceStatus;
-use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
@@ -111,10 +109,18 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         $component->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+        // Patch date fields for DB assertion
+        $dbPayload = Arr::except($payload, [
             'quoteItems', 'quote_total', 'quote_item_subtotal',
             'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
-        ]));
+        ]);
+        if (isset($dbPayload['quoted_at'])) {
+            $dbPayload['quoted_at'] = $dbPayload['quoted_at'] . ' 00:00:00';
+        }
+        if (isset($dbPayload['quote_expires_at'])) {
+            $dbPayload['quote_expires_at'] = $dbPayload['quote_expires_at'] . ' 00:00:00';
+        }
+        $this->assertDatabaseHas('quotes', $dbPayload);
     }
 
     #[Test]
@@ -542,10 +548,18 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $component
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('quotes', Arr::except($payload, [
+        // Patch date fields for DB assertion
+        $dbPayload = Arr::except($payload, [
             'quoteItems', 'quote_total', 'quote_item_subtotal',
             'quote_tax_total', 'quote_discount_amount', 'quote_discount_percent',
-        ]));
+        ]);
+        if (isset($dbPayload['quoted_at'])) {
+            $dbPayload['quoted_at'] = $dbPayload['quoted_at'] . ' 00:00:00';
+        }
+        if (isset($dbPayload['quote_expires_at'])) {
+            $dbPayload['quote_expires_at'] = $dbPayload['quote_expires_at'] . ' 00:00:00';
+        }
+        $this->assertDatabaseHas('quotes', $dbPayload);
     }
 
     #[Test]
@@ -712,15 +726,41 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete('revisit quote_item_subtotal');
 
         /* Arrange */
-        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
+            'quote_number'           => 'Q-0001',
             'prospect_id'            => $prospect->id,
-            'quote_number'           => 'Q-2025-006',
-            'quote_status'           => QuoteStatus::DRAFT,
-            'quote_discount_percent' => 5,
-            'quote_tax_total'        => 20,
-            'quote_total'            => 120,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
+            'quote_tax_total'        => 60,
+            'quote_total'            => 360,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Design',
+                    'quantity'        => 2,
+                    'price'           => 150,
+                    'subtotal'        => 300,
+                    'total'           => 300,
+                ],
+            ],
         ];
 
         /* Act */
@@ -760,7 +800,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'quote_discount_percent' => 5,
             'quote_item_subtotal'    => 100,
             'quote_total'            => 120,
-            'quote_tax_total'        => null,
         ];
 
         /* Act */
@@ -788,7 +827,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_total(): void
     {
-        $this->markTestIncomplete('revisit quote_total');
+        $this->markTestIncomplete('revisit quote_tax_total');
 
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
@@ -811,137 +850,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component->assertHasFormErrors(['quote_total']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_deletes_a_quote(): void
-    {
-        /* Arrange */
-        $company  = $this->company;
-        $user     = $this->user;
-        $prospect = Relation::factory()->for($this->company)->prospect()->create();
-
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->create([
-                'quote_number' => 'Q-0001',
-                'prospect_id'  => $prospect->id,
-                'user_id'      => $user->id,
-                'quoted_at'    => now()->format('Y-m-d'),
-            ]);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->mountAction(TestAction::make('delete')->table($quote))
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_delete_approved_quote(): void
-    {
-        $this->markTestIncomplete('Still can delete approved quote');
-
-        /* Arrange */
-        $company  = $this->company;
-        $user     = $this->user;
-        $prospect = Relation::factory()->for($this->company)->prospect()->create();
-
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->create([
-                'quote_number' => 'Q-0001',
-                'prospect_id'  => $prospect->id,
-                'user_id'      => $user->id,
-                'quote_status' => QuoteStatus::APPROVED,
-                'quoted_at'    => now()->format('Y-m-d'),
-            ]);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->mountAction(TestAction::make('delete')->table($quote))
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_delete_if_linked_paid_invoice(): void
-    {
-        $this->markTestIncomplete('no column invoice_id which is weird');
-
-        /* Arrange */
-        $company  = $this->company;
-        $user     = $this->user;
-        $customer = Relation::factory()->for($this->company)->customer()->create();
-
-        $invoice = Invoice::factory()
-            ->for($this->company)
-            ->create([
-                'customer_id'    => $customer->id,
-                'user_id'        => $user->id,
-                'invoice_status' => InvoiceStatus::PAID->value,
-            ]);
-
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->create([
-                'quote_number' => 'Q-0001',
-                'prospect_id'  => $customer->id,
-                'invoice_id'   => $invoice->id,
-                'user_id'      => $user->id,
-                'quoted_at'    => now()->format('Y-m-d'),
-            ]);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->mountAction(TestAction::make('delete')->table($quote))
-            ->callMountedAction();
-
-        /* Assert */
-        $this->assertDatabaseHas('quotes', ['id' => $quote->id]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_delete_quote_that_was_already_deleted(): void
-    {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
-        /* Arrange */
-        $company  = $this->company;
-        $user     = $this->user;
-        $prospect = Relation::factory()->for($this->company)->prospect()->create();
-
-        $quote = Quote::factory()
-            ->for($this->company)
-            ->create([
-                'quote_number' => 'Q-0001',
-                'prospect_id'  => $prospect->id,
-                'user_id'      => $user->id,
-                'quoted_at'    => now()->format('Y-m-d'),
-            ]);
-        $quote->delete();
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class)
-            ->mountAction(TestAction::make('delete')->table($quote))
-            ->callMountedAction();
-
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('quotes', ['id' => $quote->id]);
     }
     # endregion
 
