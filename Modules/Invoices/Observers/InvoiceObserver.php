@@ -16,7 +16,7 @@ class InvoiceObserver extends AbstractObserver
     public function saving(Invoice $invoice): void
     {
         if ($invoice->invoice_number !== null) {
-            $duplicate = Invoice::where('company_id', $invoice->company_id)
+            $duplicate = Invoice::query()->where('company_id', $invoice->company_id)
                 ->where('invoice_number', $invoice->invoice_number)
                 ->where('id', '!=', $invoice->id ?? 0)
                 ->exists();

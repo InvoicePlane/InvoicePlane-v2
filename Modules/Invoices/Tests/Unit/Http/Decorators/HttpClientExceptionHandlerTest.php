@@ -334,7 +334,7 @@ class HttpClientExceptionHandlerTest extends TestCase
     #[Test]
     public function it_handles_http_exceptions(): void
     {
-        /* arrange */
+        /* Arrange */
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
         ]);

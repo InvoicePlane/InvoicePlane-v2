@@ -144,13 +144,13 @@ class FormatHandlerFactoryTest extends TestCase
     #[Test]
     public function it_resolves_handler(): void
     {
-        /* arrange */
+        /* Arrange */
         $format = PeppolDocumentFormat::UBL_24;
 
-        /* act */
+        /* Act */
         $handler = FormatHandlerFactory::create($format);
 
-        /* assert */
+        /* Assert */
         $this->assertInstanceOf(InvoiceFormatHandlerInterface::class, $handler);
         $this->assertInstanceOf(UblHandler::class, $handler);
     }

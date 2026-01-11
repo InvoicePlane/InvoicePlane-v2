@@ -4,12 +4,12 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
-class InvoiceDuplicateNumberPreventionTest extends AbstractTestCase
+class InvoiceDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     public function it_prevents_duplicate_invoice_numbers_within_same_company(): void
@@ -88,7 +88,7 @@ class InvoiceDuplicateNumberPreventionTest extends AbstractTestCase
         $this->assertNull($draft3->invoice_number);
 
         // All three drafts should exist
-        $drafts = Invoice::where('company_id', $company->id)
+        $drafts = Invoice::query()->where('company_id', $company->id)
             ->whereNull('invoice_number')
             ->count();
         $this->assertEquals(3, $drafts);

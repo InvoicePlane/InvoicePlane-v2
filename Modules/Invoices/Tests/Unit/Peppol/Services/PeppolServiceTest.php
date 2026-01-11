@@ -238,16 +238,16 @@ class PeppolServiceTest extends TestCase
     #[Test]
     public function it_processes_invoice(): void
     {
-        /* arrange */
+        /* Arrange */
         $invoice = $this->createMockInvoice();
 
-        /* act */
+        /* Act */
         $result = $this->service->sendInvoiceToPeppol($invoice, [
             'customer_peppol_id' => 'BE:0123456789',
             'format'             => 'ubl_2.4',
         ]);
 
-        /* assert */
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertArrayHasKey('success', $result);
         $this->assertArrayHasKey('document_id', $result);

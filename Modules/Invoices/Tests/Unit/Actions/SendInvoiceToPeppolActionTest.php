@@ -220,15 +220,15 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     #[Test]
     public function it_sends_invoice(): void
     {
-        /* arrange */
+        /* Arrange */
         $invoice = $this->createMockInvoice('sent');
 
-        /* act */
+        /* Act */
         $result = $this->action->execute($invoice, [
             'customer_peppol_id' => 'BE:0123456789',
         ]);
 
-        /* assert */
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertArrayHasKey('success', $result);
         $this->assertArrayHasKey('document_id', $result);

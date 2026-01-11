@@ -364,7 +364,7 @@ class NumberingService
             return 0;
         }
 
-        return (int) $modelClass::where($foreignKey, $numbering->getKey())
+        return (int) $modelClass::query()->where($foreignKey, $numbering->getKey())
             ->count();
     }
 

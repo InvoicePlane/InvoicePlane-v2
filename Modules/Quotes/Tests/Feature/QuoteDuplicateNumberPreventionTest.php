@@ -4,12 +4,12 @@ namespace Modules\Quotes\Tests\Feature;
 
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
-class QuoteDuplicateNumberPreventionTest extends AbstractTestCase
+class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 {
     #[Test]
     public function it_prevents_duplicate_quote_numbers_within_same_company(): void
@@ -88,7 +88,7 @@ class QuoteDuplicateNumberPreventionTest extends AbstractTestCase
         $this->assertNull($draft3->quote_number);
 
         // All three drafts should exist
-        $drafts = Quote::where('company_id', $company->id)
+        $drafts = Quote::query()->where('company_id', $company->id)
             ->whereNull('quote_number')
             ->count();
         $this->assertEquals(3, $drafts);

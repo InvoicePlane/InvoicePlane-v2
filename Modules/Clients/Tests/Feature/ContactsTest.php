@@ -25,7 +25,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_lists_contacts(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -39,11 +39,11 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
         Contact::factory()->for($this->company)->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class);
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertSee('Jane Doe');
@@ -64,7 +64,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_contact_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -76,7 +76,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
             ->mountAction('create')
@@ -84,7 +84,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas('contacts', $payload);
@@ -101,7 +101,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_through_a_modal_without_required_relation_id(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             //'relation_id' => $relation->id,
             'first_name' => 'Jane',
@@ -129,7 +129,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_through_a_modal_without_required_first_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -160,7 +160,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_through_a_modal_without_required_last_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -190,7 +190,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_contact_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -211,14 +211,14 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'last_name'  => 'Contact',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
             ->mountAction(TestAction::make('edit')->table($contact), $updatedData)
             ->fillForm($updatedData)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -232,7 +232,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_contact(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -244,13 +244,13 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoFormErrors();
@@ -262,7 +262,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_without_required_relation_id(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             //'relation_id' => $relation->id,
             'first_name' => 'Jane',
@@ -270,13 +270,13 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'     => 'female',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['relation_id']);
     }
 
@@ -284,7 +284,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_without_required_first_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -295,13 +295,13 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['first_name']);
     }
 
@@ -309,7 +309,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_create_without_required_last_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()
             ->for($this->company, 'company')
             ->create();
@@ -320,13 +320,13 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateContact::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['last_name']);
     }
 
@@ -334,7 +334,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_contact(): void
     {
-        /* arrange */
+        /* Arrange */
         $relation = Relation::factory()->for($this->company, 'company')->create();
         $contact  = Contact::factory()->for($this->company)->create([
             'relation_id' => $relation->id,
@@ -343,13 +343,13 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ]);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class)
             ->mountAction(TestAction::make('delete')->table($contact))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
     }
     # endregion

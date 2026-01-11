@@ -42,7 +42,7 @@ class PeppolStatusPoller implements ShouldQueue
      * $this->logPeppolInfo('Starting Peppol status polling job');
      *
      * // Get all transmissions awaiting acknowledgement
-     * $transmissions = PeppolTransmission::where('status', PeppolTransmissionStatus::SENT)
+     * $transmissions = PeppolTransmission::query()->where('status', PeppolTransmissionStatus::SENT)
      * ->whereNotNull('external_id')
      * ->whereNull('acknowledged_at')
      * ->where('sent_at', '<', now()->subMinutes(5)) // Allow 5 min grace period

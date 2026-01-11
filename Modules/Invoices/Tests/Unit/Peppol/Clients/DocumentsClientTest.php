@@ -276,7 +276,7 @@ class DocumentsClientTest extends TestCase
     #[Test]
     public function it_creates_document(): void
     {
-        /* arrange */
+        /* Arrange */
         Http::fake([
             'https://api.e-invoice.be/api/documents' => Http::response([
                 'document_id' => 'DOC-NEW-123',
@@ -290,10 +290,10 @@ class DocumentsClientTest extends TestCase
             'amount'         => 100.00,
         ];
 
-        /* act */
+        /* Act */
         $response = $this->client->submitDocument($documentData);
 
-        /* assert */
+        /* Assert */
         $this->assertTrue($response->successful());
         $this->assertEquals(201, $response->status());
         $this->assertEquals('DOC-NEW-123', $response->json('document_id'));

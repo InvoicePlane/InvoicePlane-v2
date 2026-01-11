@@ -28,7 +28,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_products(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -54,11 +54,11 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         ];
         $product = Product::factory()->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful();
 
@@ -87,7 +87,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -109,7 +109,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'  => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction('create')
@@ -120,7 +120,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dd($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasNoFormErrors();
 
@@ -149,7 +149,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_through_a_modal_without_required_code(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -173,7 +173,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction('create')
@@ -184,7 +184,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['code']);
 
@@ -210,7 +210,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_through_a_modal_without_required_product_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -222,7 +222,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'unit_name' => '::unit_name::',
         ]);
 
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_id'    => $productCategory->id,
             'unit_id'        => $productUnit->id,
@@ -235,7 +235,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction('create')
@@ -246,7 +246,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
     }
@@ -281,7 +281,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'unit_name' => '::unit_name::',
         ]);
 
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_id'    => $productCategory->id,
             'unit_id'        => $productUnit->id,
@@ -294,7 +294,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction('create')
@@ -305,7 +305,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['price']);
 
@@ -316,7 +316,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -344,7 +344,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'price'        => 70.00,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction(TestAction::make('edit')->table($product), $payload)
@@ -381,7 +381,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -403,7 +403,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'  => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -413,7 +413,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasNoFormErrors();
 
@@ -442,7 +442,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_without_required_code(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -466,7 +466,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -476,7 +476,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['code']);
 
@@ -513,7 +513,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'unit_name' => '::unit_name::',
         ]);
 
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_id'    => $productCategory->id,
             'unit_id'        => $productUnit->id,
@@ -526,7 +526,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -536,7 +536,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
     }
@@ -571,7 +571,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'unit_name' => '::unit_name::',
         ]);
 
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_id'    => $productCategory->id,
             'unit_id'        => $productUnit->id,
@@ -584,7 +584,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'    => 'Example',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProduct::class)
             ->fillForm($payload)
@@ -594,7 +594,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['price']);
 
@@ -605,7 +605,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -633,7 +633,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'price'        => 70.00,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditProduct::class, ['record' => $product->id])
             ->fillForm($payload)
@@ -648,7 +648,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->for($this->company)->create([
             'category_name' => '::category_name::',
         ]);
@@ -671,13 +671,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             'description'   => 'Example',
         ]);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction(TestAction::make('delete')->table($product))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -693,7 +693,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
         ]);
@@ -713,13 +713,13 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $products = Product::factory(3)->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->mountAction(TestAction::make('bulkDelete')->table($product))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -747,7 +747,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
@@ -769,12 +769,12 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $product1 = Product::factory()->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->callAction('processSelections', $product1);
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -790,7 +790,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $this->marktestskipped('Skipped test.');
         // $this->authenticate();
@@ -812,12 +812,12 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         $product = Product::factory()->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProducts::class)
             ->callAction('processSelections', $product);
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();

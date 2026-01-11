@@ -28,7 +28,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_payments(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -45,7 +45,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         Payment::factory()->for($this->company)->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class, ['tenant' => Str::lower($this->company->search_code)]);
 
@@ -53,7 +53,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('payments', [
             'invoice_id'     => $payload['invoice_id'],
@@ -81,7 +81,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_payment_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -97,7 +97,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
@@ -109,7 +109,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dd($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasNoErrors();
 
         $this->assertDatabaseHas('payments', array_merge(
@@ -132,7 +132,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_invoice_id(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
 
         $payload = [
@@ -146,14 +146,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['invoice_id']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -173,7 +173,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_method(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -191,14 +191,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_method']);
         $this->assertDatabaseMissing('payments', $payload);
     }
@@ -217,7 +217,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_payment_status(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -233,7 +233,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'notes'          => 'Test payment',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
@@ -244,7 +244,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_status']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -265,7 +265,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_paid_at(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -279,7 +279,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'payment_amount' => 250.00,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
@@ -290,7 +290,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['paid_at']);
         $this->assertDatabaseMissing('payments', $payload);
     }
@@ -309,7 +309,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_through_a_modal_without_required_amount(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -323,14 +323,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_amount']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -340,7 +340,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('modals')]
     public function it_updates_a_payment_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -362,19 +362,19 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'payment_status' => PaymentStatus::COMPLETED->value,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class, ['record' => $payment->id])
             ->mountAction(TestAction::make('edit')->table($payment), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_status' => PaymentStatus::COMPLETED->value]);
     }
     # endregion
@@ -395,7 +395,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_payment(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -411,7 +411,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
@@ -422,7 +422,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dd($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasNoErrors();
 
         $this->assertDatabaseHas('payments', array_merge(
@@ -445,7 +445,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_without_required_invoice_id(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
 
         $payload = [
@@ -459,13 +459,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['invoice_id']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -485,7 +485,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_without_required_payment_method(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -503,13 +503,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_method']);
         $this->assertDatabaseMissing('payments', $payload);
     }
@@ -528,7 +528,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_without_required_payment_status(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -544,7 +544,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'notes'          => 'Test payment',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
@@ -554,7 +554,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_status']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -575,7 +575,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_without_required_paid_at(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -589,7 +589,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'payment_amount' => 250.00,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
@@ -599,7 +599,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             dump($payload);
         }*/
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['paid_at']);
         $this->assertDatabaseMissing('payments', $payload);
     }
@@ -618,7 +618,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_payment_without_required_amount(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -632,13 +632,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'paid_at'        => '2024-11-01',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreatePayment::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['payment_amount']);
 
         $this->assertDatabaseMissing('payments', $payload);
@@ -648,7 +648,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_payment(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -668,18 +668,18 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         $payload = ['payment_amount' => 888.00];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditPayment::class, ['record' => $payment->id])
             ->fillForm($payload)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_amount' => 888.00]);
     }
 
@@ -687,7 +687,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -705,14 +705,14 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
                 'paid_at'        => '2024-11-01',
             ]);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction(TestAction::make('delete')->table($payment))
             ->callMountedAction();
         $component->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
     }
 
@@ -722,7 +722,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('Still can delete payment if invoice is paid');
 
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id'    => $customer->id,
@@ -747,7 +747,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ->mountAction(TestAction::make('delete')->table($payment))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasErrors(['delete']);
 
@@ -760,7 +760,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('record for delete action cannot be null');
 
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
@@ -779,13 +779,13 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             ]);
         $payment->delete();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListPayments::class)
             ->mountAction(TestAction::make('delete')->table($payment))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasErrors();
 
         $this->assertDatabaseMissing('payments', ['id' => $payment->id]);

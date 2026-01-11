@@ -4,12 +4,11 @@ namespace Modules\Core\Tests\Feature;
 
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
-use Modules\Core\Models\User;
 use Modules\Core\Services\NumberingService;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-class NumberingPanelAccessTest extends AbstractTestCase
+class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
 {
     private NumberingService $service;
 
@@ -83,8 +82,8 @@ class NumberingPanelAccessTest extends AbstractTestCase
 
         /* Act */
         // Company panel should only see own numberings (via BelongsToCompany trait)
-        $company1Numberings = Numbering::where('company_id', $company1->id)->get();
-        $company2Numberings = Numbering::where('company_id', $company2->id)->get();
+        $company1Numberings = Numbering::query()->where('company_id', $company1->id)->get();
+        $company2Numberings = Numbering::query()->where('company_id', $company2->id)->get();
 
         /* Assert */
         $this->assertEquals(1, $company1Numberings->count());

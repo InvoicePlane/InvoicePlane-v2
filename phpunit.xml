@@ -9,6 +9,30 @@
          displayDetailsOnPhpunitDeprecations="true"
 >
     <testsuites>
+        <testsuite name="failing">
+            <file>Modules/Core/Tests/Unit/DateFieldAutoPopulationTest.php</file>
+            <file>Modules/Core/Tests/Unit/Services/NumberingCompanyIsolationTest.php</file>
+            <file>Modules/Core/Tests/Unit/Services/NumberingServiceTest.php</file>
+            <file>Modules/Core/Tests/Unit/SettingsTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Http/Clients/ApiClientTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Http/Decorators/HttpClientExceptionHandlerTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Peppol/Clients/DocumentsClientTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Peppol/Enums/PeppolDocumentFormatTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Peppol/FormatHandlers/FormatHandlerFactoryTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Peppol/Providers/ProviderFactoryTest.php</file>
+            <file>Modules/Invoices/Tests/Unit/Peppol/Services/PeppolServiceTest.php</file>
+            <file>Modules/Core/Tests/Feature/NumberingPanelAccessTest.php</file>
+            <file>Modules/Core/Tests/Feature/NumberingTest.php</file>
+            <file>Modules/Expenses/Tests/Feature/ExpensesTest.php</file>
+            <file>Modules/Invoices/Tests/Feature/InvoiceDuplicateNumberPreventionTest.php</file>
+            <file>Modules/Invoices/Tests/Feature/InvoiceNumberingSchemeChangeTest.php</file>
+            <file>Modules/Invoices/Tests/Feature/InvoicesTest.php</file>
+            <file>Modules/Payments/Tests/Feature/PaymentsTest.php</file>
+            <file>Modules/Projects/Tests/Feature/ProjectsTest.php</file>
+            <file>Modules/Projects/Tests/Feature/TasksTest.php</file>
+            <file>Modules/Quotes/Tests/Feature/QuoteDuplicateNumberPreventionTest.php</file>
+            <file>Modules/Quotes/Tests/Feature/QuotesTest.php</file>
+        </testsuite>
         <testsuite name="Unit">
             <directory>Modules/*/Tests/Unit</directory>
         </testsuite>

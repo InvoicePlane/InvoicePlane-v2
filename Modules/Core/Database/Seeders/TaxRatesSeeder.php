@@ -101,7 +101,7 @@ class TaxRatesSeeder extends AbstractSeeder
                 ];
             }
 
-            $existingCount = TaxRate::where('company_id', $company->id)->count();
+            $existingCount = TaxRate::query()->where('company_id', $company->id)->count();
 
             TaxRate::upsert(
                 $ratesToUpsert,
