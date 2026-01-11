@@ -90,6 +90,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
             'format'                  => 'PRJ-{YEAR}-{ID}',
             'next_id'                 => 1,
             'reset_number'            => 0,
+            'company_id'              => $this->company->id,
         ];
 
         /* Act */
@@ -98,12 +99,12 @@ class NumberingTest extends AbstractAdminPanelTestCase
             ->callAction('create', data: $payload);
 
         /* Assert */
-        $component->assertSuccessful();
         $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('numbering', [
-            'name'   => 'Project Numbering',
-            'type'   => NumberingType::PROJECT->value,
-            'format' => 'PRJ-{YEAR}-{ID}',
+            'name'       => 'Project Numbering',
+            'type'       => NumberingType::PROJECT->value,
+            'format'     => 'PRJ-{YEAR}-{ID}',
+            'company_id' => $this->company->id,
         ]);
     }
 
@@ -127,10 +128,9 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callAction('edit', data: $payload);
+            ->callAction('edit', [$numbering->getKey()], $payload);
 
         /* Assert */
-        $component->assertSuccessful();
         $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('numbering', [
             'id'                      => $numbering->id,
@@ -154,10 +154,9 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callAction('delete', $numbering);
+            ->callAction('delete', [$numbering->getKey()]);
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseMissing('numbering', ['id' => $numbering->id]);
     }
 

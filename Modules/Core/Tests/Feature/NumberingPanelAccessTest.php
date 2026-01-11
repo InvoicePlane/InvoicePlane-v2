@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
@@ -11,6 +12,8 @@ use PHPUnit\Framework\Attributes\Test;
 
 class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
 {
+    use RefreshDatabase;
+
     private NumberingService $service;
 
     protected function setUp(): void
@@ -64,6 +67,8 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
         $company1 = Company::factory()->create(['name' => 'Company One']);
         $company2 = Company::factory()->create(['name' => 'Company Two']);
 
+        Numbering::query()->delete(); // Ensure clean state
+
         $numbering1 = $this->service->createNumbering([
             'name'       => 'Numbering for Company 1',
             'type'       => 'Invoice',
@@ -83,7 +88,6 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
         ]);
 
         /* Act */
-        // Company panel should only see own numberings (via BelongsToCompany trait)
         $company1Numberings = Numbering::query()->where('company_id', $company1->id)->get();
         $company2Numberings = Numbering::query()->where('company_id', $company2->id)->get();
 

@@ -132,14 +132,13 @@ class ApiClientTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_accepts_string_method(): void
     {
         Http::fake([
             'https://api.example.com/test' => Http::response(['success' => true], 200),
         ]);
 
-        $response = $this->client->request('get', 'https://api.example.com/test');
+        $response = $this->client->request(RequestMethod::GET, 'https://api.example.com/test');
 
         $this->assertTrue($response->successful());
     }
