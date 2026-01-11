@@ -46,7 +46,7 @@ enum PeppolDocumentFormat: string
      * Factur-X v1.0 - French/German hybrid format.
      * Combines PDF/A-3 with embedded XML (ZUGFeRD/CII).
      */
-    case FACTURX_10 = 'facturx_1.0';
+    case FACTURX = 'factur-x';
 
     /**
      * ZUGFeRD v1.0 - German e-invoice format.
@@ -70,25 +70,12 @@ enum PeppolDocumentFormat: string
      * EHF (Elektronisk Handelsformat) - Norwegian e-invoice format.
      * Based on UBL with Norwegian-specific requirements.
      */
-    case EHF = 'ehf';
-
-    /**
-     * PEPPOL BIS Billing 3.0 - Pan-European standard.
-     * Based on UBL 2.1 with Peppol-specific requirements.
-     */
-    case PEPPOL_BIS_30 = 'peppol_bis_3.0';
-
-    /**
-     * EHF 3.0 - Norwegian e-invoice format (specific version for Peppol tests).
-     * Used in some test cases and country recommendations.
-     */
     case EHF_30 = 'ehf_3.0';
 
     /**
-     * Factur-X - Hybrid PDF/XML format (specific version for Peppol tests).
-     * Used in some test cases and country recommendations.
+     * PEPPOL BIS Billing 3.0 - Default Peppol format for most countries.
      */
-    case FACTURX = 'facturx';
+    case PEPPOL_BIS_30 = 'peppol_bis_3.0';
 
     /**
      * Get the recommended format based on country code.
@@ -100,14 +87,13 @@ enum PeppolDocumentFormat: string
     public static function recommendedForCountry(?string $countryCode): self
     {
         return match (mb_strtoupper($countryCode ?? '')) {
-            'ES'    => self::FACTURAE_32,
-            'IT'    => self::FATTURAPA_12,
-            'FR'    => self::FACTURX_10,
-            'DE'    => self::ZUGFERD_20,
-            'AT'    => self::CII,
-            'DK'    => self::OIOUBL,
-            'NO'    => self::EHF,
-            default => self::PEPPOL_BIS_30,
+            'DE', 'FR', 'AT' => self::CII,
+            'IT' => self::FATTURAPA_12,
+            'ES' => self::FACTURAE_32,
+            'DK' => self::OIOUBL,
+            'NO' => self::EHF_30,
+            'NL', 'BE', 'GB', 'SE', 'FI', 'XX', '' => self::UBL_24,
+            default => self::UBL_24,
         };
     }
 
@@ -123,14 +109,14 @@ enum PeppolDocumentFormat: string
         $country = mb_strtoupper($countryCode ?? '');
 
         return match ($country) {
-            'ES'    => [self::FACTURAE_32, self::UBL_21, self::PEPPOL_BIS_30],
-            'IT'    => [self::FATTURAPA_12, self::UBL_21, self::PEPPOL_BIS_30],
-            'FR'    => [self::FACTURX_10, self::FACTURX, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'DE'    => [self::ZUGFERD_20, self::ZUGFERD_10, self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'AT'    => [self::CII, self::UBL_21, self::PEPPOL_BIS_30],
-            'DK'    => [self::OIOUBL, self::UBL_21, self::PEPPOL_BIS_30],
-            'NO'    => [self::EHF_30, self::EHF, self::UBL_21, self::PEPPOL_BIS_30],
-            default => [self::PEPPOL_BIS_30, self::UBL_21, self::CII],
+            'AT'    => [self::CII, self::UBL_21],
+            'DE'    => [self::ZUGFERD_20, self::ZUGFERD_10, self::CII, self::UBL_21],
+            'DK'    => [self::OIOUBL, self::UBL_21],
+            'ES'    => [self::FACTURAE_32, self::UBL_21],
+            'FR'    => [self::FACTURX, self::CII, self::UBL_21],
+            'IT'    => [self::FATTURAPA_12, self::UBL_21],
+            'NO'    => [self::EHF_30, self::UBL_21],
+            default => [self::UBL_21, self::CII],
         };
     }
 
@@ -142,19 +128,17 @@ enum PeppolDocumentFormat: string
     public function label(): string
     {
         return match ($this) {
-            self::UBL_21        => 'UBL 2.1 (Universal Business Language)',
-            self::UBL_24        => 'UBL 2.4 (Universal Business Language)',
-            self::CII           => 'CII (Cross Industry Invoice)',
+            self::UBL_21        => 'UBL 2.1',
+            self::UBL_24        => 'UBL 2.4',
+            self::CII           => 'Cross Industry Invoice (CII)',
             self::FACTURAE_32   => 'Facturae 3.2 (Spain)',
             self::FATTURAPA_12  => 'FatturaPA 1.2 (Italy)',
-            self::FACTURX_10    => 'Factur-X 1.0 (France/Germany)',
-            self::ZUGFERD_10    => 'ZUGFeRD 1.0 (Germany)',
-            self::ZUGFERD_20    => 'ZUGFeRD 2.0 (Germany)',
-            self::OIOUBL        => 'OIOUBL (Denmark)',
-            self::EHF           => 'EHF (Norway)',
-            self::PEPPOL_BIS_30 => 'PEPPOL BIS Billing 3.0',
-            self::EHF_30        => 'EHF 3.0 (Norway)',
             self::FACTURX       => 'Factur-X (France/Germany)',
+            self::ZUGFERD_10    => 'ZUGFeRD 1.0',
+            self::ZUGFERD_20    => 'ZUGFeRD 2.0',
+            self::OIOUBL        => 'OIOUBL (Denmark)',
+            self::EHF_30        => 'EHF 3.0 (Norway)',
+            self::PEPPOL_BIS_30 => 'PEPPOL BIS Billing 3.0',
         };
     }
 
@@ -171,14 +155,12 @@ enum PeppolDocumentFormat: string
             self::CII           => 'Common in Germany, France, and Austria. UN/CEFACT standard.',
             self::FACTURAE_32   => 'Mandatory for invoices to Spanish public administration.',
             self::FATTURAPA_12  => 'Mandatory format for all B2B and B2G invoices in Italy.',
-            self::FACTURX_10    => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
+            self::FACTURX       => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
             self::ZUGFERD_10    => 'German standard combining PDF with embedded XML invoice data.',
             self::ZUGFERD_20    => 'Updated ZUGFeRD compatible with Factur-X. Uses CII format.',
             self::OIOUBL        => 'Danish UBL-based format with national extensions.',
-            self::EHF           => 'Norwegian UBL-based format used in public procurement.',
-            self::PEPPOL_BIS_30 => 'Pan-European Public Procurement Online standard.',
             self::EHF_30        => 'Norwegian EHF 3.0 format for Peppol network.',
-            self::FACTURX       => 'Hybrid PDF/A-3 format with embedded XML. Used in France and Germany.',
+            self::PEPPOL_BIS_30 => 'Default Peppol format for most countries. Based on UBL.',
         };
     }
 
@@ -190,7 +172,7 @@ enum PeppolDocumentFormat: string
     public function extension(): string
     {
         return match ($this) {
-            self::FACTURX_10, self::ZUGFERD_10, self::ZUGFERD_20 => 'pdf',
+            self::FACTURX, self::ZUGFERD_10, self::ZUGFERD_20 => 'pdf',
             default => 'xml',
         };
     }
@@ -203,7 +185,7 @@ enum PeppolDocumentFormat: string
     public function requiresPdfEmbedding(): bool
     {
         return match ($this) {
-            self::FACTURX_10, self::ZUGFERD_10, self::ZUGFERD_20 => true,
+            self::FACTURX, self::ZUGFERD_10, self::ZUGFERD_20 => true,
             default => false,
         };
     }
@@ -216,11 +198,12 @@ enum PeppolDocumentFormat: string
     public function xmlNamespace(): string
     {
         return match ($this) {
-            self::UBL_21, self::UBL_24, self::PEPPOL_BIS_30, self::OIOUBL, self::EHF => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
-            self::CII, self::FACTURX_10, self::ZUGFERD_20 => 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
-            self::ZUGFERD_10   => 'urn:ferd:CrossIndustryDocument:invoice:1p0',
-            self::FACTURAE_32  => 'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
-            self::FATTURAPA_12 => 'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
+            self::UBL_21, self::UBL_24, self::OIOUBL, self::EHF_30 => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+            self::CII, self::FACTURX, self::ZUGFERD_20 => 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+            self::ZUGFERD_10    => 'urn:ferd:CrossIndustryDocument:invoice:1p0',
+            self::FACTURAE_32   => 'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
+            self::FATTURAPA_12  => 'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
+            self::PEPPOL_BIS_30 => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
         };
     }
 

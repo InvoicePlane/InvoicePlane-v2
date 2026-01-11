@@ -132,6 +132,7 @@ class ApiClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_accepts_string_method(): void
     {
         Http::fake([

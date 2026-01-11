@@ -26,7 +26,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_creates_a_numbering(): void
     {
         /* Arrange */
@@ -53,7 +52,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_auto_sets_prefix_from_type_when_not_provided(): void
     {
         /* Arrange */
@@ -76,7 +74,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_converts_starting_id_to_next_id(): void
     {
         /* Arrange */
@@ -100,7 +97,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_generates_formatted_number_preview(): void
     {
         /* Arrange */
@@ -122,7 +118,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_deletes_numbering_when_not_in_use(): void
     {
         /* Arrange */
@@ -144,7 +139,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_checks_if_numbering_is_applied(): void
     {
         /* Arrange */
@@ -163,7 +157,6 @@ class NumberingServiceTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    #[Group('failed')]
     public function it_increments_numbers_correctly(): void
     {
         /* Arrange */

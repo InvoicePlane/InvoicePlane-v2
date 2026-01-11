@@ -46,27 +46,9 @@ class TaskFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $this->resolveCompanyId();
-        if (!$companyId) {
-            $company = Company::factory()->create();
-            $companyId = $company->id;
-        }
-        // Get a customer for this company if one already exists
-        $customerId = null;
-        if ($companyId) {
-            $customerId = Relation::query()
-                ->where('company_id', $companyId)
-                ->where('relation_type', \Modules\Clients\Enums\RelationType::CUSTOMER->value)
-                ->inRandomOrder()
-                ->value('id');
-            if (!$customerId) {
-                $customer = Relation::factory()
-                    ->for(Company::query()->find($companyId))
-                    ->customer()
-                    ->create();
-                $customerId = $customer->id;
-            }
-        }
+        $companyId  = $this->resolveCompanyId();
+        $customerId = $this->resolveForeignKey(Relation::class, $companyId);
+
         return [
             'company_id'  => $companyId,
             'customer_id' => $customerId,

@@ -22,7 +22,7 @@ class FacturXHandler extends BaseFormatHandler
      */
     public function __construct()
     {
-        parent::__construct(PeppolDocumentFormat::FACTURX_10);
+        parent::__construct(PeppolDocumentFormat::FACTURX);
     }
 
     /**
@@ -358,7 +358,7 @@ class FacturXHandler extends BaseFormatHandler
      *
      * @return float The tax rate percentage for the item; defaults to 20.0 if not present.
      */
-    protected function getTaxRate($item): float
+    protected function getTaxRate(mixed $item): float
     {
         return $item->tax_rate ?? 20.0; // Default French VAT rate
     }

@@ -23,18 +23,17 @@ class FormatHandlerFactory
      * @var array<string, class-string<InvoiceFormatHandlerInterface>>
      */
     protected static array $handlers = [
+        'cii'            => CiiHandler::class,
+        'ehf_3.0'        => EhfHandler::class,
+        'factur-x'       => FacturXHandler::class,
+        'facturae_3.2'   => FacturaeHandler::class,
+        'fatturapa_1.2'  => FatturapaHandler::class,
+        'oioubl'         => OioublHandler::class,
         'peppol_bis_3.0' => PeppolBisHandler::class,
         'ubl_2.1'        => UblHandler::class,
         'ubl_2.4'        => UblHandler::class,
-        'cii'            => CiiHandler::class,
-        // Additional handlers will be registered here as implemented
-        // 'fatturapa_1.2' => FatturapaHandler::class,
-        // 'facturae_3.2' => FacturaeHandler::class,
-        // 'factur-x' => FacturXHandler::class,
-        // 'zugferd_1.0' => ZugferdV1Handler::class,
-        // 'zugferd_2.0' => ZugferdV2Handler::class,
-        // 'oioubl' => OioublHandler::class,
-        // 'ehf_3.0' => EhfHandler::class,
+        'zugferd_1.0'    => ZugferdHandler::class,
+        'zugferd_2.0'    => ZugferdHandler::class,
     ];
 
     /**
