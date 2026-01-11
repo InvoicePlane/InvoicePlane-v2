@@ -9,7 +9,7 @@ use Modules\Expenses\Models\Expense;
 
 class ExpenseNumberGenerator extends AbstractNumberGenerator
 {
-    protected string $type = 'expense';
+    protected string $type = 'Expense'; // Match NumberingType::EXPENSE->value
 
     protected ?string $groupName = 'Expenses';
 

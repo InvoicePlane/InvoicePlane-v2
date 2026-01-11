@@ -33,7 +33,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
-    #[Group('failing')]
     public function it_allows_changing_task_numbering_format_per_company(): void
     {
         /* Arrange */
@@ -76,7 +75,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
-    #[Group('failing')]
     public function it_isolates_numbering_changes_between_companies(): void
     {
         /* Arrange */
@@ -132,7 +130,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
-    #[Group('failing')]
     public function it_allows_changing_expense_numbering_with_year_month(): void
     {
         /* Arrange */
@@ -173,8 +170,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         // Generate third number with new format
         $thirdNumber = $generator->forNumberingId($numbering->id)->generate();
-
-        dd($firstNumber, $secondNumber, $thirdNumber);
 
         /* Assert */
         $this->assertEquals('EXP-0001', $firstNumber);
@@ -235,7 +230,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('troubleshooting')]
-    #[Group('failing')]
     public function it_recalculates_next_id_when_set_to_lower_value_for_troubleshooting(): void
     {
         /* Arrange */
@@ -335,7 +329,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
-    public function it_returns_fallback_when_type_mismatch(): void
+    public function it_returns_null_when_type_mismatch(): void
     {
         /* Arrange */
         Carbon::setTestNow('2025-12-29');
@@ -359,6 +353,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         /* Act */
         $result = $generator->forNumberingId($numbering->id)->generate();
         /* Assert */
-        $this->assertEquals('what the hell?', $result);
+        $this->assertNull($result);
     }
 }

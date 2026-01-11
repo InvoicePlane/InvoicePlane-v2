@@ -323,7 +323,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('date-auto-population')]
-    #[Group('failing')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         $this->markTestIncomplete('still failing');
