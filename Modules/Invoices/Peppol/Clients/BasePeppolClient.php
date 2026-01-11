@@ -85,7 +85,13 @@ abstract class BasePeppolClient
      */
     public function getRequestOptions(array $options = []): array
     {
-        // Implement logic or return options as needed
+        // Merge authentication headers with any existing headers
+        $authHeaders = $this->getAuthenticationHeaders();
+        $existingHeaders = $options['headers'] ?? [];
+        
+        $options['headers'] = array_merge($authHeaders, $existingHeaders);
+        $options['timeout'] = $options['timeout'] ?? $this->getTimeout();
+        
         return $options;
     }
 

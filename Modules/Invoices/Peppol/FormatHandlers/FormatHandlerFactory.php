@@ -53,7 +53,14 @@ class FormatHandlerFactory
             throw new RuntimeException("No handler available for format: {$format->value}");
         }
 
-        return app($handlerClass);
+        $handler = app($handlerClass);
+        
+        // Set the format on the handler if it extends BaseFormatHandler
+        if ($handler instanceof BaseFormatHandler) {
+            $handler->setFormat($format);
+        }
+        
+        return $handler;
     }
 
     /**
