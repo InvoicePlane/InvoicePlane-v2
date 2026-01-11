@@ -121,6 +121,6 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $this->assertEquals('QUO-2025-0001', $quote->quote_number);
-        $this->assertEquals('approved', $quote->quote_status);
+        $this->assertEquals('approved', $quote->quote_status->value);
     }
 }

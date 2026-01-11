@@ -2,7 +2,6 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Support\Str;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
@@ -21,6 +20,10 @@ class RelationFactory extends AbstractFactory
 
     public function definition(): array
     {
+        $companyId = $this->resolveCompanyId();
+        if ( ! $companyId) {
+            $companyId = \Modules\Core\Models\Company::factory()->create()->id;
+        }
         $companyName = $this->faker->company;
         $suffix      = $this->faker->optional(0.7)->companySuffix();
         $tradingName = $companyName . ($suffix ? " {$suffix}" : '');
@@ -33,19 +36,20 @@ class RelationFactory extends AbstractFactory
             ]);
 
         return [
-            'company_id'      => $this->resolveCompanyId(),
-            'relation_type'   => $relationType,
-            'relation_status' => $this->faker->randomElement(RelationStatus::cases())->value,
-            'relation_number' => $this->faker->bothify('??######'),
-            'company_name'    => $companyName,
-            'trading_name'    => $tradingName,
-            'unique_name'     => Str::slug($tradingName),
-            'id_number'       => $this->faker->optional()->numerify('#########'),
-            'coc_number'      => $this->faker->optional()->numerify('#########'),
-            'vat_number'      => $this->faker->optional()->regexify('^(BE|DE|FR|LU|NL)\d{9}$'),
-            'currency_code'   => null,
-            'language'        => fake()->optional()->languageCode,
-            'registered_at'   => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
+            'company_id'         => $companyId,
+            'primary_contact_id' => null, // Set to null or a valid Contact ID if needed
+            'relation_type'      => $relationType,
+            'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,
+            'relation_number'    => $this->faker->bothify('??######'),
+            'company_name'       => $companyName,
+            'trading_name'       => $tradingName,
+            'unique_name'        => \Illuminate\Support\Str::slug($tradingName),
+            'id_number'          => $this->faker->optional()->numerify('#########'),
+            'coc_number'         => $this->faker->optional()->numerify('#########'),
+            'vat_number'         => $this->faker->optional()->regexify('^(BE|DE|FR|LU|NL)\d{9}$'),
+            'currency_code'      => 'EUR', // Set a default currency code
+            'language'           => $this->faker->optional()->languageCode,
+            'registered_at'      => $this->faker->dateTimeBetween('-2 years', '-1 month')->format('Y-m-d'),
         ];
     }
 
