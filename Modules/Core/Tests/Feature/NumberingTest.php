@@ -109,7 +109,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_updates_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -127,7 +127,8 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callAction('edit', [$numbering->getKey()], $payload);
+            ->mountAction('edit', [$numbering->getKey()], $payload)
+            ->callMountedAction();
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -140,7 +141,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_deletes_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -153,7 +154,8 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callAction('delete', [$numbering->getKey()]);
+            ->mountAction('delete', [$numbering->getKey()])
+            ->callMountedAction();
 
         /* Assert */
         $this->assertDatabaseMissing('numbering', ['id' => $numbering->id]);

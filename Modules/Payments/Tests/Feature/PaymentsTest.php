@@ -79,7 +79,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      *   "paid_at": "2024-11-01"
      * }
      */
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_creates_a_payment_through_a_modal(): void
     {
         /* Arrange */
@@ -115,7 +115,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('payments', array_merge(
             $payload,
-            ['payment_amount' => TestDecimal::exact(250)]
+            [
+                'payment_amount' => TestDecimal::exact(250),
+                'paid_at'        => '2024-11-01 00:00:00',
+            ]
         ));
     }
 
@@ -394,7 +397,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      *   "paid_at": "2024-11-01"
      * }
      */
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_creates_a_payment(): void
     {
         /* Arrange */
@@ -429,7 +432,10 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('payments', array_merge(
             $payload,
-            ['payment_amount' => TestDecimal::exact(250)]
+            [
+                'payment_amount' => TestDecimal::exact(250),
+                'paid_at'        => '2024-11-01 00:00:00',
+            ]
         ));
     }
 

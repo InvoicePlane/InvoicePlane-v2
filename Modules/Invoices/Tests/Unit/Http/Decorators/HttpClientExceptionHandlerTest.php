@@ -36,7 +36,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_wraps_external_client_successfully(): void
     {
         Http::fake([
@@ -51,7 +51,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_throws_exception_on_client_errors(): void
     {
         Http::fake([
@@ -65,7 +65,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_throws_exception_on_server_errors(): void
     {
         Http::fake([
@@ -79,7 +79,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_handles_connection_exceptions(): void
     {
         Http::fake([
@@ -95,7 +95,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_logs_requests_when_enabled(): void
     {
         Log::spy();
@@ -122,7 +122,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_does_not_log_when_disabled(): void
     {
         Log::spy();
@@ -139,7 +139,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_logs_errors_for_failed_requests(): void
     {
         Log::spy();
@@ -162,7 +162,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_sanitizes_sensitive_headers_in_logs(): void
     {
         Log::spy();
@@ -191,7 +191,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_sanitizes_auth_credentials_in_logs(): void
     {
         Log::spy();
@@ -222,7 +222,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_makes_post_request_with_exception_handling(): void
     {
         Http::fake([
@@ -237,7 +237,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_makes_put_request_with_exception_handling(): void
     {
         Http::fake([
@@ -251,7 +251,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_makes_patch_request_with_exception_handling(): void
     {
         Http::fake([
@@ -265,7 +265,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_makes_delete_request_with_exception_handling(): void
     {
         Http::fake([
@@ -282,7 +282,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_fails_on_unauthorized_access(): void
     {
         Http::fake([
@@ -296,7 +296,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_fails_on_forbidden_access(): void
     {
         Http::fake([
@@ -310,7 +310,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_logs_connection_errors(): void
     {
         Log::spy();
@@ -336,7 +336,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_logs_unexpected_errors(): void
     {
         Log::spy();
@@ -362,7 +362,7 @@ class HttpClientExceptionHandlerTest extends TestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    #[\PHPUnit\Framework\Attributes\Group('failing')]
+    #[Group('failing')]
     public function it_handles_http_exceptions(): void
     {
         /* Arrange */
