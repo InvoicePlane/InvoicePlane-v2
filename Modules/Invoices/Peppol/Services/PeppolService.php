@@ -58,13 +58,15 @@ class PeppolService
      */
     public function sendInvoiceToPeppol(Invoice $invoice, array $options = []): array
     {
-        // Validate invoice before processing
+        // Validate invoice basic requirements (customer, invoice_number, items)
+        // This ensures the invoice has the minimum required data before processing
         $this->validateInvoice($invoice);
 
         // Get the appropriate format handler for this invoice
         $formatHandler = FormatHandlerFactory::createForInvoice($invoice);
 
-        // Validate invoice before sending
+        // Validate invoice against format-specific requirements (e.g., UBL, CII rules)
+        // This ensures the invoice meets the specific format standards for transmission
         $validationErrors = $formatHandler->validate($invoice);
         if ( ! empty($validationErrors)) {
             throw new InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));

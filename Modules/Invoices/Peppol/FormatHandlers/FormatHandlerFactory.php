@@ -20,6 +20,17 @@ class FormatHandlerFactory
     /**
      * Registry of available handlers.
      *
+     * Currently limited to core formats to ensure stability and reliability.
+     * Supported formats:
+     * - CII: Cross Industry Invoice (UN/CEFACT standard, common in Germany/France)
+     * - UBL 2.1/2.4: Universal Business Language (most common for Peppol)
+     * - PEPPOL BIS 3.0: Default Peppol format for most countries
+     *
+     * Note: Other formats (EHF, Factur-X, Facturae, FatturaPA, OIOUBL, ZUGFeRD)
+     * have been temporarily removed pending implementation of their format handlers.
+     * Existing configurations using these formats will fall back to the recommended
+     * format for their country or PEPPOL BIS 3.0 as default.
+     *
      * @var array<string, class-string<InvoiceFormatHandlerInterface>>
      */
     protected static array $handlers = [
@@ -87,6 +98,12 @@ class FormatHandlerFactory
                 return self::create($format);
             } catch (ValueError | RuntimeException $e) {
                 // Invalid format or handler not available, continue to fallback
+                \Illuminate\Support\Facades\Log::info("Customer's preferred Peppol format '{$customer->peppol_format}' is not available, falling back to recommended format", [
+                    'customer_id'    => $customer->id,
+                    'invoice_id'     => $invoice->id,
+                    'country_code'   => $countryCode,
+                    'error'          => $e->getMessage(),
+                ]);
             }
         }
 
@@ -97,6 +114,12 @@ class FormatHandlerFactory
                 return self::create($recommendedFormat);
             } catch (RuntimeException $e) {
                 // Mandatory format not available, fall through to default
+                \Illuminate\Support\Facades\Log::warning("Mandatory Peppol format '{$recommendedFormat->value}' for country '{$countryCode}' is not available, falling back to default", [
+                    'invoice_id'   => $invoice->id,
+                    'country_code' => $countryCode,
+                    'format'       => $recommendedFormat->value,
+                    'error'        => $e->getMessage(),
+                ]);
             }
         }
 
@@ -105,6 +128,11 @@ class FormatHandlerFactory
             return self::create($recommendedFormat);
         } catch (RuntimeException $e) {
             // Recommended format not available, use default
+            \Illuminate\Support\Facades\Log::info("Recommended Peppol format '{$recommendedFormat->value}' is not available, falling back to PEPPOL BIS 3.0", [
+                'invoice_id'   => $invoice->id,
+                'country_code' => $countryCode,
+                'format'       => $recommendedFormat->value,
+            ]);
         }
 
         // 4. Fall back to default PEPPOL BIS
