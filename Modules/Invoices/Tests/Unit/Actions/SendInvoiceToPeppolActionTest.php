@@ -256,14 +256,19 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
      */
     protected function createMockInvoice(string $status = 'sent'): Invoice
     {
+        // Create a real company for multi-tenancy context
+        $company = \Modules\Core\Models\Company::factory()->create();
+
         /** @var Relation $customer */
         $customer = Relation::factory()->make([
+            'company_id'    => $company->id,
             'company_name'  => 'Test Customer',
             'customer_name' => 'Test Customer',
         ]);
 
         $items = collect([
             InvoiceItem::factory()->make([
+                'company_id'  => $company->id,
                 'item_name'   => 'Product 1',
                 'quantity'    => 2,
                 'price'       => 100,
@@ -274,6 +279,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
 
         /** @var Invoice $invoice */
         $invoice = Invoice::factory()->make([
+            'company_id'            => $company->id,
             'invoice_number'        => 'INV-2024-001',
             'invoice_status'        => $status,
             'invoice_item_subtotal' => 200,
