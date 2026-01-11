@@ -5,6 +5,7 @@ namespace Modules\Invoices\Peppol\FormatHandlers;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 use Modules\Invoices\Peppol\Enums\PeppolEndpointScheme;
+use RuntimeException;
 
 /**
  * BaseFormatHandler - Abstract base class for invoice format handlers.
@@ -62,7 +63,7 @@ abstract class BaseFormatHandler implements InvoiceFormatHandlerInterface
     public function getFormat(): PeppolDocumentFormat
     {
         if ($this->format === null) {
-            throw new \RuntimeException('Format has not been set on this handler. Call setFormat() first.');
+            throw new RuntimeException('Format has not been set on this handler. Call setFormat() first.');
         }
         
         return $this->format;

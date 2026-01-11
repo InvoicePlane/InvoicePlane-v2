@@ -205,14 +205,6 @@ class HttpClientExceptionHandlerTest extends AbstractTestCase
 
     #[Test]
     #[Group('http_client_failing')]
-    public function it_forwards_method_calls_to_wrapped_client(): void
-    {
-        // This test is not applicable since ApiClient only exposes request().
-        $this->assertTrue(true);
-    }
-
-    #[Test]
-    #[Group('http_client_failing')]
     public function it_makes_post_request_with_exception_handling(): void
     {
         Http::fake([
@@ -352,7 +344,7 @@ class HttpClientExceptionHandlerTest extends AbstractTestCase
             'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
         ]);
 
-        /* act & assert */
+        /* Act & Assert */
         $this->expectException(RequestException::class);
         $this->handler->request(RequestMethod::GET, 'test');
     }
