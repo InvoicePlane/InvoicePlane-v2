@@ -84,11 +84,6 @@ class PeppolService
             $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
 
-            // Throw for non-successful responses
-            if ( ! $response->successful()) {
-                $response->throw();
-            }
-
             $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
             return [
@@ -130,11 +125,6 @@ class PeppolService
             $response     = $this->documentsClient->getDocumentStatus($documentId);
             $responseData = $response->json();
 
-            // Throw for non-successful responses
-            if ( ! $response->successful()) {
-                $response->throw();
-            }
-
             $this->logResponse('Peppol', "GET /documents/{$documentId}/status", $response->status(), $responseData);
 
             return $responseData;
@@ -166,12 +156,6 @@ class PeppolService
 
         try {
             $response = $this->documentsClient->cancelDocument($documentId);
-
-            // Throw for non-successful responses (unless 404, which means already cancelled)
-            if ( ! $response->successful() && $response->status() !== 404) {
-                $response->throw();
-            }
-
             $success  = $response->successful();
 
             $this->logResponse('Peppol', "DELETE /documents/{$documentId}", $response->status(), [
@@ -180,6 +164,16 @@ class PeppolService
 
             return $success;
         } catch (RequestException $e) {
+            // 404 means document doesn't exist or was already cancelled - treat as success
+            if ($e->response?->status() === 404) {
+                $this->logResponse('Peppol', "DELETE /documents/{$documentId}", 404, [
+                    'success' => true,
+                    'note'    => 'Document not found or already cancelled',
+                ]);
+
+                return true;
+            }
+
             $this->logError('Request', 'DELETE', "/documents/{$documentId}", $e->getMessage(), [
                 'document_id' => $documentId,
             ]);

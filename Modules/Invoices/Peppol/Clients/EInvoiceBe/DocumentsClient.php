@@ -97,18 +97,11 @@ class DocumentsClient extends EInvoiceBeClient
      */
     public function getDocument(string $documentId): Response
     {
-        $response = $this->client->request(
+        return $this->client->request(
             RequestMethod::GET,
             $this->buildUrl("api/documents/{$documentId}"),
             $this->getRequestOptions()
         );
-
-        // Throw on authentication errors
-        if ($response->status() === 401) {
-            $response->throw();
-        }
-
-        return $response;
     }
 
     /**
