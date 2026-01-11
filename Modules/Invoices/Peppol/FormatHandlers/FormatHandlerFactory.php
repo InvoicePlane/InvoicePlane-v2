@@ -20,24 +20,31 @@ class FormatHandlerFactory
     /**
      * Registry of available handlers.
      *
-     * Currently limited to core formats to ensure stability and reliability.
      * Supported formats:
      * - CII: Cross Industry Invoice (UN/CEFACT standard, common in Germany/France)
+     * - EHF 3.0: Norwegian e-invoice format
+     * - Factur-X: French/German hybrid format (PDF with embedded XML)
+     * - Facturae 3.2: Spanish e-invoice format (mandatory for public administration)
+     * - FatturaPA 1.2: Italian e-invoice format (mandatory for all invoices in Italy)
+     * - OIOUBL: Danish e-invoice format
      * - UBL 2.1/2.4: Universal Business Language (most common for Peppol)
      * - PEPPOL BIS 3.0: Default Peppol format for most countries
-     *
-     * Note: Other formats (EHF, Factur-X, Facturae, FatturaPA, OIOUBL, ZUGFeRD)
-     * have been temporarily removed pending implementation of their format handlers.
-     * Existing configurations using these formats will fall back to the recommended
-     * format for their country or PEPPOL BIS 3.0 as default.
+     * - ZUGFeRD 1.0/2.0: German e-invoice format (PDF with embedded XML)
      *
      * @var array<string, class-string<InvoiceFormatHandlerInterface>>
      */
     protected static array $handlers = [
         'cii'            => CiiHandler::class,
+        'ehf_3.0'        => EhfHandler::class,
+        'factur-x'       => FacturXHandler::class,
+        'facturae_3.2'   => FacturaeHandler::class,
+        'fatturapa_1.2'  => FatturaPaHandler::class,
+        'oioubl'         => OioublHandler::class,
         'peppol_bis_3.0' => PeppolBisHandler::class,
         'ubl_2.1'        => UblHandler::class,
         'ubl_2.4'        => UblHandler::class,
+        'zugferd_1.0'    => ZugferdHandler::class,
+        'zugferd_2.0'    => ZugferdHandler::class,
     ];
 
     /**
