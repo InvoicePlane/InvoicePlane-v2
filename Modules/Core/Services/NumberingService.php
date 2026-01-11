@@ -142,7 +142,7 @@ class NumberingService
             $data['prefix'] = $this->sanitizePrefix($data['prefix']);
         }
 
-        if ((! isset($data['prefix'])) && isset($data['type'])) {
+        if (( ! isset($data['prefix'])) && isset($data['type'])) {
             $type = $data['type'];
             if ($type instanceof NumberingType) {
                 $data['prefix'] = $type->prefix();
@@ -256,9 +256,9 @@ class NumberingService
         $maxNum = 0;
         foreach ($existingNumbers as $num) {
             if (is_string($num) && str_starts_with($num, $prefix)) {
-                $numeric = preg_replace('/[^0-9]/', '', substr($num, strlen($prefix)));
+                $numeric = preg_replace('/[^0-9]/', '', mb_substr($num, mb_strlen($prefix)));
                 if ($numeric !== '' && is_numeric($numeric)) {
-                    $maxNum = max($maxNum, (int)$numeric);
+                    $maxNum = max($maxNum, (int) $numeric);
                 }
             }
         }
@@ -266,6 +266,7 @@ class NumberingService
         if ($desiredNextId <= $maxNum) {
             return $nextAvailable;
         }
+
         return $desiredNextId;
     }
 
@@ -281,7 +282,7 @@ class NumberingService
         }
 
         $pad      = max(($numbering->left_pad ?? 0), 0);
-        $idPadded = str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
+        $idPadded = mb_str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
 
         return ($prefix ? $prefix . '-' : '') . $idPadded;
     }
@@ -303,7 +304,7 @@ class NumberingService
                 : (string) ($numbering->type ?? 'record');
 
             throw new InvalidArgumentException(
-                "Cannot delete numbering scheme '$numbering->name' because it is in use by $usageCount " . mb_strtolower($label) . '(s).'
+                "Cannot delete numbering scheme '{$numbering->name}' because it is in use by {$usageCount} " . mb_strtolower($label) . '(s).'
             );
         }
     }
@@ -319,6 +320,7 @@ class NumberingService
 
         /** @var class-string<Model> $modelClass */
         $modelInstance = new $modelClass();
+
         return $modelInstance->newQuery()->where($foreignKey, $numbering->getKey())
             ->count();
     }
