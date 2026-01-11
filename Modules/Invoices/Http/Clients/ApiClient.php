@@ -35,9 +35,7 @@ class ApiClient
             $client = $client->withHeaders($options['headers']);
         }
 
-        return $client
-            ->{$method->value}($uri, $options['payload'] ?? [])
-            ->throw();
+        return $client->{$method->value}($uri, $options['payload'] ?? []);
     }
 
     /**

@@ -53,14 +53,18 @@ class FormatHandlerFactory
             throw new RuntimeException("No handler available for format: {$format->value}");
         }
 
-        /** @var BaseFormatHandler $handler */
-        $handler = app($handlerClass);
+        try {
+            /** @var BaseFormatHandler $handler */
+            $handler = app($handlerClass);
 
-        // Set the format on the handler to ensure it matches what was requested
-        // This is especially important for handlers that can handle multiple formats (UBL, ZUGFeRD)
-        $handler->setFormat($format);
+            // Set the format on the handler to ensure it matches what was requested
+            // This is especially important for handlers that can handle multiple formats (UBL, ZUGFeRD)
+            $handler->setFormat($format);
 
-        return $handler;
+            return $handler;
+        } catch (\Throwable $e) {
+            throw new RuntimeException("Failed to create handler for format: {$format->value}. {$e->getMessage()}", 0, $e);
+        }
     }
 
     /**

@@ -34,7 +34,7 @@ return [
         |
         */
         'e_invoice_be' => [
-            'api_key'  => env('PEPPOL_E_INVOICE_BE_API_KEY', ''),
+            'api_key'  => env('PEPPOL_E_INVOICE_BE_API_KEY', 'test-default-key'),
             'base_url' => env('PEPPOL_E_INVOICE_BE_BASE_URL', 'https://api.e-invoice.be'),
             'timeout'  => env('PEPPOL_E_INVOICE_BE_TIMEOUT', 30),
         ],
