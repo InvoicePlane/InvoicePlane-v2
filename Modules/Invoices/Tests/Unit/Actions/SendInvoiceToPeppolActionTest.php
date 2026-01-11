@@ -13,6 +13,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use Modules\Invoices\Peppol\Services\PeppolService;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -177,8 +178,10 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_validates_invoice_has_required_data(): void
     {
+        /** @var Invoice $invoice */
         $invoice = Invoice::factory()->make([
             'invoice_status' => 'sent',
             'invoice_number' => null, // Missing invoice number

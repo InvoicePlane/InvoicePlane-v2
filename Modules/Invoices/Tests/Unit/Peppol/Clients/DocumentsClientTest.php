@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
@@ -210,10 +211,13 @@ class DocumentsClientTest extends TestCase
             ], 401),
         ]);
 
-        $response = $this->client->getDocument('DOC-123');
-        $this->assertFalse($response->successful());
-        $this->assertEquals(401, $response->status());
-        $this->assertEquals('Invalid API key', $response->json('error'));
+        try {
+            $this->client->getDocument('DOC-123');
+            $this->fail('Expected RequestException was not thrown.');
+        } catch (RequestException $e) {
+            $this->assertEquals(401, $e->response->status());
+            $this->assertEquals('Invalid API key', $e->response->json('error'));
+        }
     }
 
     #[Test]
