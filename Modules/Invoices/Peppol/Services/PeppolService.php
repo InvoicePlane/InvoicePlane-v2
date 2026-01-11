@@ -58,6 +58,9 @@ class PeppolService
      */
     public function sendInvoiceToPeppol(Invoice $invoice, array $options = []): array
     {
+        // Validate invoice before processing
+        $this->validateInvoice($invoice);
+
         // Get the appropriate format handler for this invoice
         $formatHandler = FormatHandlerFactory::createForInvoice($invoice);
 
@@ -80,6 +83,11 @@ class PeppolService
         try {
             $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
+
+            // Throw for non-successful responses
+            if ( ! $response->successful()) {
+                $response->throw();
+            }
 
             $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
@@ -122,6 +130,11 @@ class PeppolService
             $response     = $this->documentsClient->getDocumentStatus($documentId);
             $responseData = $response->json();
 
+            // Throw for non-successful responses
+            if ( ! $response->successful()) {
+                $response->throw();
+            }
+
             $this->logResponse('Peppol', "GET /documents/{$documentId}/status", $response->status(), $responseData);
 
             return $responseData;
@@ -153,6 +166,12 @@ class PeppolService
 
         try {
             $response = $this->documentsClient->cancelDocument($documentId);
+
+            // Throw for non-successful responses (unless 404, which means already cancelled)
+            if ( ! $response->successful() && $response->status() !== 404) {
+                $response->throw();
+            }
+
             $success  = $response->successful();
 
             $this->logResponse('Peppol', "DELETE /documents/{$documentId}", $response->status(), [
