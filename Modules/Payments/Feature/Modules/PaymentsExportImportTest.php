@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Payments\Filament\Company\Resources\Payments\Pages\ListPayments;
 use Modules\Payments\Models\Payment;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListPayments::class)]
 class PaymentsExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;

@@ -3,12 +3,14 @@
 namespace Modules\Invoices\Tests\Unit\Http\Decorators;
 
 use Exception;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mockery;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
+use Modules\Invoices\Http\RequestMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
@@ -20,7 +22,7 @@ use RuntimeException;
  * Uses HTTP fakes to simulate various scenarios.
  */
 #[Group('peppol')]
-class HttpClientExceptionHandlerTest extends TestCase
+class HttpClientExceptionHandlerTest extends AbstractTestCase
 {
     protected HttpClientExceptionHandler $handler;
 
@@ -33,43 +35,51 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_wraps_external_client_successfully(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['success' => true], 200),
         ]);
 
-        $response = $this->handler->get('test');
+        $response = $this->handler->request(RequestMethod::GET, 'test');
 
         $this->assertTrue($response->successful());
         $this->assertEquals(['success' => true], $response->json());
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_throws_exception_on_client_errors(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Bad request'], 400),
         ]);
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
-        $this->handler->get('test');
+        $this->handler->request(RequestMethod::GET, 'test');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_throws_exception_on_server_errors(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Server error'], 500),
         ]);
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
-        $this->handler->get('test');
+        $this->handler->request(RequestMethod::GET, 'test');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_handles_connection_exceptions(): void
     {
         Http::fake([
@@ -80,10 +90,12 @@ class HttpClientExceptionHandlerTest extends TestCase
 
         $this->expectException(\Illuminate\Http\Client\ConnectionException::class);
 
-        $this->handler->get('test');
+        $this->handler->request(RequestMethod::GET, 'test');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_logs_requests_when_enabled(): void
     {
         Log::spy();
@@ -93,7 +105,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         $this->handler->enableLogging();
-        $this->handler->get('test');
+        $this->handler->request(RequestMethod::GET, 'test');
 
         Log::shouldHaveReceived('info')
             ->with('HTTP Request', Mockery::on(function ($arg) {
@@ -109,6 +121,8 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_does_not_log_when_disabled(): void
     {
         Log::spy();
@@ -118,12 +132,14 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         $this->handler->disableLogging();
-        $this->handler->get('test');
+        $this->handler->request(RequestMethod::GET, 'test');
 
         Log::shouldNotHaveReceived('info');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_logs_errors_for_failed_requests(): void
     {
         Log::spy();
@@ -133,7 +149,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         try {
-            $this->handler->get('test');
+            $this->handler->request(RequestMethod::GET, 'test');
         } catch (Exception $e) {
             // Expected exception
         }
@@ -145,6 +161,8 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_sanitizes_sensitive_headers_in_logs(): void
     {
         Log::spy();
@@ -154,7 +172,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         $this->handler->enableLogging();
-        $this->handler->request('GET', 'test', [
+        $this->handler->request(RequestMethod::GET, 'test', [
             'headers' => [
                 'Authorization' => 'Bearer secret-token',
                 'X-API-Key'     => 'my-secret-key',
@@ -172,6 +190,8 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_sanitizes_auth_credentials_in_logs(): void
     {
         Log::spy();
@@ -181,7 +201,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         $this->handler->enableLogging();
-        $this->handler->request('GET', 'test', [
+        $this->handler->request(RequestMethod::GET, 'test', [
             'auth' => ['username', 'password'],
         ]);
 
@@ -193,65 +213,58 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_forwards_method_calls_to_wrapped_client(): void
-    {
-        Http::fake([
-            'https://api.example.com/*' => Http::response(['success' => true], 200),
-        ]);
-
-        // Test that we can call methods that don't exist on the decorator
-        $this->handler->setHeaders(['X-Custom' => 'value']);
-        $this->handler->setTimeout(60);
-
-        $response = $this->handler->get('test');
-        $this->assertTrue($response->successful());
-    }
-
-    #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_makes_post_request_with_exception_handling(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['created' => true], 201),
         ]);
 
-        $response = $this->handler->post('create', ['name' => 'Test']);
+        $response = $this->handler->request(RequestMethod::POST, 'create', ['payload' => ['name' => 'Test']]);
 
         $this->assertTrue($response->successful());
         $this->assertEquals(201, $response->status());
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_makes_put_request_with_exception_handling(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['updated' => true], 200),
         ]);
 
-        $response = $this->handler->put('update/1', ['name' => 'Updated']);
+        $response = $this->handler->request(RequestMethod::PUT, 'update/1', ['payload' => ['name' => 'Updated']]);
 
         $this->assertTrue($response->successful());
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_makes_patch_request_with_exception_handling(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['patched' => true], 200),
         ]);
 
-        $response = $this->handler->patch('patch/1', ['field' => 'value']);
+        $response = $this->handler->request(RequestMethod::PATCH, 'patch/1', ['payload' => ['field' => 'value']]);
 
         $this->assertTrue($response->successful());
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_makes_delete_request_with_exception_handling(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(null, 204),
         ]);
 
-        $response = $this->handler->delete('delete/1');
+        $response = $this->handler->request(RequestMethod::DELETE, 'delete/1');
 
         $this->assertTrue($response->successful());
         $this->assertEquals(204, $response->status());
@@ -260,30 +273,36 @@ class HttpClientExceptionHandlerTest extends TestCase
     // Failing tests for error scenarios
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_fails_on_unauthorized_access(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Unauthorized'], 401),
         ]);
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
-        $this->handler->get('secure');
+        $this->handler->request(RequestMethod::GET, 'secure');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_fails_on_forbidden_access(): void
     {
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Forbidden'], 403),
         ]);
 
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
+        $this->expectException(RequestException::class);
 
-        $this->handler->get('forbidden');
+        $this->handler->request(RequestMethod::GET, 'forbidden');
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_logs_connection_errors(): void
     {
         Log::spy();
@@ -295,7 +314,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         try {
-            $this->handler->get('test');
+            $this->handler->request(RequestMethod::GET, 'test');
         } catch (Exception $e) {
             // Expected exception
         }
@@ -308,6 +327,8 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_logs_unexpected_errors(): void
     {
         Log::spy();
@@ -319,7 +340,7 @@ class HttpClientExceptionHandlerTest extends TestCase
         ]);
 
         try {
-            $this->handler->get('test');
+            $this->handler->request(RequestMethod::GET, 'test');
         } catch (Exception $e) {
             // Expected exception
         }
@@ -332,15 +353,17 @@ class HttpClientExceptionHandlerTest extends TestCase
     }
 
     #[Test]
+    #[Group('http_client_failing')]
+    #[Group('failing')]
     public function it_handles_http_exceptions(): void
     {
-        /* arrange */
+        /* Arrange */
         Http::fake([
             'https://api.example.com/*' => Http::response(['error' => 'Not Found'], 404),
         ]);
 
-        /* act & assert */
-        $this->expectException(\Illuminate\Http\Client\RequestException::class);
-        $this->handler->get('test');
+        /* Act & Assert */
+        $this->expectException(RequestException::class);
+        $this->handler->request(RequestMethod::GET, 'test');
     }
 }

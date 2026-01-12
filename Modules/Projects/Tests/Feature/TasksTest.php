@@ -27,7 +27,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_tasks(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
@@ -55,11 +55,11 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->for($taxRate, 'taxRate')
             ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertCanSeeTableRecords([$task]);
@@ -88,7 +88,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_task_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
@@ -112,7 +112,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
             ->mountAction('create')
@@ -120,12 +120,17 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertNotSet('isSaving', true);
 
-        $this->assertDatabaseHas('tasks', $payload);
+        $this->assertDatabaseHas('tasks', array_merge(
+            $payload,
+            [
+                'due_at' => isset($payload['due_at']) ? $this->formatDateForDb($payload['due_at']) : null,
+            ]
+        ));
     }
 
     #[Test]
@@ -146,7 +151,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_through_a_modal_without_required_task_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
@@ -168,7 +173,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         Livewire::actingAs($this->user)
             ->test(ListTasks::class)
             ->mountAction('create')
@@ -176,7 +181,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasFormErrors(['task_name' => 'required']);
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseMissing('tasks', $payload);
     }
 
@@ -197,7 +202,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_through_a_modal_without_required_project(): void
     {
-        /* arrange */
+        /* Arrange */
 
         $taxRate = TaxRate::factory()
             ->for($this->company)
@@ -214,14 +219,14 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['project_id' => 'required']);
         $this->assertDatabaseMissing('tasks', $payload);
     }
@@ -243,7 +248,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_through_a_modal_without_required_tax_rate(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
@@ -263,14 +268,14 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['tax_rate_id' => 'required']);
 
         $this->assertDatabaseMissing('tasks', $payload);
@@ -295,7 +300,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_task_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()
             ->for($customer, 'customer')
@@ -321,14 +326,14 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Updated description',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class, ['record' => $task->getKey()])
             ->mountAction(TestAction::make('edit')->table($task), $updatedData)
             ->fillForm($updatedData)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -359,7 +364,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_task(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
@@ -381,18 +386,23 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateTask::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('tasks', $payload);
+        $this->assertDatabaseHas('tasks', array_merge(
+            $payload,
+            [
+                'due_at' => isset($payload['due_at']) ? $this->formatDateForDb($payload['due_at']) : null,
+            ]
+        ));
     }
 
     #[Test]
@@ -413,7 +423,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_without_required_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
@@ -434,13 +444,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateTask::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['task_name' => 'required']);
 
         $this->assertDatabaseMissing('tasks', $payload);
@@ -463,7 +473,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_without_required_project(): void
     {
-        /* arrange */
+        /* Arrange */
 
         $taxRate = TaxRate::factory()
             ->for($this->company)
@@ -481,13 +491,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateTask::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['project_id' => 'required']);
         $this->assertDatabaseMissing('tasks', $payload);
     }
@@ -509,7 +519,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_task_without_required_tax_rate(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->create([
             'customer_id'  => $customer->id,
@@ -527,13 +537,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'description' => 'Create a responsive landing page',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateTask::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['tax_rate_id']);
 
         $this->assertDatabaseMissing('tasks', $payload);
@@ -558,7 +568,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_task(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->create([
             'company_name' => '::customer_name::',
         ]);
@@ -591,13 +601,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
             'task_name' => 'Updated Task Name',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditTask::class, ['record' => $task->getKey()])
             ->fillForm($updatedData)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -626,7 +636,7 @@ class TasksTest extends AbstractCompanyPanelTestCase
      */
     public function it_deletes_a_task(): void
     {
-        /* arrange */
+        /* Arrange */
         $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
         $project  = Project::factory()->for($this->company)->for($customer)->create([
             'project_name' => '::project_name::',
@@ -647,13 +657,13 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         $task = Task::factory()->for($project)->for($customer)->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListTasks::class)
             ->mountAction(TestAction::make('delete')->table($task))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
     # endregion
@@ -663,4 +673,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
     # region spicy
     # endregion
+
+    /**
+     * Format a date string for DB assertion (adds ' 00:00:00' if not present).
+     */
+    private function formatDateForDb(string $date): string
+    {
+        return \Illuminate\Support\Str::contains($date, ':') ? $date : $date . ' 00:00:00';
+    }
 }

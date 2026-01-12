@@ -31,7 +31,7 @@ class TestPeppolIntegrationCommand extends Command
     {
         $integrationId = $this->argument('integration_id');
 
-        $integration = PeppolIntegration::find($integrationId);
+        $integration = PeppolIntegration::query()->find($integrationId);
 
         if ( ! $integration) {
             $this->error("Integration {$integrationId} not found.");

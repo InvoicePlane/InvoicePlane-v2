@@ -16,16 +16,16 @@ class QuoteObserver extends AbstractObserver
     public function saving(Quote $quote): void
     {
         if ($quote->quote_number !== null) {
-            $duplicate = Quote::where('company_id', $quote->company_id)
+            $duplicate = Quote::query()->where('company_id', $quote->company_id)
                 ->where('quote_number', $quote->quote_number)
                 ->where('id', '!=', $quote->id ?? 0)
                 ->exists();
 
             if ($duplicate) {
                 throw new RuntimeException(
-                    trans('ip.duplicate_quote_number', [
-                        'number'  => $quote->quote_number,
-                        'company' => $quote->company_id,
+                    trans('quotes.errors.duplicate_quote_number', [
+                        'quote_number' => $quote->quote_number,
+                        'company_id' => $quote->company_id,
                     ])
                 );
             }

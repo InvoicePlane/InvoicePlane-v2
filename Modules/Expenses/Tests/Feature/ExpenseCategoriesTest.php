@@ -26,7 +26,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_lists_expense_categories(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Travel',
         ];
@@ -35,11 +35,11 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
             ->for($this->company)
             ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas($record);
@@ -57,24 +57,24 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_an_expense_category_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Meals',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
 
@@ -86,17 +86,17 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_category_through_a_modal_without_required_category_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = ['category_name' => null];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['category_name']);
         $this->assertDatabaseMissing('expense_categories', $payload);
     }
@@ -105,23 +105,23 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_category_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
             ->mountAction(TestAction::make('edit')->table($record), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
     # endregion
@@ -137,23 +137,23 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_an_expense_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Meals',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateExpenseCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
 
@@ -165,16 +165,16 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_category_without_required_category_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = ['category_name' => null];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateExpenseCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['category_name']);
         $this->assertDatabaseMissing('expense_categories', $payload);
     }
@@ -183,22 +183,22 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditExpenseCategory::class, ['record' => $record->id])
             ->fillForm($payload)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
 
@@ -206,16 +206,16 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_an_expense_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
             ->mountAction(TestAction::make('delete')->table($expenseCategory))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
     }
 
@@ -225,17 +225,17 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
-        /* arrange */
+        /* Arrange */
         $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
         $expenseCategory->delete();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListExpenseCategories::class)
             ->mountAction(TestAction::make('delete')->table($expenseCategory))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasErrors();
 
         $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);

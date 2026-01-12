@@ -7,7 +7,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Actions\SendInvoiceToPeppolAction;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests the action that coordinates invoice transmission to Peppol.
  * Uses fakes for HTTP responses and database interactions.
  */
-class SendInvoiceToPeppolActionTest extends AbstractTestCase
+class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;
 
@@ -54,7 +54,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('failed')]
+    #[Group('failing')]
     public function it_executes_successfully_with_valid_invoice(): void
     {
         $invoice = $this->createMockInvoice('sent');
@@ -69,6 +69,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_loads_invoice_relationships(): void
     {
         $invoice = $this->createMockInvoice('sent');
@@ -83,6 +84,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_rejects_draft_invoices(): void
     {
         $invoice = $this->createMockInvoice('draft');
@@ -94,6 +96,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_passes_additional_data_to_service(): void
     {
         $invoice        = $this->createMockInvoice('sent');
@@ -118,14 +121,14 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     {
         Http::fake([
             'https://api.e-invoice.be/api/documents/*/status' => Http::response([
-                'status'    => 'delivered',
+                'status'    => 'submitted',
                 'timestamp' => '2024-01-15T10:30:00Z',
             ], 200),
         ]);
 
         $status = $this->action->getStatus('DOC-123456');
 
-        $this->assertEquals('delivered', $status['status']);
+        $this->assertEquals('submitted', $status['status']);
     }
 
     #[Test]
@@ -143,6 +146,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     // Failing tests
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_validation_errors_from_peppol(): void
     {
         Http::fake([
@@ -153,12 +157,17 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
 
         $invoice = $this->createMockInvoice('sent');
 
-        $this->expectException(RequestException::class);
-
-        $this->action->execute($invoice);
+        try {
+            $this->action->execute($invoice);
+            $this->fail('Expected RequestException was not thrown.');
+        } catch (RequestException $e) {
+            $this->assertEquals(422, $e->response->status());
+            $this->assertEquals('Invalid VAT number', $e->response->json('error'));
+        }
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_network_failures(): void
     {
         Http::fake([
@@ -175,21 +184,25 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_validates_invoice_has_required_data(): void
     {
+        /** @var Invoice $invoice */
         $invoice = Invoice::factory()->make([
             'invoice_status' => 'sent',
             'invoice_number' => null, // Missing invoice number
         ]);
         $invoice->setRelation('customer', Relation::factory()->make());
-        $invoice->setRelation('invoiceItems', collect([]));
+        $invoice->setRelation('invoiceItems', collect([InvoiceItem::factory()->make()]));
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invoice must have an invoice number');
 
         $this->action->execute($invoice);
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_fails_when_status_check_fails(): void
     {
         Http::fake([
@@ -198,12 +211,17 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
             ], 404),
         ]);
 
-        $this->expectException(RequestException::class);
-
-        $this->action->getStatus('INVALID-DOC-ID');
+        try {
+            $this->action->getStatus('INVALID-DOC-ID');
+            $this->fail('Expected RequestException was not thrown.');
+        } catch (RequestException $e) {
+            $this->assertEquals(404, $e->response->status());
+            $this->assertEquals('Document not found', $e->response->json('error'));
+        }
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_fails_when_cancellation_not_allowed(): void
     {
         Http::fake([
@@ -212,23 +230,28 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
             ], 409),
         ]);
 
-        $this->expectException(RequestException::class);
-
-        $this->action->cancel('DOC-DELIVERED');
+        try {
+            $this->action->cancel('DOC-DELIVERED');
+            $this->fail('Expected RequestException was not thrown.');
+        } catch (RequestException $e) {
+            $this->assertEquals(409, $e->response->status());
+            $this->assertEquals('Document already delivered, cannot cancel', $e->response->json('error'));
+        }
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_sends_invoice(): void
     {
-        /* arrange */
+        /* Arrange */
         $invoice = $this->createMockInvoice('sent');
 
-        /* act */
+        /* Act */
         $result = $this->action->execute($invoice, [
             'customer_peppol_id' => 'BE:0123456789',
         ]);
 
-        /* assert */
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertArrayHasKey('success', $result);
         $this->assertArrayHasKey('document_id', $result);
@@ -245,14 +268,19 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
      */
     protected function createMockInvoice(string $status = 'sent'): Invoice
     {
+        // Create a real company for multi-tenancy context
+        $company = \Modules\Core\Models\Company::factory()->create();
+
         /** @var Relation $customer */
         $customer = Relation::factory()->make([
+            'company_id'    => $company->id,
             'company_name'  => 'Test Customer',
             'customer_name' => 'Test Customer',
         ]);
 
         $items = collect([
             InvoiceItem::factory()->make([
+                'company_id'  => $company->id,
                 'item_name'   => 'Product 1',
                 'quantity'    => 2,
                 'price'       => 100,
@@ -263,6 +291,7 @@ class SendInvoiceToPeppolActionTest extends AbstractTestCase
 
         /** @var Invoice $invoice */
         $invoice = Invoice::factory()->make([
+            'company_id'            => $company->id,
             'invoice_number'        => 'INV-2024-001',
             'invoice_status'        => $status,
             'invoice_item_subtotal' => 200,

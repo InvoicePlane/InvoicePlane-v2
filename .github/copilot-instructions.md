@@ -179,7 +179,7 @@ public function it_creates_invoice(): void
 
 ### Peppol Integration Rules
 
-- **Peppol service follows Strategy Pattern** for format handlers (UBL, FatturaPA, ZUGFeRD, etc.).
+- **Peppol service follows Strategy Pattern** for format handlers with 11 supported formats.
 - **PeppolService coordinates** invoice transformation and transmission.
 - **PeppolManagementService handles** integration lifecycle (create, test, validate, send).
 - **Format handlers** must implement validation, transformation, and format-specific logic.
@@ -187,6 +187,22 @@ public function it_creates_invoice(): void
 - **All API calls** must go through the ApiClient with exception handling.
 - **Logging** is done via LogsApiRequests and LogsPeppolActivity traits.
 - **Events** are dispatched for all major Peppol operations (transmission, validation, etc.).
+
+**All 11 Supported Peppol Format Handlers:**
+1. **CII** - Cross Industry Invoice (UN/CEFACT standard for Germany/France/Austria)
+2. **EHF 3.0** - Norwegian e-invoice format (Elektronisk Handelsformat)
+3. **Factur-X** - French/German hybrid (PDF with embedded XML)
+4. **Facturae 3.2** - Spanish format (mandatory for public administration)
+5. **FatturaPA 1.2** - Italian format (mandatory for all invoices)
+6. **OIOUBL** - Danish e-invoice format
+7. **PEPPOL BIS 3.0** - Default Peppol format (pan-European)
+8. **UBL 2.1** - Universal Business Language (most common)
+9. **UBL 2.4** - Updated UBL with enhanced features
+10. **ZUGFeRD 1.0** - German format (PDF with embedded XML)
+11. **ZUGFeRD 2.0** - Updated German format (compatible with Factur-X)
+
+Each handler is registered in `FormatHandlerFactory` with comprehensive PHPUnit test coverage.
+The factory automatically selects handlers with fallback logic and proper logging.
 
 ### Seeding Rules
 

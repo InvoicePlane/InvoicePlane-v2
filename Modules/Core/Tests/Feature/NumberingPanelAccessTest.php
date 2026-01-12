@@ -2,15 +2,18 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
-use Modules\Core\Models\User;
 use Modules\Core\Services\NumberingService;
-use Modules\Core\Tests\AbstractTestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-class NumberingPanelAccessTest extends AbstractTestCase
+class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
 {
+    use RefreshDatabase;
+
     private NumberingService $service;
 
     protected function setUp(): void
@@ -57,11 +60,14 @@ class NumberingPanelAccessTest extends AbstractTestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_restricts_company_panel_to_current_company_only(): void
     {
         /* Arrange */
         $company1 = Company::factory()->create(['name' => 'Company One']);
         $company2 = Company::factory()->create(['name' => 'Company Two']);
+
+        Numbering::query()->delete(); // Ensure clean state
 
         $numbering1 = $this->service->createNumbering([
             'name'       => 'Numbering for Company 1',
@@ -82,9 +88,8 @@ class NumberingPanelAccessTest extends AbstractTestCase
         ]);
 
         /* Act */
-        // Company panel should only see own numberings (via BelongsToCompany trait)
-        $company1Numberings = Numbering::where('company_id', $company1->id)->get();
-        $company2Numberings = Numbering::where('company_id', $company2->id)->get();
+        $company1Numberings = Numbering::query()->where('company_id', $company1->id)->get();
+        $company2Numberings = Numbering::query()->where('company_id', $company2->id)->get();
 
         /* Assert */
         $this->assertEquals(1, $company1Numberings->count());

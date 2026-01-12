@@ -2,19 +2,23 @@
 
 ## Overview
 
-This document provides a comprehensive summary of the PEPPOL e-invoicing architecture implemented in InvoicePlane v2. The implementation follows the detailed specification provided and includes all major components for a production-ready PEPPOL integration.
+This document provides a comprehensive summary of the PEPPOL e-invoicing architecture implemented in InvoicePlane v2.
+The implementation follows the detailed specification provided and includes all major components for a production-ready
+PEPPOL integration.
 
 ## Architecture Components Implemented
 
 ### 1. Database Layer
 
 #### Migrations Created:
+
 - `2025_10_02_000001_create_peppol_integrations_table.php`
 - `2025_10_02_000002_create_peppol_transmissions_table.php`
 - `2025_10_02_000003_create_customer_peppol_validation_history_table.php`
 - `2025_10_02_000004_add_peppol_validation_fields_to_relations_table.php`
 
 #### Models Created:
+
 - `PeppolIntegration` - Manages provider configurations with encrypted API tokens
 - `PeppolTransmission` - Tracks invoice transmission lifecycle with state machine methods
 - `CustomerPeppolValidationHistory` - Audits all customer Peppol ID validations
@@ -23,15 +27,18 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 ### 2. Provider Abstraction Layer
 
 #### Core Interfaces & Factories:
+
 - `ProviderInterface` - Contract that all providers must implement
 - `ProviderFactory` - Factory pattern for creating provider instances
 - `BaseProvider` - Abstract base with common functionality
 
 #### Provider Implementations:
+
 - `EInvoiceBeProvider` - Complete e-invoice.be integration using existing clients
 - `StorecoveProvider` - Placeholder for Storecove (ready for implementation)
 
 **Provider Methods:**
+
 - `testConnection()` - Validate provider credentials
 - `validatePeppolId()` - Check if participant exists in network
 - `sendInvoice()` - Submit invoice to Peppol network
@@ -42,6 +49,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 ### 3. Events & Audit Trail
 
 **Events Implemented:**
+
 - `PeppolIntegrationCreated`
 - `PeppolIntegrationTested`
 - `PeppolIdValidationCompleted`
@@ -53,28 +61,31 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - `PeppolTransmissionDead`
 
 **Audit Logging:**
+
 - `LogPeppolEventToAudit` listener logs all events to `audit_log` table
 - Complete event payload preserved for compliance
 
 ### 4. Background Jobs & Queue Processing
 
 **Jobs Implemented:**
+
 - `SendInvoiceToPeppolJob` - Main orchestration job for sending invoices
- - Pre-send validation
- - Idempotency guards
- - Artifact generation (XML/PDF)
- - Provider transmission
- - Retry scheduling with exponential backoff
+- Pre-send validation
+- Idempotency guards
+- Artifact generation (XML/PDF)
+- Provider transmission
+- Retry scheduling with exponential backoff
 
 - `PeppolStatusPoller` - Polls providers for acknowledgements
- - Batch processes transmissions awaiting ACK
- - Updates status to accepted/rejected
+- Batch processes transmissions awaiting ACK
+- Updates status to accepted/rejected
 
 - `RetryFailedTransmissions` - Retry scheduler
- - Respects max attempts limit
- - Marks as dead when exceeded
+- Respects max attempts limit
+- Marks as dead when exceeded
 
 **Console Commands:**
+
 - `peppol:poll-status` - Dispatch status polling job
 - `peppol:retry-failed` - Dispatch retry job
 - `peppol:test-integration` - Test connection for an integration
@@ -82,6 +93,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 ### 5. Services & Business Logic
 
 **PeppolManagementService:**
+
 - `createIntegration()` - Create new provider integration
 - `testConnection()` - Test provider connectivity
 - `validatePeppolId()` - Validate customer Peppol ID with provider
@@ -90,6 +102,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 - `suggestPeppolScheme()` - Auto-suggest scheme from country
 
 **PeppolTransformerService:**
+
 - Transforms Invoice models to Peppol-compatible data structures
 - Extracts supplier, customer, line items, tax totals
 - Formats dates, amounts, and codes per Peppol requirements
@@ -97,6 +110,7 @@ This document provides a comprehensive summary of the PEPPOL e-invoicing archite
 ### 6. State Machine Implementation
 
 **Transmission States:**
+
 ```
 pending → queued → processing → sent → accepted
  ↘ rejected
@@ -104,6 +118,7 @@ pending → queued → processing → sent → accepted
 ```
 
 **State Machine Methods on PeppolTransmission:**
+
 - `markAsSent()` - Transition to sent state
 - `markAsAccepted()` - Final success state
 - `markAsRejected()` - Final rejection state
@@ -112,6 +127,7 @@ pending → queued → processing → sent → accepted
 - `markAsDead()` - Permanent failure after max retries
 
 **State Checks:**
+
 - `isFinal()` - Check if in terminal state
 - `canRetry()` - Check if retry is allowed
 - `isAwaitingAck()` - Check if waiting for acknowledgement
@@ -119,11 +135,13 @@ pending → queued → processing → sent → accepted
 ### 7. Error Handling & Classification
 
 **Error Types:**
+
 - `TRANSIENT` - 5xx errors, timeouts, rate limits (retryable)
 - `PERMANENT` - 4xx errors, invalid data, auth failures (not retryable)
 - `UNKNOWN` - Ambiguous errors (retry with caution)
 
 **Retry Policy:**
+
 - Exponential backoff: 1min, 5min, 30min, 2h, 6h
 - Configurable max attempts (default: 5)
 - Automatic dead-letter marking after max attempts
@@ -147,6 +165,7 @@ pending → queued → processing → sent → accepted
 ### 9. Storage & Artifacts
 
 **Storage Structure:**
+
 ```
 peppol/{integration_id}/{year}/{month}/{transmission_id}/
  - invoice.xml
@@ -154,6 +173,7 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 ```
 
 **Implemented in SendInvoiceToPeppolJob:**
+
 - Generates XML using format handlers
 - Stores XML and PDF to configured disk
 - Records paths in transmission record
@@ -162,11 +182,13 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 ### 10. Idempotency & Concurrency
 
 **Idempotency:**
+
 - Unique idempotency key calculated from: `hash(invoice_id|customer_peppol_id|integration_id|updated_at)`
 - Prevents duplicate transmissions
 - Database unique constraint on `idempotency_key`
 
 **Implemented in:**
+
 - `SendInvoiceToPeppolJob::calculateIdempotencyKey()`
 - `SendInvoiceToPeppolJob::getOrCreateTransmission()`
 
@@ -183,26 +205,31 @@ peppol/{integration_id}/{year}/{month}/{transmission_id}/
 ## Key Design Decisions
 
 ### 1. Two-Level Storage for Validation Results
+
 - **Quick lookup:** `peppol_validation_status` on customer table
 - **Full audit:** `CustomerPeppolValidationHistory` table
 - Rationale: UI performance + compliance requirements
 
 ### 2. Idempotency at Job Level
+
 - Prevents race conditions
 - Safe to retry jobs
 - Deterministic key based on invoice content
 
 ### 3. Provider Abstraction
+
 - Easy to add new providers
 - Normalized error handling
 - Uniform interface for UI
 
 ### 4. Event-Driven Architecture
+
 - Decoupled components
 - Complete audit trail
 - Easy to add notifications/webhooks
 
 ### 5. Exponential Backoff
+
 - Respects provider rate limits
 - Improves success rate
 - Prevents thundering herd
@@ -298,7 +325,7 @@ if ($integration && $invoice->customer->hasPeppolIdValidated()) {
 ### Checking Transmission Status
 
 ```php
-$transmission = PeppolTransmission::where('invoice_id', $invoice->id)->first();
+$transmission = PeppolTransmission::query()->where('invoice_id', $invoice->id)->first();
 
 if ($transmission->status === PeppolTransmission::STATUS_ACCEPTED) {
  // Invoice delivered successfully
@@ -345,6 +372,7 @@ protected function schedule(Schedule $schedule)
 ## Monitoring & Alerting
 
 **Metrics to Track:**
+
 - Transmissions per hour/day
 - Success rate by provider
 - Average time to acknowledgement
@@ -353,6 +381,7 @@ protected function schedule(Schedule $schedule)
 - Provider response times
 
 **Alert Triggers:**
+
 - Integration connection test failures
 - More than 10 dead transmissions in 1 hour
 - Provider authentication failures
@@ -432,7 +461,8 @@ Modules/Clients/Database/Migrations/
 
 ## Conclusion
 
-This implementation provides a comprehensive, production-ready PEPPOL e-invoicing architecture following all specifications from the problem statement. It includes:
+This implementation provides a comprehensive, production-ready PEPPOL e-invoicing architecture following all
+specifications from the problem statement. It includes:
 
 - Complete database schema with proper relationships
 - Robust state machine for transmission lifecycle
@@ -444,4 +474,5 @@ This implementation provides a comprehensive, production-ready PEPPOL e-invoicin
 - Extensive configuration options
 - Console commands for operations
 
-The architecture is modular, testable, and ready for extension with additional providers, UI components, and monitoring integrations.
+The architecture is modular, testable, and ready for extension with additional providers, UI components, and monitoring
+integrations.

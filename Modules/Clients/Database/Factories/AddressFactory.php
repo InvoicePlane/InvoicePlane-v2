@@ -25,14 +25,14 @@ class AddressFactory extends AbstractFactory
         $this->faker->addProvider(new Internet($this->faker));
 
         return [
-            'address_type'      => fake()->randomElement(AddressType::cases())->value,
-            'address_1'         => fake()->streetAddress,
-            'address_2'         => fake()->optional(0.7)->secondaryAddress,
-            'number'            => fake()->buildingNumber,
-            'postal_code'       => fake()->postcode,
-            'city'              => fake()->city,
-            'state_or_province' => fake()->optional()->stateAbbr,
-            'country'           => fake()->countryCode,
+            'address_type'      => $this->faker->randomElement(AddressType::cases())->value,
+            'address_1'         => $this->faker->streetAddress,
+            'address_2'         => $this->faker->optional(0.7)->secondaryAddress,
+            'number'            => $this->faker->buildingNumber,
+            'postal_code'       => $this->faker->postcode,
+            'city'              => $this->faker->city,
+            'state_or_province' => $this->faker->optional()->stateAbbr,
+            'country'           => $this->faker->countryCode,
         ];
     }
 

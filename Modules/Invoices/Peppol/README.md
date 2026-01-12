@@ -2,33 +2,40 @@
 
 ## Overview
 
-This Peppol integration allows InvoicePlane v2 to send invoices electronically through the Peppol network. The implementation follows a modular architecture with clean separation of concerns, comprehensive error handling, and extensive test coverage.
+This Peppol integration allows InvoicePlane v2 to send invoices electronically through the Peppol network. The
+implementation follows a modular architecture with clean separation of concerns, comprehensive error handling, and
+extensive test coverage.
 
 ## Architecture
 
 ### Components
 
 1. **HTTP Client Layer**
- - HTTP client: Laravel's Http facade wrapper
- - Comprehensive exception handling and logging for all API requests
+
+- HTTP client: Laravel's Http facade wrapper
+- Comprehensive exception handling and logging for all API requests
 
 2. **Peppol Provider Layer**
- - `BasePeppolClient`: Abstract base class for all Peppol providers
- - `EInvoiceBeClient`: Concrete implementation for e-invoice.be provider
- - `DocumentsClient`: Specific client for document operations
+
+- `BasePeppolClient`: Abstract base class for all Peppol providers
+- `EInvoiceBeClient`: Concrete implementation for e-invoice.be provider
+- `DocumentsClient`: Specific client for document operations
 
 3. **Service Layer**
- - `PeppolService`: Business logic for Peppol operations
- - Handles invoice validation, data preparation, and transmission
+
+- `PeppolService`: Business logic for Peppol operations
+- Handles invoice validation, data preparation, and transmission
 
 4. **Action Layer**
- - `SendInvoiceToPeppolAction`: Orchestrates invoice sending process
- - Can be called from UI actions or programmatically
+
+- `SendInvoiceToPeppolAction`: Orchestrates invoice sending process
+- Can be called from UI actions or programmatically
 
 5. **UI Integration**
- - Header action in `EditInvoice` page
- - Table action in `ListInvoices` page
- - Modal form for entering customer Peppol ID
+
+- Header action in `EditInvoice` page
+- Table action in `ListInvoices` page
+- Modal form for entering customer Peppol ID
 
 ## Installation & Configuration
 
@@ -49,6 +56,7 @@ PEPPOL_CURRENCY_CODE=EUR
 ### 2. Configuration File
 
 The configuration is located at `Modules/Invoices/Config/config.php` and contains:
+
 - Provider settings
 - Document format defaults
 - Validation rules
@@ -56,6 +64,7 @@ The configuration is located at `Modules/Invoices/Config/config.php` and contain
 ### 3. Service Registration
 
 All Peppol services are automatically registered in `InvoicesServiceProvider`. The provider:
+
 - Binds HTTP clients with dependency injection
 - Configures exception handler with logging (non-production only)
 - Registers Peppol clients and services
@@ -65,12 +74,14 @@ All Peppol services are automatically registered in `InvoicesServiceProvider`. T
 ### From UI (Filament Actions)
 
 #### Edit Invoice Page
+
 1. Navigate to an invoice edit page
 2. Click the "Send to Peppol" button in the header
 3. Enter the customer's Peppol ID (e.g., `BE:0123456789`)
 4. Click submit
 
 #### Invoices List Page
+
 1. Navigate to the invoices list
 2. Click the action menu on an invoice row
 3. Select "Send to Peppol"
@@ -83,7 +94,7 @@ All Peppol services are automatically registered in `InvoicesServiceProvider`. T
 use Modules\Invoices\Actions\SendInvoiceToPeppolAction;
 use Modules\Invoices\Models\Invoice;
 
-$invoice = Invoice::find($invoiceId);
+$invoice = Invoice::query()->find($invoiceId);
 $action = app(SendInvoiceToPeppolAction::class);
 
 try {
@@ -192,13 +203,13 @@ Before sending to Peppol, invoices are validated:
 
 ### Common Errors
 
-| Error Code | Description | Solution |
-|------------|-------------|----------|
-| 400 | Bad Request | Check invoice data format |
-| 401 | Unauthorized | Verify API key is correct |
-| 422 | Validation Error | Review Peppol requirements |
-| 429 | Rate Limit | Wait and retry |
-| 500 | Server Error | Contact Peppol provider |
+| Error Code | Description      | Solution                   |
+|------------|------------------|----------------------------|
+| 400        | Bad Request      | Check invoice data format  |
+| 401        | Unauthorized     | Verify API key is correct  |
+| 422        | Validation Error | Review Peppol requirements |
+| 429        | Rate Limit       | Wait and retry             |
+| 500        | Server Error     | Contact Peppol provider    |
 
 ### Exception Types
 
@@ -259,6 +270,7 @@ Total: **49 unit tests** covering success and failure scenarios
 To add support for another Peppol provider (e.g., Storecove):
 
 1. Create provider client:
+
 ```php
 namespace Modules\Invoices\Peppol\Clients\Storecove;
 
@@ -275,6 +287,7 @@ class StorecoveClient extends BasePeppolClient
 ```
 
 2. Create endpoint clients extending the provider client:
+
 ```php
 class StorecoveDocumentsClient extends StorecoveClient
 {
@@ -286,6 +299,7 @@ class StorecoveDocumentsClient extends StorecoveClient
 ```
 
 3. Register in `InvoicesServiceProvider`:
+
 ```php
 $this->app->bind(
  StorecoveDocumentsClient::class,
@@ -301,6 +315,7 @@ $this->app->bind(
 ```
 
 4. Update configuration in `config.php`:
+
 ```php
 'storecove' => [
  'api_key' => env('PEPPOL_STORECOVE_API_KEY', ''),
@@ -315,6 +330,7 @@ $this->app->bind(
 Full API documentation: https://api.e-invoice.be/docs
 
 Key endpoints used:
+
 - `POST /api/documents` - Submit a document
 - `GET /api/documents/{id}` - Get document details
 - `GET /api/documents/{id}/status` - Get document status
@@ -354,6 +370,7 @@ All HTTP requests and responses are logged in non-production environments:
 ## Troubleshooting
 
 ### API Key Issues
+
 ```bash
 # Check if API key is set
 php artisan tinker
@@ -361,7 +378,9 @@ php artisan tinker
 ```
 
 ### Connection Timeouts
+
 Increase timeout in provider client:
+
 ```php
 protected function getTimeout(): int
 {
@@ -370,7 +389,9 @@ protected function getTimeout(): int
 ```
 
 ### Debug Mode
+
 Enable request logging:
+
 ```php
 $handler = app(HttpClientExceptionHandler::class);
 $handler->enableLogging();
@@ -383,6 +404,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 ### Pan-European Standards
 
 #### PEPPOL BIS Billing 3.0
+
 - **Format**: UBL 2.1 based
 - **Regions**: All European countries
 - **Handler**: `PeppolBisHandler`
@@ -391,6 +413,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Status**: Fully implemented
 
 #### UBL 2.1 / 2.4
+
 - **Format**: OASIS Universal Business Language
 - **Regions**: Worldwide
 - **Handler**: `UblHandler`
@@ -399,6 +422,7 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 - **Status**: Fully implemented
 
 #### CII (Cross Industry Invoice)
+
 - **Format**: UN/CEFACT XML
 - **Regions**: Germany, France, Austria
 - **Handler**: `CiiHandler`
@@ -409,100 +433,106 @@ InvoicePlane v2 supports 11 different e-invoice formats to comply with various n
 ### Country-Specific Formats
 
 #### FatturaPA 1.2 (Italy)
+
 - **Format**: XML
 - **Mandatory**: Yes, for all B2B and B2G invoices in Italy
 - **Handler**: `FatturaPaHandler`
 - **Authority**: Agenzia delle Entrate
 - **Requirements**:
- - Supplier: Italian VAT number (Partita IVA)
- - Customer: Tax code (Codice Fiscale) for Italian customers
- - Transmission: Via SDI (Sistema di Interscambio)
+- Supplier: Italian VAT number (Partita IVA)
+- Customer: Tax code (Codice Fiscale) for Italian customers
+- Transmission: Via SDI (Sistema di Interscambio)
 - **Features**:
- - Fiscal regime codes
- - Payment conditions
- - Tax summary by rate
+- Fiscal regime codes
+- Payment conditions
+- Tax summary by rate
 - **Status**: Fully implemented
 
 #### Facturae 3.2 (Spain)
+
 - **Format**: XML
 - **Mandatory**: Yes, for invoices to Spanish public administration
 - **Handler**: `FacturaeHandler`
 - **Authority**: Ministry of Finance and Public Administration
 - **Requirements**:
- - Supplier: Spanish tax ID (NIF/CIF)
- - Format includes: File header, parties, invoices
- - Support for both resident and overseas addresses
+- Supplier: Spanish tax ID (NIF/CIF)
+- Format includes: File header, parties, invoices
+- Support for both resident and overseas addresses
 - **Features**:
- - Series codes for invoice numbering
- - Administrative centres
- - IVA (Spanish VAT) handling
+- Series codes for invoice numbering
+- Administrative centres
+- IVA (Spanish VAT) handling
 - **Status**: Fully implemented
 
 #### Factur-X 1.0 (France/Germany)
+
 - **Format**: PDF/A-3 with embedded CII XML
 - **Regions**: France, Germany
 - **Handler**: `FacturXHandler`
 - **Standards**: Hybrid of PDF and XML
 - **Requirements**:
- - Supplier: VAT number
- - PDF must be PDF/A-3 compliant
- - XML embedded as attachment
+- Supplier: VAT number
+- PDF must be PDF/A-3 compliant
+- XML embedded as attachment
 - **Features**:
- - Human-readable PDF
- - Machine-readable XML
- - Compatible with ZUGFeRD 2.0
+- Human-readable PDF
+- Machine-readable XML
+- Compatible with ZUGFeRD 2.0
 - **Profiles**: MINIMUM, BASIC, EN16931, EXTENDED
 - **Status**: Fully implemented
 
 #### ZUGFeRD 1.0 / 2.0 (Germany)
+
 - **Format**: PDF/A-3 with embedded XML (1.0) or CII XML (2.0)
 - **Regions**: Germany
 - **Handler**: `ZugferdHandler`
 - **Authority**: FeRD (Forum elektronische Rechnung Deutschland)
 - **Requirements**:
- - Supplier: German VAT number
- - SEPA payment means support
- - German-specific tax handling
+- Supplier: German VAT number
+- SEPA payment means support
+- German-specific tax handling
 - **Versions**:
- - **1.0**: Original ZUGFeRD format
- - **2.0**: Compatible with Factur-X, uses EN 16931
+- **1.0**: Original ZUGFeRD format
+- **2.0**: Compatible with Factur-X, uses EN 16931
 - **Features**:
- - Multiple profiles (Comfort, Basic, Extended)
- - SEPA credit transfer codes
- - German VAT rate (19% standard)
+- Multiple profiles (Comfort, Basic, Extended)
+- SEPA credit transfer codes
+- German VAT rate (19% standard)
 - **Status**: Fully implemented (both versions)
 
 #### OIOUBL (Denmark)
+
 - **Format**: UBL 2.0 with Danish extensions
 - **Mandatory**: Yes, for public procurement
 - **Handler**: `OioublHandler`
 - **Authority**: Digitaliseringsstyrelsen
 - **Requirements**:
- - Supplier: CVR number (Danish business registration)
- - Customer: Peppol ID (CVR for Danish entities)
- - Accounting cost codes
+- Supplier: CVR number (Danish business registration)
+- Customer: Peppol ID (CVR for Danish entities)
+- Accounting cost codes
 - **Features**:
- - Danish-specific party identification
- - Payment means with bank details
- - Settlement periods
- - Danish VAT (25% standard)
+- Danish-specific party identification
+- Payment means with bank details
+- Settlement periods
+- Danish VAT (25% standard)
 - **Profile**: `Procurement-OrdSim-BilSim-1.0`
 - **Status**: Fully implemented
 
 #### EHF 3.0 (Norway)
+
 - **Format**: UBL 2.1 with Norwegian extensions
 - **Mandatory**: Yes, for public procurement
 - **Handler**: `EhfHandler`
 - **Authority**: Difi (Agency for Public Management and eGovernment)
 - **Requirements**:
- - Supplier: Norwegian organization number (ORGNR)
- - Customer: Organization number or Peppol ID
- - Buyer reference for routing
+- Supplier: Norwegian organization number (ORGNR)
+- Customer: Organization number or Peppol ID
+- Buyer reference for routing
 - **Features**:
- - Norwegian organization numbers (9 digits)
- - Delivery information
- - Norwegian payment terms
- - Norwegian VAT (25% standard)
+- Norwegian organization numbers (9 digits)
+- Delivery information
+- Norwegian payment terms
+- Norwegian VAT (25% standard)
 - **Profile**: PEPPOL BIS 3.0 compliant
 - **Status**: Fully implemented
 
@@ -532,23 +562,23 @@ The system automatically selects the appropriate format based on:
 
 Each country uses specific identifier schemes for Peppol participants:
 
-| Country | Scheme | Format | Example |
-|---------|--------|--------|---------|
-| Belgium | BE:CBE | 10 digits | 0123456789 |
-| Germany | DE:VAT | DE + 9 digits | DE123456789 |
-| France | FR:SIRENE | 9 or 14 digits | 123456789 |
-| Italy | IT:VAT | IT + 11 digits | IT12345678901 |
-| Spain | ES:VAT | Letter + 7-8 digits + check | A12345678 |
-| Netherlands | NL:KVK | 8 digits | 12345678 |
-| Norway | NO:ORGNR | 9 digits | 123456789 |
-| Denmark | DK:CVR | 8 digits | 12345678 |
-| Sweden | SE:ORGNR | 10 digits | 123456-7890 |
-| Finland | FI:OVT | 7 digits + check | 1234567-8 |
-| Austria | AT:VAT | ATU + 8 digits | ATU12345678 |
-| Switzerland | CH:UIDB | CHE + 9 digits | CHE-123.456.789 |
-| UK | GB:COH | 8 characters | 12345678 |
-| International | GLN | 13 digits | 1234567890123 |
-| International | DUNS | 9 digits | 123456789 |
+| Country       | Scheme    | Format                      | Example         |
+|---------------|-----------|-----------------------------|-----------------|
+| Belgium       | BE:CBE    | 10 digits                   | 0123456789      |
+| Germany       | DE:VAT    | DE + 9 digits               | DE123456789     |
+| France        | FR:SIRENE | 9 or 14 digits              | 123456789       |
+| Italy         | IT:VAT    | IT + 11 digits              | IT12345678901   |
+| Spain         | ES:VAT    | Letter + 7-8 digits + check | A12345678       |
+| Netherlands   | NL:KVK    | 8 digits                    | 12345678        |
+| Norway        | NO:ORGNR  | 9 digits                    | 123456789       |
+| Denmark       | DK:CVR    | 8 digits                    | 12345678        |
+| Sweden        | SE:ORGNR  | 10 digits                   | 123456-7890     |
+| Finland       | FI:OVT    | 7 digits + check            | 1234567-8       |
+| Austria       | AT:VAT    | ATU + 8 digits              | ATU12345678     |
+| Switzerland   | CH:UIDB   | CHE + 9 digits              | CHE-123.456.789 |
+| UK            | GB:COH    | 8 characters                | 12345678        |
+| International | GLN       | 13 digits                   | 1234567890123   |
+| International | DUNS      | 9 digits                    | 123456789       |
 
 ## Testing Format Handlers
 
@@ -589,6 +619,7 @@ Total test count: **90+ unit tests** covering all formats and handlers
 ## Contributing
 
 When adding features:
+
 1. Write tests first (TDD approach)
 2. Use fakes over mocks
 3. Include both success and failure test cases

@@ -16,7 +16,6 @@ use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
-use RuntimeException;
 use Throwable;
 
 class NumberingService
@@ -73,7 +72,7 @@ class NumberingService
 
     public function previewNextFormattedNumber(Numbering $numbering): string
     {
-        $currentNextId = (int) ($numbering->next_id ?? 1);
+        $currentNextId = ($numbering->next_id ?? 1);
         $safeNextId    = $this->resolveNextIdUpdate($numbering, $currentNextId);
         $prefix        = $numbering->resolvedPrefix();
 
@@ -93,38 +92,6 @@ class NumberingService
                 throw $e;
             }
         });
-    }
-
-    public function hasNumberingsInUse(): bool
-    {
-        return Customer::query()->whereNotNull('numbering_id')->exists()
-            || Expense::query()->whereNotNull('numbering_id')->exists()
-            || Invoice::query()->whereNotNull('numbering_id')->exists()
-            || Payment::query()->whereNotNull('numbering_id')->exists()
-            || Project::query()->whereNotNull(Project::NUMBERING_ID)->exists()
-            || Quote::query()->whereNotNull('numbering_id')->exists()
-            || Task::query()->whereNotNull('numbering_id')->exists();
-    }
-
-    /**
-     * Check whether any numberings are in use for a specific numbering type.
-     *
-     * Accepts either a NumberingType enum or the underlying string value.
-     */
-    public function hasNumberingsInUseForType(NumberingType|string $type): bool
-    {
-        $modelClass = $this->getModelClassForType($type);
-        $foreignKey = $this->getNumberingForeignKeyForType($type);
-
-        if ($modelClass === null || $foreignKey === null) {
-            return false;
-        }
-
-        /** @var class-string<Model> $modelClass */
-        /** @var Model $modelInstance */
-        $modelInstance = new $modelClass();
-
-        return $modelInstance->newQuery()->whereNotNull($foreignKey)->exists();
     }
 
     public function isNumberingApplied(Numbering $numbering): bool
@@ -156,7 +123,7 @@ class NumberingService
         }
 
         if ( ! isset($data['last_id'])) {
-            $data['last_id'] = null;
+            $data['last_id'] = 0;
         }
 
         if (isset($data['next_id'])) {
@@ -175,7 +142,7 @@ class NumberingService
             $data['prefix'] = $this->sanitizePrefix($data['prefix']);
         }
 
-        if (( ! isset($data['prefix']) || $data['prefix'] === null) && isset($data['type'])) {
+        if (( ! isset($data['prefix'])) && isset($data['type'])) {
             $type = $data['type'];
             if ($type instanceof NumberingType) {
                 $data['prefix'] = $type->prefix();
@@ -185,7 +152,7 @@ class NumberingService
             }
         }
 
-        if (isset($data['format'], $data['prefix']) && $data['prefix'] !== null) {
+        if (isset($data['format'], $data['prefix'])) {
             $data['format'] = Numbering::replacePrefixInFormat($data['format'], $data['prefix']);
         }
 
@@ -269,7 +236,7 @@ class NumberingService
             return $desiredNextId;
         }
 
-        $query = $modelClass::whereNotNull($numberField);
+        $query = $modelClass::query()->whereNotNull($numberField);
 
         $foreignKey = $this->getNumberingForeignKeyForType($type);
         if ($foreignKey) {
@@ -284,36 +251,23 @@ class NumberingService
             return $desiredNextId;
         }
 
-        $existingLookup = array_flip($existingNumbers);
-        $prefix         = $numbering->resolvedPrefix();
-        $candidateId    = max(1, $desiredNextId);
-        $maxAttempts    = 10000; // Safeguard against infinite loops
-        $attempts       = 0;
-
-        while ($attempts < $maxAttempts) {
-            $testNumber = $this->generateFormattedNumber($numbering, $candidateId, $prefix);
-
-            if ( ! isset($existingLookup[$testNumber])) {
-                return $candidateId;
+        // Find the highest numeric part among all existing numbers for this numbering
+        $prefix = $numbering->resolvedPrefix();
+        $maxNum = 0;
+        foreach ($existingNumbers as $num) {
+            if (is_string($num) && str_starts_with($num, $prefix)) {
+                $numeric = preg_replace('/[^0-9]/', '', mb_substr($num, mb_strlen($prefix)));
+                if ($numeric !== '' && is_numeric($numeric)) {
+                    $maxNum = max($maxNum, (int) $numeric);
+                }
             }
-
-            $candidateId++;
-            $attempts++;
+        }
+        $nextAvailable = $maxNum + 1;
+        if ($desiredNextId <= $maxNum) {
+            return $nextAvailable;
         }
 
-        // If we reach here, we've exceeded max attempts
-        Log::warning('Numbering collision resolution exceeded max attempts', [
-            'numbering_id'    => $numbering->id,
-            'numbering_name'  => $numbering->name,
-            'prefix'          => $prefix,
-            'desired_next_id' => $desiredNextId,
-            'attempts'        => $attempts,
-        ]);
-
-        throw new RuntimeException(
-            "Unable to resolve numbering collision after {$maxAttempts} attempts for numbering '{$numbering->name}' (ID: {$numbering->id}). "
-            . 'Please review existing numbers or adjust the numbering format.'
-        );
+        return $desiredNextId;
     }
 
     /**
@@ -327,7 +281,7 @@ class NumberingService
             return $numbering->applyFormat($sequentialId, $prefix);
         }
 
-        $pad      = max((int) ($numbering->left_pad ?? 0), 0);
+        $pad      = max(($numbering->left_pad ?? 0), 0);
         $idPadded = mb_str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
 
         return ($prefix ? $prefix . '-' : '') . $idPadded;
@@ -364,7 +318,10 @@ class NumberingService
             return 0;
         }
 
-        return (int) $modelClass::where($foreignKey, $numbering->getKey())
+        /** @var class-string<Model> $modelClass */
+        $modelInstance = new $modelClass();
+
+        return $modelInstance->newQuery()->where($foreignKey, $numbering->getKey())
             ->count();
     }
 
@@ -375,7 +332,7 @@ class NumberingService
      *
      * @return string|null
      */
-    protected function getModelClassForType($type): ?string
+    protected function getModelClassForType(mixed $type): ?string
     {
         return match ($type->value ?? $type) {
             'Customer' => Customer::class,
@@ -396,7 +353,7 @@ class NumberingService
      *
      * @return string|null
      */
-    protected function getNumberFieldForType($type): ?string
+    protected function getNumberFieldForType(mixed $type): ?string
     {
         return match ($type->value ?? $type) {
             'Customer' => 'customer_number',

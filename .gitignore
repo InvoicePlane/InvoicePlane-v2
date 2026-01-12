@@ -79,6 +79,4 @@ package-lock.json
 /.php-cs-fixer.cache
 *.sqlite
 /failures.txt
-/phpunit.txt
-/stan.txt
 /yarnpack.txt

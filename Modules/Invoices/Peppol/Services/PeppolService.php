@@ -58,10 +58,15 @@ class PeppolService
      */
     public function sendInvoiceToPeppol(Invoice $invoice, array $options = []): array
     {
+        // Validate invoice basic requirements (customer, invoice_number, items)
+        // This ensures the invoice has the minimum required data before processing
+        $this->validateInvoice($invoice);
+
         // Get the appropriate format handler for this invoice
         $formatHandler = FormatHandlerFactory::createForInvoice($invoice);
 
-        // Validate invoice before sending
+        // Validate invoice against format-specific requirements (e.g., UBL, CII rules)
+        // This ensures the invoice meets the specific format standards for transmission
         $validationErrors = $formatHandler->validate($invoice);
         if ( ! empty($validationErrors)) {
             throw new InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));
@@ -80,6 +85,11 @@ class PeppolService
         try {
             $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
+
+            // If response is not successful, throw exception
+            if ( ! $response->successful()) {
+                $response->throw();
+            }
 
             $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
@@ -161,6 +171,16 @@ class PeppolService
 
             return $success;
         } catch (RequestException $e) {
+            // 404 means document doesn't exist or was already cancelled - treat as success
+            if ($e->response?->status() === 404) {
+                $this->logResponse('Peppol', "DELETE /documents/{$documentId}", 404, [
+                    'success' => true,
+                    'note'    => 'Document not found or already cancelled',
+                ]);
+
+                return true;
+            }
+
             $this->logError('Request', 'DELETE', "/documents/{$documentId}", $e->getMessage(), [
                 'document_id' => $documentId,
             ]);

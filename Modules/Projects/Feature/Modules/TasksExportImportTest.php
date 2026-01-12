@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
 use Modules\Projects\Models\Task;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListTasks::class)]
 class TasksExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;
