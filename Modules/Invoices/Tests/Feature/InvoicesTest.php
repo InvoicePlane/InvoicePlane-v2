@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Carbon\Carbon;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -124,7 +125,14 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $this->assertDatabaseHas('invoices', Arr::except($payload, ['invoiceItems', 'numbering_id']));
+        $expected = Arr::except($payload, ['invoiceItems', 'numbering_id']);
+        if (isset($expected['invoiced_at'])) {
+            $expected['invoiced_at'] = Carbon::parse($expected['invoiced_at'])->format('Y-m-d H:i:s');
+        }
+        if (isset($expected['invoice_due_at'])) {
+            $expected['invoice_due_at'] = Carbon::parse($expected['invoice_due_at'])->format('Y-m-d H:i:s');
+        }
+        $this->assertDatabaseHas('invoices', $expected);
     }
 
     #[Test]
@@ -356,7 +364,14 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful()
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('invoices', Arr::except($payload, ['invoiceItems', 'numbering_id']));
+        $expected = Arr::except($payload, ['invoiceItems', 'numbering_id']);
+        if (isset($expected['invoiced_at'])) {
+            $expected['invoiced_at'] = Carbon::parse($expected['invoiced_at'])->format('Y-m-d H:i:s');
+        }
+        if (isset($expected['invoice_due_at'])) {
+            $expected['invoice_due_at'] = Carbon::parse($expected['invoice_due_at'])->format('Y-m-d H:i:s');
+        }
+        $this->assertDatabaseHas('invoices', $expected);
     }
 
     #[Test]
