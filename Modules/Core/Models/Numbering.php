@@ -167,7 +167,7 @@ class Numbering extends Model
         $format = $this->format ?? '{{prefix}}-{{number}}';
 
         $pad      = max((int) ($this->left_pad ?? 0), 0);
-        $idPadded = str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
+        $idPadded = mb_str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
 
         $replacements = [
             '{{prefix}}' => $prefix,
