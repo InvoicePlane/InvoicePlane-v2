@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
 use Modules\Products\Models\Product;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListProducts::class)]
 class ProductsExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;

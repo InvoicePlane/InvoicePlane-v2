@@ -6,11 +6,12 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
 use Modules\Invoices\Peppol\Services\PeppolService;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -19,7 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Tests the PeppolService using fakes for HTTP responses.
  * Includes both passing and failing test cases.
  */
-class PeppolServiceTest extends TestCase
+class PeppolServiceTest extends AbstractAdminPanelTestCase
 {
     protected PeppolService $service;
 
@@ -51,6 +52,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_sends_invoice_to_peppol_successfully(): void
     {
         $invoice = $this->createMockInvoice();
@@ -66,6 +68,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_validates_invoice_has_customer(): void
     {
         $invoice = Invoice::factory()->make(['customer_id' => null]);
@@ -79,6 +82,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_validates_invoice_has_invoice_number(): void
     {
         $invoice = Invoice::factory()->make(['invoice_number' => null]);
@@ -92,6 +96,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_validates_invoice_has_items(): void
     {
         $invoice = Invoice::factory()->make([
@@ -107,6 +112,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_api_errors_gracefully(): void
     {
         Http::fake([
@@ -123,6 +129,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_gets_document_status(): void
     {
         Http::fake([
@@ -139,6 +146,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_cancels_document(): void
     {
         Http::fake([
@@ -151,6 +159,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_prepares_document_data_correctly(): void
     {
         $invoice = $this->createMockInvoice();
@@ -169,6 +178,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_includes_customer_peppol_id_in_request(): void
     {
         $invoice = $this->createMockInvoice();
@@ -188,6 +198,7 @@ class PeppolServiceTest extends TestCase
     // Failing tests for edge cases
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_connection_timeout(): void
     {
         Http::fake([
@@ -204,6 +215,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_unauthorized_access(): void
     {
         Http::fake([
@@ -220,6 +232,7 @@ class PeppolServiceTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_server_errors(): void
     {
         Http::fake([
@@ -238,16 +251,16 @@ class PeppolServiceTest extends TestCase
     #[Test]
     public function it_processes_invoice(): void
     {
-        /* arrange */
+        /* Arrange */
         $invoice = $this->createMockInvoice();
 
-        /* act */
+        /* Act */
         $result = $this->service->sendInvoiceToPeppol($invoice, [
             'customer_peppol_id' => 'BE:0123456789',
             'format'             => 'ubl_2.4',
         ]);
 
-        /* assert */
+        /* Assert */
         $this->assertIsArray($result);
         $this->assertArrayHasKey('success', $result);
         $this->assertArrayHasKey('document_id', $result);

@@ -127,7 +127,7 @@ class RelationService extends BaseService
 
         $nextId = $lastRelation ? ((int) Str::after($lastRelation->relation_number, $prefix) + 1) : 1;
 
-        return $prefix . mb_str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        return $prefix . str_pad($nextId, 5, '0', STR_PAD_LEFT);
     }
 
     protected function syncAddresses(Relation $relation, array $addresses): void

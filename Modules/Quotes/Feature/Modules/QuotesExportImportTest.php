@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Models\Quote;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListQuotes::class)]
 class QuotesExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;

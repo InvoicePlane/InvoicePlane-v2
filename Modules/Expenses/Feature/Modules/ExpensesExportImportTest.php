@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
 use Modules\Expenses\Models\Expense;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListExpenses::class)]
 class ExpensesExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;

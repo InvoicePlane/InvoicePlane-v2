@@ -23,7 +23,7 @@ if ( ! file_exists($jsonFile)) {
 }
 
 $content = file_get_contents($jsonFile);
-$data    = json_decode($content, true);
+$data    = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
     echo "Error: Invalid JSON in '{$jsonFile}': " . json_last_error_msg() . "\n";

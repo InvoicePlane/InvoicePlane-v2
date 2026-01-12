@@ -10,9 +10,11 @@ use Livewire\Livewire;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(ListRelations::class)]
 class ClientsExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;

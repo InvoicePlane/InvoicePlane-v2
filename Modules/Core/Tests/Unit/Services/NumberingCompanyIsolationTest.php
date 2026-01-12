@@ -12,9 +12,11 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Expenses\Support\ExpenseNumberGenerator;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Support\TaskNumberGenerator;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[CoversClass(NumberingService::class)]
 class NumberingCompanyIsolationTest extends AbstractTestCase
 {
     use RefreshDatabase;
@@ -38,6 +40,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         $company = Company::factory()->create(['id' => 22]);
 
+        /** @var Numbering $numbering */
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering',
@@ -46,6 +49,9 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
 
         $generator = new TaskNumberGenerator($company->id);
 
@@ -78,6 +84,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         $company23 = Company::factory()->create(['id' => 23]);
 
         // Company 22 numbering
+        /** @var Numbering $numbering22 */
         $numbering22 = Numbering::factory()->for($company22)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering Company 22',
@@ -86,8 +93,10 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-
-        // Company 23 numbering (same type, different company)
+        if ( ! $numbering22 instanceof Numbering) {
+            $numbering22 = Numbering::query()->find($numbering22->id);
+        }
+        /** @var Numbering $numbering23 */
         $numbering23 = Numbering::factory()->for($company23)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering Company 23',
@@ -96,6 +105,9 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
+        if ( ! $numbering23 instanceof Numbering) {
+            $numbering23 = Numbering::query()->find($numbering23->id);
+        }
 
         $generator22 = new TaskNumberGenerator($company22->id);
         $generator23 = new TaskNumberGenerator($company23->id);
@@ -118,7 +130,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('company-isolation')]
-    #[Group('failed')]
     public function it_allows_changing_expense_numbering_with_year_month(): void
     {
         /* Arrange */
@@ -126,14 +137,24 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         $company = Company::factory()->create(['id' => 34]);
 
+        /** @var Numbering $numbering */
         $numbering = Numbering::factory()->for($company)->create([
-            'type'     => NumberingType::EXPENSE->value,
-            'name'     => 'Expense Numbering',
-            'format'   => 'EXP-{{number}}',
-            'prefix'   => 'EXP',
-            'next_id'  => 1,
-            'left_pad' => 4,
+            'type'         => NumberingType::EXPENSE->value,
+            'name'         => 'Expense Numbering',
+            'format'       => 'EXP-{{number}}',
+            'prefix'       => NumberingType::EXPENSE->prefix(),
+            'next_id'      => 1,
+            'left_pad'     => 4,
+            'reset_number' => 0, // Ensure no reset occurs
+            'last_id'      => 0,
+            'last_year'    => 2025,
+            'last_month'   => 12,
+            'last_week'    => 52,
         ]);
+
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
 
         $generator = new ExpenseNumberGenerator($company->id);
 
@@ -166,6 +187,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
 
         $company = Company::factory()->create();
 
+        /** @var Numbering $numbering */
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Test Numbering',
@@ -174,6 +196,9 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
 
         $generator = new TaskNumberGenerator($company->id);
 
@@ -205,12 +230,13 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('troubleshooting')]
-    #[Group('failed')]
+    #[Group('failing')]
     public function it_recalculates_next_id_when_set_to_lower_value_for_troubleshooting(): void
     {
         /* Arrange */
         $company = Company::factory()->create(['id' => 17]);
 
+        /** @var Numbering $numbering */
         $numbering = Numbering::factory()->for($company)->create([
             'type'     => NumberingType::TASK->value,
             'name'     => 'Task Numbering',
@@ -220,6 +246,9 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'last_id'  => 45533,
             'left_pad' => 5,
         ]);
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
 
         // Create existing task records to simulate real usage
         // Note: Tasks don't have numbering_id FK, they just store the generated number
@@ -256,6 +285,7 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         $company1 = Company::factory()->create();
         $company2 = Company::factory()->create();
 
+        /** @var Numbering $numbering1 */
         $numbering1 = Numbering::factory()->for($company1)->create([
             'type'     => NumberingType::TASK->value,
             'format'   => 'TSK-{{number}}',
@@ -263,7 +293,10 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
-
+        if ( ! $numbering1 instanceof Numbering) {
+            $numbering1 = Numbering::query()->find($numbering1->id);
+        }
+        /** @var Numbering $numbering2 */
         $numbering2 = Numbering::factory()->for($company2)->create([
             'type'     => NumberingType::TASK->value,
             'format'   => 'TSK-{{number}}',
@@ -271,6 +304,9 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
             'next_id'  => 1,
             'left_pad' => 4,
         ]);
+        if ( ! $numbering2 instanceof Numbering) {
+            $numbering2 = Numbering::query()->find($numbering2->id);
+        }
 
         $generator1 = new TaskNumberGenerator($company1->id);
         $generator2 = new TaskNumberGenerator($company2->id);
@@ -289,5 +325,35 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
         $numbering2->refresh();
         $this->assertEquals(2, $numbering1->next_id);
         $this->assertEquals(2, $numbering2->next_id);
+    }
+
+    #[Test]
+    #[Group('numbering')]
+    #[Group('company-isolation')]
+    public function it_returns_null_when_type_mismatch(): void
+    {
+        /* Arrange */
+        Carbon::setTestNow('2025-12-29');
+        $company = Company::factory()->create(['id' => 99]);
+        /** @var Numbering $numbering */
+        $numbering = Numbering::factory()->for($company)->create([
+            'type'     => 'Expense', // Correct type
+            'name'     => 'Expense Numbering',
+            'format'   => 'EXP-{{number}}',
+            'prefix'   => 'EXP',
+            'next_id'  => 1,
+            'left_pad' => 4,
+        ]);
+        if ( ! $numbering instanceof Numbering) {
+            $numbering = Numbering::query()->find($numbering->id);
+        }
+        // Simulate generator with wrong type
+        $generator = new class ($company->id) extends \Modules\Core\Support\NumberGenerator\AbstractNumberGenerator {
+            protected string $type = 'expense'; // Lowercase, does not match Numbering
+        };
+        /* Act */
+        $result = $generator->forNumberingId($numbering->id)->generate();
+        /* Assert */
+        $this->assertNull($result);
     }
 }

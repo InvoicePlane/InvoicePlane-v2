@@ -4,6 +4,7 @@ namespace Modules\Core\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Carbon;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
@@ -19,6 +20,7 @@ abstract class AbstractAdminPanelTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Carbon::setTestNow(Carbon::parse('2026-01-01 00:00:00'));
 
         filament()->setCurrentPanel(filament()->getPanel('admin'));
 
@@ -33,6 +35,12 @@ abstract class AbstractAdminPanelTestCase extends BaseTestCase
         session(['current_company_id' => $this->company->id]);
 
         $this->withoutExceptionHandling();
+    }
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow(); // Clear the test time
+        parent::tearDown();
     }
 
     protected function superAdmin(): User

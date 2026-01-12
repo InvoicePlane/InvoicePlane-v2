@@ -23,17 +23,17 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_product_units(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = ['unit_name' => 'Box'];
         $record  = ProductUnit::factory()
             ->for($this->company)
             ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful()
             ->assertCanSeeTableRecords(collect([$record]));
 
@@ -46,13 +46,13 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_product_unit_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'unit_name'      => 'Pack',
             'unit_name_plrl' => 'Packs',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
             ->mountAction('create')
@@ -60,7 +60,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_units', $payload);
     }
 
@@ -74,19 +74,19 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_unit_through_a_modal_without_required_unit_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'unit_name' => null,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['unit_name']);
 
         $this->assertDatabaseMissing('product_units', $payload);
@@ -96,7 +96,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $productUnit = ProductUnit::factory()
             ->for($this->company)
             ->create(['unit_name' => 'Old Unit', 'unit_name_plrl' => 'kgs']);
@@ -106,14 +106,14 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             'unit_name_plrl' => 'Updated Units',
         ];
 
-        /* act */
+        /* Act */
         Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
             ->mountAction(TestAction::make('edit')->table($productUnit), $payload)
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_units', array_merge($payload, [
             'id' => $productUnit->id,
         ]));
@@ -124,13 +124,13 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_update_product_unit_through_a_modal_without_required_unit_name(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
         $record = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'X']);
 
         $tenant  = Str::lower($this->company->search_code);
         $payload = ['unit_name' => null];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class, [
                 'tenant' => $tenant,
@@ -139,7 +139,7 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['unit_name']);
     }
     # endregion
@@ -155,24 +155,24 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_unit(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'unit_name'      => 'Pack',
             'unit_name_plrl' => 'Packs',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductUnit::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_units', $payload);
     }
 
@@ -186,18 +186,18 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_unit_without_required_unit_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'unit_name' => null,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductUnit::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['unit_name']);
 
         $this->assertDatabaseMissing('product_units', $payload);
@@ -207,22 +207,22 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_unit(): void
     {
-        /* arrange */
+        /* Arrange */
         $record  = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'Old Unit']);
         $payload = ['unit_name' => 'Updated Unit'];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditProductUnit::class, ['record' => $record->id])
             ->fillForm($payload)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_units', $payload);
     }
 
@@ -230,18 +230,18 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product_unit(): void
     {
-        /* arrange */
+        /* Arrange */
         $productUnit = ProductUnit::factory()
             ->for($this->company)
             ->create();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
             ->mountAction(TestAction::make('delete')->table($productUnit))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertModelMissing($productUnit);
     }
@@ -252,17 +252,17 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
-        /* arrange */
+        /* Arrange */
         $productUnit = ProductUnit::factory()->for($this->company)->create();
         $productUnit->delete();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductUnits::class)
             ->mountAction(TestAction::make('delete')->table($productUnit))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasErrors();
 
         $this->assertDatabaseMissing('product_units', ['id' => $productUnit->id]);

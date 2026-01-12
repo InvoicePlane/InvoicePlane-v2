@@ -38,4 +38,15 @@ enum RelationType: string implements LabeledEnum
             self::LEAD     => 'green',
         };
     }
+
+    public function prefix(): string
+    {
+        return match ($this) {
+            self::CUSTOMER => 'CST',
+            self::VENDOR   => 'VDR',
+            self::PROSPECT => 'PSP',
+            self::PARTNER  => 'PRT',
+            self::LEAD     => 'LED',
+        };
+    }
 }

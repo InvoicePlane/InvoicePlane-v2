@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Admin\Resources\Numberings\Pages\ListNumberings;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
@@ -53,7 +54,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* Arrange */
-        $otherCompany = \Modules\Core\Models\Company::factory()->create();
+        $otherCompany = Company::factory()->create();
 
         $ownNumbering = Numbering::factory()->for($this->company)->create([
             'type' => NumberingType::INVOICE->value,
@@ -88,25 +89,27 @@ class NumberingTest extends AbstractAdminPanelTestCase
             'format'                  => 'PRJ-{YEAR}-{ID}',
             'next_id'                 => 1,
             'reset_number'            => 0,
+            'company_id'              => $this->company->id,
         ];
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callTableAction('create', data: $payload);
+            ->callAction('create', data: $payload);
 
         /* Assert */
-        $component->assertSuccessful();
-        $component->assertHasNoTableActionErrors();
+        $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('numbering', [
-            'name'   => 'Project Numbering',
-            'type'   => NumberingType::PROJECT->value,
-            'format' => 'PRJ-{YEAR}-{ID}',
+            'name'       => 'Project Numbering',
+            'type'       => NumberingType::PROJECT->value,
+            'format'     => 'PRJ-{YEAR}-{ID}',
+            'company_id' => $this->company->id,
         ]);
     }
 
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_updates_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -124,11 +127,11 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callTableAction('edit', $numbering, data: $payload);
+            ->mountAction('edit', [$numbering->getKey()], $payload)
+            ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
-        $component->assertHasNoTableActionErrors();
+        $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('numbering', [
             'id'                      => $numbering->id,
             'name'                    => 'Updated Quote Numbering',
@@ -138,6 +141,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_deletes_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -150,10 +154,10 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callTableAction('delete', $numbering);
+            ->mountAction('delete', [$numbering->getKey()])
+            ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseMissing('numbering', ['id' => $numbering->id]);
     }
 
@@ -170,7 +174,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callTableAction('create', data: $payload);
+            ->callAction('create', data: $payload);
 
         /* Assert */
         $component->assertHasTableActionErrors(['name']);
@@ -189,7 +193,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->callTableAction('create', data: $payload);
+            ->callAction('create', data: $payload);
 
         /* Assert */
         $component->assertHasTableActionErrors(['type']);

@@ -30,14 +30,14 @@ class UsersTest extends AbstractAdminPanelTestCase
      */
     public function it_lists_users(): void
     {
-        /* arrange */
+        /* Arrange */
         $user = User::factory()->create(['email' => 'admin@example.com']);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListUsers::class);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas('users', [
@@ -53,16 +53,16 @@ class UsersTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_user(): void
     {
-        /* arrange */
+        /* Arrange */
         $user = User::factory()->create();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin)
             ->test(ListUsers::class)
             ->mountAction(TestAction::make('delete')->table($user))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
@@ -88,7 +88,7 @@ class UsersTest extends AbstractAdminPanelTestCase
      */
     public function it_prevents_inactive_users_from_logging_in(): void
     {
-        /* arrange */
+        /* Arrange */
         $expectedDate = Carbon::now();
 
         $inactiveUser = User::factory()->create([
@@ -101,7 +101,7 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         $inactiveUser->companies()->attach($this->company);
 
-        /* act */
+        /* Act */
         $response = Livewire::test(Login::class)
             ->fillForm([
                 'email'    => 'inactive@example.com',
@@ -109,7 +109,7 @@ class UsersTest extends AbstractAdminPanelTestCase
             ])
             ->call('authenticate');
 
-        /* assert */
+        /* Assert */
         $response->assertHasErrors();
 
         $this->assertEquals(
@@ -139,7 +139,7 @@ class UsersTest extends AbstractAdminPanelTestCase
      */
     public function it_allows_active_users_to_login_after_inactive_user_fails(): void
     {
-        /* arrange */
+        /* Arrange */
         $expectedDate = Carbon::now();
 
         $inactiveUser = User::factory()->create([
@@ -161,7 +161,7 @@ class UsersTest extends AbstractAdminPanelTestCase
         $inactiveUser->companies()->attach($this->company);
         $activeUser->companies()->attach($this->company);
 
-        /* act */
+        /* Act */
         $inactiveResponse = Livewire::test(Login::class)
             ->fillForm([
                 'email'    => 'inactive@example.com',
@@ -182,7 +182,7 @@ class UsersTest extends AbstractAdminPanelTestCase
      */
     public function it_prevents_login_when_user_becomes_inactive_after_creation(): void
     {
-        /* arrange */
+        /* Arrange */
         $expectedDate = Carbon::now();
 
         $userPayload = [
@@ -215,7 +215,7 @@ class UsersTest extends AbstractAdminPanelTestCase
         auth()->logout();
         $this->assertGuest();
 
-        /* act */
+        /* Act */
         $user->update(['is_active' => false]);
 
         $secondLoginResponse = Livewire::test(Login::class)
@@ -225,7 +225,7 @@ class UsersTest extends AbstractAdminPanelTestCase
             ])
             ->call('authenticate');
 
-        /* assert */
+        /* Assert */
         $secondLoginResponse->assertHasErrors();
         $this->assertGuest();
 

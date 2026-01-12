@@ -25,7 +25,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_lists_product_categories(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Hardware',
         ];
@@ -34,11 +34,11 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->for($this->company)
             ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful()
             ->assertCanSeeTableRecords(collect([$record]));
 
@@ -51,12 +51,12 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_product_category_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Office Supplies',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
             ->mountAction('create')
@@ -64,7 +64,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('product_categories', array_merge(
             ['company_id' => $this->company->id],
@@ -82,7 +82,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_category_through_a_modal_without_required_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => null,
         ];
@@ -104,14 +104,14 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_category_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()
             ->for($this->company)
             ->create(['category_name' => 'Old Cat']);
 
         $payload = ['category_name' => 'Updated Category'];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
             ->mountAction(TestAction::make('edit')->table($productCategory), $payload)
@@ -119,7 +119,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful();
 
@@ -142,23 +142,23 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Office Supplies',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_categories', $payload);
     }
 
@@ -172,18 +172,18 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_product_category_without_required_category_name(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => null,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['category_name']);
 
         $this->assertDatabaseMissing('product_categories', $payload);
@@ -193,22 +193,22 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_a_product_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $record  = ProductCategory::factory()->for($this->company)->create(['category_name' => 'Old Cat']);
         $payload = ['category_name' => 'Updated Category'];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditProductCategory::class, ['record' => $record->id])
             ->fillForm($payload)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_categories', $payload);
     }
 
@@ -216,18 +216,18 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_product_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()
             ->for($this->company)
             ->create(['category_name' => 'Category to Delete']);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
             ->mountAction(TestAction::make('delete')->table($productCategory))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
     }
@@ -238,17 +238,17 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete('record to deleteAction cannot be null');
 
-        /* arrange */
+        /* Arrange */
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productCategory->delete();
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListProductCategories::class)
             ->mountAction(TestAction::make('delete')->table($productCategory))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertHasErrors();
 
         $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);

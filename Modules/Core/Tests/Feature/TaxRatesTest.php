@@ -38,7 +38,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Group('smoke')]
     public function it_lists_tax_rates(): void
     {
-        /* arrange */
+        /* Arrange */
         $taxRate = TaxRate::factory()->create([
             'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
@@ -47,11 +47,11 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'rate'          => 15.00,
         ]);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListTaxRates::class);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         // Optional: direct DB check
@@ -79,7 +79,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      */
     public function it_creates_a_taxrate_through_a_modal(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
@@ -88,14 +88,14 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'rate'          => 21.0000,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListTaxRates::class)
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -131,7 +131,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'rate' => 22.0,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListTaxRates::class)
             ->mountAction(TestAction::make('edit')->table($record), $updatedData)
@@ -139,7 +139,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->callMountedAction()
             ->assertHasNoFormErrors();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas('tax_rates', array_merge(
@@ -168,7 +168,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     #[Group('crud')]
     public function it_creates_a_taxrate(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
@@ -177,13 +177,13 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'rate'          => 21.0000,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(CreateTaxRate::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -206,7 +206,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      */
     public function it_updates_a_taxrate(): void
     {
-        /* arrange */
+        /* Arrange */
         $taxRate = TaxRate::factory()->create([
             'tax_rate_type' => TaxRateType::EXCLUSIVE,
             'is_active'     => true,
@@ -220,13 +220,13 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'rate' => 21.0000,
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(EditTaxRate::class, ['record' => $taxRate->getKey()])
             ->fillForm($updatedData)
             ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
@@ -251,7 +251,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_taxrate(): void
     {
-        /* arrange */
+        /* Arrange */
         $taxRate = TaxRate::factory()->create([
             'name'          => 'Tax to Delete',
             'code'          => 'DELETEME',
@@ -259,13 +259,13 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             'tax_rate_type' => TaxRateType::EXCLUSIVE,
         ]);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->superAdmin)
             ->test(ListTaxRates::class)
             ->mountAction(TestAction::make('delete')->table($taxRate))
             ->callMountedAction();
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseMissing('tax_rates', ['id' => $taxRate->id]);
     }

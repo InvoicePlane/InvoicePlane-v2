@@ -7,15 +7,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Clients\Models\Customer;
 use Modules\Core\Database\Factories\NumberingFactory;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Traits\BelongsToCompany;
-use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
-use Modules\Payments\Models\Payment;
-use Modules\Projects\Models\Project;
-use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
 
 /**
@@ -172,7 +167,7 @@ class Numbering extends Model
         $format = $this->format ?? '{{prefix}}-{{number}}';
 
         $pad      = max((int) ($this->left_pad ?? 0), 0);
-        $idPadded = mb_str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
+        $idPadded = str_pad((string) $sequentialId, $pad, '0', STR_PAD_LEFT);
 
         $replacements = [
             '{{prefix}}' => $prefix,

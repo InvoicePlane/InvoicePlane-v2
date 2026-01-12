@@ -188,7 +188,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
         $idempotencyKey = $this->calculateIdempotencyKey();
 
         // Try to find existing transmission
-        $transmission = PeppolTransmission::where('idempotency_key', $idempotencyKey)->first();
+        $transmission = PeppolTransmission::query()->where('idempotency_key', $idempotencyKey)->first();
 
         if ($transmission) {
             $this->logPeppolInfo('Found existing transmission', ['transmission_id' => $transmission->id]);

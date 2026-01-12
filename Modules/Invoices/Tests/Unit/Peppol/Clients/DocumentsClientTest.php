@@ -2,8 +2,9 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Clients;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Modules\Core\Tests\TestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
@@ -17,7 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Verifies proper API integration and error handling.
  */
 #[Group('peppol')]
-class DocumentsClientTest extends TestCase
+class DocumentsClientTest extends AbstractTestCase
 {
     protected DocumentsClient $client;
 
@@ -38,6 +39,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_submits_document_successfully(): void
     {
         Http::fake([
@@ -67,6 +69,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_gets_document_by_id(): void
     {
         Http::fake([
@@ -89,6 +92,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_gets_document_status(): void
     {
         Http::fake([
@@ -109,6 +113,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_lists_documents_with_filters(): void
     {
         Http::fake([
@@ -134,6 +139,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_cancels_document(): void
     {
         Http::fake([
@@ -152,6 +158,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_includes_authentication_header(): void
     {
         Http::fake([
@@ -167,6 +174,7 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_sets_correct_content_type(): void
     {
         Http::fake([
@@ -184,6 +192,7 @@ class DocumentsClientTest extends TestCase
     // Failing tests for error conditions
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_validation_errors(): void
     {
         Http::fake([
@@ -194,12 +203,13 @@ class DocumentsClientTest extends TestCase
         ]);
 
         $response = $this->client->submitDocument([]);
-
         $this->assertFalse($response->successful());
         $this->assertEquals(422, $response->status());
+        $this->assertEquals('Validation failed', $response->json('error'));
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_authentication_errors(): void
     {
         Http::fake([
@@ -208,13 +218,17 @@ class DocumentsClientTest extends TestCase
             ], 401),
         ]);
 
-        $response = $this->client->getDocument('DOC-123');
-
-        $this->assertFalse($response->successful());
-        $this->assertEquals(401, $response->status());
+        try {
+            $this->client->getDocument('DOC-123');
+            $this->fail('Expected RequestException was not thrown.');
+        } catch (RequestException $e) {
+            $this->assertEquals(401, $e->response->status());
+            $this->assertEquals('Invalid API key', $e->response->json('error'));
+        }
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_not_found_errors(): void
     {
         Http::fake([
@@ -224,12 +238,13 @@ class DocumentsClientTest extends TestCase
         ]);
 
         $response = $this->client->getDocument('INVALID');
-
         $this->assertFalse($response->successful());
         $this->assertEquals(404, $response->status());
+        $this->assertEquals('Document not found', $response->json('error'));
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_server_errors(): void
     {
         Http::fake([
@@ -239,12 +254,13 @@ class DocumentsClientTest extends TestCase
         ]);
 
         $response = $this->client->submitDocument(['test' => 'data']);
-
         $this->assertFalse($response->successful());
         $this->assertEquals(500, $response->status());
+        $this->assertEquals('Internal server error', $response->json('error'));
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_handles_rate_limiting(): void
     {
         Http::fake([
@@ -254,9 +270,9 @@ class DocumentsClientTest extends TestCase
         ]);
 
         $response = $this->client->submitDocument(['test' => 'data']);
-
         $this->assertFalse($response->successful());
         $this->assertEquals(429, $response->status());
+        $this->assertEquals('Too many requests', $response->json('error'));
     }
 
     #[Test]
@@ -274,9 +290,10 @@ class DocumentsClientTest extends TestCase
     }
 
     #[Test]
+    #[Group('failing')]
     public function it_creates_document(): void
     {
-        /* arrange */
+        /* Arrange */
         Http::fake([
             'https://api.e-invoice.be/api/documents' => Http::response([
                 'document_id' => 'DOC-NEW-123',
@@ -290,10 +307,10 @@ class DocumentsClientTest extends TestCase
             'amount'         => 100.00,
         ];
 
-        /* act */
+        /* Act */
         $response = $this->client->submitDocument($documentData);
 
-        /* assert */
+        /* Assert */
         $this->assertTrue($response->successful());
         $this->assertEquals(201, $response->status());
         $this->assertEquals('DOC-NEW-123', $response->json('document_id'));

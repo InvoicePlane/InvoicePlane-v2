@@ -296,7 +296,7 @@ class Settings extends Page implements HasTable, HasForms
                                                 return [];
                                             }
 
-                                            return Numbering::where('company_id', $companyId)->pluck('name', 'id');
+                                            return Numbering::query()->where('company_id', $companyId)->pluck('name', 'id');
                                         })
                                         ->placeholder(trans('ip.none')),
 

@@ -250,7 +250,7 @@ class PeppolManagementService
      */
     public function getActiveIntegration(int $companyId): ?PeppolIntegration
     {
-        return PeppolIntegration::where('company_id', $companyId)
+        return PeppolIntegration::query()->where('company_id', $companyId)
             ->where('enabled', true)
             ->where('test_connection_status', PeppolConnectionStatus::SUCCESS)
             ->first();

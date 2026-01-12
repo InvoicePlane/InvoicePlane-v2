@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Database\Factories;
 
+use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
@@ -23,7 +24,8 @@ class ProjectFactory extends AbstractFactory
         $companyId = $this->resolveCompanyId();
 
         return [
-            'customer_id'    => $this->resolveForeignKey(\Modules\Clients\Models\Relation::class, $companyId),
+            'company_id'     => $companyId,
+            'customer_id'    => $this->resolveForeignKey(Relation::class, $companyId),
             'project_number' => $this->faker->unique()->numerify('PRJ-#####'),
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),

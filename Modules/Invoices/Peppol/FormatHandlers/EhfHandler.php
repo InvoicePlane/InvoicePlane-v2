@@ -20,7 +20,7 @@ class EhfHandler extends BaseFormatHandler
      */
     public function __construct()
     {
-        parent::__construct(PeppolDocumentFormat::EHF);
+        parent::__construct(PeppolDocumentFormat::EHF_30);
     }
 
     /**

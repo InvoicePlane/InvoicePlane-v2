@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 use Filament\Schemas\Components\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Carbon;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
@@ -21,6 +22,7 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Carbon::setTestNow(Carbon::parse('2026-01-01 00:00:00'));
 
         /** @var User $user */
         $user = User::factory()->withCompany([
@@ -47,6 +49,7 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
 
     protected function tearDown(): void
     {
+        Carbon::setTestNow(); // Clear the test time
         parent::tearDown();
     }
 
