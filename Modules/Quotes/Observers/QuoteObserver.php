@@ -25,7 +25,7 @@ class QuoteObserver extends AbstractObserver
                 throw new RuntimeException(
                     trans('quotes.errors.duplicate_quote_number', [
                         'quote_number' => $quote->quote_number,
-                        'company_id' => $quote->company_id,
+                        'company_id'   => $quote->company_id,
                     ])
                 );
             }

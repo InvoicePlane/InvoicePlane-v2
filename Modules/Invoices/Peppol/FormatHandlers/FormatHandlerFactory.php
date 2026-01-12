@@ -5,6 +5,7 @@ namespace Modules\Invoices\Peppol\FormatHandlers;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Enums\PeppolDocumentFormat;
 use RuntimeException;
+use Throwable;
 use ValueError;
 
 /**
@@ -73,7 +74,7 @@ class FormatHandlerFactory
             $handler->setFormat($format);
 
             return $handler;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new RuntimeException("Failed to create handler for format: {$format->value}", 0, $e);
         }
     }
@@ -106,10 +107,10 @@ class FormatHandlerFactory
             } catch (ValueError | RuntimeException $e) {
                 // Invalid format or handler not available, continue to fallback
                 \Illuminate\Support\Facades\Log::info("Customer's preferred Peppol format '{$customer->peppol_format}' is not available, falling back to recommended format", [
-                    'customer_id'    => $customer->id,
-                    'invoice_id'     => $invoice->id,
-                    'country_code'   => $countryCode,
-                    'error'          => $e->getMessage(),
+                    'customer_id'  => $customer->id,
+                    'invoice_id'   => $invoice->id,
+                    'country_code' => $countryCode,
+                    'error'        => $e->getMessage(),
                 ]);
             }
         }

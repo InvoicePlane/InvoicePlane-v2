@@ -160,7 +160,7 @@ class FormatHandlerFactoryTest extends TestCase
         $handlers = FormatHandlerFactory::getRegisteredHandlers();
 
         $this->assertIsArray($handlers);
-        
+
         // Check all handlers are registered
         $this->assertArrayHasKey('peppol_bis_3.0', $handlers);
         $this->assertArrayHasKey('ubl_2.1', $handlers);

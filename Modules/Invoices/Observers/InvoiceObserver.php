@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Observers;
 
-use Illuminate\Validation\ValidationException;
 use Modules\Core\Observers\AbstractObserver;
 use Modules\Invoices\Models\Invoice;
 
