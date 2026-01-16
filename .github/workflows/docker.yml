@@ -1,5 +1,8 @@
 name: Docker Compose Check (Disabled)
 
+permissions:
+  contents: read
+
 # This workflow is DISABLED by default.
 # To enable it:
 # - Remove/comment out the line: `workflow_dispatch:`
