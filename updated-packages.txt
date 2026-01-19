@@ -1,0 +1,27 @@
+## Direct Dependencies (from composer.json)
+
+filament/actions: v4.5.2 → v5.0.0
+filament/filament: v4.5.2 → v5.0.0
+laravel/framework: v12.46.0 → v12.47.0
+larastan/larastan: v3.8.1 → v3.9.0
+laravel/boost: v1.8.9 → v1.8.10
+phpunit/phpunit: 11.5.46 → 11.5.48
+rector/rector: 2.3.0 → 2.3.1
+
+## Transient Dependencies (indirect)
+
+filament/forms: v4.5.2 → v5.0.0
+filament/infolists: v4.5.2 → v5.0.0
+filament/notifications: v4.5.2 → v5.0.0
+filament/query-builder: v4.5.2 → v5.0.0
+filament/schemas: v4.5.2 → v5.0.0
+filament/support: v4.5.2 → v5.0.0
+filament/tables: v4.5.2 → v5.0.0
+filament/widgets: v4.5.2 → v5.0.0
+laravel/prompts: v0.3.8 → v0.3.10
+laravel/serializable-closure: v2.0.7 → v2.0.8
+league/uri: 7.7.0 → 7.8.0
+league/uri-components: 7.7.0 → 7.8.0
+league/uri-interfaces: 7.7.0 → 7.8.0
+livewire/livewire: v3.7.3 → v4.0.1
+ueberdosis/tiptap-php: 2.0.0 → 2.1.0
