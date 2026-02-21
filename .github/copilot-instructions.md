@@ -2,6 +2,15 @@
 
 This is the default Copilot prompt for this project.
 
+## How to Use These Instructions
+
+**IMPORTANT:** These instructions contain comprehensive information about the InvoicePlane v2 codebase, architecture, and development workflow. **Trust these instructions** and use them as your primary reference. Only perform additional searches if:
+- The information you need is not covered here
+- You encounter an error that contradicts these instructions
+- You need to locate specific files or code not referenced here
+
+Following these guidelines will significantly reduce exploration time and prevent common mistakes.
+
 ## Project Description
 
 This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with a **modular architecture**.
@@ -28,28 +37,35 @@ This project is **InvoicePlane v2**, a **multi-tenant Laravel application** with
 
 ### Testing
 ```bash
-# Run all tests
+# Run all tests (typically 30-60 seconds)
 php artisan test
 
-# Run tests with coverage
+# Run tests with coverage (typically 60-120 seconds)
 php artisan test --coverage
 
-# Run specific test suite
+# Run specific test suite (faster - 10-30 seconds each)
 php artisan test --testsuite=Unit
 php artisan test --testsuite=Feature
 ```
 
+**Important:** Always run tests before finalizing changes. All tests must pass.
+
 ### Code Quality
 ```bash
-# Format code with Laravel Pint
+# Format code with Laravel Pint (auto-fixes PSR-12 violations)
 vendor/bin/pint
 
-# Run static analysis
+# Run static analysis (typically 20-40 seconds)
 vendor/bin/phpstan analyse
 
 # Run Rector for automated refactoring
 vendor/bin/rector process --dry-run
 ```
+
+**Validation Pipeline:** Before submitting code, you MUST run:
+1. `vendor/bin/pint` - Format code
+2. `vendor/bin/phpstan analyse` - Check for type errors
+3. `php artisan test` - Run all tests
 
 ### Setup & Installation
 ```bash
@@ -68,10 +84,14 @@ php artisan queue:work
 - For local development, you can use `QUEUE_CONNECTION=sync` in `.env`
 - For production, use Redis or database queue driver with Supervisor
 
-**GitHub Actions Automation:**
-- Automated dependency updates require `PAT_TOKEN` secret (Personal Access Token with `repo` and `workflow` scopes)
-- Set up at: Settings → Secrets and variables → Actions
-- See `.github/workflows/README.md` for detailed setup instructions
+**GitHub Actions CI/CD:**
+The following automated checks run on every pull request and MUST pass:
+- **PHPUnit** - All tests must pass (`php artisan test`)
+- **PHPStan** - Static analysis must pass with no errors (`vendor/bin/phpstan analyse`)
+- **Pint** - Code must follow PSR-12 standards (`vendor/bin/pint`)
+- **Docker Build** - Docker images must build successfully
+
+See `.github/workflows/` for workflow configurations. Reference `.github/workflows/README.md` for setup details.
 
 ## Related Documentation
 
@@ -293,3 +313,20 @@ protected function createCompany(): Company
     return $company;
 }
 ```
+
+## Development Workflow
+
+When making code changes, follow this workflow:
+
+1. **Understand the Task** - Read the requirements carefully
+2. **Locate Files** - Use the module structure (`Modules/{ModuleName}/{Type}/`)
+3. **Make Changes** - Follow all guidelines above (SOLID, DTOs, Transformers, etc.)
+4. **Write/Update Tests** - Use `#[Test]`, `it_` prefix, Arrange/Act/Assert structure
+5. **Validate Locally**:
+   - Run `vendor/bin/pint` to format code
+   - Run `vendor/bin/phpstan analyse` to check types
+   - Run `php artisan test` to verify tests pass
+6. **Review Changes** - Ensure minimal, surgical changes only
+7. **Commit** - Follow `.github/git-commit-instructions.md`
+
+**Remember:** All CI checks (PHPUnit, PHPStan, Pint) must pass before code can be merged.

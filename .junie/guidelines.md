@@ -4,6 +4,17 @@ This document provides comprehensive guidelines for AI agents (like Junie) worki
 
 ---
 
+## How to Use These Guidelines
+
+**IMPORTANT:** These guidelines contain comprehensive information about the InvoicePlane v2 codebase, architecture, and development workflow. **Trust these guidelines** and use them as your primary reference. Only perform additional searches if:
+- The information you need is not covered here
+- You encounter an error that contradicts these guidelines
+- You need to locate specific files or code not referenced here
+
+Following these guidelines will significantly reduce exploration time and prevent common mistakes.
+
+---
+
 ## Project Overview
 
 **InvoicePlane v2** is a multi-tenant invoicing and billing application built with modern PHP/Laravel technologies.
@@ -421,18 +432,25 @@ public function it_sends_invoice_to_peppol_successfully(): void
 
 **Testing:**
 ```bash
-php artisan test # All tests
-php artisan test --coverage # With coverage
-php artisan test --testsuite=Unit # Unit tests only
+php artisan test # All tests (typically 30-60 seconds)
+php artisan test --coverage # With coverage (typically 60-120 seconds)
+php artisan test --testsuite=Unit # Unit tests only (faster - 10-30 seconds)
 php artisan test --group=export # Export tests only
 ```
 
+**Important:** Always run tests before finalizing changes. All tests must pass.
+
 **Code Quality:**
 ```bash
-vendor/bin/pint # Format code (PSR-12)
-vendor/bin/phpstan analyse # Static analysis
+vendor/bin/pint # Format code (PSR-12) - auto-fixes violations
+vendor/bin/phpstan analyse # Static analysis (typically 20-40 seconds)
 vendor/bin/rector process --dry-run # Refactoring suggestions
 ```
+
+**Validation Pipeline:** Before submitting code, you MUST run:
+1. `vendor/bin/pint` - Format code
+2. `vendor/bin/phpstan analyse` - Check for type errors
+3. `php artisan test` - Run all tests
 
 **Setup:**
 ```bash
@@ -470,6 +488,16 @@ php artisan queue:work # For exports
 ---
 
 ## GitHub Actions & Automation
+
+### CI/CD Pipeline
+
+The following automated checks run on every pull request and MUST pass:
+- **PHPUnit** - All tests must pass (`php artisan test`)
+- **PHPStan** - Static analysis must pass with no errors (`vendor/bin/phpstan analyse`)
+- **Pint** - Code must follow PSR-12 standards (`vendor/bin/pint`)
+- **Docker Build** - Docker images must build successfully
+
+See `.github/workflows/` for workflow configurations. Reference `.github/workflows/README.md` for setup details.
 
 ### Automated Workflows
 
@@ -708,6 +736,61 @@ Before submitting code, verify:
 
 ---
 
+## Step-by-Step Development Workflow
+
+When making code changes, follow this workflow for best results:
+
+### 1. Understand the Task
+- Read the requirements carefully
+- Identify the scope of changes needed
+- Understand which modules are affected
+
+### 2. Locate Files
+- Use the module structure (`Modules/{ModuleName}/{Type}/`)
+- Check existing code patterns in similar features
+- Review relevant tests for context
+
+### 3. Make Changes
+- Follow all guidelines above (SOLID, DTOs, Transformers, etc.)
+- Keep changes minimal and focused
+- Extract duplicate code into reusable methods
+- Use early returns for better readability
+
+### 4. Write/Update Tests
+- Use `#[Test]` attribute
+- Name tests with `it_` prefix (e.g., `it_creates_invoice`)
+- Structure with Arrange/Act/Assert comments
+- Define all variables in "act" section before assertions
+- Extend appropriate abstract test case from `Modules/Core/Tests/`
+
+### 5. Validate Locally
+Run the validation pipeline in order:
+```bash
+# 1. Format code
+vendor/bin/pint
+
+# 2. Check for type errors
+vendor/bin/phpstan analyse
+
+# 3. Run all tests
+php artisan test
+```
+
+### 6. Review Changes
+- Ensure changes are minimal and surgical
+- Verify no unrelated code was modified
+- Check that all new code follows project guidelines
+- Confirm test coverage is adequate
+
+### 7. Commit
+- Follow `.github/git-commit-instructions.md`
+- Write clear, semantic commit messages
+- Reference issues when applicable
+
+**Remember:** All CI checks (PHPUnit, PHPStan, Pint, Docker Build) must pass before code can be merged.
+
+---
+
 ## Learning Resources
 
 ### InvoicePlane-Specific
@@ -735,7 +818,7 @@ This document should be updated as:
 - Best practices evolve
 - Performance optimizations discovered
 
-**Last Updated:** 2025-12-29
+**Last Updated:** 2026-02-21
 
 ---
 
