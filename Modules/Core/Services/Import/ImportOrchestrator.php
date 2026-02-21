@@ -110,12 +110,14 @@ class ImportOrchestrator
      */
     private function runImportServices(): void
     {
+        $numberingService = new NumberingImportService();
+
         $services = [
             new UsersImportService(),
             new TaxRatesImportService(),
             new ProductsImportService(),
             new ClientsImportService(),
-            new NumberingImportService(),
+            $numberingService,
             new InvoicesImportService($this->userId),
             new QuotesImportService($this->userId),
             new PaymentsImportService(),
@@ -130,6 +132,10 @@ class ImportOrchestrator
             $serviceStats = $service->import($this->companyId, $this->idMappings);
             $this->stats = array_merge($this->stats, $serviceStats);
         }
+
+        // Apply proper numbering logic after all imports are complete
+        // This ensures numberings are correct and won't fail on next invoice/quote creation
+        $numberingService->applyNumberingLogic($this->companyId);
     }
 
     /**

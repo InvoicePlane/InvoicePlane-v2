@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services\Import;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\Numbering;
 
 class NumberingImportService extends AbstractImportService
@@ -39,6 +40,59 @@ class NumberingImportService extends AbstractImportService
 
             $this->idMappings['invoice_groups'][$group->invoice_group_id] = $numbering->id;
             $this->stats['invoice_groups']++;
+        }
+    }
+
+    /**
+     * Apply proper numbering logic after invoices and quotes are imported
+     * This ensures numberings reflect the actual state and won't fail
+     */
+    public function applyNumberingLogic(int $companyId): void
+    {
+        $numberings = Numbering::where('company_id', $companyId)
+            ->where('type', 'invoice')
+            ->get();
+
+        foreach ($numberings as $numbering) {
+            // Get the highest invoice number for this numbering
+            $maxInvoiceNumber = DB::table('invoices')
+                ->where('company_id', $companyId)
+                ->where('numbering_id', $numbering->id)
+                ->whereNotNull('invoice_number')
+                ->max('invoice_number');
+
+            if ($maxInvoiceNumber) {
+                // Extract numeric part from invoice number
+                $numericPart = preg_replace('/[^0-9]/', '', $maxInvoiceNumber);
+                if ($numericPart) {
+                    // Set next_id to be one more than the highest
+                    $numbering->update([
+                        'next_id' => (int) $numericPart + 1,
+                    ]);
+                }
+            }
+        }
+
+        // Apply similar logic for quote numberings
+        $quoteNumberings = Numbering::where('company_id', $companyId)
+            ->where('type', 'quote')
+            ->get();
+
+        foreach ($quoteNumberings as $numbering) {
+            $maxQuoteNumber = DB::table('quotes')
+                ->where('company_id', $companyId)
+                ->where('numbering_id', $numbering->id)
+                ->whereNotNull('quote_number')
+                ->max('quote_number');
+
+            if ($maxQuoteNumber) {
+                $numericPart = preg_replace('/[^0-9]/', '', $maxQuoteNumber);
+                if ($numericPart) {
+                    $numbering->update([
+                        'next_id' => (int) $numericPart + 1,
+                    ]);
+                }
+            }
         }
     }
 }

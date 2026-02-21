@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services\Import;
 
+use Modules\Core\Enums\ModelType;
 use Modules\Core\Models\Note;
 
 class NotesImportService extends AbstractImportService
@@ -27,7 +28,8 @@ class NotesImportService extends AbstractImportService
         $notes = $this->getImportData('ip_notes');
 
         foreach ($notes as $v1Note) {
-            $modelId = $this->getModelId($v1Note->entity_type ?? 'invoice', $v1Note->entity_id ?? null);
+            $modelType = ModelType::fromString($v1Note->entity_type ?? 'invoice');
+            $modelId = $this->getModelId($modelType, $v1Note->entity_id ?? null);
 
             if (! $modelId) {
                 continue;
@@ -36,7 +38,7 @@ class NotesImportService extends AbstractImportService
             Note::create([
                 'company_id'  => $this->companyId,
                 'notable_id'  => $modelId,
-                'notable_type' => $this->mapModelType($v1Note->entity_type ?? 'invoice'),
+                'notable_type' => $modelType->getModelClass(),
                 'note'        => $v1Note->note ?? '',
             ]);
 
@@ -44,28 +46,17 @@ class NotesImportService extends AbstractImportService
         }
     }
 
-    private function getModelId(string $entityType, ?int $entityId): ?int
+    private function getModelId(ModelType $modelType, ?int $entityId): ?int
     {
         if (! $entityId) {
             return null;
         }
 
-        return match ($entityType) {
-            'invoice'  => $this->idMappings['invoices'][$entityId] ?? null,
-            'quote'    => $this->idMappings['quotes'][$entityId] ?? null,
-            'client'   => $this->idMappings['clients'][$entityId] ?? null,
-            'payment'  => null, // Payments don't have a direct mapping from v1
-            default    => null,
-        };
-    }
-
-    private function mapModelType(string $entityType): string
-    {
-        return match ($entityType) {
-            'invoice'  => 'Modules\\Invoices\\Models\\Invoice',
-            'quote'    => 'Modules\\Quotes\\Models\\Quote',
-            'client'   => 'Modules\\Clients\\Models\\Relation',
-            default    => 'Modules\\Invoices\\Models\\Invoice',
+        return match ($modelType) {
+            ModelType::INVOICE => $this->idMappings['invoices'][$entityId] ?? null,
+            ModelType::QUOTE   => $this->idMappings['quotes'][$entityId] ?? null,
+            ModelType::CLIENT  => $this->idMappings['clients'][$entityId] ?? null,
+            default            => null,
         };
     }
 }

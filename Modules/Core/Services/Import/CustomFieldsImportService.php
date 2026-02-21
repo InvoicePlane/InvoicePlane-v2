@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services\Import;
 
+use Modules\Core\Enums\ModelType;
 use Modules\Core\Models\CustomField;
 use Modules\Core\Models\CustomFieldValue;
 
@@ -52,26 +53,17 @@ class CustomFieldsImportService extends AbstractImportService
                 continue;
             }
 
+            $modelType = ModelType::fromString($v1Value->entity_type ?? 'invoice');
+
             CustomFieldValue::create([
                 'company_id'       => $this->companyId,
                 'custom_field_id'  => $customFieldId,
                 'model_id'         => $v1Value->entity_id ?? null,
-                'model_type'       => $this->mapModelType($v1Value->entity_type ?? 'invoice'),
+                'model_type'       => $modelType->getModelClass(),
                 'custom_field_value' => $v1Value->custom_field_value ?? '',
             ]);
 
             $this->stats['custom_field_values']++;
         }
-    }
-
-    private function mapModelType(string $entityType): string
-    {
-        return match ($entityType) {
-            'invoice'  => 'Modules\\Invoices\\Models\\Invoice',
-            'quote'    => 'Modules\\Quotes\\Models\\Quote',
-            'client'   => 'Modules\\Clients\\Models\\Relation',
-            'payment'  => 'Modules\\Payments\\Models\\Payment',
-            default    => 'Modules\\Invoices\\Models\\Invoice',
-        };
     }
 }
