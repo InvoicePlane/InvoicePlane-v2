@@ -8,6 +8,7 @@ use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
+use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Payments\Models\Payment;
@@ -22,6 +23,8 @@ class ImportInvoicePlaneV1Service
     private const TEMP_DB_NAME = 'invoiceplane_v1_temp';
 
     private ?int $companyId = null;
+
+    private ?int $userId = null;
 
     private array $idMappings = [
         'clients'           => [],
@@ -55,12 +58,15 @@ class ImportInvoicePlaneV1Service
         // Step 1: Setup company
         $this->companyId = $companyId ?? $this->createCompany();
 
-        // Step 2: Create temporary database and restore dump
+        // Step 2: Get or create a valid user
+        $this->userId = $this->getValidUserId();
+
+        // Step 3: Create temporary database and restore dump
         $this->createTemporaryDatabase();
         $this->restoreDump($dumpFile);
 
         try {
-            // Step 3: Import data in dependency order
+            // Step 4: Import data in dependency order
             $this->importTaxRates();
             $this->importProductFamilies();
             $this->importProductUnits();
@@ -73,7 +79,7 @@ class ImportInvoicePlaneV1Service
 
             return $this->stats;
         } finally {
-            // Step 4: Cleanup temporary database
+            // Step 5: Cleanup temporary database
             $this->dropTemporaryDatabase();
         }
     }
@@ -89,6 +95,28 @@ class ImportInvoicePlaneV1Service
         ]);
 
         return $company->id;
+    }
+
+    /**
+     * Get or create a valid user ID
+     */
+    private function getValidUserId(): int
+    {
+        // Try to find any user
+        $user = User::first();
+
+        if ($user) {
+            return $user->id;
+        }
+
+        // If no users exist, create a default one
+        $defaultUser = User::create([
+            'name'     => 'Import User',
+            'email'    => 'import-' . uniqid() . '@invoiceplane.local',
+            'password' => bcrypt(str()->random(32)),
+        ]);
+
+        return $defaultUser->id;
     }
 
     /**
@@ -111,8 +139,16 @@ class ImportInvoicePlaneV1Service
         $password = $config['password'];
         $port = $config['port'] ?? 3306;
 
-        $passwordArg = $password ? "-p{$password}" : '';
-        $command = "mysql -h{$host} -P{$port} -u{$username} {$passwordArg} " . self::TEMP_DB_NAME . " < {$dumpFile} 2>&1";
+        $passwordArg = $password ? '-p' . escapeshellarg($password) : '';
+        $command = sprintf(
+            'mysql -h%s -P%s -u%s %s %s < %s 2>&1',
+            escapeshellarg($host),
+            escapeshellarg((string) $port),
+            escapeshellarg($username),
+            $passwordArg,
+            escapeshellarg(self::TEMP_DB_NAME),
+            escapeshellarg($dumpFile)
+        );
 
         exec($command, $output, $returnCode);
 
@@ -251,7 +287,7 @@ class ImportInvoicePlaneV1Service
                 $categoryId = $defaultCategory->id;
             }
 
-            Product::create([
+            $product = Product::create([
                 'company_id'   => $this->companyId,
                 'category_id'  => $categoryId,
                 'unit_id'      => $unitId,
@@ -263,7 +299,7 @@ class ImportInvoicePlaneV1Service
                 'description'  => $v1Product->product_description ?? null,
             ]);
 
-            $this->idMappings['products'][$v1Product->product_id] = Product::latest('id')->first()->id;
+            $this->idMappings['products'][$v1Product->product_id] = $product->id;
             $this->stats['products']++;
         }
     }
@@ -351,7 +387,7 @@ class ImportInvoicePlaneV1Service
                 'company_id'               => $this->companyId,
                 'customer_id'              => $customerId,
                 'numbering_id'             => $numberingId,
-                'user_id'                  => 1, // Default user
+                'user_id'                  => $this->userId,
                 'invoice_number'           => $v1Invoice->invoice_number,
                 'invoice_status'           => $this->mapInvoiceStatus($v1Invoice->invoice_status_id ?? 1),
                 'invoiced_at'              => $v1Invoice->invoice_date_created ?? now(),
@@ -437,7 +473,7 @@ class ImportInvoicePlaneV1Service
                 'company_id'             => $this->companyId,
                 'prospect_id'            => $prospectId,
                 'numbering_id'           => $numberingId,
-                'user_id'                => 1, // Default user
+                'user_id'                => $this->userId,
                 'quote_number'           => $v1Quote->quote_number,
                 'quote_status'           => $this->mapQuoteStatus($v1Quote->quote_status_id ?? 1),
                 'quoted_at'              => $v1Quote->quote_date_created ?? now(),

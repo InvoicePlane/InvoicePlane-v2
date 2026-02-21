@@ -42,12 +42,11 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $initialCompanyCount = Company::count();
 
         /* Act */
-        $exitCode = $this->artisan('import:db', [
+        $this->artisan('import:db', [
             'dumpfile' => $this->dumpFile,
-        ]);
+        ])->assertSuccessful();
 
         /* Assert */
-        $this->assertEquals(0, $exitCode->run());
         $this->assertEquals($initialCompanyCount + 1, Company::count());
 
         $company = Company::latest('id')->first();
@@ -63,13 +62,12 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $initialCompanyCount = Company::count();
 
         /* Act */
-        $exitCode = $this->artisan('import:db', [
+        $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ]);
+        ])->assertSuccessful();
 
         /* Assert */
-        $this->assertEquals(0, $exitCode->run());
         $this->assertEquals($initialCompanyCount, Company::count());
     }
 
@@ -284,13 +282,10 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         /* Arrange */
         $nonExistentFile = '/tmp/non_existent_dump.sql';
 
-        /* Act */
-        $exitCode = $this->artisan('import:db', [
+        /* Act & Assert */
+        $this->artisan('import:db', [
             'dumpfile' => $nonExistentFile,
-        ]);
-
-        /* Assert */
-        $this->assertEquals(1, $exitCode->run());
+        ])->assertFailed();
     }
 
     #[Test]
