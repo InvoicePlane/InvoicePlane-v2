@@ -204,7 +204,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $invoice = $invoices->where('invoice_number', 'INV-001')->first();
         $this->assertNotNull($invoice);
         $this->assertNotNull($invoice->customer_id);
-        $this->assertEquals('sent', $invoice->invoice_status);
+        $this->assertEquals('sent', $invoice->invoice_status->value);
         $this->assertEquals(100.00, $invoice->invoice_item_subtotal);
         $this->assertEquals(21.00, $invoice->invoice_tax_total);
         $this->assertEquals(121.00, $invoice->invoice_total);
