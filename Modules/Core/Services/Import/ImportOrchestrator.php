@@ -16,6 +16,7 @@ class ImportOrchestrator
     private ?int $userId = null;
 
     private array $idMappings = [
+        'users'             => [],
         'clients'           => [],
         'products'          => [],
         'product_families'  => [],
@@ -24,6 +25,8 @@ class ImportOrchestrator
         'invoices'          => [],
         'quotes'            => [],
         'tax_rates'         => [],
+        'projects'          => [],
+        'custom_fields'     => [],
     ];
 
     private array $stats = [];
@@ -108,6 +111,7 @@ class ImportOrchestrator
     private function runImportServices(): void
     {
         $services = [
+            new UsersImportService(),
             new TaxRatesImportService(),
             new ProductsImportService(),
             new ClientsImportService(),
@@ -115,6 +119,11 @@ class ImportOrchestrator
             new InvoicesImportService($this->userId),
             new QuotesImportService($this->userId),
             new PaymentsImportService(),
+            new ProjectsImportService(),
+            new EmailTemplatesImportService(),
+            new CustomFieldsImportService(),
+            new SettingsImportService(),
+            new NotesImportService(),
         ];
 
         foreach ($services as $service) {
