@@ -29,11 +29,11 @@ class SettingsImportService extends AbstractImportService
         foreach ($settings as $v1Setting) {
             Setting::updateOrCreate(
                 [
-                    'company_id' => $this->companyId,
-                    'key'        => $v1Setting->setting_key,
+                    'company_id'  => $this->companyId,
+                    'setting_key' => $v1Setting->setting_key,
                 ],
                 [
-                    'value' => $v1Setting->setting_value ?? '',
+                    'setting_value' => $v1Setting->setting_value ?? '',
                 ]
             );
 

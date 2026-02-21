@@ -37,7 +37,7 @@ class ProjectsImportService extends AbstractImportService
 
             $project = Project::create([
                 'company_id'      => $this->companyId,
-                'relation_id'     => $clientId,
+                'customer_id'     => $clientId,
                 'project_name'    => $v1Project->project_name,
                 'project_status'  => $v1Project->project_status ?? 'active',
                 'project_description' => $v1Project->project_description ?? null,

@@ -17,8 +17,14 @@ abstract class AbstractImportService implements ImportServiceInterface
     /**
      * Check if a table exists in the import database
      */
+    protected array $tableExistsCache = [];
+
     protected function tableExists(string $tableName): bool
     {
+        if (isset($this->tableExistsCache[$tableName])) {
+            return $this->tableExistsCache[$tableName];
+        }
+
         try {
             $tables = DB::connection(self::IMPORT_CONNECTION)
                 ->select('SHOW TABLES');
@@ -27,12 +33,15 @@ abstract class AbstractImportService implements ImportServiceInterface
 
             foreach ($tables as $table) {
                 if (isset($table->$tableKey) && $table->$tableKey === $tableName) {
+                    $this->tableExistsCache[$tableName] = true;
                     return true;
                 }
             }
 
+            $this->tableExistsCache[$tableName] = false;
             return false;
         } catch (\Exception $e) {
+            $this->tableExistsCache[$tableName] = false;
             return false;
         }
     }

@@ -71,31 +71,42 @@ class ImportOrchestrator
 
         try {
             $config = config('database.connections.' . self::IMPORT_CONNECTION);
-            $host = $config['host'];
-            $port = $config['port'];
-            $username = $config['username'];
-            $password = $config['password'];
-            $database = $config['database'];
 
-            // Create database if it doesn't exist
-            DB::statement("CREATE DATABASE IF NOT EXISTS `{$database}`");
+            if (! is_array($config) || $config === []) {
+                throw new \RuntimeException('Import database connection not configured');
+            }
+
+            $host = $config['host'] ?? throw new \RuntimeException('Import database host not configured');
+            $port = $config['port'] ?? throw new \RuntimeException('Import database port not configured');
+            $username = $config['username'] ?? throw new \RuntimeException('Import database username not configured');
+            $password = $config['password'] ?? throw new \RuntimeException('Import database password not configured');
+            $database = $config['database'] ?? throw new \RuntimeException('Import database name not configured');
+            // Create database if it doesn't exist (using the default connection/server)
+            DB::connection()->statement("CREATE DATABASE IF NOT EXISTS `{$database}`");
 
             // Use Laravel's DB to ensure connection works
             DB::connection(self::IMPORT_CONNECTION)->getPdo();
 
-            // Import SQL file using mysql command
-            $passwordArg = $password ? '-p' . escapeshellarg($password) : '';
-            $command = sprintf(
-                'mysql -h%s -P%s -u%s %s %s < %s 2>&1',
-                escapeshellarg($host),
-                escapeshellarg((string) $port),
-                escapeshellarg($username),
-                $passwordArg,
-                escapeshellarg($database),
-                escapeshellarg($dumpPath)
-            );
+            // Use a temporary options file for credentials
+            $tmpFile = tempnam(sys_get_temp_dir(), 'mysql_import_');
+            file_put_contents($tmpFile, sprintf(
+                "[client]\nuser=%s\npassword=%s\nhost=%s\nport=%s\n",
+                $username, $password, $host, $port
+            ));
+            chmod($tmpFile, 0600);
 
-            exec($command, $output, $returnCode);
+            try {
+                $command = sprintf(
+                    'mysql --defaults-extra-file=%s %s < %s 2>&1',
+                    escapeshellarg($tmpFile),
+                    escapeshellarg($database),
+                    escapeshellarg($dumpPath)
+                );
+
+                exec($command, $output, $returnCode);
+            } finally {
+                unlink($tmpFile);
+            }
 
             if ($returnCode !== 0) {
                 throw new \RuntimeException('Failed to restore dump: ' . implode("\n", $output));

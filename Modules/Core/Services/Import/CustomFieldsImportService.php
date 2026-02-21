@@ -55,11 +55,17 @@ class CustomFieldsImportService extends AbstractImportService
 
             $modelType = ModelType::fromString($v1Value->entity_type ?? 'invoice');
 
+            $modelId = $this->resolveModelId($v1Value->entity_type ?? 'invoice', $v1Value->entity_id ?? null);
+
+            if (! $modelId) {
+                continue;
+            }
+
             CustomFieldValue::create([
                 'company_id'       => $this->companyId,
                 'custom_field_id'  => $customFieldId,
-                'model_id'         => $v1Value->entity_id ?? null,
-                'model_type'       => $modelType->getModelClass(),
+                'model_id'         => $modelId,
+                'model_type'       => $this->mapModelType($v1Value->entity_type ?? 'invoice'),
                 'custom_field_value' => $v1Value->custom_field_value ?? '',
             ]);
 

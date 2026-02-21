@@ -34,7 +34,7 @@ class NumberingImportService extends AbstractImportService
                 'name'       => $group->invoice_group_name,
                 'next_id'    => $group->invoice_group_next_id ?? 1,
                 'left_pad'   => 0,
-                'format'     => $group->invoice_group_prefix ?? 'INV',
+                'format'     => null,
                 'prefix'     => $group->invoice_group_prefix ?? 'INV',
             ]);
 

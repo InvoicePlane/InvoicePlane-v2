@@ -39,7 +39,9 @@ class UsersImportService extends AbstractImportService
             $user = User::create([
                 'name'     => $v1User->user_name ?? 'Imported User',
                 'email'    => $v1User->user_email,
-                'password' => $v1User->user_password ?? Hash::make(str()->random(32)),
+                // For security, do not reuse legacy v1 password hashes.
+                // Always assign a new random password and require a password reset in v2.
+                'password' => Hash::make(str()->random(32)),
             ]);
 
             $this->idMappings['users'][$v1User->user_id] = $user->id;
