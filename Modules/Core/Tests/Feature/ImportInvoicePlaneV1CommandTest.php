@@ -241,7 +241,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $quote = $quotes->where('quote_number', 'QUO-001')->first();
         $this->assertNotNull($quote);
         $this->assertNotNull($quote->prospect_id);
-        $this->assertEquals('sent', $quote->quote_status);
+        $this->assertEquals('sent', $quote->quote_status->value);
         $this->assertEquals(100.00, $quote->quote_item_subtotal);
 
         // Check quote items
