@@ -81,7 +81,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $categories = ProductCategory::where('company_id', $company->id)->get();
@@ -102,7 +102,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $units = ProductUnit::where('company_id', $company->id)->get();
@@ -123,7 +123,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $products = Product::where('company_id', $company->id)->get();
@@ -147,7 +147,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $relations = Relation::where('company_id', $company->id)->get();
@@ -170,7 +170,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $numbering = Numbering::where('company_id', $company->id)
@@ -195,7 +195,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $invoices = Invoice::where('company_id', $company->id)->get();
@@ -232,7 +232,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $quotes = Quote::where('company_id', $company->id)->get();
@@ -262,7 +262,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $payments = Payment::where('company_id', $company->id)->get();
@@ -298,7 +298,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $this->artisan('import:db', [
             'dumpfile'    => $this->dumpFile,
             '--company_id' => $company->id,
-        ])->run();
+        ])->assertSuccessful();
 
         /* Assert */
         $invoice = Invoice::where('company_id', $company->id)
@@ -333,6 +333,6 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
             ->expectsOutputToContain('Clients')
             ->expectsOutputToContain('Invoices')
             ->expectsOutputToContain('Payments')
-            ->run();
+            ->assertSuccessful();
     }
 }

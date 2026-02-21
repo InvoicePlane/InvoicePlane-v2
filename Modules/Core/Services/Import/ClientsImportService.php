@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Import;
 
 use Modules\Clients\Models\Address;
+use Modules\Clients\Models\Communication;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
 
@@ -17,7 +18,7 @@ class ClientsImportService extends AbstractImportService
     {
         $this->companyId = $companyId;
         $this->idMappings = &$idMappings;
-        $this->initStats(['clients', 'contacts', 'addresses']);
+        $this->initStats(['clients', 'contacts', 'addresses', 'communications']);
 
         $this->importClients();
         $this->importContacts();
@@ -73,15 +74,48 @@ class ClientsImportService extends AbstractImportService
                 continue;
             }
 
-            Contact::create([
-                'company_id'   => $this->companyId,
-                'relation_id'  => $relationId,
-                'contact_name' => $v1Contact->contact_name ?? 'Contact',
-                'email'        => $v1Contact->contact_email ?? null,
-                'phone'        => $v1Contact->contact_phone ?? null,
+            // Split contact name into first and last name
+            $contactName = $v1Contact->contact_name ?? 'Contact';
+            $nameParts = explode(' ', $contactName, 2);
+            $firstName = $nameParts[0];
+            $lastName = $nameParts[1] ?? '';
+
+            $contact = Contact::create([
+                'company_id'  => $this->companyId,
+                'relation_id' => $relationId,
+                'first_name'  => $firstName,
+                'last_name'   => $lastName,
             ]);
 
             $this->stats['contacts']++;
+
+            // Import email as communication
+            if (! empty($v1Contact->contact_email)) {
+                Communication::create([
+                    'company_id'             => $this->companyId,
+                    'communicationable_id'   => $contact->id,
+                    'communicationable_type' => Contact::class,
+                    'is_primary'             => true,
+                    'communication_type'     => 'email',
+                    'communication_value'    => $v1Contact->contact_email,
+                ]);
+
+                $this->stats['communications']++;
+            }
+
+            // Import phone as communication
+            if (! empty($v1Contact->contact_phone)) {
+                Communication::create([
+                    'company_id'             => $this->companyId,
+                    'communicationable_id'   => $contact->id,
+                    'communicationable_type' => Contact::class,
+                    'is_primary'             => true,
+                    'communication_type'     => 'phone',
+                    'communication_value'    => $v1Contact->contact_phone,
+                ]);
+
+                $this->stats['communications']++;
+            }
         }
     }
 }

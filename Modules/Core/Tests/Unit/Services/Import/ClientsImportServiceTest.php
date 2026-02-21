@@ -189,12 +189,13 @@ class ClientsImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(1, $stats['contacts']);
+        $this->assertEquals(2, $stats['communications']); // email + phone
 
         $contact = Contact::where('company_id', $this->company->id)->first();
         $this->assertNotNull($contact);
-        $this->assertEquals('John Doe', $contact->contact_name);
-        $this->assertEquals('john@example.com', $contact->email);
-        $this->assertEquals('555-1234', $contact->phone);
+        $this->assertEquals('John', $contact->first_name);
+        $this->assertEquals('Doe', $contact->last_name);
+        $this->assertEquals('John Doe', $contact->full_name);
     }
 
     #[Test]
