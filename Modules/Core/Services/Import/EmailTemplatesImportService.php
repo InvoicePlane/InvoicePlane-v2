@@ -28,13 +28,13 @@ class EmailTemplatesImportService extends AbstractImportService
 
         foreach ($templates as $v1Template) {
             EmailTemplate::create([
-                'company_id'            => $this->companyId,
-                'email_template_title'  => $v1Template->email_template_title ?? 'Template',
-                'email_template_type'   => $v1Template->email_template_type ?? 'default',
-                'email_template_subject' => $v1Template->email_template_subject ?? '',
-                'email_template_body'   => $v1Template->email_template_body ?? '',
-                'email_template_from_name' => $v1Template->email_template_from_name ?? null,
-                'email_template_from_email' => $v1Template->email_template_from_email ?? null,
+                'company_id'   => $this->companyId,
+                'title'        => $v1Template->email_template_title ?? 'Template',
+                'type'         => $v1Template->email_template_type ?? 'default',
+                'subject'      => $v1Template->email_template_subject ?? '',
+                'body'         => $v1Template->email_template_body ?? '',
+                'from_name'    => $v1Template->email_template_from_name ?? null,
+                'from_email'   => $v1Template->email_template_from_email ?? null,
             ]);
 
             $this->stats['email_templates']++;
