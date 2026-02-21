@@ -28,6 +28,11 @@ class UsersImportService extends AbstractImportService
         $users = $this->getImportData('ip_users');
 
         foreach ($users as $v1User) {
+            // Skip users without valid email
+            if (empty($v1User->user_email) || ! filter_var($v1User->user_email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+
             // Check if user already exists by email
             $existingUser = User::where('email', $v1User->user_email)->first();
 

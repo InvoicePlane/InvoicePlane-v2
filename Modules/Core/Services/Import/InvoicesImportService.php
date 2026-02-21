@@ -34,6 +34,7 @@ class InvoicesImportService extends AbstractImportService
     private function importInvoices(): void
     {
         $invoices = $this->getImportData('ip_invoices');
+        $allItems = collect($this->getImportData('ip_invoice_items'))->groupBy('invoice_id');
 
         foreach ($invoices as $v1Invoice) {
             $customerId = $this->idMappings['clients'][$v1Invoice->client_id] ?? null;
@@ -65,19 +66,13 @@ class InvoicesImportService extends AbstractImportService
             $this->idMappings['invoices'][$v1Invoice->invoice_id] = $invoice->id;
             $this->stats['invoices']++;
 
-            $this->importInvoiceItems($v1Invoice->invoice_id, $invoice->id);
+            $this->importInvoiceItems($allItems->get($v1Invoice->invoice_id, collect()), $invoice->id);
         }
     }
 
-    private function importInvoiceItems(int $v1InvoiceId, int $v2InvoiceId): void
+    private function importInvoiceItems($v1Items, int $v2InvoiceId): void
     {
-        $items = $this->getImportData('ip_invoice_items');
-
-        foreach ($items as $v1Item) {
-            if ($v1Item->invoice_id != $v1InvoiceId) {
-                continue;
-            }
-
+        foreach ($v1Items as $v1Item) {
             $productId = $this->idMappings['products'][$v1Item->item_product_id] ?? null;
             $taxRateId = $this->idMappings['tax_rates'][$v1Item->item_tax_rate_id] ?? null;
 

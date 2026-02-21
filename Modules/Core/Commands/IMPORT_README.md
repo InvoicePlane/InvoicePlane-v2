@@ -20,12 +20,12 @@ The `import:db` command allows you to:
 ## Command Syntax
 
 ```bash
-php artisan import:db <dumpfile> [--company_id=<id>]
+php artisan import:db <filename> [--company_id=<id>]
 ```
 
 ### Arguments
 
-- `dumpfile` (required): Path to the InvoicePlane v1 MySQL dump file
+- `filename` (required): Filename of the SQL dump located in `storage/app/private/imports/`
 
 ### Options
 
@@ -35,8 +35,10 @@ php artisan import:db <dumpfile> [--company_id=<id>]
 
 ### Import into a new company
 
+Place your dump file in `storage/app/private/imports/` and run:
+
 ```bash
-php artisan import:db /path/to/invoiceplane_v1_dump.sql
+php artisan import:db invoiceplane_v1_dump.sql
 ```
 
 This will:
@@ -47,7 +49,7 @@ This will:
 ### Import into an existing company
 
 ```bash
-php artisan import:db /path/to/invoiceplane_v1_dump.sql --company_id=22
+php artisan import:db invoiceplane_v1_dump.sql --company_id=22
 ```
 
 This will import all data into company with ID 22.
@@ -145,17 +147,17 @@ If the dump restoration fails or database errors occur, the command will:
 1. Display the error message
 2. Show stack trace
 3. Return exit code 1
-4. Clean up the temporary database
+4. Leave temporary database for debugging (can be manually dropped)
 
 ## Technical Details
 
 ### Temporary Database
 The import process:
-1. Creates a temporary database named `invoiceplane_v1_temp`
+1. Creates a temporary database named `invoiceplane_v1_import`
 2. Restores the dump file to this database
 3. Reads data from temporary database
 4. Imports into v2 schema
-5. Cleans up temporary database
+5. **Note:** Temporary database is kept for debugging purposes and should be manually dropped if needed
 
 ### ID Mapping
 The service maintains internal ID mappings to preserve relationships:
@@ -165,7 +167,7 @@ The service maintains internal ID mappings to preserve relationships:
 
 ### Default Values
 When v1 data is missing or incomplete:
-- Default user ID: 1 (for invoices and quotes)
+- Default user ID: Auto-assigned from existing users scoped to company
 - Default product type: "service"
 - Default payment status: "paid"
 - Default invoice/quote date: Current date

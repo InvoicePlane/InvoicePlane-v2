@@ -163,21 +163,26 @@ class ImportOrchestrator
     }
 
     /**
-     * Get or create a valid user ID
+     * Get or create a valid user ID scoped to the company
      */
     private function getValidUserId(): int
     {
-        $user = User::first();
+        // Find user belonging to the company
+        $user = User::whereHas('companies', fn ($q) => $q->where('companies.id', $this->companyId))->first();
 
         if ($user) {
             return $user->id;
         }
 
+        // Create a new user and associate with company
         $defaultUser = User::create([
             'name'     => 'Import User',
             'email'    => 'import-' . uniqid() . '@invoiceplane.local',
             'password' => bcrypt(str()->random(32)),
         ]);
+
+        // Attach user to company
+        $defaultUser->companies()->attach($this->companyId);
 
         return $defaultUser->id;
     }

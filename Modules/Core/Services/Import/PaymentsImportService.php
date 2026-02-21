@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Import;
 
 use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 
 class PaymentsImportService extends AbstractImportService
@@ -41,7 +42,7 @@ class PaymentsImportService extends AbstractImportService
                 'invoice_id'     => $invoiceId,
                 'payment_number' => null,
                 'payment_method' => $this->mapPaymentMethod($v1Payment->payment_method_id ?? 1)->value,
-                'payment_status' => 'paid',
+                'payment_status' => PaymentStatus::COMPLETED->value,
                 'paid_at'        => $v1Payment->payment_date ?? now(),
                 'payment_amount' => $v1Payment->payment_amount ?? 0,
                 'notes'          => $v1Payment->payment_note ?? null,

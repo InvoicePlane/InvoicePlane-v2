@@ -34,6 +34,7 @@ class QuotesImportService extends AbstractImportService
     private function importQuotes(): void
     {
         $quotes = $this->getImportData('ip_quotes');
+        $allItems = collect($this->getImportData('ip_quote_items'))->groupBy('quote_id');
 
         foreach ($quotes as $v1Quote) {
             $prospectId = $this->idMappings['clients'][$v1Quote->client_id] ?? null;
@@ -65,19 +66,13 @@ class QuotesImportService extends AbstractImportService
             $this->idMappings['quotes'][$v1Quote->quote_id] = $quote->id;
             $this->stats['quotes']++;
 
-            $this->importQuoteItems($v1Quote->quote_id, $quote->id);
+            $this->importQuoteItems($allItems->get($v1Quote->quote_id, collect()), $quote->id);
         }
     }
 
-    private function importQuoteItems(int $v1QuoteId, int $v2QuoteId): void
+    private function importQuoteItems($v1Items, int $v2QuoteId): void
     {
-        $items = $this->getImportData('ip_quote_items');
-
-        foreach ($items as $v1Item) {
-            if ($v1Item->quote_id != $v1QuoteId) {
-                continue;
-            }
-
+        foreach ($v1Items as $v1Item) {
             $productId = $this->idMappings['products'][$v1Item->item_product_id] ?? null;
             $taxRateId = $this->idMappings['tax_rates'][$v1Item->item_tax_rate_id] ?? null;
 

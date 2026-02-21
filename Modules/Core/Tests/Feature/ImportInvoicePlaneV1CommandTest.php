@@ -9,6 +9,8 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
+use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -268,12 +270,13 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
         $payments = Payment::where('company_id', $company->id)->get();
         $this->assertGreaterThanOrEqual(1, $payments->count());
 
-        $payment = $payments->first();
+        $payment = $payments->where('payment_amount', 54.50)->first();
+        $this->assertNotNull($payment);
         $this->assertNotNull($payment->invoice_id);
         $this->assertNotNull($payment->customer_id);
-        $this->assertEquals('bank_transfer', $payment->payment_method);
+        $this->assertEquals(PaymentMethod::BANK_TRANSFER, $payment->payment_method);
         $this->assertEquals(54.50, $payment->payment_amount);
-        $this->assertEquals('paid', $payment->payment_status);
+        $this->assertEquals(PaymentStatus::COMPLETED, $payment->payment_status);
     }
 
     #[Test]
