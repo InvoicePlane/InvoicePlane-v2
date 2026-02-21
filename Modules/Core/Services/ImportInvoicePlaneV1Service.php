@@ -130,10 +130,32 @@ class ImportInvoicePlaneV1Service
     }
 
     /**
+     * Check if a table exists in the temporary database
+     */
+    private function tableExists(string $tableName): bool
+    {
+        try {
+            $result = DB::select(
+                "SELECT COUNT(*) as count FROM information_schema.tables 
+                WHERE table_schema = ? AND table_name = ?",
+                [self::TEMP_DB_NAME, $tableName]
+            );
+
+            return $result[0]->count > 0;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Import tax rates from v1
      */
     private function importTaxRates(): void
     {
+        if (! $this->tableExists('ip_tax_rates')) {
+            return;
+        }
+
         $taxRates = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_tax_rates')
             ->get();
@@ -156,6 +178,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importProductFamilies(): void
     {
+        if (! $this->tableExists('ip_families')) {
+            return;
+        }
+
         $families = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_families')
             ->get();
@@ -177,6 +203,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importProductUnits(): void
     {
+        if (! $this->tableExists('ip_units')) {
+            return;
+        }
+
         $units = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_units')
             ->get();
@@ -198,6 +228,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importProducts(): void
     {
+        if (! $this->tableExists('ip_products')) {
+            return;
+        }
+
         $products = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_products')
             ->get();
@@ -239,6 +273,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importClients(): void
     {
+        if (! $this->tableExists('ip_clients')) {
+            return;
+        }
+
         $clients = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_clients')
             ->get();
@@ -264,6 +302,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importInvoiceGroups(): void
     {
+        if (! $this->tableExists('ip_invoice_groups')) {
+            return;
+        }
+
         $groups = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_invoice_groups')
             ->get();
@@ -289,6 +331,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importInvoices(): void
     {
+        if (! $this->tableExists('ip_invoices')) {
+            return;
+        }
+
         $invoices = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_invoices')
             ->get();
@@ -333,6 +379,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importInvoiceItems(int $v1InvoiceId, int $v2InvoiceId): void
     {
+        if (! $this->tableExists('ip_invoice_items')) {
+            return;
+        }
+
         $items = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_invoice_items')
             ->where('invoice_id', $v1InvoiceId)
@@ -367,6 +417,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importQuotes(): void
     {
+        if (! $this->tableExists('ip_quotes')) {
+            return;
+        }
+
         $quotes = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_quotes')
             ->get();
@@ -411,6 +465,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importQuoteItems(int $v1QuoteId, int $v2QuoteId): void
     {
+        if (! $this->tableExists('ip_quote_items')) {
+            return;
+        }
+
         $items = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_quote_items')
             ->where('quote_id', $v1QuoteId)
@@ -445,6 +503,10 @@ class ImportInvoicePlaneV1Service
      */
     private function importPayments(): void
     {
+        if (! $this->tableExists('ip_payments')) {
+            return;
+        }
+
         $payments = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_payments')
             ->get();
