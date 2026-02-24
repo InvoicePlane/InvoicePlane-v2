@@ -3,16 +3,22 @@
 namespace App\Mason\Collections;
 
 use App\Mason\Bricks\DetailItemsBrick;
+use App\Mason\Bricks\DetailTasksBrick;
 use App\Mason\Bricks\FooterNotesBrick;
+use App\Mason\Bricks\FooterSummaryBrick;
+use App\Mason\Bricks\FooterTermsBrick;
 use App\Mason\Bricks\FooterTotalsBrick;
 use App\Mason\Bricks\HeaderClientBrick;
 use App\Mason\Bricks\HeaderCompanyBrick;
 use App\Mason\Bricks\HeaderInvoiceMetaBrick;
+use App\Mason\Bricks\HeaderProjectBrick;
+use App\Mason\Bricks\HeaderQuoteMetaBrick;
 
 /**
  * Collection of Mason Bricks for Report Templates.
  *
  * Organizes available bricks by their functional area (header, detail, footer).
+ * Supports multiple entity types: Invoices, Quotes, Projects, Clients, Tasks.
  */
 class ReportBricksCollection
 {
@@ -41,6 +47,8 @@ class ReportBricksCollection
             HeaderCompanyBrick::class,
             HeaderClientBrick::class,
             HeaderInvoiceMetaBrick::class,
+            HeaderQuoteMetaBrick::class,
+            HeaderProjectBrick::class,
         ];
     }
 
@@ -53,6 +61,7 @@ class ReportBricksCollection
     {
         return [
             DetailItemsBrick::class,
+            DetailTasksBrick::class,
         ];
     }
 
@@ -66,6 +75,8 @@ class ReportBricksCollection
         return [
             FooterTotalsBrick::class,
             FooterNotesBrick::class,
+            FooterTermsBrick::class,
+            FooterSummaryBrick::class,
         ];
     }
 }
