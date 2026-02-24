@@ -59,7 +59,7 @@ class FooterTotalsBrick extends Brick
                 'show_total' => $arguments['show_total'] ?? true,
                 'show_paid' => $arguments['show_paid'] ?? false,
                 'show_balance' => $arguments['show_balance'] ?? false,
-                'font_size' => $arguments['font_size'] => 10,
+                'font_size' => $arguments['font_size'] ?? 10,
                 'text_align' => $arguments['text_align'] ?? 'right',
                 'highlight_total' => $arguments['highlight_total'] ?? true,
             ])
