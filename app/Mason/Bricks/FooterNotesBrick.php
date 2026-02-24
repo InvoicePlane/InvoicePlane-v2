@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Mason\Bricks;
+
+use Awcodes\Mason\Brick;
+use Filament\Actions\Action;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\HtmlString;
+
+class FooterNotesBrick extends Brick
+{
+    public static function getId(): string
+    {
+        return 'footer_notes';
+    }
+
+    public static function getLabel(): string
+    {
+        return trans('ip.footer_notes');
+    }
+
+    public static function getIcon(): string | Htmlable | null
+    {
+        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>');
+    }
+
+    public static function getPreviewLabel(array $config): string
+    {
+        return trans('ip.footer_notes');
+    }
+
+    public static function toPreviewHtml(array $config): ?string
+    {
+        return view('mason.bricks.footer-notes.preview', [
+            'config' => $config,
+        ])->render();
+    }
+
+    public static function toHtml(array $config, array $data): ?string
+    {
+        return view('mason.bricks.footer-notes.index', [
+            'config' => $config,
+            'data' => $data,
+        ])->render();
+    }
+
+    public static function configureBrickAction(Action $action): Action
+    {
+        return $action
+            ->label(trans('ip.configure_notes'))
+            ->modalHeading(trans('ip.notes_settings'))
+            ->slideOver()
+            ->fillForm(fn (array $arguments): array => [
+                'notes_content' => $arguments['notes_content'] ?? '',
+                'font_size' => $arguments['font_size'] ?? 8,
+            ])
+            ->schema([
+                RichEditor::make('notes_content')
+                    ->label(trans('ip.notes_content'))
+                    ->columnSpanFull()
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'bulletList',
+                        'orderedList',
+                    ]),
+                TextInput::make('font_size')
+                    ->label(trans('ip.font_size'))
+                    ->numeric()
+                    ->default(8)
+                    ->minValue(6)
+                    ->maxValue(12),
+            ])
+            ->action(function (array $arguments, array $data, \Awcodes\Mason\Mason $component) {
+                $brick = $component->getBrick($arguments['id']);
+
+                if (blank($brick)) {
+                    return;
+                }
+
+                $brickContent = [
+                    'type' => 'masonBrick',
+                    'attrs' => [
+                        'config' => $data,
+                        'id' => $arguments['id'],
+                        'label' => $brick::getPreviewLabel($data),
+                        'preview' => base64_encode($brick::toPreviewHtml($data)),
+                    ],
+                ];
+
+                $component->runCommands([
+                    \Awcodes\Mason\Actions\EditorCommand::make(
+                        'insertContentAt',
+                        arguments: [
+                            $arguments['dragPosition'],
+                            $brickContent,
+                        ],
+                    ),
+                ]);
+            });
+    }
+}
