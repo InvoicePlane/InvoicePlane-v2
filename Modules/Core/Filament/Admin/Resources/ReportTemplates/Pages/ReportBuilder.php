@@ -2,9 +2,11 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
+use App\Mason\Collections\ReportBricksCollection;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Forms\Components\MasonEditor;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
@@ -18,6 +20,7 @@ use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource
 use Modules\Core\Models\ReportBlock;
 use Modules\Core\Models\ReportTemplate;
 use Modules\Core\Services\GridSnapperService;
+use Modules\Core\Services\MasonStorageAdapter;
 use Modules\Core\Services\ReportTemplateService;
 use Modules\Core\Transformers\BlockTransformer;
 
@@ -34,6 +37,8 @@ class ReportBuilder extends Page
 
     public string $currentBlockSlug = '';
 
+    public string $masonContent = '';
+
     protected static string $resource = ReportTemplateResource::class;
 
     protected string $view = 'core::filament.admin.resources.report-template-resource.pages.design-report-template';
@@ -47,6 +52,7 @@ class ReportBuilder extends Page
     {
         $this->record = $record;
         $this->loadBlocks();
+        $this->loadMasonContent();
     }
 
     public function setCurrentBlockId(?string $blockId): void
@@ -416,6 +422,42 @@ class ReportBuilder extends Page
 
     public function save($bands): void
     {
+        // Legacy support: Handle traditional band-based saves
+        if (is_array($bands) && isset($bands[0]['key'])) {
+            $this->saveLegacy($bands);
+            return;
+        }
+
+        // Mason-based save: $bands is actually the Mason JSON content
+        if (is_string($bands)) {
+            $this->saveMasonContent($bands);
+            return;
+        }
+
+        // Fallback to legacy
+        $this->saveLegacy($bands);
+    }
+
+    /**
+     * Save content from Mason editor.
+     */
+    protected function saveMasonContent(string $masonJson): void
+    {
+        $adapter = app(MasonStorageAdapter::class);
+        $blockDTOs = $adapter->masonToBlocks($masonJson);
+
+        $service = app(ReportTemplateService::class);
+        $service->persistBlocks($this->record, $blockDTOs);
+
+        $this->masonContent = $masonJson;
+        $this->dispatch('blocks-saved');
+    }
+
+    /**
+     * Legacy save method for backward compatibility.
+     */
+    protected function saveLegacy($bands): void
+    {
         // $bands is already grouped by band from Alpine.js
         $blocks = [];
         foreach ($bands as $band) {
@@ -493,5 +535,49 @@ class ReportBuilder extends Page
             $blockArray                      = BlockTransformer::toArray($blockDTO);
             $this->blocks[$blockArray['id']] = $blockArray;
         }
+    }
+
+    /**
+     * Load Mason editor content from blocks.
+     */
+    protected function loadMasonContent(): void
+    {
+        $adapter = app(MasonStorageAdapter::class);
+        $blockDTOs = array_values($this->blocks);
+
+        // Convert block arrays back to DTOs if needed
+        $dtoCollection = [];
+        foreach ($blockDTOs as $blockArray) {
+            if (is_array($blockArray)) {
+                $dtoCollection[] = BlockTransformer::toDTO($blockArray);
+            } elseif ($blockArray instanceof BlockDTO) {
+                $dtoCollection[] = $blockArray;
+            }
+        }
+
+        $this->masonContent = $adapter->blocksToMason($dtoCollection);
+    }
+
+    /**
+     * Get Mason editor configuration.
+     */
+    public function getMasonEditorSchema(): array
+    {
+        return [
+            MasonEditor::make('masonContent')
+                ->label(trans('ip.report_layout'))
+                ->bricks(ReportBricksCollection::all())
+                ->preview(route('mason.preview'))
+                ->dehydrated()
+                ->required(),
+        ];
+    }
+
+    /**
+     * Get available bricks for Mason editor.
+     */
+    public function getAvailableBricks(): array
+    {
+        return ReportBricksCollection::all();
     }
 }
