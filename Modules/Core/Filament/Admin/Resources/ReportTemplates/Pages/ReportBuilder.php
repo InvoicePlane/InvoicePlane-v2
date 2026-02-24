@@ -13,16 +13,11 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
-use Modules\Core\DTOs\BlockDTO;
-use Modules\Core\DTOs\GridPositionDTO;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas\ReportBlockForm;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Models\ReportBlock;
 use Modules\Core\Models\ReportTemplate;
-use Modules\Core\Services\GridSnapperService;
-use Modules\Core\Services\MasonStorageAdapter;
-use Modules\Core\Services\ReportTemplateService;
-use Modules\Core\Transformers\BlockTransformer;
+use Modules\Core\Services\MasonTemplateStorage;
 
 class ReportBuilder extends Page
 {
@@ -31,13 +26,11 @@ class ReportBuilder extends Page
 
     public ReportTemplate $record;
 
-    public array $blocks = [];
+    public string $masonContent = '';
 
     public string $selectedBlockId = '';
 
     public string $currentBlockSlug = '';
-
-    public string $masonContent = '';
 
     protected static string $resource = ReportTemplateResource::class;
 
@@ -51,7 +44,6 @@ class ReportBuilder extends Page
     public function mount(ReportTemplate $record): void
     {
         $this->record = $record;
-        $this->loadBlocks();
         $this->loadMasonContent();
     }
 
@@ -420,142 +412,26 @@ class ReportBuilder extends Page
         );
     }
 
-    public function save($bands): void
+    public function save($content): void
     {
-        // Legacy support: Handle traditional band-based saves
-        if (is_array($bands) && isset($bands[0]['key'])) {
-            $this->saveLegacy($bands);
-            return;
-        }
-
-        // Mason-based save: $bands is actually the Mason JSON content
-        if (is_string($bands)) {
-            $this->saveMasonContent($bands);
-            return;
-        }
-
-        // Fallback to legacy
-        $this->saveLegacy($bands);
-    }
-
-    /**
-     * Save content from Mason editor.
-     */
-    protected function saveMasonContent(string $masonJson): void
-    {
-        $adapter = app(MasonStorageAdapter::class);
-        $blockDTOs = $adapter->masonToBlocks($masonJson);
-
-        $service = app(ReportTemplateService::class);
-        $service->persistBlocks($this->record, $blockDTOs);
-
-        $this->masonContent = $masonJson;
-        $this->dispatch('blocks-saved');
-    }
-
-    /**
-     * Legacy save method for backward compatibility.
-     */
-    protected function saveLegacy($bands): void
-    {
-        // $bands is already grouped by band from Alpine.js
-        $blocks = [];
-        foreach ($bands as $band) {
-            if ( ! isset($band['blocks'])) {
-                continue;
-            }
-            foreach ($band['blocks'] as $block) {
-                // Ensure the block data has all necessary fields before passing to service
-                if ( ! isset($block['type'])) {
-                    $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
-                    $type         = str_replace('block_', '', $block['id']);
-                    if (isset($systemBlocks[$type])) {
-                        $block = BlockTransformer::toArray($systemBlocks[$type]);
-                    }
-                }
-
-                $block['band']        = $band['key'] ?? 'header';
-                $blocks[$block['id']] = $block;
-            }
-        }
-        $this->blocks = $blocks;
-        $service      = app(ReportTemplateService::class);
-        $service->persistBlocks($this->record, $this->blocks);
-        $this->dispatch('blocks-saved');
-    }
-
-    public function saveBlockConfiguration(string $blockType, array $config): void
-    {
-        $service = app(ReportTemplateService::class);
-        $dbBlock = ReportBlock::where('block_type', $blockType)->first();
-
-        if ($dbBlock) {
-            $service->saveBlockConfig($dbBlock, $config);
-            $this->dispatch('block-config-saved');
-        }
-    }
-
-    public function getAvailableFields(): array
-    {
-        return [
-            ['id' => 'company_name', 'label' => 'Company Name'],
-            ['id' => 'company_address', 'label' => 'Company Address'],
-            ['id' => 'company_phone', 'label' => 'Company Phone'],
-            ['id' => 'company_email', 'label' => 'Company Email'],
-            ['id' => 'company_vat_id', 'label' => 'Company VAT ID'],
-            ['id' => 'client_name', 'label' => 'Client Name'],
-            ['id' => 'client_address', 'label' => 'Client Address'],
-            ['id' => 'client_phone', 'label' => 'Client Phone'],
-            ['id' => 'client_email', 'label' => 'Client Email'],
-            ['id' => 'invoice_number', 'label' => 'Invoice Number'],
-            ['id' => 'invoice_date', 'label' => 'Invoice Date'],
-            ['id' => 'invoice_due_date', 'label' => 'Due Date'],
-            ['id' => 'invoice_subtotal', 'label' => 'Subtotal'],
-            ['id' => 'invoice_tax_total', 'label' => 'Tax Total'],
-            ['id' => 'invoice_total', 'label' => 'Invoice Total'],
-            ['id' => 'item_description', 'label' => 'Item Description'],
-            ['id' => 'item_quantity', 'label' => 'Item Quantity'],
-            ['id' => 'item_price', 'label' => 'Item Price'],
-            ['id' => 'item_tax_name', 'label' => 'Item Tax Name'],
-            ['id' => 'item_tax_rate', 'label' => 'Item Tax Rate'],
-            ['id' => 'footer_notes', 'label' => 'Notes'],
-        ];
-    }
-
-    /**
-     * Loads the template blocks from the filesystem via the service.
-     */
-    protected function loadBlocks(): void
-    {
-        $service   = app(ReportTemplateService::class);
-        $blockDTOs = $service->loadBlocks($this->record);
-
-        $this->blocks = [];
-        foreach ($blockDTOs as $blockDTO) {
-            $blockArray                      = BlockTransformer::toArray($blockDTO);
-            $this->blocks[$blockArray['id']] = $blockArray;
+        // Mason-based save: Store JSON directly
+        if (is_string($content)) {
+            $storage = app(MasonTemplateStorage::class);
+            $storage->save($this->record, $content);
+            
+            $this->masonContent = $content;
+            $this->dispatch('blocks-saved');
         }
     }
 
     /**
-     * Load Mason editor content from blocks.
+     * Load Mason editor content from filesystem.
      */
     protected function loadMasonContent(): void
     {
-        $adapter = app(MasonStorageAdapter::class);
-        $blockDTOs = array_values($this->blocks);
-
-        // Convert block arrays back to DTOs if needed
-        $dtoCollection = [];
-        foreach ($blockDTOs as $blockArray) {
-            if (is_array($blockArray)) {
-                $dtoCollection[] = BlockTransformer::toDTO($blockArray);
-            } elseif ($blockArray instanceof BlockDTO) {
-                $dtoCollection[] = $blockArray;
-            }
-        }
-
-        $this->masonContent = $adapter->blocksToMason($dtoCollection);
+        $storage = app(MasonTemplateStorage::class);
+        $this->masonContent = $storage->load($this->record);
+    }
     }
 
     /**
