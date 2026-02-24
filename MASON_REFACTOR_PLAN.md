@@ -1,5 +1,13 @@
 # Mason Package Integration Plan
 
+## Status: READY FOR IMPLEMENTATION
+
+This document provides a comprehensive plan to refactor the InvoicePlane v2 ReportBuilder to use the `awcodes/mason` package instead of the current custom implementation.
+
+**Package Added**: `composer.json` has been updated to require `awcodes/mason:^3.0`
+
+**Next Step**: Install the package in a local environment (CI has GitHub auth limitations) and begin implementing the brick classes.
+
 ## Overview
 This document outlines the plan to refactor the InvoicePlane v2 ReportBuilder to use the `awcodes/mason` package instead of the current custom implementation.
 
