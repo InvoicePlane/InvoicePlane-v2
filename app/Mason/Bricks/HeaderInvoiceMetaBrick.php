@@ -53,14 +53,7 @@ class HeaderInvoiceMetaBrick extends Brick
             ->label(trans('ip.configure_invoice_metadata'))
             ->modalHeading(trans('ip.invoice_metadata_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_invoice_number' => $arguments['show_invoice_number'] ?? true,
-                'show_invoice_date' => $arguments['show_invoice_date'] ?? true,
-                'show_due_date' => $arguments['show_due_date'] ?? true,
-                'show_po_number' => $arguments['show_po_number'] ?? false,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'text_align' => $arguments['text_align'] ?? 'right',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_invoice_number')
                     ->label(trans('ip.show_invoice_number'))

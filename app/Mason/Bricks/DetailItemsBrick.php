@@ -52,15 +52,7 @@ class DetailItemsBrick extends Brick
             ->label(trans('ip.configure_line_items'))
             ->modalHeading(trans('ip.line_items_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_description' => $arguments['show_description'] ?? true,
-                'show_quantity' => $arguments['show_quantity'] ?? true,
-                'show_price' => $arguments['show_price'] ?? true,
-                'show_tax' => $arguments['show_tax'] ?? true,
-                'show_total' => $arguments['show_total'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 9,
-                'alternating_rows' => $arguments['alternating_rows'] ?? true,
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_description')
                     ->label(trans('ip.show_description'))

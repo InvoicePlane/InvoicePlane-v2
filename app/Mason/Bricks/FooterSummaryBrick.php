@@ -52,10 +52,7 @@ class FooterSummaryBrick extends Brick
             ->label(trans('ip.configure_summary'))
             ->modalHeading(trans('ip.summary_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'summary_content' => $arguments['summary_content'] ?? '',
-                'font_size' => $arguments['font_size'] ?? 9,
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 RichEditor::make('summary_content')
                     ->label(trans('ip.summary_content'))

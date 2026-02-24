@@ -52,10 +52,7 @@ class FooterTermsBrick extends Brick
             ->label(trans('ip.configure_terms'))
             ->modalHeading(trans('ip.terms_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'terms_content' => $arguments['terms_content'] ?? '',
-                'font_size' => $arguments['font_size'] ?? 8,
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 RichEditor::make('terms_content')
                     ->label(trans('ip.terms_content'))

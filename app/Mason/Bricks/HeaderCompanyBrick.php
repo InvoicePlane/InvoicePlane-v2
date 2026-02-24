@@ -54,15 +54,7 @@ class HeaderCompanyBrick extends Brick
             ->label(trans('ip.configure_company_header'))
             ->modalHeading(trans('ip.company_header_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_vat_id' => $arguments['show_vat_id'] ?? true,
-                'show_phone' => $arguments['show_phone'] ?? true,
-                'show_email' => $arguments['show_email'] ?? true,
-                'show_address' => $arguments['show_address'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'font_weight' => $arguments['font_weight'] ?? 'bold',
-                'text_align' => $arguments['text_align'] ?? 'left',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_vat_id')
                     ->label(trans('ip.show_vat_id'))

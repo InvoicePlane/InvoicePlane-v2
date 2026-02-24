@@ -52,10 +52,7 @@ class FooterNotesBrick extends Brick
             ->label(trans('ip.configure_notes'))
             ->modalHeading(trans('ip.notes_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'footer_content' => $arguments['footer_content'] ?? '',
-                'font_size' => $arguments['font_size'] ?? 8,
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 RichEditor::make('footer_content')
                     ->label(trans('ip.footer_content'))
