@@ -53,16 +53,7 @@ class FooterTotalsBrick extends Brick
             ->label(trans('ip.configure_totals'))
             ->modalHeading(trans('ip.totals_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_subtotal' => $arguments['show_subtotal'] ?? true,
-                'show_tax' => $arguments['show_tax'] ?? true,
-                'show_total' => $arguments['show_total'] ?? true,
-                'show_paid' => $arguments['show_paid'] ?? false,
-                'show_balance' => $arguments['show_balance'] ?? false,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'text_align' => $arguments['text_align'] ?? 'right',
-                'highlight_total' => $arguments['highlight_total'] ?? true,
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_subtotal')
                     ->label(trans('ip.show_subtotal'))

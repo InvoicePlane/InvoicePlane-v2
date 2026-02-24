@@ -53,15 +53,7 @@ class HeaderProjectBrick extends Brick
             ->label(trans('ip.configure_project'))
             ->modalHeading(trans('ip.project_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_project_number' => $arguments['show_project_number'] ?? true,
-                'show_project_name' => $arguments['show_project_name'] ?? true,
-                'show_start_date' => $arguments['show_start_date'] ?? true,
-                'show_end_date' => $arguments['show_end_date'] ?? true,
-                'show_status' => $arguments['show_status'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'text_align' => $arguments['text_align'] ?? 'left',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_project_number')
                     ->label(trans('ip.show_project_number'))

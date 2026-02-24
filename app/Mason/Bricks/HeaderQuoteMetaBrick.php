@@ -53,14 +53,7 @@ class HeaderQuoteMetaBrick extends Brick
             ->label(trans('ip.configure_quote_meta'))
             ->modalHeading(trans('ip.quote_meta_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_quote_number' => $arguments['show_quote_number'] ?? true,
-                'show_quoted_at' => $arguments['show_quoted_at'] ?? true,
-                'show_expires_at' => $arguments['show_expires_at'] ?? true,
-                'show_status' => $arguments['show_status'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'text_align' => $arguments['text_align'] ?? 'right',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_quote_number')
                     ->label(trans('ip.show_quote_number'))

@@ -53,16 +53,7 @@ class DetailTasksBrick extends Brick
             ->label(trans('ip.configure_tasks'))
             ->modalHeading(trans('ip.tasks_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_task_number' => $arguments['show_task_number'] ?? true,
-                'show_task_name' => $arguments['show_task_name'] ?? true,
-                'show_description' => $arguments['show_description'] ?? true,
-                'show_due_at' => $arguments['show_due_at'] ?? false,
-                'show_task_price' => $arguments['show_task_price'] ?? true,
-                'show_task_status' => $arguments['show_task_status'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 9,
-                'header_style' => $arguments['header_style'] ?? 'bold',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_task_number')
                     ->label(trans('ip.show_task_number'))

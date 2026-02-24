@@ -53,13 +53,7 @@ class HeaderClientBrick extends Brick
             ->label(trans('ip.configure_client_header'))
             ->modalHeading(trans('ip.client_header_settings'))
             ->slideOver()
-            ->fillForm(fn (array $arguments): array => [
-                'show_phone' => $arguments['show_phone'] ?? true,
-                'show_email' => $arguments['show_email'] ?? true,
-                'show_address' => $arguments['show_address'] ?? true,
-                'font_size' => $arguments['font_size'] ?? 10,
-                'text_align' => $arguments['text_align'] ?? 'right',
-            ])
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
                 Checkbox::make('show_phone')
                     ->label(trans('ip.show_phone'))
