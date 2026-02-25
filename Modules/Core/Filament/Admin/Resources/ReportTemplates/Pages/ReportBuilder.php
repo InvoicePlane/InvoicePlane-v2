@@ -43,8 +43,22 @@ class ReportBuilder extends Page
 
     public function mount(ReportTemplate $record): void
     {
+        $this->authorize();
         $this->record = $record;
         $this->loadMasonContent();
+    }
+
+    /**
+     * Authorize access to the report builder.
+     * Only admin and superadmin roles can access.
+     */
+    protected function authorize(): void
+    {
+        $user = auth()->user();
+        
+        if (!$user || !($user->hasRole('admin') || $user->hasRole('superadmin'))) {
+            abort(403, 'Unauthorized access to Report Builder.');
+        }
     }
 
     public function setCurrentBlockId(?string $blockId): void
@@ -431,14 +445,7 @@ class ReportBuilder extends Page
     {
         $storage = app(MasonTemplateStorage::class);
         $this->masonContent = $storage->load($this->record);
-    protected function loadMasonContent(): void
-    {
-        $storage = app(MasonTemplateStorage::class);
-        $this->masonContent = $storage->load($this->record);
     }
-
-    /**
-     * Get Mason editor configuration.
 
     /**
      * Get Mason editor configuration.

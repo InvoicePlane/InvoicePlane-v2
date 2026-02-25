@@ -2,7 +2,7 @@
     <div class="font-bold mb-2">{{ trans('ip.terms_conditions') }}</div>
     <div class="text-gray-600">
         @if(!empty($config['terms_content']))
-            {!! $config['terms_content'] !!}
+            {{ $config['terms_content'] }}
         @else
             <p class="text-sm italic">{{ trans('ip.terms_placeholder') }}</p>
         @endif

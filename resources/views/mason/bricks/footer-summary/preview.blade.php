@@ -2,7 +2,7 @@
     <div class="font-bold mb-2">{{ trans('ip.summary') }}</div>
     <div class="text-gray-600">
         @if(!empty($config['summary_content']))
-            {!! $config['summary_content'] !!}
+            {{ $config['summary_content'] }}
         @else
             <p class="text-sm italic">{{ trans('ip.summary_placeholder') }}</p>
         @endif
