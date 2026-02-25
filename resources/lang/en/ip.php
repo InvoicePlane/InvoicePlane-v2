@@ -1105,14 +1105,14 @@ return [
     'client_address'               => 'Client Address',
     'logo'                         => 'Logo',
     'balance_due'                  => 'Balance Due',
-    'item'                         => 'Item',
+    'mason_item'                   => 'Item',
 
     // New Mason Bricks for Multiple Entities
     'project_header'               => 'Project Header',
     'quote_metadata'               => 'Quote Metadata',
     'tasks_table'                  => 'Tasks Table',
     'terms_conditions'             => 'Terms & Conditions',
-    'summary'                      => 'Summary',
+    'mason_summary'                => 'Summary',
     'footer'                       => 'Footer',
     'configure_project'            => 'Configure Project',
     'project_settings'             => 'Project Settings',
