@@ -212,7 +212,7 @@ class MasonBricksTest extends AbstractTestCase
     {
         /* Arrange */
         $config = [
-            'notes_content' => '<p>Custom payment terms</p>',
+            'footer_content' => '<p>Custom payment terms</p>',
         ];
         $data = [];
 

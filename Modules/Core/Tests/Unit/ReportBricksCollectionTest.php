@@ -22,7 +22,7 @@ class ReportBricksCollectionTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIsArray($bricks);
-        $this->assertCount(6, $bricks);
+        $this->assertCount(17, $bricks);
     }
 
     #[Test]
@@ -33,10 +33,12 @@ class ReportBricksCollectionTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIsArray($headerBricks);
-        $this->assertCount(3, $headerBricks);
+        $this->assertCount(5, $headerBricks);
         $this->assertContains(HeaderCompanyBrick::class, $headerBricks);
         $this->assertContains(HeaderClientBrick::class, $headerBricks);
         $this->assertContains(HeaderInvoiceMetaBrick::class, $headerBricks);
+        $this->assertContains(HeaderQuoteMetaBrick::class, $headerBricks);
+        $this->assertContains(HeaderProjectBrick::class, $headerBricks);
     }
 
     #[Test]
@@ -47,8 +49,15 @@ class ReportBricksCollectionTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIsArray($detailBricks);
-        $this->assertCount(1, $detailBricks);
+        $this->assertCount(8, $detailBricks);
         $this->assertContains(DetailItemsBrick::class, $detailBricks);
+        $this->assertContains(DetailTasksBrick::class, $detailBricks);
+        $this->assertContains(DetailInvoiceProductBrick::class, $detailBricks);
+        $this->assertContains(DetailInvoiceProjectBrick::class, $detailBricks);
+        $this->assertContains(DetailQuoteProductBrick::class, $detailBricks);
+        $this->assertContains(DetailQuoteProjectBrick::class, $detailBricks);
+        $this->assertContains(DetailCustomerAgingBrick::class, $detailBricks);
+        $this->assertContains(DetailExpenseBrick::class, $detailBricks);
     }
 
     #[Test]
@@ -59,9 +68,11 @@ class ReportBricksCollectionTest extends AbstractTestCase
 
         /* Assert */
         $this->assertIsArray($footerBricks);
-        $this->assertCount(2, $footerBricks);
+        $this->assertCount(4, $footerBricks);
         $this->assertContains(FooterTotalsBrick::class, $footerBricks);
         $this->assertContains(FooterNotesBrick::class, $footerBricks);
+        $this->assertContains(FooterTermsBrick::class, $footerBricks);
+        $this->assertContains(FooterSummaryBrick::class, $footerBricks);
     }
 
     #[Test]
