@@ -6,7 +6,7 @@ use App\Mason\Collections\ReportBricksCollection;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Forms\Components\MasonEditor;
+use Awcodes\Mason\Mason as MasonEditor;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
