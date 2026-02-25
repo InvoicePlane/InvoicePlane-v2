@@ -2,7 +2,13 @@
 
 namespace App\Mason\Collections;
 
+use App\Mason\Bricks\DetailCustomerAgingBrick;
+use App\Mason\Bricks\DetailExpenseBrick;
+use App\Mason\Bricks\DetailInvoiceProductBrick;
+use App\Mason\Bricks\DetailInvoiceProjectBrick;
 use App\Mason\Bricks\DetailItemsBrick;
+use App\Mason\Bricks\DetailQuoteProductBrick;
+use App\Mason\Bricks\DetailQuoteProjectBrick;
 use App\Mason\Bricks\DetailTasksBrick;
 use App\Mason\Bricks\FooterNotesBrick;
 use App\Mason\Bricks\FooterSummaryBrick;
@@ -62,6 +68,12 @@ class ReportBricksCollection
         return [
             DetailItemsBrick::class,
             DetailTasksBrick::class,
+            DetailInvoiceProductBrick::class,
+            DetailInvoiceProjectBrick::class,
+            DetailQuoteProductBrick::class,
+            DetailQuoteProjectBrick::class,
+            DetailCustomerAgingBrick::class,
+            DetailExpenseBrick::class,
         ];
     }
 
