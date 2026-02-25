@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Mason\Bricks;
+
+use Awcodes\Mason\Brick;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\HtmlString;
+
+class DetailExpenseBrick extends Brick
+{
+    public static function getId(): string
+    {
+        return 'detail_expense';
+    }
+
+    public static function getLabel(): string
+    {
+        return trans('ip.expense_details');
+    }
+
+    public static function getIcon(): string | Htmlable | null
+    {
+        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>');
+    }
+
+    public static function getPreviewLabel(array $config): string
+    {
+        return trans('ip.expense_details');
+    }
+
+    public static function toPreviewHtml(array $config): ?string
+    {
+        return view('mason.bricks.detail-expense.preview', [
+            'config' => $config,
+        ])->render();
+    }
+
+    public static function toHtml(array $config, array $data): ?string
+    {
+        return view('mason.bricks.detail-expense.index', [
+            'config' => $config,
+            'data' => $data,
+        ])->render();
+    }
+
+    public static function configureBrickAction(Action $action): Action
+    {
+        return $action
+            ->label(trans('ip.configure_expense_details'))
+            ->modalHeading(trans('ip.expense_details_settings'))
+            ->slideOver()
+            ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
+            ->schema([
+                Checkbox::make('show_expense_number')
+                    ->label(trans('ip.show_expense_number'))
+                    ->default(true),
+                Checkbox::make('show_expense_date')
+                    ->label(trans('ip.show_expense_date'))
+                    ->default(true),
+                Checkbox::make('show_category')
+                    ->label(trans('ip.show_category'))
+                    ->default(true),
+                Checkbox::make('show_vendor')
+                    ->label(trans('ip.show_vendor'))
+                    ->default(false),
+                Checkbox::make('show_description')
+                    ->label(trans('ip.show_description'))
+                    ->default(true),
+                Checkbox::make('show_amount')
+                    ->label(trans('ip.show_amount'))
+                    ->default(true),
+                Checkbox::make('show_status')
+                    ->label(trans('ip.show_status'))
+                    ->default(true),
+                Checkbox::make('alternating_rows')
+                    ->label(trans('ip.alternating_rows'))
+                    ->default(true),
+                TextInput::make('font_size')
+                    ->label(trans('ip.font_size'))
+                    ->numeric()
+                    ->default(9)
+                    ->minValue(7)
+                    ->maxValue(14),
+            ])
+            ->action(function (array $arguments, array $data, \Awcodes\Mason\Mason $component) {
+                $brick = $component->getBrick($arguments['id']);
+
+                if (blank($brick)) {
+                    return;
+                }
+
+                $brickContent = [
+                    'type' => 'masonBrick',
+                    'attrs' => [
+                        'config' => $data,
+                        'id' => $arguments['id'],
+                        'label' => $brick::getPreviewLabel($data),
+                        'preview' => base64_encode($brick::toPreviewHtml($data)),
+                    ],
+                ];
+
+                $component->runCommands([
+                    \Awcodes\Mason\Actions\EditorCommand::make(
+                        'insertContentAt',
+                        arguments: [
+                            $arguments['dragPosition'],
+                            $brickContent,
+                        ],
+                    ),
+                ]);
+            });
+    }
+}
