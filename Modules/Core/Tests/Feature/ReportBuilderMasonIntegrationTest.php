@@ -56,10 +56,20 @@ class ReportBuilderMasonIntegrationTest extends AbstractAdminPanelTestCase
         /* Act */
         $blocks = $this->adapter->masonToBlocks($masonJson);
         $this->service->persistBlocks($this->template, $blocks);
+        $reloadedBlocks = $this->service->loadBlocks($this->template);
+        $reloadedMasonJson = $this->adapter->blocksToMason($reloadedBlocks);
 
         /* Assert */
-        $path = "{$this->company->id}/{$this->template->slug}.json";
-        Storage::disk('report_templates')->assertExists($path);
+        $this->assertIsString($reloadedMasonJson);
+
+        $originalDecoded = json_decode($masonJson, true);
+        $reloadedDecoded = json_decode($reloadedMasonJson, true);
+
+        $this->assertIsArray($originalDecoded);
+        $this->assertIsArray($reloadedDecoded);
+        $this->assertSame('doc', $originalDecoded['type']);
+        $this->assertSame('doc', $reloadedDecoded['type']);
+        $this->assertNotEmpty($reloadedDecoded['content']);
     }
 
     #[Test]
