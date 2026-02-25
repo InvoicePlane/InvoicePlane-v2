@@ -431,8 +431,14 @@ class ReportBuilder extends Page
     {
         $storage = app(MasonTemplateStorage::class);
         $this->masonContent = $storage->load($this->record);
+    protected function loadMasonContent(): void
+    {
+        $storage = app(MasonTemplateStorage::class);
+        $this->masonContent = $storage->load($this->record);
     }
-    }
+
+    /**
+     * Get Mason editor configuration.
 
     /**
      * Get Mason editor configuration.
