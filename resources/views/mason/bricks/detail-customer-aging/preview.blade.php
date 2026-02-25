@@ -70,7 +70,7 @@
         </tbody>
         <tfoot class="bg-gray-200 font-bold">
             <tr>
-                <td colspan="{{ $config['show_invoice_number'] && $config['show_invoice_date'] && $config['show_due_date'] ? '3' : '1' }}" class="p-2">{{ trans('ip.total') }}</td>
+                <td colspan="{{ (($config['show_invoice_number'] ?? true) ? 1 : 0) + (($config['show_invoice_date'] ?? true) ? 1 : 0) + (($config['show_due_date'] ?? true) ? 1 : 0) }}" class="p-2">{{ trans('ip.total') }}</td>
                 @if($config['show_current'] ?? true)
                     <td class="text-right p-2">$1,500.00</td>
                 @endif
