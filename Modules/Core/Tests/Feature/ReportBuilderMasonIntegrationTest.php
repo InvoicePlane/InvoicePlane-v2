@@ -63,6 +63,46 @@ class ReportBuilderMasonIntegrationTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
+    public function it_saves_and_loads_mason_json_via_mason_template_storage(): void
+    {
+        /* Arrange */
+        $storage = app(\Modules\Core\Services\MasonTemplateStorage::class);
+        $masonJson = json_encode([
+            'type' => 'doc',
+            'content' => [
+                [
+                    'type' => 'masonBrick',
+                    'attrs' => [
+                        'id' => 'header_company_test',
+                        'config' => ['show_vat_id' => true],
+                        'label' => 'Company Header',
+                    ],
+                ],
+            ],
+        ]);
+
+        /* Act */
+        $storage->save($this->template, $masonJson);
+
+        /* Assert */
+        $path = "{$this->company->id}/mason_{$this->template->slug}.json";
+        Storage::disk('report_templates')->assertExists($path);
+        
+        $loadedJson = $storage->load($this->template);
+        $this->assertIsString($loadedJson);
+        
+        $originalDecoded = json_decode($masonJson, true);
+        $loadedDecoded = json_decode($loadedJson, true);
+        
+        $this->assertIsArray($originalDecoded);
+        $this->assertIsArray($loadedDecoded);
+        $this->assertSame('doc', $originalDecoded['type']);
+        $this->assertSame('doc', $loadedDecoded['type']);
+        $this->assertNotEmpty($loadedDecoded['content']);
+        $this->assertEquals($originalDecoded, $loadedDecoded);
+    }
+
+    #[Test]
     public function it_loads_blocks_and_converts_to_mason_format(): void
     {
         /* Arrange */
