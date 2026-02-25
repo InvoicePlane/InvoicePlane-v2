@@ -4,7 +4,6 @@ namespace Modules\Core\Services;
 
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
-use Modules\Core\Transformers\BlockTransformer;
 
 /**
  * Adapter to convert between Mason JSON format and InvoicePlane Block structure.
