@@ -36,7 +36,7 @@ class PaymentsImportService extends AbstractImportService
                 continue;
             }
 
-            Payment::create([
+            $payment = Payment::create([
                 'company_id'     => $this->companyId,
                 'customer_id'    => $customerId,
                 'invoice_id'     => $invoiceId,
@@ -48,6 +48,7 @@ class PaymentsImportService extends AbstractImportService
                 'notes'          => $v1Payment->payment_note ?? null,
             ]);
 
+            $this->idMappings['payments'][$v1Payment->id] = $payment->id;
             $this->stats['payments']++;
         }
     }

@@ -54,13 +54,15 @@ class ProjectsImportService extends AbstractImportService
 
         foreach ($tasks as $v1Task) {
             $projectId = $this->idMappings['projects'][$v1Task->project_id] ?? null;
+            $customerId = $this->idMappings['clients'][$v1Task->customer_id] ?? null;
 
-            if (! $projectId) {
+            if (! $projectId || ! $customerId) {
                 continue;
             }
 
             Task::create([
                 'company_id'      => $this->companyId,
+                'customer_id'     => $customerId,
                 'project_id'      => $projectId,
                 'task_name'       => $v1Task->task_name,
                 'task_description' => $v1Task->task_description ?? null,

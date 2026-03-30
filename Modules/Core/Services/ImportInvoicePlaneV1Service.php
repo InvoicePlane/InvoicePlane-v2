@@ -32,6 +32,7 @@ class ImportInvoicePlaneV1Service
         'product_families'  => [],
         'product_units'     => [],
         'invoice_groups'    => [],
+        'quote_groups'      => [],
         'invoices'          => [],
         'quotes'            => [],
         'tax_rates'         => [],
@@ -61,11 +62,11 @@ class ImportInvoicePlaneV1Service
         // Step 2: Get or create a valid user
         $this->userId = $this->getValidUserId();
 
-        // Step 3: Create temporary database and restore dump
-        $this->createTemporaryDatabase();
-        $this->restoreDump($dumpFile);
-
         try {
+            // Step 3: Create temporary database and restore dump
+            $this->createTemporaryDatabase();
+            $this->restoreDump($dumpFile);
+
             // Step 4: Import data in dependency order
             $this->importTaxRates();
             $this->importProductFamilies();
@@ -73,6 +74,7 @@ class ImportInvoicePlaneV1Service
             $this->importProducts();
             $this->importClients();
             $this->importInvoiceGroups();
+            $this->importQuoteGroups();
             $this->importInvoices();
             $this->importQuotes();
             $this->importPayments();
@@ -102,10 +104,21 @@ class ImportInvoicePlaneV1Service
      */
     private function getValidUserId(): int
     {
-        // Try to find any user
+        // Try to find a user belonging to the company
+        $user = User::whereHas('companies', fn ($q) => $q->where('companies.id', $this->companyId))->first();
+
+        if ($user) {
+            return $user->id;
+        }
+
+        // Try to find any user and attach to company
         $user = User::first();
 
         if ($user) {
+            // Attach user to company if not already attached
+            if (! $user->companies()->where('companies.id', $this->companyId)->exists()) {
+                $user->companies()->attach($this->companyId);
+            }
             return $user->id;
         }
 
@@ -115,6 +128,9 @@ class ImportInvoicePlaneV1Service
             'email'    => 'import-' . uniqid() . '@invoiceplane.local',
             'password' => bcrypt(str()->random(32)),
         ]);
+
+        // Attach to company
+        $defaultUser->companies()->attach($this->companyId);
 
         return $defaultUser->id;
     }
@@ -172,14 +188,23 @@ class ImportInvoicePlaneV1Service
     {
         try {
             $result = DB::select(
-                "SELECT COUNT(*) as count FROM information_schema.tables 
+                "SELECT COUNT(*) as count FROM information_schema.tables
                 WHERE table_schema = ? AND table_name = ?",
                 [self::TEMP_DB_NAME, $tableName]
             );
 
             return $result[0]->count > 0;
-        } catch (\Exception $e) {
-            return false;
+        } catch (\Throwable $e) {
+            // Check if it's just a "table not found" scenario vs a real error
+            $message = $e->getMessage();
+
+            // If the error is about the table not existing, return false
+            if (str_contains($message, "doesn't exist") || str_contains($message, 'Unknown table')) {
+                return false;
+            }
+
+            // For other errors (connection issues, permission errors, etc.), rethrow
+            throw new \RuntimeException("Failed to check table existence for '{$tableName}': " . $message, 0, $e);
         }
     }
 
@@ -197,13 +222,14 @@ class ImportInvoicePlaneV1Service
             ->get();
 
         foreach ($taxRates as $v1TaxRate) {
-            $v2TaxRate = TaxRate::firstOrCreate(
-                [
-                    'company_id' => $this->companyId,
-                    'tax_name'   => $v1TaxRate->tax_rate_name ?? 'Tax',
-                    'tax_rate'   => $v1TaxRate->tax_rate_percent ?? 0,
-                ],
-            );
+            $v2TaxRate = TaxRate::create([
+                'company_id' => $this->companyId,
+                'name'       => $v1TaxRate->tax_rate_name ?? 'Tax',
+                'rate'       => $v1TaxRate->tax_rate_percent ?? 0,
+                'code'       => strtoupper(substr($v1TaxRate->tax_rate_name ?? 'TAX', 0, 10)),
+                'tax_rate_type' => 'sales',
+                'is_active'  => true,
+            ]);
 
             $this->idMappings['tax_rates'][$v1TaxRate->tax_rate_id] = $v2TaxRate->id;
         }
@@ -363,6 +389,33 @@ class ImportInvoicePlaneV1Service
     }
 
     /**
+     * Import quote groups (numbering) from v1
+     */
+    private function importQuoteGroups(): void
+    {
+        // Check if there's a separate ip_quote_groups table
+        if ($this->tableExists('ip_quote_groups')) {
+            $groups = DB::connection('mysql')
+                ->table(self::TEMP_DB_NAME . '.ip_quote_groups')
+                ->get();
+
+            foreach ($groups as $group) {
+                $numbering = Numbering::create([
+                    'company_id' => $this->companyId,
+                    'type'       => 'quote',
+                    'name'       => $group->quote_group_name ?? $group->invoice_group_name ?? 'Quote Group',
+                    'next_id'    => $group->quote_group_next_id ?? $group->invoice_group_next_id ?? 1,
+                    'left_pad'   => 0,
+                    'format'     => $group->quote_group_prefix ?? $group->invoice_group_prefix ?? 'QTE',
+                    'prefix'     => $group->quote_group_prefix ?? $group->invoice_group_prefix ?? 'QTE',
+                ]);
+
+                $this->idMappings['quote_groups'][$group->quote_group_id ?? $group->invoice_group_id] = $numbering->id;
+            }
+        }
+    }
+
+    /**
      * Import invoices from v1
      */
     private function importInvoices(): void
@@ -374,6 +427,18 @@ class ImportInvoicePlaneV1Service
         $invoices = DB::connection('mysql')
             ->table(self::TEMP_DB_NAME . '.ip_invoices')
             ->get();
+
+        // Preload all invoice items once to avoid per-invoice queries
+        $allInvoiceItems = [];
+        if ($this->tableExists('ip_invoice_items')) {
+            $items = DB::connection('mysql')
+                ->table(self::TEMP_DB_NAME . '.ip_invoice_items')
+                ->get();
+
+            foreach ($items as $item) {
+                $allInvoiceItems[$item->invoice_id][] = $item;
+            }
+        }
 
         foreach ($invoices as $v1Invoice) {
             $customerId = $this->idMappings['clients'][$v1Invoice->client_id] ?? null;
@@ -405,24 +470,17 @@ class ImportInvoicePlaneV1Service
             $this->idMappings['invoices'][$v1Invoice->invoice_id] = $invoice->id;
             $this->stats['invoices']++;
 
-            // Import invoice items
-            $this->importInvoiceItems($v1Invoice->invoice_id, $invoice->id);
+            // Import invoice items from preloaded data
+            $this->importInvoiceItems($v1Invoice->invoice_id, $invoice->id, $allInvoiceItems);
         }
     }
 
     /**
      * Import invoice items for a specific invoice
      */
-    private function importInvoiceItems(int $v1InvoiceId, int $v2InvoiceId): void
+    private function importInvoiceItems(int $v1InvoiceId, int $v2InvoiceId, array $allInvoiceItems): void
     {
-        if (! $this->tableExists('ip_invoice_items')) {
-            return;
-        }
-
-        $items = DB::connection('mysql')
-            ->table(self::TEMP_DB_NAME . '.ip_invoice_items')
-            ->where('invoice_id', $v1InvoiceId)
-            ->get();
+        $items = $allInvoiceItems[$v1InvoiceId] ?? [];
 
         foreach ($items as $v1Item) {
             $productId = $this->idMappings['products'][$v1Item->item_product_id] ?? null;
@@ -461,9 +519,21 @@ class ImportInvoicePlaneV1Service
             ->table(self::TEMP_DB_NAME . '.ip_quotes')
             ->get();
 
+        // Preload all quote items once to avoid per-quote queries
+        $allQuoteItems = [];
+        if ($this->tableExists('ip_quote_items')) {
+            $items = DB::connection('mysql')
+                ->table(self::TEMP_DB_NAME . '.ip_quote_items')
+                ->get();
+
+            foreach ($items as $item) {
+                $allQuoteItems[$item->quote_id][] = $item;
+            }
+        }
+
         foreach ($quotes as $v1Quote) {
             $prospectId = $this->idMappings['clients'][$v1Quote->client_id] ?? null;
-            $numberingId = $this->idMappings['invoice_groups'][$v1Quote->quote_group_id] ?? null;
+            $numberingId = $this->idMappings['quote_groups'][$v1Quote->quote_group_id] ?? null;
 
             if (! $prospectId) {
                 continue; // Skip quotes without clients
@@ -491,24 +561,17 @@ class ImportInvoicePlaneV1Service
             $this->idMappings['quotes'][$v1Quote->quote_id] = $quote->id;
             $this->stats['quotes']++;
 
-            // Import quote items
-            $this->importQuoteItems($v1Quote->quote_id, $quote->id);
+            // Import quote items from preloaded data
+            $this->importQuoteItems($v1Quote->quote_id, $quote->id, $allQuoteItems);
         }
     }
 
     /**
      * Import quote items for a specific quote
      */
-    private function importQuoteItems(int $v1QuoteId, int $v2QuoteId): void
+    private function importQuoteItems(int $v1QuoteId, int $v2QuoteId, array $allQuoteItems): void
     {
-        if (! $this->tableExists('ip_quote_items')) {
-            return;
-        }
-
-        $items = DB::connection('mysql')
-            ->table(self::TEMP_DB_NAME . '.ip_quote_items')
-            ->where('quote_id', $v1QuoteId)
-            ->get();
+        $items = $allQuoteItems[$v1QuoteId] ?? [];
 
         foreach ($items as $v1Item) {
             $productId = $this->idMappings['products'][$v1Item->item_product_id] ?? null;

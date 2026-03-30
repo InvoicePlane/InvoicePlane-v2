@@ -92,12 +92,11 @@ class ClientsImportService extends AbstractImportService
             // Import email as communication
             if (! empty($v1Contact->contact_email)) {
                 Communication::create([
-                    'company_id'             => $this->companyId,
-                    'communicationable_id'   => $contact->id,
-                    'communicationable_type' => Contact::class,
-                    'is_primary'             => true,
-                    'contactable_type'       => 'email',
-                    'contactable_value'      => $v1Contact->contact_email,
+                    'company_id'        => $this->companyId,
+                    'contactable_id'    => $contact->id,
+                    'contactable_type'  => Contact::class,
+                    'is_primary'        => true,
+                    'contactable_value' => $v1Contact->contact_email,
                 ]);
 
                 $this->stats['communications']++;
@@ -106,12 +105,11 @@ class ClientsImportService extends AbstractImportService
             // Import phone as communication
             if (! empty($v1Contact->contact_phone)) {
                 Communication::create([
-                    'company_id'             => $this->companyId,
-                    'communicationable_id'   => $contact->id,
-                    'communicationable_type' => Contact::class,
-                    'is_primary'             => true,
-                    'contactable_type'       => 'phone',
-                    'contactable_value'      => $v1Contact->contact_phone,
+                    'company_id'        => $this->companyId,
+                    'contactable_id'    => $contact->id,
+                    'contactable_type'  => Contact::class,
+                    'is_primary'        => true,
+                    'contactable_value' => $v1Contact->contact_phone,
                 ]);
 
                 $this->stats['communications']++;

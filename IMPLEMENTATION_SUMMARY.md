@@ -99,8 +99,8 @@ This implementation provides a complete solution for importing InvoicePlane v1 d
 
 #### Status Mappings
 - Invoice statuses: draft, sent, viewed, paid, overdue
-- Quote statuses: draft, sent, viewed, approved, rejected, canceled
-- Payment methods: cash, bank_transfer, credit_card, paypal, other
+- Quote statuses: draft, sent, viewed, approved, rejected
+- Payment methods: cash, bank_transfer, credit_card, PayPal, other
 
 #### Schema Mappings
 - `ip_families` → `product_categories`
