@@ -29,11 +29,27 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->dumpFile = module_path('Core', 'Tests/Fixtures/test_invoiceplane_v1_dump.sql');
+        // The import:db command expects the dump file to live under
+        // storage/app/private/imports and receives only the basename.
+        $this->dumpFile = 'test_invoiceplane_v1_dump.sql';
 
-        // Ensure test dump file exists
-        if (! file_exists($this->dumpFile)) {
-            $this->fail('Test dump file not found: ' . $this->dumpFile);
+        $fixturePath = module_path('Core', 'Tests/Fixtures/' . $this->dumpFile);
+
+        // Ensure test dump file exists at the module fixture path
+        if (! file_exists($fixturePath)) {
+            $this->fail('Test dump file not found: ' . $fixturePath);
+        }
+
+        $importsPath = storage_path('app/private/imports');
+
+        if (! is_dir($importsPath) && ! mkdir($importsPath, 0777, true) && ! is_dir($importsPath)) {
+            $this->fail('Unable to create imports directory: ' . $importsPath);
+        }
+
+        $targetPath = $importsPath . DIRECTORY_SEPARATOR . $this->dumpFile;
+
+        if (! copy($fixturePath, $targetPath)) {
+            $this->fail('Unable to copy dump file to imports directory: ' . $targetPath);
         }
     }
 
@@ -45,7 +61,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile' => $this->dumpFile,
+            'filename' => $this->dumpFile,
         ])->assertSuccessful();
 
         /* Assert */
@@ -65,7 +81,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -81,7 +97,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -102,7 +118,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -123,7 +139,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -147,7 +163,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -170,7 +186,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -195,7 +211,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -232,7 +248,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -262,7 +278,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -287,7 +303,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act & Assert */
         $this->artisan('import:db', [
-            'dumpfile' => $nonExistentFile,
+            'filename' => $nonExistentFile,
         ])->assertFailed();
     }
 
@@ -299,7 +315,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])->assertSuccessful();
 
@@ -327,7 +343,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         /* Act */
         $this->artisan('import:db', [
-            'dumpfile'    => $this->dumpFile,
+            'filename'    => $this->dumpFile,
             '--company_id' => $company->id,
         ])
             ->expectsOutputToContain('Import completed successfully!')

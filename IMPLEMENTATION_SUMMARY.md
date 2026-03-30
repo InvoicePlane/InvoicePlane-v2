@@ -159,14 +159,16 @@ This implementation provides a complete solution for importing InvoicePlane v1 d
 
 ## Usage Examples
 
+Place your InvoicePlane v1 dump file in `storage/app/private/imports/` directory first.
+
 ### Import into new company
 ```bash
-php artisan import:db /path/to/v1_dump.sql
+php artisan import:db v1_dump.sql
 ```
 
 ### Import into existing company ID 22
 ```bash
-php artisan import:db /path/to/v1_dump.sql --company_id=22
+php artisan import:db v1_dump.sql --company_id=22
 ```
 
 ## Performance Considerations

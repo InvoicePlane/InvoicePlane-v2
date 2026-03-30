@@ -26,6 +26,17 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
         $this->service = new TaxRatesImportService();
         $this->company = Company::factory()->create();
+        
+        // Configure import_v1 connection to use in-memory SQLite for testing
+        config(['database.connections.import_v1' => [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]]);
+        
+        // Purge any existing connection and reconnect
+        DB::purge('import_v1');
+        
         $this->setupImportDatabase();
     }
 

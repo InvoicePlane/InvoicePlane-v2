@@ -53,23 +53,40 @@ class CustomFieldsImportService extends AbstractImportService
                 continue;
             }
 
-            $modelType = ModelType::fromString($v1Value->entity_type ?? 'invoice');
-
-            $modelId = $this->resolveModelId($v1Value->entity_type ?? 'invoice', $v1Value->entity_id ?? null);
+            $entityType = $v1Value->entity_type ?? 'invoice';
+            $modelId = $this->resolveModelId($entityType, $v1Value->entity_id ?? null);
 
             if (! $modelId) {
                 continue;
             }
 
             CustomFieldValue::create([
-                'company_id'       => $this->companyId,
-                'custom_field_id'  => $customFieldId,
-                'model_id'         => $modelId,
-                'model_type'       => $this->mapModelType($v1Value->entity_type ?? 'invoice'),
+                'company_id'         => $this->companyId,
+                'custom_field_id'    => $customFieldId,
+                'model_id'           => $modelId,
+                'model_type'         => ModelType::fromString($entityType)->value,
                 'custom_field_value' => $v1Value->custom_field_value ?? '',
             ]);
 
             $this->stats['custom_field_values']++;
         }
+    }
+
+    /**
+     * Resolve the model ID from entity type and legacy ID
+     */
+    private function resolveModelId(string $entityType, ?int $legacyId): ?int
+    {
+        if ($legacyId === null) {
+            return null;
+        }
+
+        return match ($entityType) {
+            'invoice' => $this->idMappings['invoices'][$legacyId] ?? null,
+            'quote' => $this->idMappings['quotes'][$legacyId] ?? null,
+            'client' => $this->idMappings['clients'][$legacyId] ?? null,
+            'product' => $this->idMappings['products'][$legacyId] ?? null,
+            default => null,
+        };
     }
 }

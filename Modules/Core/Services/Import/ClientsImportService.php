@@ -11,7 +11,7 @@ class ClientsImportService extends AbstractImportService
 {
     public function getTables(): array
     {
-        return ['ip_clients', 'ip_client_notes', 'ip_contacts'];
+        return ['ip_clients', 'ip_contacts'];
     }
 
     public function import(int $companyId, array &$idMappings): array

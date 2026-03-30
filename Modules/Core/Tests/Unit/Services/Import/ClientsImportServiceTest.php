@@ -29,6 +29,17 @@ class ClientsImportServiceTest extends AbstractTestCase
         $this->service = new ClientsImportService();
         $this->company = Company::factory()->create();
         $this->idMappings = ['clients' => []];
+        
+        // Configure import_v1 connection to use in-memory SQLite for testing
+        config(['database.connections.import_v1' => [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]]);
+        
+        // Purge any existing connection and reconnect
+        DB::purge('import_v1');
+        
         $this->setupImportDatabase();
     }
 

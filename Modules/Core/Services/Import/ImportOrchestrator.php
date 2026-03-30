@@ -3,7 +3,6 @@
 namespace Modules\Core\Services\Import;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
@@ -87,8 +86,18 @@ class ImportOrchestrator
                 throw new \RuntimeException('Invalid database name: must contain only alphanumeric characters, dollar signs, and underscores');
             }
             
-            // Create database if it doesn't exist (using the default connection/server)
-            DB::connection()->statement("CREATE DATABASE IF NOT EXISTS `{$database}`");
+            // Create database if it doesn't exist on the same server as the import connection
+            $dsn = sprintf(
+                'mysql:host=%s;port=%s;charset=%s',
+                $host,
+                $port,
+                $config['charset'] ?? 'utf8mb4'
+            );
+
+            $pdo = new \PDO($dsn, $username, $password);
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$database}`");
+            unset($pdo);
 
             // Use Laravel's DB to ensure connection works
             DB::connection(self::IMPORT_CONNECTION)->getPdo();
