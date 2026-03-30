@@ -216,7 +216,7 @@ Test fixtures are located in: `Modules/Core/Tests/Fixtures/test_invoiceplane_v1_
 ## Security Considerations
 
 - The command requires database credentials with CREATE DATABASE privilege
-- Temporary database is cleaned up after import
+- Temporary import database is kept after import for debugging and verification; drop it manually when no longer needed
 - SQL injection is prevented by using Laravel's query builder
 - File paths are validated before processing
 
