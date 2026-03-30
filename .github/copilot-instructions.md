@@ -101,6 +101,78 @@ See `.github/workflows/` for workflow configurations. Reference `.github/workflo
 - **Testing:** See test examples in `Modules/*/Tests/`
 - **Commit Conventions:** `.github/git-commit-instructions.md`
 
+## Project Layout
+
+### Repository Structure
+
+```
+├── .github/               # Workflows, docs, issue/PR templates, Copilot instructions
+├── Modules/               # All application logic lives here
+│   ├── Clients/           # Client/customer management
+│   ├── Core/              # Shared infrastructure, panels, base test cases
+│   ├── Expenses/          # Expense tracking
+│   ├── Invoices/          # Invoice management + Peppol e-invoicing
+│   ├── Payments/          # Payment processing
+│   ├── Products/          # Product/item catalog
+│   ├── Projects/          # Project management
+│   └── Quotes/            # Quote/estimate management
+├── app/                   # Laravel bootstrap only — business logic is in Modules/
+├── config/                # Laravel configuration files
+├── database/seeders/      # Database seeders
+└── routes/                # web.php, console.php
+```
+
+### Module Directory Conventions
+
+Every module follows the same internal structure:
+
+```
+Modules/{Name}/
+├── Database/              # Migrations and model factories
+├── Enums/                 # PHP 8.1+ enums (used in $casts)
+├── Events/ & Listeners/   # Domain events and their listeners
+├── Filament/              # Filament UI resources, pages, and components
+│   ├── Admin/             # Admin panel resources (Core module only)
+│   └── Company/           # Company panel resources
+├── Models/                # Eloquent models (no $fillable, no timestamps unless specified)
+├── Observers/             # Eloquent observers
+├── Providers/             # Module service providers
+├── Services/              # Business logic (use Transformers, not raw DTOs)
+├── Support/               # DTOs, Transformers, value objects
+├── Tests/
+│   ├── Unit/              # Unit tests (extend AbstractTestCase)
+│   └── Feature/           # Feature tests (extend AbstractAdminPanelTestCase or AbstractCompanyPanelTestCase)
+└── Traits/                # Shared traits
+```
+
+### Filament Panel Providers
+
+All panel providers are in `Modules/Core/Providers/`:
+
+| Provider | File | Path | Roles |
+|---|---|---|---|
+| Admin | `AdminPanelProvider.php` | `/admin` | `admin`, `superadmin` |
+| Company | `CompanyPanelProvider.php` | `/company` | authenticated company users |
+| User | `UserPanelProvider.php` | `/user` | end users |
+
+### Configuration Files
+
+| File | Purpose |
+|---|---|
+| `phpunit.xml` | PHPUnit config — Unit suite: `Modules/*/Tests/Unit`, Feature suite: `Modules/*/Tests/Feature` |
+| `phpstan.neon` | PHPStan config (imports `phpstan-baseline.neon` for known suppressions) |
+| `pint.json` | Laravel Pint (PSR-12) code style rules |
+| `rector.php` | Rector automated refactoring rules |
+| `modules_statuses.json` | Which nwidart modules are enabled |
+
+### Abstract Test Cases (always extend one of these)
+
+Located in `Modules/Core/Tests/`:
+
+- `AbstractTestCase` — application bootstrap only
+- `AbstractAdminPanelTestCase` — admin panel + `RefreshDatabase`
+- `AbstractCompanyPanelTestCase` — company panel + multi-tenancy + `RefreshDatabase`
+
 ## Guidelines
 
 - **SOLID Principles** must be followed at all times.
