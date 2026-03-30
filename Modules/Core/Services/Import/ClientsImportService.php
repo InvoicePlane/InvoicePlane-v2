@@ -47,15 +47,15 @@ class ClientsImportService extends AbstractImportService
             // Import address if available
             if (! empty($v1Client->client_address_1) || ! empty($v1Client->client_city)) {
                 Address::create([
-                    'company_id'     => $this->companyId,
-                    'addressable_id' => $relation->id,
-                    'addressable_type' => Relation::class,
-                    'address_1'      => $v1Client->client_address_1 ?? null,
-                    'address_2'      => $v1Client->client_address_2 ?? null,
-                    'city'           => $v1Client->client_city ?? null,
-                    'state'          => $v1Client->client_state ?? null,
-                    'zip'            => $v1Client->client_zip ?? null,
-                    'country'        => $v1Client->client_country ?? null,
+                    'company_id'        => $this->companyId,
+                    'addressable_id'    => $relation->id,
+                    'addressable_type'  => Relation::class,
+                    'address_1'         => $v1Client->client_address_1 ?? null,
+                    'address_2'         => $v1Client->client_address_2 ?? null,
+                    'city'              => $v1Client->client_city ?? null,
+                    'state_or_province' => $v1Client->client_state ?? null,
+                    'postal_code'       => $v1Client->client_zip ?? null,
+                    'country'           => $v1Client->client_country ?? null,
                 ]);
 
                 $this->stats['addresses']++;
@@ -96,8 +96,8 @@ class ClientsImportService extends AbstractImportService
                     'communicationable_id'   => $contact->id,
                     'communicationable_type' => Contact::class,
                     'is_primary'             => true,
-                    'communication_type'     => 'email',
-                    'communication_value'    => $v1Contact->contact_email,
+                    'contactable_type'       => 'email',
+                    'contactable_value'      => $v1Contact->contact_email,
                 ]);
 
                 $this->stats['communications']++;
@@ -110,8 +110,8 @@ class ClientsImportService extends AbstractImportService
                     'communicationable_id'   => $contact->id,
                     'communicationable_type' => Contact::class,
                     'is_primary'             => true,
-                    'communication_type'     => 'phone',
-                    'communication_value'    => $v1Contact->contact_phone,
+                    'contactable_type'       => 'phone',
+                    'contactable_value'      => $v1Contact->contact_phone,
                 ]);
 
                 $this->stats['communications']++;

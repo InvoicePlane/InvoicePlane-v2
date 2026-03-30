@@ -38,7 +38,7 @@ class NotesImportService extends AbstractImportService
             Note::create([
                 'company_id'   => $this->companyId,
                 'notable_id'   => $modelId,
-                'notable_type' => $this->mapModelType($v1Note->entity_type ?? 'invoice'),
+                'notable_type' => $modelType->value,
                 'title'        => $v1Note->note_title ?? 'Note',
                 'content'      => $v1Note->note ?? '',
             ]);

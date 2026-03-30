@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Import;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 
 class NumberingImportService extends AbstractImportService
@@ -30,7 +31,7 @@ class NumberingImportService extends AbstractImportService
         foreach ($groups as $group) {
             $numbering = Numbering::create([
                 'company_id' => $this->companyId,
-                'type'       => 'invoice',
+                'type'       => NumberingType::INVOICE,
                 'name'       => $group->invoice_group_name,
                 'next_id'    => $group->invoice_group_next_id ?? 1,
                 'left_pad'   => 0,

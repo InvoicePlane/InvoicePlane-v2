@@ -81,6 +81,12 @@ class ImportOrchestrator
             $username = $config['username'] ?? throw new \RuntimeException('Import database username not configured');
             $password = $config['password'] ?? throw new \RuntimeException('Import database password not configured');
             $database = $config['database'] ?? throw new \RuntimeException('Import database name not configured');
+            
+            // Validate database name to prevent SQL injection
+            if (! preg_match('/^[A-Za-z0-9$_]+$/', $database)) {
+                throw new \RuntimeException('Invalid database name: must contain only alphanumeric characters, dollar signs, and underscores');
+            }
+            
             // Create database if it doesn't exist (using the default connection/server)
             DB::connection()->statement("CREATE DATABASE IF NOT EXISTS `{$database}`");
 
@@ -111,7 +117,7 @@ class ImportOrchestrator
             if ($returnCode !== 0) {
                 throw new \RuntimeException('Failed to restore dump: ' . implode("\n", $output));
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new \RuntimeException('Database restoration failed: ' . $e->getMessage(), 0, $e);
         }
     }
