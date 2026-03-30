@@ -37,6 +37,10 @@ class UsersImportService extends AbstractImportService
             $existingUser = User::where('email', $v1User->user_email)->first();
 
             if ($existingUser) {
+                // Attach existing user to company if not already attached
+                if (! $existingUser->companies()->where('companies.id', $this->companyId)->exists()) {
+                    $existingUser->companies()->attach($this->companyId);
+                }
                 $this->idMappings['users'][$v1User->user_id] = $existingUser->id;
                 continue;
             }
@@ -48,6 +52,9 @@ class UsersImportService extends AbstractImportService
                 // Always assign a new random password and require a password reset in v2.
                 'password' => Hash::make(str()->random(32)),
             ]);
+
+            // Attach new user to the target company
+            $user->companies()->attach($this->companyId);
 
             $this->idMappings['users'][$v1User->user_id] = $user->id;
             $this->stats['users']++;

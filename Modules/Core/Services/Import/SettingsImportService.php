@@ -27,9 +27,10 @@ class SettingsImportService extends AbstractImportService
         $settings = $this->getImportData('ip_settings');
 
         foreach ($settings as $v1Setting) {
+            // Note: Settings table doesn't have company_id in v2
+            // Settings are global across the system
             Setting::updateOrCreate(
                 [
-                    'company_id'  => $this->companyId,
                     'setting_key' => $v1Setting->setting_key,
                 ],
                 [

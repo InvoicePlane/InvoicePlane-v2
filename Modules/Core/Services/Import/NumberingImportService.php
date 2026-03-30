@@ -51,24 +51,26 @@ class NumberingImportService extends AbstractImportService
     public function applyNumberingLogic(int $companyId): void
     {
         $numberings = Numbering::where('company_id', $companyId)
-            ->where('type', 'invoice')
+            ->where('type', NumberingType::INVOICE->value)
             ->get();
 
         foreach ($numberings as $numbering) {
-            // Get the highest invoice number for this numbering
-            $maxInvoiceNumber = DB::table('invoices')
+            // Get all invoice numbers for this numbering to find highest numeric value
+            $invoiceNumbers = DB::table('invoices')
                 ->where('company_id', $companyId)
                 ->where('numbering_id', $numbering->id)
                 ->whereNotNull('invoice_number')
-                ->max('invoice_number');
+                ->pluck('invoice_number');
 
-            if ($maxInvoiceNumber) {
-                // Extract numeric part from invoice number
-                $numericPart = preg_replace('/[^0-9]/', '', $maxInvoiceNumber);
-                if ($numericPart) {
-                    // Set next_id to be one more than the highest
+            if ($invoiceNumbers->isNotEmpty()) {
+                // Extract numeric parts from all invoice numbers and find max
+                $maxNumeric = $invoiceNumbers->map(function ($number) {
+                    return (int) preg_replace('/[^0-9]/', '', $number);
+                })->max();
+
+                if ($maxNumeric) {
                     $numbering->update([
-                        'next_id' => (int) $numericPart + 1,
+                        'next_id' => $maxNumeric + 1,
                     ]);
                 }
             }
@@ -76,21 +78,25 @@ class NumberingImportService extends AbstractImportService
 
         // Apply similar logic for quote numberings
         $quoteNumberings = Numbering::where('company_id', $companyId)
-            ->where('type', 'quote')
+            ->where('type', NumberingType::QUOTE->value)
             ->get();
 
         foreach ($quoteNumberings as $numbering) {
-            $maxQuoteNumber = DB::table('quotes')
+            $quoteNumbers = DB::table('quotes')
                 ->where('company_id', $companyId)
                 ->where('numbering_id', $numbering->id)
                 ->whereNotNull('quote_number')
-                ->max('quote_number');
+                ->pluck('quote_number');
 
-            if ($maxQuoteNumber) {
-                $numericPart = preg_replace('/[^0-9]/', '', $maxQuoteNumber);
-                if ($numericPart) {
+            if ($quoteNumbers->isNotEmpty()) {
+                // Extract numeric parts from all quote numbers and find max
+                $maxNumeric = $quoteNumbers->map(function ($number) {
+                    return (int) preg_replace('/[^0-9]/', '', $number);
+                })->max();
+
+                if ($maxNumeric) {
                     $numbering->update([
-                        'next_id' => (int) $numericPart + 1,
+                        'next_id' => $maxNumeric + 1,
                     ]);
                 }
             }
