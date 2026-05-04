@@ -1,4 +1,197 @@
 {
-    "advisories": [],
+    "advisories": {
+        "filament/tables": [
+            {
+                "advisoryId": "PKSA-5bdf-2x61-v43c",
+                "packageName": "filament/tables",
+                "affectedVersions": ">=5.0.0,<5.3.5|>=4.0.0,<4.8.5",
+                "title": "Filament Unvalidated Range and Values summarizer values can be used for XSS",
+                "cve": "CVE-2026-33080",
+                "link": "https://github.com/advisories/GHSA-vv3x-j2x5-36jc",
+                "reportedAt": "2026-03-18T20:07:24+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-vv3x-j2x5-36jc"
+                    }
+                ],
+                "severity": "high"
+            }
+        ],
+        "league/commonmark": [
+            {
+                "advisoryId": "PKSA-21fb-n1x5-5nf7",
+                "packageName": "league/commonmark",
+                "affectedVersions": ">=2.3.0,<=2.8.1",
+                "title": "league/commonmark has an embed extension allowed_domains bypass",
+                "cve": "CVE-2026-33347",
+                "link": "https://github.com/advisories/GHSA-hh8v-hgvp-g3f5",
+                "reportedAt": "2026-03-19T19:04:24+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-hh8v-hgvp-g3f5"
+                    }
+                ],
+                "severity": "medium"
+            },
+            {
+                "advisoryId": "PKSA-2cx9-ynrq-qdk3",
+                "packageName": "league/commonmark",
+                "affectedVersions": ">=2.0.0,<=2.8.0",
+                "title": "CommonMark has DisallowedRawHtml extension bypass via whitespace in HTML tag names",
+                "cve": "CVE-2026-30838",
+                "link": "https://github.com/advisories/GHSA-4v6x-c7xx-hw9f",
+                "reportedAt": "2026-03-06T23:27:03+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-4v6x-c7xx-hw9f"
+                    }
+                ],
+                "severity": "medium"
+            }
+        ],
+        "phpoffice/phpspreadsheet": [
+            {
+                "advisoryId": "PKSA-gz3f-3cz3-3wsw",
+                "packageName": "phpoffice/phpspreadsheet",
+                "affectedVersions": "<=1.30.3|>=2.0.0,<=2.1.15|>=2.2.0,<=2.4.4|>=3.3.0,<=3.10.4|>=4.0.0,<=5.6.0",
+                "title": "PhpSpreadsheet has CPU Denial of Service via Unbounded Row Number in XLSX Row Dimensions",
+                "cve": "CVE-2026-40902",
+                "link": "https://github.com/advisories/GHSA-7c6m-4442-2x6m",
+                "reportedAt": "2026-04-29T20:24:13+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-7c6m-4442-2x6m"
+                    }
+                ],
+                "severity": "high"
+            },
+            {
+                "advisoryId": "PKSA-x13r-n4wc-4gcr",
+                "packageName": "phpoffice/phpspreadsheet",
+                "affectedVersions": "<=1.30.3|>=2.0.0,<=2.1.15|>=2.2.0,<=2.4.4|>=3.3.0,<=3.10.4|>=4.0.0,<=5.6.0",
+                "title": "PhpSpreadsheet has CPU Denial of Service via Unbounded Row Index in SpreadsheetML XML Reader",
+                "cve": "CVE-2026-40863",
+                "link": "https://github.com/advisories/GHSA-84wq-86v6-x5j6",
+                "reportedAt": "2026-04-29T20:23:27+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-84wq-86v6-x5j6"
+                    }
+                ],
+                "severity": "high"
+            },
+            {
+                "advisoryId": "PKSA-8cfg-tzhf-fr83",
+                "packageName": "phpoffice/phpspreadsheet",
+                "affectedVersions": "<=1.30.2|>=2.0.0,<=2.1.14|>=2.2.0,<=2.4.3|>=3.3.0,<=3.10.3|>=4.0.0,<=5.5.0",
+                "title": "PhpSpreadsheet has SSRF/RCE in IOFactory::load when $filename is user controlled",
+                "cve": "CVE-2026-34084",
+                "link": "https://github.com/advisories/GHSA-q4q6-r8wh-5cgh",
+                "reportedAt": "2026-04-29T20:22:30+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-q4q6-r8wh-5cgh"
+                    }
+                ],
+                "severity": "high"
+            },
+            {
+                "advisoryId": "PKSA-hznc-gbby-6w16",
+                "packageName": "phpoffice/phpspreadsheet",
+                "affectedVersions": "<=1.30.3|>=2.0.0,<=2.1.15|>=2.2.0,<=2.4.4|>=3.3.0,<=3.10.4|>=4.0.0,<=5.6.0",
+                "title": "PhpSpreadsheet has XSS via number format code with @ text placeholder bypasses htmlspecialchars in HTML writer",
+                "cve": "CVE-2026-40296",
+                "link": "https://github.com/advisories/GHSA-hrmw-qprp-wgmc",
+                "reportedAt": "2026-04-28T22:57:13+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-hrmw-qprp-wgmc"
+                    }
+                ],
+                "severity": "medium"
+            },
+            {
+                "advisoryId": "PKSA-jtdk-dcr5-f11n",
+                "packageName": "phpoffice/phpspreadsheet",
+                "affectedVersions": "<=1.30.3|>=2.0.0,<=2.1.15|>=2.2.0,<=2.4.4|>=3.3.0,<=3.10.4|>=4.0.0,<=5.6.0",
+                "title": "PhpSpreadsheet has XSS via NumberFormat @ Text Substitution in HTML Writer",
+                "cve": "CVE-2026-35453",
+                "link": "https://github.com/advisories/GHSA-6wpp-88cp-7q68",
+                "reportedAt": "2026-04-28T22:50:31+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-6wpp-88cp-7q68"
+                    }
+                ],
+                "severity": "medium"
+            }
+        ],
+        "phpunit/phpunit": [
+            {
+                "advisoryId": "PKSA-z3gr-8qht-p93v",
+                "packageName": "phpunit/phpunit",
+                "affectedVersions": ">=0,<8.5.52|>=9.0.0,<9.6.33|>=10.0.0,<10.5.62|>=11.0.0,<11.5.50|>=12.0.0,<12.5.8",
+                "title": "Unsafe Deserialization in PHPT Code Coverage Handling",
+                "cve": "CVE-2026-24765",
+                "link": "https://github.com/sebastianbergmann/phpunit/security/advisories/GHSA-vvj3-c3rp-c85p",
+                "reportedAt": "2026-01-27T05:21:14+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-vvj3-c3rp-c85p"
+                    },
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "phpunit/phpunit/CVE-2026-24765.yaml"
+                    }
+                ],
+                "severity": "high"
+            }
+        ],
+        "psy/psysh": [
+            {
+                "advisoryId": "PKSA-4s4z-t146-6123",
+                "packageName": "psy/psysh",
+                "affectedVersions": "<=0.11.22|>=0.12.0,<=0.12.18",
+                "title": "PsySH has Local Privilege Escalation via CWD .psysh.php auto-load",
+                "cve": "CVE-2026-25129",
+                "link": "https://github.com/advisories/GHSA-4486-gxhx-5mg7",
+                "reportedAt": "2026-01-30T21:28:44+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-4486-gxhx-5mg7"
+                    }
+                ],
+                "severity": "medium"
+            }
+        ],
+        "symfony/process": [
+            {
+                "advisoryId": "PKSA-rkkf-636k-qjb3",
+                "packageName": "symfony/process",
+                "affectedVersions": ">=8.0,<8.0.5|>=7.4,<7.4.5|>=7.3,<7.3.11|>=6.4,<6.4.33|<5.4.51",
+                "title": "Symfony's incorrect argument escaping under MSYS2/Git Bash can lead to destructive file operations on Windows",
+                "cve": "CVE-2026-24739",
+                "link": "https://github.com/advisories/GHSA-r39x-jcww-82v6",
+                "reportedAt": "2026-01-28T21:28:10+00:00",
+                "sources": [
+                    {
+                        "name": "GitHub",
+                        "remoteId": "GHSA-r39x-jcww-82v6"
+                    }
+                ],
+                "severity": "medium"
+            }
+        ]
+    },
     "abandoned": []
 }
