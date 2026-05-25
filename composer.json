@@ -19,6 +19,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
+        "awcodes/mason": "^3.0",
         "doctrine/dbal": ">=4.4",
         "filament/actions": ">=4.5",
         "filament/filament": ">=4.5",

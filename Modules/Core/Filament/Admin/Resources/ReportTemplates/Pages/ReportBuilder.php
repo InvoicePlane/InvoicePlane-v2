@@ -2,24 +2,22 @@
 
 namespace Modules\Core\Filament\Admin\Resources\ReportTemplates\Pages;
 
+use App\Mason\Collections\ReportBricksCollection;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
+use Awcodes\Mason\Mason as MasonEditor;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
-use Modules\Core\DTOs\BlockDTO;
-use Modules\Core\DTOs\GridPositionDTO;
 use Modules\Core\Filament\Admin\Resources\ReportBlocks\Schemas\ReportBlockForm;
 use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Models\ReportBlock;
 use Modules\Core\Models\ReportTemplate;
-use Modules\Core\Services\GridSnapperService;
-use Modules\Core\Services\ReportTemplateService;
-use Modules\Core\Transformers\BlockTransformer;
+use Modules\Core\Services\MasonTemplateStorage;
 
 class ReportBuilder extends Page
 {
@@ -28,7 +26,7 @@ class ReportBuilder extends Page
 
     public ReportTemplate $record;
 
-    public array $blocks = [];
+    public string $masonContent = '';
 
     public string $selectedBlockId = '';
 
@@ -45,8 +43,22 @@ class ReportBuilder extends Page
 
     public function mount(ReportTemplate $record): void
     {
+        $this->authorize();
         $this->record = $record;
-        $this->loadBlocks();
+        $this->loadMasonContent();
+    }
+
+    /**
+     * Authorize access to the report builder.
+     * Only admin and superadmin roles can access.
+     */
+    protected function authorize(): void
+    {
+        $user = auth()->user();
+        
+        if (!$user || !($user->hasRole('admin') || $user->hasRole('superadmin'))) {
+            abort(403, 'Unauthorized access to Report Builder.');
+        }
     }
 
     public function setCurrentBlockId(?string $blockId): void
@@ -414,84 +426,47 @@ class ReportBuilder extends Page
         );
     }
 
-    public function save($bands): void
+    public function save($content): void
     {
-        // $bands is already grouped by band from Alpine.js
-        $blocks = [];
-        foreach ($bands as $band) {
-            if ( ! isset($band['blocks'])) {
-                continue;
-            }
-            foreach ($band['blocks'] as $block) {
-                // Ensure the block data has all necessary fields before passing to service
-                if ( ! isset($block['type'])) {
-                    $systemBlocks = app(ReportTemplateService::class)->getSystemBlocks();
-                    $type         = str_replace('block_', '', $block['id']);
-                    if (isset($systemBlocks[$type])) {
-                        $block = BlockTransformer::toArray($systemBlocks[$type]);
-                    }
-                }
-
-                $block['band']        = $band['key'] ?? 'header';
-                $blocks[$block['id']] = $block;
-            }
-        }
-        $this->blocks = $blocks;
-        $service      = app(ReportTemplateService::class);
-        $service->persistBlocks($this->record, $this->blocks);
-        $this->dispatch('blocks-saved');
-    }
-
-    public function saveBlockConfiguration(string $blockType, array $config): void
-    {
-        $service = app(ReportTemplateService::class);
-        $dbBlock = ReportBlock::where('block_type', $blockType)->first();
-
-        if ($dbBlock) {
-            $service->saveBlockConfig($dbBlock, $config);
-            $this->dispatch('block-config-saved');
+        // Mason-based save: Store JSON directly
+        if (is_string($content)) {
+            $storage = app(MasonTemplateStorage::class);
+            $storage->save($this->record, $content);
+            
+            $this->masonContent = $content;
+            $this->dispatch('blocks-saved');
         }
     }
 
-    public function getAvailableFields(): array
+    /**
+     * Load Mason editor content from filesystem.
+     */
+    protected function loadMasonContent(): void
+    {
+        $storage = app(MasonTemplateStorage::class);
+        $this->masonContent = $storage->load($this->record);
+    }
+
+    /**
+     * Get Mason editor configuration.
+     */
+    public function getMasonEditorSchema(): array
     {
         return [
-            ['id' => 'company_name', 'label' => 'Company Name'],
-            ['id' => 'company_address', 'label' => 'Company Address'],
-            ['id' => 'company_phone', 'label' => 'Company Phone'],
-            ['id' => 'company_email', 'label' => 'Company Email'],
-            ['id' => 'company_vat_id', 'label' => 'Company VAT ID'],
-            ['id' => 'client_name', 'label' => 'Client Name'],
-            ['id' => 'client_address', 'label' => 'Client Address'],
-            ['id' => 'client_phone', 'label' => 'Client Phone'],
-            ['id' => 'client_email', 'label' => 'Client Email'],
-            ['id' => 'invoice_number', 'label' => 'Invoice Number'],
-            ['id' => 'invoice_date', 'label' => 'Invoice Date'],
-            ['id' => 'invoice_due_date', 'label' => 'Due Date'],
-            ['id' => 'invoice_subtotal', 'label' => 'Subtotal'],
-            ['id' => 'invoice_tax_total', 'label' => 'Tax Total'],
-            ['id' => 'invoice_total', 'label' => 'Invoice Total'],
-            ['id' => 'item_description', 'label' => 'Item Description'],
-            ['id' => 'item_quantity', 'label' => 'Item Quantity'],
-            ['id' => 'item_price', 'label' => 'Item Price'],
-            ['id' => 'item_tax_name', 'label' => 'Item Tax Name'],
-            ['id' => 'item_tax_rate', 'label' => 'Item Tax Rate'],
-            ['id' => 'footer_notes', 'label' => 'Notes'],
+            MasonEditor::make('masonContent')
+                ->label(trans('ip.report_layout'))
+                ->bricks(ReportBricksCollection::all())
+                ->preview(route('mason.preview'))
+                ->dehydrated()
+                ->required(),
         ];
     }
 
     /**
-     * Loads the template blocks from the filesystem via the service.
+     * Get available bricks for Mason editor.
      */
-    protected function loadBlocks(): void
+    public function getAvailableBricks(): array
     {
-        $service   = app(ReportTemplateService::class);
-        $blockDTOs = $service->loadBlocks($this->record);
-
-        $this->blocks = [];
-        foreach ($blockDTOs as $blockDTO) {
-            $blockArray                      = BlockTransformer::toArray($blockDTO);
-            $this->blocks[$blockArray['id']] = $blockArray;
-        }
+        return ReportBricksCollection::all();
     }
 }

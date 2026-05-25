@@ -3,6 +3,10 @@ name: PHPStan Analysis
 on:
   workflow_dispatch:  # Manual only — does not run automatically
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   phpstan:
     name: Static Analysis with PHPStan

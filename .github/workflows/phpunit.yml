@@ -1,5 +1,8 @@
 name: Run PHPUnit Tests
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:  # Manual only — does not run automatically
 
