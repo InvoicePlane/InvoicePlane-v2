@@ -160,6 +160,53 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      *   "name": "InvoicePlane Corp"
      * }
      */
+    #[Group('crud')]
+    public function it_lists_companies(): void
+    {
+        /* arrange */
+        $company = Company::factory()->create(['name' => 'Acme LLC']);
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class);
+
+        /* assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('companies', $company->toArray());
+    }
+    # endregion
+
+    # region modals
+    #[Test]
+    #[Group('modals')]
+    public function it_creates_a_company_trough_a_modal(): void
+    {
+        $this->markTestIncomplete('need revisit, slug not generated');
+        /* arrange */
+        $payload = [
+            'search_code' => 'ROCKETCORP',
+            'name'        => 'Acme LLC',
+            'slug'        => 'acme-llc',
+        ];
+
+        /* act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* assert */
+        $component->assertSuccessful();
+        $component->assertHasNoFormErrors();
+        $this->assertDatabaseHas('companies', $payload);
+    }
+    # endregion
+
+    # region crud
+    #[Test]
+    #[Group('crud')]
     public function it_creates_a_company(): void
     {
         /* Arrange */

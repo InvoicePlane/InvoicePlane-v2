@@ -61,7 +61,7 @@ class QuoteForm
                             ])
                             ->columnSpan(3),
 
-                        Group::make()
+                        Schemas\Components\Group::make()
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
@@ -179,7 +179,7 @@ class QuoteForm
                                 Group::make()
                                     ->schema([]),
 
-                                Group::make()
+                                Schemas\Components\Group::make()
                                     ->schema([
                                         TextInput::make('quote_subtotal')
                                             ->label(trans('ip.subtotal'))

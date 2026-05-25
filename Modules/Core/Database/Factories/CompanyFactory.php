@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Modules\Core\Models\Company as CompanyModel;
 
+/**
+ * @extends Factory<\Modules\Core\Models\Company>
+ */
 class CompanyFactory extends Factory
 {
     protected $model = CompanyModel::class;

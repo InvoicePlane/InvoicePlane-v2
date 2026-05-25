@@ -50,23 +50,10 @@ class TaskForm
                                             ->getSearchResultsUsing(function (string $search): array {
                                                 return Project::query()
                                                     ->with('customer')
-                                                    ->where('project_name', 'like', "%{$search}%")
-                                                    ->orWhereHas('customer', function ($q) use ($search) {
-                                                        $q->where('company_name', 'like', "%{$search}%");
-                                                    })
                                                     ->limit(50)
                                                     ->get()
                                                     ->mapWithKeys(fn (Project $p) => [
-                                                        $p->id => "{$p->project_name} – {$p->customer?->company_name}",
                                                     ])->toArray();
-                                            })
-                                            ->getOptionLabelUsing(function ($value): string {
-                                                if ($value === null) {
-                                                    return '';
-                                                }
-                                                $project = Project::with('customer')->find($value);
-
-                                                return $project ? "{$project->project_name} – {$project->customer?->company_name}" : '';
                                             })
                                             ->createOptionForm([
                                                 Select::make('customer_id')
@@ -77,7 +64,6 @@ class TaskForm
                                                     ->required()
                                                     ->createOptionForm([
                                                         TextInput::make('company_name')
-                                                            ->label(trans('ip.customer_name'))
                                                             ->required()
                                                             ->maxLength(255),
                                                     ]),
@@ -91,8 +77,8 @@ class TaskForm
                                             ->label(trans('ip.client_information'))
                                             ->content(
                                                 fn (Get $get) => optional($get('project'))->name
-                                                    . ' – '
-                                                    . optional($get('project.customer'))->company_name
+                                                . ' – '
+                                                . optional($get('project.customer'))->company_name
                                             ),
                                     ]),
                             ]),
@@ -107,8 +93,6 @@ class TaskForm
                                     ->columns(2)
                                     ->schema([
                                         Select::make('task_status')
-                                            ->label(trans('ip.status'))
-                                            ->options(TaskStatus::options())
                                             ->searchable()
                                             ->preload()
                                             ->native(false)
@@ -133,10 +117,8 @@ class TaskForm
                                     ]),
                             ]),
 
-                        Section::make(trans('ip.task_description'))
                             ->schema([
                                 MarkdownEditor::make('description')
-                                    ->label(trans('ip.task_description'))
                                     ->toolbarButtons(['bold', 'italic']),
                             ])
                             ->collapsed(true)

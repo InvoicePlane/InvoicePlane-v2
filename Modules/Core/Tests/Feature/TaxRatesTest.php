@@ -204,6 +204,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      * "rate": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_updates_a_taxrate(): void
     {
         /* Arrange */
@@ -249,6 +250,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
      * "rate": "Example"
      * }
      */
+    #[Group('crud')]
     public function it_deletes_a_taxrate(): void
     {
         /* Arrange */

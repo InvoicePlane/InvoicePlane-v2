@@ -21,6 +21,7 @@ use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Enums\UserRole;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Quotes\Models\Quote;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -125,6 +126,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
         return $this->hasMany(Quote::class, 'user_id');
     }
 
+    public function recurringInvoices(): HasMany
+    {
+        return $this->hasMany(RecurringInvoice::class);
+    }
+
     public function uploads(): HasMany
     {
         return $this->hasMany(Upload::class);
@@ -153,7 +159,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     // ——————————————————————————————————————————————————————————————
     public function getFilamentName(): string
     {
-        return $this->name;
+        return $this->getAttributeValue('name');
     }
 
     public function getFilamentAvatarUrl(): ?string
