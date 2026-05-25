@@ -1,7 +1,10 @@
+@import 'tailwindcss';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 @source '../../../../app/Filament/Tenant/**/*';
 @source '../../../../resources/views/filament/tenant/**/*';
+@source '../../../../Modules/**/resources/views/**/*';
+@source '../../../../Modules/**/*.php';
 
 .fi-bg-color-600 {
     @apply bg-primary-700;
@@ -13,6 +16,7 @@
     @apply bg-primary-500;
 
     /* Collapse icon */
+
     .fi-topbar-close-collapse-sidebar-btn {
         @apply text-white;
         @apply hover:text-primary-600;
@@ -43,6 +47,7 @@
     }
 
     /* Sidebar items */
+
     .fi-sidebar-group-label {
         @apply text-white;
     }
@@ -53,7 +58,7 @@
 
     .fi-sidebar-item.fi-active {
         @apply text-white;
-        @apply !bg-primary-700;
+        @apply bg-primary-700!;
         @apply rounded-lg;
     }
 
@@ -152,6 +157,7 @@
     @apply hover:text-primary-500;
 
 }
+
 .fi-breadcrumbs-item-label {
     @apply text-primary-700;
     @apply hover:text-primary-500;
