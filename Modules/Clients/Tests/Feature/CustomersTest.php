@@ -371,7 +371,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_customer(): void
     {
-        $this->markTestIncomplete('foreign key contact');
 
         /* Arrange */
         $customer = Relation::factory()->for($this->company)->create([
@@ -392,7 +391,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_customer_when_contact_attached(): void
     {
-        $this->markTestIncomplete();
 
         /* Arrange */
         $customer = Relation::factory()->for($this->company)->create([

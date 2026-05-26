@@ -554,7 +554,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Test]
     public function it_updates_invoice_and_updates_total(): void
     {
-        $this->markTestIncomplete();
 
         /* Arrange */
 
@@ -640,7 +639,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_paid_invoice(): void
     {
-        $this->markTestIncomplete('Still can delete paid invoice');
 
         /* Arrange */
         $user            = $this->user;
@@ -696,7 +694,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $invoice = Invoice::factory()->for($this->company)->create();

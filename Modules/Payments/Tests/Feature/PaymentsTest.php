@@ -728,7 +728,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
-        $this->markTestIncomplete('Still can delete payment if invoice is paid');
 
         /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
@@ -766,7 +765,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_payment(): void
     {
-        $this->markTestIncomplete('record for delete action cannot be null');
 
         /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();

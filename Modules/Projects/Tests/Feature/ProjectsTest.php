@@ -412,7 +412,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_project_name(): void
     {
-        $this->markTestIncomplete();
 
         $company  = $this->user->companies()->first();
         $customer = Relation::factory()->create(['client_name' => '::client_name::']);
@@ -481,7 +480,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_updates_a_project(): void
     {
-        $this->markTestIncomplete();
 
         /* arrange */
 

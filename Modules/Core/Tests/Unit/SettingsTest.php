@@ -31,7 +31,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_filters_numberings_by_current_company_id(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         Numbering::query()->where('company_id', $this->company1->id)->delete();
@@ -64,7 +63,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_handles_no_current_company_id_in_session(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         Numbering::factory()->for($this->company1)->create([
@@ -87,7 +85,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_returns_empty_options_when_no_numberings_exist(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         Numbering::query()->where('company_id', $this->company1->id)->delete();
@@ -103,7 +100,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_switches_company_context_properly(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         Numbering::query()->where('company_id', $this->company1->id)->delete();
@@ -129,14 +125,12 @@ class SettingsTest extends AbstractAdminPanelTestCase
         // Verify each component shows only its company's groups
         // This would require accessing the form options, but the important
         // thing is that no errors are thrown during company switching
-        $this->assertTrue(true); // Component creation succeeded
     }
 
     #[Test]
     #[Group('unit')]
     public function it_loads_default_settings_properly(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         session(['current_company_id' => $this->company1->id]);
@@ -164,7 +158,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_validates_update_check_interval_boundaries(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         session(['current_company_id' => $this->company1->id]);
@@ -192,7 +185,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_validates_email_format_for_notifications(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         session(['current_company_id' => $this->company1->id]);
@@ -215,7 +207,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_has_all_required_tabs(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
 
         /* Arrange */
         session(['current_company_id' => $this->company1->id]);
@@ -239,7 +230,6 @@ class SettingsTest extends AbstractAdminPanelTestCase
     #[Group('unit')]
     public function it_persists_settings(): void
     {
-        $this->markTestIncomplete('settings_tests_failing');
         /* Arrange */
         session(['current_company_id' => $this->company1->id]);
 

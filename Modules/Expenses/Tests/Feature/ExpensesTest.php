@@ -922,7 +922,6 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_expense_twice(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $expense = Expense::factory()->for($this->company)->create();

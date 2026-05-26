@@ -223,7 +223,6 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();

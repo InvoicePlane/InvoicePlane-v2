@@ -27,7 +27,6 @@ class ReportBlockWidthTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals('one_third', $width->value);
         $this->assertEquals(4, $gridWidth);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -43,7 +42,6 @@ class ReportBlockWidthTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals('half', $width->value);
         $this->assertEquals(6, $gridWidth);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -59,7 +57,6 @@ class ReportBlockWidthTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals('two_thirds', $width->value);
         $this->assertEquals(8, $gridWidth);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -75,7 +72,6 @@ class ReportBlockWidthTest extends AbstractTestCase
         /* Assert */
         $this->assertEquals('full', $width->value);
         $this->assertEquals(12, $gridWidth);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -99,7 +95,6 @@ class ReportBlockWidthTest extends AbstractTestCase
             $this->assertArrayHasKey($case->value, $expectedWidths);
             $this->assertEquals($expectedWidths[$case->value], $case->getGridWidth());
         }
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -119,6 +114,5 @@ class ReportBlockWidthTest extends AbstractTestCase
             $actualGrid = $width->getGridWidth();
             $this->assertEquals($expectedGrid, $actualGrid, "Width {$width->value} should map to {$expectedGrid} grid columns");
         }
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 }

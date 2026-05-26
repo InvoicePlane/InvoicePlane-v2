@@ -123,7 +123,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_update_product_unit_through_a_modal_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
         $record = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'X']);
 
@@ -250,7 +249,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_product_unit_twice(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $productUnit = ProductUnit::factory()->for($this->company)->create();

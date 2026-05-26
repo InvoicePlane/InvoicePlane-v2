@@ -57,7 +57,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         $this->assertNotNull($foundBlock);
         $this->assertEquals('company_header', $foundBlock->block_type);
         $this->assertEquals('Company Header', $foundBlock->name);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -86,7 +85,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         $this->assertEquals('details', $data['default_band']);
         $this->assertTrue($data['is_active']);
         $this->assertIsArray($data['config']);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -110,7 +108,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $this->assertEquals('two_thirds', $data['width']);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -136,7 +133,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         $this->assertNull($block);
         $this->assertEquals($blockType, $defaultData['block_type']);
         $this->assertTrue($defaultData['is_active']);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -165,8 +161,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         Log::info('Mounting block config with data:', $data);
 
         /* Assert */
-        $this->assertTrue(true); // Log assertions are handled by shouldReceive
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -206,7 +200,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
             $this->assertInstanceOf(ReportBlock::class, $block);
             $this->assertContains($block->block_type, $blockTypes);
         }
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -234,7 +227,6 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         $this->assertEquals($config, $data['config']);
         $this->assertTrue($data['config']['show_vat_id']);
         $this->assertEquals(10, $data['config']['font_size']);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 
     #[Test]
@@ -257,6 +249,5 @@ class ReportBuilderBlockEditTest extends AbstractAdminPanelTestCase
         $this->assertNotNull($foundByType);
         $this->assertEquals($foundBySlug->id, $foundByType->id);
         $this->assertEquals('slug_lookup_test', $foundBySlug->block_type);
-        $this->markTestIncomplete('Test implementation complete but marked incomplete as per requirements');
     }
 }

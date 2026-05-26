@@ -150,7 +150,6 @@ class PeppolDocumentFormatTest extends TestCase
 
     public function test_it_throws_on_invalid_enum_value(): void
     {
-        $this->markTestIncomplete('weird test');
 
         $this->expectException(ValueError::class);
         PeppolDocumentFormat::from('invalid_value');
@@ -158,7 +157,6 @@ class PeppolDocumentFormatTest extends TestCase
 
     public function test_it_throws_on_invalid_enum_value_name(): void
     {
-        $this->markTestIncomplete('weird test');
 
         $this->expectException(ValueError::class);
         PeppolDocumentFormat::from('not_a_real_enum');

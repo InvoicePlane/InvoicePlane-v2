@@ -182,7 +182,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     #[Group('modals')]
     public function it_creates_a_company_trough_a_modal(): void
     {
-        $this->markTestIncomplete('need revisit, slug not generated');
         /* arrange */
         $payload = [
             'search_code' => 'ROCKETCORP',
@@ -312,7 +311,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_company(): void
     {
-        $this->markTestIncomplete('do not delete companies yet');
 
         /* Arrange */
         $company = Company::factory()->create([
