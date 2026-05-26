@@ -45,6 +45,7 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component->assertSuccessful();
+        $component->assertSeeText($payload['first_name']);
 
         $this->assertDatabaseHas('contacts', $payload);
         $this->assertSame(1, Contact::query()->where($payload)->count());
