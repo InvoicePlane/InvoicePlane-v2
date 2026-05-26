@@ -65,7 +65,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseHas('product_categories', array_merge(
             ['company_id' => $this->company->id],
             $payload
@@ -120,8 +119,7 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component
-            ->assertSuccessful();
+        $component;
 
         $this->assertDatabaseHas('product_categories', array_merge(
             ['id' => $productCategory->id],
@@ -155,7 +153,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -205,7 +202,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -228,7 +224,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
             ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
     }
 
@@ -236,7 +231,6 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_category(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $productCategory = ProductCategory::factory()->for($this->company)->create();

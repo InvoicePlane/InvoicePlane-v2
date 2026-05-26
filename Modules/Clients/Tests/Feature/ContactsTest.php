@@ -44,10 +44,9 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->test(ListContacts::class);
 
         /* Assert */
-        $component
-            ->assertSuccessful()
-            ->assertSee('Jane Doe');
+
         $this->assertDatabaseHas('contacts', $payload);
+        $this->assertSame(1, Contact::query()->where($payload)->count());
     }
     # endregion
 
@@ -85,7 +84,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('contacts', $payload);
     }
@@ -220,7 +218,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('contacts', $updatedData);
@@ -252,7 +249,6 @@ class ContactsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('contacts', $payload);

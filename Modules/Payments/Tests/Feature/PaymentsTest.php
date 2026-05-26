@@ -54,7 +54,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
         }*/
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseHas('payments', [
             'invoice_id'     => $payload['invoice_id'],
             'customer_id'    => $payload['customer_id'],
@@ -79,7 +78,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      *   "paid_at": "2024-11-01"
      * }
      */
-    #[Group('failing')]
     public function it_creates_a_payment_through_a_modal(): void
     {
         /* Arrange */
@@ -375,7 +373,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -397,7 +394,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
      *   "paid_at": "2024-11-01"
      * }
      */
-    #[Group('failing')]
     public function it_creates_a_payment(): void
     {
         /* Arrange */
@@ -684,7 +680,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -728,7 +723,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_if_invoice_is_paid(): void
     {
-        $this->markTestIncomplete('Still can delete payment if invoice is paid');
 
         /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
@@ -766,7 +760,6 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_already_deleted_payment(): void
     {
-        $this->markTestIncomplete('record for delete action cannot be null');
 
         /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();

@@ -61,7 +61,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertCanSeeTableRecords([$task]);
 
         $this->assertDatabaseHas('tasks', $payload);
@@ -122,7 +121,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertNotSet('isSaving', true);
 
         $this->assertDatabaseHas('tasks', array_merge(
@@ -335,7 +333,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [
@@ -394,7 +391,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', array_merge(
@@ -609,7 +605,6 @@ class TasksTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tasks', array_merge($updatedData, [

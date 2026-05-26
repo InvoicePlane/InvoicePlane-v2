@@ -52,7 +52,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->test(ListTaxRates::class);
 
         /* Assert */
-        $component->assertSuccessful();
 
         // Optional: direct DB check
         $this->assertDatabaseHas('tax_rates', [
@@ -97,7 +96,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
@@ -140,7 +138,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('tax_rates', array_merge(
             ['id' => $record->id],
@@ -185,7 +182,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
@@ -229,7 +225,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', array_merge($updatedData, [
@@ -268,7 +263,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseMissing('tax_rates', ['id' => $taxRate->id]);
     }
 

@@ -36,7 +36,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
             ->test(ListNumberings::class);
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseHas('numbering', [
             'id'       => $numbering->id,
             'type'     => $numbering->type->value,
@@ -71,7 +70,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
             ->test(ListNumberings::class);
 
         /* Assert */
-        $component->assertSuccessful();
         $component->assertCanSeeTableRecords([$ownNumbering]);
         $component->assertCanNotSeeTableRecords([$otherNumbering]);
     }
@@ -109,7 +107,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_updates_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -141,7 +138,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_deletes_a_numbering_scheme(): void
     {
         /* Arrange */

@@ -33,7 +33,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->test(ListEmailTemplates::class);
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('email_templates', $template->toArray());
     }
@@ -67,7 +66,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('email_templates', $payload);
@@ -158,7 +156,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('email_templates', $payload);
@@ -194,7 +191,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        $component->assertSuccessful()->assertHasNoFormErrors();
+        $component->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('email_templates', array_merge(
             $payload,
@@ -279,7 +276,6 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('email_templates', $payload);

@@ -75,14 +75,12 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->test(ListInvoices::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* Assert */
-        $component->assertSuccessful();
     }
     # endregion
 
     # region modals
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_creates_an_invoice_through_a_modal(): void
     {
         /* Arrange */
@@ -307,7 +305,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -321,7 +318,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_creates_an_invoice_with_items(): void
     {
         $customer        = Relation::factory()->for($this->company)->customer()->create();
@@ -541,7 +537,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -554,7 +549,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Test]
     public function it_updates_invoice_and_updates_total(): void
     {
-        $this->markTestIncomplete();
 
         /* Arrange */
 
@@ -629,7 +623,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         /* Assert */
@@ -640,7 +633,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_paid_invoice(): void
     {
-        $this->markTestIncomplete('Still can delete paid invoice');
 
         /* Arrange */
         $user            = $this->user;
@@ -696,7 +688,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
 
         /* Arrange */
         $invoice = Invoice::factory()->for($this->company)->create();

@@ -60,7 +60,6 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_restricts_company_panel_to_current_company_only(): void
     {
         /* Arrange */
@@ -124,7 +123,6 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
 
         // Attempting to update with different company_id should fail or be ignored
         // In practice, this would be prevented by form validation or policy
-        $this->assertTrue(true); // Placeholder - actual enforcement is in Filament form
     }
 
     #[Test]

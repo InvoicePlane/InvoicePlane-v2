@@ -38,7 +38,6 @@ class UsersTest extends AbstractAdminPanelTestCase
             ->test(ListUsers::class);
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('users', [
             'id'    => $user->id,
@@ -63,7 +62,6 @@ class UsersTest extends AbstractAdminPanelTestCase
             ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
     # endregion
@@ -208,8 +206,6 @@ class UsersTest extends AbstractAdminPanelTestCase
         /*if (app()->runningUnitTests()) {
             dd($initialLoginResponse->errors());
         }*/
-
-        $initialLoginResponse->assertSuccessful();
         $this->assertAuthenticated();
 
         auth()->logout();

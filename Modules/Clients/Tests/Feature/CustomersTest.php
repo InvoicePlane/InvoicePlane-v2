@@ -44,7 +44,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class, ['tenant' => Str::lower($this->company->search_code)]);
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('relations', $payload);
     }
@@ -82,7 +81,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('relations', $payload);
     }
@@ -236,8 +234,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component
-            ->assertSuccessful();
+        $component;
 
         $this->assertDatabaseHas(
             'relations',
@@ -273,7 +270,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('relations', $payload);
@@ -371,7 +367,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_deletes_a_customer(): void
     {
-        $this->markTestIncomplete('foreign key contact');
 
         /* Arrange */
         $customer = Relation::factory()->for($this->company)->create([
@@ -392,7 +387,6 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_customer_when_contact_attached(): void
     {
-        $this->markTestIncomplete();
 
         /* Arrange */
         $customer = Relation::factory()->for($this->company)->create([

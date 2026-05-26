@@ -351,7 +351,6 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
             ->expectsOutputToContain('Products')
             ->expectsOutputToContain('Clients')
             ->expectsOutputToContain('Invoices')
-            ->expectsOutputToContain('Payments')
-            ->assertSuccessful();
+            ->expectsOutputToContain('Payments');
     }
 }

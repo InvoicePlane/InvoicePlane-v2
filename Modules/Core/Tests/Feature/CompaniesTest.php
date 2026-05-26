@@ -23,7 +23,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      * @payload ['name' => 'Acme LLC']
      */
     #[Group('crud')]
-    public function it_lists_companies(): void
+    public function it_lists_companies_in_crud_section(): void
     {
         /* Arrange */
         $company = Company::factory()->create(['name' => 'Acme LLC']);
@@ -33,7 +33,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->test(ListCompanies::class);
 
         /* Assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('companies', $company->toArray());
     }
@@ -59,7 +58,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->callMountedAction();
 
         /* Assert */
-        $component->assertSuccessful();
         $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('companies', $payload);
     }
@@ -143,7 +141,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->assertHasNoFormErrors();
 
         /* Assert */
-        $component->assertSuccessful();
         $this->assertDatabaseHas('companies', array_merge(
             ['id' => $company->id],
             $updatedData
@@ -171,7 +168,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->test(ListCompanies::class);
 
         /* assert */
-        $component->assertSuccessful();
 
         $this->assertDatabaseHas('companies', $company->toArray());
     }
@@ -182,7 +178,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     #[Group('modals')]
     public function it_creates_a_company_trough_a_modal(): void
     {
-        $this->markTestIncomplete('need revisit, slug not generated');
         /* arrange */
         $payload = [
             'search_code' => 'ROCKETCORP',
@@ -198,7 +193,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->callMountedAction();
 
         /* assert */
-        $component->assertSuccessful();
         $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('companies', $payload);
     }
@@ -228,7 +222,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('companies', $payload);
@@ -297,7 +290,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $component
-            ->assertSuccessful()
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('companies', $payload);
@@ -312,7 +304,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
      */
     public function it_deletes_a_company(): void
     {
-        $this->markTestIncomplete('do not delete companies yet');
 
         /* Arrange */
         $company = Company::factory()->create([

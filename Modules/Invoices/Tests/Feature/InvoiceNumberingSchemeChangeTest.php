@@ -15,7 +15,6 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     use RefreshDatabase;
 
     #[Test]
-    #[Group('failing')]
     public function it_regenerates_invoice_number_when_changing_numbering_scheme(): void
     {
         /* Arrange */
@@ -81,7 +80,6 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_continues_numbering_sequence_after_scheme_change(): void
     {
         /* Arrange */
@@ -121,7 +119,6 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_maintains_separate_sequences_for_different_numbering_schemes(): void
     {
         /* Arrange */
