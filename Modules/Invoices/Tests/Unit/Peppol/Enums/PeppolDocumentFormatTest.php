@@ -113,7 +113,6 @@ class PeppolDocumentFormatTest extends TestCase
 
     #[Test]
     #[DataProvider('mandatoryFormatProvider')]
-    #[Group('failing')]
     public function it_identifies_mandatory_formats_correctly(
         PeppolDocumentFormat $format,
         string $countryCode,
@@ -163,7 +162,6 @@ class PeppolDocumentFormatTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_provides_description_for_formats(): void
     {
         $description = PeppolDocumentFormat::PEPPOL_BIS_30->description();

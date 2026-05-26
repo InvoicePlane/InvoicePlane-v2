@@ -67,7 +67,6 @@ class ProviderFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_creates_provider_from_name_with_integration(): void
     {
         $integration = new PeppolIntegration([
@@ -82,7 +81,6 @@ class ProviderFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_creates_provider_from_name_string(): void
     {
         $provider = ProviderFactory::makeFromName('e_invoice_be');
@@ -161,7 +159,6 @@ class ProviderFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_discovers_providers_implementing_interface(): void
     {
         $providers = ProviderFactory::getAvailableProviders();
@@ -173,7 +170,6 @@ class ProviderFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_passes_integration_to_provider_constructor(): void
     {
         $integration = new PeppolIntegration([
@@ -188,7 +184,6 @@ class ProviderFactoryTest extends TestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_handles_null_integration_gracefully(): void
     {
         $provider = ProviderFactory::makeFromName('e_invoice_be', null);

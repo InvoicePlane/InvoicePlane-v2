@@ -109,7 +109,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_updates_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -141,7 +140,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_deletes_a_numbering_scheme(): void
     {
         /* Arrange */

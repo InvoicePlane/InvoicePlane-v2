@@ -16,7 +16,6 @@ use RuntimeException;
 class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 {
     #[Test]
-    #[Group('failing')]
     public function it_prevents_duplicate_quote_numbers_within_same_company(): void
     {
         /* Arrange */
@@ -65,7 +64,6 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_allows_multiple_null_quote_numbers_for_drafts(): void
     {
         /* Arrange */
@@ -101,7 +99,6 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_allows_updating_quote_without_changing_number(): void
     {
         /* Arrange */

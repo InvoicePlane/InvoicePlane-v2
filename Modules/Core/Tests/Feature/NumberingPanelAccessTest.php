@@ -60,7 +60,6 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
-    #[Group('failing')]
     public function it_restricts_company_panel_to_current_company_only(): void
     {
         /* Arrange */

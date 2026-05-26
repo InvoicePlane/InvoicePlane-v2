@@ -230,7 +230,6 @@ class NumberingCompanyIsolationTest extends AbstractTestCase
     #[Test]
     #[Group('numbering')]
     #[Group('troubleshooting')]
-    #[Group('failing')]
     public function it_recalculates_next_id_when_set_to_lower_value_for_troubleshooting(): void
     {
         /* Arrange */
