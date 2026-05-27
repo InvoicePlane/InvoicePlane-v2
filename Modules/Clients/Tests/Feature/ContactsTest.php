@@ -37,16 +37,14 @@ class ContactsTest extends AbstractCompanyPanelTestCase
             'gender'      => 'female',
         ];
 
-        Contact::factory()->for($this->company)->create($payload);
+        $contact = Contact::factory()->for($this->company)->create($payload);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListContacts::class);
 
         /* Assert */
-
-        $this->assertDatabaseHas('contacts', $payload);
-        $this->assertSame(1, Contact::query()->where($payload)->count());
+        $component->assertCanSeeTableRecords([$contact]);
     }
     # endregion
 
