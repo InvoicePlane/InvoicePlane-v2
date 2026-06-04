@@ -43,7 +43,7 @@ class ReportBuilder extends Page
 
     public function mount(ReportTemplate $record): void
     {
-        $this->authorize();
+        $this->authorizeReportBuilderAccess();
         $this->record = $record;
         $this->loadMasonContent();
     }
@@ -52,7 +52,7 @@ class ReportBuilder extends Page
      * Authorize access to the report builder.
      * Only admin and superadmin roles can access.
      */
-    protected function authorize(): void
+    protected function authorizeReportBuilderAccess(): void
     {
         $user = auth()->user();
         
