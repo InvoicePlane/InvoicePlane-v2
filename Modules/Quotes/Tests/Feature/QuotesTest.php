@@ -683,7 +683,11 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_discount_percent(): void
     {
-        $this->markTestIncomplete('quote_discount_percent missing, even though it is set');
+        $this->markTestIncomplete(
+            'quote_discount_percent is a nullable, dehydrated(false) field — it carries no server-side ' .
+            'required validation. The QuoteCalculator computes it from item data. This test cannot pass ' .
+            'without first adding a required validation rule to the form field.'
+        );
 
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
@@ -723,7 +727,11 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_item_subtotal(): void
     {
-        $this->markTestIncomplete('revisit quote_item_subtotal');
+        $this->markTestIncomplete(
+            'quote_item_subtotal is a computed field populated by QuoteCalculator from line items. ' .
+            'It is not a user-supplied field and therefore has no required validation rule. ' .
+            'This test should be replaced with a test that verifies a quote with no line items is rejected.'
+        );
 
         /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
@@ -788,7 +796,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_tax_total(): void
     {
-        $this->markTestIncomplete('revisit quote_tax_total');
+        $this->markTestIncomplete(
+            'quote_tax_total is a disabled computed field — it is populated by QuoteCalculator and ' .
+            'carries no standalone required validation. Cannot trigger assertHasFormErrors on a disabled field.'
+        );
 
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
@@ -827,7 +838,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_total(): void
     {
-        $this->markTestIncomplete('revisit quote_tax_total');
+        $this->markTestIncomplete(
+            'quote_total is a disabled computed field — it is populated by QuoteCalculator and ' .
+            'carries no standalone required validation. Cannot trigger assertHasFormErrors on a disabled field.'
+        );
 
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
@@ -854,6 +868,44 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_returns_quotes_belonging_to_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB  = \Modules\Core\Models\Company::factory()->create();
+        $quoteA    = Quote::factory()->for($this->company)->create(['quote_number' => 'Q-TENANT-A']);
+        $quoteB    = Quote::factory()->for($companyB)->create(['quote_number' => 'Q-TENANT-B']);
+
+        /* Act — authenticate as Company A user; global scope filters to Company A */
+        $this->actingAs($this->user);
+
+        /* Assert */
+        $this->assertDatabaseHas('quotes', ['id' => $quoteA->id]);
+        $this->assertDatabaseHas('quotes', ['id' => $quoteB->id]);     // B is in the DB...
+        $this->assertNotNull(Quote::find($quoteA->id));                // A is visible to tenant A
+        $this->assertNull(Quote::find($quoteB->id));                   // B is NOT visible to tenant A
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_lists_quotes_for_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB = \Modules\Core\Models\Company::factory()->create();
+
+        Quote::factory()->for($this->company)->create(['quote_number' => 'Q-VISIBLE']);
+        Quote::factory()->for($companyB)->create(['quote_number' => 'Q-HIDDEN']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class);
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
+        $component->assertDontSeeText('Q-HIDDEN');
+    }
     # endregion
 
     # region spicy
@@ -861,7 +913,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function widget_shows_only_current_tenant_quotes(): void
     {
-        $this->markTestIncomplete('Should assert widget only shows quotes for the current tenant.');
+        $this->markTestIncomplete(
+            'No widget route is currently registered for quotes. ' .
+            'This test should be implemented once route(\'quotes.widget\') exists and returns JSON.'
+        );
     }
     # endregion
 }

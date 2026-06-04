@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Core\Services\BaseService;
+use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Throwable;
 
@@ -178,6 +179,10 @@ class InvoiceService extends BaseService
 
     public function deleteInvoice(Invoice $invoice): Invoice
     {
+        if ($invoice->invoice_status === InvoiceStatus::PAID) {
+            throw new \InvalidArgumentException(trans('ip.cannot_delete_paid_invoice'));
+        }
+
         DB::beginTransaction();
         try {
             $invoice->invoiceItems()->delete();

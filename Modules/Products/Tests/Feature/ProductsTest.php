@@ -116,10 +116,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        /*if (app()->runningUnitTests()) {
-            dd($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasNoFormErrors();
@@ -180,10 +176,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasFormErrors(['code']);
@@ -242,10 +234,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
@@ -300,10 +288,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
 
         /* Assert */
         $component
@@ -409,10 +393,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasNoFormErrors();
@@ -472,10 +452,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasFormErrors(['code']);
@@ -532,10 +508,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
@@ -589,10 +561,6 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->test(CreateProduct::class)
             ->fillForm($payload)
             ->call('create');
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
 
         /* Assert */
         $component
@@ -733,6 +701,44 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_returns_products_belonging_to_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB  = \Modules\Core\Models\Company::factory()->create();
+        $productA  = Product::factory()->for($this->company)->create(['product_name' => 'Product-Tenant-A']);
+        $productB  = Product::factory()->for($companyB)->create(['product_name' => 'Product-Tenant-B']);
+
+        /* Act — authenticate as Company A user; global scope filters to Company A */
+        $this->actingAs($this->user);
+
+        /* Assert */
+        $this->assertDatabaseHas('products', ['id' => $productA->id]);
+        $this->assertDatabaseHas('products', ['id' => $productB->id]);     // B is in the DB...
+        $this->assertNotNull(Product::find($productA->id));                // A is visible to tenant A
+        $this->assertNull(Product::find($productB->id));                   // B is NOT visible to tenant A
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_lists_products_for_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB = \Modules\Core\Models\Company::factory()->create();
+
+        Product::factory()->for($this->company)->create(['product_name' => 'VISIBLE-PRODUCT']);
+        Product::factory()->for($companyB)->create(['product_name' => 'HIDDEN-PRODUCT']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProducts::class, ['tenant' => Str::lower($this->company->search_code)]);
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('products', ['product_name' => 'HIDDEN-PRODUCT']);
+        $component->assertDontSeeText('HIDDEN-PRODUCT');
+    }
     # endregion
 
     # region spicy
