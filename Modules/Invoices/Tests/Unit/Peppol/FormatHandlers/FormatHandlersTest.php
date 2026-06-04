@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Peppol\FormatHandlers;
+namespace Modules\Invoices\Tests\Unit\Peppol\FormatHandlers;
 
 use Modules\Core\Tests\TestCase;
 use Modules\Invoices\Models\Invoice;
