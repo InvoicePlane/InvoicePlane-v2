@@ -24,11 +24,7 @@ class InvoiceTransaction extends Model
         'is_successful' => 'bool',
     ];
 
-    protected $fillable = [
-        'invoice_id',
-        'is_successful',
-        'transaction_reference',
-    ];
+    protected $guarded = [];
 
     public function invoice(): BelongsTo
     {

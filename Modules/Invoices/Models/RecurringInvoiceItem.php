@@ -42,22 +42,7 @@ class RecurringInvoiceItem extends Model
         'display_order' => 'int',
     ];
 
-    protected $fillable = [
-        'recurring_invoice_id',
-        'item_id',
-        'tax_rate_id',
-        'tax_rate_2_id',
-        'name',
-        'quantity',
-        'price',
-        'subtotal',
-        'tax_1',
-        'tax_2',
-        'tax',
-        'total',
-        'display_order',
-        'description',
-    ];
+    protected $guarded = [];
 
     /*
     |--------------------------------------------------------------------------
