@@ -450,7 +450,9 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component->assertSuccessful();
+        $this->assertDatabaseHas('relations', ['id' => $customerA->id]);
         $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
+        $component->assertSeeText('Visible Customer');
         $component->assertDontSeeText('Hidden Customer');
     }
     # endregion

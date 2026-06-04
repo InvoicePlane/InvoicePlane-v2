@@ -737,6 +737,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('products', ['product_name' => 'HIDDEN-PRODUCT']);
+        $component->assertSeeText('VISIBLE-PRODUCT');
         $component->assertDontSeeText('HIDDEN-PRODUCT');
     }
     # endregion

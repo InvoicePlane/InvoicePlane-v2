@@ -102,12 +102,16 @@ class InvoiceModelTest extends AbstractCompanyPanelTestCase
         ];
 
         /* Act */
-        $item = new RecurringInvoiceItem($fields);
+        $item = RecurringInvoiceItem::create($fields);
 
         /* Assert */
-        $this->assertEquals('Monthly Hosting', $item->item_name);
-        $this->assertEquals(2.0, $item->quantity);
-        $this->assertEquals(49.99, $item->price);
-        $this->assertEquals(99.98, $item->subtotal);
+        $this->assertDatabaseHas('recurring_invoice_items', [
+            'item_name'     => 'Monthly Hosting',
+            'quantity'      => 2.0,
+            'price'         => 49.99,
+            'subtotal'      => 99.98,
+            'total'         => 99.98,
+            'display_order' => 1,
+        ]);
     }
 }

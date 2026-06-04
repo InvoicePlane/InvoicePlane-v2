@@ -24,7 +24,7 @@ class InvoiceTransaction extends Model
         'is_successful' => 'bool',
     ];
 
-    protected $guarded = [];
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
     public function invoice(): BelongsTo
     {
