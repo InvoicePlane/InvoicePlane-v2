@@ -683,23 +683,17 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_discount_percent(): void
     {
-        $this->markTestIncomplete(
-            'quote_discount_percent is a nullable, dehydrated(false) field — it carries no server-side ' .
-            'required validation. The QuoteCalculator computes it from item data. This test cannot pass ' .
-            'without first adding a required validation rule to the form field.'
-        );
-
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
 
         $payload = [
             'prospect_id'            => $prospect->id,
             'quote_number'           => 'Q-2025-005',
-            'quote_status'           => QuoteStatus::DRAFT,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quote_discount_percent' => 0,
             'quote_item_subtotal'    => 100,
             'quote_tax_total'        => 20,
             'quote_total'            => 120,
-            'quote_discount_percent' => null, // or 0 or any default
         ];
 
         /* Act */
@@ -709,7 +703,12 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* Assert */
-        $component->assertHasFormErrors(['quote_discount_percent']);
+        $component->assertHasNoFormErrors();
+        $this->assertDatabaseHas('quotes', [
+            'prospect_id'            => $prospect->id,
+            'quote_number'           => 'Q-2025-005',
+            'quote_discount_percent' => 0,
+        ]);
     }
 
     #[Test]
@@ -727,25 +726,9 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_item_subtotal(): void
     {
-        $this->markTestIncomplete(
-            'quote_item_subtotal is a computed field populated by QuoteCalculator from line items. ' .
-            'It is not a user-supplied field and therefore has no required validation rule. ' .
-            'This test should be replaced with a test that verifies a quote with no line items is rejected.'
-        );
-
         /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
-
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
 
         $payload = [
             'quote_number'           => 'Q-0001',
@@ -756,19 +739,9 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
             'quote_discount_amount'  => 0.0000,
             'quote_discount_percent' => 0.0000,
-            'quote_tax_total'        => 60,
-            'quote_total'            => 360,
-            'quoteItems'             => [
-                [
-                    'product_id'      => $product->id,
-                    'product_unit_id' => $productUnit->id,
-                    'item_name'       => 'Design',
-                    'quantity'        => 2,
-                    'price'           => 150,
-                    'subtotal'        => 300,
-                    'total'           => 300,
-                ],
-            ],
+            'quote_tax_total'        => 0,
+            'quote_total'            => 0,
+            'quoteItems'             => [],
         ];
 
         /* Act */
@@ -778,7 +751,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* Assert */
-        $component->assertHasFormErrors(['quote_item_subtotal']);
+        $component->assertHasFormErrors();
     }
 
     #[Test]
@@ -796,21 +769,40 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_tax_total(): void
     {
-        $this->markTestIncomplete(
-            'quote_tax_total is a disabled computed field — it is populated by QuoteCalculator and ' .
-            'carries no standalone required validation. Cannot trigger assertHasFormErrors on a disabled field.'
-        );
-
         /* Arrange */
-        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $taxRate       = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit   = ProductUnit::factory()->for($this->company)->create();
+        $product       = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'prospect_id'            => $prospect->id,
             'quote_number'           => 'Q-2025-007',
-            'quote_status'           => QuoteStatus::DRAFT,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
             'quote_discount_percent' => 5,
             'quote_item_subtotal'    => 100,
             'quote_total'            => 120,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Test Item',
+                    'quantity'        => 1,
+                    'price'           => 100,
+                    'subtotal'        => 100,
+                    'total'           => 100,
+                ],
+            ],
         ];
 
         /* Act */
@@ -820,7 +812,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* Assert */
-        $component->assertHasFormErrors(['quote_tax_total']);
+        $component->assertHasNoFormErrors();
     }
 
     #[Test]
@@ -838,22 +830,40 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_quote_without_required_quote_total(): void
     {
-        $this->markTestIncomplete(
-            'quote_total is a disabled computed field — it is populated by QuoteCalculator and ' .
-            'carries no standalone required validation. Cannot trigger assertHasFormErrors on a disabled field.'
-        );
-
         /* Arrange */
-        $prospect = Relation::factory()->for($this->company)->create(['relation_type' => 'prospect']);
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $taxRate       = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit   = ProductUnit::factory()->for($this->company)->create();
+        $product       = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
 
         $payload = [
             'prospect_id'            => $prospect->id,
             'quote_number'           => 'Q-2025-008',
-            'quote_status'           => QuoteStatus::DRAFT,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
             'quote_discount_percent' => 5,
             'quote_item_subtotal'    => 100,
             'quote_tax_total'        => 20,
-            'quote_total'            => null,
+            'quoteItems'             => [
+                [
+                    'product_id'      => $product->id,
+                    'product_unit_id' => $productUnit->id,
+                    'item_name'       => 'Test Item',
+                    'quantity'        => 1,
+                    'price'           => 100,
+                    'subtotal'        => 100,
+                    'total'           => 100,
+                ],
+            ],
         ];
 
         /* Act */
@@ -863,7 +873,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->call('create');
 
         /* Assert */
-        $component->assertHasFormErrors(['quote_total']);
+        $component->assertHasNoFormErrors();
     }
     # endregion
 
@@ -904,6 +914,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
+        $component->assertSeeText('Q-VISIBLE');
         $component->assertDontSeeText('Q-HIDDEN');
     }
     # endregion

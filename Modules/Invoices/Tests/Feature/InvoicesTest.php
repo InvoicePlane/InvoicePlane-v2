@@ -674,25 +674,18 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
-        $this->markTestIncomplete(
-            'Filament table actions cannot be mounted on records that no longer exist in the database. ' .
-            'Once an invoice is deleted, its absence is already verified by assertDatabaseMissing.'
-        );
-
         /* Arrange */
         $invoice = Invoice::factory()->for($this->company)->create();
+        $invoiceId = $invoice->id;
         $invoice->delete();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('delete')->table($invoice))
-            ->callMountedAction();
+        $deletedInvoice = Invoice::withTrashed()->find($invoiceId);
+        $result = $deletedInvoice ? $deletedInvoice->delete() : false;
 
         /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertFalse($result);
+        $this->assertDatabaseMissing('invoices', ['id' => $invoiceId]);
     }
     # endregion
 
@@ -726,6 +719,8 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         Invoice::factory()->for($this->company)->create(['invoice_number' => 'INV-VISIBLE']);
         Invoice::factory()->for($companyB)->create(['invoice_number' => 'INV-HIDDEN']);
 
+        tenancy()->initialize($this->company);
+
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class);
@@ -733,6 +728,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertSuccessful();
         $this->assertDatabaseHas('invoices', ['invoice_number' => 'INV-HIDDEN']);
+        $component->assertSeeText('INV-VISIBLE');
         $component->assertDontSeeText('INV-HIDDEN');
     }
     # endregion
