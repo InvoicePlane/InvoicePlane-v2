@@ -170,7 +170,7 @@ InvoicePlane v2 uses two PHPUnit configuration files:
 
 ### phpunit.xml
 - Runs all Unit and Feature test suites
-- Uses SQLite in-memory database
+- Uses MariaDB/MySQL via the testing database settings in `.env.testing.example`
 - Includes all test directories
 
 ### phpunit.smoke.xml

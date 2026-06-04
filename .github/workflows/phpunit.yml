@@ -10,20 +10,28 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
-    # MySQL service commented out - tests use SQLite in-memory instead
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: root
-    #       MYSQL_DATABASE: testing
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping --silent"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=3
+    services:
+      mysql:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_ROOT_HOST: '%'
+          MARIADB_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: testing
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - uses: actions/checkout@v4

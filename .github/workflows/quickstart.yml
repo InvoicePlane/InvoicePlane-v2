@@ -10,28 +10,29 @@ jobs:
     permissions:
       contents: read
 
-    # MySQL service commented out - smoke tests should not require database setup
-    # services:
-    #   mysql:
-    #     image: mariadb:10.6
-    #     env:
-    #       MYSQL_DATABASE: testing
-    #       MYSQL_ROOT_PASSWORD: root
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=5
+    services:
+      mysql:
+        image: mariadb:11
+        env:
+          MARIADB_DATABASE: testing
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     env:
-      # DB_CONNECTION: mysql
-      # DB_DATABASE: testing
-      # DB_USERNAME: root
-      # DB_PASSWORD: root
-      # DB_HOST: 127.0.0.1
       APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: testing
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - name: Checkout repository
