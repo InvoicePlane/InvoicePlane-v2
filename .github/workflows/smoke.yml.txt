@@ -1,0 +1,37 @@
+name: Smoke Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Composer, migrations, and smoke tests
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: testing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+          composer-flags: '--prefer-dist --no-interaction'
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.testing.example .env
+          php artisan key:generate
+
+      - name: Run migrations and seeders
+        run: php artisan migrate --seed
+
+      - name: Run smoke tests
+        run: php artisan test --group=smoke
