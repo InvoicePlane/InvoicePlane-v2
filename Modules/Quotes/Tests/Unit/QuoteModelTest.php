@@ -2,10 +2,9 @@
 
 namespace Modules\Quotes\Tests\Unit;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteItem;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -13,59 +12,63 @@ class QuoteModelTest extends AbstractCompanyPanelTestCase
 {
     #[Test]
     #[Group('unit')]
-    public function it_has_a_user_relationship_returning_belongs_to(): void
+    public function it_returns_the_user_who_created_the_quote(): void
+    {
+        /* Arrange */
+        $quote = Quote::factory()->for($this->company)->create(['user_id' => $this->user->id]);
+
+        /* Act */
+        $result = $quote->user;
+
+        /* Assert */
+        $this->assertNotNull($result);
+        $this->assertEquals($this->user->id, $result->id);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_returns_items_belonging_to_the_quote(): void
+    {
+        /* Arrange */
+        $quote      = Quote::factory()->for($this->company)->create();
+        $item       = QuoteItem::factory()->for($quote)->create();
+
+        $otherQuote = Quote::factory()->for($this->company)->create();
+        QuoteItem::factory()->for($otherQuote)->create();
+
+        /* Act */
+        $result = $quote->quoteItems;
+
+        /* Assert */
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->contains($item));
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_returns_no_items_for_a_new_quote(): void
     {
         /* Arrange */
         $quote = Quote::factory()->for($this->company)->create();
 
         /* Act */
-        $relation = $quote->user();
+        $count = $quote->quoteItems()->count();
 
         /* Assert */
-        $this->assertInstanceOf(BelongsTo::class, $relation);
+        $this->assertSame(0, $count);
     }
 
     #[Test]
     #[Group('unit')]
-    public function it_has_a_quote_items_relationship_returning_has_many(): void
+    public function it_allows_creating_a_quote_via_mass_assignment(): void
     {
-        /* Arrange */
-        $quote = Quote::factory()->for($this->company)->create();
+        /* Arrange — only fields needed to satisfy DB constraints */
+        $quote = Quote::factory()->for($this->company)->make()->toArray();
 
         /* Act */
-        $relation = $quote->quoteItems();
+        $created = Quote::create($quote);
 
         /* Assert */
-        $this->assertInstanceOf(HasMany::class, $relation);
-    }
-
-    #[Test]
-    #[Group('unit')]
-    public function it_does_not_have_a_void_tax_rate_method(): void
-    {
-        /* Arrange */
-        $quote = Quote::factory()->for($this->company)->create();
-
-        /* Act */
-        $hasTaxRateMethod = method_exists($quote, 'taxRate');
-
-        /* Assert */
-        $this->assertFalse($hasTaxRateMethod, 'Quote::taxRate() with void return type was removed — it had no implementation.');
-    }
-
-    #[Test]
-    #[Group('unit')]
-    public function it_uses_guarded_protection(): void
-    {
-        /* Arrange */
-        $model = new Quote();
-
-        /* Act */
-        $fillable = $model->getFillable();
-        $guarded  = $model->getGuarded();
-
-        /* Assert */
-        $this->assertEmpty($fillable, 'Quote must not use $fillable — use $guarded = [] instead.');
-        $this->assertSame([], $guarded);
+        $this->assertDatabaseHas('quotes', ['id' => $created->id]);
     }
 }

@@ -55,4 +55,18 @@ class UserCanAccessTenantTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertTrue($result);
     }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_denies_access_to_a_user_with_no_company_association(): void
+    {
+        /* Arrange */
+        $userWithNoCompany = User::factory()->create();
+
+        /* Act */
+        $result = $userWithNoCompany->canAccessTenant($this->company);
+
+        /* Assert */
+        $this->assertFalse($result);
+    }
 }
