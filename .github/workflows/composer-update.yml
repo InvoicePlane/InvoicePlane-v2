@@ -1,6 +1,6 @@
 name: Composer Dependency Update
 
-'on':
+on:
   workflow_dispatch:
     inputs:
       update_type:
