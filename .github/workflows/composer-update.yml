@@ -11,6 +11,7 @@ on:
           - security-patch
           - patch-minor
           - all-dependencies
+          - repair
         default: 'security-patch'
   schedule:
     # Run weekly on Monday at 9:00 AM UTC
@@ -42,10 +43,26 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP with Composer
+        if: github.event.inputs.update_type != 'repair'
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.2'
-          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql'
+          php-version: '8.4'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+
+      - name: Setup PHP for Composer repair
+        if: github.event.inputs.update_type == 'repair'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath
+          coverage: none
+
+      - name: Repair Composer install
+        if: github.event.inputs.update_type == 'repair'
+        run: |
+          rm -f composer.lock
+          rm -rf vendor
+          composer install --prefer-dist --no-interaction
 
       - name: Run Composer audit
         id: audit
