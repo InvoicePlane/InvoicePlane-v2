@@ -25,6 +25,10 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - name: Setup gh CLI auth
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
