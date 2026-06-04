@@ -2,9 +2,9 @@
 
 namespace Modules\Invoices\Tests\Unit;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceTransaction;
 use Modules\Invoices\Models\RecurringInvoiceItem;
@@ -15,35 +15,26 @@ class InvoiceModelTest extends AbstractCompanyPanelTestCase
 {
     #[Test]
     #[Group('unit')]
-    public function it_has_a_single_expenses_relationship_returning_has_many(): void
+    public function it_returns_expenses_belonging_to_the_invoice(): void
     {
         /* Arrange */
-        $invoice = Invoice::factory()->for($this->company)->draft()->create();
+        $invoice      = Invoice::factory()->for($this->company)->draft()->create();
+        $ownedExpense = Expense::factory()->for($this->company)->create(['invoice_id' => $invoice->id]);
+
+        $otherInvoice = Invoice::factory()->for($this->company)->draft()->create();
+        Expense::factory()->for($this->company)->create(['invoice_id' => $otherInvoice->id]);
 
         /* Act */
-        $relation = $invoice->expenses();
+        $result = $invoice->expenses;
 
         /* Assert */
-        $this->assertInstanceOf(HasMany::class, $relation);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->contains($ownedExpense));
     }
 
     #[Test]
     #[Group('unit')]
-    public function it_has_a_tax_rates_relationship_returning_belongs_to_many(): void
-    {
-        /* Arrange */
-        $invoice = Invoice::factory()->for($this->company)->draft()->create();
-
-        /* Act */
-        $relation = $invoice->taxRates();
-
-        /* Assert */
-        $this->assertInstanceOf(BelongsToMany::class, $relation);
-    }
-
-    #[Test]
-    #[Group('unit')]
-    public function it_expenses_relationship_returns_zero_count_on_new_invoice(): void
+    public function it_returns_zero_expenses_for_a_new_invoice(): void
     {
         /* Arrange */
         $invoice = Invoice::factory()->for($this->company)->draft()->create();
@@ -57,33 +48,66 @@ class InvoiceModelTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('unit')]
-    public function it_uses_guarded_protection_on_invoice_transaction(): void
+    public function it_returns_only_tax_rates_attached_to_the_invoice(): void
     {
         /* Arrange */
-        $model = new InvoiceTransaction();
+        $invoice        = Invoice::factory()->for($this->company)->draft()->create();
+        $attachedRate   = TaxRate::factory()->for($this->company)->create();
+        $unattachedRate = TaxRate::factory()->for($this->company)->create();
+        $invoice->taxRates()->attach($attachedRate);
 
         /* Act */
-        $fillable = $model->getFillable();
-        $guarded  = $model->getGuarded();
+        $result = $invoice->taxRates;
 
         /* Assert */
-        $this->assertEmpty($fillable, 'InvoiceTransaction must not use $fillable — use $guarded = [] instead.');
-        $this->assertSame([], $guarded);
+        $this->assertCount(1, $result);
+        $this->assertTrue($result->contains($attachedRate));
+        $this->assertFalse($result->contains($unattachedRate));
     }
 
     #[Test]
     #[Group('unit')]
-    public function it_uses_guarded_protection_on_recurring_invoice_item(): void
+    public function it_allows_creating_an_invoice_transaction_via_mass_assignment(): void
     {
         /* Arrange */
-        $model = new RecurringInvoiceItem();
+        $invoice = Invoice::factory()->for($this->company)->draft()->create();
 
         /* Act */
-        $fillable = $model->getFillable();
-        $guarded  = $model->getGuarded();
+        InvoiceTransaction::create([
+            'invoice_id'            => $invoice->id,
+            'is_successful'         => true,
+            'transaction_reference' => 'TXN-REF-001',
+        ]);
 
         /* Assert */
-        $this->assertEmpty($fillable, 'RecurringInvoiceItem must not use $fillable — use $guarded = [] instead.');
-        $this->assertSame([], $guarded);
+        $this->assertDatabaseHas('invoice_transactions', [
+            'invoice_id'            => $invoice->id,
+            'is_successful'         => true,
+            'transaction_reference' => 'TXN-REF-001',
+        ]);
+    }
+
+    #[Test]
+    #[Group('unit')]
+    public function it_allows_filling_all_recurring_invoice_item_fields_via_mass_assignment(): void
+    {
+        /* Arrange */
+        $fields = [
+            'item_name'     => 'Monthly Hosting',
+            'quantity'      => 2.0,
+            'price'         => 49.99,
+            'subtotal'      => 99.98,
+            'total'         => 99.98,
+            'display_order' => 1,
+        ];
+
+        /* Act */
+        $item = new RecurringInvoiceItem($fields);
+
+        /* Assert */
+        $this->assertEquals('Monthly Hosting', $item->item_name);
+        $this->assertEquals(2.0, $item->quantity);
+        $this->assertEquals(49.99, $item->price);
+        $this->assertEquals(99.98, $item->subtotal);
     }
 }
