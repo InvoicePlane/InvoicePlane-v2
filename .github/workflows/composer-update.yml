@@ -1,17 +1,17 @@
 name: Composer Dependency Update
 
-on:
+'on':
   workflow_dispatch:
     inputs:
       update_type:
         description: 'Type of update to perform'
         required: true
-        type: choice
+        type: 'choice'
         options:
-          - security-patch
-          - patch-minor
-          - all-dependencies
-          - repair
+          - 'security-patch'
+          - 'patch-minor'
+          - 'all-dependencies'
+          - 'repair'
         default: 'security-patch'
   schedule:
     # Run weekly on Monday at 9:00 AM UTC
@@ -43,14 +43,14 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP with Composer
-        if: github.event.inputs.update_type != 'repair'
+        if: github.event_name == 'schedule' || inputs.update_type != 'repair'
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
           php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
 
       - name: Setup PHP for Composer repair
-        if: github.event.inputs.update_type == 'repair'
+        if: github.event_name == 'workflow_dispatch' && inputs.update_type == 'repair'
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -58,7 +58,7 @@ jobs:
           coverage: none
 
       - name: Repair Composer install
-        if: github.event.inputs.update_type == 'repair'
+        if: github.event_name == 'workflow_dispatch' && inputs.update_type == 'repair'
         run: |
           rm -f composer.lock
           rm -rf vendor
@@ -75,19 +75,19 @@ jobs:
           fi
 
       - name: Update Composer dependencies (Security & Patch Updates)
-        if: github.event.inputs.update_type == 'security-patch' || github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || inputs.update_type == 'security-patch'
         run: |
           # Note: This updates all dependencies while respecting version constraints in composer.json
           # For true security-only updates, manually update specific vulnerable packages
           composer update --with-dependencies --prefer-stable --no-interaction
 
       - name: Update Composer dependencies (Patch & Minor)
-        if: github.event.inputs.update_type == 'patch-minor'
+        if: inputs.update_type == 'patch-minor'
         run: |
           composer update --prefer-stable --no-interaction
 
       - name: Update Composer dependencies (All)
-        if: github.event.inputs.update_type == 'all-dependencies'
+        if: inputs.update_type == 'all-dependencies'
         run: |
           composer bump && composer update
 
@@ -214,16 +214,16 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.PAT_TOKEN }}
-          commit-message: "chore(deps): update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
+          commit-message: "chore(deps): update Composer dependencies (${{ inputs.update_type || 'security-patch' }})"
           branch: automated/composer-update-${{ github.run_number }}
           delete-branch: false
-          title: "chore(deps): Update Composer dependencies (${{ github.event.inputs.update_type || 'security-patch' }})"
+          title: "chore(deps): Update Composer dependencies (${{ inputs.update_type || 'security-patch' }})"
           body: |
             ## Composer Dependency Update
             
             This PR updates Composer dependencies.
             
-            **Update Type:** ${{ github.event.inputs.update_type }}
+            **Update Type:** ${{ inputs.update_type || 'security-patch' }}
             **Triggered by:** ${{ github.event_name }}
             
             ### Updated Packages

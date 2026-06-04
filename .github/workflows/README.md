@@ -124,6 +124,7 @@ Artifacts are also available in the Actions tab for 90 days.
 - `security-patch` - Security and patch updates (default for scheduled runs)
 - `patch-minor` - Patch and minor version updates
 - `all-dependencies` - All updates including major versions with `composer bump`
+- `repair` - Regenerates `composer.lock` from a clean Composer install when dependency installation is broken
 
 **Smoke Tests:**
 
