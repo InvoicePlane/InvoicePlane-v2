@@ -415,6 +415,44 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     # endregion
 
     # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_returns_customers_belonging_to_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB   = \Modules\Core\Models\Company::factory()->create();
+        $customerA  = Relation::factory()->for($this->company)->customer()->create();
+        $customerB  = Relation::factory()->for($companyB)->customer()->create();
+
+        /* Act — authenticate as Company A user; global scope filters to Company A */
+        $this->actingAs($this->user);
+
+        /* Assert */
+        $this->assertDatabaseHas('relations', ['id' => $customerA->id]);
+        $this->assertDatabaseHas('relations', ['id' => $customerB->id]);    // B is in the DB...
+        $this->assertNotNull(Relation::find($customerA->id));               // A is visible to tenant A
+        $this->assertNull(Relation::find($customerB->id));                  // B is NOT visible to tenant A
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_lists_customers_for_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB = \Modules\Core\Models\Company::factory()->create();
+
+        $customerA = Relation::factory()->for($this->company)->customer()->create(['company_name' => 'Visible Customer']);
+        $customerB = Relation::factory()->for($companyB)->customer()->create(['company_name' => 'Hidden Customer']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class, ['tenant' => Str::lower($this->company->search_code)]);
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
+        $component->assertDontSeeText('Hidden Customer');
+    }
     # endregion
 
     # region spicy

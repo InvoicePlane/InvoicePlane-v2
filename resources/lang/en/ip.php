@@ -660,6 +660,7 @@ return [
     'invoice_status_partially_paid'      => 'Partially Paid',
     'invoice_status_sent'                => 'Sent',
     'invoice_status_viewed'              => 'Viewed',
+    'cannot_delete_paid_invoice'         => 'Paid invoices cannot be deleted.',
     'invoice_sumex'                      => 'Sumex',
     'invoice_sumex_canton'               => 'Canton',
     'invoice_sumex_diagnosis'            => 'Diagnosis',
