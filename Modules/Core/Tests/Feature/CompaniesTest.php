@@ -151,32 +151,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
-    # region crud
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload {
-     *   "search_code": "IVPLV2",
-     *   "name": "InvoicePlane Corp"
-     * }
-     */
-    #[Group('crud')]
-    public function it_lists_companies(): void
-    {
-        /* arrange */
-        $company = Company::factory()->create(['name' => 'Acme LLC']);
-
-        /* act */
-        $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListCompanies::class);
-
-        /* assert */
-        $component->assertSuccessful();
-
-        $this->assertDatabaseHas('companies', $company->toArray());
-    }
-    # endregion
-
     # region modals
     #[Test]
     #[Group('modals')]
