@@ -443,6 +443,8 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         $customerA = Relation::factory()->for($this->company)->customer()->create(['company_name' => 'Visible Customer']);
         $customerB = Relation::factory()->for($companyB)->customer()->create(['company_name' => 'Hidden Customer']);
+        $customerA = Relation::factory()->for($this->company)->customer()->create(['company_name' => 'Visible Customer']);
+        $customerB = Relation::factory()->for($companyB)->customer()->create(['company_name' => 'Hidden Customer']);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
@@ -450,11 +452,9 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component->assertSuccessful();
-        $this->assertDatabaseHas('relations', ['id' => $customerA->id]);
-        $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
         $component->assertSeeText('Visible Customer');
+        $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
         $component->assertDontSeeText('Hidden Customer');
-    }
     # endregion
 
     # region spicy
