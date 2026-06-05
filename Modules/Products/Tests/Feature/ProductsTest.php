@@ -116,6 +116,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
+        /*if (app()->runningUnitTests()) {
+            dd($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasNoFormErrors();
@@ -176,6 +180,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasFormErrors(['code']);
@@ -234,6 +242,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->callMountedAction();
 
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
@@ -288,6 +300,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
+
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
 
         /* Assert */
         $component
@@ -393,6 +409,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasNoFormErrors();
@@ -452,6 +472,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasFormErrors(['code']);
@@ -508,6 +532,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
+
         /* Assert */
         $component
             ->assertHasFormErrors(['product_name']);
@@ -561,6 +589,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
             ->test(CreateProduct::class)
             ->fillForm($payload)
             ->call('create');
+
+        /*if (app()->runningUnitTests()) {
+            dump($payload);
+        }*/
 
         /* Assert */
         $component
