@@ -912,9 +912,10 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->test(ListQuotes::class);
 
         /* Assert */
+        /* Assert */
         $component->assertSuccessful();
-        $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
         $component->assertSeeText('Q-VISIBLE');
+        $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
         $component->assertDontSeeText('Q-HIDDEN');
     }
     # endregion
