@@ -20,8 +20,8 @@ class RecurringInvoiceForm
                 TextInput::make('invoice_id')
                     ->required()
                     ->numeric(),
-                TextInput::make('document_group_id')
-                    ->numeric()
+                Select::make('numbering_id')
+                    ->relationship('numbering', 'name')
                     ->default(null),
                 Select::make('frequency')
                     ->options(RecurringFrequency::class)

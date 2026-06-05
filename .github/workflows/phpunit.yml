@@ -10,20 +10,27 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
-    # MySQL service commented out - tests use SQLite in-memory instead
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: root
-    #       MYSQL_DATABASE: testing
-    #     ports:
-    #       - 3306:3306
-    #     options: >-
-    #       --health-cmd="mysqladmin ping --silent"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=3
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: invoiceplane_test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +39,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          php-extensions: 'mbstring, bcmath, pdo_sqlite, pdo_mysql'
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
           composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
       - name: Prepare Laravel environment
@@ -40,11 +47,8 @@ jobs:
           cp .env.testing.example .env.testing
           php artisan key:generate --env=testing
 
-      #- name: Run Laravel migrations
-      #  run: php artisan migrate --force --env=testing
-
-      #- name: Run Laravel seeds (optional)
-      #  run: php artisan db:seed --force --env=testing
+      - name: Run Laravel migrations
+        run: php artisan migrate --force --env=testing
 
       - name: Run PHPUnit
         run: php artisan test --env=testing
