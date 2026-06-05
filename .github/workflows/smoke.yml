@@ -4,6 +4,14 @@ permissions:
   contents: read
 
 on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -11,8 +19,28 @@ jobs:
     name: Composer, migrations, and smoke tests
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: invoiceplane_test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
       APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - name: Checkout repository
@@ -22,7 +50,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, sqlite, mysql, bcmath'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, pdo_mysql, pdo_sqlite, sqlite, bcmath'
           composer-flags: '--prefer-dist --no-interaction'
 
       - name: Prepare Laravel environment

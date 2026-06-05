@@ -31,8 +31,8 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
-          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          php-version: '8.4'
+          php-extensions: 'mbstring, bcmath, pdo_sqlite, pdo_mysql'
           composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
       - name: Prepare Laravel environment
