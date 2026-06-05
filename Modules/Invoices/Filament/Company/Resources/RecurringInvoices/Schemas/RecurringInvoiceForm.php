@@ -21,6 +21,7 @@ class RecurringInvoiceForm
                     ->required()
                     ->numeric(),
                 Select::make('numbering_id')
+                    ->label(trans('ip.numbering'))
                     ->relationship('numbering', 'name')
                     ->default(null),
                 Select::make('frequency')
