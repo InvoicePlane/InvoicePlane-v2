@@ -396,51 +396,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseMissing('projects', $payload);
     }
 
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload missing: project_name
-     * {
-     *   "company_id": 1,
-     *   "customer_id": 2,
-     *   "project_status": "active",
-     *   "project_name": "Website Redesign",
-     *   "start_at": "2025-05-01",
-     *   "end_at": "2025-06-01",
-     *   "description": "Redesigning the corporate website"
-     * }
-     */
-    public function it_fails_to_create_project_without_required_project_name(): void
-    {
-        $this->markTestIncomplete();
-
-        $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
-
-        /* arrange */
-        $payload = [
-            'company_id'     => $company->id,
-            'customer_id'    => 2,
-            'project_status' => 'active',
-            'start_at'       => '2025-05-01',
-            'end_at'         => '2025-06-01',
-            'description'    => 'Redesigning the corporate website',
-        ];
-
-        $component = Livewire::actingAs($this->user)
-            ->test(CreateProject::class)
-            ->fillForm($payload)
-            ->call('create');
-
-        $component
-            ->assertHasFormErrors(['project_name' => 'required']);
-
-        $this->assertDatabaseMissing('projects', [
-            'customer_id'  => $customer->id,
-            'project_name' => 'Website Redesign',
-        ]);
-    }
-
     /**
      * @payload missing: starts_at
      * {
@@ -469,44 +424,6 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component->assertHasFormErrors(['starts_at']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     *    "project_name": "Updated Project Name"
-     * }
-     */
-    public function it_updates_a_project(): void
-    {
-        $this->markTestIncomplete();
-
-        /* arrange */
-
-        $this->markTestSkipped('Not implemented yet');
-        // $this->authenticate();
-        $client = Relation::factory()->create(['client_name' => '::client_name::']);
-
-        $project = Project::factory()->create([
-            'client_id'    => $client->client_id,
-            'project_name' => '::project_name::',
-        ]);
-
-        $updatedData = [
-            'project_name' => '::updated_project_name::',
-        ];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProject::class, ['record' => $project->project_id])->set('data.project_name', $updatedData['project_name'])->call('save');
-
-        /* assert */
-        $component->assertSuccessful()->assertHasNoErrors();
-
-        $this->assertDatabaseHas('projects', array_merge($updatedData, [
-            'project_id' => $project->project_id,
-        ]));
     }
 
     #[Test]
