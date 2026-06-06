@@ -62,14 +62,15 @@ jobs:
 
     services:
       mysql:
-        image: mariadb:10.6
+        image: mariadb:11
         env:
-          MYSQL_DATABASE: ivplv2
-          MYSQL_ROOT_PASSWORD: root
+          MARIADB_DATABASE: ivplv2
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_ROOT_HOST: '%'
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -90,7 +91,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, json, pdo, mysql
+          extensions: mbstring, xml, json, pdo, pdo_mysql
           coverage: none
 
       - name: Set up Node.js

@@ -23,8 +23,8 @@ jobs:
       mariadb:
         image: mariadb:10.11
         env:
-          MYSQL_DATABASE: invoiceplane_test
           MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
@@ -50,7 +50,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
-          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, pdo_mysql, pdo_sqlite, sqlite, bcmath'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, pdo_mysql, bcmath'
           composer-flags: '--prefer-dist --no-interaction'
 
       - name: Prepare Laravel environment
