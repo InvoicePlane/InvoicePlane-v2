@@ -21,9 +21,6 @@ class RelationFactory extends AbstractFactory
     public function definition(): array
     {
         $companyId = $this->resolveCompanyId();
-        if ( ! $companyId) {
-            $companyId = \Modules\Core\Models\Company::factory()->create()->id;
-        }
         $companyName = $this->faker->company;
         $suffix      = $this->faker->optional(0.7)->companySuffix();
         $tradingName = $companyName . ($suffix ? " {$suffix}" : '');
@@ -36,7 +33,7 @@ class RelationFactory extends AbstractFactory
             ]);
 
         return [
-            'company_id'         => $companyId,
+            'company_id'         => $companyId ?? \Modules\Core\Models\Company::factory(),
             'primary_contact_id' => null, // Set to null or a valid Contact ID if needed
             'relation_type'      => $relationType,
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,
