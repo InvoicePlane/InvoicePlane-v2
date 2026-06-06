@@ -41,7 +41,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_returns_correct_mime_type($handlerClass): void
+    public function it_returns_correct_mime_type($handlerClass, $format = null): void
     {
         $handler  = new $handlerClass();
         $mimeType = $handler->getMimeType();
@@ -52,7 +52,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_returns_correct_file_extension($handlerClass): void
+    public function it_returns_correct_file_extension($handlerClass, $format = null): void
     {
         $handler   = new $handlerClass();
         $extension = $handler->getFileExtension();
@@ -63,7 +63,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_transforms_invoice_correctly($handlerClass): void
+    public function it_transforms_invoice_correctly($handlerClass, $format = null): void
     {
         $handler = new $handlerClass();
         $invoice = $this->createMockInvoice();
@@ -77,7 +77,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_validates_basic_invoice_fields($handlerClass): void
+    public function it_validates_basic_invoice_fields($handlerClass, $format = null): void
     {
         $handler = new $handlerClass();
         $invoice = $this->createMockInvoice();
@@ -91,7 +91,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_validates_missing_customer($handlerClass): void
+    public function it_validates_missing_customer($handlerClass, $format = null): void
     {
         $handler      = new $handlerClass();
         $invoice      = new Invoice();
@@ -112,7 +112,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_validates_missing_invoice_number($handlerClass): void
+    public function it_validates_missing_invoice_number($handlerClass, $format = null): void
     {
         $handler                 = new $handlerClass();
         $invoice                 = $this->createMockInvoice();
@@ -127,7 +127,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_validates_missing_items($handlerClass): void
+    public function it_validates_missing_items($handlerClass, $format = null): void
     {
         $handler               = new $handlerClass();
         $invoice               = $this->createMockInvoice();
@@ -142,7 +142,7 @@ class FormatHandlersTest extends TestCase
     #[Test]
     #[Group('still_failing')]
     #[DataProvider('handlerProvider')]
-    public function it_generates_xml($handlerClass): void
+    public function it_generates_xml($handlerClass, $format = null): void
     {
         $handler = new $handlerClass();
         $invoice = $this->createMockInvoice();
