@@ -196,10 +196,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->fillForm($payload)
             ->call('create');
 
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
-
         /* Assert */
         $component
             ->assertSuccessful()
@@ -220,10 +216,6 @@ class CompaniesTest extends AbstractAdminPanelTestCase
             ->test(CreateCompany::class)
             ->fillForm($payload)
             ->call('create');
-
-        /*if (app()->runningUnitTests()) {
-            dump($payload);
-        }*/
 
         /* Assert */
         $component

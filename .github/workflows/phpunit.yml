@@ -11,16 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
+      mariadb:
         image: mariadb:11
         env:
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_ROOT_HOST: '%'
-          MARIADB_DATABASE: testing
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -29,7 +28,7 @@ jobs:
       DB_CONNECTION: mysql
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_DATABASE: testing
+      DB_DATABASE: invoiceplane_test
       DB_USERNAME: root
       DB_PASSWORD: root
 
@@ -39,7 +38,7 @@ jobs:
       - name: Setup PHP with Composer
         uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           php-extensions: 'mbstring, bcmath, pdo_mysql'
           composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
@@ -48,11 +47,8 @@ jobs:
           cp .env.testing.example .env.testing
           php artisan key:generate --env=testing
 
-      #- name: Run Laravel migrations
-      #  run: php artisan migrate --force --env=testing
-
-      #- name: Run Laravel seeds (optional)
-      #  run: php artisan db:seed --force --env=testing
+      - name: Run Laravel migrations
+        run: php artisan migrate --force --env=testing
 
       - name: Run PHPUnit
         run: php artisan test --env=testing

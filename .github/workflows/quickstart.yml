@@ -11,16 +11,15 @@ jobs:
       contents: read
 
     services:
-      mysql:
+      mariadb:
         image: mariadb:11
         env:
-          MARIADB_DATABASE: testing
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_ROOT_HOST: '%'
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -30,7 +29,7 @@ jobs:
       DB_CONNECTION: mysql
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_DATABASE: testing
+      DB_DATABASE: invoiceplane_test
       DB_USERNAME: root
       DB_PASSWORD: root
 
@@ -42,6 +41,7 @@ jobs:
         uses: ./.github/actions/setup-php-composer
         with:
           php-version: '8.4'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, pdo_mysql, bcmath'
           composer-flags: '--prefer-dist --no-interaction'
 
       - name: Set up Node.js

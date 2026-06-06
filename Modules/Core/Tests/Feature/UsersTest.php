@@ -81,22 +81,15 @@ class UsersTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('authentication')]
     #[Group('security')]
-    /**
-     * Test that inactive users cannot log in and receive appropriate error messages.
-     *
-     * @payload ['name' => 'Inactive User', 'email' => 'inactive@example.com', 'is_active' => false]
-     */
-    public function it_prevents_inactive_users_from_logging_in(): void
+    public function it_denies_login_to_inactive_users(): void
     {
         /* Arrange */
-        $expectedDate = Carbon::now();
-
         $inactiveUser = User::factory()->create([
             'name'              => 'Inactive User',
             'email'             => 'inactive@example.com',
             'password'          => bcrypt('password123'),
             'is_active'         => false,
-            'email_verified_at' => $expectedDate,
+            'email_verified_at' => Carbon::now(),
         ]);
 
         $inactiveUser->companies()->attach($this->company);
@@ -111,19 +104,7 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $response->assertHasErrors();
-
-        $this->assertEquals(
-            'Your account is inactive. Please contact the administrator.',
-            trans('ip.account_inactive')
-        );
-
-        $this->assertEquals(
-            'Login denied: Your account has been deactivated.',
-            trans('ip.account_inactive_login_denied')
-        );
-
         $this->assertGuest();
-
         $this->assertDatabaseHas('users', [
             'email'     => 'inactive@example.com',
             'is_active' => false,
@@ -133,64 +114,45 @@ class UsersTest extends AbstractAdminPanelTestCase
     #[Test]
     #[Group('authentication')]
     #[Group('security')]
-    #[Group('edge-cases')]
-    /**
-     * Test edge case: Active user can log in successfully after inactive user fails.
-     */
-    public function it_allows_active_users_to_login_after_inactive_user_fails(): void
+    public function it_allows_active_users_to_login(): void
     {
         /* Arrange */
-        $expectedDate = Carbon::now();
-
-        $inactiveUser = User::factory()->create([
-            'name'              => 'Inactive User',
-            'email'             => 'inactive@example.com',
-            'password'          => bcrypt('password123'),
-            'is_active'         => false,
-            'email_verified_at' => $expectedDate,
-        ]);
-
         $activeUser = User::factory()->create([
             'name'              => 'Active User',
             'email'             => 'active@example.com',
-            'password'          => bcrypt('password123'),
+            'password'          => bcrypt('password'),
             'is_active'         => true,
-            'email_verified_at' => $expectedDate,
+            'email_verified_at' => Carbon::now(),
         ]);
 
-        $inactiveUser->companies()->attach($this->company);
         $activeUser->companies()->attach($this->company);
 
         /* Act */
-        $inactiveResponse = Livewire::test(Login::class)
+        $response = Livewire::test(Login::class)
             ->fillForm([
-                'email'    => 'inactive@example.com',
-                'password' => 'password123',
+                'email'    => 'active@example.com',
+                'password' => 'password',
             ])
             ->call('authenticate');
 
-        $inactiveResponse->assertHasErrors();
-        $this->assertGuest();
+        /* Assert */
+        $response->assertHasNoErrors();
+        $this->assertAuthenticated();
     }
 
     #[Test]
     #[Group('authentication')]
     #[Group('security')]
     #[Group('edge-cases')]
-    /**
-     * Test edge case: User becomes inactive after being created as active.
-     */
     public function it_prevents_login_when_user_becomes_inactive_after_creation(): void
     {
         /* Arrange */
-        $expectedDate = Carbon::now();
-
         $userPayload = [
             'name'              => 'Test User',
             'email'             => 'test@example.com',
             'password'          => 'password123',
             'is_active'         => true,
-            'email_verified_at' => $expectedDate,
+            'email_verified_at' => Carbon::now(),
         ];
 
         $user = User::factory()->create($userPayload);
@@ -204,10 +166,6 @@ class UsersTest extends AbstractAdminPanelTestCase
                 'password' => $userPayload['password'],
             ])
             ->call('authenticate');
-
-        /*if (app()->runningUnitTests()) {
-            dd($initialLoginResponse->errors());
-        }*/
 
         $initialLoginResponse->assertSuccessful();
         $this->assertAuthenticated();

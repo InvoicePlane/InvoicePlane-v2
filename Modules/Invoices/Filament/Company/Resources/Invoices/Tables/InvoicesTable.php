@@ -158,7 +158,14 @@ class InvoicesTable
                         }),
                     DeleteAction::make('delete')
                         ->action(function (Invoice $record, array $data) {
-                            app(InvoiceService::class)->deleteInvoice($record);
+                            try {
+                                app(InvoiceService::class)->deleteInvoice($record);
+                            } catch (\InvalidArgumentException $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
                 ]),
             ])

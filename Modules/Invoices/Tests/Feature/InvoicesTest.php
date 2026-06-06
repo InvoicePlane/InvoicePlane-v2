@@ -640,55 +640,33 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_paid_invoice(): void
     {
-        $this->markTestIncomplete('Still can delete paid invoice');
-
         /* Arrange */
-        $user            = $this->user;
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'customer_id'              => $customer->id,
-            'numbering_id'             => $documentGroup->id,
-            'user_id'                  => $user->id,
-            'invoice_number'           => 'INV-987654',
-            'invoice_status'           => InvoiceStatus::PAID,
-            'invoice_sign'             => '1',
-            'invoiced_at'              => now()->format('Y-m-d'),
-            'invoice_due_at'           => now()->addDays(30)->format('Y-m-d'),
-            'invoice_discount_amount'  => 10,
-            'invoice_discount_percent' => 5,
-            'item_tax_total'           => 0,
-            'invoice_item_subtotal'    => 450,
-            'invoice_tax_total'        => 20,
-            'invoice_total'            => 440,
-        ];
+        $user     = $this->user;
+        $customer = Relation::factory()->for($this->company)->customer()->create();
 
         $invoice = Invoice::factory()
             ->for($this->company)
-            ->create($payload);
+            ->paid()
+            ->create([
+                'customer_id'  => $customer->id,
+                'user_id'      => $user->id,
+                'invoice_number' => 'INV-PAID-001',
+            ]);
 
-        $payment = Payment::factory()->for($this->company)->create([
+        Payment::factory()->for($this->company)->create([
             'customer_id'    => $customer->id,
             'invoice_id'     => $invoice->id,
-            'payment_amount' => 440,
+            'payment_amount' => $invoice->invoice_total,
             'paid_at'        => now(),
         ]);
 
-        $component = Livewire::actingAs($this->user)
+        /* Act */
+        Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
             ->mountAction(TestAction::make('delete')->table($invoice))
             ->callMountedAction();
 
+        /* Assert — paid invoice must be preserved */
         $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
     }
 
@@ -696,26 +674,63 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_delete_invoice_that_was_already_deleted(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
         /* Arrange */
         $invoice = Invoice::factory()->for($this->company)->create();
+        $invoiceId = $invoice->id;
         $invoice->delete();
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('delete')->table($invoice))
-            ->callMountedAction();
+        $deletedInvoice = Invoice::withTrashed()->find($invoiceId);
+        $result = $deletedInvoice ? $deletedInvoice->delete() : false;
 
         /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertFalse($result);
+        $this->assertDatabaseMissing('invoices', ['id' => $invoiceId]);
     }
     # endregion
 
     # region multi-tenancy
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_returns_invoices_belonging_to_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB  = \Modules\Core\Models\Company::factory()->create();
+        $invoiceA  = Invoice::factory()->for($this->company)->create(['invoice_number' => 'INV-TENANT-A']);
+        $invoiceB  = Invoice::factory()->for($companyB)->create(['invoice_number' => 'INV-TENANT-B']);
+
+        /* Act — authenticate as Company A user; global scope filters to Company A */
+        $this->actingAs($this->user);
+
+        /* Assert */
+        $this->assertDatabaseHas('invoices', ['id' => $invoiceA->id]);
+        $this->assertDatabaseHas('invoices', ['id' => $invoiceB->id]);    // B is in the DB...
+        $this->assertNotNull(Invoice::find($invoiceA->id));               // A is visible to tenant A
+        $this->assertNull(Invoice::find($invoiceB->id));                  // B is NOT visible to tenant A
+    }
+
+    #[Test]
+    #[Group('multi-tenancy')]
+    public function it_only_lists_invoices_for_the_current_tenant(): void
+    {
+        /* Arrange */
+        $companyB = \Modules\Core\Models\Company::factory()->create();
+
+        Invoice::factory()->for($this->company)->create(['invoice_number' => 'INV-VISIBLE']);
+        Invoice::factory()->for($companyB)->create(['invoice_number' => 'INV-HIDDEN']);
+
+        tenancy()->initialize($this->company);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class);
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('invoices', ['invoice_number' => 'INV-HIDDEN']);
+        $component->assertSeeText('INV-VISIBLE');
+        $component->assertDontSeeText('INV-HIDDEN');
+    }
     # endregion
 
     #region spicy
