@@ -455,6 +455,7 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         $component->assertSeeText('Visible Customer');
         $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
         $component->assertDontSeeText('Hidden Customer');
+    }
     # endregion
 
     # region spicy
