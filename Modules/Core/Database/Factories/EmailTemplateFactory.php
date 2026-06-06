@@ -13,10 +13,9 @@ class EmailTemplateFactory extends AbstractFactory
     public function definition(): array
     {
         $companyId = $this->resolveCompanyId();
-        $company   = $this->resolveCompany();
 
         return [
-            'company_id' => $company->id,
+            'company_id' => $companyId ?? Company::factory(),
             'title'      => $this->faker->sentence(),
             'type'       => $this->faker->randomElement(EmailTemplateType::cases())->value,
             'subject'    => $this->faker->word,
