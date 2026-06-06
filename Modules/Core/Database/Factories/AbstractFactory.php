@@ -23,11 +23,13 @@ abstract class AbstractFactory extends Factory
 
     protected function resolveForeignKey($relatedClass, $companyId = null)
     {
-        if (app()->runningUnitTests()) {
+        if (app()->runningUnitTests() && $companyId !== null) {
             return $relatedClass::query()->where('company_id', $companyId)
                 ->inRandomOrder()
                 ->first()?->id
                 ?? $relatedClass::factory();
         }
+
+        return $relatedClass::factory();
     }
 }
