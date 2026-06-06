@@ -12,7 +12,7 @@ jobs:
 
     services:
       mariadb:
-        image: mariadb:11
+        image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: invoiceplane_test
