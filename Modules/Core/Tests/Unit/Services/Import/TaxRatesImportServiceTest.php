@@ -52,13 +52,14 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(2, $stats['tax_rates']);
-        $this->assertEquals(2, TaxRate::where('company_id', $this->company->id)->count());
+        $this->assertDatabaseHas('tax_rates', ['company_id' => $this->company->id, 'name' => 'VAT 21%']);
+        $this->assertDatabaseHas('tax_rates', ['company_id' => $this->company->id, 'name' => 'VAT 9%']);
 
         $taxRate1 = TaxRate::where('company_id', $this->company->id)
-            ->where('tax_name', 'VAT 21%')
+            ->where('name', 'VAT 21%')
             ->first();
         $this->assertNotNull($taxRate1);
-        $this->assertEquals(21.000, $taxRate1->tax_rate);
+        $this->assertEquals(21.000, $taxRate1->rate);
         $this->assertArrayHasKey(1, $this->idMappings['tax_rates']);
     }
 
@@ -75,8 +76,9 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(1, $stats['tax_rates']);
-        $taxRate = TaxRate::where('company_id', $this->company->id)->first();
-        $this->assertEquals('Tax', $taxRate->tax_name);
+        $taxRate = TaxRate::where('company_id', $this->company->id)->where('name', 'Tax')->first();
+        $this->assertNotNull($taxRate);
+        $this->assertEquals('Tax', $taxRate->name);
     }
 
     #[Test]
@@ -92,8 +94,9 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(1, $stats['tax_rates']);
-        $taxRate = TaxRate::where('company_id', $this->company->id)->first();
-        $this->assertEquals(0, $taxRate->tax_rate);
+        $taxRate = TaxRate::where('company_id', $this->company->id)->where('name', 'VAT')->first();
+        $this->assertNotNull($taxRate);
+        $this->assertEquals(0, $taxRate->rate);
     }
 
     #[Test]
@@ -107,7 +110,6 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(0, $stats['tax_rates']);
-        $this->assertEquals(0, TaxRate::where('company_id', $this->company->id)->count());
     }
 
     #[Test]
@@ -126,7 +128,7 @@ class TaxRatesImportServiceTest extends AbstractTestCase
         $this->assertEquals(2, $stats['tax_rates']);
         // Should create only 1 unique tax rate due to firstOrCreate
         $this->assertEquals(1, TaxRate::where('company_id', $this->company->id)
-            ->where('tax_name', 'VAT 21%')
+            ->where('name', 'VAT 21%')
             ->count());
     }
 

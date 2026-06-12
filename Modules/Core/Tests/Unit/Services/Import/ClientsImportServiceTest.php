@@ -104,7 +104,7 @@ class ClientsImportServiceTest extends AbstractTestCase
         $this->assertNotNull($address);
         $this->assertEquals('123 Main St', $address->address_1);
         $this->assertEquals('New York', $address->city);
-        $this->assertEquals('10001', $address->zip);
+        $this->assertEquals('10001', $address->postal_code);
     }
 
     #[Test]

@@ -77,15 +77,16 @@ class ProductsImportService extends AbstractImportService
             }
 
             $product = Product::create([
-                'company_id'   => $this->companyId,
-                'category_id'  => $categoryId,
-                'unit_id'      => $unitId,
-                'type'         => 'service',
-                'code'         => $v1Product->product_sku ?? null,
-                'product_name' => $v1Product->product_name,
-                'price'        => $v1Product->product_price ?? 0,
-                'tax_rate_id'  => $taxRateId,
-                'description'  => $v1Product->product_description ?? null,
+                'company_id'    => $this->companyId,
+                'category_id'   => $categoryId,
+                'unit_id'       => $unitId,
+                'type'          => 'service',
+                'code'          => $v1Product->product_sku ?? null,
+                'product_name'  => $v1Product->product_name,
+                'price'         => $v1Product->product_price ?? 0,
+                'tax_rate_id'   => $taxRateId,
+                'tax_rate_2_id' => null,
+                'description'   => $v1Product->product_description ?? null,
             ]);
 
             $this->idMappings['products'][$v1Product->product_id] = $product->id;

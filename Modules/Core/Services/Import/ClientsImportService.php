@@ -48,6 +48,7 @@ class ClientsImportService extends AbstractImportService
             if ( ! empty($v1Client->client_address_1) || ! empty($v1Client->client_city)) {
                 Address::create([
                     'company_id'        => $this->companyId,
+                    'address_type'      => 'billing',
                     'addressable_id'    => $relation->id,
                     'addressable_type'  => Relation::class,
                     'address_1'         => $v1Client->client_address_1 ?? null,
@@ -92,11 +93,12 @@ class ClientsImportService extends AbstractImportService
             // Import email as communication
             if ( ! empty($v1Contact->contact_email)) {
                 Communication::create([
-                    'company_id'        => $this->companyId,
-                    'contactable_id'    => $contact->id,
-                    'contactable_type'  => Contact::class,
-                    'is_primary'        => true,
-                    'contactable_value' => $v1Contact->contact_email,
+                    'company_id'             => $this->companyId,
+                    'communicationable_id'   => $contact->id,
+                    'communicationable_type' => Contact::class,
+                    'is_primary'             => true,
+                    'communication_type'     => 'email',
+                    'communication_value'    => $v1Contact->contact_email,
                 ]);
 
                 $this->stats['communications']++;
@@ -105,11 +107,12 @@ class ClientsImportService extends AbstractImportService
             // Import phone as communication
             if ( ! empty($v1Contact->contact_phone)) {
                 Communication::create([
-                    'company_id'        => $this->companyId,
-                    'contactable_id'    => $contact->id,
-                    'contactable_type'  => Contact::class,
-                    'is_primary'        => true,
-                    'contactable_value' => $v1Contact->contact_phone,
+                    'company_id'             => $this->companyId,
+                    'communicationable_id'   => $contact->id,
+                    'communicationable_type' => Contact::class,
+                    'is_primary'             => false,
+                    'communication_type'     => 'phone',
+                    'communication_value'    => $v1Contact->contact_phone,
                 ]);
 
                 $this->stats['communications']++;

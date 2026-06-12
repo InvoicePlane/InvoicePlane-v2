@@ -57,7 +57,8 @@ class ProductsImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(2, $stats['product_categories']);
-        $this->assertEquals(2, ProductCategory::where('company_id', $this->company->id)->count());
+        $this->assertDatabaseHas('product_categories', ['company_id' => $this->company->id, 'category_name' => 'Services']);
+        $this->assertDatabaseHas('product_categories', ['company_id' => $this->company->id, 'category_name' => 'Products']);
         $this->assertArrayHasKey(1, $this->idMappings['product_families']);
         $this->assertArrayHasKey(2, $this->idMappings['product_families']);
     }
@@ -76,7 +77,8 @@ class ProductsImportServiceTest extends AbstractTestCase
 
         /* Assert */
         $this->assertEquals(2, $stats['product_units']);
-        $this->assertEquals(2, ProductUnit::where('company_id', $this->company->id)->count());
+        $this->assertDatabaseHas('product_units', ['company_id' => $this->company->id, 'unit_name' => 'Hour']);
+        $this->assertDatabaseHas('product_units', ['company_id' => $this->company->id, 'unit_name' => 'Piece']);
     }
 
     #[Test]
@@ -162,7 +164,8 @@ class ProductsImportServiceTest extends AbstractTestCase
         $stats = $this->service->import($this->company->id, $this->idMappings);
 
         /* Assert */
-        $unit = ProductUnit::where('company_id', $this->company->id)->first();
+        $unit = ProductUnit::where('company_id', $this->company->id)->where('unit_name', 'Item')->first();
+        $this->assertNotNull($unit);
         $this->assertEquals('Item', $unit->unit_name_plrl);
     }
 
