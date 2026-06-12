@@ -144,8 +144,8 @@ class AdminPanelProvider extends PanelProvider
                                 ...ImportResource::getNavigationItems(),
                             ]),*/
 
-NavigationGroup::make(trans('ip.users_roles'))
-                            //->icon('heroicon-o-users')
+                        NavigationGroup::make(trans('ip.users_roles'))
+                                                    //->icon('heroicon-o-users')
                             ->items([
                                 ...UserResource::getNavigationItems(),
                                 //...RoleResource::getNavigationItems(),
