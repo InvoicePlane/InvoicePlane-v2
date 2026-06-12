@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
@@ -67,6 +68,7 @@ class Invoice extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
 
@@ -232,6 +234,42 @@ class Invoice extends Model
             ->orderBy('invoice_due_at', 'desc')
             ->orderBy('invoice_status', 'asc')
             ->limit($invoiceLimit);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $invoice) {
+            if ($invoice->invoice_number === null) {
+                return;
+            }
+
+            $exists = static::withoutGlobalScopes()
+                ->where('company_id', $invoice->company_id)
+                ->where('invoice_number', $invoice->invoice_number)
+                ->exists();
+
+            if ($exists) {
+                throw new \RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
+            }
+        });
+    }
+
+    public function delete(): bool
+    {
+        // When called re-entrantly from forceDelete(), delegate straight to Model::delete()
+        // so SoftDeletes::performDeleteOnModel() can do the actual hard delete.
+        // Without this guard, our trashed() check triggers forceDelete() → delete() → ∞.
+        if ($this->isForceDeleting()) {
+            return parent::delete();
+        }
+
+        if ($this->trashed()) {
+            $this->forceDelete();
+
+            return false;
+        }
+
+        return parent::delete();
     }
 
     /*

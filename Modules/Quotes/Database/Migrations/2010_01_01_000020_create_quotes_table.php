@@ -13,7 +13,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('prospect_id');
             $table->unsignedBigInteger('numbering_id')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->string('quote_number')->index('quote_number');
+            $table->string('quote_number')->nullable()->index('quote_number');
             $table->string('quote_status');
             $table->date('quoted_at')->nullable();
             $table->date('quote_expires_at')->nullable();

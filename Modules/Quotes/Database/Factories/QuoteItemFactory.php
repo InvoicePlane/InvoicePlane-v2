@@ -10,6 +10,15 @@ class QuoteItemFactory extends AbstractFactory
 {
     protected $model = QuoteItem::class;
 
+    public function configure(): static
+    {
+        return $this->afterMaking(function (QuoteItem $item) {
+            if (empty($item->company_id) && ! empty($item->quote_id)) {
+                $item->company_id = \Modules\Quotes\Models\Quote::find($item->quote_id)?->company_id;
+            }
+        });
+    }
+
     public function definition(): array
     {
         /** @phpstan-ignore-next-line */

@@ -41,6 +41,8 @@ class Payment extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     protected $casts = [
         'payment_method' => PaymentMethod::class,
         'payment_status' => PaymentStatus::class,

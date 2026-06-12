@@ -376,7 +376,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'company_id'     => $this->company->id,
             'customer_id'    => $customer->id,
             'project_status' => 'active',
-            'project_name'   => 'Website Redesign',
+            /* project_name intentionally omitted to trigger required validation */
             'start_at'       => '2025-05-01',
             'end_at'         => '2025-06-01',
             'description'    => 'Redesigning the corporate website',
@@ -390,8 +390,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
         /* assert */
         $component
-            ->assertStatus(422)
-            ->assertHasFormErrors(['project_status' => 'required']);
+            ->assertHasFormErrors(['project_name' => 'required']);
 
         $this->assertDatabaseMissing('projects', $payload);
     }

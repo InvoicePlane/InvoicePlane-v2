@@ -29,6 +29,10 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
     {
         parent::setUp();
 
+        if (trim((string) shell_exec('which mysql 2>/dev/null')) === '') {
+            $this->markTestSkipped('mysql CLI binary not found; install mariadb-client to run import tests');
+        }
+
         // The import:db command expects the dump file to live under
         // storage/app/private/imports and receives only the basename.
         $this->dumpFile = 'test_invoiceplane_v1_dump.sql';
@@ -69,7 +73,7 @@ class ImportInvoicePlaneV1CommandTest extends AbstractTestCase
 
         $company = Company::latest('id')->first();
         $this->assertNotNull($company);
-        $this->assertStringContainsString('Imported from InvoicePlane v1', $company->company_name);
+        $this->assertStringContainsString('Imported from InvoicePlane v1', $company->name);
     }
 
     #[Test]

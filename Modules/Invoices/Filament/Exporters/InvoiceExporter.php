@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Exporters;
 
+use Carbon\Carbon;
 use Filament\Actions\Exports\ExportColumn;
 use Modules\Core\Filament\Exporters\BaseExporter;
 use Modules\Invoices\Models\Invoice;
@@ -23,10 +24,10 @@ class InvoiceExporter extends BaseExporter
                 ->formatStateUsing(fn ($state, Invoice $record) => $record->customer?->trading_name ?? $record->customer?->company_name ?? ''),
             ExportColumn::make('invoiced_at')
                 ->label(trans('ip.invoiced_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('Y-m-d') : null),
             ExportColumn::make('invoice_due_at')
                 ->label(trans('ip.invoice_due_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('Y-m-d') : null),
             ExportColumn::make('invoice_total')
                 ->label(trans('ip.invoice_total')),
         ];

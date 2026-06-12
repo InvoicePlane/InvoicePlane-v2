@@ -15,7 +15,8 @@ return new class () extends Migration {
             $table->unsignedBigInteger('creditinvoice_parent_id')->nullable()->index('invoices_creditinvoice_parent_id_foreign');
             $table->unsignedBigInteger('user_id')->index('invoices_user_id_foreign');
 
-            $table->string('invoice_number');
+            $table->string('invoice_number')->nullable();
+            $table->softDeletes();
             $table->string('invoice_status');
             $table->enum('invoice_sign', ['1', '-1'])->default('1');
             $table->date('invoiced_at')->nullable();

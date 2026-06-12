@@ -759,8 +759,8 @@ class ProductsTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $companyB = \Modules\Core\Models\Company::factory()->create();
 
-        Product::factory()->for($this->company)->create(['product_name' => 'VISIBLE-PRODUCT']);
-        Product::factory()->for($companyB)->create(['product_name' => 'HIDDEN-PRODUCT']);
+        Product::factory()->for($this->company)->create(['product_name' => 'VISIBLE']);
+        Product::factory()->for($companyB)->create(['product_name' => 'HIDDEN']);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
@@ -768,9 +768,9 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $component->assertSuccessful();
-        $this->assertDatabaseHas('products', ['product_name' => 'HIDDEN-PRODUCT']);
-        $component->assertSeeText('VISIBLE-PRODUCT');
-        $component->assertDontSeeText('HIDDEN-PRODUCT');
+        $this->assertDatabaseHas('products', ['product_name' => 'HIDDEN']);
+        $component->assertSeeText('VISIBLE');
+        $component->assertDontSeeText('HIDDEN');
     }
     # endregion
 

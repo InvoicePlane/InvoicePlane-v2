@@ -3,6 +3,7 @@
 namespace Modules\Invoices\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Models\Invoice;
@@ -19,10 +20,11 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     public function it_regenerates_invoice_number_when_changing_numbering_scheme(): void
     {
         /* Arrange */
+        $company = Company::factory()->create();
+
         // Create first numbering scheme (simple format without month)
-        $oldNumbering = Numbering::factory()->create([
+        $oldNumbering = Numbering::factory()->for($company)->create([
             'name'                    => 'Invoice Numbering Old',
-            'company_id'              => 1,
             'type'                    => 'Invoice',
             'prefix'                  => 'INV',
             'group_identifier_format' => '{{prefix}}-{{year}}-{{number}}',
@@ -32,9 +34,8 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
         ]);
 
         // Create second numbering scheme (with month)
-        $newNumbering = Numbering::factory()->create([
+        $newNumbering = Numbering::factory()->for($company)->create([
             'name'                    => 'Invoice Numbering With Month',
-            'company_id'              => 1,
             'type'                    => 'Invoice',
             'prefix'                  => 'INV',
             'group_identifier_format' => 'INV-{{year}}-{{month}}-{{number}}',
@@ -44,10 +45,9 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
         ]);
 
         // Create invoice with the old numbering scheme
-        $invoice = Invoice::factory()->create([
+        $invoice = Invoice::factory()->for($company)->create([
             'numbering_id'   => $oldNumbering->id,
             'invoice_number' => 'INV-2025-57836',
-            'company_id'     => 1,
         ]);
 
         // Verify initial state
@@ -85,9 +85,9 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     public function it_continues_numbering_sequence_after_scheme_change(): void
     {
         /* Arrange */
-        $numbering = Numbering::factory()->create([
+        $company  = Company::factory()->create();
+        $numbering = Numbering::factory()->for($company)->create([
             'name'                    => 'Invoice Numbering',
-            'company_id'              => 1,
             'type'                    => 'Invoice',
             'prefix'                  => 'INV',
             'group_identifier_format' => 'INV-{{year}}-{{month}}-{{number}}',
@@ -97,10 +97,9 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
         ]);
 
         // Create first invoice
-        $invoice1 = Invoice::factory()->create([
+        $invoice1 = Invoice::factory()->for($company)->create([
             'numbering_id'   => $numbering->id,
             'invoice_number' => 'INV-2025-12-0099',
-            'company_id'     => 1,
         ]);
 
         /* Act */
@@ -125,9 +124,9 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     public function it_maintains_separate_sequences_for_different_numbering_schemes(): void
     {
         /* Arrange */
-        $numbering1 = Numbering::factory()->create([
+        $company    = Company::factory()->create();
+        $numbering1 = Numbering::factory()->for($company)->create([
             'name'                    => 'Standard Invoices',
-            'company_id'              => 1,
             'type'                    => 'Invoice',
             'prefix'                  => 'INV',
             'group_identifier_format' => 'INV-{{number}}',
@@ -136,9 +135,8 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
             'left_pad'                => 4,
         ]);
 
-        $numbering2 = Numbering::factory()->create([
+        $numbering2 = Numbering::factory()->for($company)->create([
             'name'                    => 'Monthly Invoices',
-            'company_id'              => 1,
             'type'                    => 'Invoice',
             'prefix'                  => 'INV',
             'group_identifier_format' => 'INV-{{month}}-{{number}}',

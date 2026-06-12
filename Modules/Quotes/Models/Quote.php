@@ -192,9 +192,27 @@ class Quote extends Model
             ->limit($quoteLimit);
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (self $quote) {
+            if ($quote->quote_number === null) {
+                return;
+            }
+
+            $exists = static::withoutGlobalScopes()
+                ->where('company_id', $quote->company_id)
+                ->where('quote_number', $quote->quote_number)
+                ->exists();
+
+            if ($exists) {
+                throw new \RuntimeException("Duplicate quote number '{$quote->quote_number}'");
+            }
+        });
+    }
+
     /*
     |--------------------------------------------------------------------------
-    | Relationships
+    | Factory
     |--------------------------------------------------------------------------
     */
     protected static function newFactory(): Factory

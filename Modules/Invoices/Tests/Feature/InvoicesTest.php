@@ -633,7 +633,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         /* Assert */
-        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertSoftDeleted($invoice);
     }
 
     #[Test]

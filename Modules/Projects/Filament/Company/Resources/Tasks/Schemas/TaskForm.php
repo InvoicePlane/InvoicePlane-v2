@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Projects\Enums\TaskStatus;
 use Modules\Projects\Models\Project;
 
 class TaskForm
@@ -46,12 +47,15 @@ class TaskForm
                                             ->searchable()
                                             ->preload()
                                             ->required()
+                                            ->getOptionLabelUsing(fn ($value) => Project::find($value)?->project_name)
                                             ->getSearchResultsUsing(function (string $search): array {
                                                 return Project::query()
+                                                    ->where('project_name', 'like', "%{$search}%")
                                                     ->with('customer')
                                                     ->limit(50)
                                                     ->get()
                                                     ->mapWithKeys(fn (Project $p) => [
+                                                        $p->id => $p->project_name,
                                                     ])->toArray();
                                             })
                                             ->createOptionForm([
@@ -92,6 +96,8 @@ class TaskForm
                                     ->columns(2)
                                     ->schema([
                                         Select::make('task_status')
+                                            ->options(TaskStatus::options())
+                                            ->getOptionLabelUsing(fn ($value) => TaskStatus::tryFrom($value)?->label())
                                             ->searchable()
                                             ->preload()
                                             ->native(false)

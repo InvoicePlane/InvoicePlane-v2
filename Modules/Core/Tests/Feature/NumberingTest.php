@@ -127,11 +127,10 @@ class NumberingTest extends AbstractAdminPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->mountAction('edit', [$numbering->getKey()], $payload)
-            ->callMountedAction();
+            ->callTableAction('edit', $numbering, data: $payload);
 
         /* Assert */
-        $component->assertHasNoFormErrors();
+        $component->assertHasNoTableActionErrors();
         $this->assertDatabaseHas('numbering', [
             'id'                      => $numbering->id,
             'name'                    => 'Updated Quote Numbering',
@@ -152,10 +151,9 @@ class NumberingTest extends AbstractAdminPanelTestCase
         ]);
 
         /* Act */
-        $component = Livewire::actingAs($this->superAdmin())
+        Livewire::actingAs($this->superAdmin())
             ->test(ListNumberings::class)
-            ->mountAction('delete', [$numbering->getKey()])
-            ->callMountedAction();
+            ->callTableAction('delete', $numbering);
 
         /* Assert */
         $this->assertDatabaseMissing('numbering', ['id' => $numbering->id]);

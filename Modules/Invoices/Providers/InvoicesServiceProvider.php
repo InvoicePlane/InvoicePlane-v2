@@ -34,8 +34,6 @@ class InvoicesServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        // Register Peppol HTTP clients and services
-        $this->registerPeppolServices();
     }
 
     public function registerTranslations(): void
@@ -67,79 +65,6 @@ class InvoicesServiceProvider extends ServiceProvider
     public function provides(): array
     {
         return [];
-    }
-
-    /**
-     * Register Peppol-related services and dependencies.
-     *
-     * This method sets up the HTTP client infrastructure and Peppol services
-     * with proper dependency injection and exception handling.
-     *
-     * @return void
-     */
-    protected function registerPeppolServices(): void
-    {
-        // Register ApiClient
-        $this->app->bind(
-            \Modules\Invoices\Http\Clients\ApiClient::class,
-            function ($app) {
-                return new \Modules\Invoices\Http\Clients\ApiClient();
-            }
-        );
-
-        // Register HttpClientExceptionHandler as a decorator
-        $this->app->bind(
-            \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler::class,
-            function ($app) {
-                $apiClient = $app->make(\Modules\Invoices\Http\Clients\ApiClient::class);
-                $handler   = new \Modules\Invoices\Http\Decorators\HttpClientExceptionHandler($apiClient);
-
-                // Enable logging in non-production environments
-                if ( ! $app->environment('production')) {
-                    $handler->enableLogging();
-                }
-
-                return $handler;
-            }
-        );
-
-        // Register DocumentsClient for e-invoice.be
-        $this->app->bind(
-            \Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient::class,
-            function ($app) {
-                $handler = $app->make(\Modules\Invoices\Http\Decorators\HttpClientExceptionHandler::class);
-
-                // Get configuration from environment or config
-                $apiKey  = config('invoices.peppol.e_invoice_be.api_key');
-                $baseUrl = config('invoices.peppol.e_invoice_be.base_url');
-
-                return new \Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient(
-                    $handler,
-                    $apiKey,
-                    $baseUrl
-                );
-            }
-        );
-
-        // Register PeppolService
-        $this->app->bind(
-            \Modules\Invoices\Peppol\Services\PeppolService::class,
-            function ($app) {
-                $documentsClient = $app->make(\Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient::class);
-
-                return new \Modules\Invoices\Peppol\Services\PeppolService($documentsClient);
-            }
-        );
-
-        // Register SendInvoiceToPeppolAction
-        $this->app->bind(
-            \Modules\Invoices\Actions\SendInvoiceToPeppolAction::class,
-            function ($app) {
-                $peppolService = $app->make(\Modules\Invoices\Peppol\Services\PeppolService::class);
-
-                return new \Modules\Invoices\Actions\SendInvoiceToPeppolAction($peppolService);
-            }
-        );
     }
 
     protected function registerCommands(): void

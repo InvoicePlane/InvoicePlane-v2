@@ -4,6 +4,7 @@ namespace Modules\Core\Services\Import;
 
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use PDO;
@@ -177,9 +178,13 @@ class ImportOrchestrator
      */
     private function createCompany(): int
     {
+        $label  = 'Imported from InvoicePlane v1';
+        $unique = Str::upper(Str::random(8));
+
         $company = Company::create([
-            'company_name' => 'Imported from InvoicePlane v1',
-            'subdomain'    => 'imported-' . uniqid(),
+            'name'        => $label,
+            'slug'        => 'imported-' . Str::lower($unique),
+            'search_code' => $unique,
         ]);
 
         return $company->id;
