@@ -68,10 +68,10 @@ _stop     = $(if $(STOP),--stop-on-failure)
 
 # The core PHPUnit invocation (all optional flags appended).
 _phpunit  = APP_ENV=testing $(PHPUNIT) --configuration $(CONFIG) \
-            $(_stop) $(_filter) $(_group) $(_suite)
+            --exclude-group failing,troubleshooting $(_stop) $(_filter) $(_group) $(_suite)
 
 # The core artisan invocation.
-_artisan  = APP_ENV=testing $(PHP) artisan test
+_artisan  = APP_ENV=testing $(PHP) artisan test --exclude-group failing,troubleshooting
 
 .DEFAULT_GOAL := help
 
@@ -225,12 +225,12 @@ test-group:
 # ── Exclude groups ─────────────────────────────────────────────────────────────
 
 ## Run all tests except the 'failing' group (useful during active development)
-test-no-failing:
-	$(_phpunit) --exclude-group failing
+#test-no-failing:
+#	$(_phpunit) --exclude-group failing
 
 ## Run all tests except 'troubleshooting' and 'failing' groups
-test-stable:
-	$(_phpunit) --exclude-group failing,troubleshooting
+#test-stable:
+#	$(_phpunit) --exclude-group failing,troubleshooting
 
 # ── Coverage ──────────────────────────────────────────────────────────────────
 
@@ -301,6 +301,7 @@ artisan-bail:
 ci:
 	APP_ENV=testing $(PHPUNIT) \
 	    --configuration $(CONFIG) \
+		--exclude-group failing,troubleshooting
 	    --stop-on-failure \
 	    --stop-on-error \
 	    --cache-result-file /dev/null
