@@ -19,115 +19,34 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('export')]
+    #[Group('failing')]
     public function it_dispatches_csv_export_job(): void
     {
-        $this->markTestIncomplete();
-        /* Arrange */
-        Queue::fake();
-        Storage::fake('local');
-        $invoices = Invoice::factory()->for($this->company)->count(3)->create();
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->callAction('exportCsv', data: [
-                'columnMap' => [
-                    'number' => ['isEnabled' => true, 'label' => 'Invoice Number'],
-                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
-                ],
-            ]);
-
-        /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        $this->markTestSkipped('exportCsv action does not exist; only exportCsvV1/V2 are registered');
     }
 
     #[Test]
     #[Group('export')]
+    #[Group('failing')]
     public function it_dispatches_excel_export_job(): void
     {
-        $this->markTestIncomplete();
-        /* Arrange */
-        Queue::fake();
-        Storage::fake('local');
-        $invoices = Invoice::factory()->for($this->company)->count(3)->create();
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->callAction('exportExcel', data: [
-                'columnMap' => [
-                    'number' => ['isEnabled' => true, 'label' => 'Invoice Number'],
-                ],
-            ]);
-
-        /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        $this->markTestSkipped('exportExcel action does not exist; only exportExcelV1/V2 are registered');
     }
 
     #[Test]
     #[Group('export')]
+    #[Group('failing')]
     public function it_exports_with_no_records(): void
     {
-        $this->markTestIncomplete();
-        /* Arrange */
-        Queue::fake();
-        Storage::fake('local');
-        // No invoices created
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->callAction('exportExcel', data: [
-                'columnMap' => [
-                    'number' => ['isEnabled' => true, 'label' => 'Number'],
-                ],
-            ]);
-
-        /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        $this->markTestSkipped('exportExcel action does not exist; only exportExcelV1/V2 are registered');
     }
 
     #[Test]
     #[Group('export')]
+    #[Group('failing')]
     public function it_exports_with_special_characters(): void
     {
-        $this->markTestIncomplete();
-        /* Arrange */
-        Queue::fake();
-        Storage::fake('local');
-        $invoice = Invoice::factory()->for($this->company)->create([
-            'number' => 'INV-Ü, "Test"',
-            'total'  => 123.45,
-        ]);
-
-        /* Act */
-        Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->callAction('exportExcel', data: [
-                'columnMap' => [
-                    'number' => ['isEnabled' => true, 'label' => 'Number'],
-                    'total'  => ['isEnabled' => true, 'label' => 'Total'],
-                ],
-            ]);
-
-        /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        $this->markTestSkipped('exportExcel action does not exist; only exportExcelV1/V2 are registered');
     }
 
     #[Test]
@@ -200,9 +119,8 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
     #[Group('export')]
     public function it_dispatches_excel_export_job_v1(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $invoices = Invoice::factory()->for($this->company)->count(3)->create();
 
@@ -216,10 +134,6 @@ class InvoicesExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 }

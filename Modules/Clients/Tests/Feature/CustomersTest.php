@@ -369,48 +369,18 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_deletes_a_customer(): void
     {
-        $this->markTestIncomplete('foreign key contact');
-
-        /* Arrange */
-        $customer = Relation::factory()->for($this->company)->create([
-            'company_name'  => 'Delete Me',
-            'relation_type' => RelationType::CUSTOMER,
-        ]);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListRelations::class)
-            ->mountAction(TestAction::make('delete')->table($customer))
-            ->callMountedAction();
-
-        $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
+        $this->markTestSkipped('FK constraint on contacts table prevents Filament delete action — needs cascade or contact cleanup first');
     }
 
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_fails_to_delete_customer_when_contact_attached(): void
     {
-        $this->markTestIncomplete();
-
-        /* Arrange */
-        $customer = Relation::factory()->for($this->company)->create([
-            'company_name'  => 'Delete Me',
-            'relation_type' => RelationType::CUSTOMER,
-        ]);
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListRelations::class)
-            ->mountAction(TestAction::make('delete')->table($customer))
-            ->callMountedAction();
-
-        /* Assert */
-        $component
-            ->assertHasErrors();
-
-        $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
+        $this->markTestSkipped('Preventing deletion of customers with attached contacts is not yet implemented');
     }
     # endregion
 
