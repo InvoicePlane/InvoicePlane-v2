@@ -1,0 +1,133 @@
+once i click on one of those blocks a modal needs to open.
+I need to see fields that i can drag / drop to the block.
+Once i save the modal, that block needs to be saved to json file for that block.
+
+
+There is a function in the ReportTemplateService called
+
+```public function getSystemBlocks(): array
+    {
+        $blocks = [];
+
+        $blocks['company_header'] = $this->createSystemBlock(
+            'block_company_header',
+            'company_header',
+            0,
+            0,
+            6,
+            4,
+            ['show_vat_id' => true, 'show_phone' => true, 'font_size' => 10],
+            trans('ip.company_header'),
+            'company',
+            'group_header'
+        );
+
+        $blocks['client_header'] = $this->createSystemBlock(
+            'block_client_header',
+            'client_header',
+            6,
+            0,
+            6,
+            4,
+            ['show_address' => true, 'show_phone' => true, 'font_size' => 10],
+            trans('ip.client_header'),
+            'client',
+            band: 'group_header'
+        );
+
+        $blocks['header_invoice_meta'] = $this->createSystemBlock(
+            'block_header_invoice_meta',
+            'header_invoice_meta',
+            0,
+            4,
+            12,
+            2,
+            ['show_date' => true, 'show_due_date' => true, 'show_number' => true],
+            trans('ip.invoice_metadata'),
+            'invoice',
+            band: 'group_header'
+        );
+
+        $blocks['detail_items'] = $this->createSystemBlock(
+            'block_detail_items',
+            'detail_items',
+            0,
+            6,
+            12,
+            6,
+            ['show_description' => true, 'show_quantity' => true, 'show_price' => true],
+            trans('ip.invoice_items'),
+            'invoice',
+            'details'
+        );
+
+        $blocks['detail_item_tax'] = $this->createSystemBlock(
+            'block_detail_item_tax',
+            'detail_item_tax',
+            0,
+            12,
+            12,
+            2,
+            ['show_tax_name' => true, 'show_tax_rate' => true],
+            trans('ip.item_tax_details'),
+            'invoice',
+            'details'
+        );
+
+        $blocks['footer_totals'] = $this->createSystemBlock(
+            'block_footer_totals',
+            'footer_totals',
+            6,
+            14,
+            6,
+            4,
+            ['show_subtotal' => true, 'show_tax' => true, 'show_total' => true],
+            trans('ip.invoice_totals'),
+            'invoice',
+            'group_footer'
+        );
+
+        $blocks['footer_notes'] = $this->createSystemBlock(
+            'block_footer_notes',
+            'footer_notes',
+            0,
+            14,
+            6,
+            4,
+            ['font_size' => 9],
+            trans('ip.footer_notes'),
+            'invoice',
+            'footer'
+        );
+
+        $blocks['footer_qr_code'] = $this->createSystemBlock(
+            'block_footer_qr_code',
+            'footer_qr_code',
+            0,
+            18,
+            4,
+            4,
+            ['size' => 100],
+            trans('ip.qr_code'),
+            'invoice',
+            'footer'
+        );
+
+        return $blocks;
+    }```
+
+those need to be json files and those json files need to be loaded instead.
+I think there needs to be a report_blocks table with  is_active, is_system, block_type, name, slug, filename and that needs to contain the blocks from this systemblocks function
+
+so `is_system` needs to be true then.
+
+the blocks for now can have 2 widths: half or full
+(make it an enum)
+
+invoice_items is full width
+
+company header and customer header is half width.
+
+I need to be able to drag / drop fields on to the block and i need to save it, then the json gets saved.
+
+make it happen?
