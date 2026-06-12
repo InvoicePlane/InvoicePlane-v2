@@ -68,6 +68,13 @@ class QuotesTable
                             app(QuoteService::class)->updateQuote($record, $data);
                         })
                         ->modalWidth('full'),
+                    Action::make('duplicate')
+                        ->label(trans('ip.duplicate'))
+                        ->icon('heroicon-o-document-duplicate')
+                        ->action(function (Quote $record): void {
+                            app(QuoteService::class)->duplicateQuote($record);
+                        })
+                        ->successNotificationTitle(trans('ip.quote_duplicated')),
                     Action::make('download pdf')
                         ->label(trans('ip.download_pdf'))
                         ->modalDescription(

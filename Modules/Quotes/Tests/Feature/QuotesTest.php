@@ -597,4 +597,67 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         $this->markTestSkipped('No widget route is currently registered for quotes');
     }
     # endregion
+
+    # region duplicate
+    #[Test]
+    #[Group('crud')]
+    public function it_duplicates_a_quote(): void
+    {
+        /* Arrange */
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+        $original = Quote::factory()->for($this->company)->create([
+            'prospect_id'  => $prospect->id,
+            'quote_number' => 'Q-ORIG-001',
+            'quote_status' => QuoteStatus::SENT,
+            'summary'      => 'Original summary',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('duplicate')->table($original))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $copy = Quote::query()
+            ->where('company_id', $this->company->id)
+            ->where('prospect_id', $prospect->id)
+            ->where('quote_status', QuoteStatus::DRAFT)
+            ->whereNot('id', $original->id)
+            ->first();
+        $this->assertNotNull($copy);
+        $this->assertNull($copy->quote_number);
+        $this->assertEquals('Original summary', $copy->summary);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_copies_quote_items_when_duplicating(): void
+    {
+        /* Arrange */
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+        $original = Quote::factory()->for($this->company)->create([
+            'prospect_id'  => $prospect->id,
+            'quote_number' => 'Q-ITEMS-001',
+        ]);
+        $itemCount = $original->quoteItems()->count();
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('duplicate')->table($original))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $copy = Quote::query()
+            ->where('company_id', $this->company->id)
+            ->whereNot('id', $original->id)
+            ->latest('id')
+            ->first();
+        $this->assertNotNull($copy);
+        $this->assertEquals($itemCount, $copy->quoteItems()->count());
+    }
+    # endregion
 }

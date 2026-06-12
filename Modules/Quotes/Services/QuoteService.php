@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Core\Services\BaseService;
+use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Throwable;
 
@@ -107,6 +108,65 @@ class QuoteService extends BaseService
             DB::commit();
 
             return $quote->refresh();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    public function duplicateQuote(Quote $quote): Quote
+    {
+        DB::beginTransaction();
+
+        try {
+            $copy = Quote::query()->create([
+                'company_id'             => $quote->company_id,
+                'prospect_id'            => $quote->prospect_id,
+                'numbering_id'           => $quote->numbering_id,
+                'user_id'                => auth()->id(),
+                'quote_number'           => null,
+                'quote_status'           => QuoteStatus::DRAFT,
+                'quoted_at'              => Carbon::today(),
+                'quote_expires_at'       => Carbon::today()->addDays(30),
+                'quote_discount_amount'  => $quote->quote_discount_amount,
+                'quote_discount_percent' => $quote->quote_discount_percent,
+                'item_tax_total'         => $quote->item_tax_total,
+                'quote_item_subtotal'    => $quote->quote_item_subtotal,
+                'quote_tax_total'        => $quote->quote_tax_total,
+                'quote_total'            => $quote->quote_total,
+                'quote_password'         => null,
+                'url_key'                => Str::random(32),
+                'template'               => $quote->template,
+                'summary'                => $quote->summary,
+                'terms'                  => $quote->terms,
+                'footer'                 => $quote->footer,
+            ]);
+
+            foreach ($quote->quoteItems as $item) {
+                $copy->quoteItems()->create([
+                    'company_id'      => $item->company_id,
+                    'product_id'      => $item->product_id,
+                    'product_unit_id' => $item->product_unit_id,
+                    'added_at'        => Carbon::today()->toDateString(),
+                    'item_name'       => $item->item_name,
+                    'quantity'        => $item->quantity,
+                    'price'           => $item->price,
+                    'discount'        => $item->discount,
+                    'subtotal'        => $item->subtotal,
+                    'tax_1'           => $item->tax_1,
+                    'tax_2'           => $item->tax_2,
+                    'tax_total'       => $item->tax_total,
+                    'total'           => $item->total,
+                    'tax_rate_id'     => $item->tax_rate_id,
+                    'tax_rate_2_id'   => $item->tax_rate_2_id,
+                    'display_order'   => $item->display_order,
+                    'description'     => $item->description,
+                ]);
+            }
+
+            DB::commit();
+
+            return $copy;
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
