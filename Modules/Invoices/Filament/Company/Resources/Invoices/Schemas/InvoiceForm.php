@@ -14,6 +14,7 @@ use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\Core\Enums\NumberingType;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Support\InvoiceCalculator;
 use Modules\Products\Models\Product;
@@ -91,7 +92,7 @@ class InvoiceForm
 
                                         Select::make('numbering_id')
                                             ->label(trans('ip.numbering'))
-                                            ->relationship('numbering', 'name')
+                                            ->relationship('numbering', 'name', fn ($query) => $query->where('type', NumberingType::INVOICE->value))
                                             ->required()
                                             ->searchable()
                                             ->preload()
