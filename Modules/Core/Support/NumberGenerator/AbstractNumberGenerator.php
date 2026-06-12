@@ -166,7 +166,14 @@ abstract class AbstractNumberGenerator
             $query->lockForUpdate();
         }
 
-        return $query->first();
+        $numbering = $query->first();
+
+        // DB collations may be case-insensitive; enforce strict type match in PHP
+        if ($numbering !== null && $numbering->type->value !== $this->type) {
+            return null;
+        }
+
+        return $numbering;
     }
 
     protected function formatNumber(Numbering $numbering): string
