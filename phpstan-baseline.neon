@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Modules/Core/Tests/Unit/ReportBlockWidthTest.php
+
+		-
+			message: '#^Cannot call method getGridWidth\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Core/Tests/Unit/ReportBlockWidthTest.php

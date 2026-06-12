@@ -1,0 +1,52 @@
+volumes:
+    database:
+        driver: "local"
+
+services:
+    db:
+        container_name: 'ivplflmnt_db'
+        image: mariadb
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            MARIADB_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MARIADB_DATABASE: "${DB_DATABASE}"
+            MARIADB_USER: "${DB_USERNAME}"
+            MARIADB_PASSWORD: "${DB_PASSWORD}"
+            TZ: "Europe/London"
+
+    mailcatcher:
+        container_name: 'ivplflmnt_mailcatcher'
+        image: sj26/mailcatcher
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "25:1025"
+            - "1080:1080"
+    # phpmyadmin:
+    #   container_name: 'ivplflmnt_phpmyadmin'
+    #   image: phpmyadmin/phpmyadmin
+    #   restart: unless-stopped
+    #   ports:
+    #     - "8081:80"
+    #   environment:
+    #     PMA_HOST: db
+    #     PMA_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    #     PMA_USER: "root"
+    #     PMA_PASSWORD: "root"
+    #     MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    #     MYSQL_PASSWORD: "${DB_PASSWORD}"
+    #     MAX_EXECUTION_TIME: 600
+    #     MEMORY_LIMIT: 256M
+    #     UPLOAD_LIMIT: 2G
+    #   depends_on:
+    #     - db
+
+    #   networks:
+    #     - laravel
+
+networks:
+    laravel:
+        driver: bridge

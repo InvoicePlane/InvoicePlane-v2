@@ -1,0 +1,29 @@
+{
+    "name": "invoiceplane/projects",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Projects\\": "",
+            "Modules\\Projects\\Database\\Factories\\": "Database/Factories/",
+            "Modules\\Projects\\Database\\Seeders\\": "Database/Seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Projects\\Tests\\": "Tests/"
+        }
+    }
+}

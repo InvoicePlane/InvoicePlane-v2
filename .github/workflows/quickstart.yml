@@ -1,0 +1,68 @@
+name: Quickstart Smoke Test
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+jobs:
+  quickstart:
+    name: Quickstart Bootstrap & Smoke Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          php-extensions: 'mbstring, xml, ctype, json, fileinfo, pdo, pdo_mysql, bcmath'
+          composer-flags: '--prefer-dist --no-interaction'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend assets
+        run: yarn build
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.testing.example .env
+          php artisan key:generate
+
+      - name: Run database migrations
+        run: php artisan migrate --force
+
+      - name: Run smoke tests
+        run: php artisan test --group=smoke

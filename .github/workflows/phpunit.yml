@@ -1,0 +1,54 @@
+name: Run PHPUnit Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:  # Manual only — does not run automatically
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceplane_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
+        with:
+          php-version: '8.4'
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
+
+      - name: Run Laravel migrations
+        run: php artisan migrate --force --env=testing
+
+      - name: Run PHPUnit
+        run: php artisan test --env=testing

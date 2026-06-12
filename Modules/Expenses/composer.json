@@ -1,0 +1,29 @@
+{
+    "name": "invoiceplane/expenses",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Expenses\\": "",
+            "Modules\\Expenses\\Database\\Factories\\": "Database/Factories/",
+            "Modules\\Expenses\\Database\\Seeders\\": "Database/Seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Expenses\\Tests\\": "Tests/"
+        }
+    }
+}

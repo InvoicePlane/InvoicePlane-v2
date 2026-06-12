@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.3",
+        "axios": "^1.17",
+        "concurrently": "^10.0",
+        "laravel-vite-plugin": "^3.1",
+        "tailwindcss": "^4.3",
+        "vite": "^8.0"
+    }
+}
