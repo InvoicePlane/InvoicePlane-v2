@@ -25,6 +25,8 @@ use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
+use Modules\Core\Filament\Admin\Resources\ReportBlocks\ReportBlockResource;
+use Modules\Core\Filament\Admin\Resources\ReportTemplates\ReportTemplateResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
@@ -144,6 +146,12 @@ class AdminPanelProvider extends PanelProvider
                                 ...ImportResource::getNavigationItems(),
                             ]),*/
 
+                        NavigationGroup::make(trans('ip.report_builder'))
+                            ->items([
+                                ...ReportTemplateResource::getNavigationItems(),
+                                ...ReportBlockResource::getNavigationItems(),
+                            ]),
+
                         NavigationGroup::make(trans('ip.users_roles'))
                                                     //->icon('heroicon-o-users')
                             ->items([
@@ -161,6 +169,8 @@ class AdminPanelProvider extends PanelProvider
                 NumberingResource::class,
                 EmailTemplateResource::class,
                 TaxRateResource::class,
+                ReportTemplateResource::class,
+                ReportBlockResource::class,
                 UserResource::class,
             ])
             ->discoverPages(in: base_path('Modules/Core/Filament/Admin/Pages'), for: 'Modules\Core\Filament\Admin\Pages')
