@@ -5,7 +5,9 @@ namespace Modules\Core\Tests\Feature;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
+use Spatie\Permission\Models\Role;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
@@ -69,6 +71,48 @@ class UsersTest extends AbstractAdminPanelTestCase
     # endregion
 
     # region modals
+    # endregion
+
+    # region security
+    #[Test]
+    #[Group('security')]
+    public function it_prevents_deletion_of_super_admin_users(): void
+    {
+        /* Arrange */
+        Role::query()->firstOrCreate(['name' => UserRole::SUPER_ADMIN->value, 'guard_name' => 'web']);
+        $adminUser = User::factory()->create();
+        $adminUser->assignRole(UserRole::SUPER_ADMIN->value);
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin)
+            ->test(ListUsers::class)
+            ->mountAction(TestAction::make('delete')->table($adminUser))
+            ->callMountedAction();
+
+        /* Assert — super_admin record must still exist */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('users', ['id' => $adminUser->id]);
+    }
+
+    #[Test]
+    #[Group('security')]
+    public function it_allows_deletion_of_non_admin_users(): void
+    {
+        /* Arrange */
+        Role::query()->firstOrCreate(['name' => UserRole::CUSTOMER_ADMIN->value, 'guard_name' => 'web']);
+        $regularUser = User::factory()->create();
+        $regularUser->assignRole(UserRole::CUSTOMER_ADMIN->value);
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin)
+            ->test(ListUsers::class)
+            ->mountAction(TestAction::make('delete')->table($regularUser))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseMissing('users', ['id' => $regularUser->id]);
+    }
     # endregion
 
     # region multi-tenancy
