@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04a2fcf349f86b4e6f78b3fbe5c110e1",
+    "content-hash": "fe150517400be01530b4df0d6d777ab7",
     "packages": [
         {
             "name": "awcodes/mason",
