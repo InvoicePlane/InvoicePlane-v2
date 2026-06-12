@@ -149,17 +149,19 @@ abstract class AbstractNumberGenerator
 
     protected function getNumbering(bool $forUpdate = false): ?Numbering
     {
-        $query = Numbering::query()
-            ->where('company_id', $this->companyId)
-            ->where('type', $this->type);
+        $query = Numbering::query()->where('type', $this->type);
 
         if ($this->groupId) {
+            // Direct ID lookup is globally unique; no company filter needed
             $query->where('id', $this->groupId);
-        } elseif ($this->groupName) {
-            $query->where('name', $this->groupName);
         } else {
-            // Get the first numbering for this type if no specific group is set
-            $query->orderBy('id');
+            $query->where('company_id', $this->companyId);
+            if ($this->groupName) {
+                $query->where('name', $this->groupName);
+            } else {
+                // Get the first numbering for this type if no specific group is set
+                $query->orderBy('id');
+            }
         }
 
         if ($forUpdate) {

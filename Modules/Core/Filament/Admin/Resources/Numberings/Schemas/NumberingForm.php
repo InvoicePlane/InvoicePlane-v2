@@ -98,6 +98,9 @@ class NumberingForm
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))
                                         ->helperText(trans('ip.numbering_format_help')),
+                                    TextInput::make('group_identifier_format')
+                                        ->label(trans('ip.numbering_group_identifier_format'))
+                                        ->placeholder('{PREFIX}-{YEAR}-{ID}'),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
