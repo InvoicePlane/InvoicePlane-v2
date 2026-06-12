@@ -71,7 +71,9 @@ class CoreServiceProvider extends ServiceProvider
 
     protected function registerCommands(): void
     {
-        $this->commands([]);
+        $this->commands([
+            \Modules\Core\Commands\ImportInvoicePlaneV1Command::class,
+        ]);
     }
 
     protected function registerCommandSchedules(): void
