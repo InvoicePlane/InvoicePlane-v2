@@ -32,9 +32,7 @@ class InvoicesServiceProvider extends ServiceProvider
         InvoiceItem::observe(InvoiceItemObserver::class);
     }
 
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     public function registerTranslations(): void
     {

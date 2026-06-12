@@ -85,7 +85,7 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
     public function it_continues_numbering_sequence_after_scheme_change(): void
     {
         /* Arrange */
-        $company  = Company::factory()->create();
+        $company   = Company::factory()->create();
         $numbering = Numbering::factory()->for($company)->create([
             'name'                    => 'Invoice Numbering',
             'type'                    => 'Invoice',

@@ -28,6 +28,7 @@ use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Payments\Models\Payment;
 use Modules\Quotes\Models\Quote;
+use RuntimeException;
 
 /**
  * @property int                      $id
@@ -236,24 +237,6 @@ class Invoice extends Model
             ->limit($invoiceLimit);
     }
 
-    protected static function booted(): void
-    {
-        static::creating(function (self $invoice) {
-            if ($invoice->invoice_number === null) {
-                return;
-            }
-
-            $exists = static::withoutGlobalScopes()
-                ->where('company_id', $invoice->company_id)
-                ->where('invoice_number', $invoice->invoice_number)
-                ->exists();
-
-            if ($exists) {
-                throw new \RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
-            }
-        });
-    }
-
     public function delete(): bool
     {
         // When called re-entrantly from forceDelete(), delegate straight to Model::delete()
@@ -270,6 +253,24 @@ class Invoice extends Model
         }
 
         return parent::delete();
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $invoice) {
+            if ($invoice->invoice_number === null) {
+                return;
+            }
+
+            $exists = static::withoutGlobalScopes()
+                ->where('company_id', $invoice->company_id)
+                ->where('invoice_number', $invoice->invoice_number)
+                ->exists();
+
+            if ($exists) {
+                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
+            }
+        });
     }
 
     /*

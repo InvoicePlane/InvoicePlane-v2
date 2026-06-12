@@ -19,6 +19,7 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
+use RuntimeException;
 
 /**
  * @property int                    $id
@@ -205,7 +206,7 @@ class Quote extends Model
                 ->exists();
 
             if ($exists) {
-                throw new \RuntimeException("Duplicate quote number '{$quote->quote_number}'");
+                throw new RuntimeException("Duplicate quote number '{$quote->quote_number}'");
             }
         });
     }

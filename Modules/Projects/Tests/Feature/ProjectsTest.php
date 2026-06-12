@@ -377,9 +377,9 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'customer_id'    => $customer->id,
             'project_status' => 'active',
             /* project_name intentionally omitted to trigger required validation */
-            'start_at'       => '2025-05-01',
-            'end_at'         => '2025-06-01',
-            'description'    => 'Redesigning the corporate website',
+            'start_at'    => '2025-05-01',
+            'end_at'      => '2025-06-01',
+            'description' => 'Redesigning the corporate website',
         ];
 
         /* act */
