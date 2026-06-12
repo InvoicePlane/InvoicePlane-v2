@@ -3,9 +3,7 @@
 namespace Modules\Core\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Core\Filament\Admin\Pages\Settings;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;

@@ -24,23 +24,23 @@ class InvoiceNumberingSchemeChangeTest extends AbstractTestCase
 
         // Create first numbering scheme (simple format without month)
         $oldNumbering = Numbering::factory()->for($company)->create([
-            'name'    => 'Invoice Numbering Old',
-            'type'    => 'Invoice',
-            'prefix'  => 'INV',
-            'format'  => '{{prefix}}-{{year}}-{{number}}',
-            'next_id' => 57837,
-            'last_id' => 57836,
+            'name'     => 'Invoice Numbering Old',
+            'type'     => 'Invoice',
+            'prefix'   => 'INV',
+            'format'   => '{{prefix}}-{{year}}-{{number}}',
+            'next_id'  => 57837,
+            'last_id'  => 57836,
             'left_pad' => 5,
         ]);
 
         // Create second numbering scheme (with month)
         $newNumbering = Numbering::factory()->for($company)->create([
-            'name'    => 'Invoice Numbering With Month',
-            'type'    => 'Invoice',
-            'prefix'  => 'INV',
-            'format'  => 'INV-{{year}}-{{month}}-{{number}}',
-            'next_id' => 34223,
-            'last_id' => 34222,
+            'name'     => 'Invoice Numbering With Month',
+            'type'     => 'Invoice',
+            'prefix'   => 'INV',
+            'format'   => 'INV-{{year}}-{{month}}-{{number}}',
+            'next_id'  => 34223,
+            'last_id'  => 34222,
             'left_pad' => 5,
         ]);
 

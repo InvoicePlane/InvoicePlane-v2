@@ -232,7 +232,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_date_field_auto_population_during_high_load(): void
     {
-
         /* Arrange */
         $customer      = $this->createTestCustomer();
         $documentGroup = $this->createTestNumbering();
@@ -270,7 +269,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_maintains_date_precision_across_different_formats(): void
     {
-
         /* Arrange */
         $customer      = $this->createTestCustomer();
         $documentGroup = $this->createTestNumbering();
@@ -311,7 +309,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_date_auto_population_with_invalid_session_data(): void
     {
-
         /* Arrange */
         $customer      = $this->createTestCustomer();
         $documentGroup = $this->createTestNumbering();
@@ -346,7 +343,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_filters_numberings_by_current_company_id(): void
     {
-
         /* Arrange */
         // Clean up any default numberings created by CompanyObserver during setup
         Numbering::withoutGlobalScopes()->where('company_id', $this->company->id)->delete();

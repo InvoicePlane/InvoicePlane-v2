@@ -8,7 +8,6 @@ use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Core\Tests\TestDecimal;
-use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
