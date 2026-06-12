@@ -154,8 +154,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_timezone_differences_correctly(): void
     {
-        $this->markTestIncomplete('no assertions?');
-
         /* Arrange */
         $originalTimezone = config('app.timezone');
         config(['app.timezone' => 'America/New_York']);
@@ -168,9 +166,11 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $component = Livewire::actingAs($this->user)
             ->test(CreateInvoice::class, ['tenant' => mb_strtolower($this->company->search_code)]);
 
+        $component->assertSuccessful();
         $formData = $component->get('data');
 
         /* Assert */
+        $this->assertIsArray($formData, 'Form data should be an array');
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
             $this->assertTrue(
@@ -189,8 +189,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_multiple_date_fields_consistently(): void
     {
-        $this->markTestIncomplete('no assertions?');
-
         /* Arrange */
         $customer      = $this->createTestCustomer();
         $documentGroup = $this->createTestNumbering();
@@ -203,6 +201,9 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $formData = $component->get('data');
 
         /* Assert */
+        $component->assertSuccessful();
+        $this->assertIsArray($formData, 'Form data should be an array');
+
         $dateFields     = ['invoiced_at', 'invoice_due_at'];
         $populatedDates = [];
 
@@ -231,7 +232,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_date_field_auto_population_during_high_load(): void
     {
-        $this->markTestIncomplete('no assertions?');
 
         /* Arrange */
         $customer      = $this->createTestCustomer();
@@ -248,7 +248,10 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $endTime = Carbon::now();
 
         /* Assert */
+        $this->assertCount(5, $components, 'All 5 form components should have been created');
+
         foreach ($components as $index => $component) {
+            $component->assertSuccessful();
             $formData = $component->get('data');
 
             if ( ! empty($formData['invoiced_at'])) {
@@ -267,7 +270,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_maintains_date_precision_across_different_formats(): void
     {
-        $this->markTestIncomplete('no assertions?');
 
         /* Arrange */
         $customer      = $this->createTestCustomer();
@@ -281,16 +283,17 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $formData = $component->get('data');
 
         /* Assert */
+        $component->assertSuccessful();
+        $this->assertIsArray($formData, 'Form data should be an array');
+
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
 
-            // Test that the date maintains precision regardless of format
             $this->assertTrue(
                 $actualDate->diffInSeconds($expectedDate) <= 1,
                 'Date precision should be maintained'
             );
 
-            // Test that the date can be properly formatted and parsed
             $formattedDate = $actualDate->format('Y-m-d H:i:s');
             $reparsedDate  = Carbon::parse($formattedDate);
 
@@ -308,7 +311,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_handles_date_auto_population_with_invalid_session_data(): void
     {
-        $this->markTestIncomplete('no assertions?');
 
         /* Arrange */
         $customer      = $this->createTestCustomer();
@@ -327,6 +329,9 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $formData = $component->get('data');
 
         /* Assert */
+        $component->assertSuccessful();
+        $this->assertIsArray($formData, 'Form data should be an array despite invalid session data');
+
         if ( ! empty($formData['invoiced_at'])) {
             $actualDate = Carbon::parse($formData['invoiced_at']);
             $this->assertTrue(
@@ -341,7 +346,6 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Group('failing')]
     public function it_filters_numberings_by_current_company_id(): void
     {
-        $this->markTestIncomplete('still failing');
 
         /* Arrange */
         // Clean up any default numberings created by CompanyObserver during setup
@@ -367,9 +371,8 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertEquals($currentCompanyDocGroup->id, $availableNumberings->first()->id);
 
         // Verify that the other company's document group is not accessible
-        $allDocGroups = Numbering::all();
-        // Debug output for troubleshooting
-        fwrite(STDERR, '\nDEBUG: allDocGroups count = ' . $allDocGroups->count() . ' | IDs: ' . $allDocGroups->pluck('id')->join(',') . ' | company_ids: ' . $allDocGroups->pluck('company_id')->join(',') . "\n");
+        // Must bypass the BelongsToCompany global scope to count across all companies
+        $allDocGroups = Numbering::withoutGlobalScopes()->get();
         $this->assertCount(2, $allDocGroups, 'Should have total of 2 document groups');
 
         $otherCompanyGroups = Numbering::query()->where('company_id', $otherCompany->id)->get();
