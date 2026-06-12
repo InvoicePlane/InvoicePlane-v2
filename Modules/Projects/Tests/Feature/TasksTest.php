@@ -365,12 +365,12 @@ class TasksTest extends AbstractCompanyPanelTestCase
     public function it_creates_a_task(): void
     {
         /* Arrange */
-        $customer = Customer::factory()->create(['company_name' => '::customer_name::']);
-        $project  = Project::factory()->create([
+        $customer = Customer::factory()->for($this->company)->create(['company_name' => '::customer_name::']);
+        $project  = Project::factory()->for($this->company)->create([
             'customer_id'  => $customer->id,
             'project_name' => '::project_name::',
         ]);
-        $taxRate = TaxRate::factory()->create([
+        $taxRate = TaxRate::factory()->for($this->company)->create([
             'name' => '::taxrate_name::',
         ]);
 

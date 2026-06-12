@@ -349,9 +349,12 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
 
         /* Arrange */
         // Clean up any default numberings created by CompanyObserver during setup
-        Numbering::query()->where('company_id', $this->company->id)->delete();
+        Numbering::withoutGlobalScopes()->where('company_id', $this->company->id)->delete();
 
-        $otherCompany           = Company::factory()->create();
+        $otherCompany = Company::factory()->create();
+        // Clean up the default numbering the observer creates for $otherCompany
+        Numbering::withoutGlobalScopes()->where('company_id', $otherCompany->id)->delete();
+
         $currentCompanyDocGroup = Numbering::factory()->for($this->company)->create(['name' => 'Current Company Group']);
         $otherCompanyDocGroup   = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Company Group']);
 
@@ -375,7 +378,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $allDocGroups = Numbering::withoutGlobalScopes()->get();
         $this->assertCount(2, $allDocGroups, 'Should have total of 2 document groups');
 
-        $otherCompanyGroups = Numbering::query()->where('company_id', $otherCompany->id)->get();
+        $otherCompanyGroups = Numbering::withoutGlobalScopes()->where('company_id', $otherCompany->id)->get();
         $this->assertCount(1, $otherCompanyGroups, 'Other company should have its document group');
         $this->assertEquals($otherCompanyDocGroup->id, $otherCompanyGroups->first()->id);
     }
