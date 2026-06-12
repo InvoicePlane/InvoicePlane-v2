@@ -2,10 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://php.net)
-[![Laravel Version](https://img.shields.io/badge/Laravel-12%2B-red.svg)](https://laravel.com)
-[![Filament Version](https://img.shields.io/badge/Filament-4.0-orange.svg)](https://filamentphp.com)
+[![Laravel Version](https://img.shields.io/badge/Laravel-13%2B-red.svg)](https://laravel.com)
+[![Filament Version](https://img.shields.io/badge/Filament-5.x-orange.svg)](https://filamentphp.com)
 
-**InvoicePlane v2** is a modern, open-source invoicing and billing application built with Laravel 12, Filament 4, and Livewire. It features a modular architecture, multi-tenancy support, and comprehensive Peppol e-invoicing integration for European businesses.
+**InvoicePlane v2** is a modern, open-source invoicing and billing application built with Laravel 13, Filament 5, and Livewire. It features a modular architecture, multi-tenancy support, and comprehensive Peppol e-invoicing integration for European businesses.
 
 ---
 
@@ -47,7 +47,7 @@
 - **PHP** 8.2 or higher
 - **Composer** 2.x
 - **Node.js** 20+ and Yarn
-- **Database** MySQL 8.0+, PostgreSQL 13+, or SQLite (dev only)
+- **Database** MariaDB 10.11+ (recommended), MySQL 8.0+, or SQLite (dev only)
 - **Redis** (recommended for queue/cache in production)
 - **Queue Worker** (required for export functionality)
 
@@ -231,20 +231,20 @@ See [PEPPOL_ARCHITECTURE.md](.github/PEPPOL_ARCHITECTURE.md) for complete setup.
 
 ### Running Tests
 
+Tests run inside the Docker workspace container — the database is only reachable there:
+
 ```bash
 # Run all tests
-php artisan test
-
-# Run with coverage
-php artisan test --coverage
-
-# Run specific test suite
-php artisan test --testsuite=Unit
-php artisan test --testsuite=Feature
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test"
 
 # Run specific test file
-php artisan test --filter=InvoiceTest
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test Modules/Invoices/Tests/Feature/InvoicesTest.php"
+
+# Fall back to phpunit for full exception traces on failure
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && vendor/bin/phpunit Modules/Invoices/Tests/Feature/InvoicesTest.php"
 ```
+
+Or use the Makefile shorthand (see `Makefile` for available targets).
 
 See [RUNNING_TESTS.md](.github/RUNNING_TESTS.md) for advanced testing.
 
