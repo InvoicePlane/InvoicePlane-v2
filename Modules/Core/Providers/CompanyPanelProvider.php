@@ -5,7 +5,6 @@ namespace Modules\Core\Providers;
 use App\Filament\Pages\SwitchCompany;
 use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
-use Filament\Navigation\MenuItem;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -239,10 +238,13 @@ class CompanyPanelProvider extends PanelProvider
                     ]);
             })
             ->userMenuItems([
-                MenuItem::make()
+                Action::make('switch-company')
                     ->label(fn (): string => Company::query()->find(session('current_company_id'))?->name ?? 'Switch Company')
                     ->icon('heroicon-o-building-office-2')
-                    ->url(fn (): string => SwitchCompany::getUrl()),
+                    ->modalHeading('Switch Company')
+                    ->modalContent(fn () => view('filament.pages.switch-company-modal'))
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
