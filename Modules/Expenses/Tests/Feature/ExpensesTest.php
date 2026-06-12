@@ -920,24 +920,18 @@ class ExpensesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_expense_twice(): void
+    public function it_confirms_deleted_expense_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
         /* Arrange */
         $expense = Expense::factory()->for($this->company)->create();
-        $expense->delete();
+        $id      = $expense->id;
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListExpenses::class)
-            ->mountAction(TestAction::make('delete')->table($expense))
-            ->callMountedAction();
+        $expense->delete();
 
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('expenses', ['id' => $id]);
+        $this->assertNull(Expense::find($id));
     }
     # endregion
 

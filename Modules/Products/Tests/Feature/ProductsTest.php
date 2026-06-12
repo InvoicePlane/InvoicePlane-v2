@@ -689,9 +689,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('failing')]
     public function it_bulk_deletes_products(): void
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped('Bulk delete uses undefined $product variable; needs Filament BulkAction API fix');
 
         /* Arrange */
         $productCategory = ProductCategory::factory()->create([
@@ -782,13 +783,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      *
      *
      **/
+    #[Group('failing')]
     public function it_products_process_selections(): void
     {
-        $this->markTestIncomplete();
-
-        /* Arrange */
-
-        $this->marktestskipped('Skipped test.');
+        $this->markTestSkipped('processSelections action not yet implemented in ListProducts');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',
@@ -825,13 +823,10 @@ class ProductsTest extends AbstractCompanyPanelTestCase
      * route('filament.ivpl.resources.filament.resources.products.process_selections').
      *
      **/
+    #[Group('failing')]
     public function it_fails_to_process_selections_without_product_ids(): void
     {
-        $this->markTestIncomplete();
-
-        /* Arrange */
-
-        $this->marktestskipped('Skipped test.');
+        $this->markTestSkipped('processSelections action not yet implemented in ListProducts');
         // $this->authenticate();
         $productCategory = ProductCategory::factory()->create([
             'category_name' => '::category_name::',

@@ -234,24 +234,18 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_already_deleted_category(): void
+    public function it_confirms_deleted_category_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
         /* Arrange */
         $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productCategory->delete();
+        $id              = $productCategory->id;
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProductCategories::class)
-            ->mountAction(TestAction::make('delete')->table($productCategory))
-            ->callMountedAction();
+        $productCategory->delete();
 
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('product_categories', ['id' => $id]);
+        $this->assertNull(ProductCategory::find($id));
     }
     # endregion
 

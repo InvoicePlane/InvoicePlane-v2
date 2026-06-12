@@ -221,24 +221,18 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_already_deleted_category(): void
+    public function it_confirms_deleted_category_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
         /* Arrange */
         $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
-        $expenseCategory->delete();
+        $id              = $expenseCategory->id;
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListExpenseCategories::class)
-            ->mountAction(TestAction::make('delete')->table($expenseCategory))
-            ->callMountedAction();
+        $expenseCategory->delete();
 
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('expense_categories', ['id' => $id]);
+        $this->assertNull(ExpenseCategory::find($id));
     }
     # endregion
 

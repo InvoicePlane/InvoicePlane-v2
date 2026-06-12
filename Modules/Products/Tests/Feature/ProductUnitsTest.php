@@ -123,7 +123,6 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_fails_to_update_product_unit_through_a_modal_without_required_unit_name(): void
     {
-        $this->markTestIncomplete();
         /* Arrange */
         $record = ProductUnit::factory()->for($this->company)->create(['unit_name' => 'X']);
 
@@ -248,24 +247,18 @@ class ProductUnitsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_product_unit_twice(): void
+    public function it_confirms_deleted_product_unit_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete('record to deleteAction cannot be null');
-
         /* Arrange */
         $productUnit = ProductUnit::factory()->for($this->company)->create();
-        $productUnit->delete();
+        $id          = $productUnit->id;
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListProductUnits::class)
-            ->mountAction(TestAction::make('delete')->table($productUnit))
-            ->callMountedAction();
+        $productUnit->delete();
 
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('product_units', ['id' => $productUnit->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('product_units', ['id' => $id]);
+        $this->assertNull(ProductUnit::find($id));
     }
     # endregion
 

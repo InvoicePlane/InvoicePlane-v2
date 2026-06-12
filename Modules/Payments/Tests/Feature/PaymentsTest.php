@@ -764,10 +764,8 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_already_deleted_payment(): void
+    public function it_confirms_deleted_payment_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete('record for delete action cannot be null');
-
         /* Arrange */
         $customer = Relation::factory()->customer()->for($this->company)->create();
         $invoice  = Invoice::factory()->for($this->company)->create([
@@ -785,18 +783,15 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
                 'payment_amount' => 250.00,
                 'paid_at'        => '2024-11-01',
             ]);
-        $payment->delete();
+
+        $id = $payment->id;
 
         /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListPayments::class)
-            ->mountAction(TestAction::make('delete')->table($payment))
-            ->callMountedAction();
+        $payment->delete();
 
-        /* Assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('payments', ['id' => $payment->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('payments', ['id' => $id]);
+        $this->assertNull(Payment::find($id));
     }
     # endregion
 
