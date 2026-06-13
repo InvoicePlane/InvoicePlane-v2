@@ -2,8 +2,6 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Core\Enums\UserRole;
@@ -11,17 +9,15 @@ use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Filament\Responses\LoginResponse;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\CreatesApplication;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 
 #[CoversClass(LoginResponse::class)]
-class LoginRedirectTest extends BaseTestCase
+class LoginRedirectTest extends AbstractCompanyPanelTestCase
 {
-    use CreatesApplication;
-    use RefreshDatabase;
 
     protected function setUp(): void
     {

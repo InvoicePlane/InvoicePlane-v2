@@ -21,10 +21,10 @@ class LoginResponse implements BaseLoginResponse
             $tenant = Company::query()
                 ->whereRaw('LOWER(search_code) = ?', [self::DEFAULT_COMPANY_CODE])
                 ->first()
-                ?? Company::query()->first();
+                ?? Company::query()->oldest('id')->first();
 
             if (! $tenant) {
-                abort(500, 'Fallback company not found.');
+                abort(500, trans('auth.fallback_company_not_found'));
             }
 
             filament()->setTenant($tenant);
@@ -32,10 +32,10 @@ class LoginResponse implements BaseLoginResponse
             $tenant = $user->companies()
                 ->whereRaw('LOWER(search_code) = ?', [self::DEFAULT_COMPANY_CODE])
                 ->first()
-                ?? $user->companies()->first();
+                ?? $user->companies()->oldest('id')->first();
 
             if (! $tenant) {
-                abort(500, 'No company found for this user.');
+                abort(500, trans('auth.no_company_found_for_user'));
             }
 
             session(['current_company_id' => $tenant->id]);
