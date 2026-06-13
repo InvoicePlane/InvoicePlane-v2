@@ -41,7 +41,7 @@ package-lock.json
 # Pint
 /pint.txt
 
-# PHPUnit / Pest
+# PHPUnit
 /.phpunit.cache
 /.phpunit.result.cache
 /depr.txt
