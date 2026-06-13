@@ -4,11 +4,11 @@ namespace Modules\Core\Tests\Unit;
 
 use Modules\Core\DTOs\BlockDTO;
 use Modules\Core\DTOs\GridPositionDTO;
-use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-class BlockDTOTest extends AbstractAdminPanelTestCase
+class BlockDTOTest extends AbstractTestCase
 {
     #[Test]
     #[Group('unit')]

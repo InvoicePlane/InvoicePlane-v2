@@ -28,7 +28,6 @@ class ReportBlockService extends BaseService
             'width'        => $data['width'],
             'data_source'  => $data['data_source'],
             'default_band' => $data['default_band'],
-            'config'       => $data['config'] ?? [],
             'is_active'    => $data['is_active'] ?? true,
             'is_system'    => $data['is_system'] ?? false,
         ]);
@@ -44,7 +43,6 @@ class ReportBlockService extends BaseService
             'width'        => $data['width'],
             'data_source'  => $data['data_source'],
             'default_band' => $data['default_band'],
-            'config'       => $data['config'] ?? [],
             'is_active'    => $data['is_active'] ?? true,
             'is_system'    => $data['is_system'] ?? false,
         ]);

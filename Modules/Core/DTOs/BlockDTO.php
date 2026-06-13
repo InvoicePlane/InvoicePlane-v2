@@ -89,14 +89,16 @@ class BlockDTO
         $dto->setSlug($original->getSlug());
 
         $originalPosition = $original->getPosition();
-        $newPosition      = GridPositionDTO::create(
-            $originalPosition->getX(),
-            $originalPosition->getY(),
-            $originalPosition->getWidth(),
-            $originalPosition->getHeight()
-        );
+        if ($originalPosition !== null) {
+            $newPosition = GridPositionDTO::create(
+                $originalPosition->getX(),
+                $originalPosition->getY(),
+                $originalPosition->getWidth(),
+                $originalPosition->getHeight()
+            );
+            $dto->setPosition($newPosition);
+        }
 
-        $dto->setPosition($newPosition);
         $dto->setConfig($original->getConfig());
         $dto->setLabel($original->getLabel());
         $dto->setIsCloneable($original->getIsCloneable());

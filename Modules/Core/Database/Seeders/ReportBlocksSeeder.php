@@ -76,21 +76,22 @@ class ReportBlocksSeeder extends Seeder
         ];
 
         foreach ($blocks as $block) {
-            $baseSlug = Str::slug($block['name']);
-            $slug     = $baseSlug . '-' . Str::random(8);
+            $slug     = $block['slug'] ?? Str::slug($block['name']);
             $filename = $slug;
 
-            ReportBlock::create([
-                'is_active'    => true,
-                'is_system'    => true,
-                'block_type'   => $block['block_type'],
-                'name'         => $block['name'],
-                'slug'         => $slug,
-                'filename'     => $filename,
-                'width'        => $block['width'],
-                'data_source'  => $block['data_source'],
-                'default_band' => $block['default_band'],
-            ]);
+            ReportBlock::firstOrCreate(
+                ['slug' => $slug],
+                [
+                    'is_active'    => true,
+                    'is_system'    => true,
+                    'block_type'   => $block['block_type'],
+                    'name'         => $block['name'],
+                    'filename'     => $filename,
+                    'width'        => $block['width'],
+                    'data_source'  => $block['data_source'],
+                    'default_band' => $block['default_band'],
+                ]
+            );
 
             // Ensure directory exists
             if ( ! Storage::disk('local')->exists('report_blocks')) {
@@ -100,8 +101,10 @@ class ReportBlocksSeeder extends Seeder
             // Save default config to JSON if it doesn't exist
             $path = 'report_blocks/' . $filename . '.json';
             if ( ! Storage::disk('local')->exists($path)) {
-                $config           = $block['config'];
-                $config['fields'] = []; // Start with no fields as requested for drag/drop
+                $config = isset($block['config']) ? $block['config'] : [];
+                if (is_array($config)) {
+                    $config['fields'] = []; // Start with no fields as requested for drag/drop
+                }
                 Storage::disk('local')->put($path, json_encode($config, JSON_PRETTY_PRINT));
             }
         }

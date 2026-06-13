@@ -51,7 +51,7 @@ class ReportTemplate extends Model
      */
     public function getFilePath(): string
     {
-        return "{$this->company_id}/{$this->slug}.json";
+        return "{$this->company_id}/mason_{$this->slug}.json";
     }
 
     /**
