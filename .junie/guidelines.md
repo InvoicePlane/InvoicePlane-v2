@@ -1,912 +1,266 @@
-# Junie AI Agent Guidelines for InvoicePlane v2
-
-This document provides comprehensive guidelines for AI agents (like Junie) working on the InvoicePlane v2 codebase to ensure maximum information accuracy and performance.
-
----
+# Junie Guidelines — InvoicePlane v2
 
 ## How to Use These Guidelines
 
-**IMPORTANT:** These guidelines contain comprehensive information about the InvoicePlane v2 codebase, architecture, and development workflow. **Trust these guidelines** and use them as your primary reference. Only perform additional searches if:
-- The information you need is not covered here
-- You encounter an error that contradicts these guidelines
-- You need to locate specific files or code not referenced here
-
-Following these guidelines will significantly reduce exploration time and prevent common mistakes.
+These guidelines contain verified facts about the InvoicePlane v2 codebase. **Trust them** and use them as the primary reference. Only search the repository when something is not covered here or contradicts what you find.
 
 ---
 
-## Project Overview
+## Verified Tech Stack
 
-**InvoicePlane v2** is a multi-tenant invoicing and billing application built with modern PHP/Laravel technologies.
-
-### Core Architecture
-- **Framework:** Laravel 12+ (PHP 8.2+)
-- **UI:** Filament 4.0 (Admin/Company/Invoice panels)
-- **Frontend:** Livewire + Tailwind CSS
-- **Module System:** nwidart/laravel-modules (modular monolith)
+- **Framework:** Laravel **11** (PHP **8.1**+)
+- **UI:** Filament **4.0** + Livewire **3**
+- **Modules:** `nwidart/laravel-modules`
+- **Permissions:** `spatie/laravel-permission`
 - **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
-- **Permissions:** spatie/laravel-permission
-- **Queue System:** Required for export functionality
+- **DB (prod):** MariaDB 11 | **DB (tests):** SQLite `:memory:` or MariaDB 11 (CI)
+- **Code quality:** Laravel Pint (PSR-12), PHPStan, Rector
 
-### Module Structure
+---
+
+## Project Architecture
+
+All business logic lives in `Modules/`. The `app/` directory is intentionally thin.
+
+### Module inventory
+
+| Module | Key models |
+|--------|-----------|
+| Core | User, Company, CompanyUser, TaxRate, Numbering, EmailTemplate, CustomField, Upload, Note, AuditLog, Setting, MailQueue |
+| Clients | Relation (table: `relations`), Contact, Address, Communication, ClientCustom (PK: `client_custom_id`) |
+| Invoices | Invoice, InvoiceItem, RecurringInvoice |
+| Quotes | Quote, QuoteItem |
+| Payments | Payment |
+| Products | Product, ProductUnit, ProductCategory |
+| Projects | Project, Task |
+| Expenses | Expense, ExpenseCategory, ExpenseItem |
+
+### Module directory layout
+
 ```
-Modules/
- ModuleName/
- Models/ # Eloquent models
- Services/ # Business logic layer
- Repositories/ # Data access layer
- DTOs/ # Data Transfer Objects
- Transformers/ # DTO ↔ Model transformations
- Filament/ # Filament resources (Admin/Company panels)
- Tests/ # PHPUnit tests
- Database/ # Migrations, seeders, factories
+Modules/<Name>/
+  Models/
+  Services/               # extend BaseService; no DTO/Repository layer
+  Enums/                  # PHP 8.1+ backed string enums
+  Filament/
+    Admin/Resources/      # Admin panel CRUD
+    Company/Resources/
+      <Resource>/
+        Pages/   CreateX, EditX, ListX
+        Tables/  XTable (columns, filters, actions)
+        Schemas/ XForm (form schema)
+  Database/
+    Factories/            # extend AbstractFactory
+    Migrations/           # auto-discovered
+    Seeders/
+  Events/ Listeners/ Observers/
+  Traits/ Helpers/ Http/ Providers/
+  Tests/Feature/ Tests/Unit/
 ```
 
 ---
 
-## Critical Principles (MUST FOLLOW)
+## Filament Panels (verified)
 
-### 1. SOLID Principles
-- **Single Responsibility:** Each class has one clear purpose
-- **Open/Closed:** Extend behavior without modifying existing code
-- **Liskov Substitution:** Subtypes must be substitutable for base types
-- **Interface Segregation:** No fat interfaces; clients shouldn't depend on unused methods
-- **Dependency Inversion:** Depend on abstractions, not concretions
+| ID | Path | Tenant | Roles |
+|----|------|--------|-------|
+| `admin` | `/admin` | No | super_admin, admin, assist |
+| `company` | `` **(root, empty)** | Yes — Company by `search_code` | client_admin, client |
+| `user` | `/user` | No | (future) |
 
-### 2. Code Quality Standards
-- **Early Returns:** Prefer early returns over nested conditions
-- **No Inline Logic:** Business logic must be in services, not controllers/resources
-- **Dynamic Programming:** Apply where relevant (memoization, tabulation)
-- **Centralize Shared Logic:** Use traits to avoid duplication
-- **Type Safety:** Use native PHP type hints throughout
+> Company panel path is **empty string** — URLs are `/{search_code}/{page}`, e.g. `/ivplv2/dashboard`.
 
-### 3. Error Handling
+Panel providers all live at `Modules/Core/Providers/`.
+
+Route names: `filament.<panel-id>.pages.<slug>` and `filament.<panel-id>.resources.<resource>.<action>`
+
+---
+
+## Multi-Tenancy
+
 ```php
-// Catch specific exceptions separately
-try {
- // code
-} catch (Error $e) {
- // Handle Error
-} catch (ErrorException $e) {
- // Handle ErrorException
-} catch (Throwable $e) {
- // Handle other throwables
+// URL tenant param — always lowercase search_code
+Str::lower($company->search_code)   // e.g. 'ivplv2'
+
+// Pivot: company_user (id, company_id, user_id — no timestamps)
+$user->companies()          // BelongsToMany<Company>
+$company->users()           // BelongsToMany<Company>
+
+// Current tenant resolution (in order):
+// 1. Filament::getTenant()
+// 2. session('current_company_id')
+// 3. auth()->user()->companies()->first()
+```
+
+Tenant middleware chain (company panel, persistent):
+1. `SetTenantFromQueryString` → reads `?tenant=`, sets session + Filament tenant
+2. `ConfigureTenant` → resolves from route/query/session/user
+3. `EnsureUserCanAccessCompany` → 403 if user not in `company_user` for that company
+
+`BelongsToCompany` trait (on every business model):
+- Adds `company()` BelongsTo relationship
+- Adds global scope filtering by `company_id` — queries are always tenant-scoped
+- Auto-injects `company_id` on model creation
+
+---
+
+## Roles (verified Spatie values)
+
+```php
+UserRole::SUPER_ADMIN    = 'super_admin'    // full access, any panel
+UserRole::ADMIN          = 'admin'
+UserRole::ASSIST         = 'assist'
+UserRole::CUSTOMER_ADMIN = 'client_admin'   // company panel only
+UserRole::CUSTOMER       = 'client'
+
+UserRole::elevated()   // ['super_admin', 'admin', 'assist']
+UserRole::nonAdmin()   // ['client_admin', 'client']
+```
+
+Spatie roles require a DB record in tests:
+```php
+Role::query()->firstOrCreate(['name' => UserRole::SUPER_ADMIN->value, 'guard_name' => 'web']);
+$user->assignRole(UserRole::SUPER_ADMIN->value);
+```
+
+---
+
+## Key Model Facts
+
+- `User::$timestamps = false` — no created_at/updated_at
+- `ClientCustom::$primaryKey = 'client_custom_id'`
+- `Import::$primaryKey = 'import_id'`
+- `Relation` → table `relations` (not `customers`, not `clients`)
+- `Company::search_code` — 10-char unique string; URL slug
+- Soft deletes on Invoice, Quote (and their items)
+- Default company: `search_code='ivplv2'`, `id=22`, name `'InvoicePlane Corporation'` (seeder)
+
+---
+
+## Service Layer
+
+**No DTO, Transformer, or Repository layer.** Services accept plain arrays, return Eloquent models.
+
+```php
+class InvoiceService extends BaseService {
+    public function model(): string { return Invoice::class; }
+    // Inherited from BaseService:
+    // create(array $data): Model
+    // find($id): Model
+    // update(array $input, Model $model): Model
+    // delete($id): bool
+    // paginate(int $perPage): LengthAwarePaginator
+    // getCompanyId(): ?int
 }
 ```
 
 ---
 
-## Architecture Patterns
+## SOLID & Code Quality Principles
 
-### DTO & Transformer Rules
-
-**DTOs (Data Transfer Objects):**
-- NO constructors in DTOs
-- Use static named constructors when necessary
-- Rely on getters and setters for data access
-- DTOs are transformed using Transformers
-
-**Transformers:**
-- Must implement `toDto()` and `toModel()` methods
-- Services must use Transformers directly (not build DTOs manually)
-- EntityExtractionService must use Transformers for entire transformation process
-
-**Example:**
-```php
-// DTO
-class InvoiceDTO
-{
- private string $number;
- private float $total;
-
- // No constructor!
-
- public static function fromArray(array $data): self
- {
- $dto = new self();
- $dto->setNumber($data['number']);
- $dto->setTotal($data['total']);
- return $dto;
- }
-
- public function getNumber(): string { return $this->number; }
- public function setNumber(string $number): void { $this->number = $number; }
-}
-
-// Transformer
-class InvoiceTransformer
-{
- public function toDto(Invoice $model): InvoiceDTO
- {
- return InvoiceDTO::fromArray([
- 'number' => $model->number,
- 'total' => $model->total,
- ]);
- }
-
- public function toModel(InvoiceDTO $dto): Invoice
- {
- $model = new Invoice();
- $model->number = $dto->getNumber();
- $model->total = $dto->getTotal();
- return $model;
- }
-}
-```
-
-### Service Layer
-- All business logic must be in services
-- Services coordinate between repositories, transformers, and external systems
-- Services must not build DTOs manually—use Transformers
-- Services return DTOs or collections of DTOs
-
-### Repository Layer
-- Repositories handle data access only
-- Use repository methods for upserts (not `updateOrCreate`)
-- Repositories return models or collections of models
-
-### API Integration
-- All API requests must go through the Advanced API Client
-- No direct API calls in controllers, services, or jobs
-- Use Laravel's HTTP client (not curl or Guzzle)
-- All transformations must go through Transformers
-- API responses and errors must be logged separately
+- **Single Responsibility:** one clear purpose per class
+- **Early returns:** reduce nesting; validate inputs at the top of methods
+- **No inline business logic:** logic in services, not resources/controllers
+- **Centralize shared logic:** traits over copy-paste
+- **Type hints everywhere:** native PHP types throughout
 
 ---
 
-## Testing Standards
+## Database & Model Rules
 
-### Test Structure
-```php
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\Group;
-
-class InvoiceServiceTest extends AbstractCompanyPanelTestCase
-{
- use RefreshDatabase;
-
- #[Test]
- #[Group('invoices')]
- public function it_creates_invoice_with_valid_data(): void
- {
- /* Arrange */
- $data = ['number' => 'INV-001', 'total' => 100.00];
-
- /* Act */
- $result = $this->service->createInvoice($data);
-
- /* Assert */
- $this->assertInstanceOf(InvoiceDTO::class, $result);
- $this->assertEquals('INV-001', $result->getNumber());
- }
-}
-```
-
-### Testing Rules (MANDATORY)
-1. **Test Naming:** Functions prefixed with `it_` (e.g., `it_creates_invoice`)
-2. **No `@test` Annotations:** Use `#[Test]` attribute instead
-3. **Prefer Fakes over Mocks:**
- ```php
- Queue::fake();
- Storage::fake('local');
- Notification::fake();
- ```
-4. **Happy Paths Last:** Place success scenarios at the end
-5. **Reusable Setup:** Abstract test cases for fixtures, not inline
-6. **Comment Blocks:** Use `/* Arrange */`, `/* Act */`, `/* Assert */`
-7. **NEVER extend `Tests\TestCase`:** All tests must extend one of the abstract test cases from `Modules/Core/Tests/`:
-   - `AbstractTestCase` - Basic test case with application bootstrap
-   - `AbstractAdminPanelTestCase` - For admin panel tests with RefreshDatabase
-   - `AbstractCompanyPanelTestCase` - For company panel tests with multi-tenancy
-
-### Export Testing
-```php
-#[Test]
-#[Group('export')]
-public function it_dispatches_csv_export_job(): void
-{
- /* Arrange */
- Queue::fake();
- Storage::fake('local');
- $records = Model::factory()->count(3)->create();
-
- /* Act */
- Livewire::actingAs($this->user)
- ->test(ListPage::class)
- ->callAction('exportCsv', data: [
- 'columnMap' => [
- 'field' => ['isEnabled' => true, 'label' => 'Label'],
- ],
- ]);
-
- /* Assert */
- Bus::assertChained([
- fn($batch) => $batch instanceof \Illuminate\Bus\PendingBatch
- ]);
-}
-```
+- **No `$fillable`** — use `$guarded = []`
+- **No JSON or ENUM columns** in migrations
+- **No `timestamps()` or `softDeletes()`** unless explicitly needed
+- **Use `$casts`** for enum fields: `'status' => InvoiceStatus::class`
+- Native PHP type hints on all properties and return types
 
 ---
 
-## Database & Models
+## Internationalization
 
-### Migration Rules
-- NO JSON columns in migrations
-- NO ENUM columns in migrations
-- NO `timestamps()` unless explicitly specified
-- NO `softDeletes()` unless explicitly specified
-
-### Model Rules
-- NO `$fillable` array in models
-- NO `timestamps` or `softDeletes` properties unless needed
-- Use native PHP type hints
-- Use `$casts` for Enum fields
+**Always `trans()`, never `__()`:**
 
 ```php
-class Invoice extends Model
-{
- // No $fillable!
-
- protected $casts = [
- 'status' => InvoiceStatus::class, // Enum
- 'total' => 'decimal:2',
- 'issued_at' => 'datetime',
- ];
-}
-```
-
----
-
-## Filament Resources
-
-### Resource Generation
-- Must use Filament internal traits (`CanReadModelSchemas`, etc.)
-- No reflection for relationship detection
-- Separate form and table generators by field type
-- Keep configurable `$excludedFields` array
-- Detect Enums via `$casts` and `enum_exists()`
-- Add docblocks above `form()`, `table()`, `getRelations()`
-- Use `copyStubToApp()` instead of inline string replacements
-
-### Panel Separation
-- Respect proper panel namespaces (Admin/Company/Invoice)
-- Resources in correct panel directories
-- Preserve exact method signatures
-
-### Best Practices
-- Use correct `Action::make()` syntax with fluent methods
-- Don't display raw `created_at` or `updated_at` in tables/infolists
-- Use dedicated timestamp columns instead
-
----
-
-## Export System
-
-### Architecture
-- Exports use Filament's asynchronous export system
-- **Requires queue workers** to be running
-- The `exports` table is temporary (job coordination only)
-- NO export history feature
-- Auto-prunable via Laravel's model pruning
-
-### Queue Configuration
-
-**Local Development:**
-```bash
-# Option 1: Sync driver (blocks request)
-QUEUE_CONNECTION=sync
-
-# Option 2: Queue worker
-php artisan queue:work
-```
-
-**Production:**
-```bash
-# Redis (recommended)
-QUEUE_CONNECTION=redis
-
-# With Supervisor
-[program:invoiceplane-worker]
-command=php /path/to/artisan queue:work --sleep=3 --tries=3
-```
-
-### Export Test Requirements
-- Must use `Queue::fake()` and `Storage::fake()`
-- Verify job dispatching with `Bus::assertChained()`
-- Don't test file content (test job dispatch only)
-- See: `Modules/Core/Filament/Exporters/README.md`
-
----
-
-## Peppol E-Invoicing Integration
-
-### Architecture Overview
-InvoicePlane v2 includes a comprehensive Peppol integration for sending electronic invoices across the European Peppol network.
-
-**Key Components:**
-- **PeppolService:** Main facade for invoice transmission and status checking
-- **PeppolManagementService:** Integration lifecycle management (create, test, validate, send)
-- **Format Handlers:** Strategy Pattern for different e-invoice formats (UBL, FatturaPA, ZUGFeRD, etc.)
-- **Provider Factory:** Creates provider-specific clients (e.g., EInvoiceBe)
-- **API Client:** Centralized HTTP client with exception handling
-- **Event System:** Dispatches events for all major operations
-
-### Format Handlers (Strategy Pattern)
-Each format handler implements:
-- `validate(Invoice $invoice): array` - Validates invoice for format requirements
-- `transform(Invoice $invoice, array $options): array` - Converts to format-specific structure
-- `getFormat(): PeppolDocumentFormat` - Returns format enum
-
-**Supported Formats (11 total):**
-- **CII** (Cross Industry Invoice) - UN/CEFACT standard, common in Germany/France/Austria
-- **EHF 3.0** - Norwegian e-invoice format (Elektronisk Handelsformat)
-- **Factur-X** - French/German hybrid format (PDF with embedded XML)
-- **Facturae 3.2** - Spanish e-invoice format (mandatory for public administration)
-- **FatturaPA 1.2** - Italian e-invoice format (mandatory for all invoices in Italy)
-- **OIOUBL** - Danish e-invoice format
-- **PEPPOL BIS 3.0** - Default Peppol format for most European countries
-- **UBL 2.1** - Universal Business Language (most common for Peppol)
-- **UBL 2.4** - Updated UBL version with enhanced features
-- **ZUGFeRD 1.0** - German e-invoice format (PDF with embedded XML)
-- **ZUGFeRD 2.0** - Updated German format, compatible with Factur-X
-
-All format handlers are registered in `FormatHandlerFactory` and have comprehensive PHPUnit test coverage.
-The factory automatically selects the appropriate handler based on:
-1. Customer's preferred format (if set)
-2. Mandatory format for customer's country
-3. Recommended format for customer's country  
-4. Fallback to PEPPOL BIS 3.0
-
-**Format Selection Logging:**
-- Info level: Customer's preferred or recommended format unavailable
-- Warning level: Mandatory format for country unavailable (serious configuration issue)
-
-### Service Layer Pattern
-```php
-// PeppolService - Transmission & Status
-$peppolService->sendInvoiceToPeppol($invoice, $options);
-$peppolService->getDocumentStatus($documentId);
-$peppolService->cancelDocument($documentId);
-
-// PeppolManagementService - Lifecycle
-$service->createIntegration($companyId, $provider, $config, $token);
-$service->testConnection($integration);
-$service->validatePeppolId($customer, $integration);
-$service->sendInvoice($invoice, $integration);
-```
-
-### Logging & Monitoring
-- **LogsApiRequests trait:** Logs all API requests/responses
-- **LogsPeppolActivity trait:** Logs Peppol-specific events
-- **Events:** PeppolTransmissionCreated, PeppolTransmissionSent, etc.
-- **Status Tracking:** Comprehensive enum-based status system
-
-### Database Structure
-- `peppol_integrations` - Company provider configurations
-- `peppol_integration_config` - Key-value config storage
-- `peppol_transmissions` - Transmission tracking
-- `peppol_transmission_responses` - Provider responses
-- `customer_peppol_validation_history` - Validation records
-
-### Testing Peppol Components
-```php
-#[Test]
-public function it_sends_invoice_to_peppol_successfully(): void
-{
- /* Arrange */
- Http::fake(['https://api.e-invoice.be/*' => Http::response([
- 'document_id' => 'DOC-123456',
- 'status' => 'submitted',
- ], 200)]);
-
- $invoice = $this->createMockInvoice();
-
- /* Act */
- $result = $this->service->sendInvoiceToPeppol($invoice);
-
- /* Assert */
- $this->assertTrue($result['success']);
- $this->assertEquals('DOC-123456', $result['document_id']);
-}
-```
-
----
-
-## Security & Permissions
-
-### Seeding Rules
-- Seed 5 default roles: `superadmin`, `admin`, `assistance`, `useradmin`, `user`
-- Users can belong to accounts (multi-tenancy)
-- Admin Panel access restricted to `admin` and `superadmin`
-
-### Multi-tenancy
-- Use `BelongsToCompany` trait on models
-- Company context required for all user operations
-- Filament panels enforce tenant isolation
-
----
-
-## Internationalization & Translations
-
-### Translation Function Usage
-**CRITICAL:** InvoicePlane v2 uses `trans()` for all translations, NOT `__()`.
-
-```php
-// ❌ WRONG - Do not use __()
+// ❌ WRONG
 $label = __('ip.invoice_total');
-$message = __('ip.payment_successful');
 
-// ✅ CORRECT - Always use trans()
+// ✅ CORRECT
 $label = trans('ip.invoice_total');
-$message = trans('ip.payment_successful');
 ```
 
-**Blade Templates:**
-```blade
-{{-- ✅ CORRECT --}}
-{{ trans('ip.total') }}
-@lang('ip.total')  {{-- @lang() is acceptable in Blade --}}
-```
-
-### Translation Key Conventions
-- Main translation file: `resources/lang/en/ip.php`
-- Prefix all keys with `ip.` for InvoicePlane-specific translations
-- Use snake_case for key names
-- Group related translations logically
-- Example keys: `ip.invoice_total`, `ip.payment_method`, `ip.report_field_company_name`
-
-### UI Text Translation Requirements
-**ALL user-facing text must be translatable:**
-
-**Form Fields:**
-```php
-// Labels
-TextInput::make('name')
-    ->label(trans('ip.field_label'))
-
-// Placeholders
-TextInput::make('email')
-    ->placeholder(trans('ip.email_placeholder'))
-
-// Helper Text
-TextInput::make('vat_id')
-    ->helperText(trans('ip.vat_id_help'))
-
-// Section Titles
-Section::make(trans('ip.section_general'))
-```
-
-**Required Translation Coverage:**
-- ✅ Form field labels
-- ✅ Form placeholders
-- ✅ Helper text and hints
-- ✅ Tips and tooltips
-- ✅ Button labels
-- ✅ Section titles
-- ✅ Table column headers
-- ✅ Success/error messages
-- ✅ Validation messages
-- ✅ Menu items
-- ✅ Page titles
-
-### Service Translation Pattern
-When services load translatable content from config files:
-```php
-// Load from config and translate
-$label = trans(config('some-config.label'));
-
-// In service methods
-public function getTranslatedLabel(): string
-{
-    return trans($this->configKey);
-}
-```
+Translation keys: `resources/lang/en/ip.php`, prefix `ip.`, snake_case.
+Apply to: form labels, placeholders, helper text, section titles, button labels, table headers, messages.
 
 ---
 
-## Development Workflow
+## Filament Conventions
 
-### Commands
-
-**Testing:**
-```bash
-php artisan test # All tests (typically 30-60 seconds)
-php artisan test --coverage # With coverage (typically 60-120 seconds)
-php artisan test --testsuite=Unit # Unit tests only (faster - 10-30 seconds)
-php artisan test --group=export # Export tests only
+Resource anatomy:
+```
+InvoiceResource.php      — getModel(), navigationIcon(), getPages()
+Pages/ListInvoices.php   — extends ListRecords
+Pages/CreateInvoice.php  — extends CreateRecord
+Pages/EditInvoice.php    — extends EditRecord
+Tables/InvoicesTable.php — static table(Table $table): Table
+Schemas/InvoiceForm.php  — static form(Schema $schema): Schema
 ```
 
-**Important:** Always run tests before finalizing changes. All tests must pass.
+- Respect panel namespace: `Filament/Admin/` vs `Filament/Company/`
+- Use `Action::make()` with fluent method chains
+- Do not display raw `created_at`/`updated_at` — use formatted timestamp columns
 
-**Code Quality:**
+---
+
+## Common Pitfalls
+
+1. Never add business logic to `app/` — use `Modules/`
+2. Never define routes in `routes/` — panels handle routing
+3. Never use `$fillable` — use `$guarded = []`
+4. Never add JSON or ENUM columns to migrations
+5. Never call `Invoice::all()` inside tenant context without company scope — BelongsToCompany adds it automatically
+6. Never skip `->for($company)` on factory calls for company-scoped models (results in `null` company_id)
+7. Never use `__()` for translations — always `trans()`
+8. Never use floats as array keys — cast to string first
+
+---
+
+## Development Commands
+
 ```bash
-vendor/bin/pint # Format code (PSR-12) - auto-fixes violations
-vendor/bin/phpstan analyse # Static analysis (typically 20-40 seconds)
-vendor/bin/rector process --dry-run # Refactoring suggestions
-```
-
-**Validation Pipeline:** Before submitting code, you MUST run:
-1. `vendor/bin/pint` - Format code
-2. `vendor/bin/phpstan analyse` - Check for type errors
-3. `php artisan test` - Run all tests
-
-**Setup:**
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
+# Setup
+composer install && cp .env.example .env && php artisan key:generate
 php artisan migrate --seed
-php artisan queue:work # For exports
+php artisan queue:work   # required for export functionality
+
+# Validation pipeline (run in order before committing)
+vendor/bin/pint                   # 1. format code
+vendor/bin/phpstan analyse         # 2. static analysis
+php artisan test                   # 3. all tests must pass
 ```
 
-### Git Commit Conventions
-- Follow conventions in `.github/git-commit-instructions.md`
-- Use semantic commit messages
-- Reference issues when applicable
+See `.github/git-commit-instructions.md` for commit message conventions.
 
 ---
 
-## Documentation References
+## CI/CD (all must pass before merge)
 
-### Key Documentation Files
-- **Installation:** `.github/INSTALLATION.md`
-- **Contributing:** `.github/CONTRIBUTING.md`
-- **Testing:** Module tests in `Modules/*/Tests/`
-- **Seeding:** `.github/SEEDING.md`
-- **Commits:** `.github/git-commit-instructions.md`
-- **Export Architecture:** `Modules/Core/Filament/Exporters/README.md`
-- **Module Checklist:** `CHECKLIST.md`
-
-### Related Documentation
-- Laravel 12: https://laravel.com/docs/12.x
-- Filament 4: https://filamentphp.com/docs/4.x
-- Livewire 3: https://livewire.laravel.com/docs
-- PHPUnit 11: https://docs.phpunit.de/en/11.0/
+- `php artisan test` — PHPUnit green
+- `vendor/bin/phpstan analyse` — no type errors
+- `vendor/bin/pint` — PSR-12 compliant
+- Docker build — must succeed
 
 ---
 
-## GitHub Actions & Automation
-
-### CI/CD Pipeline
-
-The following automated checks run on every pull request and MUST pass:
-- **PHPUnit** - All tests must pass (`php artisan test`)
-- **PHPStan** - Static analysis must pass with no errors (`vendor/bin/phpstan analyse`)
-- **Pint** - Code must follow PSR-12 standards (`vendor/bin/pint`)
-- **Docker Build** - Docker images must build successfully
-
-See `.github/workflows/` for workflow configurations. Reference `.github/workflows/README.md` for setup details.
-
-### Automated Workflows
-
-InvoicePlane v2 uses GitHub Actions for automated dependency management and CI/CD:
-
-- **Composer Update** - Automated PHP dependency updates
-- **Yarn Update** - Automated JavaScript dependency updates
-- **Crowdin Sync** - Automated translation synchronization
-- **Release** - Automated production releases
-
-### Required Secrets
-
-Automation workflows require repository secrets to function:
-
-**PAT_TOKEN** (Personal Access Token):
-- Required for: Composer Update, Yarn Update workflows
-- Reason: Default `GITHUB_TOKEN` cannot create PRs that trigger other workflows
-- Scopes needed: `repo` and `workflow`
-- Setup: Settings → Secrets and variables → Actions → New repository secret
-
-**CROWDIN_PROJECT_ID** and **CROWDIN_PERSONAL_TOKEN**:
-- Required for: Crowdin Sync, Release workflows
-- Setup: Settings → Secrets and variables → Actions
-
-For detailed setup instructions, see `.github/workflows/README.md` and `.github/MAINTENANCE.md`.
-
----
-
-## Performance Optimization
-
-### Query Optimization
-- Use eager loading to prevent N+1 queries
-- Index foreign keys and frequently queried columns
-- Use `select()` to limit columns when possible
-- Chunk large datasets for processing
-
-### Caching Strategy
-- Cache expensive computations
-- Use Redis for session and cache storage
-- Implement query result caching where appropriate
-
-### Queue Workers
-- Use multiple workers for high-volume operations
-- Configure max execution time appropriately
-- Monitor failed jobs and retry logic
-
----
-
-## PHPStan Type Safety Rules
-
-### Critical: Avoiding Float Array Keys
-**Problem:** Floats used directly as array keys cause PHPStan errors due to precision issues.
-
-**Solution:** Cast floats to strings when using as array keys:
-```php
-// ❌ WRONG - Float as array key
-$rate = 21.0;
-$taxGroups[$rate] = ['base' => 0, 'amount' => 0];
-
-// ✅ CORRECT - Cast to string for array key
-$rate = 21.0;
-$rateKey = (string) $rate;
-$taxGroups[$rateKey] = ['base' => 0, 'amount' => 0];
-
-// When iterating, cast back to float for calculations
-foreach ($taxGroups as $rateKey => $group) {
-    $rate = (float) $rateKey;
-    // Use $rate for calculations and comparisons
-}
-```
-
-### DTO Constructor Invocation
-**Problem:** DTOs with no-arg constructors being called with parameters.
-
-**Solution:** Use static factory methods instead:
-```php
-// ❌ WRONG - Calling constructor with parameters
-$dto = new GridPositionDTO(0, 0, 6, 4);
-
-// ✅ CORRECT - Use static factory method
-$dto = GridPositionDTO::create(0, 0, 6, 4);
-```
-
-### Test Variable Definition
-**Problem:** Tests asserting on undefined variables (missing "act" section).
-
-**Solution:** Always include all three test sections:
-```php
-#[Test]
-public function it_creates_user(): void
-{
-    /* Arrange */
-    $data = ['name' => 'John', 'email' => 'john@example.com'];
-    
-    /* Act */
-    $user = $this->service->createUser($data);  // ❗ Must define variable before assert
-    
-    /* Assert */
-    $this->assertInstanceOf(User::class, $user);
-}
-```
-
-### Property Type Consistency
-**Problem:** Child class properties have different types than parent.
-
-**Solution:** Match parent class property types exactly:
-```php
-// ❌ WRONG - Nullable when parent is not
-class ChildResource extends ParentResource
-{
-    protected static ?string $navigationGroup = 'Reports';  // Parent expects string
-}
-
-// ✅ CORRECT - Match parent type
-class ChildResource extends ParentResource
-{
-    protected static string $navigationGroup = 'Reports';
-}
-```
-
-### Mock Object Type Hints
-**Problem:** Using stdClass for mocks when proper type is expected.
-
-**Solution:** Use PHPStan suppression for test mocks:
-```php
-// When mocking with stdClass in tests
-$customer = new stdClass();
-$customer->name = 'Test';
-
-/** @phpstan-ignore-next-line */
-$invoice->customer = $customer;  // Property expects Customer model
-```
-
-### Import Statements
-**Problem:** Using class aliases without proper imports.
-
-**Solution:** Always import from the correct namespace:
-```php
-// ❌ WRONG - Bare class name
-use Log;
-
-// ✅ CORRECT - Full namespace
-use Illuminate\Support\Facades\Log;
-```
-
-### Method Return Types
-**Problem:** Method return types don't match what the method actually returns.
-
-**Solution:** Use type annotations or suppressions when needed:
-```php
-// When factory returns Collection but method expects Model
-protected function createCompany(): Company
-{
-    /** @var Company $company */
-    $company = Company::factory()->create();
-    return $company;
-}
-
-// Or use PHPStan suppression for complex cases
-/** @phpstan-ignore-next-line */
-return $this->query->get();
-```
-
-### PHPDoc Annotations
-**Problem:** Invalid PHPDoc syntax causing PHPStan errors.
-
-**Solution:** Use correct PHPDoc/PHPStan syntax:
-```php
-// ❌ WRONG - Invalid PHPDoc syntax
-/** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
-
-// ✅ CORRECT - Valid syntax
-/** @SuppressWarnings PHPMD.UnusedFormalParameter */
-
-// Or use PHPStan-specific suppression
-/** @phpstan-ignore-next-line */
-```
-
-### Static vs Non-Static Properties
-**Problem:** Child class makes parent property static or vice versa.
-
-**Solution:** Keep property modifiers consistent with parent:
-```php
-// If parent class has non-static $view, child must also be non-static
-// Use PHPStan suppression if framework requires static
-/** @phpstan-ignore-next-line */
-protected static string $view = 'view.name';
-```
-
-## Common Pitfalls to Avoid
-
-1. Don't use `$fillable` in models
-2. Don't create DTOs with constructors
-3. Don't build DTOs manually in services—use Transformers
-4. Don't use JSON or ENUM columns in migrations
-5. Don't add timestamps/softDeletes unless specified
-6. Don't test export file content—test job dispatching
-7. Don't make direct API calls—use Advanced API Client
-8. Don't use `updateOrCreate`—use repository upsert methods
-9. Don't nest conditions deeply—use early returns
-10. Don't duplicate logic—centralize in traits
-11. **Don't use floats as array keys**—cast to string first
-12. **Don't call DTO constructors with parameters**—use static factory methods
-13. **Don't write tests without "act" sections**—always define variables before asserting
-14. **Don't mismatch parent/child property types**—keep types consistent
-15. **Don't forget proper imports**—always use full namespaces
-
----
-
-## Code Review Checklist
-
-Before submitting code, verify:
-
-- [ ] Follows SOLID principles
-- [ ] No inline business logic (in services)
-- [ ] DTOs use static constructors, not `__construct()`
-- [ ] Transformers used for DTO ↔ Model conversions
-- [ ] Tests use `it_` prefix and `#[Test]` attribute
-- [ ] Tests have Arrange/Act/Assert comments
-- [ ] **All test variables are defined in "act" section before assertions**
-- [ ] No `$fillable` in models
-- [ ] No JSON/ENUM in migrations
-- [ ] Type hints used throughout
-- [ ] **Floats cast to strings when used as array keys**
-- [ ] **DTO static factory methods used instead of constructor calls**
-- [ ] **Property types match parent class types exactly**
-- [ ] **All imports use full namespace paths (no bare class names)**
-- [ ] Early returns instead of nested conditions
-- [ ] Fakes used instead of mocks in tests
-- [ ] **Test mocks use PHPStan suppressions when type mismatches**
-- [ ] Export tests use Queue/Storage fakes
-- [ ] Code formatted with `vendor/bin/pint`
-- [ ] Static analysis passes (`vendor/bin/phpstan`)
-- [ ] All tests pass (`php artisan test`)
-- [ ] Documentation updated if needed
-
----
-
-## Step-by-Step Development Workflow
-
-When making code changes, follow this workflow for best results:
-
-### 1. Understand the Task
-- Read the requirements carefully
-- Identify the scope of changes needed
-- Understand which modules are affected
-
-### 2. Locate Files
-- Use the module structure (`Modules/{ModuleName}/{Type}/`)
-- Check existing code patterns in similar features
-- Review relevant tests for context
-
-### 3. Make Changes
-- Follow all guidelines above (SOLID, DTOs, Transformers, etc.)
-- Keep changes minimal and focused
-- Extract duplicate code into reusable methods
-- Use early returns for better readability
-
-### 4. Write/Update Tests
-- Use `#[Test]` attribute
-- Name tests with `it_` prefix (e.g., `it_creates_invoice`)
-- Structure with Arrange/Act/Assert comments
-- Define all variables in "act" section before assertions
-- Extend appropriate abstract test case from `Modules/Core/Tests/`
-
-### 5. Validate Locally
-Run the validation pipeline in order:
-```bash
-# 1. Format code
-vendor/bin/pint
-
-# 2. Check for type errors
-vendor/bin/phpstan analyse
-
-# 3. Run all tests
-php artisan test
-```
-
-### 6. Review Changes
-- Ensure changes are minimal and surgical
-- Verify no unrelated code was modified
-- Check that all new code follows project guidelines
-- Confirm test coverage is adequate
-
-### 7. Commit
-- Follow `.github/git-commit-instructions.md`
-- Write clear, semantic commit messages
-- Reference issues when applicable
-
-**Remember:** All CI checks (PHPUnit, PHPStan, Pint, Docker Build) must pass before code can be merged.
-
----
-
-## Learning Resources
-
-### InvoicePlane-Specific
-- Review existing modules for patterns
-- Check test files for examples
-- Read module-specific README files
-- Follow CHECKLIST.md for feature status
-
-### Laravel/PHP
-- [Laravel Best Practices](https://github.com/alexeymezenin/laravel-best-practices)
-- [PHP: The Right Way](https://phptherightway.com/)
-- [SOLID Principles in PHP](https://solidprinciples.dev/)
-
-### Filament
-- [Filament Tricks](https://filamentphp.com/tricks)
-- [Filament Community](https://github.com/filamentphp)
-
----
-
-## Continuous Improvement
-
-This document should be updated as:
-- New patterns emerge
-- Architecture decisions change
-- Best practices evolve
-- Performance optimizations discovered
-
-**Last Updated:** 2026-02-21
-
----
-
-## Support
-
-- **Discord:** https://discord.gg/PPzD2hTrXt
-- **Forums:** https://community.invoiceplane.com
-- **Issues:** https://github.com/InvoicePlane/InvoicePlane/issues
-- **Wiki:** https://wiki.invoiceplane.com
-
----
-
-**Remember:** These guidelines ensure consistency, maintainability, and performance across the InvoicePlane v2 codebase. When in doubt, refer to existing code that follows these patterns, and always prioritize code quality over speed of delivery.
+## Reference Files
+
+| File | Content |
+|------|---------|
+| `.github/copilot-instructions.md` | Copilot-specific context (same facts, Copilot format) |
+| `.junie/testing.md` | Testing patterns, base classes, factory cheat sheet |
+| `.junie/architecture.md` | Auth flow, middleware, seeder details |
+| `CLAUDE.md` | Claude Code context (same facts, Claude format) |
+| `AGENTS.md` | OpenAI Codex / Agents context |
+| `.github/INSTALLATION.md` | Installation guide |
+| `.github/CONTRIBUTING.md` | Contributing guide |
+| `.github/git-commit-instructions.md` | Commit conventions |
+| `Modules/Core/Filament/Exporters/README.md` | Export architecture |
