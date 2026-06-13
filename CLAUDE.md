@@ -124,6 +124,10 @@ $user->isSuperAdmin()  // shorthand
 
 ## Testing
 
+> **This project uses PHPUnit exclusively. Pest is NOT installed and must NOT be used.**
+> Never write `it()`, `test()`, `describe()`, `uses()`, or Pest `expect()` chains.
+> All tests are class-based, extend one of the base classes below, and use `#[Test]` attributes.
+
 ### Base classes
 
 | Class | Extends | Sets up | Use for |
