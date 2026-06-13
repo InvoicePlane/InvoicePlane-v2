@@ -115,7 +115,8 @@ class ReportBlockWidthTest extends AbstractTestCase
         ];
 
         /* Act & Assert */
-        foreach ($widths as $width => $expectedGrid) {
+        foreach ($widths as $widthString => $expectedGrid) {
+            $width = ReportBlockWidth::from($widthString);
             $actualGrid = $width->getGridWidth();
             $this->assertEquals($expectedGrid, $actualGrid, "Width {$width->value} should map to {$expectedGrid} grid columns");
         }
