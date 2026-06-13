@@ -22,6 +22,8 @@ class LoginRedirectTest extends AbstractCompanyPanelTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // Clean slate: remove companies created by base class to properly test fallback logic
+        Company::query()->delete();
         Carbon::setTestNow(Carbon::parse('2026-01-01 00:00:00'));
         filament()->setCurrentPanel(filament()->getPanel('company'));
     }
@@ -117,7 +119,7 @@ class LoginRedirectTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $this->elevatedRole(UserRole::SUPER_ADMIN->value);
-        $otherCompany = Company::factory()->create(['search_code' => 'acme']);
+        Company::factory()->create(['search_code' => 'acme']);
 
         $user = $this->activeUser(['email' => 'super@example.com']);
         $user->assignRole(UserRole::SUPER_ADMIN->value);
