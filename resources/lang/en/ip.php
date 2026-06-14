@@ -662,7 +662,8 @@ return [
     'invoice_status_partially_paid'      => 'Partially Paid',
     'invoice_status_sent'                => 'Sent',
     'invoice_status_viewed'              => 'Viewed',
-    'cannot_delete_paid_invoice'         => 'Paid invoices cannot be deleted.',
+    'cannot_delete_paid_invoice'              => 'Paid invoices cannot be deleted.',
+    'cannot_delete_client_has_linked_records' => 'This client cannot be deleted because it has linked invoices, quotes, expenses, tasks, or projects.',
     'invoice_sumex'                      => 'Sumex',
     'invoice_sumex_canton'               => 'Canton',
     'invoice_sumex_diagnosis'            => 'Diagnosis',
@@ -1217,5 +1218,7 @@ return [
     'task_name'      => 'Task Name',
     'pending'        => 'Pending',
     'number'         => 'Number',
+    'not_yet_implemented'  => 'Not yet implemented',
+    'create_credit_note'   => 'Create Credit Note',
     #endregion
 ];

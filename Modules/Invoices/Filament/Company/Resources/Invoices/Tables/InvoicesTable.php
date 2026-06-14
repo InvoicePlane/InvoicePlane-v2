@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -76,52 +75,7 @@ class InvoicesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->mutateDataUsing(function (array $data, Invoice $record) {
-                            $data['invoiceItems'] = $record->invoiceItems()->get()->map(function ($item) {
-                                $product = $item->product;
-
-                                return [
-                                    'id'            => $item->id,
-                                    'product_id'    => $item->product_id,
-                                    'product_name'  => $product?->product_name ?? '',
-                                    'item_name'     => $item->item_name,
-                                    'quantity'      => $item->quantity,
-                                    'price'         => $item->price,
-                                    'discount'      => $item->discount,
-                                    'subtotal'      => $item->subtotal,
-                                    'tax_1'         => $item->tax_1,
-                                    'tax_2'         => $item->tax_2,
-                                    'tax_rate_id'   => $item->tax_rate_id,
-                                    'tax_rate_2_id' => $item->tax_rate_2_id,
-                                    'description'   => $item->description,
-                                ];
-                            })->toArray();
-
-                            return $data;
-                        })
-                        ->action(function (Invoice $record, array $data) {
-                            app(\Modules\Invoices\Services\InvoiceService::class)->updateInvoice($record, $data);
-                        })
-                        ->modalWidth('full'),
-                    Action::make('download pdf')
-                        ->label(trans('ip.download_pdf'))
-                        ->modalDescription(
-                            'todo: make sure we can download the PDF of the Invoice through an action,
-                            so need for modal anymore'
-                        )
-                        ->action(function (Invoice $record): void {}),
-                    Action::make('send email')
-                        ->label(trans('ip.send_email'))
-                        ->action(function (Invoice $record): void {
-                            app(InvoiceService::class)->sendInvoiceEmail($record);
-                            // Optionally, show a notification
-                            \Filament\Notifications\Notification::make()
-                                ->title(trans('ip.email_sent'))
-                                ->body(trans('ip.invoice_email_sent_successfully'))
-                                ->success()
-                                ->send();
-                        }),
+                    EditAction::make(),
                     DeleteAction::make('delete')
                         ->action(function (Invoice $record, array $data) {
                             try {
