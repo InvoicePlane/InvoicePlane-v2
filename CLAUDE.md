@@ -193,6 +193,22 @@ DB_CONNECTION=sqlite
 DB_DATABASE=:memory:
 ```
 
+### AAA phase comment style
+
+Phase labels (`Arrange`, `Act`, `Assert`) inside test methods **must** use block comments. Line comments (`//`) are **prohibited** for phase labels.
+
+```php
+/* Arrange */
+...
+/* Act */
+...
+/* Assert */
+
+/* Act & Assert */   ← combined phase label, same rule
+```
+
+**Never** write `// Arrange`, `// Act`, or `// Assert`.
+
 ---
 
 ## Key model notes

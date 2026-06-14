@@ -21,65 +21,65 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_calculates_subtotal_from_quantity_and_price(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 2, 'price' => 50.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(100.00, $totals['item_subtotal']);
     }
 
     #[Test]
     public function it_applies_item_level_tax(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(21.00, $totals['item_tax_total']);
     }
 
     #[Test]
     public function it_applies_two_tax_rates(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 21, 'tax_rate_2' => 5],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(26.00, $totals['item_tax_total']);
     }
 
     #[Test]
     public function it_applies_item_discount_before_tax(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         // price=100, discount=10 → discounted base=90, tax@21%=18.9
         $items = [
             ['quantity' => 1, 'price' => 100.00, 'discount' => 10.00, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(100.00, $totals['item_subtotal']);
         $this->assertEquals(18.90, round($totals['item_tax_total'], 2));
     }
@@ -87,16 +87,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_calculates_grand_total_with_taxes(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 2, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         // subtotal=200, tax=42, grand total=200+42+42 (item_tax+invoice_tax)
         $this->assertEquals(200.00, $totals['item_subtotal']);
         $this->assertGreaterThan(200.00, $totals['total']);
@@ -105,7 +105,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_applies_document_level_discount(): void
     {
-        // Arrange
+        /* Arrange */
         $document                    = new \stdClass();
         $document->discount_amount   = 20.00;
         $document->discount_percent  = 0;
@@ -115,10 +115,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(80.00, $totals['total']);
         $this->assertEquals(20.00, $totals['discount_amount']);
     }
@@ -126,7 +126,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_applies_percentage_discount(): void
     {
-        // Arrange
+        /* Arrange */
         $document                   = new \stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 10;
@@ -136,10 +136,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 1, 'price' => 200.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(20.00, $totals['discount_amount']);
         $this->assertEquals(180.00, $totals['total']);
     }
@@ -147,7 +147,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_aggregates_multiple_items(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
@@ -155,10 +155,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 3, 'price' => 10.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(230.00, $totals['item_subtotal']);
         $this->assertEquals(230.00, $totals['total']);
     }
@@ -166,13 +166,13 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_totals_for_empty_items(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, []);
 
-        // Assert
+        /* Assert */
         $this->assertEquals(0, $totals['item_subtotal']);
         $this->assertEquals(0, $totals['item_tax_total']);
         $this->assertEquals(0, $totals['total']);
@@ -185,16 +185,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_total_when_item_quantity_is_zero(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 0, 'price' => 99.99, 'discount' => 0, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertSame(0.0, $totals['item_subtotal']);
         $this->assertSame(0.0, $totals['item_tax_total']);
         $this->assertSame(0.0, $totals['total']);
@@ -203,16 +203,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_total_when_unit_price_is_zero(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 5, 'price' => 0.00, 'discount' => 0, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertSame(0.0, $totals['item_subtotal']);
         $this->assertSame(0.0, $totals['item_tax_total']);
         $this->assertSame(0.0, $totals['total']);
@@ -221,16 +221,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_returns_zero_tax_total_when_tax_rate_is_zero(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 3, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertSame(0.0, $totals['item_tax_total']);
         // total should equal subtotal when there are no taxes and no discounts
         $this->assertSame(300.0, $totals['item_subtotal']);
@@ -240,23 +240,23 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_clamps_total_to_zero_when_item_discount_exceeds_subtotal(): void
     {
-        // Arrange — item discount larger than price; calculator uses max(subtotal - discount, 0)
+        /* Arrange — item discount larger than price; calculator uses max(subtotal - discount, 0) */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 50.00, 'discount' => 200.00, 'tax_rate_1' => 21, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — discounted base is clamped to 0, so tax is also 0
+        /* Assert — discounted base is clamped to 0, so tax is also 0 */
         $this->assertSame(0.0, $totals['item_tax_total']);
     }
 
     #[Test]
     public function it_applies_100_percent_document_discount_resulting_in_zero_total(): void
     {
-        // Arrange
+        /* Arrange */
         $document                   = new \stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 100;
@@ -266,10 +266,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 2, 'price' => 150.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — 100% discount wipes the subtotal entirely
+        /* Assert — 100% discount wipes the subtotal entirely */
         $this->assertEqualsWithDelta(0.0, $totals['total'], 0.001);
         $this->assertEqualsWithDelta(300.0, $totals['discount_amount'], 0.001);
     }
@@ -277,16 +277,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_handles_single_item_correctly(): void
     {
-        // Arrange
+        /* Arrange */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 49.99, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert
+        /* Assert */
         $this->assertEqualsWithDelta(49.99, $totals['item_subtotal'], 0.001);
         $this->assertEqualsWithDelta(49.99, $totals['total'], 0.001);
     }
@@ -294,7 +294,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_sums_multiple_tax_rates_across_multiple_items(): void
     {
-        // Arrange — two items each with different tax combinations
+        /* Arrange — two items each with different tax combinations */
         $document = $this->mockDocument();
         $items    = [
             // item 1: price=100, tax1=10% => tax=10
@@ -303,17 +303,17 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 1, 'price' => 200.00, 'discount' => 0, 'tax_rate_1' => 5, 'tax_rate_2' => 3],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — combined item_tax_total = 10 + 16 = 26
+        /* Assert — combined item_tax_total = 10 + 16 = 26 */
         $this->assertEqualsWithDelta(26.0, $totals['item_tax_total'], 0.001);
     }
 
     #[Test]
     public function it_handles_floating_point_precision_across_many_items(): void
     {
-        // Arrange — three items at 33.33 each; sum should be close to 99.99
+        /* Arrange — three items at 33.33 each; sum should be close to 99.99 */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 1, 'price' => 33.33, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
@@ -321,10 +321,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 1, 'price' => 33.33, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — allow a small floating-point delta
+        /* Assert — allow a small floating-point delta */
         $this->assertEqualsWithDelta(99.99, $totals['item_subtotal'], 0.001);
         $this->assertEqualsWithDelta(99.99, $totals['total'], 0.001);
     }
@@ -332,7 +332,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_returns_correct_balance_after_partial_payment(): void
     {
-        // Arrange
+        /* Arrange */
         $document                   = new \stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 0;
@@ -342,10 +342,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
             ['quantity' => 1, 'price' => 200.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — balance = total - amount_paid = 200 - 50 = 150
+        /* Assert — balance = total - amount_paid = 200 - 50 = 150 */
         $this->assertEqualsWithDelta(150.0, $totals['balance'], 0.001);
     }
 
@@ -361,16 +361,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_produces_negative_subtotal_for_negative_quantity_without_throwing(): void
     {
-        // Arrange — calculator does not guard against negative quantities
+        /* Arrange — calculator does not guard against negative quantities */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => -1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — result is mathematically correct but negative
+        /* Assert — result is mathematically correct but negative */
         $this->assertEqualsWithDelta(-100.0, $totals['item_subtotal'], 0.001);
         $this->assertEqualsWithDelta(-100.0, $totals['total'], 0.001);
     }
@@ -378,16 +378,16 @@ class InvoiceCalculatorTest extends AbstractTestCase
     #[Test]
     public function it_produces_negative_subtotal_for_negative_price_without_throwing(): void
     {
-        // Arrange — calculator does not guard against negative prices
+        /* Arrange — calculator does not guard against negative prices */
         $document = $this->mockDocument();
         $items    = [
             ['quantity' => 2, 'price' => -50.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
         ];
 
-        // Act
+        /* Act */
         $totals = $this->calculator->calculateTotals($document, $items);
 
-        // Assert — result is mathematically correct but negative
+        /* Assert — result is mathematically correct but negative */
         $this->assertEqualsWithDelta(-100.0, $totals['item_subtotal'], 0.001);
         $this->assertEqualsWithDelta(-100.0, $totals['total'], 0.001);
     }
