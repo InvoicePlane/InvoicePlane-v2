@@ -7,6 +7,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Tables\QuotesTable;
@@ -57,7 +58,8 @@ class QuoteResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListQuotes::route('/'),
+            'index'  => ListQuotes::route('/'),
+            'create' => CreateQuote::route('/create'),
         ];
     }
 }

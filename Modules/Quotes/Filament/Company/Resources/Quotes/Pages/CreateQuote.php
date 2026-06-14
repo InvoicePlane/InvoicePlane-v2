@@ -6,6 +6,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Services\QuoteService;
+use function request;
 
 class CreateQuote extends CreateRecord
 {
@@ -43,5 +44,23 @@ class CreateQuote extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         return app(QuoteService::class)->createQuote($data);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if ($customerId = request()->integer('customer_id')) {
+            $data['customer_id'] = $customerId;
+        }
+
+        return $data;
+    }
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        if ($customerId = request()->integer('customer_id')) {
+            $this->form->fill(['customer_id' => $customerId]);
+        }
     }
 }
