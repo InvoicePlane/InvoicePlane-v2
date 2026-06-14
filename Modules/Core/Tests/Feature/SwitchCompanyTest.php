@@ -5,24 +5,16 @@ namespace Modules\Core\Tests\Feature;
 use App\Filament\Pages\SwitchCompany;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
-use Modules\Core\Tests\CreatesApplication;
+use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-class SwitchCompanyTest extends BaseTestCase
+class SwitchCompanyTest extends AbstractCompanyPanelTestCase
 {
-    use CreatesApplication;
     use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        filament()->setCurrentPanel(filament()->getPanel('company'));
-    }
 
     // ─────────────────────────────────────────────────────────────────────
     // Helpers
@@ -129,7 +121,7 @@ class SwitchCompanyTest extends BaseTestCase
 
     #[Test]
     #[Group('crud')]
-    public function only_the_current_company_switch_action_is_disabled(): void
+    public function it_disables_only_the_current_company_switch_action(): void
     {
         /* Arrange */
         [$user, $companies] = $this->userWithCompanies(4);
@@ -259,7 +251,7 @@ class SwitchCompanyTest extends BaseTestCase
 
     #[Test]
     #[Group('edge-cases')]
-    public function switching_back_to_original_company_works(): void
+    public function it_switches_back_to_original_company(): void
     {
         /* Arrange */
         [$user, $companies] = $this->userWithCompanies(2);

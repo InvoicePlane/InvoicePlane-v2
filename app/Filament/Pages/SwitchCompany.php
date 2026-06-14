@@ -13,6 +13,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 
 class SwitchCompany extends Page implements HasForms, HasTable
@@ -24,7 +25,12 @@ class SwitchCompany extends Page implements HasForms, HasTable
 
     protected string $view = 'filament.pages.switch-company';
 
-    protected static ?string $title = 'Switch Company';
+    protected static ?string $title = null;
+
+    public function getTitle(): string
+    {
+        return trans('ip.switch_company');
+    }
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -38,14 +44,14 @@ class SwitchCompany extends Page implements HasForms, HasTable
             )
             ->columns([
                 TextColumn::make('name')
-                    ->label('Company')
+                    ->label(trans('ip.company'))
                     ->searchable()
                     ->weight(fn (Company $record): string => $record->id === session('current_company_id') ? 'bold' : 'normal'),
                 TextColumn::make('search_code')
-                    ->label('Code')
+                    ->label(trans('ip.code'))
                     ->badge(),
                 IconColumn::make('active')
-                    ->label('Current')
+                    ->label(trans('ip.current'))
                     ->state(fn (Company $record): bool => $record->id === session('current_company_id'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -53,14 +59,14 @@ class SwitchCompany extends Page implements HasForms, HasTable
             ])
             ->recordActions([
                 Action::make('switch')
-                    ->label('Switch')
+                    ->label(trans('ip.switch'))
                     ->icon('heroicon-o-arrow-right-circle')
                     ->color('primary')
                     ->disabled(fn (Company $record): bool => $record->id === session('current_company_id'))
                     ->action(function (Company $record): void {
                         session(['current_company_id' => $record->id]);
                         $this->redirect(
-                            route('filament.company.pages.dashboard', ['tenant' => $record->search_code])
+                            route('filament.company.pages.dashboard', ['tenant' => Str::lower($record->search_code)])
                         );
                     }),
             ])

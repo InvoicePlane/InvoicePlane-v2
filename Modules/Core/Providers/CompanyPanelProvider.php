@@ -239,9 +239,9 @@ class CompanyPanelProvider extends PanelProvider
             })
             ->userMenuItems([
                 Action::make('switch-company')
-                    ->label(fn (): string => Company::query()->find(session('current_company_id'))?->name ?? 'Switch Company')
+                    ->label(fn (): string => Company::query()->find(session('current_company_id'))?->name ?? trans('ip.switch_company'))
                     ->icon('heroicon-o-building-office-2')
-                    ->modalHeading('Switch Company')
+                    ->modalHeading(trans('ip.switch_company'))
                     ->modalContent(fn () => view('filament.pages.switch-company-modal'))
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false),
