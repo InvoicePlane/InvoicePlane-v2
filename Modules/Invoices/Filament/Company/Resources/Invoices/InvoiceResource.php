@@ -7,6 +7,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Schemas\InvoiceForm;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Tables\InvoicesTable;
@@ -58,7 +59,8 @@ class InvoiceResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListInvoices::route('/'),
+            'index'  => ListInvoices::route('/'),
+            'create' => CreateInvoice::route('/create'),
         ];
     }
 }
