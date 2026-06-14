@@ -2,7 +2,6 @@
 
 namespace Modules\Quotes\Filament\Company\Resources\Quotes\Tables;
 
-use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -63,30 +62,7 @@ class QuotesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make('edit')
-                        ->action(function (Quote $record, array $data) {
-                            app(QuoteService::class)->updateQuote($record, $data);
-                        })
-                        ->modalWidth('full'),
-                    Action::make('duplicate')
-                        ->label(trans('ip.duplicate'))
-                        ->icon('heroicon-o-document-duplicate')
-                        ->action(function (Quote $record): void {
-                            app(QuoteService::class)->duplicateQuote($record);
-                        })
-                        ->successNotificationTitle(trans('ip.quote_duplicated')),
-                    Action::make('download pdf')
-                        ->label(trans('ip.download_pdf'))
-                        ->modalDescription(
-                            'todo: make sure we can download the PDF of the Quote through an action,
-                            so need for modal anymore'
-                        )
-                        ->action(function (Quote $record): void {}),
-                    Action::make('send email')
-                        ->label(trans('ip.send_email'))
-                        ->modalDescription('todo: make sure we can email the Quote through an action,
-                            so need for modal anymore')
-                        ->action(function (Quote $record): void {}),
+                    EditAction::make(),
                     DeleteAction::make('delete')
                         ->action(function (Quote $quote) {
                             app(QuoteService::class)->deleteQuote($quote);

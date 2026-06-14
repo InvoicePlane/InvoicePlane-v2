@@ -7,6 +7,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Tables\QuotesTable;
@@ -58,6 +59,7 @@ class QuoteResource extends BaseResource
     {
         return [
             'index' => ListQuotes::route('/'),
+            'edit'  => EditQuote::route('/{record}/edit'),
         ];
     }
 }
