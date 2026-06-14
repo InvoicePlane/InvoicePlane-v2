@@ -2,11 +2,13 @@
 
 namespace Modules\Clients\Filament\Company\Resources\Relations\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\RelationStatus;
@@ -14,6 +16,8 @@ use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Clients\Services\CustomerService;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 
 class RelationsTable
 {
@@ -87,6 +91,19 @@ class RelationsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
+                    ViewAction::make('view'),
+                    Action::make('create_invoice')
+                        ->label(trans('ip.create_invoice'))
+                        ->icon('heroicon-o-document-plus')
+                        ->url(fn (Relation $record): string => InvoiceResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
+                    Action::make('create_quote')
+                        ->label(trans('ip.create_quote'))
+                        ->icon('heroicon-o-document-text')
+                        ->url(fn (Relation $record): string => QuoteResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
                     EditAction::make('edit')
                         ->action(function (Relation $record, array $data) {
                             app(CustomerService::class)->updateCustomer($record, $data);
