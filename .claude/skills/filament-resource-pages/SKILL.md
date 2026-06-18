@@ -1,126 +1,196 @@
 ---
-name: service-layer
-description: Defines application service structure and business orchestration boundaries
+name: filament-resource-pages
+description: "Defines the Filament v4 resource page structure used in this project: Resource + Pages + Schemas + Tables split, action patterns, and BaseResource conventions."
 license: MIT
 metadata:
   author: project
 ---
 
-# Service Layer
+# Filament Resource Pages
 
-Services define business orchestration and are the primary boundary for business logic execution.
+## Resource Directory Layout
 
-They are framework-agnostic and represent application behavior independent of UI or transport layers.
+Every resource lives under `Modules/{Name}/Filament/{Panel}/Resources/{Model}/`:
 
----
+```
+{Model}Resource.php          ← extends BaseResource; declares model, nav, pages
+Pages/
+  List{Model}.php             ← extends ListRecords
+  Create{Model}.php           ← extends CreateRecord
+  Edit{Model}.php             ← extends EditRecord
+Schemas/
+  {Model}Form.php             ← static configure(Schema $schema): Schema
+Tables/
+  {Model}sTable.php           ← static configure(Table $table): Table
+RelationManagers/             ← optional
+```
 
-# 1. Responsibility
-
-Services MUST:
-
-- contain business logic
-- coordinate models and repositories
-- enforce domain rules
-- return models or internally used DTOs
-- encapsulate persistence logic
-
-Services MUST NOT:
-
-- use Filament
-- depend on HTTP layer (requests/responses)
-- contain UI logic
-- use service locators (`app()`, `resolve()`)
-- depend on transport concerns
+Schemas and Tables are **separate classes**, never defined inline inside the Resource.
 
 ---
 
-# 2. Dependency Rule
-
-Services MUST use constructor injection:
+## Resource Class
 
 ```php
-public function __construct(
-    private InvoiceRepository $repository
-) {}
+class InvoiceResource extends BaseResource
+{
+    protected static ?string $model = Invoice::class;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
+    protected static ?int $navigationSort = 10;
+    protected static bool $isScopedToTenant = true;
+
+    public static function form(Schema $schema): Schema
+    {
+        return InvoiceForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return InvoicesTable::configure($table);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index'  => Pages\ListInvoices::route('/'),
+            'create' => Pages\CreateInvoice::route('/create'),
+            'edit'   => Pages\EditInvoice::route('/{record}/edit'),
+        ];
+    }
+}
 ```
 
-No service locator usage is allowed inside services.
+`BaseResource` handles tenant-scoped queries automatically — do NOT add manual `company_id` filters.
 
 ---
 
-# 3. DTO Rule (Refined)
-
-DTOs are NOT required for UI → Service communication.
-
-DTO usage depends on coupling, not layer type:
-
-## DTOs are required when:
-- crossing system boundaries (API, external integrations, queues)
-- multiple consumers share a contract
-- transformation logic must be standardized
-- stability across versions is required
-
-## DTOs are NOT required when:
-- input originates from trusted UI layer (e.g. Filament Forms)
-- single consumer exists
-- payload is short-lived and not reused elsewhere
-
-### Rule of thumb:
-> DTOs exist to stabilize unstable or shared contracts, not to formalize trusted UI input.
-
-Services MAY still use DTOs internally if they improve clarity or structure.
-
----
-
-# 4. Filament Boundary Rule
-
-Filament is a UI orchestration layer.
-
-## Allowed usage:
-
-### Pages / Resources
-- constructor injection preferred
-- `app(Service::class)` allowed as fallback when needed
-
-### Table Actions / Closures
-- `app(Service::class)` is allowed
-- constructor injection is not guaranteed in closure scope
-
-Example:
+## List Page
 
 ```php
-Action::make('create')
-    ->action(function (array $data) {
-        app(InvoiceService::class)->createInvoice($data);
-    });
-```
+class ListInvoices extends ListRecords
+{
+    protected static string $resource = InvoiceResource::class;
 
-This is acceptable boundary-layer behavior.
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make()
+                ->modalWidth('full')
+                ->action(function (array $data) {
+                    app(InvoiceService::class)->createInvoice($data);
+                }),
+        ];
+    }
+}
+```
 
 ---
 
-# 5. Standard Service Shape
+## Edit Page
 
-```
-Modules/{Name}/src/Services/{Model}Service.php
+Override `save()` when you need to route the update through the service layer:
+
+```php
+class EditInvoice extends EditRecord
+{
+    protected static string $resource = InvoiceResource::class;
+
+    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
+    {
+        $this->authorizeAccess();
+        $this->callHook('beforeValidate');
+        $data = $this->form->getState();
+        $this->callHook('afterValidate');
+        $data = $this->mutateFormDataBeforeSave($data);
+        $this->callHook('beforeSave');
+
+        app(InvoiceService::class)->updateInvoice($data, $this->getRecord());
+
+        $this->callHook('afterSave');
+
+        if ($shouldRedirect) {
+            $this->redirect($this->getRedirectUrl());
+        }
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [DeleteAction::make()];
+    }
+}
 ```
 
 ---
 
-# 6. Standard Methods
+## Schema Class
 
-- createX
-- updateX
-- deleteX
-- findOrFail
-- listForCompany
+```php
+class InvoiceForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema->components([
+            Grid::make(2)->schema([
+                Section::make('Details')->schema([
+                    Select::make('customer_id')->relationship('customer', 'company_name')->required(),
+                    DatePicker::make('invoice_date')->required(),
+                ]),
+            ]),
+        ]);
+    }
+}
+```
 
 ---
 
-# 7. Core Principle
+## Table Class
 
-Services are pure business units.
+```php
+class InvoicesTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('invoice_number')->searchable()->sortable(),
+                TextColumn::make('invoice_status')->badge(),
+            ])
+            ->actions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([DeleteBulkAction::make()]),
+            ]);
+    }
+}
+```
 
-They MUST remain independent of framework execution context.
+---
 
-UI layers may use service locator as a pragmatic escape hatch where DI is not available.
+## Action Closure Rule
+
+Filament action closures do NOT support constructor injection. Always use `app()`:
+
+```php
+->action(function (array $data) {
+    app(InvoiceService::class)->createInvoice($data);
+})
+```
+
+This is the only place `app()` is acceptable. Services themselves must never use it.
+
+---
+
+## Panel Registration
+
+Resources are discovered per module in `CompanyPanelProvider`:
+
+```php
+->discoverResources(
+    in: base_path('Modules/Invoices/Filament/Company/Resources'),
+    for: 'Modules\\Invoices\\Filament\\Company\\Resources'
+)
+```
+
+Both `in` and `for` must exactly match the module's filesystem path and PHP namespace.
