@@ -8,7 +8,7 @@ use Modules\Core\Enums\UserRole;
 
 class LoginResponse implements BaseLoginResponse
 {
-    public const string DEFAULT_COMPANY_CODE = 'ivplv2';
+    public const DEFAULT_COMPANY_CODE = 'ivplv2';
 
     public function toResponse($request): mixed
     {
