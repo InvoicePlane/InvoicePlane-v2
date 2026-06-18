@@ -70,18 +70,18 @@ modules/
     "require": {},
     "autoload": {
         "psr-4": {
-            "App\\{Name}\\": "src/"
+            "Modules\\{Name}\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\{Name}\\Tests\\": "tests/"
+            "Modules\\{Name}\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "App\\{Name}\\{Name}ServiceProvider"
+                "Modules\\{Name}\\{Name}ServiceProvider"
             ]
         }
     },
@@ -117,13 +117,13 @@ Run `composer require app/{name}:*` whenever a new module is added.
 ## Namespace Convention
 
 ```
-App\{Name}\
-App\{Name}\Models\
-App\{Name}\Filament\Company\Resources\{Model}\{Model}Resource
-App\{Name}\Database\Factories\{Model}Factory
-App\{Name}\Database\Seeders\{Model}Seeder
-App\{Name}\Services\{Model}Service
-App\{Name}\Tests\Feature\{Model}Test
+Modules\{Name}\
+Modules\{Name}\Models\
+Modules\{Name}\Filament\Company\Resources\{Model}\{Model}Resource
+Modules\{Name}\Database\Factories\{Model}Factory
+Modules\{Name}\Database\Seeders\{Model}Seeder
+Modules\{Name}\Services\{Model}Service
+Modules\{Name}\Tests\Feature\{Model}Test
 ```
 
 ---
@@ -134,7 +134,7 @@ The service provider is auto-discovered via `composer.json`. It only needs to
 load migrations and register observers:
 
 ```php
-namespace App\Invoices;
+namespace Modules\Invoices;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -159,7 +159,7 @@ Add `->discoverResources()` per module in `CompanyPanelProvider`:
 ```php
 ->discoverResources(
     in: base_path('modules/invoices/src/Filament/Company/Resources'),
-    for: 'App\\Invoices\\Filament\\Company\\Resources'
+    for: 'Modules\\Invoices\\Filament\\Company\\Resources'
 )
 ```
 
@@ -198,7 +198,7 @@ InvoicePlane-v2 uses `nwidart/laravel-modules` ≥ v12. The key differences:
 |---|---|---|
 | Module root | `modules/{name}/` | `Modules/{Name}/` |
 | PSR-4 source | `src/` | module root directly |
-| Namespace | `App\{Name}\` | `Modules\{Name}\` |
+| Namespace | `Modules\{Name}\` | `Modules\{Name}\` |
 | Tests | `tests/` (lowercase) | `Tests/` (uppercase) |
 | DB files | `database/` (lowercase) | `Database/` (uppercase) |
 | Discovery | Composer path repo | `module.json` + manual provider |
