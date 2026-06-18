@@ -174,20 +174,20 @@ When asked to eliminate Pest from a codebase, check and fix all of the following
 ## Rule 7 — Arrange / Act / Assert
 
 Every test method MUST be structured in three named phases, each preceded by its
-own `// Arrange`, `// Act`, or `// Assert` comment. No exceptions.
+own `/* Arrange */`, `/* Act */`, or `/* Assert */` comment. No exceptions.
 
 ```php
 #[Test]
 public function it_creates_an_invoice(): void
 {
-    // Arrange
+    /* Arrange */
     $client  = Relation::factory()->for($this->company)->create();
     $payload = ['customer_id' => $client->getKey(), 'invoice_date' => '2026-01-01'];
 
-    // Act
+    /* Act */
     app(InvoiceService::class)->createInvoice($payload);
 
-    // Assert
+    /* Assert */
     $this->assertDatabaseHas('invoices', [
         'customer_id' => $client->getKey(),
         'company_id'  => $this->company->id,
@@ -195,7 +195,7 @@ public function it_creates_an_invoice(): void
 }
 ```
 
-A test with no `// Arrange` / `// Act` / `// Assert` comments is rejected on
+A test with no `/* Arrange */` / `/* Act */` / `/* Assert */` comments is rejected on
 review, no matter how correct the assertions are.
 
 If a phase is genuinely empty (e.g. a pure-assertion unit test with no setup),
