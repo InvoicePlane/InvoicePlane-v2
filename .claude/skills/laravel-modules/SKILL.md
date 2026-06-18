@@ -8,49 +8,55 @@ metadata:
 
 # Laravel Modules
 
-This project uses a hand-rolled modular structure under `Modules/`. There is no
-`nwidart/laravel-modules` package — modules are plain directories registered
-manually.
+This project uses `nwidart/laravel-modules` (≥ v12). Modules live under `Modules/`.
 
 ## Directory Layout
 
-Every module follows this exact layout:
+Every module follows this exact layout (note uppercase `Database/` and `Tests/`):
 
 ```
 Modules/{Name}/
-  database/
-    factories/        ← Eloquent factories
-    migrations/       ← Module-specific migrations
-    seeders/          ← Module seeders (extend AbstractSeeder)
-  resources/
-    views/            ← Blade views namespaced as '{name}::'
-  src/
-    Contracts/        ← Interfaces / contracts (optional)
-    Enums/            ← Module enums
-    Filament/
+  Database/
+    Factories/        ← Eloquent factories
+    Migrations/       ← Module-specific migrations
+    Seeders/          ← Module seeders (extend AbstractSeeder)
+  Filament/
+    Admin/Resources/  ← Admin panel resources (if any)
+    Company/
       Resources/
         {Model}/
           {Model}Resource.php     ← extends BaseResource
           Pages/
-            List{Model}.php       ← extends ListRecords
-            Create{Model}.php     ← extends CreateRecord
-            Edit{Model}.php       ← extends EditRecord
-    Models/           ← Eloquent models
-    Observers/        ← Model observers (optional)
-    Providers/        ← {Name}ServiceProvider
-    Services/         ← {Name}Service (createX, updateX, deleteX, listForCompany)
-    Traits/           ← Shared traits (optional)
-  tests/
+            List{Model}.php
+            Create{Model}.php
+            Edit{Model}.php
+          Schemas/
+            {Model}Form.php
+          Tables/
+            {Model}sTable.php
+  Models/             ← Eloquent models
+  Enums/
+  Events/
+  Listeners/
+  Observers/
+  Providers/          ← {Name}ServiceProvider
+  Services/           ← {Name}Service
+  Traits/
+  Tests/
     Feature/          ← PHPUnit feature tests
     Unit/             ← PHPUnit unit tests
+  resources/
+    views/            ← Blade views namespaced as '{name}::'
+  composer.json
+  module.json
 ```
 
 ## Namespace Convention
 
 ```
-Modules\{Name}\            root namespace
-Modules\{Name}\Models\     models
-Modules\{Name}\Filament\Resources\{Model}\{Model}Resource
+Modules\{Name}\
+Modules\{Name}\Models\
+Modules\{Name}\Filament\Company\Resources\{Model}\{Model}Resource
 Modules\{Name}\Database\Factories\{Model}Factory
 Modules\{Name}\Database\Seeders\{Model}Seeder
 Modules\{Name}\Services\{Model}Service
@@ -59,18 +65,15 @@ Modules\{Name}\Tests\Feature\{Model}Test
 
 ## Service Provider
 
-Every module has a `{Name}ServiceProvider` that loads migrations and views.
-Observers are registered here too:
+Every module has a `{Name}ServiceProvider` registered in `config/app.php`:
 
 ```php
 class ClientsServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
-
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'clients');
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../../Database/Migrations');
         Client::observe(ClientObserver::class); // only if observer exists
     }
 }
@@ -79,29 +82,25 @@ class ClientsServiceProvider extends ServiceProvider
 ## Registering a New Module
 
 1. Create the directory tree above.
-2. Add the service provider to `config/app.php` providers array.
+2. Add `{Name}ServiceProvider` to `config/app.php` providers array.
 3. Register the factory namespace in `app/Providers/AppServiceProvider.php`
-   (look at how existing modules do it — there's a `Factory::guessFactoryNamesUsing` callback).
-4. Add `->discoverResources(...)` to `CompanyPanelProvider` for the new module.
-
-## Registering Resources in the Panel
-
-`app/Providers/Filament/CompanyPanelProvider.php` discovers resources per module:
+   following the pattern used by existing modules (`Factory::guessFactoryNamesUsing`).
+4. Add `->discoverResources(...)` to `CompanyPanelProvider`:
 
 ```php
 ->discoverResources(
-    in: base_path('Modules/mymodule/src/Filament/Resources'),
-    for: 'Modules\\Mymodule\\Filament\\Resources'
+    in: base_path('Modules/Mymodule/Filament/Company/Resources'),
+    for: 'Modules\\Mymodule\\Filament\\Company\\Resources'
 )
 ```
 
-## Tests Are Auto-Discovered
+## Test Auto-Discovery
 
-`phpunit.xml` includes module test directories:
+`phpunit.xml` discovers tests automatically — no registration needed:
 
 ```xml
-<directory>Modules/*/tests/Unit</directory>
-<directory>Modules/*/tests/Feature</directory>
+<directory>Modules/*/Tests/Unit</directory>
+<directory>Modules/*/Tests/Feature</directory>
 ```
 
-No extra registration needed — just put tests in the right place.
+Just put tests under `Modules/{Name}/Tests/Feature/` or `Tests/Unit/`.
