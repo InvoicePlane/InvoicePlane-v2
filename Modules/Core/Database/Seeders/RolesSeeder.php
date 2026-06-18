@@ -62,6 +62,9 @@ class RolesSeeder extends Seeder
     {
         $allPermissions = array_column(PermissionEnum::cases(), 'value');
 
+        $customerResources = ['relations', 'contacts', 'invoices', 'quotes', 'payments', 'projects', 'tasks', 'products', 'expenses'];
+        $allowedActions    = ['view-', 'create-', 'edit-', 'download-', 'print-', 'email-', 'approve-', 'export-'];
+
         return [
             UserRole::SUPER_ADMIN->value => [
                 'name'        => 'Super Admin',
@@ -83,14 +86,22 @@ class RolesSeeder extends Seeder
                 'name'        => 'Customer Admin',
                 'permissions' => array_values(array_filter(
                     $allPermissions,
-                    fn ($p) => str_starts_with($p, 'view-')
-                        || str_starts_with($p, 'create-')
-                        || str_starts_with($p, 'edit-')
-                        || in_array($p, [
-                            'download-invoices', 'print-invoices', 'email-invoices',
-                            'download-quotes', 'print-quotes', 'email-quotes',
-                            'export-products', 'export-reports', 'view-dashboard',
-                        ])
+                    function ($p) use ($customerResources, $allowedActions) {
+                        if ($p === PermissionEnum::VIEW_DASHBOARD->value) {
+                            return true;
+                        }
+
+                        $isCustomerResource = (bool) array_filter(
+                            $customerResources,
+                            fn ($r) => str_ends_with($p, '-' . $r)
+                        );
+                        $isAllowedAction = (bool) array_filter(
+                            $allowedActions,
+                            fn ($a) => str_starts_with($p, $a)
+                        );
+
+                        return $isCustomerResource && $isAllowedAction;
+                    }
                 )),
             ],
             UserRole::CUSTOMER->value => [
