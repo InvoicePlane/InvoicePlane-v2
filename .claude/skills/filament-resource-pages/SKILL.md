@@ -188,9 +188,9 @@ Resources are discovered per module in `CompanyPanelProvider`:
 
 ```php
 ->discoverResources(
-    in: base_path('Modules/Invoices/Filament/Company/Resources'),
+    in: base_path('modules/invoices/src/Filament/Company/Resources'),
     for: 'Modules\\Invoices\\Filament\\Company\\Resources'
 )
 ```
 
-Both `in` and `for` must exactly match the module's filesystem path and PHP namespace.
+The `in` parameter uses the filesystem path (lowercase with `src/`), while `for` uses the PHP namespace.
