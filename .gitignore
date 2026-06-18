@@ -8,6 +8,7 @@
 
 .env*
 !.env.example
+!.env.testing
 !.env.testing.example
 /storage/*.key
 
