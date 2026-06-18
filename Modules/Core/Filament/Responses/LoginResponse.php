@@ -8,21 +8,19 @@ use Modules\Core\Enums\UserRole;
 
 class LoginResponse implements BaseLoginResponse
 {
+    public const string DEFAULT_COMPANY_CODE = 'ivplv2';
+
     public function toResponse($request): mixed
     {
-        $user          = auth()->user();
-        $elevatedRoles = UserRole::elevated();
-        $isElevated    = false;
-
-        foreach ($elevatedRoles as $role) {
-            if ($user->hasRole($role)) {
-                $isElevated = true;
-                break;
-            }
-        }
+        $user       = auth()->user();
+        $isElevated = $user->hasAnyRole(UserRole::elevated());
 
         if ($isElevated) {
-            $tenant = \Modules\Core\Models\Company::query()->first(); // <<</// @todo should be ivplv2, maybe
+            $tenant = \Modules\Core\Models\Company::query()
+                ->whereRaw('LOWER(search_code) = ?', [self::DEFAULT_COMPANY_CODE])
+                ->first()
+                ?? \Modules\Core\Models\Company::query()->first();
+
             if ( ! $tenant) {
                 abort(500, 'Fallback company not found.');
             }
@@ -33,19 +31,11 @@ class LoginResponse implements BaseLoginResponse
             }
         }
 
-        // For super_admins or Filament panel routes (with {tenant}), do not set session, only set Filament tenant
-        if ($isElevated) {
-            filament()->setTenant($tenant);
-        } else {
-            // For regular users, set both session and Filament tenant
-            session(['current_company_id' => $tenant->id]);
-            filament()->setTenant($tenant);
-        }
+        session(['current_company_id' => $tenant->id]);
+        filament()->setTenant($tenant);
 
         return redirect()->route('filament.company.pages.dashboard', [
             'tenant' => Str::lower($tenant->search_code),
         ]);
-
-        //return redirect()->intended(Filament::getUrl());
     }
 }
