@@ -63,6 +63,7 @@ Focus on:
 - Hardcoded IDs (violates `test-honesty`)
 - Pest syntax in a PHPUnit-only project
 - Livewire tests that bypass the service layer and assert nothing in the DB
+- **Missing `// Arrange` / `// Act` / `// Assert` phase comments** — every test method requires all three, no exceptions
 
 ---
 
