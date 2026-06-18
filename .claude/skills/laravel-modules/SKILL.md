@@ -1,6 +1,6 @@
 ---
 name: laravel-modules
-description: "Creates and modifies code inside the Modules/ directory structure. Activates when adding a new module, adding a model/factory/migration/resource/service to an existing module, registering a module with Filament, or when the user mentions modules, modular, or a specific module name (clients, invoices, payments, etc.)."
+description: "Creates and modifies code inside a modular Laravel structure. Targets internachi/modular (modules as real Composer packages with src/). Activates when adding a new module, adding a model/factory/migration/resource/service to an existing module, registering a module with Filament, or when the user mentions modules, modular, or a specific module name."
 license: MIT
 metadata:
   author: project
@@ -8,99 +8,202 @@ metadata:
 
 # Laravel Modules
 
-This project uses `nwidart/laravel-modules` (≥ v12). Modules live under `Modules/`.
+## Package Standard: `internachi/modular`
 
-## Directory Layout
+New modules use [`internachi/modular`](https://github.com/InterNACHI/modular).
+Each module is a **real Composer package** with its own `composer.json`, resolved
+from the root via a path repository. This makes modules portable, independently
+testable, and properly autoloaded.
 
-Every module follows this exact layout (note uppercase `Database/` and `Tests/`):
+> **InvoicePlane-v2 exception:** This project was built with `nwidart/laravel-modules`
+> and has **no `src/` layer** — the module root is the PSR-4 root. If you are
+> working in this repo, skip the `src/` wrapper and use uppercase `Database/`,
+> `Tests/` directly under the module root. See the nwidart section at the bottom.
 
-```
-Modules/{Name}/
-  Database/
-    Factories/        ← Eloquent factories
-    Migrations/       ← Module-specific migrations
-    Seeders/          ← Module seeders (extend AbstractSeeder)
-  Filament/
-    Admin/Resources/  ← Admin panel resources (if any)
-    Company/
-      Resources/
-        {Model}/
-          {Model}Resource.php     ← extends BaseResource
-          Pages/
-            List{Model}.php
-            Create{Model}.php
-            Edit{Model}.php
-          Schemas/
-            {Model}Form.php
-          Tables/
-            {Model}sTable.php
-  Models/             ← Eloquent models
-  Enums/
-  Events/
-  Listeners/
-  Observers/
-  Providers/          ← {Name}ServiceProvider
-  Services/           ← {Name}Service
-  Traits/
-  Tests/
-    Feature/          ← PHPUnit feature tests
-    Unit/             ← PHPUnit unit tests
-  resources/
-    views/            ← Blade views namespaced as '{name}::'
-  composer.json
-  module.json
-```
+---
 
-## Namespace Convention
+## `internachi/modular` Directory Layout
 
 ```
-Modules\{Name}\
-Modules\{Name}\Models\
-Modules\{Name}\Filament\Company\Resources\{Model}\{Model}Resource
-Modules\{Name}\Database\Factories\{Model}Factory
-Modules\{Name}\Database\Seeders\{Model}Seeder
-Modules\{Name}\Services\{Model}Service
-Modules\{Name}\Tests\Feature\{Model}Test
+modules/
+  {name}/                        ← lowercase, kebab-case
+    src/                         ← PSR-4 root
+      {Name}ServiceProvider.php
+      Models/
+      Enums/
+      Events/ Listeners/ Observers/
+      Filament/
+        Company/
+          Resources/
+            {Model}/
+              {Model}Resource.php
+              Pages/
+                List{Model}.php
+                Create{Model}.php
+                Edit{Model}.php
+              Schemas/
+                {Model}Form.php
+              Tables/
+                {Model}sTable.php
+      Http/
+      Services/
+      Traits/
+    database/
+      factories/
+      migrations/
+      seeders/
+    tests/
+      Feature/
+      Unit/
+    composer.json
 ```
 
-## Service Provider
+---
 
-Every module has a `{Name}ServiceProvider` registered in `config/app.php`:
+## Module `composer.json`
 
-```php
-class ClientsServiceProvider extends ServiceProvider
+```json
 {
-    public function boot(): void
-    {
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'clients');
-        $this->loadMigrationsFrom(__DIR__ . '/../../Database/Migrations');
-        Client::observe(ClientObserver::class); // only if observer exists
+    "name": "app/{name}",
+    "description": "The {Name} module",
+    "type": "library",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\{Name}\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\{Name}\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "App\\{Name}\\{Name}ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+```
+
+---
+
+## Root `composer.json` Wiring
+
+```json
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./modules/*",
+            "options": { "symlink": true }
+        }
+    ],
+    "require": {
+        "app/core":     "*",
+        "app/invoices": "*"
     }
 }
 ```
 
-## Registering a New Module
+Run `composer require app/{name}:*` whenever a new module is added.
 
-1. Create the directory tree above.
-2. Add `{Name}ServiceProvider` to `config/app.php` providers array.
-3. Register the factory namespace in `app/Providers/AppServiceProvider.php`
-   following the pattern used by existing modules (`Factory::guessFactoryNamesUsing`).
-4. Add `->discoverResources(...)` to `CompanyPanelProvider`:
+---
+
+## Namespace Convention
+
+```
+App\{Name}\
+App\{Name}\Models\
+App\{Name}\Filament\Company\Resources\{Model}\{Model}Resource
+App\{Name}\Database\Factories\{Model}Factory
+App\{Name}\Database\Seeders\{Model}Seeder
+App\{Name}\Services\{Model}Service
+App\{Name}\Tests\Feature\{Model}Test
+```
+
+---
+
+## Service Provider
+
+The service provider is auto-discovered via `composer.json`. It only needs to
+load migrations and register observers:
+
+```php
+namespace App\Invoices;
+
+use Illuminate\Support\ServiceProvider;
+
+class InvoicesServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'invoices');
+    }
+}
+```
+
+No manual entry in `config/app.php` — Composer's auto-discovery handles it.
+
+---
+
+## Filament Resource Registration
+
+Add `->discoverResources()` per module in `CompanyPanelProvider`:
 
 ```php
 ->discoverResources(
-    in: base_path('Modules/Mymodule/Filament/Company/Resources'),
-    for: 'Modules\\Mymodule\\Filament\\Company\\Resources'
+    in: base_path('modules/invoices/src/Filament/Company/Resources'),
+    for: 'App\\Invoices\\Filament\\Company\\Resources'
 )
 ```
 
-## Test Auto-Discovery
+---
 
-`phpunit.xml` discovers tests automatically — no registration needed:
+## Test Discovery
+
+Configure `phpunit.xml` to pick up all module test directories:
 
 ```xml
-<directory>Modules/*/Tests/Unit</directory>
-<directory>Modules/*/Tests/Feature</directory>
+<testsuite name="Unit">
+    <directory>modules/*/tests/Unit</directory>
+</testsuite>
+<testsuite name="Feature">
+    <directory>modules/*/tests/Feature</directory>
+</testsuite>
 ```
 
-Just put tests under `Modules/{Name}/Tests/Feature/` or `Tests/Unit/`.
+---
+
+## Adding a New Module (Checklist)
+
+1. Create `modules/{name}/` with the directory tree above.
+2. Write `modules/{name}/composer.json` (copy from existing module, change name/namespace).
+3. Run `composer require app/{name}:*` from the project root.
+4. Add `->discoverResources(...)` to `CompanyPanelProvider`.
+5. Run `php artisan migrate` to pick up the new module's migrations.
+
+---
+
+## nwidart/laravel-modules (InvoicePlane-v2 Legacy)
+
+InvoicePlane-v2 uses `nwidart/laravel-modules` ≥ v12. The key differences:
+
+| | `internachi/modular` | `nwidart` (InvoicePlane-v2) |
+|---|---|---|
+| Module root | `modules/{name}/` | `Modules/{Name}/` |
+| PSR-4 source | `src/` | module root directly |
+| Namespace | `App\{Name}\` | `Modules\{Name}\` |
+| Tests | `tests/` (lowercase) | `Tests/` (uppercase) |
+| DB files | `database/` (lowercase) | `Database/` (uppercase) |
+| Discovery | Composer path repo | `module.json` + manual provider |
+| Registration | `composer require` | add to `config/app.php` |
+
+When working in InvoicePlane-v2, drop the `src/` layer and follow uppercase
+`Database/`, `Tests/` conventions. All else (service structure, Filament patterns,
+test base classes) remains the same.
