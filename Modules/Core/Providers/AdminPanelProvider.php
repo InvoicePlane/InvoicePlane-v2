@@ -28,6 +28,7 @@ use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
 use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Filament\Pages\Auth\Login;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->viteTheme('resources/css/filament/company/nord.css')
-            ->login()
+            ->login(Login::class)
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
