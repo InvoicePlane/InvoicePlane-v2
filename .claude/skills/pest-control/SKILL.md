@@ -171,7 +171,30 @@ When asked to eliminate Pest from a codebase, check and fix all of the following
 
 ---
 
-## Rule 7 — Arrange / Act / Assert
+## Rule 7 — Test Method Naming
+
+Test methods MUST follow the `it_{verb}_{object}` convention. The name must read
+as a sentence describing observable behavior.
+
+```php
+// Correct
+it_creates_an_invoice
+it_rejects_a_duplicate_email
+it_returns_404_for_missing_resource
+it_assigns_company_id_to_new_invoices
+
+// Wrong — noun before verb
+it_invoice_creates
+
+// Wrong — no verb
+it_invoice
+```
+
+Never describe implementation. Describe what the system does from the outside.
+
+---
+
+## Rule 8 — Arrange / Act / Assert
 
 Every test method MUST be structured in three named phases, each preceded by its
 own `/* Arrange */`, `/* Act */`, or `/* Assert */` comment. No exceptions.
