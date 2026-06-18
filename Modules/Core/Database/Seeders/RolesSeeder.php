@@ -4,6 +4,7 @@ namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Enums\Permission as PermissionEnum;
 use Modules\Core\Enums\UserRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -59,11 +60,7 @@ class RolesSeeder extends Seeder
 
     public function getDefaultRolePermissions(): array
     {
-        $permissionsSeeder = new PermissionsSeeder();
-        $allCrud           = $this->getAllCrudPermissions($permissionsSeeder->resources, $permissionsSeeder->basicActions);
-        $allSpecial        = $this->getAllSpecialPermissions($permissionsSeeder->specialPermissions);
-        $systemPermissions = $this->getSystemPermissions();
-        $allPermissions    = array_merge($allCrud, $allSpecial, $systemPermissions);
+        $allPermissions = array_column(PermissionEnum::cases(), 'value');
 
         return [
             UserRole::SUPER_ADMIN->value => [
@@ -76,26 +73,25 @@ class RolesSeeder extends Seeder
             ],
             UserRole::ASSIST->value => [
                 'name'        => 'Assist',
-                'permissions' => array_merge(
-                    array_filter($allCrud, fn ($p) => ! str_starts_with($p, 'delete-')),
-                    array_filter($allSpecial, fn ($p) => ! in_array(explode('-', $p)[0], ['delete', 'manage'])),
-                    ['view-dashboard']
-                ),
+                'permissions' => array_values(array_filter(
+                    $allPermissions,
+                    fn ($p) => ! str_starts_with($p, 'delete-') && ! str_starts_with($p, 'manage-')
+                )),
             ],
+
             UserRole::CUSTOMER_ADMIN->value => [
                 'name'        => 'Customer Admin',
-                'permissions' => array_merge(
-                    array_filter($allCrud, fn ($p) => str_starts_with($p, 'view-')),
-                    array_filter(
-                        $allCrud,
-                        fn ($p) => str_starts_with($p, 'create-') || str_starts_with($p, 'edit-')
-                    ),
-                    array_filter(
-                        $allSpecial,
-                        fn ($p) => in_array(explode('-', $p)[0], ['download', 'print', 'email', 'export'])
-                    ),
-                    ['view-dashboard']
-                ),
+                'permissions' => array_values(array_filter(
+                    $allPermissions,
+                    fn ($p) => str_starts_with($p, 'view-')
+                        || str_starts_with($p, 'create-')
+                        || str_starts_with($p, 'edit-')
+                        || in_array($p, [
+                            'download-invoices', 'print-invoices', 'email-invoices',
+                            'download-quotes', 'print-quotes', 'email-quotes',
+                            'export-products', 'export-reports', 'view-dashboard',
+                        ])
+                )),
             ],
             UserRole::CUSTOMER->value => [
                 'name'        => 'Customer',
@@ -108,36 +104,5 @@ class RolesSeeder extends Seeder
                 ],
             ],
         ];
-    }
-
-    protected function getSystemPermissions(): array
-    {
-        return [
-            'view-dashboard', 'manage-company-settings', 'import', 'export', 'backup', 'restore',
-        ];
-    }
-
-    protected function getAllCrudPermissions(array $resources, array $basicActions): array
-    {
-        $permissions = [];
-        foreach ($resources as $resource) {
-            foreach ($basicActions as $action) {
-                $permissions[] = "{$action}-{$resource}";
-            }
-        }
-
-        return $permissions;
-    }
-
-    protected function getAllSpecialPermissions(array $specialPermissions): array
-    {
-        $permissions = [];
-        foreach ($specialPermissions as $resource => $actions) {
-            foreach ($actions as $action) {
-                $permissions[] = "{$action}-{$resource}";
-            }
-        }
-
-        return $permissions;
     }
 }
