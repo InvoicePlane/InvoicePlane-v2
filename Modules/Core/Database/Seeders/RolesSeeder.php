@@ -107,11 +107,16 @@ class RolesSeeder extends Seeder
             UserRole::CUSTOMER->value => [
                 'name'        => 'Customer',
                 'permissions' => [
-                    'view-contacts', 'edit-contacts',
-                    'view-invoices', 'download-invoices', 'print-invoices',
-                    'view-quotes', 'download-quotes', 'print-quotes',
-                    'view-payments',
-                    'view-dashboard',
+                    PermissionEnum::VIEW_CONTACTS->value,
+                    PermissionEnum::EDIT_CONTACTS->value,
+                    PermissionEnum::VIEW_INVOICES->value,
+                    PermissionEnum::DOWNLOAD_INVOICES->value,
+                    PermissionEnum::PRINT_INVOICES->value,
+                    PermissionEnum::VIEW_QUOTES->value,
+                    PermissionEnum::DOWNLOAD_QUOTES->value,
+                    PermissionEnum::PRINT_QUOTES->value,
+                    PermissionEnum::VIEW_PAYMENTS->value,
+                    PermissionEnum::VIEW_DASHBOARD->value,
                 ],
             ],
         ];

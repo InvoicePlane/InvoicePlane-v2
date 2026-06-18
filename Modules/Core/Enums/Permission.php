@@ -133,10 +133,12 @@ enum Permission: string implements LabeledEnum
 
     case VIEW_DASHBOARD          = 'view-dashboard';
     case MANAGE_COMPANY_SETTINGS = 'manage-company-settings';
-    case IMPORT                  = 'import';
-    case EXPORT                  = 'export';
-    case BACKUP                  = 'backup';
-    case RESTORE                 = 'restore';
+
+    // System-wide operations
+    case IMPORT  = 'import';
+    case EXPORT  = 'export';
+    case BACKUP  = 'backup';
+    case RESTORE = 'restore';
 
     public function label(): string
     {
