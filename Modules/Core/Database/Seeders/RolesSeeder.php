@@ -63,7 +63,19 @@ class RolesSeeder extends Seeder
         $allPermissions = array_column(PermissionEnum::cases(), 'value');
 
         $customerResources = ['relations', 'contacts', 'invoices', 'quotes', 'payments', 'projects', 'tasks', 'products', 'expenses'];
-        $allowedActions    = ['view-', 'create-', 'edit-', 'download-', 'print-', 'email-', 'approve-', 'export-'];
+
+        $customerSpecialPermissions = [
+            PermissionEnum::DOWNLOAD_INVOICES->value,
+            PermissionEnum::EMAIL_INVOICES->value,
+            PermissionEnum::PRINT_INVOICES->value,
+            PermissionEnum::EMAIL_PAYMENTS->value,
+            PermissionEnum::EXPORT_PRODUCTS->value,
+            PermissionEnum::DOWNLOAD_QUOTES->value,
+            PermissionEnum::EMAIL_QUOTES->value,
+            PermissionEnum::PRINT_QUOTES->value,
+            PermissionEnum::EXPORT_REPORTS->value,
+            PermissionEnum::PRINT_REPORTS->value,
+        ];
 
         return [
             UserRole::SUPER_ADMIN->value => [
@@ -84,24 +96,23 @@ class RolesSeeder extends Seeder
 
             UserRole::CUSTOMER_ADMIN->value => [
                 'name'        => 'Customer Admin',
-                'permissions' => array_values(array_filter(
-                    $allPermissions,
-                    function ($p) use ($customerResources, $allowedActions) {
-                        if ($p === PermissionEnum::VIEW_DASHBOARD->value) {
-                            return true;
+                'permissions' => array_unique(array_merge(
+                    array_values(array_filter(
+                        $allPermissions,
+                        function ($p) use ($customerResources) {
+                            $isBasicAction = str_starts_with($p, 'view-')
+                                || str_starts_with($p, 'create-')
+                                || str_starts_with($p, 'edit-');
+                            $isCustomerResource = (bool) array_filter(
+                                $customerResources,
+                                fn ($r) => str_ends_with($p, '-' . $r)
+                            );
+
+                            return $isBasicAction && $isCustomerResource;
                         }
-
-                        $isCustomerResource = (bool) array_filter(
-                            $customerResources,
-                            fn ($r) => str_ends_with($p, '-' . $r)
-                        );
-                        $isAllowedAction = (bool) array_filter(
-                            $allowedActions,
-                            fn ($a) => str_starts_with($p, $a)
-                        );
-
-                        return $isCustomerResource && $isAllowedAction;
-                    }
+                    )),
+                    $customerSpecialPermissions,
+                    [PermissionEnum::VIEW_DASHBOARD->value],
                 )),
             ],
             UserRole::CUSTOMER->value => [

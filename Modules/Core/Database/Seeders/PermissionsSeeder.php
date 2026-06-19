@@ -22,7 +22,7 @@ class PermissionsSeeder extends Seeder
 
         $newPermissions = array_diff($permissions, $existingPermissions);
 
-        foreach($newPermissions as $permission) {
+        foreach ($newPermissions as $permission) {
             Permission::create([
                 'name'       => $permission,
                 'guard_name' => 'web',
