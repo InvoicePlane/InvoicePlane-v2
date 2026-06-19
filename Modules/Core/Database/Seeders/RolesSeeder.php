@@ -84,13 +84,29 @@ class RolesSeeder extends Seeder
             ],
             UserRole::ADMIN->value => [
                 'name'        => 'Administrator',
-                'permissions' => $allPermissions,
+                'permissions' => array_values(array_filter(
+                    $allPermissions,
+                    fn ($p) => ! in_array($p, [
+                        PermissionEnum::IMPERSONATE_USERS->value,
+                        PermissionEnum::BACKUP->value,
+                        PermissionEnum::RESTORE->value,
+                    ])
+                )),
             ],
+
             UserRole::ASSIST->value => [
                 'name'        => 'Assist',
                 'permissions' => array_values(array_filter(
                     $allPermissions,
-                    fn ($p) => ! str_starts_with($p, 'delete-') && ! str_starts_with($p, 'manage-')
+                    fn ($p) => ! str_starts_with($p, 'delete-')
+                        && ! str_starts_with($p, 'manage-')
+                        && ! str_starts_with($p, 'approve-')
+                        && ! str_starts_with($p, 'reject-')
+                        && ! in_array($p, [
+                            PermissionEnum::IMPERSONATE_USERS->value,
+                            PermissionEnum::BACKUP->value,
+                            PermissionEnum::RESTORE->value,
+                        ])
                 )),
             ],
 
@@ -102,7 +118,9 @@ class RolesSeeder extends Seeder
                         function ($p) use ($customerResources) {
                             $isBasicAction = str_starts_with($p, 'view-')
                                 || str_starts_with($p, 'create-')
-                                || str_starts_with($p, 'edit-');
+                                || str_starts_with($p, 'edit-')
+                                || str_starts_with($p, 'export-')
+                                || str_starts_with($p, 'duplicate-');
                             $isCustomerResource = (bool) array_filter(
                                 $customerResources,
                                 fn ($r) => str_ends_with($p, '-' . $r)
@@ -112,7 +130,7 @@ class RolesSeeder extends Seeder
                         }
                     )),
                     $customerSpecialPermissions,
-                    [PermissionEnum::VIEW_DASHBOARD->value],
+                    [PermissionEnum::VIEW_DASHBOARD->value, PermissionEnum::MANAGE_COMPANY_SETTINGS->value],
                 )),
             ],
             UserRole::CUSTOMER->value => [
