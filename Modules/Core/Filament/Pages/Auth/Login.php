@@ -62,7 +62,6 @@ class Login extends BaseLogin
     protected function getEmailFormComponent(): Component
     {
         return TextInput::make('email')
-            ->label(trans('filament-panels::pages/auth/login.form.email.label'))
             ->email()
             ->required()
             ->autocomplete()
@@ -73,7 +72,6 @@ class Login extends BaseLogin
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
-            ->label(trans('filament-panels::pages/auth/login.form.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->autocomplete('current-password')
