@@ -13,6 +13,11 @@ enum Permission: string implements LabeledEnum
     case EDIT_RELATIONS   = 'edit-relations';
     case DELETE_RELATIONS = 'delete-relations';
 
+    case IMPORT_RELATIONS    = 'import-relations';
+    case EXPORT_RELATIONS    = 'export-relations';
+    case DUPLICATE_RELATIONS = 'duplicate-relations';
+    case MERGE_RELATIONS     = 'merge-relations';
+
     case VIEW_CONTACTS   = 'view-contacts';
     case CREATE_CONTACTS = 'create-contacts';
     case EDIT_CONTACTS   = 'edit-contacts';
@@ -99,6 +104,10 @@ enum Permission: string implements LabeledEnum
     case APPROVE_EXPENSES = 'approve-expenses';
     case REJECT_EXPENSES  = 'reject-expenses';
 
+    case IMPORT_EXPENSES    = 'import-expenses';
+    case EXPORT_EXPENSES    = 'export-expenses';
+    case DUPLICATE_EXPENSES = 'duplicate-expenses';
+
     case DOWNLOAD_INVOICES  = 'download-invoices';
     case DUPLICATE_INVOICES = 'duplicate-invoices';
     case EMAIL_INVOICES     = 'email-invoices';
@@ -106,13 +115,26 @@ enum Permission: string implements LabeledEnum
     case MARK_SENT_INVOICES = 'mark-sent-invoices';
     case PRINT_INVOICES     = 'print-invoices';
 
+    case IMPORT_INVOICES           = 'import-invoices';
+    case EXPORT_INVOICES           = 'export-invoices';
+    case CONVERT_TO_QUOTE_INVOICES = 'convert-to-quote-invoices';
+
     case EMAIL_PAYMENTS  = 'email-payments';
     case REFUND_PAYMENTS = 'refund-payments';
 
-    case EXPORT_PRODUCTS = 'export-products';
-    case IMPORT_PRODUCTS = 'import-products';
+    case IMPORT_PAYMENTS = 'import-payments';
+    case EXPORT_PAYMENTS = 'export-payments';
+
+    case EXPORT_PRODUCTS    = 'export-products';
+    case IMPORT_PRODUCTS    = 'import-products';
+    case DUPLICATE_PRODUCTS = 'duplicate-products';
 
     case MANAGE_PROJECTS = 'manage-projects';
+
+    case IMPORT_PROJECTS    = 'import-projects';
+    case EXPORT_PROJECTS    = 'export-projects';
+    case DUPLICATE_PROJECTS = 'duplicate-projects';
+    case ARCHIVE_PROJECTS   = 'archive-projects';
 
     case APPROVE_QUOTES            = 'approve-quotes';
     case CONVERT_TO_INVOICE_QUOTES = 'convert-to-invoice-quotes';
@@ -123,11 +145,16 @@ enum Permission: string implements LabeledEnum
     case PRINT_QUOTES              = 'print-quotes';
     case REJECT_QUOTES             = 'reject-quotes';
 
+    case IMPORT_QUOTES  = 'import-quotes';
+    case EXPORT_QUOTES  = 'export-quotes';
+    case ARCHIVE_QUOTES = 'archive-quotes';
+
     case EXPORT_REPORTS = 'export-reports';
     case MANAGE_REPORTS = 'manage-reports';
     case PRINT_REPORTS  = 'print-reports';
 
     case MANAGE_SETTINGS = 'manage-settings';
+    case MANAGE_ROLES    = 'manage-roles';
 
     case IMPERSONATE_USERS = 'impersonate-users';
 
