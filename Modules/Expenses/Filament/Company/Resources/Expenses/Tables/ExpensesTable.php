@@ -120,21 +120,6 @@ class ExpensesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value)),
-                    Action::make('import')
-                        ->visible(fn () => auth()->user()?->can(Permission::IMPORT_EXPENSES->value))
-                        ->requiresConfirmation()
-                        ->modalHeading('TODO: Import Expenses')
-                        ->modalDescription('This action is not yet implemented.')
-                        ->modalSubmitActionLabel('OK')
-                        ->action(fn () => null),
-
-                    Action::make('export')
-                        ->visible(fn () => auth()->user()?->can(Permission::EXPORT_EXPENSES->value))
-                        ->requiresConfirmation()
-                        ->modalHeading('TODO: Export Expenses')
-                        ->modalDescription('This action is not yet implemented.')
-                        ->modalSubmitActionLabel('OK')
-                        ->action(fn () => null),
                 ]),
             ]);
     }
