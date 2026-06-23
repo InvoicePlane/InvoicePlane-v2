@@ -338,6 +338,7 @@ return [
     'record_successfully_updated'                  => 'Record successfully updated',
     'recurring'                                    => 'Recurring',
     'recurring_invoices'                           => 'Recurring Invoices',
+    'refund'                                       => 'Refund',
     'rejected'                                     => 'Rejected',
     'remove'                                       => 'Remove',
     'remove_logo'                                  => 'Remove Logo',
