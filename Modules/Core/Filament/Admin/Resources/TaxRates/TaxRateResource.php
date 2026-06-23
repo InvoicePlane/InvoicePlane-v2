@@ -40,4 +40,29 @@ class TaxRateResource extends Resource
             'index' => ListTaxRates::route('/'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_TAX_RATES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_TAX_RATES->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_TAX_RATES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_TAX_RATES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_TAX_RATES->value) ?? false;
+    }
 }
