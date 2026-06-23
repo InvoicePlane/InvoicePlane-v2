@@ -35,7 +35,7 @@ class Settings extends Page implements HasTable, HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can(Permission::VIEW_SETTINGS->value) ?? false;
+        return auth()->user()?->can(Permission::MANAGE_SETTINGS->value) ?? false;
     }
 
     public function boot(): void {}
