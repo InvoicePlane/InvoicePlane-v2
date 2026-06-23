@@ -106,6 +106,7 @@ class RolesSeeder extends Seeder
                             PermissionEnum::IMPERSONATE_USERS->value,
                             PermissionEnum::BACKUP->value,
                             PermissionEnum::RESTORE->value,
+                            PermissionEnum::REFUND_PAYMENTS->value,
                         ])
                 )),
             ],
