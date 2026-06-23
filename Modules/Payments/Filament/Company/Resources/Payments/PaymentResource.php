@@ -90,8 +90,12 @@ class PaymentResource extends BaseResource
         $query = parent::getEloquentQuery();
         $user  = auth()->user();
 
-        if ($user?->hasRole(UserRole::CUSTOMER->value) && $user->relation_id) {
-            $query->where('customer_id', $user->relation_id);
+        if ($user?->hasRole(UserRole::CUSTOMER->value)) {
+            if ($user->relation_id) {
+                $query->where('customer_id', $user->relation_id);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
         }
 
         return $query;
