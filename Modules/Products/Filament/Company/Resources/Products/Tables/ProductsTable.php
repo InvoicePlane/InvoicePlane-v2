@@ -2,6 +2,7 @@
 
 namespace Modules\Products\Filament\Company\Resources\Products\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -9,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 use Modules\Products\Services\ProductService;
@@ -61,19 +63,28 @@ class ProductsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PRODUCTS->value))
                         ->action(function (Product $record, array $data) {
                             app(ProductService::class)->updateProduct($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value))
+
                         ->action(function (Product $record, array $data) {
                             app(ProductService::class)->deleteProduct($record, $data);
                         }),
+                    Action::make('duplicate')
+                        ->label(trans('ip.duplicate'))
+                        ->icon('heroicon-o-document-duplicate')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_PRODUCTS->value))
+                        ->action(function (Product $record): void {}),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value)),
                 ]),
             ]);
     }
