@@ -80,6 +80,7 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()?->can(Permission::DELETE_USERS->value) ?? false;
+        return !$record->isSuperAdmin()
+            && (auth()->user()?->can(Permission::DELETE_USERS->value) ?? false);
     }
 }
