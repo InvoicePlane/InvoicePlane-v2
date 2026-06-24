@@ -63,7 +63,7 @@ class RolePermissionsPage extends Page
             $grouped[trans('ip.other')] = $ungrouped;
         }
 
-        return array_filter($grouped); 
+        return array_filter($grouped);
     }
 
     public function mount(): void
@@ -87,13 +87,20 @@ class RolePermissionsPage extends Page
                 continue; // skip super_admin..
             }
 
-            $toSync = [];
+            $toSync     = [];
+            $alreadyHas = $role->permissions->pluck('name')->flip();
+
             foreach (PermissionEnum::cases() as $perm) {
                 if ( ! ($this->matrix[$role->name][$perm->value] ?? false)) {
                     continue;
                 }
-                // Privilege escalation guard: you can only grant what you have
-                if ($currentUser->can($perm->value) || $currentUser->isSuperAdmin()) {
+
+                $canGrant       = $currentUser->isSuperAdmin() || $currentUser->can($perm->value);
+                $alreadyGranted = isset($alreadyHas[$perm->value]);
+
+                // Allow if editor can grant it, or if it was already assigned (preserve existing)
+                // Block only newly checked permissions the editor doesn't have themselves
+                if ($canGrant || $alreadyGranted) {
                     $toSync[] = $perm->value;
                 }
             }
