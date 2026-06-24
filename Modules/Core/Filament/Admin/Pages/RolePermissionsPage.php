@@ -91,6 +91,8 @@ class RolePermissionsPage extends Page
 
     public function save(): void
     {
+        abort_unless(static::canAccess(), 403);
+
         app(RolesService::class)->syncPermissionsFromMatrix($this->matrix, auth()->user());
 
         Notification::make()->title(trans('ip.role_permissions_updated'))->success()->send();
