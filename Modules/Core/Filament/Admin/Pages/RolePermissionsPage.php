@@ -69,10 +69,11 @@ class RolePermissionsPage extends Page
     public function mount(): void
     {
         $roles = Role::all()->keyBy('name');
-        foreach($roles as $roleName => $role) {
-            $granted = $role->permissions->pluck('name')->flip();
-            foreach(PermissionEnum::cases() as $perm) {
-                $this->matrix[$roleName][$perm->value] = isset($granted[$perm->value]);
+        foreach ($roles as $roleName => $role) {
+            $isSuperAdmin = $roleName === UserRole::SUPER_ADMIN->value;
+            $granted      = $isSuperAdmin ? [] : $role->permissions->pluck('name')->flip();
+            foreach (PermissionEnum::cases() as $perm) {
+                $this->matrix[$roleName][$perm->value] = $isSuperAdmin || isset($granted[$perm->value]);
             }
         }
     }
