@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Core\Enums\Permission as PermissionEnum;
 use Modules\Core\Enums\UserRole;
 use Spatie\Permission\Models\Role;
@@ -15,6 +16,12 @@ use Spatie\Permission\PermissionRegistrar;
 class RolePermissionsPage extends Page
 {
     public array $matrix = [];
+
+    public Collection $roles;
+
+    public array $groupedPerms = [];
+
+    public string $superAdmin = '';
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
@@ -68,7 +75,11 @@ class RolePermissionsPage extends Page
 
     public function mount(): void
     {
-        $roles = Role::all()->keyBy('name');
+        $this->roles        = Role::all();
+        $this->groupedPerms = static::getGroupedPermissions();
+        $this->superAdmin   = UserRole::SUPER_ADMIN->value;
+
+        $roles = $this->roles->keyBy('name');
         foreach ($roles as $roleName => $role) {
             $isSuperAdmin = $roleName === UserRole::SUPER_ADMIN->value;
             $granted      = $isSuperAdmin ? [] : $role->permissions->pluck('name')->flip();
