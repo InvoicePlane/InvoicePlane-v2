@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\ListTaxRates;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Schemas\TaxRateForm;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Tables\TaxRatesTable;
