@@ -10,8 +10,8 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Core\Enums\Permission as PermissionEnum;
 use Modules\Core\Enums\UserRole;
+use Modules\Core\Services\RolesService;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionsPage extends Page
 {
@@ -91,35 +91,7 @@ class RolePermissionsPage extends Page
 
     public function save(): void
     {
-        $currentUser = auth()->user();
-
-        foreach (Role::all() as $role) {
-            if ($role->name === UserRole::SUPER_ADMIN->value) {
-                continue; // skip super_admin..
-            }
-
-            $toSync     = [];
-            $alreadyHas = $role->permissions->pluck('name')->flip();
-
-            foreach (PermissionEnum::cases() as $perm) {
-                if ( ! ($this->matrix[$role->name][$perm->value] ?? false)) {
-                    continue;
-                }
-
-                $canGrant       = $currentUser->isSuperAdmin() || $currentUser->can($perm->value);
-                $alreadyGranted = isset($alreadyHas[$perm->value]);
-
-                // Allow if editor can grant it, or if it was already assigned (preserve existing)
-                // Block only newly checked permissions the editor doesn't have themselves
-                if ($canGrant || $alreadyGranted) {
-                    $toSync[] = $perm->value;
-                }
-            }
-
-            $role->syncPermissions($toSync);
-        }
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        app(RolesService::class)->syncPermissionsFromMatrix($this->matrix, auth()->user());
 
         Notification::make()->title(trans('ip.role_permissions_updated'))->success()->send();
     }
