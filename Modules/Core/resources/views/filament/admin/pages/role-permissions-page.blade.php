@@ -1,10 +1,4 @@
 <x-filament-panels::page>
-    @php
-        $roles = \Spatie\Permission\Models\Role::all();
-        $groupedPerms = $this->getGroupedPermissions();
-        $superAdmin = \Modules\Core\Enums\UserRole::SUPER_ADMIN->value;
-    @endphp
-
     <div class="space-y-4">
         @foreach ($groupedPerms as $group => $perms)
             <x-filament::section :heading="$group" collapsible collapsed style="margin: 1rem 0;">
