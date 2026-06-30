@@ -15,6 +15,7 @@ use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
 use Modules\Clients\Services\CustomerService;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
@@ -105,11 +106,13 @@ class RelationsTable
                             'customer_id' => $record->id,
                         ])),
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
                             app(CustomerService::class)->updateCustomer($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
                             app(\Modules\Clients\Services\RelationService::class)->deleteRelation($record);
                         }),
@@ -117,7 +120,8 @@ class RelationsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_RELATIONS->value)),
                 ]),
             ])->defaultSort('company_name', 'asc');
     }

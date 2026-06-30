@@ -13,6 +13,7 @@ use Modules\Clients\Enums\Gender;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Services\ContactService;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 
 class ContactsTable
@@ -67,11 +68,13 @@ class ContactsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_CONTACTS->value))
                         ->action(function (Contact $record, array $data) {
                             app(ContactService::class)->updateContact($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_CONTACTS->value))
                         ->action(function (Contact $record, array $data) {
                             app(ContactService::class)->deleteContact($record);
                         }),
@@ -79,7 +82,8 @@ class ContactsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_CONTACTS->value)),
                 ]),
             ]);
     }

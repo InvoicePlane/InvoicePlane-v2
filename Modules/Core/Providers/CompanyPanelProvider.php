@@ -24,6 +24,7 @@ use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
@@ -53,7 +54,7 @@ class CompanyPanelProvider extends PanelProvider
             ->id('company')
             ->path('')
             ->viteTheme('resources/css/filament/company/nord.css')
-            ->login()
+            ->login(Login::class)
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
