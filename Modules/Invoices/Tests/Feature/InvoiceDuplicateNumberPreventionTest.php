@@ -5,6 +5,7 @@ namespace Modules\Invoices\Tests\Feature;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -95,6 +96,60 @@ class InvoiceDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
             ->whereNull('invoice_number')
             ->count();
         $this->assertEquals(3, $drafts);
+    }
+
+    #[Test]
+    public function it_allows_parent_invoice_to_be_edited_when_a_credit_note_shares_its_number(): void
+    {
+        /* Arrange */
+        $company   = Company::factory()->create();
+        $numbering = Numbering::factory()->for($company)->create();
+
+        $parent = Invoice::factory()->for($company)->create([
+            'numbering_id'   => $numbering->id,
+            'invoice_number' => 'INV-2025-0001',
+            'invoice_sign'   => '1',
+        ]);
+
+        // Credit note shares the parent's number (allowed by design)
+        Invoice::factory()->for($company)->create([
+            'numbering_id'            => $numbering->id,
+            'invoice_number'          => 'INV-2025-0001',
+            'invoice_sign'            => '-1',
+            'creditinvoice_parent_id' => $parent->id,
+        ]);
+
+        /* Act — editing the parent must not throw */
+        $parent->update(['invoice_status' => InvoiceStatus::PAID]);
+        $parent->refresh();
+
+        /* Assert */
+        $this->assertEquals(InvoiceStatus::PAID, $parent->invoice_status);
+    }
+
+    #[Test]
+    public function it_allows_creating_a_credit_note_with_the_same_number_as_its_parent(): void
+    {
+        /* Arrange */
+        $company   = Company::factory()->create();
+        $numbering = Numbering::factory()->for($company)->create();
+
+        $parent = Invoice::factory()->for($company)->create([
+            'numbering_id'   => $numbering->id,
+            'invoice_number' => 'INV-2025-0001',
+            'invoice_sign'   => '1',
+        ]);
+
+        /* Act */
+        $creditNote = Invoice::factory()->for($company)->create([
+            'numbering_id'            => $numbering->id,
+            'invoice_number'          => 'INV-2025-0001',
+            'invoice_sign'            => '-1',
+            'creditinvoice_parent_id' => $parent->id,
+        ]);
+
+        /* Assert */
+        $this->assertDatabaseHas('invoices', ['id' => $creditNote->id, 'creditinvoice_parent_id' => $parent->id]);
     }
 
     #[Test]

@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Importers\ImportFactory;
 use Modules\Core\Traits\BelongsToCompany;
@@ -9,6 +10,7 @@ use Modules\Core\Traits\BelongsToCompany;
 class Import extends Model
 {
     use BelongsToCompany;
+    use HasFactory;
 
     public $timestamps = false;
 

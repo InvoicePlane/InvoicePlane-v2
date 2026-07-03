@@ -63,6 +63,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_quote_through_a_modal(): void
     {
+        /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
@@ -101,12 +102,14 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
+        /* Assert */
         $component->assertHasNoFormErrors();
 
         // Patch date fields for DB assertion
@@ -343,6 +346,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_quote(): void
     {
+        /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
@@ -580,7 +584,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->test(ListQuotes::class);
 
         /* Assert */
-        /* Assert */
         $component->assertSuccessful();
         $component->assertSeeText('Q-VISIBLE');
         $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
@@ -592,9 +595,72 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     #[Group('failing')]
-    public function widget_shows_only_current_tenant_quotes(): void
+    public function it_shows_only_current_tenant_quotes_in_the_widget(): void
     {
         $this->markTestSkipped('No widget route is currently registered for quotes');
+    }
+    # endregion
+
+    # region duplicate
+    #[Test]
+    #[Group('crud')]
+    public function it_duplicates_a_quote(): void
+    {
+        /* Arrange */
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+        $original = Quote::factory()->for($this->company)->create([
+            'prospect_id'  => $prospect->id,
+            'quote_number' => 'Q-ORIG-001',
+            'quote_status' => QuoteStatus::SENT,
+            'summary'      => 'Original summary',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('duplicate')->table($original))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $copy = Quote::query()
+            ->where('company_id', $this->company->id)
+            ->where('prospect_id', $prospect->id)
+            ->where('quote_status', QuoteStatus::DRAFT)
+            ->whereNot('id', $original->id)
+            ->first();
+        $this->assertNotNull($copy);
+        $this->assertNull($copy->quote_number);
+        $this->assertEquals('Original summary', $copy->summary);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_copies_quote_items_when_duplicating(): void
+    {
+        /* Arrange */
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+        $original = Quote::factory()->for($this->company)->create([
+            'prospect_id'  => $prospect->id,
+            'quote_number' => 'Q-ITEMS-001',
+        ]);
+        $itemCount = $original->quoteItems()->count();
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListQuotes::class)
+            ->mountAction(TestAction::make('duplicate')->table($original))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $copy = Quote::query()
+            ->where('company_id', $this->company->id)
+            ->whereNot('id', $original->id)
+            ->latest('id')
+            ->first();
+        $this->assertNotNull($copy);
+        $this->assertEquals($itemCount, $copy->quoteItems()->count());
     }
     # endregion
 }

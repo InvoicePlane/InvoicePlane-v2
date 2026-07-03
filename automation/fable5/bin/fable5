@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../bootstrap/app.php';
+
+use Fable5\Logging\FileLogger;
+use Fable5\Http\ApiClient;
+use Fable5\Clients\GitHubClient;
+use Fable5\Git\PullRequestManager;
+use Fable5\Git\GitRepository;
+use Fable5\Indexer\PRBranchReconciler;
+use Fable5\Execution\Fable5Kernel;
+use Fable5\Execution\ExecutionPlanner;
+use Fable5\Execution\ExecutionScheduler;
+use Fable5\Execution\ExecutionRunner;
+
+$config = config('github');
+
+$logger = new FileLogger(__DIR__ . '/../storage/logs/execution.log');
+
+$transport = new ApiClient(
+    logger: $logger,
+    timeout: $config['timeout'] ?? 30,
+    retries: $config['retries'] ?? 3
+);
+
+$githubClient = new GitHubClient($transport, $config['token'] ?? '');
+
+$prManager = new PullRequestManager(
+    githubClient: $githubClient,
+    owner: $config['owner'],
+    repo: $config['repo']
+);
+
+$git = new GitRepository(
+    workingDirectory: base_path(),
+    logger: $logger
+);
+
+$reconciler = new PRBranchReconciler($prManager);
+$planner = new ExecutionPlanner();
+$scheduler = new ExecutionScheduler(maxConcurrency: $config['max_concurrency'] ?? 4);
+$runner = new ExecutionRunner($logger, $git, $prManager);
+
+$kernel = new Fable5Kernel(
+    logger: $logger,
+    config: $config,
+    reconciler: $reconciler,
+    planner: $planner,
+    scheduler: $scheduler,
+    runner: $runner
+);
+
+echo "Fable5 Automation Framework loaded.\n";
+
+$kernel->run();

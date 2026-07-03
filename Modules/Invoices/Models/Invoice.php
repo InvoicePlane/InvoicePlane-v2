@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Models;
 
 use Carbon\CarbonInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -97,31 +96,6 @@ class Invoice extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?MorphMany
-    {
-        //return $this->morphMany(Activity::class, 'audit');
-        return null;
-    }
-
-    public function attachments(): ?MorphMany
-    {
-        // return $this->morphMany(Attachment::class, 'attachable');
-        return null;
-    }
-
-    public function clientAttachments(): MorphMany
-    {
-        $relationship = $this->morphMany('Attachment', 'attachable');
-
-        if ($this->status_text == 'paid') {
-            $relationship->whereIn('client_visibility', [1, 2]);
-        } else {
-            $relationship->where('client_visibility', 1);
-        }
-
-        return $relationship;
-    }
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
@@ -154,7 +128,7 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): Builder
+    public function mailQueue(): HasMany
     {
         return $this->hasMany(MailQueue::class, 'mailable_id')
             ->where('mailable_type', self::class);
@@ -262,12 +236,16 @@ class Invoice extends Model
                 return;
             }
 
-            $exists = static::withoutGlobalScopes()
+            $query = static::withoutGlobalScopes()
                 ->where('company_id', $invoice->company_id)
-                ->where('invoice_number', $invoice->invoice_number)
-                ->exists();
+                ->where('invoice_number', $invoice->invoice_number);
 
-            if ($exists) {
+            // A credit note is allowed to share the same number as its parent invoice
+            if ($invoice->creditinvoice_parent_id) {
+                $query->where('id', '!=', $invoice->creditinvoice_parent_id);
+            }
+
+            if ($query->exists()) {
                 throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
             }
         });

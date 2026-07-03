@@ -10,6 +10,25 @@ cp .env.testing.example .env.testing
 php artisan key:generate --env=testing
 ```
 
+## Docker Setup (local development)
+
+The test database (`invoiceplane_test`) runs inside Docker. Commands below must be executed inside the workspace container — running `php artisan test` directly on the host will fail with a connection error.
+
+```bash
+# Run all tests
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test"
+
+# Run a specific file
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test Modules/Invoices/Tests/Feature/InvoicesTest.php"
+
+# Full exception traces on failure (fall back to phpunit)
+docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && vendor/bin/phpunit Modules/Invoices/Tests/Feature/InvoicesTest.php"
+```
+
+The Makefile wraps these commands — check `Makefile` for available targets.
+
+---
+
 ## Quick Reference
 
 ### Run All Tests
@@ -17,7 +36,7 @@ php artisan key:generate --env=testing
 # Using Laravel Artisan (recommended)
 php artisan test
 
-# Using PHPUnit directly
+# Using PHPUnit directly (shows full exception traces)
 ./vendor/bin/phpunit
 ```
 

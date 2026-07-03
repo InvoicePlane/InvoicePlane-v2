@@ -8,6 +8,7 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Icons\Heroicon;
+use Modules\Core\Enums\Permission;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Filament\Exporters\ExpenseExporter;
 use Modules\Expenses\Filament\Exporters\ExpenseLegacyExporter;
@@ -21,6 +22,7 @@ class ListExpenses extends ListRecords
     {
         return [
             CreateAction::make()
+                ->visible(fn () => auth()->user()?->can(Permission::CREATE_EXPENSES->value))
                 ->mutateDataUsing(function (array $data) {
                     return $data;
                 })

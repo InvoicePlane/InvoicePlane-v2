@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 
@@ -31,6 +32,11 @@ class Settings extends Page implements HasTable, HasForms
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-server-stack';
 
     protected string $view = 'core::filament.admin.pages.settings';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can(Permission::MANAGE_SETTINGS->value) ?? false;
+    }
 
     public function boot(): void {}
 
