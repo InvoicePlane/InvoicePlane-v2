@@ -91,10 +91,12 @@ class QuoteForm
 
                                         DatePicker::make('quoted_at')
                                             ->label(trans('ip.quote_date'))
+                                            ->default(fn () => now()->toDateString())
                                             ->native(false),
 
                                         DatePicker::make('quote_expires_at')
                                             ->label(trans('ip.quote_expires_at'))
+                                            ->default(fn () => now()->addDays(30)->toDateString())
                                             ->native(false),
 
                                         Select::make('numbering_id')

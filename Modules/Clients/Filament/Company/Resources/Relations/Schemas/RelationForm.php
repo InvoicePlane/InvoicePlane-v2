@@ -120,6 +120,7 @@ class RelationForm
 
                                                 DatePicker::make('registered_at')
                                                     ->label(trans('ip.date'))
+                                                    ->default(fn () => now()->toDateString())
                                                     ->required(),
                                             ]),
                                     ]),

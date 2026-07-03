@@ -137,6 +137,7 @@ class ExpenseForm
                                     ->numeric()
                                     ->required(),
                                 DatePicker::make('expensed_at')
+                                    ->default(fn () => now()->toDateString())
                                     ->required(),
                             ])
                             ->columnSpan(1),

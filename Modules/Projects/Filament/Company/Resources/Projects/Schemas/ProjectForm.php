@@ -77,6 +77,7 @@ class ProjectForm
 
                                         DatePicker::make('start_at')
                                             ->label(trans('ip.start_at'))
+                                            ->default(fn () => now()->toDateString())
                                             ->required()
                                             ->native(false),
 

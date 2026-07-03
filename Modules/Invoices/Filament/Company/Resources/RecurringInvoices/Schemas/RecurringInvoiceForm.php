@@ -27,6 +27,7 @@ class RecurringInvoiceForm
                     ->options(RecurringFrequency::class)
                     ->required(),
                 DatePicker::make('start_at')
+                    ->default(fn () => now()->toDateString())
                     ->required(),
                 DatePicker::make('end_at'),
             ]);

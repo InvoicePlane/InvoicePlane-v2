@@ -27,7 +27,8 @@ class InvoiceItemForm
                 Select::make('product_unit_id')
                     ->relationship('productUnit', 'id')
                     ->default(null),
-                DatePicker::make('added_at'),
+                DatePicker::make('added_at')
+                    ->default(fn () => now()->toDateString()),
                 TextInput::make('item_name')
                     ->default(null),
                 TextInput::make('product_unit')

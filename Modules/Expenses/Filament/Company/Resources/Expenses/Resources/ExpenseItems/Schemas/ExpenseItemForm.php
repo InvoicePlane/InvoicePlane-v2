@@ -23,7 +23,8 @@ class ExpenseItemForm
                 TextInput::make('unit_id')
                     ->numeric()
                     ->default(null),
-                DatePicker::make('added_at'),
+                DatePicker::make('added_at')
+                    ->default(fn () => now()->toDateString()),
                 TextInput::make('item_name')
                     ->default(null),
                 Toggle::make('is_recurring')

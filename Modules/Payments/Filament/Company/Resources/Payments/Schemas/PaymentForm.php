@@ -84,6 +84,7 @@ class PaymentForm
                                             ->schema([
                                                 DatePicker::make('paid_at')
                                                     ->label(trans('ip.paid_at'))
+                                                    ->default(fn () => now()->toDateString())
                                                     ->required(),
 
                                                 Select::make('payment_method')
