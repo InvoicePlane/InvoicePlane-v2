@@ -8,7 +8,7 @@ use Fable5\Git\PullRequestManager;
 use Fable5\Execution\ExecutionNode;
 use Fable5\Execution\ExecutionGraph;
 
-final class PRBranchReconciler
+class PRBranchReconciler
 {
     public function __construct(
         private PullRequestManager $prManager

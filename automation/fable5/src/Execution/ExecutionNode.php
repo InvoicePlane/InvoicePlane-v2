@@ -8,28 +8,28 @@ final class ExecutionNode
 {
     public function __construct(
         private string $id,
-        private string $type,
-        private array $payload = [],
-        private array $dependencies = []
+        private array $issues,
+        private string $type = 'feature',
+        private array $metadata = [],
     ) {}
 
-    public function getId(): string
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function getType(): string
+    public function issues(): array
+    {
+        return $this->issues;
+    }
+
+    public function type(): string
     {
         return $this->type;
     }
 
-    public function getPayload(): array
+    public function metadata(): array
     {
-        return $this->payload;
-    }
-
-    public function getDependencies(): array
-    {
-        return $this->dependencies;
+        return $this->metadata;
     }
 }
