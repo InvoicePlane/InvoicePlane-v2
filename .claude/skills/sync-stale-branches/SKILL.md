@@ -1,3 +1,8 @@
+---
+name: sync-stale-branches
+description: Brings diverged remote branches up to date with develop — classifies, rescues unique work, then resets or deletes stale branches
+---
+
 # Skill: sync-stale-branches
 
 Bring old/diverged remote branches up to date with `develop`.

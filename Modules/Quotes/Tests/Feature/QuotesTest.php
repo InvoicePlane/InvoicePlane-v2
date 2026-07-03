@@ -63,6 +63,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_a_quote_through_a_modal(): void
     {
+        /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
@@ -101,12 +102,14 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
             ->mountAction('create')
             ->fillForm($payload)
             ->callMountedAction();
 
+        /* Assert */
         $component->assertHasNoFormErrors();
 
         // Patch date fields for DB assertion
@@ -343,6 +346,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_quote(): void
     {
+        /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
@@ -580,7 +584,6 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             ->test(ListQuotes::class);
 
         /* Assert */
-        /* Assert */
         $component->assertSuccessful();
         $component->assertSeeText('Q-VISIBLE');
         $this->assertDatabaseHas('quotes', ['quote_number' => 'Q-HIDDEN']);
@@ -592,7 +595,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     #[Group('failing')]
-    public function widget_shows_only_current_tenant_quotes(): void
+    public function it_shows_only_current_tenant_quotes_in_the_widget(): void
     {
         $this->markTestSkipped('No widget route is currently registered for quotes');
     }

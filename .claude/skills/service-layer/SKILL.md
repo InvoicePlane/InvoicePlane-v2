@@ -8,9 +8,7 @@ metadata:
 
 # Service Layer
 
-Services define **business orchestration only**.
-
-They are framework-agnostic and represent the application’s business operations.
+Services are the only place business logic lives. They are framework-agnostic.
 
 ---
 
@@ -19,23 +17,22 @@ They are framework-agnostic and represent the application’s business operation
 Services MUST:
 
 - contain business logic
-- coordinate models and repositories
+- coordinate models
 - enforce domain rules
 - return models or DTOs
 
 Services MUST NOT:
 
-- use Filament
-- use HTTP layer
-- depend on request/response objects
+- import or use Filament
+- accept or return HTTP request/response objects
 - contain UI logic
-- use service locators (`app()`, `resolve()`)
+- use `app()` or `resolve()` internally
 
 ---
 
 # 2. Dependency Rule
 
-Services MUST use constructor injection:
+Constructor injection only:
 
 ```php
 public function __construct(
@@ -43,25 +40,28 @@ public function __construct(
 ) {}
 ```
 
-No `app()` or service locator usage inside services.
+---
+
+# 3. DTO Rule
+
+DTOs are **not** required for Filament → Service calls. Arrays are fine when the
+source is a trusted Filament form.
+
+Use DTOs when:
+- crossing system boundaries (API, queues, external integrations)
+- multiple services share a contract
+- the payload must be stable across refactors
+
+Skip DTOs when:
+- input comes from a single Filament form
+- the data is short-lived and not reused
 
 ---
 
-# 3. Filament Boundary Rule
+# 4. Filament Action Exception
 
-Filament is a UI boundary layer with different lifecycle constraints.
-
-Allowed patterns:
-
-### Pages / Resources
-- constructor injection preferred
-- `app(Service::class)` allowed as fallback
-
-### Table Actions / Closures
-- `app(Service::class)` is allowed
-- constructor injection is not guaranteed in closures
-
-Example:
+Filament closures do not support constructor DI. `app()` is the only acceptable
+escape hatch — and it belongs in the closure, not inside the service:
 
 ```php
 Action::make('create')
@@ -70,32 +70,12 @@ Action::make('create')
     });
 ```
 
-This is acceptable UI-layer coupling.
-
 ---
 
-# 4. Standard Service Shape
+# 5. Standard Shape
 
 ```
-Modules/{Name}/src/Services/{Model}Service.php
+Modules/{Name}/Services/{Model}Service.php
 ```
 
----
-
-# 5. Standard Methods
-
-- createX
-- updateX
-- deleteX
-- findOrFail
-- listForCompany
-
----
-
-# 6. Core Principle
-
-Services are pure business units.
-
-They must not depend on framework execution context.
-
-UI layers may use service locator as a pragmatic boundary escape hatch.
+Standard method names: `createX`, `updateX`, `deleteX`, `findOrFail`, `listForCompany`.

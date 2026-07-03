@@ -1,3 +1,8 @@
+---
+name: autonomous-coding-workflow
+description: Governs safe, incremental, repository-wide development workflow with continuous validation gates
+---
+
 # Autonomous Coding Workflow
 
 ## Goal

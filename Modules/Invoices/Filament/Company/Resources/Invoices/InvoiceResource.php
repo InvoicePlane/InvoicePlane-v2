@@ -6,6 +6,8 @@ use BackedEnum;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
@@ -62,5 +64,25 @@ class InvoiceResource extends BaseResource
             'index' => ListInvoices::route('/'),
             'edit'  => EditInvoice::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_INVOICES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_INVOICES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_INVOICES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_INVOICES->value) ?? false;
     }
 }
