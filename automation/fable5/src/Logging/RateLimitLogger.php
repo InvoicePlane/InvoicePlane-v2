@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Fable5\Logging;
+
+final class RateLimitLogger extends FileLogger
+{
+    public function __construct()
+    {
+        parent::__construct('rate_limit.log');
+    }
+}
