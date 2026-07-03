@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fable5\Http;
 
-enum HttpMethod: string
+enum RequestMethod: string
 {
     case GET = 'GET';
     case POST = 'POST';

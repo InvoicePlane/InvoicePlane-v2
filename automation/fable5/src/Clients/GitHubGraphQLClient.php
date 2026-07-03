@@ -5,22 +5,27 @@ declare(strict_types=1);
 namespace Fable5\Clients;
 
 use Fable5\Http\ApiClient;
-use Fable5\Http\HttpMethod;
+use Fable5\Http\RequestMethod;
 
 final class GitHubGraphQLClient
 {
     private const ENDPOINT = 'https://api.github.com/graphql';
 
     public function __construct(
-        private readonly ApiClient $transport
+        private readonly ApiClient $transport,
+        private readonly string $token,
     ) {
     }
 
     public function query(string $query, array $variables = []): array
     {
-        return $this->transport->request(HttpMethod::POST, self::ENDPOINT, [
+        return $this->transport->request(RequestMethod::POST, self::ENDPOINT, [
             'query' => $query,
             'variables' => $variables,
+        ], [
+            'Authorization' => 'Bearer ' . $this->token,
+            'Accept' => 'application/vnd.github.v3+json',
+            'User-Agent' => 'Fable5-Automation-Framework',
         ])->json();
     }
 
