@@ -15,6 +15,11 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(GitHubGraphQLClient::class)]
 final class GitHubGraphQLClientTest extends TestCase
 {
+    private function getFixture(string $path): array
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
+    }
+
     #[Test]
     public function it_executes_generic_query(): void
     {
@@ -44,9 +49,10 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_gets_issue_with_labels_and_comments(): void
     {
         /* Arrange */
+        $fixture = $this->getFixture('graphql_issue.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['data' => ['repository' => ['issue' => ['id' => '123']]]]);
+        $response->method('json')->willReturn($fixture);
 
         $transport->expects($this->once())
             ->method('request')
@@ -58,7 +64,7 @@ final class GitHubGraphQLClientTest extends TestCase
         $result = $client->getIssue('owner', 'repo', 1);
 
         /* Assert */
-        $this->assertEquals('123', $result['data']['repository']['issue']['id']);
+        $this->assertEquals($fixture['data']['repository']['issue']['id'], $result['data']['repository']['issue']['id']);
     }
 
     #[Test]
@@ -86,9 +92,10 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_gets_project(): void
     {
         /* Arrange */
+        $fixture = $this->getFixture('graphql_project.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['data' => ['user' => ['projectV2' => ['id' => 'project-id']]]]);
+        $response->method('json')->willReturn($fixture);
 
         $transport->expects($this->once())
             ->method('request')
@@ -100,7 +107,7 @@ final class GitHubGraphQLClientTest extends TestCase
         $result = $client->getProject('owner', 1);
 
         /* Assert */
-        $this->assertEquals('project-id', $result['data']['user']['projectV2']['id']);
+        $this->assertEquals($fixture['data']['user']['projectV2']['id'], $result['data']['user']['projectV2']['id']);
     }
 
     #[Test]

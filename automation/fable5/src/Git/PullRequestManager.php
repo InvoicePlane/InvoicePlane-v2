@@ -6,7 +6,7 @@ namespace Fable5\Git;
 
 use Fable5\Clients\GitHubClient;
 
-final class PullRequestManager
+class PullRequestManager
 {
     public function __construct(
         private GitHubClient $githubClient,

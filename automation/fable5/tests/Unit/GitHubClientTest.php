@@ -15,6 +15,11 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(GitHubClient::class)]
 final class GitHubClientTest extends TestCase
 {
+    private function getFixture(string $path): array
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
+    }
+
     #[Test]
     public function it_lists_workflow_runs_with_pagination(): void
     {
@@ -47,85 +52,94 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_repository(): void
     {
+        $fixture = $this->getFixture('repository.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['name' => 'repo']);
+        $response->method('json')->willReturn($fixture);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
         $result = $client->getRepository('owner', 'repo');
-        $this->assertEquals('repo', $result['name']);
+        $this->assertEquals($fixture['name'], $result['name']);
     }
 
     #[Test]
     public function it_creates_pull_request(): void
     {
+        $fixture = $this->getFixture('pull_request.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['number' => 1]);
+        $response->method('json')->willReturn($fixture);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
         $result = $client->createPullRequest('owner', 'repo', []);
-        $this->assertEquals(1, $result['number']);
+        $this->assertEquals($fixture['number'], $result['number']);
     }
 
     #[Test]
     public function it_gets_pull_request(): void
     {
+        $fixture = $this->getFixture('pull_request.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['number' => 1]);
+        $response->method('json')->willReturn($fixture);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
-        $result = $client->getPullRequest('owner', 'repo', 1);
-        $this->assertEquals(1, $result['number']);
+        $result = $client->getPullRequest('owner', 'repo', $fixture['number']);
+        $this->assertEquals($fixture['number'], $result['number']);
     }
 
     #[Test]
     public function it_lists_pull_requests(): void
     {
+        $fixture = $this->getFixture('pull_request.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn([['number' => 1]]);
+        $response->method('json')->willReturn([$fixture]);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
         $result = $client->listPullRequests('owner', 'repo');
         $this->assertCount(1, $result);
+        $this->assertEquals($fixture['number'], $result[0]['number']);
     }
 
     #[Test]
     public function it_gets_issue(): void
     {
+        $fixture = $this->getFixture('issue.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['number' => 1]);
+        $response->method('json')->willReturn($fixture);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
-        $result = $client->getIssue('owner', 'repo', 1);
-        $this->assertEquals(1, $result['number']);
+        $result = $client->getIssue('owner', 'repo', $fixture['number']);
+        $this->assertEquals($fixture['number'], $result['number']);
     }
 
     #[Test]
     public function it_updates_issue(): void
     {
+        $fixture = $this->getFixture('issue.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['number' => 1]);
+        $response->method('json')->willReturn($fixture);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
-        $result = $client->updateIssue('owner', 'repo', 1, []);
-        $this->assertEquals(1, $result['number']);
+        $result = $client->updateIssue('owner', 'repo', $fixture['number'], []);
+        $this->assertEquals($fixture['number'], $result['number']);
     }
 
     #[Test]
     public function it_lists_issues(): void
     {
+        $fixture = $this->getFixture('issue.json');
         $transport = $this->createMock(ApiClient::class);
         $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn([['number' => 1]]);
+        $response->method('json')->willReturn([$fixture]);
         $transport->expects($this->once())->method('request')->willReturn($response);
         $client = new GitHubClient($transport, 'token');
         $result = $client->listIssues('owner', 'repo');
         $this->assertCount(1, $result);
+        $this->assertEquals($fixture['number'], $result[0]['number']);
     }
 
     #[Test]
