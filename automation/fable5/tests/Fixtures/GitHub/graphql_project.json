@@ -1,0 +1,22 @@
+{
+  "data": {
+    "user": {
+      "projectV2": {
+        "id": "PVT_kwDOAn96is4ABy8K",
+        "title": "Roadmap",
+        "url": "https://github.com/users/octocat/projects/1",
+        "items": {
+          "nodes": [
+            {
+              "id": "PVTI_kwDOAn96is4ABy8K",
+              "content": {
+                "title": "Found a bug",
+                "number": 1347
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

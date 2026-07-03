@@ -237,11 +237,11 @@ final class GitHubCli
 
         while ($attempt < self::MAX_RETRIES) {
             try {
-                $result = Process::withEnvironmentVariables([
+                $result = Process::env([
                     'GH_TOKEN' => $this->githubToken,
                     'GITHUB_TOKEN' => $this->githubToken,
                     'NO_COLOR' => '1',
-                ])->run($command);
+                ])->run(implode(' ', array_map('escapeshellarg', $command)));
 
                 if ($result->successful()) {
                     $output = $result->output();

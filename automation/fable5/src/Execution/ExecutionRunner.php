@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace Fable5\Execution;
 
-use Fable5\Logging\FileLogger;
-use Fable5\Git\GitHubExecutionBridge;
+use Fable5\Logging\Logger;
+use Fable5\Git\GitRepository;
+use Fable5\Git\PullRequestManager;
 
 final class ExecutionRunner
 {
     public function __construct(
-        private FileLogger $logger,
-        private GitHubExecutionBridge $bridge,
+        private Logger $logger,
+        private GitRepository $git,
+        private PullRequestManager $prManager
     ) {}
 
-    public function run(array $batches): void
+    public function run(ExecutionGraph $graph, array $schedule): void
     {
-        foreach ($batches as $batchName => $nodes) {
-            $this->logger->info('Running batch: ' . $batchName);
-
-            foreach ($nodes as $node) {
+        foreach ($schedule as $layer) {
+            foreach ($layer as $nodeId) {
+                $node = $graph->getNode($nodeId);
                 $this->execute($node);
             }
         }
@@ -27,10 +28,14 @@ final class ExecutionRunner
 
     private function execute(ExecutionNode $node): void
     {
-        $this->logger->info('Executing node: ' . $node->id());
+        $branch = $node->metadata()['branch'] ?? "fable5/{$node->id()}";
 
-        $result = $this->bridge->executeNode($node);
+        if ($this->prManager->findExistingPRForBranch($branch)) {
+            $this->logger->warning("PR already exists for branch {$branch}, skipping.");
+            return;
+        }
 
-        $this->logger->info('PR created: ' . json_encode($result));
+        $this->git->exec(['checkout', '-b', $branch]);
+        // ... more logic would go here in a real implementation
     }
 }

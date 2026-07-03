@@ -8,7 +8,7 @@ use Fable5\Logging\Logger;
 use Illuminate\Support\Facades\Process;
 use RuntimeException;
 
-final class GitRepository
+class GitRepository
 {
     public function __construct(
         private string $workingDirectory,

@@ -26,8 +26,8 @@ final class ExecutionRunnerTest extends TestCase
         $prManager = $this->createMock(PullRequestManager::class);
 
         $graph = new ExecutionGraph();
-        $graph->addNode(new ExecutionNode('1', 'issue', ['branch' => 'feat/1']));
-        $graph->addNode(new ExecutionNode('2', 'issue', ['branch' => 'feat/2']));
+        $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
+        $graph->addNode(new ExecutionNode('2', [], 'issue', ['branch' => 'feat/2']));
 
         $schedule = [['1'], ['2']];
 
@@ -53,7 +53,7 @@ final class ExecutionRunnerTest extends TestCase
         $prManager = $this->createMock(PullRequestManager::class);
 
         $graph = new ExecutionGraph();
-        $graph->addNode(new ExecutionNode('1', 'issue', ['branch' => 'feat/1']));
+        $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
 
         $schedule = [['1']];
 
