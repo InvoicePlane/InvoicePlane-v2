@@ -18,6 +18,7 @@ class GitRepository
     public function exec(array $command): string
     {
         $fullCommand = array_merge(['git', '-C', $this->workingDirectory], $command);
+        $this->logger->info(implode(' ', $fullCommand));
         $result = Process::run($fullCommand);
 
         if (!$result->successful()) {

@@ -28,7 +28,7 @@ class ApiClient
             ->retry($this->retries, function (int $attempt) {
                 return $this->retryDelay * (2 ** ($attempt - 1));
             }, function (Exception $exception, PendingRequest $request) {
-                $this->logger->warning('API request failed, retrying...', [
+                $this->logger->warning('Request failed, retrying...', [
                     'exception' => $exception->getMessage(),
                 ]);
 
