@@ -1,20 +1,18 @@
 <?php
 
-namespace Modules\Quotes\Feature\Modules;
+namespace Modules\Quotes\Tests\Feature;
 
+use Illuminate\Bus\ChainedBatch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Models\Quote;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ListQuotes::class)]
 class QuotesExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;
@@ -24,7 +22,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_csv_export_job_v2(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $quotes = Quote::factory()->for($this->company)->count(3)->create();
 
@@ -39,11 +37,7 @@ class QuotesExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]

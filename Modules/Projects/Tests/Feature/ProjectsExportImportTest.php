@@ -1,20 +1,18 @@
 <?php
 
-namespace Modules\Projects\Feature\Modules;
+namespace Modules\Projects\Tests\Feature;
 
+use Illuminate\Bus\ChainedBatch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
 use Modules\Projects\Models\Project;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ListProjects::class)]
 class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;
@@ -24,7 +22,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_csv_export_job_v2(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $projects = Project::factory()->for($this->company)->count(3)->create();
 
@@ -38,11 +36,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -50,7 +44,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_excel_export_job_v2(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $projects = Project::factory()->for($this->company)->count(3)->create();
 
@@ -64,11 +58,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -76,7 +66,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_with_no_records(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         // No projects created
 
@@ -90,11 +80,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -102,7 +88,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_with_special_characters(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $project = Project::factory()->for($this->company)->create([
             'project_name' => 'ÜProject, "Test"',
@@ -119,11 +105,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -131,7 +113,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_csv_export_job_v1(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $projects = Project::factory()->for($this->company)->count(3)->create();
 
@@ -145,11 +127,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -157,7 +135,7 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_excel_export_job_v1(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $projects = Project::factory()->for($this->company)->count(3)->create();
 
@@ -171,10 +149,6 @@ class ProjectsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 }

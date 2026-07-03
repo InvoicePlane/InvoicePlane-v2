@@ -1,20 +1,18 @@
 <?php
 
-namespace Modules\Products\Feature\Modules;
+namespace Modules\Products\Tests\Feature;
 
+use Illuminate\Bus\ChainedBatch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
 use Modules\Products\Models\Product;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ListProducts::class)]
 class ProductsExportImportTest extends AbstractCompanyPanelTestCase
 {
     use RefreshDatabase;
@@ -24,7 +22,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_csv_export_job_v2(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         Bus::fake();
         $products = Product::factory()->for($this->company)->count(3)->create();
@@ -39,11 +37,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -51,7 +45,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_excel_export_job_v2(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $products = Product::factory()->for($this->company)->count(3)->create();
 
@@ -65,11 +59,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -77,7 +67,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_with_no_records(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         // No products created
 
@@ -91,11 +81,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -103,7 +89,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_exports_with_special_characters(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $product = Product::factory()->for($this->company)->create([
             'name'  => 'ÜProduct, "Test"',
@@ -120,11 +106,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -132,7 +114,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_csv_export_job_v1(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $products = Product::factory()->for($this->company)->count(3)->create();
 
@@ -146,11 +128,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 
     #[Test]
@@ -158,7 +136,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
     public function it_dispatches_excel_export_job_v1(): void
     {
         /* Arrange */
-        Queue::fake();
+        Bus::fake();
         Storage::fake('local');
         $products = Product::factory()->for($this->company)->count(3)->create();
 
@@ -172,10 +150,6 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ]);
 
         /* Assert */
-        Bus::assertChained([
-            function ($batch) {
-                return $batch instanceof \Illuminate\Bus\PendingBatch;
-            },
-        ]);
+        Bus::assertDispatched(ChainedBatch::class);
     }
 }
