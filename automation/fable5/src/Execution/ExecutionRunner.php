@@ -31,7 +31,13 @@ final class ExecutionRunner
 
     private function execute(ExecutionNode $node): void
     {
-        $branch = $node->metadata()['branch'] ?? "fable5/{$node->id()}";
+        $branch = $node->metadata()['branch'] ?? null;
+
+        if (! $branch) {
+            $this->logger->error("Branch not found for issue {$node->id()}");
+
+            return;
+        }
 
         if ($this->prManager->findExistingPRForBranch($branch)) {
             $this->logger->warning("PR already exists for branch {$branch}, skipping.");

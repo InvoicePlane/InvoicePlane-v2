@@ -23,6 +23,21 @@ final class FakePullRequestManager extends PullRequestManager
         return $this->existingPRs[$branch] ?? null;
     }
 
+    public function create(string $title, string $body, string $head, string $base = 'main'): array
+    {
+        $pr = [
+            'number' => 999,
+            'title' => $title,
+            'body' => $body,
+            'head' => ['ref' => $head],
+            'base' => ['ref' => $base],
+            'state' => 'open',
+        ];
+        $this->existingPRs[$head] = $pr;
+
+        return $pr;
+    }
+
     public function setExistingPR(string $branch, array $prData): void
     {
         $this->existingPRs[$branch] = $prData;

@@ -15,12 +15,17 @@ class PRBranchReconciler
     ) {}
 
     /** @param array<int, array<string, mixed>> $issues */
-    public function build(array $issues): ExecutionGraph
+    public function build(array $issues, array $existingBranches = []): ExecutionGraph
     {
         $graph = new ExecutionGraph;
 
         foreach ($issues as $issue) {
             $branchName = "fable5/issue-{$issue['number']}";
+
+            if (! in_array($branchName, $existingBranches)) {
+                continue;
+            }
+
             $existingPr = $this->prManager->findExistingPRForBranch($branchName);
 
             $payload = [
