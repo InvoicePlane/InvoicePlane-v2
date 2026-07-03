@@ -13,7 +13,6 @@ final class Fable5Kernel
         private Logger $logger,
         private array $config,
         private PRBranchReconciler $reconciler,
-        private ExecutionPlanner $planner,
         private ExecutionScheduler $scheduler,
         private ExecutionRunner $runner,
     ) {}
