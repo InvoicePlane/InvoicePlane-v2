@@ -30,6 +30,7 @@ class PRBranchReconciler
 
             $node = new ExecutionNode(
                 (string) $issue['number'],
+                [$issue],
                 'issue',
                 $payload
             );

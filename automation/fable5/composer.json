@@ -9,7 +9,8 @@
     "require": {
         "php": "^8.3",
         "symfony/process": "^7.0",
-        "illuminate/http": "*"
+        "illuminate/http": "*",
+        "illuminate/process": "*"
     },
     "require-dev": {
         "larastan/larastan": "^3.10",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "092a2cff78e0e98fcaac4c82772a341e",
+    "content-hash": "f654c29c5f19443f6b2a031ca897e829",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -980,6 +980,57 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-04-29T09:35:06+00:00"
+        },
+        {
+            "name": "illuminate/process",
+            "version": "v13.18.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/process.git",
+                "reference": "bb0ec8044a0e3bfda505411cee58057d388c0086"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/process/zipball/bb0ec8044a0e3bfda505411cee58057d388c0086",
+                "reference": "bb0ec8044a0e3bfda505411cee58057d388c0086",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^13.0",
+                "illuminate/contracts": "^13.0",
+                "illuminate/macroable": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.3",
+                "symfony/process": "^7.4.5 || ^8.0.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "13.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Process\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Process package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-06-04T22:53:30+00:00"
         },
         {
             "name": "illuminate/reflection",

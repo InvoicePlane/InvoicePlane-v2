@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fable\Http;
 
-use Exception;
 use Fable\Logging\Logger;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
@@ -25,7 +24,7 @@ class ApiClient
             ->timeout($this->timeout)
             ->retry($this->retries, function (int $attempt) {
                 return $this->retryDelay * (2 ** ($attempt - 1));
-            }, function (Exception $exception, PendingRequest $request) {
+            }, function (\Throwable $exception, PendingRequest $request) {
                 $this->logger->warning('Request failed, retrying...', [
                     'exception' => $exception->getMessage(),
                 ]);
