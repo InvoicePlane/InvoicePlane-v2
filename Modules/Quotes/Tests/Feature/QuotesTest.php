@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
-use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
