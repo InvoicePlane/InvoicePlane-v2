@@ -2,12 +2,13 @@
 
 namespace Fable5\Audit;
 
-require_once __DIR__ . '/TestCaseAnalyzer.php';
-require_once __DIR__ . '/ApplicationFlowRegistry.php';
+require_once __DIR__.'/TestCaseAnalyzer.php';
+require_once __DIR__.'/ApplicationFlowRegistry.php';
 
 class TestHonestyAuditor
 {
     private array $testFiles = [];
+
     private array $sourceFiles = [];
 
     public function __construct(private string $testPath, private string $srcPath) {}
@@ -17,7 +18,7 @@ class TestHonestyAuditor
         $this->scanDirectories($this->testPath, $this->testFiles);
         $this->scanDirectories($this->srcPath, $this->sourceFiles);
 
-        $analyzer = new TestCaseAnalyzer();
+        $analyzer = new TestCaseAnalyzer;
         $results = [];
 
         foreach ($this->testFiles as $file) {
@@ -31,14 +32,18 @@ class TestHonestyAuditor
 
     private function scanDirectories(string $dir, &$fileList): void
     {
-        if (!is_dir($dir)) return;
+        if (! is_dir($dir)) {
+            return;
+        }
         $files = scandir($dir);
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..') continue;
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            $path = $dir.DIRECTORY_SEPARATOR.$file;
             if (is_dir($path)) {
                 $this->scanDirectories($path, $fileList);
-            } else if (str_ends_with($file, '.php')) {
+            } elseif (str_ends_with($file, '.php')) {
                 $fileList[] = $path;
             }
         }
@@ -55,11 +60,11 @@ class TestHonestyAuditor
         foreach ($analysisResults as $res) {
             if ($res['is_weak']) {
                 $weakTests[] = $res;
-            } else if ($res['is_strong']) {
+            } elseif ($res['is_strong']) {
                 $strongTests[] = $res;
             }
 
-            if (!empty($res['suspicious_patterns'])) {
+            if (! empty($res['suspicious_patterns'])) {
                 $suspiciousTests[] = $res;
             }
         }
@@ -72,12 +77,12 @@ class TestHonestyAuditor
                 $className = end($parts);
                 $covered = false;
                 foreach ($analysisResults as $res) {
-                    if (str_contains($res['file'], $className . 'Test')) {
+                    if (str_contains($res['file'], $className.'Test')) {
                         $covered = true;
                         break;
                     }
                 }
-                if (!$covered) {
+                if (! $covered) {
                     $missingCoverage[] = "Missing test for $class in flow '$flowName'";
                 }
             }
