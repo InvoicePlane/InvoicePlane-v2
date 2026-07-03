@@ -6,7 +6,6 @@ use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
-use Livewire\Livewire;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
