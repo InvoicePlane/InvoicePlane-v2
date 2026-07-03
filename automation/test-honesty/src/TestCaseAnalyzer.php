@@ -2,8 +2,6 @@
 
 namespace Fable5\Audit;
 
-use Illuminate\Support\Str;
-
 class TestCaseAnalyzer
 {
     public function analyze(string $filePath): array
@@ -20,16 +18,16 @@ class TestCaseAnalyzer
         if (preg_match('/\$this->assertEquals\(\$val, \$val\)/', $content) ||
             preg_match('/\$this->assertSame\(\$x, \$x\)/', $content)) {
             $isWeak = true;
-            $reasons[] = "Asserting value equals itself";
+            $reasons[] = 'Asserting value equals itself';
         }
 
         // Check for DTO-only tests (very simple heuristic)
-        if (preg_match('/it_sets_and_gets/', $content) || (preg_match_all('/(set|get)[A-Z]/', $content) > 5 && !str_contains($content, 'Service'))) {
-             // This is a weak signal but often true for DTO tests
-             // Let's refine: if it only calls getters and setters and asserts they match
-             if (str_contains($content, '->set') && str_contains($content, '->get')) {
-                 $suspiciousPatterns[] = "Likely DTO getter/setter test";
-             }
+        if (preg_match('/it_sets_and_gets/', $content) || (preg_match_all('/(set|get)[A-Z]/', $content) > 5 && ! str_contains($content, 'Service'))) {
+            // This is a weak signal but often true for DTO tests
+            // Let's refine: if it only calls getters and setters and asserts they match
+            if (str_contains($content, '->set') && str_contains($content, '->get')) {
+                $suspiciousPatterns[] = 'Likely DTO getter/setter test';
+            }
         }
 
         // Check for heavy mocking
@@ -39,9 +37,9 @@ class TestCaseAnalyzer
         }
 
         // Check for assertions that only validate logging
-        if (str_contains($content, "->expects(\$this->") && str_contains($content, "->method('log')") && !str_contains($content, 'assertEquals')) {
-             $isWeak = true;
-             $reasons[] = "Only asserts logging";
+        if (str_contains($content, '->expects($this->') && str_contains($content, "->method('log')") && ! str_contains($content, 'assertEquals')) {
+            $isWeak = true;
+            $reasons[] = 'Only asserts logging';
         }
 
         // Strong test detection

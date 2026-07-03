@@ -88,3 +88,4 @@ package-lock.json
 /yarnpack.txt
 /automation/.idea/
 /automation/vendor/
+/automation/test-honesty/vendor/
