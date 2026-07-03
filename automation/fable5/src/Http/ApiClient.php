@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fable5\Http;
 
+use Fable5\Http\RequestMethod;
 use Fable5\Logging\Logger;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -13,7 +14,6 @@ use Exception;
 class ApiClient
 {
     public function __construct(
-        private string $token,
         private Logger $logger,
         private int $timeout = 30,
         private int $retries = 3,
@@ -21,30 +21,22 @@ class ApiClient
     ) {
     }
 
-    public function request(HttpMethod $method, string $url, array $data = []): Response
+    public function request(RequestMethod $method, string $url, array $data = [], array $headers = []): Response
     {
-        return $this->getPendingRequest()->send($method->value, $url, match ($method) {
-            HttpMethod::GET => ['query' => $data],
-            default => ['json' => $data],
-        });
-    }
-
-    private function getPendingRequest(): PendingRequest
-    {
-        return Http::withToken($this->token)
-            ->withHeaders([
-                'Accept' => 'application/vnd.github.v3+json',
-                'User-Agent' => 'Fable5-Automation-Framework',
-            ])
+        return Http::withHeaders($headers)
             ->timeout($this->timeout)
             ->retry($this->retries, function (int $attempt) {
                 return $this->retryDelay * (2 ** ($attempt - 1));
             }, function (Exception $exception, PendingRequest $request) {
-                $this->logger->warning('GitHub API request failed, retrying...', [
+                $this->logger->warning('API request failed, retrying...', [
                     'exception' => $exception->getMessage(),
                 ]);
 
                 return true;
-            }, throw: false);
+            }, throw: false)
+            ->send($method->value, $url, match ($method) {
+                RequestMethod::GET => ['query' => $data],
+                default => ['json' => $data],
+            });
     }
 }

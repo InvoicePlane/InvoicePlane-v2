@@ -21,13 +21,12 @@ $config = config('github');
 $logger = new FileLogger(__DIR__ . '/../storage/logs/execution.log');
 
 $transport = new ApiClient(
-    token: $config['token'] ?? '',
     logger: $logger,
     timeout: $config['timeout'] ?? 30,
     retries: $config['retries'] ?? 3
 );
 
-$githubClient = new GitHubClient($transport);
+$githubClient = new GitHubClient($transport, $config['token'] ?? '');
 
 $prManager = new PullRequestManager(
     githubClient: $githubClient,
