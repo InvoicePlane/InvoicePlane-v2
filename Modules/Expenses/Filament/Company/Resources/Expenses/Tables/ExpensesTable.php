@@ -2,6 +2,7 @@
 
 namespace Modules\Expenses\Filament\Company\Resources\Expenses\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -9,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
@@ -76,19 +78,48 @@ class ExpensesTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_EXPENSES->value))
                         ->action(function (Expense $record, array $data) {
                             app(ExpenseService::class)->updateExpense($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value))
                         ->action(function (Expense $record, array $data) {
                             app(ExpenseService::class)->deleteExpense($record);
                         }),
+
+                    Action::make('approve')
+                        ->visible(fn () => auth()->user()?->can(Permission::APPROVE_EXPENSES->value))
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('TODO: Approve Expense')
+                        ->modalDescription('This action is not yet implemented.')
+                        ->modalSubmitActionLabel('OK')
+                        ->action(fn () => null),
+
+                    Action::make('reject')
+                        ->visible(fn () => auth()->user()?->can(Permission::REJECT_EXPENSES->value))
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('TODO: Reject Expense')
+                        ->modalDescription('This action is not yet implemented.')
+                        ->modalSubmitActionLabel('OK')
+                        ->action(fn () => null),
+
+                    Action::make('duplicate')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_EXPENSES->value))
+                        ->requiresConfirmation()
+                        ->modalHeading('TODO: Duplicate Expense')
+                        ->modalDescription('This action is not yet implemented.')
+                        ->modalSubmitActionLabel('OK')
+                        ->action(fn () => null),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value)),
                 ]),
             ]);
     }

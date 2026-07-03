@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Core\Filament\Company\Resources\Numberings\Pages\EditNumbering;
 use Modules\Core\Filament\Company\Resources\Numberings\Pages\ListNumberings;
@@ -56,12 +58,28 @@ class NumberingResource extends BaseResource
         ];
     }
 
-    /**
-     * Company users cannot create numbering schemes.
-     * Only admins can create them in the Admin panel.
-     */
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false;
+    }
+
     public static function canCreate(): bool
     {
-        return false;
+        return false; // only admins can create numbering schemes (via admin panel)
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false; // only admins can delete numbering schemes
     }
 }

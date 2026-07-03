@@ -28,7 +28,7 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
             'quote_number' => 'QUO-2025-0001',
         ]);
 
-        /* Act & Assert */
+        /* Act */
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Duplicate quote number 'QUO-2025-0001'");
 
@@ -36,6 +36,8 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
             'numbering_id' => $numbering->id,
             'quote_number' => 'QUO-2025-0001',
         ]);
+
+        /* Assert */
     }
 
     #[Test]

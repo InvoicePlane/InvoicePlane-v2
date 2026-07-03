@@ -8,12 +8,15 @@ metadata:
 
 # Filament Panel Setup
 
-This app has two panels:
+This app has three panels:
 
-| Panel | Provider | Id | Default? | Tenant |
-|-------|----------|----|----------|--------|
-| Company | `CompanyPanelProvider` | `company` | No | `Company::class` |
-| Admin | `AdminPanelProvider` | `admin` | Yes | None |
+| Panel | Provider | Id | Default? | Tenant | Access |
+|-------|----------|----|----------|--------|--------|
+| Company | `CompanyPanelProvider` | `company` | Yes (root) | `Company::class` | `client_admin`, `client` |
+| Admin | `AdminPanelProvider` | `admin` | No | None | `super_admin`, `admin`, `assist` |
+| User | `UserPanelProvider` | `user` | No | None | minimal, future use |
+
+All three providers live at `Modules/Core/Providers/`.
 
 ## Registering Module Resources
 
