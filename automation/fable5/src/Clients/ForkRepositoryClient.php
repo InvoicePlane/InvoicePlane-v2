@@ -15,6 +15,7 @@ final class ForkRepositoryClient
         private string $token,
     ) {}
 
+    /** @return array<string, mixed> */
     public function createFork(string $owner, string $repo, ?string $organization = null): array
     {
         $url = "https://api.github.com/repos/{$owner}/{$repo}/forks";
@@ -23,11 +24,13 @@ final class ForkRepositoryClient
         return $this->request(RequestMethod::POST, $url, $data)->json();
     }
 
+    /** @return array<string, mixed> */
     public function getFork(string $owner, string $repo): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}")->json();
     }
 
+    /** @param array<string, mixed> $data */
     private function request(RequestMethod $method, string $url, array $data = []): Response
     {
         return $this->transport->request($method, $url, $data, [

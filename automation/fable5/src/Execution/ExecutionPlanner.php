@@ -12,6 +12,7 @@ final class ExecutionPlanner
         private PRBranchReconciler $reconciler,
     ) {}
 
+    /** @param array<int, array<string, mixed>> $issues */
     public function plan(array $issues): ExecutionGraph
     {
         $graph = new ExecutionGraph;
@@ -35,6 +36,10 @@ final class ExecutionPlanner
         return $graph;
     }
 
+    /**
+     * @param  array<int, array<string, mixed>>  $issues
+     * @return array<string, array<int, array<string, mixed>>>
+     */
     private function groupIssues(array $issues): array
     {
         $groups = [];

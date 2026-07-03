@@ -15,6 +15,7 @@ class GitRepository
         private Logger $logger
     ) {}
 
+    /** @param array<int, string> $command */
     public function exec(array $command): string
     {
         $fullCommand = array_merge(['git', '-C', $this->workingDirectory], $command);

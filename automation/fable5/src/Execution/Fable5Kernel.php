@@ -9,6 +9,7 @@ use Fable\Logging\Logger;
 
 final class Fable5Kernel
 {
+    /** @param array<string, mixed> $config */
     public function __construct(
         private Logger $logger,
         private array $config,
@@ -46,11 +47,13 @@ final class Fable5Kernel
         $this->logger->info('Fable5 kernel finished');
     }
 
+    /** @return array<int, array<string, mixed>> */
     private function loadIssues(): array
     {
         return $this->config['issues'] ?? [];
     }
 
+    /** @param array<mixed> $items */
     private function isEmpty(array $items): bool
     {
         return $items === [];

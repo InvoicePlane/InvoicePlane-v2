@@ -18,6 +18,10 @@ class ApiClient
         private int $retryDelay = 1000,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @param  array<string, string>  $headers
+     */
     public function request(RequestMethod $method, string $url, array $data = [], array $headers = []): Response
     {
         return Http::withHeaders($headers)
