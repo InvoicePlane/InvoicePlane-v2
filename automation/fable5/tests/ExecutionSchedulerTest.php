@@ -19,20 +19,21 @@ final class ExecutionSchedulerTest extends TestCase
     {
         /* Arrange */
         $graph = new ExecutionGraph();
-        $graph->addNode(new ExecutionNode('1', 't1'));
-        $graph->addNode(new ExecutionNode('2', 't2', [], ['1']));
-        $graph->addNode(new ExecutionNode('3', 't3', [], ['1']));
-        $graph->addNode(new ExecutionNode('4', 't4', [], ['2', '3']));
+        $graph->addNode(new ExecutionNode('1', ['issue1']));
+        $graph->addNode(new ExecutionNode('2', array_fill(0, 5, 'issue')));
+        $graph->addNode(new ExecutionNode('3', array_fill(0, 15, 'issue')));
 
-        $scheduler = new ExecutionScheduler(maxConcurrency: 2);
+        $scheduler = new ExecutionScheduler();
 
         /* Act */
-        $plan = $scheduler->schedule($graph);
+        $batches = $scheduler->schedule($graph);
 
         /* Assert */
-        $this->assertCount(3, $plan);
-        $this->assertEquals(['1'], $plan[0]);
-        $this->assertEquals(['2', '3'], $plan[1]);
-        $this->assertEquals(['4'], $plan[2]);
+        $this->assertArrayHasKey('small-batch', $batches);
+        $this->assertArrayHasKey('medium-batch', $batches);
+        $this->assertArrayHasKey('large-batch', $batches);
+        $this->assertCount(1, $batches['small-batch']);
+        $this->assertCount(1, $batches['medium-batch']);
+        $this->assertCount(1, $batches['large-batch']);
     }
 }

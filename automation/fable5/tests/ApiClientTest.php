@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Fable5\Tests;
 
-use Fable5\Http\GitHubHttpTransport;
+use Fable5\Http\ApiClient;
+use Fable5\Http\HttpMethod;
 use Fable5\Logging\Logger;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Tests\TestCase;
 
-#[CoversClass(GitHubHttpTransport::class)]
-final class GitHubHttpTransportTest extends TestCase
+#[CoversClass(ApiClient::class)]
+final class ApiClientTest extends TestCase
 {
     #[Test]
     public function it_sends_get_request(): void
@@ -23,10 +24,10 @@ final class GitHubHttpTransportTest extends TestCase
         ]);
 
         $logger = $this->createMock(Logger::class);
-        $transport = new GitHubHttpTransport('token', $logger);
+        $transport = new ApiClient('token', $logger);
 
         /* Act */
-        $response = $transport->get('https://api.github.com/repos/owner/repo');
+        $response = $transport->request(HttpMethod::GET, 'https://api.github.com/repos/owner/repo');
 
         /* Assert */
         $this->assertEquals(200, $response->status());

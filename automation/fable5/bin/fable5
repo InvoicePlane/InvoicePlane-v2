@@ -6,7 +6,7 @@ declare(strict_types=1);
 require __DIR__ . '/../bootstrap/app.php';
 
 use Fable5\Logging\FileLogger;
-use Fable5\Http\GitHubHttpTransport;
+use Fable5\Http\ApiClient;
 use Fable5\Clients\GitHubClient;
 use Fable5\Git\PullRequestManager;
 use Fable5\Git\GitRepository;
@@ -20,7 +20,7 @@ $config = config('github');
 
 $logger = new FileLogger(__DIR__ . '/../storage/logs/execution.log');
 
-$transport = new GitHubHttpTransport(
+$transport = new ApiClient(
     token: $config['token'] ?? '',
     logger: $logger,
     timeout: $config['timeout'] ?? 30,

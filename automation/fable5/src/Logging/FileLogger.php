@@ -6,7 +6,7 @@ namespace Fable5\Logging;
 
 use Fable5\Support\Paths;
 
-final class FileLogger implements Logger
+class FileLogger implements Logger
 {
     private string $logPath;
 

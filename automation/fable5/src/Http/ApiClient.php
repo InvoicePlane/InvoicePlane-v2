@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Exception;
 
-class GitHubHttpTransport
+class ApiClient
 {
     public function __construct(
         private string $token,
@@ -21,32 +21,15 @@ class GitHubHttpTransport
     ) {
     }
 
-    public function get(string $url, array $query = []): Response
+    public function request(HttpMethod $method, string $url, array $data = []): Response
     {
-        return $this->request()->get($url, $query);
+        return $this->getPendingRequest()->send($method->value, $url, match ($method) {
+            HttpMethod::GET => ['query' => $data],
+            default => ['json' => $data],
+        });
     }
 
-    public function post(string $url, array $data = []): Response
-    {
-        return $this->request()->post($url, $data);
-    }
-
-    public function put(string $url, array $data = []): Response
-    {
-        return $this->request()->put($url, $data);
-    }
-
-    public function delete(string $url, array $data = []): Response
-    {
-        return $this->request()->delete($url, $data);
-    }
-
-    public function patch(string $url, array $data = []): Response
-    {
-        return $this->request()->patch($url, $data);
-    }
-
-    private function request(): PendingRequest
+    private function getPendingRequest(): PendingRequest
     {
         return Http::withToken($this->token)
             ->withHeaders([
@@ -55,7 +38,7 @@ class GitHubHttpTransport
             ])
             ->timeout($this->timeout)
             ->retry($this->retries, function (int $attempt) {
-                return $this->retryDelay * pow(2, $attempt - 1);
+                return $this->retryDelay * (2 ** ($attempt - 1));
             }, function (Exception $exception, PendingRequest $request) {
                 $this->logger->warning('GitHub API request failed, retrying...', [
                     'exception' => $exception->getMessage(),
