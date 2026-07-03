@@ -14,6 +14,7 @@ class PRBranchReconciler
         private PullRequestManager $prManager
     ) {}
 
+    /** @param array<int, array<string, mixed>> $issues */
     public function build(array $issues): ExecutionGraph
     {
         $graph = new ExecutionGraph;

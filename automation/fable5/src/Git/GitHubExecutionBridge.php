@@ -15,6 +15,7 @@ final class GitHubExecutionBridge
         private string $repo,
     ) {}
 
+    /** @return array<string, mixed> */
     public function executeNode(ExecutionNode $node): array
     {
         $branch = $this->resolveBranch($node);
@@ -43,10 +44,12 @@ final class GitHubExecutionBridge
     private function applyNodeChanges(ExecutionNode $node, string $branch): void
     {
         foreach ($node->issues() as $issue) {
-            $this->client->log("Applying issue {$issue} to {$branch}");
+            $issueId = $issue['id'] ?? 'unknown';
+            $this->client->log("Applying issue {$issueId} to {$branch}");
         }
     }
 
+    /** @return array<string, mixed> */
     private function createDraftPullRequest(ExecutionNode $node, string $branch): array
     {
         return $this->client->createPullRequest($this->owner, $this->repo, [

@@ -6,6 +6,10 @@ namespace Fable\Execution;
 
 final class ExecutionNode
 {
+    /**
+     * @param  array<int, array<string, mixed>>  $issues
+     * @param  array<string, mixed>  $metadata
+     */
     public function __construct(
         private string $id,
         private array $issues,
@@ -18,6 +22,7 @@ final class ExecutionNode
         return $this->id;
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function issues(): array
     {
         return $this->issues;
@@ -28,6 +33,7 @@ final class ExecutionNode
         return $this->type;
     }
 
+    /** @return array<string, mixed> */
     public function metadata(): array
     {
         return $this->metadata;

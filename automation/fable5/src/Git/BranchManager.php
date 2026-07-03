@@ -20,6 +20,7 @@ final class BranchManager
         $this->repository->exec(['branch', '-D', $branchName]);
     }
 
+    /** @return array<int, string> */
     public function listBranches(): array
     {
         $output = $this->repository->exec(['branch', '--format', '%(refname:short)']);

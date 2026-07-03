@@ -3,7 +3,7 @@ includes:
 
 parameters:
     tmpDir: null
-    level: 5
+    level: 8
     paths:
         - src/
 

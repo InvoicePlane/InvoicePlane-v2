@@ -16,6 +16,10 @@ final class GitHubGraphQLClient
         private readonly string $token,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $variables
+     * @return array<string, mixed>
+     */
     public function query(string $query, array $variables = []): array
     {
         return $this->transport->request(RequestMethod::POST, self::ENDPOINT, [
@@ -28,6 +32,7 @@ final class GitHubGraphQLClient
         ])->json();
     }
 
+    /** @return array<string, mixed> */
     public function getIssue(string $owner, string $repo, int $number): array
     {
         $query = <<<'GRAPHQL'
@@ -53,6 +58,7 @@ final class GitHubGraphQLClient
         return $this->query($query, ['owner' => $owner, 'repo' => $repo, 'number' => $number]);
     }
 
+    /** @return array<string, mixed> */
     public function getProject(string $owner, int $number): array
     {
         $query = <<<'GRAPHQL'
@@ -95,6 +101,7 @@ final class GitHubGraphQLClient
         return $this->query($query, ['owner' => $owner, 'number' => $number]);
     }
 
+    /** @return array<string, mixed> */
     public function listWorkflowRuns(string $owner, string $repo, int $first = 10): array
     {
         $query = <<<'GRAPHQL'
@@ -122,6 +129,7 @@ final class GitHubGraphQLClient
         return $this->query($query, ['owner' => $owner, 'repo' => $repo, 'first' => $first]);
     }
 
+    /** @return array<string, mixed> */
     public function addProjectV2ItemById(string $projectId, string $contentId): array
     {
         $query = <<<'GRAPHQL'

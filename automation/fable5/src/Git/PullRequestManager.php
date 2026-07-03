@@ -14,6 +14,7 @@ class PullRequestManager
         private string $repo
     ) {}
 
+    /** @return array<string, mixed> */
     public function create(string $title, string $body, string $head, string $base = 'main'): array
     {
         return $this->githubClient->createPullRequest($this->owner, $this->repo, [
@@ -24,6 +25,7 @@ class PullRequestManager
         ]);
     }
 
+    /** @return array<string, mixed>|null */
     public function findExistingPRForBranch(string $branch): ?array
     {
         $prs = $this->githubClient->listPullRequests($this->owner, $this->repo, [

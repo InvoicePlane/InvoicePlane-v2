@@ -16,11 +16,16 @@ final class GitHubClient
         private string $token,
     ) {}
 
+    /** @return array<string, mixed> */
     public function getRepository(string $owner, string $repo): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}")->json();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function createPullRequest(string $owner, string $repo, array $data): array
     {
         return $this->request(RequestMethod::POST, "https://api.github.com/repos/{$owner}/{$repo}/pulls", $data)->json();
@@ -31,11 +36,16 @@ final class GitHubClient
         // Internal logging or console output could go here
     }
 
+    /** @return array<string, mixed> */
     public function getPullRequest(string $owner, string $repo, int $number): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/pulls/{$number}")->json();
     }
 
+    /**
+     * @param  array<string, mixed>  $query
+     * @return array<string, mixed>
+     */
     public function listPullRequests(string $owner, string $repo, array $query = []): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/pulls", $query)->json();
@@ -43,26 +53,40 @@ final class GitHubClient
 
     // --- Issues ---
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function createIssue(string $owner, string $repo, array $data): array
     {
         return $this->request(RequestMethod::POST, "https://api.github.com/repos/{$owner}/{$repo}/issues", $data)->json();
     }
 
+    /** @return array<string, mixed> */
     public function getIssue(string $owner, string $repo, int $number): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/issues/{$number}")->json();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function updateIssue(string $owner, string $repo, int $number, array $data): array
     {
         return $this->request(RequestMethod::PATCH, "https://api.github.com/repos/{$owner}/{$repo}/issues/{$number}", $data)->json();
     }
 
+    /**
+     * @param  array<string, mixed>  $query
+     * @return array<string, mixed>
+     */
     public function listIssues(string $owner, string $repo, array $query = []): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/issues", $query)->json();
     }
 
+    /** @return array<string, mixed> */
     public function addIssueComment(string $owner, string $repo, int $issueNumber, string $body): array
     {
         return $this->request(RequestMethod::POST, "https://api.github.com/repos/{$owner}/{$repo}/issues/{$issueNumber}/comments", ['body' => $body])->json();
@@ -70,6 +94,10 @@ final class GitHubClient
 
     // --- Repository Management ---
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function updateRepository(string $owner, string $repo, array $data): array
     {
         return $this->request(RequestMethod::PATCH, "https://api.github.com/repos/{$owner}/{$repo}", $data)->json();
@@ -80,18 +108,23 @@ final class GitHubClient
         return $this->request(RequestMethod::DELETE, "https://api.github.com/repos/{$owner}/{$repo}")->successful();
     }
 
+    /** @return array<int, string> */
     public function listRepositoryTopics(string $owner, string $repo): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/topics")->json();
     }
 
+    /**
+     * @param  array<int, string>  $names
+     * @return array<string, mixed>
+     */
     public function replaceRepositoryTopics(string $owner, string $repo, array $names): array
     {
         return $this->request(RequestMethod::PUT, "https://api.github.com/repos/{$owner}/{$repo}/topics", ['names' => $names])->json();
     }
 
     /**
-     * @return Generator<int, array>
+     * @return Generator<int, array<string, mixed>>
      */
     public function listWorkflowRuns(string $owner, string $repo, ?string $status = null): Generator
     {
@@ -130,19 +163,21 @@ final class GitHubClient
         }
     }
 
+    /** @return array<string, mixed> */
     public function getWorkflowRun(string $owner, string $repo, int $runId): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/actions/runs/{$runId}")->json();
     }
 
     /**
-     * @return Generator<int, array>
+     * @return Generator<int, array<string, mixed>>
      */
     public function listFailedWorkflowRuns(string $owner, string $repo): Generator
     {
         return $this->listWorkflowRuns($owner, $repo, 'failure');
     }
 
+    /** @return array<string, mixed> */
     public function listWorkflowJobs(string $owner, string $repo, int $runId): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/actions/runs/{$runId}/jobs")->json();
@@ -160,6 +195,7 @@ final class GitHubClient
 
     public function createBranch(string $owner, string $repo, string $branch): void {}
 
+    /** @param array<string, mixed> $data */
     private function request(RequestMethod $method, string $url, array $data = []): Response
     {
         return $this->transport->request($method, $url, $data, [

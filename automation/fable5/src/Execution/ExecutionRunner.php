@@ -16,12 +16,15 @@ final class ExecutionRunner
         private PullRequestManager $prManager
     ) {}
 
+    /** @param array<int, array<int, string>> $schedule */
     public function run(ExecutionGraph $graph, array $schedule): void
     {
         foreach ($schedule as $layer) {
             foreach ($layer as $nodeId) {
                 $node = $graph->getNode($nodeId);
-                $this->execute($node);
+                if ($node !== null) {
+                    $this->execute($node);
+                }
             }
         }
     }

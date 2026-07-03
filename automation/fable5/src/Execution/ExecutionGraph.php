@@ -6,6 +6,10 @@ namespace Fable\Execution;
 
 final class ExecutionGraph
 {
+    /**
+     * @param  array<string, ExecutionNode>  $nodes
+     * @param  array<string, array<int, string>>  $edges
+     */
     public function __construct(
         private array $nodes = [],
         private array $edges = [],
@@ -21,11 +25,13 @@ final class ExecutionGraph
         $this->edges[$from][] = $to;
     }
 
+    /** @return array<string, ExecutionNode> */
     public function nodes(): array
     {
         return $this->nodes;
     }
 
+    /** @return array<string, array<int, string>> */
     public function edges(): array
     {
         return $this->edges;

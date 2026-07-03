@@ -16,21 +16,25 @@ class FileLogger implements Logger
         $this->ensureDirectoryExists();
     }
 
+    /** @param array<string, mixed> $context */
     public function info(string $message, array $context = []): void
     {
         $this->log('INFO', $message, $context);
     }
 
+    /** @param array<string, mixed> $context */
     public function error(string $message, array $context = []): void
     {
         $this->log('ERROR', $message, $context);
     }
 
+    /** @param array<string, mixed> $context */
     public function warning(string $message, array $context = []): void
     {
         $this->log('WARNING', $message, $context);
     }
 
+    /** @param array<string, mixed> $context */
     private function log(string $level, string $message, array $context): void
     {
         $timestamp = date('Y-m-d H:i:s');

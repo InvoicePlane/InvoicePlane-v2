@@ -24,6 +24,7 @@ final class GitHubCli
         private readonly string $ghBinary = 'gh'
     ) {}
 
+    /** @return array<string, mixed> */
     public function listFailedWorkflows(string $repo, int $page = 1, int $perPage = 30): array
     {
         return $this->execute([
@@ -35,6 +36,7 @@ final class GitHubCli
         ]);
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function listAllFailedWorkflows(string $repo, int $maxPages = 1000): array
     {
         $allRuns = [];
@@ -67,11 +69,13 @@ final class GitHubCli
         return $allRuns;
     }
 
+    /** @return array<string, mixed> */
     public function rerunWorkflowRun(int $runId): array
     {
         return $this->execute(['run', 'rerun', (string) $runId]);
     }
 
+    /** @return array<string, mixed> */
     public function rerunFailedJobs(int $runId): array
     {
         return $this->execute(['run', 'rerun', (string) $runId, '--failed']);
@@ -94,6 +98,7 @@ final class GitHubCli
         return $result->output();
     }
 
+    /** @return array<string, mixed> */
     public function listWorkflowRuns(string $repo, string $status = 'failed'): array
     {
         return $this->execute([
@@ -118,19 +123,30 @@ final class GitHubCli
 
     // --- Issues ---
 
+    /**
+     * @param  array<string, mixed>  $args
+     * @return array<int, array<string, mixed>>
+     */
     public function listIssues(string $repo, array $args = []): array
     {
         $command = ['issue', 'list', '-R', $repo, '--json', 'number,title,state,author,createdAt'];
         foreach ($args as $key => $value) {
             $command[] = "--{$key}";
             if ($value !== true) {
-                $command[] = $value;
+                $command[] = (string) $value;
             }
         }
 
-        return $this->execute($command);
+        $result = $this->execute($command);
+
+        /** @var array<int, array<string, mixed>> $result */
+        return ! isset($result['number']) ? $result : [$result];
     }
 
+    /**
+     * @param  array<int, string>  $labels
+     * @return array<string, mixed>
+     */
     public function createIssue(string $repo, string $title, string $body, array $labels = []): array
     {
         $command = ['issue', 'create', '-R', $repo, '-t', $title, '-b', $body];
@@ -144,19 +160,27 @@ final class GitHubCli
 
     // --- Pull Requests ---
 
+    /**
+     * @param  array<string, mixed>  $args
+     * @return array<int, array<string, mixed>>
+     */
     public function listPullRequests(string $repo, array $args = []): array
     {
         $command = ['pr', 'list', '-R', $repo, '--json', 'number,title,state,author,headRefName,baseRefName'];
         foreach ($args as $key => $value) {
             $command[] = "--{$key}";
             if ($value !== true) {
-                $command[] = $value;
+                $command[] = (string) $value;
             }
         }
 
-        return $this->execute($command);
+        $result = $this->execute($command);
+
+        /** @var array<int, array<string, mixed>> $result */
+        return ! isset($result['number']) ? $result : [$result];
     }
 
+    /** @return array<string, mixed> */
     public function createPullRequest(string $repo, string $title, string $body, string $base = 'main', string $head = ''): array
     {
         $command = ['pr', 'create', '-R', $repo, '-t', $title, '-b', $body, '-B', $base];
@@ -183,11 +207,16 @@ final class GitHubCli
 
     // --- Projects ---
 
+    /** @return array<int, array<string, mixed>> */
     public function listProjects(string $owner): array
     {
-        return $this->execute(['project', 'list', '--owner', $owner, '--json', 'number,title,id,url']);
+        $result = $this->execute(['project', 'list', '--owner', $owner, '--json', 'number,title,id,url']);
+
+        /** @var array<int, array<string, mixed>> $result */
+        return ! isset($result['id']) ? $result : [$result];
     }
 
+    /** @return array<string, mixed> */
     public function viewProject(int $number, string $owner): array
     {
         return $this->execute(['project', 'view', (string) $number, '--owner', $owner, '--json', 'number,title,items,id']);
@@ -241,6 +270,10 @@ final class GitHubCli
         return $deletedCount;
     }
 
+    /**
+     * @param  array<int, string>  $args
+     * @return array<string, mixed>
+     */
     private function execute(array $args): array
     {
         $attempt = 0;
