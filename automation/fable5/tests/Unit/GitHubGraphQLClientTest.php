@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Clients\GitHubGraphQLClient;
-use Fable5\Http\ApiClient;
 use Fable5\Http\RequestMethod;
-use Illuminate\Http\Client\Response;
+use Fable5\Tests\Fakes\FakeApiClient;
+use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Modules\Core\Tests\TestCase;
 
 #[CoversClass(GitHubGraphQLClient::class)]
 final class GitHubGraphQLClientTest extends TestCase
@@ -24,17 +24,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_executes_generic_query(): void
     {
         /* Arrange */
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['data' => ['viewer' => ['login' => 'user']]]);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->with(RequestMethod::POST, 'https://api.github.com/graphql', [
-                'query' => 'query { viewer { login } }',
-                'variables' => []
-            ])
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response(['data' => ['viewer' => ['login' => 'user']]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 
@@ -50,13 +41,8 @@ final class GitHubGraphQLClientTest extends TestCase
     {
         /* Arrange */
         $fixture = $this->getFixture('graphql_issue.json');
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn($fixture);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response($fixture));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 
@@ -71,13 +57,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_adds_project_item(): void
     {
         /* Arrange */
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['data' => ['addProjectV2ItemById' => ['item' => ['id' => 'item-id']]]]);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response(['data' => ['addProjectV2ItemById' => ['item' => ['id' => 'item-id']]]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 
@@ -93,13 +74,8 @@ final class GitHubGraphQLClientTest extends TestCase
     {
         /* Arrange */
         $fixture = $this->getFixture('graphql_project.json');
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn($fixture);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response($fixture));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 
@@ -114,13 +90,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_lists_workflow_runs(): void
     {
         /* Arrange */
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['data' => ['repository' => ['object' => ['checkSuites' => ['nodes' => []]]]]]);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response(['data' => ['repository' => ['object' => ['checkSuites' => ['nodes' => []]]]]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 
@@ -135,13 +106,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_handles_graphql_errors(): void
     {
         /* Arrange */
-        $transport = $this->createMock(ApiClient::class);
-        $response = $this->createMock(Response::class);
-        $response->method('json')->willReturn(['errors' => [['message' => 'Something went wrong']]]);
-
-        $transport->expects($this->once())
-            ->method('request')
-            ->willReturn($response);
+        $transport = new FakeApiClient();
+        $transport->setResponse('*/graphql', Http::response(['errors' => [['message' => 'Something went wrong']]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
 

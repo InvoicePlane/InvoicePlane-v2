@@ -8,7 +8,7 @@ use Fable5\Execution\ExecutionPlanner;
 use Fable5\Indexer\PRBranchReconciler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Modules\Core\Tests\TestCase;
 
 #[CoversClass(ExecutionPlanner::class)]
 final class ExecutionPlannerTest extends TestCase

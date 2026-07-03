@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MessDetectorOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCSFixerOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCodeSnifferOptionsConfiguration">
+    <option name="highlightLevel" value="WARNING" />
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/nesbot/carbon" />
+      <path value="$PROJECT_DIR$/fable5/vendor/voku/portable-ascii" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/event-dispatcher-contracts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/fable5/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/http-foundation" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-php83" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/fable5/vendor/larastan/larastan" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/http-kernel" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-php86" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/fable5/vendor/iamcal/sql-parser" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-php85" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/clock" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/translation-contracts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/laravel/serializable-closure" />
+      <path value="$PROJECT_DIR$/fable5/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/fable5/vendor/laravel/prompts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/polyfill-php84" />
+      <path value="$PROJECT_DIR$/fable5/vendor/symfony/error-handler" />
+      <path value="$PROJECT_DIR$/fable5/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/fable5/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/fable5/vendor/guzzlehttp/uri-template" />
+      <path value="$PROJECT_DIR$/fable5/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/fable5/vendor/carbonphp/carbon-doctrine-types" />
+      <path value="$PROJECT_DIR$/fable5/vendor/nunomaduro/termwind" />
+      <path value="$PROJECT_DIR$/fable5/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/fable5/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/fable5/vendor/fruitcake/php-cors" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/conditionable" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/contracts" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/reflection" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/collections" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/macroable" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/support" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/filesystem" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/session" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/http" />
+      <path value="$PROJECT_DIR$/fable5/vendor/brick/math" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/database" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/view" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/events" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/console" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/container" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/pipeline" />
+      <path value="$PROJECT_DIR$/fable5/vendor/illuminate/bus" />
+      <path value="$PROJECT_DIR$/fable5/vendor/composer" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
+  <component name="PhpStanOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PsalmOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+</project>

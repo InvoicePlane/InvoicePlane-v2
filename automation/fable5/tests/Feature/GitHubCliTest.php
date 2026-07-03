@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Git\Cli\GitHubCli;
-use Fable5\Logging\Logger;
+use Fable5\Tests\Fakes\FakeLogger;
 use Illuminate\Support\Facades\Process;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,7 +18,7 @@ final class GitHubCliTest extends TestCase
     public function it_lists_failed_workflows(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         $output = json_encode(['workflow_runs' => [['id' => 123]]]);
 
         Process::fake(function ($request) use ($output) {
@@ -46,7 +46,7 @@ final class GitHubCliTest extends TestCase
     public function it_reruns_workflow_run(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         $output = json_encode(['status' => 'ok']);
         Process::fake(function ($request) use ($output) {
              return Process::result($output);
@@ -73,7 +73,7 @@ final class GitHubCliTest extends TestCase
     public function it_deletes_workflow_run(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         Process::fake(function ($request) {
              return Process::result('');
         });
@@ -99,7 +99,7 @@ final class GitHubCliTest extends TestCase
     public function it_bulk_deletes_workflow_runs(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
 
         $listOutput = json_encode([
             'workflow_runs' => [
@@ -135,7 +135,7 @@ final class GitHubCliTest extends TestCase
     public function it_creates_issue(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         $output = json_encode(['url' => 'http://issue/1']);
         Process::fake(function ($request) use ($output) {
              return Process::result($output);
@@ -160,7 +160,7 @@ final class GitHubCliTest extends TestCase
     public function it_merges_pr(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         Process::fake(function ($request) {
              return Process::result('');
         });
@@ -184,7 +184,7 @@ final class GitHubCliTest extends TestCase
     public function it_lists_projects(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
+        $logger = new FakeLogger();
         $output = json_encode([['number' => 1]]);
         Process::fake(function ($request) use ($output) {
              return Process::result($output);

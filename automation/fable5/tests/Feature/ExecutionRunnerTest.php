@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Execution\ExecutionGraph;
-use Fable5\Execution\ExecutionNode;
 use Fable5\Execution\ExecutionRunner;
-use Fable5\Git\GitRepository;
-use Fable5\Git\PullRequestManager;
-use Fable5\Logging\Logger;
+use Fable5\Execution\ExecutionNode;
+use Fable5\Tests\Fakes\FakeLogger;
+use Fable5\Tests\Fakes\FakeGitRepository;
+use Fable5\Tests\Fakes\FakePullRequestManager;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Modules\Core\Tests\TestCase;
 
 #[CoversClass(ExecutionRunner::class)]
 final class ExecutionRunnerTest extends TestCase
@@ -21,9 +21,9 @@ final class ExecutionRunnerTest extends TestCase
     public function it_executes_scheduled_layers(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
-        $git = $this->createMock(GitRepository::class);
-        $prManager = $this->createMock(PullRequestManager::class);
+        $logger = new FakeLogger();
+        $git = new FakeGitRepository($logger);
+        $prManager = new FakePullRequestManager();
 
         $graph = new ExecutionGraph();
         $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
@@ -33,24 +33,31 @@ final class ExecutionRunnerTest extends TestCase
 
         $runner = new ExecutionRunner($logger, $git, $prManager);
 
-        $prManager->method('findExistingPRForBranch')->willReturn(null);
-
-        // Assert
-        $git->expects($this->exactly(2))
-            ->method('exec')
-            ->with($this->callback(fn($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b'));
-
         /* Act */
         $runner->run($graph, $schedule);
+
+        /* Assert */
+        $this->assertTrue(
+            $git->hasExecuted(fn($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/1'),
+            'Should have checked out feat/1'
+        );
+        $this->assertTrue(
+            $git->hasExecuted(fn($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/2'),
+            'Should have checked out feat/2'
+        );
+
+        // Assert domain behavior: logging
+        $this->assertTrue($logger->hasMessage('checkout -b feat/1'));
+        $this->assertTrue($logger->hasMessage('checkout -b feat/2'));
     }
 
     #[Test]
     public function it_skips_if_pr_exists(): void
     {
         /* Arrange */
-        $logger = $this->createMock(Logger::class);
-        $git = $this->createMock(GitRepository::class);
-        $prManager = $this->createMock(PullRequestManager::class);
+        $logger = new FakeLogger();
+        $git = new FakeGitRepository();
+        $prManager = new FakePullRequestManager();
 
         $graph = new ExecutionGraph();
         $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
@@ -59,12 +66,13 @@ final class ExecutionRunnerTest extends TestCase
 
         $runner = new ExecutionRunner($logger, $git, $prManager);
 
-        $prManager->method('findExistingPRForBranch')->willReturn(['number' => 123]);
-
-        // Assert
-        $git->expects($this->never())->method('exec');
+        $prManager->setExistingPR('feat/1', ['number' => 123]);
 
         /* Act */
         $runner->run($graph, $schedule);
+
+        /* Assert */
+        $this->assertEmpty($git->getExecutedCommands(), 'Should not have executed any git commands');
+        $this->assertTrue($logger->hasMessage('PR already exists for branch feat/1, skipping'));
     }
 }
