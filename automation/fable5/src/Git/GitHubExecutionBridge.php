@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Git;
+namespace Fable5\Git;
 
-use TestHonesty\Clients\GitHubClient;
-use TestHonesty\Execution\ExecutionNode;
+use Fable5\Clients\GitHubClient;
+use Fable5\Execution\ExecutionNode;
 
 final class GitHubExecutionBridge
 {
@@ -49,9 +49,7 @@ final class GitHubExecutionBridge
 
     private function createDraftPullRequest(ExecutionNode $node, string $branch): array
     {
-        return $this->client->createPullRequest([
-            'owner' => $this->owner,
-            'repo' => $this->repo,
+        return $this->client->createPullRequest($this->owner, $this->repo, [
             'head' => $branch,
             'base' => 'main',
             'title' => '[Fable5] '.$node->id(),

@@ -26,6 +26,11 @@ final class GitHubClient
         return $this->request(RequestMethod::POST, "https://api.github.com/repos/{$owner}/{$repo}/pulls", $data)->json();
     }
 
+    public function log(string $message): void
+    {
+        // Internal logging or console output could go here
+    }
+
     public function getPullRequest(string $owner, string $repo, int $number): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/pulls/{$number}")->json();
