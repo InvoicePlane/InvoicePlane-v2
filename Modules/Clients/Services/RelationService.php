@@ -128,13 +128,7 @@ class RelationService extends BaseService
      */
     protected function guardAgainstLinkedRecords(Relation $relation): void
     {
-        $hasLinked = $relation->invoices()->withoutGlobalScopes()->exists()
-            || $relation->quotes()->withoutGlobalScopes()->exists()
-            || $relation->expenses()->withoutGlobalScopes()->exists()
-            || $relation->tasks()->withoutGlobalScopes()->exists()
-            || $relation->projects()->withoutGlobalScopes()->exists();
-
-        if ($hasLinked) {
+        if ($relation->hasLinkedRecords()) {
             throw new RelationHasLinkedRecordsException();
         }
     }

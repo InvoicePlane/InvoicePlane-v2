@@ -37,7 +37,7 @@ class ViewRelation extends ViewRecord
             EditAction::make(),
 
             DeleteAction::make()
-                ->hidden(fn () => $this->clientHasLinkedRecords())
+                ->hidden(fn () => $this->getRecord()->hasLinkedRecords())
                 ->action(function (): void {
                     try {
                         app(RelationService::class)->deleteRelation($this->getRecord());
@@ -50,16 +50,5 @@ class ViewRelation extends ViewRecord
                     }
                 }),
         ];
-    }
-
-    private function clientHasLinkedRecords(): bool
-    {
-        $record = $this->getRecord();
-
-        return $record->invoices()->withoutGlobalScopes()->exists()
-            || $record->quotes()->withoutGlobalScopes()->exists()
-            || $record->expenses()->withoutGlobalScopes()->exists()
-            || $record->tasks()->withoutGlobalScopes()->exists()
-            || $record->projects()->withoutGlobalScopes()->exists();
     }
 }
