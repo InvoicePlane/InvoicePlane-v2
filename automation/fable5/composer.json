@@ -14,6 +14,7 @@
         "larastan/larastan": "^3.10",
         "phpunit/phpunit": "^12.5",
         "laravel/pao": "^1.1",
-        "laravel/pint": "^1.29"
+        "laravel/pint": "^1.29",
+        "brianium/paratest": "^7.20"
     }
 }

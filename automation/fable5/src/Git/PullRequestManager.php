@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Git;
+namespace TestHonesty\Git;
 
-use Fable5\Clients\GitHubClient;
+use TestHonesty\Clients\GitHubClient;
 
 class PullRequestManager
 {
@@ -18,16 +18,16 @@ class PullRequestManager
     {
         return $this->githubClient->createPullRequest($this->owner, $this->repo, [
             'title' => $title,
-            'body'  => $body,
-            'head'  => $head,
-            'base'  => $base,
+            'body' => $body,
+            'head' => $head,
+            'base' => $base,
         ]);
     }
 
     public function findExistingPRForBranch(string $branch): ?array
     {
         $prs = $this->githubClient->listPullRequests($this->owner, $this->repo, [
-            'head'  => "{$this->owner}:{$branch}",
+            'head' => "{$this->owner}:{$branch}",
             'state' => 'open',
         ]);
 

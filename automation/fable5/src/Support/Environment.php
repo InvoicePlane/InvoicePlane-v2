@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Support;
+namespace TestHonesty\Support;
 
 final class Environment
 {

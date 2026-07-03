@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Http;
+namespace TestHonesty\Http;
 
 enum RequestMethod: string
 {
-    case GET    = 'GET';
-    case POST   = 'POST';
-    case PUT    = 'PUT';
+    case GET = 'GET';
+    case POST = 'POST';
+    case PUT = 'PUT';
     case DELETE = 'DELETE';
-    case PATCH  = 'PATCH';
+    case PATCH = 'PATCH';
 }

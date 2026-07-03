@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Clients;
+namespace TestHonesty\Clients;
 
-use Fable5\Http\ApiClient;
-use Fable5\Http\RequestMethod;
+use TestHonesty\Http\ApiClient;
+use TestHonesty\Http\RequestMethod;
 
 final class GitHubGraphQLClient
 {
@@ -19,12 +19,12 @@ final class GitHubGraphQLClient
     public function query(string $query, array $variables = []): array
     {
         return $this->transport->request(RequestMethod::POST, self::ENDPOINT, [
-            'query'     => $query,
+            'query' => $query,
             'variables' => $variables,
         ], [
-            'Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/vnd.github.v3+json',
-            'User-Agent'    => 'Fable5-Automation-Framework',
+            'Authorization' => 'Bearer '.$this->token,
+            'Accept' => 'application/vnd.github.v3+json',
+            'User-Agent' => 'Fable5-Automation-Framework',
         ])->json();
     }
 

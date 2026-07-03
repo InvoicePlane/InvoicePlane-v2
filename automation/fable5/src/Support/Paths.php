@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Support;
+namespace TestHonesty\Support;
 
 final class Paths
 {
@@ -13,16 +13,16 @@ final class Paths
 
     public static function src(): string
     {
-        return self::root() . '/src';
+        return self::root().'/src';
     }
 
     public static function storage(): string
     {
-        return self::root() . '/storage';
+        return self::root().'/storage';
     }
 
     public static function config(): string
     {
-        return self::root() . '/config';
+        return self::root().'/config';
     }
 }

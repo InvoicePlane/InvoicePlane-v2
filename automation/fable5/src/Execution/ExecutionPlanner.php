@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Execution;
+namespace TestHonesty\Execution;
 
-use Fable5\Indexer\PRBranchReconciler;
+use TestHonesty\Indexer\PRBranchReconciler;
 
 final class ExecutionPlanner
 {
@@ -14,7 +14,7 @@ final class ExecutionPlanner
 
     public function plan(array $issues): ExecutionGraph
     {
-        $graph = new ExecutionGraph();
+        $graph = new ExecutionGraph;
 
         $groups = $this->groupIssues($issues);
 
@@ -49,10 +49,10 @@ final class ExecutionPlanner
     private function resolveGroupKey(mixed $issue): string
     {
         if (is_array($issue) && isset($issue['feature'])) {
-            return 'feature-' . $issue['feature'];
+            return 'feature-'.$issue['feature'];
         }
 
-        return 'issue-' . (string) $issue;
+        return 'issue-'.(string) $issue;
     }
 
     private function applyDependencies(ExecutionGraph $graph): void

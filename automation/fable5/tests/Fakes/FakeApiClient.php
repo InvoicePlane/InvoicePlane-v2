@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests\Fakes;
+namespace TestHonesty\Tests\Fakes;
 
-use Fable5\Http\ApiClient;
-use Fable5\Http\RequestMethod;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use TestHonesty\Http\ApiClient;
+use TestHonesty\Http\RequestMethod;
 
 final class FakeApiClient extends ApiClient
 {
@@ -15,7 +15,7 @@ final class FakeApiClient extends ApiClient
 
     public function __construct()
     {
-        parent::__construct(new FakeLogger());
+        parent::__construct(new FakeLogger);
     }
 
     public function request(RequestMethod $method, string $url, array $data = [], array $headers = []): Response
