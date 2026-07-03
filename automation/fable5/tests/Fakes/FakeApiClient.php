@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests\Fakes;
+namespace Fable\Tests\Fakes;
 
+use Fable\Http\ApiClient;
+use Fable\Http\RequestMethod;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use TestHonesty\Http\ApiClient;
-use TestHonesty\Http\RequestMethod;
 
 final class FakeApiClient extends ApiClient
 {

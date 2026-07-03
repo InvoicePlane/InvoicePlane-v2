@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests;
+namespace Fable\Tests;
 
+use Fable\Clients\GitHubGraphQLClient;
+use Fable\Tests\Fakes\FakeApiClient;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use TestHonesty\Clients\GitHubGraphQLClient;
-use TestHonesty\Tests\Fakes\FakeApiClient;
 
 #[CoversClass(GitHubGraphQLClient::class)]
 final class GitHubGraphQLClientTest extends TestCase

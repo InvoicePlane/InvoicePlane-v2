@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Execution;
+namespace Fable\Execution;
 
-use TestHonesty\Indexer\PRBranchReconciler;
+use Fable\Indexer\PRBranchReconciler;
 
 final class ExecutionPlanner
 {
@@ -29,6 +29,8 @@ final class ExecutionPlanner
         }
 
         $this->applyDependencies($graph);
+
+        $this->reconciler->build($issues);
 
         return $graph;
     }

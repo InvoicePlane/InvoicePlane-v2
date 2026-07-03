@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests\Fakes;
+namespace Fable\Tests\Fakes;
 
-use TestHonesty\Git\GitRepository;
-use TestHonesty\Logging\Logger;
+use Fable\Git\GitRepository;
+use Fable\Logging\Logger;
 
 final class FakeGitRepository extends GitRepository
 {

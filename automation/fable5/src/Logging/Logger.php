@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Logging;
+namespace Fable\Logging;
 
 interface Logger
 {

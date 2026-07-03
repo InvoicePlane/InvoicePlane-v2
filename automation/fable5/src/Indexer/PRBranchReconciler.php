@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Indexer;
+namespace Fable\Indexer;
 
-use TestHonesty\Execution\ExecutionGraph;
-use TestHonesty\Execution\ExecutionNode;
-use TestHonesty\Git\PullRequestManager;
+use Fable\Execution\ExecutionGraph;
+use Fable\Execution\ExecutionNode;
+use Fable\Git\PullRequestManager;
 
 class PRBranchReconciler
 {

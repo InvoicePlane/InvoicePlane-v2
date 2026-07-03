@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Git;
+namespace Fable\Git;
 
-use Fable5\Clients\GitHubClient;
-use Fable5\Execution\ExecutionNode;
+use Fable\Clients\GitHubClient;
+use Fable\Execution\ExecutionNode;
 
 final class GitHubExecutionBridge
 {

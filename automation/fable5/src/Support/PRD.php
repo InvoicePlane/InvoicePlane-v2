@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Support;
+namespace Fable\Support;
 
 final class PRD
 {

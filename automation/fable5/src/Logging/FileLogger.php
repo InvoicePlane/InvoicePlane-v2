@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Logging;
+namespace Fable\Logging;
 
-use TestHonesty\Support\Paths;
+use Fable\Support\Paths;
 
 class FileLogger implements Logger
 {

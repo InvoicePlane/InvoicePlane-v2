@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Http;
+namespace Fable\Http;
 
 enum RequestMethod: string
 {
