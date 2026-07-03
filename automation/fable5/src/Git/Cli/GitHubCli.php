@@ -81,7 +81,7 @@ final class GitHubCli
     {
         // Logs are usually text/binary, not JSON
         $command = array_merge([$this->ghBinary], ['run', 'view', (string) $runId, '--log']);
-        $result = Process::withEnvironmentVariables([
+        $result = Process::env([
             'GH_TOKEN' => $this->githubToken,
             'GITHUB_TOKEN' => $this->githubToken,
             'NO_COLOR' => '1',
