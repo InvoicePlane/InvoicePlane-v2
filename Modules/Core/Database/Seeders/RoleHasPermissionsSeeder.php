@@ -29,26 +29,22 @@ class RoleHasPermissionsSeeder extends Seeder
 
         foreach ($roles as $role) {
             $currentPermissions = $role->permissions->pluck('name')->toArray();
-            $defaultPermissions = $this->getDefaultPermissionsForRole($role->name);
 
             if ($role->name === UserRole::SUPER_ADMIN->value) {
-                $newPermissions = $allPermissions;
+                $toAdd = array_diff($allPermissions, $currentPermissions);
             } else {
-                $newPermissions = array_intersect($defaultPermissions, $allPermissions);
-
-                $customPermissions = array_diff($currentPermissions, $defaultPermissions);
-                $newPermissions    = array_unique(array_merge($newPermissions, $customPermissions));
+                $defaultPermissions = $this->getDefaultPermissionsForRole($role->name);
+                $toAdd              = array_diff(
+                    array_intersect($defaultPermissions, $allPermissions),
+                    $currentPermissions
+                );
             }
 
-            if (count(array_diff($newPermissions, $currentPermissions)) > 0
-                || count(array_diff($currentPermissions, $newPermissions)) > 0) {
-                $role->syncPermissions($newPermissions);
+            if (count($toAdd) > 0) {
+                $role->givePermissionTo($toAdd);
                 $rolesUpdated++;
 
-                Log::info(trans('ip.role_permissions_updated', [
-                    'count' => count($newPermissions),
-                    'role'  => $role->display_name ?: $role->name,
-                ]));
+                Log::info('Added ' . count($toAdd) . ' permission(s) to role [' . $role->name . ']: ' . implode(', ', $toAdd));
             }
         }
 

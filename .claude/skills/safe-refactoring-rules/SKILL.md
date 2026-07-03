@@ -1,3 +1,8 @@
+---
+name: safe-refactoring-rules
+description: Ensures all refactoring is deterministic, behavior-preserving, and non-breaking
+---
+
 # Safe Refactoring Rules
 
 ## Purpose

@@ -8,11 +8,11 @@
 
 .env*
 !.env.example
+!.env.testing
 !.env.testing.example
 /storage/*.key
 
 # Laravel – Modules (ignored generated sources)
-/Modules/*/resources/views/**
 Modules/**/Controllers/
 Modules/**/Http/Controllers/
 Modules/**/Http/Requests/
@@ -41,7 +41,7 @@ package-lock.json
 # Pint
 /pint.txt
 
-# PHPUnit / Pest
+# PHPUnit
 /.phpunit.cache
 /.phpunit.result.cache
 /depr.txt

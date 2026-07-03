@@ -1,6 +1,6 @@
 ---
 name: non-standard-pks
-description: "Works with models that have non-standard primary key names. Activates when writing factories, tests, relationships, or seeders for models that use user_id, client_id, invoice_id, etc. instead of id."
+description: "Works with models that have non-standard primary key names. Activates when writing factories, tests, relationships, or seeders for models that use a custom primary key instead of id."
 license: MIT
 metadata:
   author: project
@@ -8,124 +8,74 @@ metadata:
 
 # Non-Standard Primary Keys
 
-Most models in this app use descriptive primary key names, not `id`.
+Most models in this app use `id` as their primary key (Laravel default). Only a
+handful declare a custom `$primaryKey`. **Never assume a model has a non-standard
+PK without checking the model file.**
 
-## PK Reference Table
+## Confirmed Non-Standard PKs
 
 | Model | Table | Primary Key |
 |-------|-------|-------------|
-| User | users | `user_id` |
-| Client | clients | `client_id` |
-| Invoice | invoices | `invoice_id` |
-| InvoiceGroup | invoice_groups | `invoice_group_id` |
-| Quote | quotes | `quote_id` |
-| Payment | payments | `payment_id` |
-| Product | products | `product_id` |
-| Project | projects | `project_id` |
-| Task | tasks | `task_id` |
-| TaxRate | tax_rates | `tax_rate_id` |
-| Family | families | `family_id` |
-| Unit | units | `unit_id` |
-| EmailTemplate | email_templates | `email_template_id` |
-| Company | companies | `id` ← standard |
-| Expense | expenses | `id` ← standard |
-| ExpenseCategory | expense_categories | `id` ← standard |
+| `ClientCustom` | `client_custom` | `client_custom_id` |
+| `Import` | `imports` | `import_id` |
 
-## Accessing the PK
+All other models should be assumed to use `id` unless their model file explicitly
+declares `protected $primaryKey = '...'`.
 
-Use `$model->getKey()` when you need the PK value generically. Use the named
-attribute only when you know the model:
+## Accessing the PK Safely
+
+Use `$model->getKey()` for generic access. Use the named attribute only when
+you know the model's actual PK:
 
 ```php
-$invoice->invoice_id   // ✓ typed access
-$invoice->getKey()     // ✓ generic access
-$invoice->id           // ✗ returns null on non-standard PKs
+$custom->client_custom_id   // ✓ typed access for ClientCustom
+$custom->getKey()           // ✓ generic access
+$custom->id                 // ✗ returns null — ClientCustom uses client_custom_id
 ```
 
-## In Factories: Pass the FK by Name
+## Factories: Pass the FK by Name
 
-When a factory creates related records, pass the FK column explicitly:
+When creating related records that reference a non-standard PK, pass the FK
+column explicitly:
 
 ```php
-Invoice::factory()->create([
-    'company_id'       => $this->companyId,
-    'client_id'        => $client->client_id,      // not $client->id
-    'invoice_group_id' => $group->invoice_group_id, // not $group->id
-    'user_id'          => $user->user_id,           // not $user->id
+// ClientCustom's PK is client_custom_id, not id
+SomeRelated::factory()->create([
+    'client_custom_id' => $custom->client_custom_id,
 ]);
 ```
 
-## In Tests: Use the PK for the Record Parameter
+## Filament Edit Page
 
-Filament's Edit page `record` parameter expects the PK value:
+The `record` parameter expects the PK value:
 
 ```php
 Livewire::actingAs($this->user)
-    ->test(EditInvoice::class, [
-        'record' => $invoice->invoice_id,  // not $invoice->id
-        'tenant' => $this->company,
+    ->test(EditClientCustom::class, [
+        'record' => $custom->client_custom_id,  // not $custom->id
+        'tenant' => $this->company->search_code,
     ])
 ```
 
 ## Model Definition
 
-Always declare `$primaryKey` explicitly. Models also set `$timestamps = false`
-since they manage date columns manually:
+Always declare `$primaryKey` explicitly for non-standard models:
 
 ```php
-class Invoice extends Model
+class ClientCustom extends Model
 {
-    protected $table      = 'invoices';
-    protected $primaryKey = 'invoice_id';
+    protected $table      = 'client_custom';
+    protected $primaryKey = 'client_custom_id';
     public    $timestamps = false;
 }
 ```
 
-## Relationships Must Specify Keys
+## Adding a New Non-Standard PK
 
-BelongsTo and HasMany must specify the FK and owner key when they differ from
-Laravel's convention (`{model}_id` → `id`):
+When you introduce a model with a non-standard PK, update this skill's
+**Confirmed Non-Standard PKs** table immediately.
 
-```php
-// On Invoice — points to users.user_id, not users.id
-public function user(): BelongsTo
-{
-    return $this->belongsTo(User::class, 'user_id', 'user_id');
-}
+## Timestamps
 
-// On Company — invoice FK column is invoice_group_id, PK is invoice_group_id
-public function invoiceGroups(): HasMany
-{
-    return $this->hasMany(InvoiceGroup::class, 'company_id', 'id');
-}
-```
-
----
-
-## Never Assume "id"
-
-Never access:
-
-$model->id
-
-Never reference:
-
-'id'
-
-unless the model explicitly uses a standard primary key.
-
-Use:
-
-$model->getKey()
-
-or the named primary key property.
-
----
-
-## Fix-One-Fix-All
-
-If one test, factory, seeder, relationship, resource, or service incorrectly
-uses `id` instead of the model's primary key, search the repository for the
-same pattern and correct all occurrences.
-
-Primary key assumptions tend to fail systematically rather than individually.
+Almost all models in this app have `$timestamps = false` — they manage date
+columns manually. Do not assume `created_at`/`updated_at` exist.

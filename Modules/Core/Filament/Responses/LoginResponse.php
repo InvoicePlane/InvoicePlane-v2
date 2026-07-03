@@ -42,6 +42,9 @@ class LoginResponse implements BaseLoginResponse
             filament()->setTenant($tenant);
         }
 
+        session(['current_company_id' => $tenant->id]);
+        filament()->setTenant($tenant);
+
         return redirect()->route('filament.company.pages.dashboard', [
             'tenant' => Str::lower($tenant->search_code),
         ]);

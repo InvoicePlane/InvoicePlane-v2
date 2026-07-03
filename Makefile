@@ -290,7 +290,7 @@ artisan-filter:
 artisan-parallel:
 	$(_artisan) --parallel
 
-## Run artisan test with pretty output (Pest-style dots)
+## Run artisan test with compact output
 artisan-pretty:
 	$(_artisan) --compact
 

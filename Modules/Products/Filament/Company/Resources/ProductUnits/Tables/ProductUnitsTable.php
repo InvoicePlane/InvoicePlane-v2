@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Products\Models\ProductUnit;
 use Modules\Products\Services\ProductUnitService;
 
@@ -26,12 +27,16 @@ class ProductUnitsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PRODUCTS->value))
+
                         ->action(function (ProductUnit $record, array $data) {
                             app(ProductUnitService::class)->updateProductUnit($record, $data);
                         })
                         ->modalWidth('full')
                         ->tooltip(trans('filament-actions::edit.single.label')),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value))
+
                         ->action(function (ProductUnit $record, array $data) {
                             app(ProductUnitService::class)->deleteProductUnit($record);
                         }),
@@ -39,7 +44,8 @@ class ProductUnitsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value)),
                 ]),
             ]);
     }
