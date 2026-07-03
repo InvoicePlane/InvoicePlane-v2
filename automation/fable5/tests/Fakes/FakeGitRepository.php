@@ -27,7 +27,16 @@ final class FakeGitRepository extends GitRepository
         $this->commands[] = $command;
         $this->loggerInstance->info(implode(' ', $command));
 
+        if ($command[0] === 'branch' && in_array('--format', $command)) {
+            return implode(PHP_EOL, $this->existingBranches);
+        }
+
         return $this->nextOutput;
+    }
+
+    public function setExistingBranches(array $branches): void
+    {
+        $this->existingBranches = $branches;
     }
 
     public function setNextOutput(string $output): void
