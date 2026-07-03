@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Indexer;
+namespace TestHonesty\Indexer;
 
-use Fable5\Execution\ExecutionGraph;
-use Fable5\Execution\ExecutionNode;
-use Fable5\Git\PullRequestManager;
+use TestHonesty\Execution\ExecutionGraph;
+use TestHonesty\Execution\ExecutionNode;
+use TestHonesty\Git\PullRequestManager;
 
 class PRBranchReconciler
 {
@@ -16,16 +16,16 @@ class PRBranchReconciler
 
     public function build(array $issues): ExecutionGraph
     {
-        $graph = new ExecutionGraph();
+        $graph = new ExecutionGraph;
 
         foreach ($issues as $issue) {
             $branchName = "fable5/issue-{$issue['number']}";
             $existingPr = $this->prManager->findExistingPRForBranch($branchName);
 
             $payload = [
-                'issue'  => $issue,
+                'issue' => $issue,
                 'branch' => $branchName,
-                'pr'     => $existingPr,
+                'pr' => $existingPr,
             ];
 
             $node = new ExecutionNode(

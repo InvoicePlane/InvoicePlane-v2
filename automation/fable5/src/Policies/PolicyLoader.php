@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Policies;
+namespace TestHonesty\Policies;
 
-use Fable5\Support\Paths;
+use TestHonesty\Support\Paths;
 
 final class PolicyLoader
 {
     public function load(): array
     {
-        $basePath = dirname(Paths::root()) . '/.claude/fable5';
+        $basePath = dirname(Paths::root()).'/.claude/fable5';
 
         return [
-            'prd'     => $this->loadFile($basePath . '/FABLE5_EXECUTION_PRD.md'),
-            'skills'  => $this->loadDirectory($basePath . '/skills'),
-            'runtime' => $this->loadFile($basePath . '/runtime/overrides.md'),
-            'repo'    => $this->loadFile(dirname(Paths::root()) . '/CLAUDE.md'),
+            'prd' => $this->loadFile($basePath.'/FABLE5_EXECUTION_PRD.md'),
+            'skills' => $this->loadDirectory($basePath.'/skills'),
+            'runtime' => $this->loadFile($basePath.'/runtime/overrides.md'),
+            'repo' => $this->loadFile(dirname(Paths::root()).'/CLAUDE.md'),
         ];
     }
 
@@ -29,11 +29,11 @@ final class PolicyLoader
 
     private function loadDirectory(string $path): array
     {
-        if ( ! is_dir($path)) {
+        if (! is_dir($path)) {
             return [];
         }
 
-        $files = glob($path . '/*.md');
+        $files = glob($path.'/*.md');
 
         return array_map(
             fn ($file) => file_get_contents($file),

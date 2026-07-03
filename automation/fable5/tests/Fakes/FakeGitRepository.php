@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests\Fakes;
+namespace TestHonesty\Tests\Fakes;
 
-use Fable5\Git\GitRepository;
-use Fable5\Logging\Logger;
+use TestHonesty\Git\GitRepository;
+use TestHonesty\Logging\Logger;
 
 final class FakeGitRepository extends GitRepository
 {
@@ -18,7 +18,7 @@ final class FakeGitRepository extends GitRepository
     public function __construct(?Logger $logger = null)
     {
         // Pass dummy values to parent constructor
-        $this->loggerInstance = $logger ?? new FakeLogger();
+        $this->loggerInstance = $logger ?? new FakeLogger;
         parent::__construct('/tmp', $this->loggerInstance);
     }
 

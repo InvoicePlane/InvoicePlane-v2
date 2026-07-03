@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests;
 
-use Fable5\Clients\GitHubClient;
-use Fable5\Tests\Fakes\FakeApiClient;
 use Illuminate\Support\Facades\Http;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Clients\GitHubClient;
+use TestHonesty\Tests\Fakes\FakeApiClient;
 
 #[CoversClass(GitHubClient::class)]
 final class GitHubClientTest extends TestCase
@@ -18,7 +17,7 @@ final class GitHubClientTest extends TestCase
     public function it_lists_workflow_runs_with_pagination(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
 
         $transport->setResponse('*/actions/runs', Http::response([
             'workflow_runs' => array_fill(0, 100, ['id' => 1]),
@@ -36,8 +35,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_repository(): void
     {
-        $fixture   = $this->getFixture('repository.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('repository.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/repos/owner/repo', Http::response($fixture));
 
         $client = new GitHubClient($transport, 'token');
@@ -48,8 +47,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_creates_pull_request(): void
     {
-        $fixture   = $this->getFixture('pull_request.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('pull_request.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/pulls', Http::response($fixture));
 
         $client = new GitHubClient($transport, 'token');
@@ -60,8 +59,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_pull_request(): void
     {
-        $fixture   = $this->getFixture('pull_request.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('pull_request.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/pulls/*', Http::response($fixture));
 
         $client = new GitHubClient($transport, 'token');
@@ -72,8 +71,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_pull_requests(): void
     {
-        $fixture   = $this->getFixture('pull_request.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('pull_request.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/pulls', Http::response([$fixture]));
 
         $client = new GitHubClient($transport, 'token');
@@ -85,8 +84,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_issue(): void
     {
-        $fixture   = $this->getFixture('issue.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('issue.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/issues/*', Http::response($fixture));
 
         $client = new GitHubClient($transport, 'token');
@@ -97,8 +96,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_updates_issue(): void
     {
-        $fixture   = $this->getFixture('issue.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('issue.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/issues/*', Http::response($fixture));
 
         $client = new GitHubClient($transport, 'token');
@@ -109,8 +108,8 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_issues(): void
     {
-        $fixture   = $this->getFixture('issue.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('issue.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/issues', Http::response([$fixture]));
 
         $client = new GitHubClient($transport, 'token');
@@ -122,7 +121,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_adds_issue_comment(): void
     {
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/comments', Http::response(['id' => 1]));
 
         $client = new GitHubClient($transport, 'token');
@@ -133,7 +132,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_deletes_repository(): void
     {
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/repos/owner/repo', Http::response([], 204));
 
         $client = new GitHubClient($transport, 'token');
@@ -143,7 +142,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_repository_topics(): void
     {
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/topics', Http::response(['names' => ['topic']]));
 
         $client = new GitHubClient($transport, 'token');
@@ -154,7 +153,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_replaces_repository_topics(): void
     {
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/topics', Http::response(['names' => ['topic']]));
 
         $client = new GitHubClient($transport, 'token');
@@ -165,11 +164,11 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_failed_workflow_runs(): void
     {
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/actions/runs', Http::response(['workflow_runs' => [['id' => 1]]]));
 
         $client = new GitHubClient($transport, 'token');
-        $runs   = iterator_to_array($client->listFailedWorkflowRuns('owner', 'repo'));
+        $runs = iterator_to_array($client->listFailedWorkflowRuns('owner', 'repo'));
         $this->assertCount(1, $runs);
     }
 
@@ -177,7 +176,7 @@ final class GitHubClientTest extends TestCase
     public function it_gets_workflow_run(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/actions/runs/123', Http::response(['id' => 123]));
 
         $client = new GitHubClient($transport, 'token');
@@ -193,7 +192,7 @@ final class GitHubClientTest extends TestCase
     public function it_lists_workflow_jobs(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/actions/runs/123/jobs', Http::response(['jobs' => [['id' => 456]]]));
 
         $client = new GitHubClient($transport, 'token');
@@ -210,7 +209,7 @@ final class GitHubClientTest extends TestCase
     public function it_deletes_workflow_run(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/actions/runs/123', Http::response([], 204));
 
         $client = new GitHubClient($transport, 'token');
@@ -226,7 +225,7 @@ final class GitHubClientTest extends TestCase
     public function it_creates_issue(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/issues', Http::response(['number' => 1]));
 
         $client = new GitHubClient($transport, 'token');
@@ -242,7 +241,7 @@ final class GitHubClientTest extends TestCase
     public function it_updates_repository(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/repos/owner/repo', Http::response(['name' => 'new-name']));
 
         $client = new GitHubClient($transport, 'token');
@@ -256,6 +255,6 @@ final class GitHubClientTest extends TestCase
 
     private function getFixture(string $path): array
     {
-        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
+        return json_decode(file_get_contents(__DIR__.'/../Fixtures/GitHub/'.$path), true);
     }
 }

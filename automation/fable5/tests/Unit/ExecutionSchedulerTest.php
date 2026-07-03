@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests;
 
-use Fable5\Execution\ExecutionGraph;
-use Fable5\Execution\ExecutionNode;
-use Fable5\Execution\ExecutionScheduler;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Execution\ExecutionGraph;
+use TestHonesty\Execution\ExecutionNode;
+use TestHonesty\Execution\ExecutionScheduler;
 
 #[CoversClass(ExecutionScheduler::class)]
 final class ExecutionSchedulerTest extends TestCase
@@ -18,12 +17,12 @@ final class ExecutionSchedulerTest extends TestCase
     public function it_schedules_tasks(): void
     {
         /* Arrange */
-        $graph = new ExecutionGraph();
+        $graph = new ExecutionGraph;
         $graph->addNode(new ExecutionNode('1', ['issue1']));
         $graph->addNode(new ExecutionNode('2', array_fill(0, 5, 'issue')));
         $graph->addNode(new ExecutionNode('3', array_fill(0, 15, 'issue')));
 
-        $scheduler = new ExecutionScheduler();
+        $scheduler = new ExecutionScheduler;
 
         /* Act */
         $batches = $scheduler->schedule($graph);

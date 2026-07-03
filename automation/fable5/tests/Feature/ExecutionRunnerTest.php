@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests;
 
-use Fable5\Execution\ExecutionGraph;
-use Fable5\Execution\ExecutionNode;
-use Fable5\Execution\ExecutionRunner;
-use Fable5\Tests\Fakes\FakeGitRepository;
-use Fable5\Tests\Fakes\FakeLogger;
-use Fable5\Tests\Fakes\FakePullRequestManager;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Execution\ExecutionGraph;
+use TestHonesty\Execution\ExecutionNode;
+use TestHonesty\Execution\ExecutionRunner;
+use TestHonesty\Tests\Fakes\FakeGitRepository;
+use TestHonesty\Tests\Fakes\FakeLogger;
+use TestHonesty\Tests\Fakes\FakePullRequestManager;
 
 #[CoversClass(ExecutionRunner::class)]
 final class ExecutionRunnerTest extends TestCase
@@ -21,11 +20,11 @@ final class ExecutionRunnerTest extends TestCase
     public function it_executes_scheduled_layers(): void
     {
         /* Arrange */
-        $logger    = new FakeLogger();
-        $git       = new FakeGitRepository($logger);
-        $prManager = new FakePullRequestManager();
+        $logger = new FakeLogger;
+        $git = new FakeGitRepository($logger);
+        $prManager = new FakePullRequestManager;
 
-        $graph = new ExecutionGraph();
+        $graph = new ExecutionGraph;
         $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
         $graph->addNode(new ExecutionNode('2', [], 'issue', ['branch' => 'feat/2']));
 
@@ -55,11 +54,11 @@ final class ExecutionRunnerTest extends TestCase
     public function it_skips_if_pr_exists(): void
     {
         /* Arrange */
-        $logger    = new FakeLogger();
-        $git       = new FakeGitRepository();
-        $prManager = new FakePullRequestManager();
+        $logger = new FakeLogger;
+        $git = new FakeGitRepository;
+        $prManager = new FakePullRequestManager;
 
-        $graph = new ExecutionGraph();
+        $graph = new ExecutionGraph;
         $graph->addNode(new ExecutionNode('1', [], 'issue', ['branch' => 'feat/1']));
 
         $schedule = [['1']];

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Git;
+namespace TestHonesty\Git;
 
 final class BranchManager
 {

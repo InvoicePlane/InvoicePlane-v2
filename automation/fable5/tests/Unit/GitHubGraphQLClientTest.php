@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests;
 
-use Fable5\Clients\GitHubGraphQLClient;
-use Fable5\Tests\Fakes\FakeApiClient;
 use Illuminate\Support\Facades\Http;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Clients\GitHubGraphQLClient;
+use TestHonesty\Tests\Fakes\FakeApiClient;
 
 #[CoversClass(GitHubGraphQLClient::class)]
 final class GitHubGraphQLClientTest extends TestCase
@@ -18,7 +17,7 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_executes_generic_query(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response(['data' => ['viewer' => ['login' => 'user']]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -34,8 +33,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_gets_issue_with_labels_and_comments(): void
     {
         /* Arrange */
-        $fixture   = $this->getFixture('graphql_issue.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('graphql_issue.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response($fixture));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -51,7 +50,7 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_adds_project_item(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response(['data' => ['addProjectV2ItemById' => ['item' => ['id' => 'item-id']]]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -67,8 +66,8 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_gets_project(): void
     {
         /* Arrange */
-        $fixture   = $this->getFixture('graphql_project.json');
-        $transport = new FakeApiClient();
+        $fixture = $this->getFixture('graphql_project.json');
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response($fixture));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -84,7 +83,7 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_lists_workflow_runs(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response(['data' => ['repository' => ['object' => ['checkSuites' => ['nodes' => []]]]]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -100,7 +99,7 @@ final class GitHubGraphQLClientTest extends TestCase
     public function it_handles_graphql_errors(): void
     {
         /* Arrange */
-        $transport = new FakeApiClient();
+        $transport = new FakeApiClient;
         $transport->setResponse('*/graphql', Http::response(['errors' => [['message' => 'Something went wrong']]]));
 
         $client = new GitHubGraphQLClient($transport, 'token');
@@ -115,6 +114,6 @@ final class GitHubGraphQLClientTest extends TestCase
 
     private function getFixture(string $path): array
     {
-        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
+        return json_decode(file_get_contents(__DIR__.'/../Fixtures/GitHub/'.$path), true);
     }
 }

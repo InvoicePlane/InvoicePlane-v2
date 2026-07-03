@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests;
 
-use Fable5\Http\ApiClient;
-use Fable5\Http\RequestMethod;
-use Fable5\Tests\Fakes\FakeLogger;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Http\ApiClient;
+use TestHonesty\Http\RequestMethod;
+use TestHonesty\Tests\Fakes\FakeLogger;
 
 #[CoversClass(ApiClient::class)]
 final class ApiClientTest extends TestCase
@@ -24,7 +23,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['foo' => 'bar'], 200),
         ]);
 
-        $logger    = new FakeLogger();
+        $logger = new FakeLogger;
         $transport = new ApiClient($logger);
 
         /* Act */
@@ -47,7 +46,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['success' => true], 201),
         ]);
 
-        $logger    = new FakeLogger();
+        $logger = new FakeLogger;
         $transport = new ApiClient($logger);
 
         /* Act */
@@ -72,7 +71,7 @@ final class ApiClientTest extends TestCase
                 ->push(['foo' => 'bar'], 200),
         ]);
 
-        $logger = new FakeLogger();
+        $logger = new FakeLogger;
 
         // retryDelay: 1ms to keep tests fast
         $transport = new ApiClient($logger, retries: 2, retryDelay: 1);
@@ -95,7 +94,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['foo' => 'bar'], 200),
         ]);
 
-        $logger    = new FakeLogger();
+        $logger = new FakeLogger;
         $transport = new ApiClient($logger, timeout: 5);
 
         /* Act */
@@ -115,7 +114,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response([], 200),
         ]);
 
-        $logger    = new FakeLogger();
+        $logger = new FakeLogger;
         $transport = new ApiClient($logger);
 
         /* Act */

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Execution;
+namespace TestHonesty\Execution;
 
-use Fable5\Indexer\PRBranchReconciler;
-use Fable5\Logging\Logger;
+use TestHonesty\Indexer\PRBranchReconciler;
+use TestHonesty\Logging\Logger;
 
 final class Fable5Kernel
 {

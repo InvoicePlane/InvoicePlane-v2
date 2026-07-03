@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Logging;
+namespace TestHonesty\Logging;
 
 final class RateLimitLogger extends FileLogger
 {

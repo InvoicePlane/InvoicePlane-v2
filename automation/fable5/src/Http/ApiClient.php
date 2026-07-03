@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Http;
+namespace TestHonesty\Http;
 
 use Exception;
-use Fable5\Logging\Logger;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use TestHonesty\Logging\Logger;
 
 class ApiClient
 {
@@ -34,7 +34,7 @@ class ApiClient
             }, throw: false)
             ->send($method->value, $url, match ($method) {
                 RequestMethod::GET => ['query' => $data],
-                default            => ['json' => $data],
+                default => ['json' => $data],
             });
     }
 }

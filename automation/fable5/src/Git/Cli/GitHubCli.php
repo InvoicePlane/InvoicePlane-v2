@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Git\Cli;
+namespace TestHonesty\Git\Cli;
 
 use Exception;
-use Fable5\Logging\Logger;
 use Illuminate\Support\Facades\Process;
+use TestHonesty\Logging\Logger;
 
 final class GitHubCli
 {
@@ -81,14 +81,14 @@ final class GitHubCli
     {
         // Logs are usually text/binary, not JSON
         $command = array_merge([$this->ghBinary], ['run', 'view', (string) $runId, '--log']);
-        $result  = Process::withEnvironmentVariables([
-            'GH_TOKEN'     => $this->githubToken,
+        $result = Process::withEnvironmentVariables([
+            'GH_TOKEN' => $this->githubToken,
             'GITHUB_TOKEN' => $this->githubToken,
-            'NO_COLOR'     => '1',
+            'NO_COLOR' => '1',
         ])->run($command);
 
-        if ( ! $result->successful()) {
-            throw new Exception("Failed to get logs for run {$runId}: " . $result->errorOutput());
+        if (! $result->successful()) {
+            throw new Exception("Failed to get logs for run {$runId}: ".$result->errorOutput());
         }
 
         return $result->output();
@@ -110,7 +110,7 @@ final class GitHubCli
 
             return true;
         } catch (Exception $e) {
-            $this->logger->error("Failed to delete workflow run {$runId} in {$repo}: " . $e->getMessage());
+            $this->logger->error("Failed to delete workflow run {$runId} in {$repo}: ".$e->getMessage());
 
             return false;
         }
@@ -175,7 +175,7 @@ final class GitHubCli
 
             return true;
         } catch (Exception $e) {
-            $this->logger->error("Failed to merge PR {$number} in {$repo}: " . $e->getMessage());
+            $this->logger->error("Failed to merge PR {$number} in {$repo}: ".$e->getMessage());
 
             return false;
         }
@@ -200,7 +200,7 @@ final class GitHubCli
     public function deleteAllWorkflowRuns(string $repo, ?string $status = null, int $maxRuns = 100000): int
     {
         $deletedCount = 0;
-        $perPage      = 100;
+        $perPage = 100;
 
         while ($deletedCount < $maxRuns) {
             $query = [
@@ -215,7 +215,7 @@ final class GitHubCli
             }
 
             $response = $this->execute($query);
-            $runs     = $response['workflow_runs'] ?? [];
+            $runs = $response['workflow_runs'] ?? [];
 
             if (empty($runs)) {
                 break;
@@ -244,15 +244,15 @@ final class GitHubCli
     private function execute(array $args): array
     {
         $attempt = 0;
-        $delay   = self::INITIAL_DELAY_MS;
+        $delay = self::INITIAL_DELAY_MS;
         $command = array_merge([$this->ghBinary], $args);
 
         while ($attempt < self::MAX_RETRIES) {
             try {
                 $result = Process::env([
-                    'GH_TOKEN'     => $this->githubToken,
+                    'GH_TOKEN' => $this->githubToken,
                     'GITHUB_TOKEN' => $this->githubToken,
-                    'NO_COLOR'     => '1',
+                    'NO_COLOR' => '1',
                 ])->run(implode(' ', array_map('escapeshellarg', $command)));
 
                 if ($result->successful()) {
@@ -266,12 +266,12 @@ final class GitHubCli
                 }
 
                 $error = $result->errorOutput();
-                $this->logger->error('GH CLI Error (Attempt ' . ($attempt + 1) . '): ' . $error, [
-                    'args'     => $args,
+                $this->logger->error('GH CLI Error (Attempt '.($attempt + 1).'): '.$error, [
+                    'args' => $args,
                     'exitCode' => $result->exitCode(),
                 ]);
             } catch (Exception $e) {
-                $this->logger->error('GH CLI Exception (Attempt ' . ($attempt + 1) . '): ' . $e->getMessage(), [
+                $this->logger->error('GH CLI Exception (Attempt '.($attempt + 1).'): '.$e->getMessage(), [
                     'args' => $args,
                 ]);
             }
@@ -283,6 +283,6 @@ final class GitHubCli
             }
         }
 
-        throw new Exception('Failed to execute GH CLI command after ' . self::MAX_RETRIES . ' attempts.');
+        throw new Exception('Failed to execute GH CLI command after '.self::MAX_RETRIES.' attempts.');
     }
 }

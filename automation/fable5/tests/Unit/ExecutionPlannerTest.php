@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Tests;
+namespace TestHonesty\Tests\Unit;
 
-use Fable5\Execution\ExecutionPlanner;
-use Fable5\Indexer\PRBranchReconciler;
-use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHonesty\Execution\ExecutionPlanner;
+use TestHonesty\Indexer\PRBranchReconciler;
+use TestHonesty\Tests\TestCase;
 
 #[CoversClass(ExecutionPlanner::class)]
 final class ExecutionPlannerTest extends TestCase
@@ -18,8 +18,8 @@ final class ExecutionPlannerTest extends TestCase
     {
         /* Arrange */
         $reconciler = $this->createMock(PRBranchReconciler::class);
-        $planner    = new ExecutionPlanner($reconciler);
-        $issues     = [
+        $planner = new ExecutionPlanner($reconciler);
+        $issues = [
             ['id' => '1', 'feature' => 'f1'],
             ['id' => '2', 'feature' => 'f1'],
             ['id' => '3', 'feature' => 'f2'],

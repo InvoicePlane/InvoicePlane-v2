@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Fable5\Clients;
+namespace TestHonesty\Clients;
 
-use Fable5\Http\ApiClient;
-use Fable5\Http\RequestMethod;
 use Generator;
+use Illuminate\Http\Client\Response;
+use TestHonesty\Http\ApiClient;
+use TestHonesty\Http\RequestMethod;
 
 final class GitHubClient
 {
@@ -89,13 +90,13 @@ final class GitHubClient
      */
     public function listWorkflowRuns(string $owner, string $repo, ?string $status = null): Generator
     {
-        $page    = 1;
+        $page = 1;
         $perPage = 100;
 
         while (true) {
             $query = [
                 'per_page' => $perPage,
-                'page'     => $page,
+                'page' => $page,
             ];
 
             if ($status !== null) {
@@ -103,7 +104,7 @@ final class GitHubClient
             }
 
             $response = $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/actions/runs", $query);
-            $data     = $response->json();
+            $data = $response->json();
 
             $runs = $data['workflow_runs'] ?? [];
 
@@ -153,12 +154,12 @@ final class GitHubClient
 
     public function createBranch(string $owner, string $repo, string $branch): void {}
 
-    private function request(RequestMethod $method, string $url, array $data = []): \Illuminate\Http\Client\Response
+    private function request(RequestMethod $method, string $url, array $data = []): Response
     {
         return $this->transport->request($method, $url, $data, [
-            'Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/vnd.github.v3+json',
-            'User-Agent'    => 'Fable5-Automation-Framework',
+            'Authorization' => 'Bearer '.$this->token,
+            'Accept' => 'application/vnd.github.v3+json',
+            'User-Agent' => 'Fable5-Automation-Framework',
         ]);
     }
 }
