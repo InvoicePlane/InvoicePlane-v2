@@ -32,6 +32,7 @@ final class FakeLogger implements Logger
                 return true;
             }
         }
+
         return false;
     }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Fable5\Execution;
 
-use Fable5\Logging\Logger;
 use Fable5\Git\GitRepository;
 use Fable5\Git\PullRequestManager;
+use Fable5\Logging\Logger;
 
 final class ExecutionRunner
 {
@@ -32,6 +32,7 @@ final class ExecutionRunner
 
         if ($this->prManager->findExistingPRForBranch($branch)) {
             $this->logger->warning("PR already exists for branch {$branch}, skipping.");
+
             return;
         }
 

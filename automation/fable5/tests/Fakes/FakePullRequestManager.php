@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fable5\Tests\Fakes;
 
 use Fable5\Git\PullRequestManager;
-use Mockery;
 
 final class FakePullRequestManager extends PullRequestManager
 {
@@ -14,7 +13,7 @@ final class FakePullRequestManager extends PullRequestManager
     public function __construct()
     {
         $fakeApiClient = new FakeApiClient();
-        $dummyClient = new \Fable5\Clients\GitHubClient($fakeApiClient, 'token');
+        $dummyClient   = new \Fable5\Clients\GitHubClient($fakeApiClient, 'token');
         parent::__construct($dummyClient, 'owner', 'repo');
     }
 

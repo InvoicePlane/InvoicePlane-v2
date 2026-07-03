@@ -18,16 +18,16 @@ class PullRequestManager
     {
         return $this->githubClient->createPullRequest($this->owner, $this->repo, [
             'title' => $title,
-            'body' => $body,
-            'head' => $head,
-            'base' => $base,
+            'body'  => $body,
+            'head'  => $head,
+            'base'  => $base,
         ]);
     }
 
     public function findExistingPRForBranch(string $branch): ?array
     {
         $prs = $this->githubClient->listPullRequests($this->owner, $this->repo, [
-            'head' => "{$this->owner}:{$branch}",
+            'head'  => "{$this->owner}:{$branch}",
             'state' => 'open',
         ]);
 

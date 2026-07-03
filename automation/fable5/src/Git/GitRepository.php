@@ -21,10 +21,10 @@ class GitRepository
         $this->logger->info(implode(' ', $fullCommand));
         $result = Process::run($fullCommand);
 
-        if (!$result->successful()) {
-            $this->logger->error("Git command failed", [
+        if ( ! $result->successful()) {
+            $this->logger->error('Git command failed', [
                 'command' => implode(' ', $fullCommand),
-                'error' => $result->errorOutput(),
+                'error'   => $result->errorOutput(),
             ]);
             throw new RuntimeException($result->errorOutput());
         }
@@ -58,12 +58,12 @@ class GitRepository
 
     public function clone(string $url): void
     {
-        if (!is_dir($this->workingDirectory)) {
+        if ( ! is_dir($this->workingDirectory)) {
             mkdir($this->workingDirectory, 0777, true);
         }
         $result = Process::path($this->workingDirectory)->run(['git', 'clone', $url, '.']);
 
-        if (!$result->successful()) {
+        if ( ! $result->successful()) {
             throw new RuntimeException($result->errorOutput());
         }
     }

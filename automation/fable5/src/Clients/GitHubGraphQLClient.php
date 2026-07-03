@@ -14,18 +14,17 @@ final class GitHubGraphQLClient
     public function __construct(
         private readonly ApiClient $transport,
         private readonly string $token,
-    ) {
-    }
+    ) {}
 
     public function query(string $query, array $variables = []): array
     {
         return $this->transport->request(RequestMethod::POST, self::ENDPOINT, [
-            'query' => $query,
+            'query'     => $query,
             'variables' => $variables,
         ], [
             'Authorization' => 'Bearer ' . $this->token,
-            'Accept' => 'application/vnd.github.v3+json',
-            'User-Agent' => 'Fable5-Automation-Framework',
+            'Accept'        => 'application/vnd.github.v3+json',
+            'User-Agent'    => 'Fable5-Automation-Framework',
         ])->json();
     }
 

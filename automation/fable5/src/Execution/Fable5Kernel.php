@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fable5\Execution;
 
-use Fable5\Logging\Logger;
 use Fable5\Indexer\PRBranchReconciler;
+use Fable5\Logging\Logger;
 
 final class Fable5Kernel
 {
@@ -26,6 +26,7 @@ final class Fable5Kernel
 
         if ($this->isEmpty($issues)) {
             $this->logger->info('No issues to process');
+
             return;
         }
 

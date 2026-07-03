@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
+use Dotenv\Dotenv;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Illuminate\Config\Repository as Config;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Http;
-use Dotenv\Dotenv;
 
 require __DIR__ . '/../../vendor/autoload.php';
 

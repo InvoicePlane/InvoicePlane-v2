@@ -33,9 +33,9 @@ class FileLogger implements Logger
 
     private function log(string $level, string $message, array $context): void
     {
-        $timestamp = date('Y-m-d H:i:s');
-        $contextJson = !empty($context) ? ' ' . json_encode($context) : '';
-        $formattedMessage = sprintf("[%s] %s: %s%s%s", $timestamp, $level, $message, $contextJson, PHP_EOL);
+        $timestamp        = date('Y-m-d H:i:s');
+        $contextJson      = ! empty($context) ? ' ' . json_encode($context) : '';
+        $formattedMessage = sprintf('[%s] %s: %s%s%s', $timestamp, $level, $message, $contextJson, PHP_EOL);
 
         file_put_contents($this->logPath, $formattedMessage, FILE_APPEND);
     }
@@ -43,7 +43,7 @@ class FileLogger implements Logger
     private function ensureDirectoryExists(): void
     {
         $dir = dirname($this->logPath);
-        if (!is_dir($dir)) {
+        if ( ! is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
     }

@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Clients\GitHubClient;
-use Fable5\Http\RequestMethod;
 use Fable5\Tests\Fakes\FakeApiClient;
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\TestCase;
 
 #[CoversClass(GitHubClient::class)]
 final class GitHubClientTest extends TestCase
 {
-    private function getFixture(string $path): array
-    {
-        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
-    }
-
     #[Test]
     public function it_lists_workflow_runs_with_pagination(): void
     {
@@ -42,7 +36,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_repository(): void
     {
-        $fixture = $this->getFixture('repository.json');
+        $fixture   = $this->getFixture('repository.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/repos/owner/repo', Http::response($fixture));
 
@@ -54,7 +48,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_creates_pull_request(): void
     {
-        $fixture = $this->getFixture('pull_request.json');
+        $fixture   = $this->getFixture('pull_request.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/pulls', Http::response($fixture));
 
@@ -66,7 +60,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_pull_request(): void
     {
-        $fixture = $this->getFixture('pull_request.json');
+        $fixture   = $this->getFixture('pull_request.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/pulls/*', Http::response($fixture));
 
@@ -78,7 +72,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_pull_requests(): void
     {
-        $fixture = $this->getFixture('pull_request.json');
+        $fixture   = $this->getFixture('pull_request.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/pulls', Http::response([$fixture]));
 
@@ -91,7 +85,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_gets_issue(): void
     {
-        $fixture = $this->getFixture('issue.json');
+        $fixture   = $this->getFixture('issue.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/issues/*', Http::response($fixture));
 
@@ -103,7 +97,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_updates_issue(): void
     {
-        $fixture = $this->getFixture('issue.json');
+        $fixture   = $this->getFixture('issue.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/issues/*', Http::response($fixture));
 
@@ -115,7 +109,7 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_issues(): void
     {
-        $fixture = $this->getFixture('issue.json');
+        $fixture   = $this->getFixture('issue.json');
         $transport = new FakeApiClient();
         $transport->setResponse('*/issues', Http::response([$fixture]));
 
@@ -175,7 +169,7 @@ final class GitHubClientTest extends TestCase
         $transport->setResponse('*/actions/runs', Http::response(['workflow_runs' => [['id' => 1]]]));
 
         $client = new GitHubClient($transport, 'token');
-        $runs = iterator_to_array($client->listFailedWorkflowRuns('owner', 'repo'));
+        $runs   = iterator_to_array($client->listFailedWorkflowRuns('owner', 'repo'));
         $this->assertCount(1, $runs);
     }
 
@@ -258,5 +252,10 @@ final class GitHubClientTest extends TestCase
 
         /* Assert */
         $this->assertEquals('new-name', $repo['name']);
+    }
+
+    private function getFixture(string $path): array
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../Fixtures/GitHub/' . $path), true);
     }
 }

@@ -15,15 +15,6 @@ final class GitHubClient
         private string $token,
     ) {}
 
-    private function request(RequestMethod $method, string $url, array $data = []): \Illuminate\Http\Client\Response
-    {
-        return $this->transport->request($method, $url, $data, [
-            'Authorization' => 'Bearer ' . $this->token,
-            'Accept' => 'application/vnd.github.v3+json',
-            'User-Agent' => 'Fable5-Automation-Framework',
-        ]);
-    }
-
     public function getRepository(string $owner, string $repo): array
     {
         return $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}")->json();
@@ -98,13 +89,13 @@ final class GitHubClient
      */
     public function listWorkflowRuns(string $owner, string $repo, ?string $status = null): Generator
     {
-        $page = 1;
+        $page    = 1;
         $perPage = 100;
 
         while (true) {
             $query = [
                 'per_page' => $perPage,
-                'page' => $page,
+                'page'     => $page,
             ];
 
             if ($status !== null) {
@@ -112,7 +103,7 @@ final class GitHubClient
             }
 
             $response = $this->request(RequestMethod::GET, "https://api.github.com/repos/{$owner}/{$repo}/actions/runs", $query);
-            $data = $response->json();
+            $data     = $response->json();
 
             $runs = $data['workflow_runs'] ?? [];
 
@@ -155,13 +146,19 @@ final class GitHubClient
         return $this->request(RequestMethod::DELETE, "https://api.github.com/repos/{$owner}/{$repo}/actions/runs/{$runId}")->successful();
     }
 
-
     public function branchExists(string $owner, string $repo, string $branch): bool
     {
         return false;
     }
 
-    public function createBranch(string $owner, string $repo, string $branch): void
+    public function createBranch(string $owner, string $repo, string $branch): void {}
+
+    private function request(RequestMethod $method, string $url, array $data = []): \Illuminate\Http\Client\Response
     {
+        return $this->transport->request($method, $url, $data, [
+            'Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/vnd.github.v3+json',
+            'User-Agent'    => 'Fable5-Automation-Framework',
+        ]);
     }
 }

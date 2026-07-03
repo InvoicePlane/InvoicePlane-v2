@@ -38,7 +38,8 @@ final class FakeApiClient extends ApiClient
 
                 // If it's a promise that hasn't been resolved to a Response yet, or something else
                 // Laravel's Http::response() sometimes needs to be handled via the factory
-                $body = is_array($result) ? json_encode($result) : (string)$result;
+                $body = is_array($result) ? json_encode($result) : (string) $result;
+
                 return new Response(new \GuzzleHttp\Psr7\Response(
                     200,
                     [],
@@ -60,11 +61,11 @@ final class FakeApiClient extends ApiClient
         $regex = str_replace(['.', '/', '?', '+'], ['\.', '\/', '\?', '\+'], $pattern);
         $regex = str_replace('*', '.*', $regex);
 
-        if (preg_match("#$regex#", $url)) {
+        if (preg_match("#{$regex}#", $url)) {
             return true;
         }
 
         // Try decoding URL if needed
-        return (bool) preg_match("#$regex#", urldecode($url));
+        return (bool) preg_match("#{$regex}#", urldecode($url));
     }
 }

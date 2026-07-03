@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Clients\ForkRepositoryClient;
-use Fable5\Http\RequestMethod;
 use Fable5\Tests\Fakes\FakeApiClient;
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\TestCase;
 
 #[CoversClass(ForkRepositoryClient::class)]
 final class ForkRepositoryClientTest extends TestCase

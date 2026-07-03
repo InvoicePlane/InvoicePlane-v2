@@ -11,12 +11,12 @@ final class PolicyLoader
     public function load(): array
     {
         $basePath = dirname(Paths::root()) . '/.claude/fable5';
-        
+
         return [
-            'prd' => $this->loadFile($basePath . '/FABLE5_EXECUTION_PRD.md'),
-            'skills' => $this->loadDirectory($basePath . '/skills'),
+            'prd'     => $this->loadFile($basePath . '/FABLE5_EXECUTION_PRD.md'),
+            'skills'  => $this->loadDirectory($basePath . '/skills'),
             'runtime' => $this->loadFile($basePath . '/runtime/overrides.md'),
-            'repo' => $this->loadFile(dirname(Paths::root()) . '/CLAUDE.md'),
+            'repo'    => $this->loadFile(dirname(Paths::root()) . '/CLAUDE.md'),
         ];
     }
 
@@ -29,7 +29,7 @@ final class PolicyLoader
 
     private function loadDirectory(string $path): array
     {
-        if (!is_dir($path)) {
+        if ( ! is_dir($path)) {
             return [];
         }
 
