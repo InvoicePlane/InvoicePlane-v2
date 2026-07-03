@@ -23,6 +23,7 @@ final class BranchManager
     public function listBranches(): array
     {
         $output = $this->repository->exec(['branch', '--format', '%(refname:short)']);
+
         return array_filter(explode(PHP_EOL, trim($output)));
     }
 

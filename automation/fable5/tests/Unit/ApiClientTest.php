@@ -8,10 +8,10 @@ use Fable5\Http\ApiClient;
 use Fable5\Http\RequestMethod;
 use Fable5\Tests\Fakes\FakeLogger;
 use Illuminate\Http\Client\Request;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\Http;
 use Modules\Core\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ApiClient::class)]
 final class ApiClientTest extends TestCase
@@ -24,7 +24,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['foo' => 'bar'], 200),
         ]);
 
-        $logger = new FakeLogger();
+        $logger    = new FakeLogger();
         $transport = new ApiClient($logger);
 
         /* Act */
@@ -34,8 +34,8 @@ final class ApiClientTest extends TestCase
         $this->assertEquals(200, $response->status());
         $this->assertEquals(['foo' => 'bar'], $response->json());
         Http::assertSent(function (Request $request) {
-            return $request->method() === 'GET' &&
-                   $request->url() === 'https://api.github.com/repos/owner/repo';
+            return $request->method() === 'GET'
+                   && $request->url() === 'https://api.github.com/repos/owner/repo';
         });
     }
 
@@ -47,7 +47,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['success' => true], 201),
         ]);
 
-        $logger = new FakeLogger();
+        $logger    = new FakeLogger();
         $transport = new ApiClient($logger);
 
         /* Act */
@@ -56,9 +56,9 @@ final class ApiClientTest extends TestCase
         /* Assert */
         $this->assertEquals(201, $response->status());
         Http::assertSent(function (Request $request) {
-            return $request->method() === 'POST' &&
-                   $request->data() === ['title' => 'test'] &&
-                   $request->header('Content-Type')[0] === 'application/json';
+            return $request->method() === 'POST'
+                   && $request->data() === ['title' => 'test']
+                   && $request->header('Content-Type')[0] === 'application/json';
         });
     }
 
@@ -95,7 +95,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response(['foo' => 'bar'], 200),
         ]);
 
-        $logger = new FakeLogger();
+        $logger    = new FakeLogger();
         $transport = new ApiClient($logger, timeout: 5);
 
         /* Act */
@@ -115,7 +115,7 @@ final class ApiClientTest extends TestCase
             'api.github.com/*' => Http::response([], 200),
         ]);
 
-        $logger = new FakeLogger();
+        $logger    = new FakeLogger();
         $transport = new ApiClient($logger);
 
         /* Act */

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Fable5\Indexer;
 
-use Fable5\Git\PullRequestManager;
-use Fable5\Execution\ExecutionNode;
 use Fable5\Execution\ExecutionGraph;
+use Fable5\Execution\ExecutionNode;
+use Fable5\Git\PullRequestManager;
 
 class PRBranchReconciler
 {
@@ -23,13 +23,13 @@ class PRBranchReconciler
             $existingPr = $this->prManager->findExistingPRForBranch($branchName);
 
             $payload = [
-                'issue' => $issue,
+                'issue'  => $issue,
                 'branch' => $branchName,
-                'pr' => $existingPr,
+                'pr'     => $existingPr,
             ];
 
             $node = new ExecutionNode(
-                (string)$issue['number'],
+                (string) $issue['number'],
                 'issue',
                 $payload
             );

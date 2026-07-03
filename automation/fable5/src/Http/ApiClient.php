@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Fable5\Http;
 
-use Fable5\Http\RequestMethod;
+use Exception;
 use Fable5\Logging\Logger;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\PendingRequest;
-use Exception;
 
 class ApiClient
 {
@@ -18,8 +17,7 @@ class ApiClient
         private int $timeout = 30,
         private int $retries = 3,
         private int $retryDelay = 1000,
-    ) {
-    }
+    ) {}
 
     public function request(RequestMethod $method, string $url, array $data = [], array $headers = []): Response
     {
@@ -36,7 +34,7 @@ class ApiClient
             }, throw: false)
             ->send($method->value, $url, match ($method) {
                 RequestMethod::GET => ['query' => $data],
-                default => ['json' => $data],
+                default            => ['json' => $data],
             });
     }
 }

@@ -10,7 +10,9 @@ use Fable5\Logging\Logger;
 final class FakeGitRepository extends GitRepository
 {
     private array $commands = [];
+
     private string $nextOutput = '';
+
     private Logger $loggerInstance;
 
     public function __construct(?Logger $logger = null)
@@ -24,6 +26,7 @@ final class FakeGitRepository extends GitRepository
     {
         $this->commands[] = $command;
         $this->loggerInstance->info(implode(' ', $command));
+
         return $this->nextOutput;
     }
 
@@ -44,6 +47,7 @@ final class FakeGitRepository extends GitRepository
                 return true;
             }
         }
+
         return false;
     }
 }

@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Fable5\Git\Cli;
 
+use Exception;
 use Fable5\Logging\Logger;
 use Illuminate\Support\Facades\Process;
-use Exception;
 
 final class GitHubCli
 {
     private const int MAX_RETRIES = 3;
+
     private const int BACKOFF_MULTIPLIER = 2;
+
     private const int INITIAL_DELAY_MS = 500;
+
     private const int PAGE_DELAY_MS = 100;
 
     public function __construct(
@@ -78,13 +81,13 @@ final class GitHubCli
     {
         // Logs are usually text/binary, not JSON
         $command = array_merge([$this->ghBinary], ['run', 'view', (string) $runId, '--log']);
-        $result = Process::withEnvironmentVariables([
-            'GH_TOKEN' => $this->githubToken,
+        $result  = Process::withEnvironmentVariables([
+            'GH_TOKEN'     => $this->githubToken,
             'GITHUB_TOKEN' => $this->githubToken,
-            'NO_COLOR' => '1',
+            'NO_COLOR'     => '1',
         ])->run($command);
 
-        if (!$result->successful()) {
+        if ( ! $result->successful()) {
             throw new Exception("Failed to get logs for run {$runId}: " . $result->errorOutput());
         }
 
@@ -104,9 +107,11 @@ final class GitHubCli
     {
         try {
             $this->execute(['api', '-X', 'DELETE', "repos/{$repo}/actions/runs/{$runId}"]);
+
             return true;
         } catch (Exception $e) {
             $this->logger->error("Failed to delete workflow run {$runId} in {$repo}: " . $e->getMessage());
+
             return false;
         }
     }
@@ -122,6 +127,7 @@ final class GitHubCli
                 $command[] = $value;
             }
         }
+
         return $this->execute($command);
     }
 
@@ -132,6 +138,7 @@ final class GitHubCli
             $command[] = '-l';
             $command[] = $label;
         }
+
         return $this->execute($command);
     }
 
@@ -146,6 +153,7 @@ final class GitHubCli
                 $command[] = $value;
             }
         }
+
         return $this->execute($command);
     }
 
@@ -156,6 +164,7 @@ final class GitHubCli
             $command[] = '-H';
             $command[] = $head;
         }
+
         return $this->execute($command);
     }
 
@@ -163,9 +172,11 @@ final class GitHubCli
     {
         try {
             $this->execute(['pr', 'merge', '-R', $repo, (string) $number, "--{$method}", '--delete-branch']);
+
             return true;
         } catch (Exception $e) {
             $this->logger->error("Failed to merge PR {$number} in {$repo}: " . $e->getMessage());
+
             return false;
         }
     }
@@ -189,7 +200,7 @@ final class GitHubCli
     public function deleteAllWorkflowRuns(string $repo, ?string $status = null, int $maxRuns = 100000): int
     {
         $deletedCount = 0;
-        $perPage = 100;
+        $perPage      = 100;
 
         while ($deletedCount < $maxRuns) {
             $query = [
@@ -204,7 +215,7 @@ final class GitHubCli
             }
 
             $response = $this->execute($query);
-            $runs = $response['workflow_runs'] ?? [];
+            $runs     = $response['workflow_runs'] ?? [];
 
             if (empty($runs)) {
                 break;
@@ -226,21 +237,22 @@ final class GitHubCli
         }
 
         $this->logger->info("Bulk deletion finished. Total runs deleted in {$repo}: {$deletedCount}");
+
         return $deletedCount;
     }
 
     private function execute(array $args): array
     {
         $attempt = 0;
-        $delay = self::INITIAL_DELAY_MS;
+        $delay   = self::INITIAL_DELAY_MS;
         $command = array_merge([$this->ghBinary], $args);
 
         while ($attempt < self::MAX_RETRIES) {
             try {
                 $result = Process::env([
-                    'GH_TOKEN' => $this->githubToken,
+                    'GH_TOKEN'     => $this->githubToken,
                     'GITHUB_TOKEN' => $this->githubToken,
-                    'NO_COLOR' => '1',
+                    'NO_COLOR'     => '1',
                 ])->run(implode(' ', array_map('escapeshellarg', $command)));
 
                 if ($result->successful()) {
@@ -249,18 +261,18 @@ final class GitHubCli
                         return [];
                     }
                     $decoded = json_decode($output, true);
+
                     return is_array($decoded) ? $decoded : [$output];
                 }
 
                 $error = $result->errorOutput();
-                $this->logger->error("GH CLI Error (Attempt " . ($attempt + 1) . "): " . $error, [
-                    'args' => $args,
-                    'exitCode' => $result->exitCode()
+                $this->logger->error('GH CLI Error (Attempt ' . ($attempt + 1) . '): ' . $error, [
+                    'args'     => $args,
+                    'exitCode' => $result->exitCode(),
                 ]);
-
             } catch (Exception $e) {
-                $this->logger->error("GH CLI Exception (Attempt " . ($attempt + 1) . "): " . $e->getMessage(), [
-                    'args' => $args
+                $this->logger->error('GH CLI Exception (Attempt ' . ($attempt + 1) . '): ' . $e->getMessage(), [
+                    'args' => $args,
                 ]);
             }
 
@@ -271,7 +283,6 @@ final class GitHubCli
             }
         }
 
-        throw new Exception("Failed to execute GH CLI command after " . self::MAX_RETRIES . " attempts.");
+        throw new Exception('Failed to execute GH CLI command after ' . self::MAX_RETRIES . ' attempts.');
     }
-
 }

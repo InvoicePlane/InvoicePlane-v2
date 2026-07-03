@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Fable5\Tests;
 
 use Fable5\Execution\ExecutionGraph;
-use Fable5\Execution\ExecutionRunner;
 use Fable5\Execution\ExecutionNode;
-use Fable5\Tests\Fakes\FakeLogger;
+use Fable5\Execution\ExecutionRunner;
 use Fable5\Tests\Fakes\FakeGitRepository;
+use Fable5\Tests\Fakes\FakeLogger;
 use Fable5\Tests\Fakes\FakePullRequestManager;
+use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\TestCase;
 
 #[CoversClass(ExecutionRunner::class)]
 final class ExecutionRunnerTest extends TestCase
@@ -21,8 +21,8 @@ final class ExecutionRunnerTest extends TestCase
     public function it_executes_scheduled_layers(): void
     {
         /* Arrange */
-        $logger = new FakeLogger();
-        $git = new FakeGitRepository($logger);
+        $logger    = new FakeLogger();
+        $git       = new FakeGitRepository($logger);
         $prManager = new FakePullRequestManager();
 
         $graph = new ExecutionGraph();
@@ -38,11 +38,11 @@ final class ExecutionRunnerTest extends TestCase
 
         /* Assert */
         $this->assertTrue(
-            $git->hasExecuted(fn($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/1'),
+            $git->hasExecuted(fn ($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/1'),
             'Should have checked out feat/1'
         );
         $this->assertTrue(
-            $git->hasExecuted(fn($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/2'),
+            $git->hasExecuted(fn ($cmd) => $cmd[0] === 'checkout' && $cmd[1] === '-b' && $cmd[2] === 'feat/2'),
             'Should have checked out feat/2'
         );
 
@@ -55,8 +55,8 @@ final class ExecutionRunnerTest extends TestCase
     public function it_skips_if_pr_exists(): void
     {
         /* Arrange */
-        $logger = new FakeLogger();
-        $git = new FakeGitRepository();
+        $logger    = new FakeLogger();
+        $git       = new FakeGitRepository();
         $prManager = new FakePullRequestManager();
 
         $graph = new ExecutionGraph();

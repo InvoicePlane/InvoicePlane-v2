@@ -7,9 +7,9 @@ namespace Fable5\Tests;
 use Fable5\Execution\ExecutionGraph;
 use Fable5\Execution\ExecutionNode;
 use Fable5\Execution\ExecutionScheduler;
+use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\TestCase;
 
 #[CoversClass(ExecutionScheduler::class)]
 final class ExecutionSchedulerTest extends TestCase

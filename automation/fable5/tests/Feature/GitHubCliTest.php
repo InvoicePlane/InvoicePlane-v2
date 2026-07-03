@@ -7,9 +7,9 @@ namespace Fable5\Tests;
 use Fable5\Git\Cli\GitHubCli;
 use Fable5\Tests\Fakes\FakeLogger;
 use Illuminate\Support\Facades\Process;
+use Modules\Core\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Modules\Core\Tests\TestCase;
 
 #[CoversClass(GitHubCli::class)]
 final class GitHubCliTest extends TestCase
@@ -22,7 +22,7 @@ final class GitHubCliTest extends TestCase
         $output = json_encode(['workflow_runs' => [['id' => 123]]]);
 
         Process::fake(function ($request) use ($output) {
-             return Process::result($output);
+            return Process::result($output);
         });
 
         $cli = new GitHubCli($logger, 'dummy-token');
@@ -36,9 +36,10 @@ final class GitHubCliTest extends TestCase
 
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'api') &&
-                   str_contains($cmd, 'repos/owner/repo/actions/runs');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'api')
+                   && str_contains($cmd, 'repos/owner/repo/actions/runs');
         });
     }
 
@@ -49,7 +50,7 @@ final class GitHubCliTest extends TestCase
         $logger = new FakeLogger();
         $output = json_encode(['status' => 'ok']);
         Process::fake(function ($request) use ($output) {
-             return Process::result($output);
+            return Process::result($output);
         });
 
         $cli = new GitHubCli($logger, 'dummy-token');
@@ -62,10 +63,11 @@ final class GitHubCliTest extends TestCase
 
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'run') &&
-                   str_contains($cmd, 'rerun') &&
-                   str_contains($cmd, '123');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'run')
+                   && str_contains($cmd, 'rerun')
+                   && str_contains($cmd, '123');
         });
     }
 
@@ -75,7 +77,7 @@ final class GitHubCliTest extends TestCase
         /* Arrange */
         $logger = new FakeLogger();
         Process::fake(function ($request) {
-             return Process::result('');
+            return Process::result('');
         });
 
         $cli = new GitHubCli($logger, 'dummy-token');
@@ -87,11 +89,12 @@ final class GitHubCliTest extends TestCase
         $this->assertTrue($success);
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'api') &&
-                   str_contains($cmd, '-X') &&
-                   str_contains($cmd, 'DELETE') &&
-                   str_contains($cmd, 'repos/owner/repo/actions/runs/123');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'api')
+                   && str_contains($cmd, '-X')
+                   && str_contains($cmd, 'DELETE')
+                   && str_contains($cmd, 'repos/owner/repo/actions/runs/123');
         });
     }
 
@@ -105,7 +108,7 @@ final class GitHubCliTest extends TestCase
             'workflow_runs' => [
                 ['id' => 1],
                 ['id' => 2],
-            ]
+            ],
         ]);
 
         $emptyOutput = json_encode(['workflow_runs' => []]);
@@ -138,7 +141,7 @@ final class GitHubCliTest extends TestCase
         $logger = new FakeLogger();
         $output = json_encode(['url' => 'http://issue/1']);
         Process::fake(function ($request) use ($output) {
-             return Process::result($output);
+            return Process::result($output);
         });
         $cli = new GitHubCli($logger, 'dummy-token');
 
@@ -149,10 +152,11 @@ final class GitHubCliTest extends TestCase
         $this->assertEquals('http://issue/1', $issue['url']);
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'issue') &&
-                   str_contains($cmd, 'create') &&
-                   str_contains($cmd, 'Title');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'issue')
+                   && str_contains($cmd, 'create')
+                   && str_contains($cmd, 'Title');
         });
     }
 
@@ -162,7 +166,7 @@ final class GitHubCliTest extends TestCase
         /* Arrange */
         $logger = new FakeLogger();
         Process::fake(function ($request) {
-             return Process::result('');
+            return Process::result('');
         });
         $cli = new GitHubCli($logger, 'dummy-token');
 
@@ -173,10 +177,11 @@ final class GitHubCliTest extends TestCase
         $this->assertTrue($success);
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'pr') &&
-                   str_contains($cmd, 'merge') &&
-                   str_contains($cmd, '123');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'pr')
+                   && str_contains($cmd, 'merge')
+                   && str_contains($cmd, '123');
         });
     }
 
@@ -187,7 +192,7 @@ final class GitHubCliTest extends TestCase
         $logger = new FakeLogger();
         $output = json_encode([['number' => 1]]);
         Process::fake(function ($request) use ($output) {
-             return Process::result($output);
+            return Process::result($output);
         });
         $cli = new GitHubCli($logger, 'dummy-token');
 
@@ -199,9 +204,10 @@ final class GitHubCliTest extends TestCase
         $this->assertEquals(1, $projects[0]['number']);
         Process::assertRan(function ($process) {
             $cmd = is_array($process->command) ? implode(' ', $process->command) : $process->command;
-            return str_contains($cmd, 'gh') &&
-                   str_contains($cmd, 'project') &&
-                   str_contains($cmd, 'list');
+
+            return str_contains($cmd, 'gh')
+                   && str_contains($cmd, 'project')
+                   && str_contains($cmd, 'list');
         });
     }
 }

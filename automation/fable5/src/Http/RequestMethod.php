@@ -6,9 +6,9 @@ namespace Fable5\Http;
 
 enum RequestMethod: string
 {
-    case GET = 'GET';
-    case POST = 'POST';
-    case PUT = 'PUT';
+    case GET    = 'GET';
+    case POST   = 'POST';
+    case PUT    = 'PUT';
     case DELETE = 'DELETE';
-    case PATCH = 'PATCH';
+    case PATCH  = 'PATCH';
 }

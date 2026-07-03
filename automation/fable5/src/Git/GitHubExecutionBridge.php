@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fable5\Git;
 
-use Fable5\Execution\ExecutionNode;
 use Fable5\Clients\GitHubClient;
+use Fable5\Execution\ExecutionNode;
 
 final class GitHubExecutionBridge
 {
@@ -51,11 +51,11 @@ final class GitHubExecutionBridge
     {
         return $this->client->createPullRequest([
             'owner' => $this->owner,
-            'repo' => $this->repo,
-            'head' => $branch,
-            'base' => 'main',
+            'repo'  => $this->repo,
+            'head'  => $branch,
+            'base'  => 'main',
             'title' => '[Fable5] ' . $node->id(),
-            'body' => $this->buildBody($node),
+            'body'  => $this->buildBody($node),
             'draft' => true,
         ]);
     }
