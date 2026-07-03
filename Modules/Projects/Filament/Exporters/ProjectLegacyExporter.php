@@ -3,6 +3,7 @@
 namespace Modules\Projects\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
+use Illuminate\Support\Carbon;
 use Modules\Core\Filament\Exporters\BaseExporter;
 use Modules\Projects\Models\Project;
 
@@ -23,10 +24,10 @@ class ProjectLegacyExporter extends BaseExporter
                 ->formatStateUsing(fn ($state) => $state?->label() ?? ''),
             ExportColumn::make('start_at')
                 ->label(trans('ip.start_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
             ExportColumn::make('end_at')
                 ->label(trans('ip.end_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
         ];
     }
 

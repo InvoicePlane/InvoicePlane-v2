@@ -3,6 +3,7 @@
 namespace Modules\Payments\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
+use Illuminate\Support\Carbon;
 use Modules\Core\Filament\Exporters\BaseExporter;
 use Modules\Payments\Models\Payment;
 
@@ -26,7 +27,7 @@ class PaymentExporter extends BaseExporter
                 ->label(trans('ip.payment_amount')),
             ExportColumn::make('paid_at')
                 ->label(trans('ip.paid_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
         ];
     }
 
