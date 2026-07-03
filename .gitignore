@@ -80,3 +80,5 @@ package-lock.json
 *.sqlite
 /failures.txt
 /yarnpack.txt
+/automation/.idea/
+/automation/vendor/
