@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fable\Tests\Fakes;
 
+use Fable\Clients\GitHubClient;
 use Fable\Git\PullRequestManager;
-use Fable5\Clients\GitHubClient;
 
 final class FakePullRequestManager extends PullRequestManager
 {

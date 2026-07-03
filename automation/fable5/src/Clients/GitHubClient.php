@@ -97,8 +97,9 @@ final class GitHubClient
     {
         $page = 1;
         $perPage = 100;
+        $maxPages = 10; // Safety cap
 
-        while (true) {
+        while ($page <= $maxPages) {
             $query = [
                 'per_page' => $perPage,
                 'page' => $page,
