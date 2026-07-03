@@ -3,6 +3,7 @@
 namespace Modules\Projects\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
+use Illuminate\Support\Carbon;
 use Modules\Core\Filament\Exporters\BaseExporter;
 use Modules\Projects\Models\Task;
 
@@ -20,7 +21,7 @@ class TaskExporter extends BaseExporter
                 ->label(trans('ip.task_name')),
             ExportColumn::make('due_at')
                 ->label(trans('ip.task_finish_date'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
             ExportColumn::make('task_price')
                 ->label(trans('ip.task_price')),
             ExportColumn::make('project_name')

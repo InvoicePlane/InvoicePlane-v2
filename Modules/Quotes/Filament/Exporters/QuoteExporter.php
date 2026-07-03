@@ -3,6 +3,7 @@
 namespace Modules\Quotes\Filament\Exporters;
 
 use Filament\Actions\Exports\ExportColumn;
+use Illuminate\Support\Carbon;
 use Modules\Core\Filament\Exporters\BaseExporter;
 use Modules\Quotes\Models\Quote;
 
@@ -23,10 +24,10 @@ class QuoteExporter extends BaseExporter
                 ->formatStateUsing(fn ($state, Quote $record) => $record->prospect?->trading_name ?? $record->prospect?->company_name ?? ''),
             ExportColumn::make('quoted_at')
                 ->label(trans('ip.quoted_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
             ExportColumn::make('quote_expires_at')
                 ->label(trans('ip.quote_expires_at'))
-                ->date(),
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->toDateString() : ''),
             ExportColumn::make('quote_item_subtotal')
                 ->label(trans('ip.quote_item_subtotal')),
             ExportColumn::make('quote_tax_total')
