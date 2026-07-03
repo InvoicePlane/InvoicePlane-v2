@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Fable\Tests;
 
 use Fable\Clients\GitHubClient;
+use Fable\Http\ApiClient;
+use Fable\Http\RequestMethod;
 use Fable\Tests\Fakes\FakeApiClient;
+use Fable\Tests\Fakes\FakeLogger;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -16,13 +20,30 @@ final class GitHubClientTest extends TestCase
     #[Test]
     public function it_lists_workflow_runs_with_pagination(): void
     {
-        $this->markTestSkipped('Crashes PHP Process');
         /* Arrange */
-        $transport = new FakeApiClient;
+        $transport = new class extends ApiClient
+        {
+            private int $calls = 0;
 
-        $transport->setResponse('*/actions/runs', Http::response([
-            'workflow_runs' => array_fill(0, 100, ['id' => 1]),
-        ]));
+            public function __construct()
+            {
+                parent::__construct(new FakeLogger);
+            }
+
+            public function request(RequestMethod $method, string $url, array $data = [], array $headers = []): Response
+            {
+                $this->calls++;
+                if ($this->calls === 1) {
+                    return new Response(Http::response([
+                        'workflow_runs' => array_fill(0, 100, ['id' => 1]),
+                    ])->wait());
+                }
+
+                return new Response(Http::response([
+                    'workflow_runs' => [],
+                ])->wait());
+            }
+        };
 
         $client = new GitHubClient($transport, 'token');
 

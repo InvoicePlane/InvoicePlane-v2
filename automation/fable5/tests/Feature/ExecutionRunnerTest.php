@@ -19,7 +19,6 @@ final class ExecutionRunnerTest extends TestCase
     #[Test]
     public function it_executes_scheduled_layers(): void
     {
-        $this->markTestSkipped('Crashes PHP Process');
         /* Arrange */
         $logger = new FakeLogger;
         $git = new FakeGitRepository($logger);
@@ -54,7 +53,6 @@ final class ExecutionRunnerTest extends TestCase
     #[Test]
     public function it_skips_if_pr_exists(): void
     {
-        $this->markTestSkipped('Crashes PHP Process');
         /* Arrange */
         $logger = new FakeLogger;
         $git = new FakeGitRepository;
