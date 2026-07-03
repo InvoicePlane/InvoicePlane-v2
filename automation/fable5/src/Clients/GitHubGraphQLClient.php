@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Clients;
+namespace Fable\Clients;
 
-use TestHonesty\Http\ApiClient;
-use TestHonesty\Http\RequestMethod;
+use Fable\Http\ApiClient;
+use Fable\Http\RequestMethod;
 
 final class GitHubGraphQLClient
 {

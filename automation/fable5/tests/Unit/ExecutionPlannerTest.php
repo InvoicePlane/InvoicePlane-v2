@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests\Unit;
+namespace Fable\Tests\Unit;
 
+use Fable\Execution\ExecutionGraph;
+use Fable\Execution\ExecutionPlanner;
+use Fable\Indexer\PRBranchReconciler;
+use Fable\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use TestHonesty\Execution\ExecutionPlanner;
-use TestHonesty\Indexer\PRBranchReconciler;
-use TestHonesty\Tests\TestCase;
 
 #[CoversClass(ExecutionPlanner::class)]
 final class ExecutionPlannerTest extends TestCase
@@ -17,7 +18,9 @@ final class ExecutionPlannerTest extends TestCase
     public function it_plans_execution(): void
     {
         /* Arrange */
-        $reconciler = $this->createMock(PRBranchReconciler::class);
+        $reconciler = $this->createStub(PRBranchReconciler::class);
+        $reconciler->method('build')->willReturn(new ExecutionGraph);
+
         $planner = new ExecutionPlanner($reconciler);
         $issues = [
             ['id' => '1', 'feature' => 'f1'],

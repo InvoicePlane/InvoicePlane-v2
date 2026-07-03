@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests;
+namespace Fable\Tests;
 
+use Fable\Execution\ExecutionGraph;
+use Fable\Execution\ExecutionNode;
+use Fable\Execution\ExecutionScheduler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use TestHonesty\Execution\ExecutionGraph;
-use TestHonesty\Execution\ExecutionNode;
-use TestHonesty\Execution\ExecutionScheduler;
 
 #[CoversClass(ExecutionScheduler::class)]
 final class ExecutionSchedulerTest extends TestCase

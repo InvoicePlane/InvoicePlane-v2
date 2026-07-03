@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Clients;
+namespace Fable\Clients;
 
+use Fable\Http\ApiClient;
+use Fable\Http\RequestMethod;
 use Illuminate\Http\Client\Response;
-use TestHonesty\Http\ApiClient;
-use TestHonesty\Http\RequestMethod;
 
 final class ForkRepositoryClient
 {

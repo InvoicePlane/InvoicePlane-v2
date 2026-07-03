@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests;
+namespace Fable\Tests;
 
+use Fable\Http\ApiClient;
+use Fable\Http\RequestMethod;
+use Fable\Tests\Fakes\FakeLogger;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use TestHonesty\Http\ApiClient;
-use TestHonesty\Http\RequestMethod;
-use TestHonesty\Tests\Fakes\FakeLogger;
 
 #[CoversClass(ApiClient::class)]
 final class ApiClientTest extends TestCase

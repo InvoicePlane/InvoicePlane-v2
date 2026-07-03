@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests\Fakes;
+namespace Fable\Tests\Fakes;
 
+use Fable\Git\PullRequestManager;
 use Fable5\Clients\GitHubClient;
-use TestHonesty\Git\PullRequestManager;
 
 final class FakePullRequestManager extends PullRequestManager
 {

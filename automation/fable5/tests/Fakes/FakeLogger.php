@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests\Fakes;
+namespace Fable\Tests\Fakes;
 
-use TestHonesty\Logging\Logger;
+use Fable\Logging\Logger;
 
 final class FakeLogger implements Logger
 {

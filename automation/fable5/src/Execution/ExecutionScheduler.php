@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Execution;
+namespace Fable\Execution;
 
 final class ExecutionScheduler
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Policies;
+namespace Fable\Policies;
 
-use TestHonesty\Support\Paths;
+use Fable\Support\Paths;
 
 final class PolicyLoader
 {

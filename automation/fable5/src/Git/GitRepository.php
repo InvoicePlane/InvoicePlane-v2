@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Git;
+namespace Fable\Git;
 
+use Fable\Logging\Logger;
 use Illuminate\Support\Facades\Process;
 use RuntimeException;
-use TestHonesty\Logging\Logger;
 
 class GitRepository
 {

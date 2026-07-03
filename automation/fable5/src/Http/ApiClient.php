@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Http;
+namespace Fable\Http;
 
 use Exception;
+use Fable\Logging\Logger;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use TestHonesty\Logging\Logger;
 
 class ApiClient
 {

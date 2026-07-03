@@ -2,7 +2,8 @@
     "name": "automation/fable5",
     "autoload": {
         "psr-4": {
-            "Fable5\\": "src/"
+            "Fable\\": "src/",
+            "Fable\\Tests\\": "tests/"
         }
     },
     "require": {

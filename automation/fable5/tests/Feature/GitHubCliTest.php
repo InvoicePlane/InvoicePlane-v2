@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Tests;
+namespace Fable\Tests;
 
+use Fable\Git\Cli\GitHubCli;
+use Fable\Tests\Fakes\FakeLogger;
 use Illuminate\Support\Facades\Process;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use TestHonesty\Git\Cli\GitHubCli;
-use TestHonesty\Tests\Fakes\FakeLogger;
 
 #[CoversClass(GitHubCli::class)]
 final class GitHubCliTest extends TestCase

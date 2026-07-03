@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Git;
+namespace Fable\Git;
 
-use TestHonesty\Clients\GitHubClient;
+use Fable\Clients\GitHubClient;
 
 class PullRequestManager
 {

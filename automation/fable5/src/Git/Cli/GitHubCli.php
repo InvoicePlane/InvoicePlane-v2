@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TestHonesty\Git\Cli;
+namespace Fable\Git\Cli;
 
 use Exception;
+use Fable\Logging\Logger;
 use Illuminate\Support\Facades\Process;
-use TestHonesty\Logging\Logger;
 
 final class GitHubCli
 {
