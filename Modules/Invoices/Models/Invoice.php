@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Models;
 
 use Carbon\CarbonInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -97,31 +96,6 @@ class Invoice extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?MorphMany
-    {
-        //return $this->morphMany(Activity::class, 'audit');
-        return null;
-    }
-
-    public function attachments(): ?MorphMany
-    {
-        // return $this->morphMany(Attachment::class, 'attachable');
-        return null;
-    }
-
-    public function clientAttachments(): MorphMany
-    {
-        $relationship = $this->morphMany('Attachment', 'attachable');
-
-        if ($this->status_text == 'paid') {
-            $relationship->whereIn('client_visibility', [1, 2]);
-        } else {
-            $relationship->where('client_visibility', 1);
-        }
-
-        return $relationship;
-    }
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
@@ -154,7 +128,7 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): Builder
+    public function mailQueue(): HasMany
     {
         return $this->hasMany(MailQueue::class, 'mailable_id')
             ->where('mailable_type', self::class);

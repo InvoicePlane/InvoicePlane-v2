@@ -1,5 +1,5 @@
 ---
-name: ci-schema-gate
+name: ci-schema-invariant-gate
 description: Ensures correct execution order of migrations, seeders, and tests in CI
 ---
 

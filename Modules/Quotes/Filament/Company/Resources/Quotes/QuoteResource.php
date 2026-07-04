@@ -6,6 +6,8 @@ use BackedEnum;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
@@ -59,5 +61,30 @@ class QuoteResource extends BaseResource
         return [
             'index' => ListQuotes::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_QUOTES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_QUOTES->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_QUOTES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_QUOTES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_QUOTES->value) ?? false;
     }
 }

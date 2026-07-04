@@ -32,15 +32,15 @@ class UserService extends BaseService
         return $user;
     }
 
-    public function updateUser(array $validatedInput, $userToUpdate): Model
+    public function updateUser(User $user, array $data): User
     {
-        $userToUpdate->fill($validatedInput);
+        $user->fill($data);
 
-        $userToUpdate->save();
+        $user->save();
 
-        event(new UserWasUpdated($userToUpdate));
+        event(new UserWasUpdated($user));
 
-        return $userToUpdate;
+        return $user;
     }
 
     public function deleteUser(User $user): User

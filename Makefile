@@ -90,6 +90,9 @@ help:
 
 # ── Full suite ────────────────────────────────────────────────────────────────
 
+docker-test:
+	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && DB_HOST=mariadb php artisan test --exclude-groups=failing,troubleshooting"
+
 ## ─── Full suite ───────────────────────────────────────────────────────────────
 test:
 	$(_phpunit)
@@ -287,7 +290,7 @@ artisan-filter:
 artisan-parallel:
 	$(_artisan) --parallel
 
-## Run artisan test with pretty output (Pest-style dots)
+## Run artisan test with compact output
 artisan-pretty:
 	$(_artisan) --compact
 

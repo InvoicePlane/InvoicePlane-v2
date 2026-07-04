@@ -79,28 +79,6 @@ class Quote extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?MorphMany
-    {
-        //return $this->morphMany(Activity::class, 'audit');
-        return null;
-    }
-
-    public function attachments(): ?MorphMany
-    {
-        // return $this->morphMany(Attachment::class, 'attachable');
-        return null;
-    }
-
-    public function clientAttachments(): ?MorphMany
-    {
-        /*$relationship = $this->morphMany(Attachment::class, 'attachable');
-
-        $relationship->where('client_visibility', 1);
-
-        return $relationship;*/
-        return null;
-    }
-
     public function customer(): BelongsTo
     {
         return $this

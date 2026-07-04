@@ -11,10 +11,8 @@ services:
         ports:
             - "3306:3306"
         environment:
-            MARIADB_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
             MARIADB_DATABASE: "${DB_DATABASE}"
-            MARIADB_USER: "${DB_USERNAME}"
-            MARIADB_PASSWORD: "${DB_PASSWORD}"
             TZ: "Europe/London"
 
     mailcatcher:

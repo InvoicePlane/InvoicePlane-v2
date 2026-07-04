@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Core\Enums\NumberingType;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
@@ -98,7 +99,7 @@ class QuoteForm
 
                                         Select::make('numbering_id')
                                             ->label(trans('ip.numbering'))
-                                            ->relationship('numbering', 'name')
+                                            ->relationship('numbering', 'name', fn ($query) => $query->where('type', NumberingType::QUOTE->value))
                                             ->required()
                                             ->searchable()
                                             ->preload()
