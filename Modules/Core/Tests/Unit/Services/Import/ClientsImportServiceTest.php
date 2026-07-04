@@ -11,6 +11,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Services\Import\ClientsImportService;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Throwable;
 
 class ClientsImportServiceTest extends AbstractTestCase
 {
@@ -26,6 +27,16 @@ class ClientsImportServiceTest extends AbstractTestCase
     {
         parent::setUp();
 
+        /*
+         * These tests exercise the V1 import against a real import_v1
+         * database; skip when none is reachable (e.g. sqlite CI env).
+         */
+        try {
+            DB::connection('import_v1')->getPdo();
+        } catch (Throwable $e) {
+            $this->markTestSkipped('import_v1 database connection unavailable');
+        }
+
         $this->service    = new ClientsImportService();
         $this->company    = Company::factory()->create();
         $this->idMappings = ['clients' => []];
@@ -37,8 +48,12 @@ class ClientsImportServiceTest extends AbstractTestCase
 
     protected function tearDown(): void
     {
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_clients');
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_contacts');
+        try {
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_clients');
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_contacts');
+        } catch (Throwable) {
+            // connection unavailable — nothing to drop
+        }
         parent::tearDown();
     }
 

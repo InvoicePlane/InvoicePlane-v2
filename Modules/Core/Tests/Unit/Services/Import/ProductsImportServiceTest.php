@@ -11,6 +11,7 @@ use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\Test;
+use Throwable;
 
 class ProductsImportServiceTest extends AbstractTestCase
 {
@@ -26,6 +27,16 @@ class ProductsImportServiceTest extends AbstractTestCase
     {
         parent::setUp();
 
+        /*
+         * These tests exercise the V1 import against a real import_v1
+         * database; skip when none is reachable (e.g. sqlite CI env).
+         */
+        try {
+            DB::connection('import_v1')->getPdo();
+        } catch (Throwable $e) {
+            $this->markTestSkipped('import_v1 database connection unavailable');
+        }
+
         $this->service    = new ProductsImportService();
         $this->company    = Company::factory()->create();
         $this->idMappings = ['tax_rates' => [], 'product_families' => [], 'product_units' => []];
@@ -37,9 +48,13 @@ class ProductsImportServiceTest extends AbstractTestCase
 
     protected function tearDown(): void
     {
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_families');
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_units');
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_products');
+        try {
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_families');
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_units');
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_products');
+        } catch (Throwable) {
+            // connection unavailable — nothing to drop
+        }
         parent::tearDown();
     }
 
