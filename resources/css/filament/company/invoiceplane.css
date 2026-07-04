@@ -60,10 +60,42 @@
         @apply text-white;
         @apply bg-primary-700!;
         @apply rounded-lg;
+
+        > .fi-sidebar-item-btn {
+            @apply bg-primary-700!;
+
+            > .fi-icon { @apply text-white!; }
+            > .fi-sidebar-item-label { @apply text-white!; }
+        }
     }
 
     .fi-sidebar-header {
         @apply bg-primary-500;
+    }
+
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible {
+        @apply bg-primary-600!;
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-group-dropdown-trigger-btn:focus-visible {
+        @apply bg-primary-600!;
+    }
+
+    .fi-sidebar-database-notifications-btn:hover,
+    .fi-sidebar-database-notifications-btn:focus-visible {
+        @apply bg-primary-600!;
+    }
+
+    .fi-sidebar-database-notifications-btn > .fi-icon,
+    .fi-sidebar-database-notifications-btn > .fi-sidebar-database-notifications-btn-label {
+        @apply text-white!;
+    }
+
+    .fi-user-menu-trigger {
+        .fi-icon { @apply text-white!; }
+        .fi-tenant-menu-trigger-text { @apply text-white!; }
     }
 }
 

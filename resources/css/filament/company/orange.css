@@ -6,6 +6,21 @@
 @source '../../../../Modules/**/resources/views/**/*';
 @source '../../../../Modules/**/*.php';
 
+/* gray-token remap: Orange warm neutral palette */
+:root {
+    --gray-50:  #fafaf8;
+    --gray-100: #f4efe9;
+    --gray-200: #e5ddd4;
+    --gray-300: #cdc3b8;
+    --gray-400: #a89a8d;
+    --gray-500: #857468;
+    --gray-600: #67574d;
+    --gray-700: #4c3c33;
+    --gray-800: #352920;
+    --gray-900: #211912;
+    --gray-950: #100c08;
+}
+
 .fi-bg-color-600 {
     @apply bg-orange-700;
     @apply hover:bg-orange-500;
@@ -60,10 +75,42 @@
         @apply text-white;
         @apply !bg-orange-700;
         @apply rounded-lg;
+
+        > .fi-sidebar-item-btn {
+            @apply !bg-orange-700;
+
+            > .fi-icon { @apply !text-white; }
+            > .fi-sidebar-item-label { @apply !text-white; }
+        }
     }
 
     .fi-sidebar-header {
         @apply bg-orange-500;
+    }
+
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-orange-600;
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-group-dropdown-trigger-btn:focus-visible {
+        @apply !bg-orange-600;
+    }
+
+    .fi-sidebar-database-notifications-btn:hover,
+    .fi-sidebar-database-notifications-btn:focus-visible {
+        @apply !bg-orange-600;
+    }
+
+    .fi-sidebar-database-notifications-btn > .fi-icon,
+    .fi-sidebar-database-notifications-btn > .fi-sidebar-database-notifications-btn-label {
+        @apply !text-white;
+    }
+
+    .fi-user-menu-trigger {
+        .fi-icon { @apply !text-white; }
+        .fi-tenant-menu-trigger-text { @apply !text-white; }
     }
 }
 

@@ -11,6 +11,21 @@
 }
 */
 
+/* gray-token remap: InvoicePlane Blue neutral palette */
+:root {
+    --gray-50:  #f8f9fd;
+    --gray-100: #eef1f9;
+    --gray-200: #dde4f2;
+    --gray-300: #c4ceea;
+    --gray-400: #9aaed5;
+    --gray-500: #758eba;
+    --gray-600: #546e97;
+    --gray-700: #3d5375;
+    --gray-800: #283c57;
+    --gray-900: #182840;
+    --gray-950: #0e1a2e;
+}
+
 .fi-bg-color-600 {
     @apply bg-blue-700;
     @apply hover:bg-blue-500;
@@ -65,10 +80,42 @@
         @apply text-white;
         @apply !bg-blue-700;
         @apply rounded-lg;
+
+        > .fi-sidebar-item-btn {
+            @apply !bg-blue-700;
+
+            > .fi-icon { @apply !text-white; }
+            > .fi-sidebar-item-label { @apply !text-white; }
+        }
     }
 
     .fi-sidebar-header {
         @apply bg-blue-500;
+    }
+
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-blue-600;
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-group-dropdown-trigger-btn:focus-visible {
+        @apply !bg-blue-600;
+    }
+
+    .fi-sidebar-database-notifications-btn:hover,
+    .fi-sidebar-database-notifications-btn:focus-visible {
+        @apply !bg-blue-600;
+    }
+
+    .fi-sidebar-database-notifications-btn > .fi-icon,
+    .fi-sidebar-database-notifications-btn > .fi-sidebar-database-notifications-btn-label {
+        @apply !text-white;
+    }
+
+    .fi-user-menu-trigger {
+        .fi-icon { @apply !text-white; }
+        .fi-tenant-menu-trigger-text { @apply !text-white; }
     }
 }
 

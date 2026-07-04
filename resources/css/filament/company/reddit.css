@@ -6,6 +6,21 @@
 @source '../../../../Modules/**/resources/views/**/*';
 @source '../../../../Modules/**/*.php';
 
+/* gray-token remap: Reddit warm red-orange neutral palette */
+:root {
+    --gray-50:  #faf9f8;
+    --gray-100: #f4efeb;
+    --gray-200: #e5dbd5;
+    --gray-300: #cdc0b8;
+    --gray-400: #a8948a;
+    --gray-500: #85706a;
+    --gray-600: #67524d;
+    --gray-700: #4c3a36;
+    --gray-800: #352622;
+    --gray-900: #211714;
+    --gray-950: #100b09;
+}
+
 .fi-bg-color-600 {
     @apply bg-[#FF4500];
     @apply hover:bg-[#ff5722];
@@ -60,10 +75,42 @@
         @apply text-white;
         @apply !bg-[#d93900];
         @apply rounded-lg;
+
+        > .fi-sidebar-item-btn {
+            @apply !bg-[#d93900];
+
+            > .fi-icon { @apply !text-white; }
+            > .fi-sidebar-item-label { @apply !text-white; }
+        }
     }
 
     .fi-sidebar-header {
         @apply bg-[#FF4500];
+    }
+
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-[#e83d00];
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-group-dropdown-trigger-btn:focus-visible {
+        @apply !bg-[#e83d00];
+    }
+
+    .fi-sidebar-database-notifications-btn:hover,
+    .fi-sidebar-database-notifications-btn:focus-visible {
+        @apply !bg-[#e83d00];
+    }
+
+    .fi-sidebar-database-notifications-btn > .fi-icon,
+    .fi-sidebar-database-notifications-btn > .fi-sidebar-database-notifications-btn-label {
+        @apply !text-white;
+    }
+
+    .fi-user-menu-trigger {
+        .fi-icon { @apply !text-white; }
+        .fi-tenant-menu-trigger-text { @apply !text-white; }
     }
 }
 

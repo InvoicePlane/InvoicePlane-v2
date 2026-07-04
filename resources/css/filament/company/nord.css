@@ -111,6 +111,21 @@
     --color-info-950: #405162;
 }
 
+/* gray-token remap: Nord content-area neutral palette (Snow Storm → Polar Night) */
+:root {
+    --gray-50:  var(--color-snowstorm-600);
+    --gray-100: var(--color-snowstorm-500);
+    --gray-200: var(--color-snowstorm-400);
+    --gray-300: var(--color-polarnight-300);
+    --gray-400: var(--color-polarnight-400);
+    --gray-500: var(--color-polarnight-500);
+    --gray-600: var(--color-polarnight-600);
+    --gray-700: var(--color-polarnight-700);
+    --gray-800: var(--color-polarnight-800);
+    --gray-900: var(--color-polarnight-900);
+    --gray-950: var(--color-polarnight-950);
+}
+
 .fi-bg-color-600 {
     @apply bg-[var(--color-frost-700)];
     @apply hover:bg-[var(--color-frost-500)];
@@ -165,10 +180,42 @@
         @apply text-[var(--color-snowstorm-600)];
         @apply !bg-[var(--color-polarnight-800)];
         @apply rounded-lg;
+
+        > .fi-sidebar-item-btn {
+            @apply !bg-[var(--color-polarnight-800)];
+
+            > .fi-icon { @apply !text-[var(--color-snowstorm-600)]; }
+            > .fi-sidebar-item-label { @apply !text-[var(--color-snowstorm-600)]; }
+        }
     }
 
     .fi-sidebar-header {
         @apply bg-[var(--color-polarnight-700)];
+    }
+
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-[var(--color-polarnight-600)];
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-group-dropdown-trigger-btn:focus-visible {
+        @apply !bg-[var(--color-polarnight-600)];
+    }
+
+    .fi-sidebar-database-notifications-btn:hover,
+    .fi-sidebar-database-notifications-btn:focus-visible {
+        @apply !bg-[var(--color-polarnight-600)];
+    }
+
+    .fi-sidebar-database-notifications-btn > .fi-icon,
+    .fi-sidebar-database-notifications-btn > .fi-sidebar-database-notifications-btn-label {
+        @apply !text-[var(--color-snowstorm-600)];
+    }
+
+    .fi-user-menu-trigger {
+        .fi-icon { @apply !text-[var(--color-snowstorm-600)]; }
+        .fi-tenant-menu-trigger-text { @apply !text-[var(--color-snowstorm-600)]; }
     }
 }
 
