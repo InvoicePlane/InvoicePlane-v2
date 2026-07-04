@@ -1,7 +1,0 @@
-{
-  "pause": false,
-  "stop_after_issue": null,
-  "skip_issues": [85],
-  "priority_override": [138],
-  "mode": "sequential"
-}
