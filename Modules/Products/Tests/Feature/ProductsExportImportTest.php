@@ -32,7 +32,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportCsvV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 
@@ -54,7 +54,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 
@@ -76,7 +76,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 
@@ -92,8 +92,8 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
         Bus::fake();
         Storage::fake('local');
         $product = Product::factory()->for($this->company)->create([
-            'name'  => 'ÜProduct, "Test"',
-            'price' => 123.45,
+            'product_name' => 'ÜProduct, "Test"',
+            'price'        => 123.45,
         ]);
 
         /* Act */
@@ -101,7 +101,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 
@@ -123,7 +123,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportCsvV1', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 
@@ -145,7 +145,7 @@ class ProductsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListProducts::class)
             ->callAction('exportExcelV1', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Product Name'],
+                    'product_name' => ['isEnabled' => true, 'label' => 'Product Name'],
                 ],
             ]);
 

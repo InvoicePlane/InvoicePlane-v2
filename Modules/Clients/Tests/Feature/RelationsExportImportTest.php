@@ -31,7 +31,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportCsvV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
@@ -53,7 +53,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
@@ -75,7 +75,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
@@ -91,7 +91,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
         Bus::fake();
         Storage::fake('local');
         $relation = Relation::factory()->for($this->company)->create([
-            'name' => 'ÜRelation, "Test"',
+            'company_name' => 'ÜRelation, "Test"',
         ]);
 
         /* Act */
@@ -99,7 +99,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportExcelV2', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
@@ -121,7 +121,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportCsvV1', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
@@ -143,7 +143,7 @@ class RelationsExportImportTest extends AbstractCompanyPanelTestCase
             ->test(ListRelations::class)
             ->callAction('exportExcelV1', data: [
                 'columnMap' => [
-                    'name' => ['isEnabled' => true, 'label' => 'Relation Name'],
+                    'company_name' => ['isEnabled' => true, 'label' => 'Relation Name'],
                 ],
             ]);
 
