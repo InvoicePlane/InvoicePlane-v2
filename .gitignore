@@ -83,3 +83,5 @@ package-lock.json
 /automation/.idea/
 /automation/vendor/
 /automation/test-honesty/vendor/
+.claude/fable5/runtime/control.json
+upd.sh
