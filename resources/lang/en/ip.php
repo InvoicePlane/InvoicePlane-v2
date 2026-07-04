@@ -1223,5 +1223,14 @@ return [
     'task_name'      => 'Task Name',
     'pending'        => 'Pending',
     'number'         => 'Number',
+
+    'merge_clients'                   => 'Merge clients',
+    'merge_clients_description'       => 'All invoices, quotes, payments, expenses, projects, tasks, contacts, addresses and notes of the duplicate will be moved to the primary client. The duplicate will be deleted.',
+    'merge_clients_primary'           => 'Primary client',
+    'merge_clients_primary_help'      => 'The selected client is kept; the other one is merged into it and deleted.',
+    'merge_clients_select_two'        => 'Select exactly two clients to merge.',
+    'merge_clients_success'           => 'Clients merged successfully.',
+    'merge_clients_same_record'       => 'A client cannot be merged into itself.',
+    'merge_clients_different_company' => 'Both clients must belong to the same company.',
     #endregion
 ];
