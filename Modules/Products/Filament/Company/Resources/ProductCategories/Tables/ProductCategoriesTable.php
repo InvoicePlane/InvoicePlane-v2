@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Products\Services\ProductCategoryService;
 
 class ProductCategoriesTable
@@ -22,8 +23,10 @@ class ProductCategoriesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()->modalWidth('full')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PRODUCTS->value)),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value))
                         ->action(function ($record, array $data) {
                             app(ProductCategoryService::class)->deleteProductCategory($record);
                         }),
@@ -31,7 +34,8 @@ class ProductCategoriesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value)),
                 ]),
             ])
             ->defaultSort('category_name', 'asc');

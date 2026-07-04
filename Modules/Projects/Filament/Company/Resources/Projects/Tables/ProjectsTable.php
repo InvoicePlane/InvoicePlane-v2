@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Filament\Company\Resources\Projects\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -9,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
@@ -53,11 +55,23 @@ class ProjectsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PROJECTS->value))
                         ->action(function (Project $record, array $data) {
                             app(ProjectService::class)->updateProject($record, $data);
                         })
                         ->modalWidth('full'),
+                    Action::make('duplicate')
+                        ->label(trans('ip.duplicate'))
+                        ->icon('heroicon-o-document-duplicate')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_PROJECTS->value))
+                        ->action(function (): void {}),
+                    Action::make('archive')
+                        ->label(trans('ip.archive'))
+                        ->icon('heroicon-o-archive-box')
+                        ->visible(fn () => auth()->user()?->can(Permission::ARCHIVE_PROJECTS->value))
+                        ->action(function (): void {}),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PROJECTS->value))
                         ->action(function (Project $record, array $data) {
                             app(ProjectService::class)->deleteProject($record);
                         }),
@@ -65,7 +79,8 @@ class ProjectsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PROJECTS->value)),
                 ]),
             ])
             ->defaultSort('end_at', 'asc');

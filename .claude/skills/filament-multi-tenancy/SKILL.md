@@ -105,21 +105,9 @@ Filament::setTenant($companyA, isQuiet: true);
 
 ## Tenant Middleware Stack
 
-The company panel uses three tenant middlewares (in order):
-
-1. `SetTenantFromQueryString` — reads `?tenant=search_code`, validates access
-2. `ConfigureTenant` — resolves tenant from route/query/session/user default, writes to session
-3. `EnsureUserCanAccessCompany` — enforces authorization (elevated roles bypass; regular users must own the company)
-
-These are registered as persistent tenant middleware in `CompanyPanelProvider`:
-
-```php
-->tenantMiddleware([
-    SetTenantFromQueryString::class,
-    ConfigureTenant::class,
-    EnsureUserCanAccessCompany::class,
-], isPersistent: true)
-```
+See the `tenant-middleware` skill for the full middleware chain. In short: three
+persistent middlewares run on every company panel request in this order:
+`SetTenantFromQueryString` → `ConfigureTenant` → `EnsureUserCanAccessCompany`.
 
 ## Tenant in Tests Setup
 

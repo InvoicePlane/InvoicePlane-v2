@@ -1,0 +1,10 @@
+[
+  {
+    "number": 501,
+    "title": "[IP-101] Fix login bug",
+    "head": {
+      "ref": "fable5/issue-101"
+    },
+    "state": "open"
+  }
+]

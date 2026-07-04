@@ -1,0 +1,32 @@
+{
+  "data": {
+    "repository": {
+      "issue": {
+        "id": "MDU6SXNzdWUx",
+        "title": "Found a bug",
+        "body": "I'm having a problem with this.",
+        "state": "OPEN",
+        "author": {
+          "login": "octocat"
+        },
+        "labels": {
+          "nodes": [
+            {
+              "name": "bug"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "body": "I'm working on it!",
+              "author": {
+                "login": "octocat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
