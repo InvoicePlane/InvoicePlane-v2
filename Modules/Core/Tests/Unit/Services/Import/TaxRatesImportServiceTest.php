@@ -9,6 +9,7 @@ use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\Import\TaxRatesImportService;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Throwable;
 
 class TaxRatesImportServiceTest extends AbstractTestCase
 {
@@ -24,6 +25,16 @@ class TaxRatesImportServiceTest extends AbstractTestCase
     {
         parent::setUp();
 
+        /*
+         * These tests exercise the V1 import against a real import_v1
+         * database; skip when none is reachable (e.g. sqlite CI env).
+         */
+        try {
+            DB::connection('import_v1')->getPdo();
+        } catch (Throwable $e) {
+            $this->markTestSkipped('import_v1 database connection unavailable');
+        }
+
         $this->service = new TaxRatesImportService();
         $this->company = Company::factory()->create();
 
@@ -34,7 +45,11 @@ class TaxRatesImportServiceTest extends AbstractTestCase
 
     protected function tearDown(): void
     {
-        DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_tax_rates');
+        try {
+            DB::connection('import_v1')->statement('DROP TABLE IF EXISTS ip_tax_rates');
+        } catch (Throwable) {
+            // connection unavailable — nothing to drop
+        }
         parent::tearDown();
     }
 
