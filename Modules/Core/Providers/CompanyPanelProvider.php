@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Providers;
 
+use App\Filament\Pages\SwitchCompany;
 use Filament\Actions\Action;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
@@ -173,6 +174,7 @@ class CompanyPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
             ->pages([
                 Dashboard::class,
+                SwitchCompany::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -238,10 +240,12 @@ class CompanyPanelProvider extends PanelProvider
             })
             ->userMenuItems([
                 Action::make('switch-company')
-                    ->label('Switch Company')
+                    ->label(fn (): string => Company::query()->find(session('current_company_id'))?->name ?? trans('ip.switch_company'))
                     ->icon('heroicon-o-building-office-2')
-                    ->modalHeading('Switch Company')
-                    ->modalContent(fn () => view('filament.company.widgets.switch-company-table')),
+                    ->modalHeading(trans('ip.switch_company'))
+                    ->modalContent(fn () => view('filament.pages.switch-company-modal'))
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
