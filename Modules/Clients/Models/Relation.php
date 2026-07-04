@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Database\Factories\RelationFactory;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Models\Company;
@@ -173,9 +174,24 @@ class Relation extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getCustomerEmailAttribute()
+    /**
+     * The relation's email address, resolved from the primary contact's
+     * email communications (there is no email column on relations itself).
+     * A primary email communication wins over any other email communication.
+     */
+    public function getCustomerEmailAttribute(): ?string
     {
-        return $this->email;
+        $contact = $this->primaryContact;
+
+        if ( ! $contact) {
+            return null;
+        }
+
+        $emails = $contact->communications
+            ->where('communication_type', CommunicationType::EMAIL->value);
+
+        return $emails->firstWhere('is_primary', true)?->communication_value
+            ?? $emails->first()?->communication_value;
     }
 
     /*public function getPrimaryContactAttribute(): string

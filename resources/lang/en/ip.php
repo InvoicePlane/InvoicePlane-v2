@@ -18,6 +18,7 @@ return [
     'coc_number'                       => 'Chamber of Commerce Number',
     'company_name'                     => 'Customer Name',
     'contact_information'              => 'Contact Information',
+    'customer_has_no_email'            => 'This customer has no email address',
     'customer_name'                    => 'Customer Name',
     'delete_client'                    => 'Delete Client',
     'delete_client_warning'            => 'If you delete this client you will also delete any invoices, quotes and payments related to this client. Are you sure you want to permanently delete this client?',
@@ -606,6 +607,7 @@ return [
     'payment_method_paypal'         => 'PayPal',
     'payment_method_stripe'         => 'Stripe',
     'payment_methods'               => 'Payment Methods',
+    'payment_recorded'              => 'Payment recorded',
     'payment_reference'             => 'Payment Reference',
     'payment_status'                => 'Payment Status',
     'payments'                      => 'Payments',
@@ -616,6 +618,7 @@ return [
 
     #region INVOICES
     'copy_invoice'                       => 'Copy Invoice',
+    'invoice_copied'                     => 'Invoice copied as draft',
     'create_credit_invoice'              => 'Create credit invoice',
     'create_credit_invoice_alert'        => 'Creating a credit invoice will make the current invoice <em>read-only</em> which means you will not be able to edit the invoice anymore. The credit invoice will contain the current state with all items but with negative amounts and balances.',
     'create_invoice'                     => 'Create Invoice',
