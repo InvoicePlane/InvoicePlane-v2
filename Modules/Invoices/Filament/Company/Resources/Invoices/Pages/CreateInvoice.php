@@ -6,6 +6,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Services\InvoiceService;
+use function request;
 
 class CreateInvoice extends CreateRecord
 {
@@ -44,5 +45,23 @@ class CreateInvoice extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         return app(InvoiceService::class)->createInvoice($data);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if ($customerId = request()->integer('customer_id')) {
+            $data['customer_id'] = $customerId;
+        }
+
+        return $data;
+    }
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        if ($customerId = request()->integer('customer_id')) {
+            $this->form->fill(['customer_id' => $customerId]);
+        }
     }
 }
