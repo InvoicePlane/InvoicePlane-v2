@@ -1,10 +1,8 @@
 ---
 name: pest-control
 description: >
-  Enforces PHPUnit-only testing in this project. Activates when writing tests, reviewing test
-  files, or when any Pest syntax appears (it(), test(), describe(), uses(), expect() chains,
-  beforeEach/afterEach hooks). Scans for and eliminates all Pest references from code,
-  config, and documentation.
+  Detects and removes Pest syntax (it/test/describe/uses/expect) from code, config, and docs —
+  this project is PHPUnit-only.
 license: MIT
 metadata:
   author: project

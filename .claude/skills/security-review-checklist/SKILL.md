@@ -1,5 +1,5 @@
 ---
-name: security-review
+name: security-review-checklist
 description: Static review rules for authorization, validation, and privilege escalation risks
 ---
 

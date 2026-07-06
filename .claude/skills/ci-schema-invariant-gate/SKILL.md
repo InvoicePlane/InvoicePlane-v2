@@ -45,8 +45,8 @@ These are handled by other skills.
 
 If CI fails:
 
-- migrations failing → schema issue (handled by test-honesty)
-- seed failing → factory/data issue (handled by test-honesty)
+- migrations failing → schema issue (handled by data-layer-contracts)
+- seed failing → factory/data issue (handled by data-layer-contracts)
 - tests failing → behavior issue (handled by test layer)
 
 CI does NOT interpret or classify failures.

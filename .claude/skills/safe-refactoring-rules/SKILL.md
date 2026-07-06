@@ -99,7 +99,7 @@ Duplicate abstractions are architectural defects.
 This skill does NOT define:
 
 - architecture layering (handled by application-architecture-standard)
-- testing strategy (handled by test-honesty / filament-resource-testing)
+- testing strategy (handled by data-layer-contracts / filament-resource-testing)
 - security rules (handled separately if present)
 
 It ONLY defines safe transformation rules.

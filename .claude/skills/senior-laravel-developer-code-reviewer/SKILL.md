@@ -28,11 +28,11 @@ Do not invent rules. Delegate evaluation to existing skills:
 
 **Tests**
 - `filament-resource-testing`
-- `test-honesty`
+- `data-layer-contracts`
 - `pest-control`
 
 **Security**
-- `security-review`
+- `security-review-checklist`
 - `spatie-roles`
 
 **Tenancy**
@@ -60,7 +60,7 @@ Good example:
 Focus on:
 - Tests that pass even when the feature is broken (assertion on wrong thing)
 - Missing failure-path tests
-- Hardcoded IDs (violates `test-honesty`)
+- Hardcoded IDs (violates `data-layer-contracts`)
 - Pest syntax in a PHPUnit-only project
 - Livewire tests that bypass the service layer and assert nothing in the DB
 - **Missing `/* Arrange */` / `/* Act */` / `/* Assert */` phase comments** — every test method requires all three, no exceptions
