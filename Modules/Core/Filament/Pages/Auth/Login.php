@@ -17,17 +17,7 @@ class Login extends BaseLogin
         try {
             $this->rateLimit(5);
         } catch (TooManyRequestsException $exception) {
-            Notification::make()
-                ->title(trans('filament-panels::auth/pages/login.notifications.throttled.title', [
-                    'seconds' => $exception->secondsUntilAvailable,
-                    'minutes' => ceil($exception->secondsUntilAvailable / 60),
-                ]))
-                ->body(array_key_exists('body', trans('filament-panels::auth/pages/login.notifications.throttled') ?: []) ? trans('filament-panels::auth/pages/login.notifications.throttled.body', [
-                    'seconds' => $exception->secondsUntilAvailable,
-                    'minutes' => ceil($exception->secondsUntilAvailable / 60),
-                ]) : null)
-                ->danger()
-                ->send();
+            $this->getRateLimitedNotification($exception)?->send();
 
             return null;
         }
