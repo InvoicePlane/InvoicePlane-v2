@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
 use Modules\Quotes\Enums\QuoteStatus;
@@ -64,11 +65,14 @@ class QuotesTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_QUOTES->value))
                         ->action(function (Quote $record, array $data) {
                             app(QuoteService::class)->updateQuote($record, $data);
                         })
                         ->modalWidth('full'),
                     Action::make('duplicate')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_QUOTES->value))
+
                         ->label(trans('ip.duplicate'))
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Quote $record): void {
@@ -76,6 +80,8 @@ class QuotesTable
                         })
                         ->successNotificationTitle(trans('ip.quote_duplicated')),
                     Action::make('download pdf')
+                        ->visible(fn () => auth()->user()?->can(Permission::DOWNLOAD_QUOTES->value))
+
                         ->label(trans('ip.download_pdf'))
                         ->modalDescription(
                             'todo: make sure we can download the PDF of the Quote through an action,
@@ -84,10 +90,44 @@ class QuotesTable
                         ->action(function (Quote $record): void {}),
                     Action::make('send email')
                         ->label(trans('ip.send_email'))
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_QUOTES->value))
+
                         ->modalDescription('todo: make sure we can email the Quote through an action,
                             so need for modal anymore')
                         ->action(function (Quote $record): void {}),
+                    Action::make('print')
+                        ->label(trans('ip.print'))
+                        ->icon('heroicon-o-printer')
+                        ->visible(fn () => auth()->user()?->can(Permission::PRINT_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
+                    Action::make('mark_sent')
+                        ->label(trans('ip.mark_sent'))
+                        ->icon('heroicon-o-check-circle')
+                        ->visible(fn () => auth()->user()?->can(Permission::MARK_SENT_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
+                    Action::make('approve')
+                        ->label(trans('ip.approve'))
+                        ->icon('heroicon-o-hand-thumb-up')
+                        ->visible(fn () => auth()->user()?->can(Permission::APPROVE_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
+                    Action::make('reject')
+                        ->label(trans('ip.reject'))
+                        ->icon('heroicon-o-hand-thumb-down')
+                        ->visible(fn () => auth()->user()?->can(Permission::REJECT_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
+                    Action::make('convert_to_invoice')
+                        ->label(trans('ip.convert_to_invoice'))
+                        ->icon('heroicon-o-arrow-right-circle')
+                        ->visible(fn () => auth()->user()?->can(Permission::CONVERT_TO_INVOICE_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
+                    Action::make('archive')
+                        ->label(trans('ip.archive'))
+                        ->icon('heroicon-o-archive-box')
+                        ->visible(fn () => auth()->user()?->can(Permission::ARCHIVE_QUOTES->value))
+                        ->action(function (Quote $record): void {}),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_QUOTES->value))
+
                         ->action(function (Quote $quote) {
                             app(QuoteService::class)->deleteQuote($quote);
                         }),
@@ -95,7 +135,8 @@ class QuotesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_QUOTES->value)),
                 ]),
             ])
             ->defaultSort('quote_expires_at', 'asc');

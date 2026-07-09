@@ -12,11 +12,13 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Enums\UserRole;
 use Modules\Expenses\Models\Expense;
@@ -128,6 +130,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     public function uploads(): HasMany
     {
         return $this->hasMany(Upload::class);
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->belongsTo(Relation::class);
     }
 
     /*
