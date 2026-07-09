@@ -18,11 +18,11 @@ class Login extends BaseLogin
             $this->rateLimit(5);
         } catch (TooManyRequestsException $exception) {
             Notification::make()
-                ->title(trans('filament-panels::pages/auth/login.notifications.throttled.title', [
+                ->title(trans('filament-panels::auth/pages/login.notifications.throttled.title', [
                     'seconds' => $exception->secondsUntilAvailable,
                     'minutes' => ceil($exception->secondsUntilAvailable / 60),
                 ]))
-                ->body(array_key_exists('body', trans('filament-panels::pages/auth/login.notifications.throttled') ?: []) ? trans('filament-panels::pages/auth/login.notifications.throttled.body', [
+                ->body(array_key_exists('body', trans('filament-panels::auth/pages/login.notifications.throttled') ?: []) ? trans('filament-panels::auth/pages/login.notifications.throttled.body', [
                     'seconds' => $exception->secondsUntilAvailable,
                     'minutes' => ceil($exception->secondsUntilAvailable / 60),
                 ]) : null)
@@ -62,7 +62,6 @@ class Login extends BaseLogin
     protected function getEmailFormComponent(): Component
     {
         return TextInput::make('email')
-            ->label(trans('filament-panels::pages/auth/login.form.email.label'))
             ->email()
             ->required()
             ->autocomplete()
@@ -73,7 +72,6 @@ class Login extends BaseLogin
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
-            ->label(trans('filament-panels::pages/auth/login.form.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->autocomplete('current-password')
