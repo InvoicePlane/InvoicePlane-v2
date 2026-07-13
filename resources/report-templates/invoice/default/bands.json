@@ -1,0 +1,40 @@
+{
+    "header": [
+        {
+            "brick": "header_company",
+            "width": "half",
+            "config": {}
+        },
+        {
+            "brick": "header_client",
+            "width": "half",
+            "config": {}
+        },
+        {
+            "brick": "header_invoice_meta",
+            "width": "full",
+            "config": {}
+        }
+    ],
+    "group_header": [],
+    "details": [
+        {
+            "brick": "detail_items",
+            "width": "full",
+            "config": {}
+        }
+    ],
+    "group_footer": [],
+    "footer": [
+        {
+            "brick": "footer_totals",
+            "width": "full",
+            "config": {}
+        },
+        {
+            "brick": "footer_notes",
+            "width": "full",
+            "config": {}
+        }
+    ]
+}
