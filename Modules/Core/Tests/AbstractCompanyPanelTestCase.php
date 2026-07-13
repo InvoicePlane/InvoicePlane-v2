@@ -3,10 +3,10 @@
 namespace Modules\Core\Tests;
 
 use Filament\Facades\Filament;
-use Filament\Schemas\Components\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
+use Livewire\Livewire;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
@@ -69,8 +69,9 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
      */
     protected function testLivewire($component, $params = [])
     {
-        return Livewire::actingAs($this->user)
-            ->withSession(['current_company_id' => $this->company->id])
-            ->test($component, $params);
+        $this->actingAs($this->user)
+            ->withSession(['current_company_id' => $this->company->id]);
+
+        return Livewire::test($component, $params);
     }
 }
