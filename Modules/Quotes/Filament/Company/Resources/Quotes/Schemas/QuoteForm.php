@@ -16,6 +16,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Enums\ReportTemplateType;
+use Modules\Core\Services\ReportTemplateStorage;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
@@ -104,6 +106,13 @@ class QuoteForm
                                             ->searchable()
                                             ->preload()
                                             ->native(false),
+
+                                        Select::make('template')
+                                            ->label(trans('ip.pdf_template'))
+                                            ->options(fn (): array => app(ReportTemplateStorage::class)->optionsForType(ReportTemplateType::QUOTE))
+                                            ->placeholder(trans('ip.company_default_template'))
+                                            ->native(false)
+                                            ->nullable(),
                                     ])
                                     ->columns(2),
                             ])
