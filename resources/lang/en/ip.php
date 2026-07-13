@@ -1234,6 +1234,8 @@ return [
     'brick'                     => 'Brick',
     'brick_moved'               => 'Brick moved',
     'brick_not_allowed_in_band' => 'This brick is not allowed in the selected band',
+    'pdf_template'              => 'PDF Template',
+    'company_default_template'  => 'Company default',
 
     // New brick translations
     'invoice_product_details'           => 'Invoice Product Details',
