@@ -44,32 +44,96 @@ class ReportRenderer
 
         $html = '<div class="report-band report-band-' . $band->value . '" style="' . $style . '">';
 
+        /*
+         * page-break bricks must live at block level between the row
+         * tables — dompdf ignores page-break CSS inside table cells.
+         */
+        $segment = [];
+
         foreach ($entries as $entry) {
-            $html .= $this->renderEntry($entry, $data);
+            if (($entry['brick'] ?? null) === 'page_break') {
+                $html .= $this->renderRows($segment, $data);
+                $html .= (string) \Modules\Core\Mason\Bricks\PageBreakBrick::toHtml($entry['config'] ?? [], $data);
+                $segment = [];
+
+                continue;
+            }
+
+            $segment[] = $entry;
         }
 
-        $html .= '<div style="clear: both;"></div></div>';
+        $html .= $this->renderRows($segment, $data);
+        $html .= '</div>';
 
         return $html;
     }
 
-    protected function renderEntry(array $entry, array $data): string
+    protected function renderRows(array $entries, array $data): string
     {
-        $brickClass = ReportBricksCollection::findById((string) ($entry['brick'] ?? ''));
+        $html = '';
 
-        if ($brickClass === null) {
-            return '';
+        foreach ($this->chunkIntoRows($entries) as $row) {
+            $html .= $this->renderRow($row, $data);
         }
 
-        $config = is_array($entry['config'] ?? null) ? $entry['config'] : [];
-        $width  = ReportBlockWidth::tryFrom((string) ($entry['width'] ?? '')) ?? ReportBlockWidth::FULL;
-        $inner  = (string) $brickClass::toHtml($brickClass::filterConfig($config), $data);
+        return $html;
+    }
 
-        $percent = (int) round($width->getGridWidth() / 12 * 100);
+    /**
+     * Group consecutive entries into rows on a 12-column grid — dompdf
+     * cannot lay out floats reliably, so each row becomes a table.
+     *
+     * @return array<int, array<int, array{entry: array, width: ReportBlockWidth}>>
+     */
+    protected function chunkIntoRows(array $entries): array
+    {
+        $rows     = [];
+        $row      = [];
+        $rowWidth = 0;
 
-        return '<div class="report-block" style="float: left; width: ' . $percent . '%; box-sizing: border-box;">'
-            . $inner
-            . '</div>';
+        foreach ($entries as $entry) {
+            if ( ! is_array($entry) || ReportBricksCollection::findById((string) ($entry['brick'] ?? '')) === null) {
+                continue;
+            }
+
+            $width = ReportBlockWidth::tryFrom((string) ($entry['width'] ?? '')) ?? ReportBlockWidth::FULL;
+
+            if ($row !== [] && $rowWidth + $width->getGridWidth() > 12) {
+                $rows[]   = $row;
+                $row      = [];
+                $rowWidth = 0;
+            }
+
+            $row[] = ['entry' => $entry, 'width' => $width];
+            $rowWidth += $width->getGridWidth();
+        }
+
+        if ($row !== []) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param array<int, array{entry: array, width: ReportBlockWidth}> $row
+     */
+    protected function renderRow(array $row, array $data): string
+    {
+        $cells = '';
+
+        foreach ($row as $block) {
+            $brickClass = ReportBricksCollection::findById((string) $block['entry']['brick']);
+            $config     = is_array($block['entry']['config'] ?? null) ? $block['entry']['config'] : [];
+            $inner      = (string) $brickClass::toHtml($brickClass::filterConfig($config), $data);
+            $percent    = (int) round($block['width']->getGridWidth() / 12 * 100);
+
+            $cells .= '<td class="report-block" style="width: ' . $percent . '%; vertical-align: top; padding: 0;">'
+                . $inner
+                . '</td>';
+        }
+
+        return '<table class="report-row" style="width: 100%; border-collapse: collapse;"><tr>' . $cells . '</tr></table>';
     }
 
     protected function keepsTogether(ReportBand $band, array $manifest): bool
