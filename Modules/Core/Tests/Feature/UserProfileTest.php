@@ -3,11 +3,13 @@
 namespace Modules\Core\Tests\Feature;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Models\Company;
+use Modules\Core\Services\UserService;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -45,6 +47,29 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('users', [
             'id'       => $this->user->id,
             'language' => 'fr',
+        ]);
+    }
+
+    #[Test]
+    public function clearing_the_avatar_removes_the_upload_and_stored_file(): void
+    {
+        /* Arrange */
+        Storage::fake('public');
+        Storage::disk('public')->put('avatars/avatar.png', 'contents');
+        app(UserService::class)->updateAvatar($this->user, 'avatars/avatar.png');
+
+        /* Act */
+        $this->testLivewire(EditProfile::class)
+            ->fillForm(['avatar' => null])
+            ->call('save')
+            /* Assert */
+            ->assertHasNoFormErrors();
+
+        Storage::disk('public')->assertMissing('avatars/avatar.png');
+        $this->assertDatabaseMissing('uploads', [
+            'uploadable_type'  => $this->user::class,
+            'uploadable_id'    => $this->user->id,
+            'file_description' => 'avatar',
         ]);
     }
 
