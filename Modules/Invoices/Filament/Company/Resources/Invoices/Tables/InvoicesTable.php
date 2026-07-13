@@ -109,11 +109,16 @@ class InvoicesTable
                     Action::make('download pdf')
                         ->visible(fn () => auth()->user()?->can(Permission::DOWNLOAD_INVOICES->value))
                         ->label(trans('ip.download_pdf'))
-                        ->modalDescription(
-                            'todo: make sure we can download the PDF of the Invoice through an action,
-                            so need for modal anymore'
-                        )
-                        ->action(function (Invoice $record): void {}),
+                        ->action(function (Invoice $record) {
+                            $pdfService = app(\Modules\Core\Services\PdfGenerationService::class);
+
+                            return response()->streamDownload(
+                                function () use ($pdfService, $record): void {
+                                    echo $pdfService->invoicePdf($record);
+                                },
+                                'invoice-' . ($record->invoice_number ?: $record->id) . '.pdf',
+                            );
+                        }),
                     Action::make('send email')
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
                         ->label(trans('ip.send_email'))

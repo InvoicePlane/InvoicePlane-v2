@@ -36,4 +36,8 @@ return [
         '3' => '3',
     ],
     'export_version' => 2,
+
+    'pdfDriver'        => env('IP_PDF_DRIVER', 'domPDF'),
+    'paperSize'        => env('IP_PAPER_SIZE', 'a4'),
+    'paperOrientation' => env('IP_PAPER_ORIENTATION', 'portrait'),
 ];
