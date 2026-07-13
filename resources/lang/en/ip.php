@@ -1060,6 +1060,16 @@ return [
     'report_block_type_totals'        => 'Totals Block',
     'report_block_type_totals_desc'   => 'Block for displaying subtotals, taxes, and grand totals',
 
+    // Email template variables (#363)
+    'available_variables'              => 'Available Variables',
+    'variable_client_name'             => 'The client (relation) company name',
+    'variable_company_name'            => 'Your company name',
+    'variable_document_number'         => 'The invoice or quote number',
+    'variable_document_date'           => 'The invoice or quote date',
+    'variable_document_total'          => 'The document total',
+    'variable_invoicing_contact_name'  => "The client's invoicing contact name (falls back to the primary contact)",
+    'variable_invoicing_contact_email' => "The client's invoicing contact email (falls back to the primary contact)",
+
     // Mason Report Builder
     'report_layout'              => 'Report Layout',
     'report_preview'             => 'Report Preview',
