@@ -15,6 +15,8 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Enums\ReportTemplateType;
+use Modules\Core\Services\ReportTemplateStorage;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Support\InvoiceCalculator;
 use Modules\Products\Models\Product;
@@ -100,6 +102,13 @@ class InvoiceForm
 
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),
+
+                                        Select::make('template')
+                                            ->label(trans('ip.pdf_template'))
+                                            ->options(fn (): array => app(ReportTemplateStorage::class)->optionsForType(ReportTemplateType::INVOICE))
+                                            ->placeholder(trans('ip.company_default_template'))
+                                            ->native(false)
+                                            ->nullable(),
                                     ]),
                             ]),
                     ]),
