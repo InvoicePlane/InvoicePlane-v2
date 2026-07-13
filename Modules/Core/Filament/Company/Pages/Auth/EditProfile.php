@@ -87,7 +87,10 @@ class EditProfile extends BaseEditProfile
         $avatarPath = Arr::pull($data, 'avatar');
 
         if (Filament::hasEmailChangeVerification() && array_key_exists('email', $data)) {
-            $this->sendEmailChangeVerification($record, $data['email']);
+            if ($data['email'] !== $record->email) {
+                $this->sendEmailChangeVerification($record, $data['email']);
+            }
+
             unset($data['email']);
         }
 
