@@ -120,6 +120,7 @@ class RolesSeeder extends Seeder
                             $isBasicAction = str_starts_with($p, 'view-')
                                 || str_starts_with($p, 'create-')
                                 || str_starts_with($p, 'edit-')
+                                || str_starts_with($p, 'delete-')
                                 || str_starts_with($p, 'export-')
                                 || str_starts_with($p, 'duplicate-');
                             $isCustomerResource = (bool) array_filter(
