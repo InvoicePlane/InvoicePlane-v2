@@ -6,6 +6,7 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
@@ -429,21 +430,33 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     # region cc emails
     #[Test]
     #[Group('crud')]
-    public function it_stores_and_retrieves_cc_emails_as_an_array(): void
+    public function it_stores_and_retrieves_cc_emails_as_communications(): void
     {
         /* Arrange */
         $cc = ['billing@acme.com', 'finance@acme.com'];
 
         /* Act */
-        $customer = Relation::factory()->for($this->company)->create(['email_cc' => $cc]);
-        $loaded   = Relation::find($customer->id);
+        $customer = Relation::factory()->for($this->company)->create();
+        foreach ($cc as $email) {
+            $customer->communications()->create([
+                'company_id'          => $this->company->id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => $email,
+                'is_primary'          => false,
+            ]);
+        }
+        $loaded = Relation::find($customer->id);
 
         /* Assert */
-        $this->assertEquals($cc, $loaded->email_cc);
-        $this->assertDatabaseHas('relations', [
-            'id'       => $customer->id,
-            'email_cc' => json_encode($cc),
-        ]);
+        $this->assertEqualsCanonicalizing($cc, $loaded->email_cc);
+        foreach ($cc as $email) {
+            $this->assertDatabaseHas('communications', [
+                'communicationable_id'   => $customer->id,
+                'communicationable_type' => Relation::class,
+                'communication_type'     => CommunicationType::INVOICE_CC->value,
+                'communication_value'    => $email,
+            ]);
+        }
     }
 
     #[Test]
@@ -471,10 +484,16 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertSuccessful();
 
-        $this->assertDatabaseHas('relations', [
-            'company_name' => $payload['company_name'],
-            'email_cc'     => json_encode($payload['email_cc']),
-        ]);
+        $customer = Relation::where('company_name', $payload['company_name'])->firstOrFail();
+
+        foreach ($payload['email_cc'] as $email) {
+            $this->assertDatabaseHas('communications', [
+                'communicationable_id'   => $customer->id,
+                'communicationable_type' => Relation::class,
+                'communication_type'     => CommunicationType::INVOICE_CC->value,
+                'communication_value'    => $email,
+            ]);
+        }
     }
 
     #[Test]
