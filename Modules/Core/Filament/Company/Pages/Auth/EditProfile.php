@@ -106,8 +106,8 @@ class EditProfile extends BaseEditProfile
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
-            ->label(__('filament-panels::auth/pages/edit-profile.form.password.label'))
-            ->validationAttribute(__('filament-panels::auth/pages/edit-profile.form.password.validation_attribute'))
+            ->label(trans('filament-panels::auth/pages/edit-profile.form.password.label'))
+            ->validationAttribute(trans('filament-panels::auth/pages/edit-profile.form.password.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->rule(Password::default())
@@ -121,7 +121,7 @@ class EditProfile extends BaseEditProfile
     protected function getPasswordConfirmationFormComponent(): Component
     {
         return TextInput::make('password_confirmation')
-            ->label(__('filament-panels::auth/pages/edit-profile.form.password_confirmation.label'))
+            ->label(trans('filament-panels::auth/pages/edit-profile.form.password_confirmation.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
