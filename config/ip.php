@@ -40,4 +40,12 @@ return [
     'pdfDriver'        => env('IP_PDF_DRIVER', 'domPDF'),
     'paperSize'        => env('IP_PAPER_SIZE', 'a4'),
     'paperOrientation' => env('IP_PAPER_ORIENTATION', 'portrait'),
+
+    // Only used when IP_PDF_DRIVER=Browsershot (headless Chromium; needs Node + Puppeteer)
+    'browsershot' => [
+        'node_binary' => env('IP_BROWSERSHOT_NODE_BINARY'),
+        'npm_binary'  => env('IP_BROWSERSHOT_NPM_BINARY'),
+        'chrome_path' => env('IP_BROWSERSHOT_CHROME_PATH'),
+        'no_sandbox'  => env('IP_BROWSERSHOT_NO_SANDBOX', false),
+    ],
 ];
