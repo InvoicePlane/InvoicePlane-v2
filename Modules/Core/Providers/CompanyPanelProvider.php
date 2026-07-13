@@ -28,8 +28,8 @@ use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
-use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
-use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
+use Modules\Core\Filament\Company\Pages\ReportBuilder;
+use Modules\Core\Filament\Company\Pages\ReportTemplates;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
@@ -185,7 +185,8 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
                 EditProfile::class,
                 MyCompanies::class,
-                CompanySettings::class,
+                ReportTemplates::class,
+                ReportBuilder::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -235,6 +236,11 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...self::withQuickCreate(PaymentResource::class),
+                            ]),
+
+                        NavigationGroup::make(trans('ip.report_templates'))
+                            ->items([
+                                ...ReportTemplates::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Resources')
