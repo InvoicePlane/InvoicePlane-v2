@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-BA_uZO_d.css",
+    "file": "assets/app-BxPzgwHj.css",
     "name": "app",
     "names": [
       "app.css"
@@ -9,7 +9,7 @@
     "isEntry": true
   },
   "resources/css/filament/company/invoiceplane-blue.css": {
-    "file": "assets/invoiceplane-blue-DySqjbYI.css",
+    "file": "assets/invoiceplane-blue-CcbBSEWf.css",
     "name": "invoiceplane-blue",
     "names": [
       "invoiceplane-blue.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/css/filament/company/invoiceplane.css": {
-    "file": "assets/invoiceplane-BRKoI_Ls.css",
+    "file": "assets/invoiceplane-CvEGAyzx.css",
     "name": "invoiceplane",
     "names": [
       "invoiceplane.css"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/css/filament/company/nord.css": {
-    "file": "assets/nord-DE5VcrRz.css",
+    "file": "assets/nord-KyHWSnIb.css",
     "name": "nord",
     "names": [
       "nord.css"
@@ -36,7 +36,7 @@
     "isEntry": true
   },
   "resources/css/filament/company/orange.css": {
-    "file": "assets/orange-CttdIaNv.css",
+    "file": "assets/orange-CPGe3zWb.css",
     "name": "orange",
     "names": [
       "orange.css"
@@ -45,7 +45,7 @@
     "isEntry": true
   },
   "resources/css/filament/company/reddit.css": {
-    "file": "assets/reddit-BXTru7AK.css",
+    "file": "assets/reddit-CQ4jPhdg.css",
     "name": "reddit",
     "names": [
       "reddit.css"
@@ -54,7 +54,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-f1GSCnwV.js",
+    "file": "assets/app-DkvKXgcL.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
