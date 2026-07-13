@@ -87,13 +87,15 @@ class UserService extends BaseService
 
     /**
      * Store an avatar file already persisted to disk by the FileUpload component
-     * as the user's single avatar Upload record.
+     * as the user's single avatar Upload record. The previous stored file (if any)
+     * is deleted once the replacement Upload record has been saved successfully.
      */
     public function updateAvatar(User $user, string $path, string $disk = 'public'): Upload
     {
         $companyId = $user->getCurrentCompanyId();
+        $existing  = $user->avatarUpload()->first();
 
-        return Upload::updateOrCreate(
+        $upload = Upload::updateOrCreate(
             [
                 'uploadable_type'   => User::class,
                 'uploadable_id'     => $user->id,
@@ -109,5 +111,28 @@ class UserService extends BaseService
                 'upload_disk'           => $disk,
             ]
         );
+
+        if ($existing && $existing->upload_stored_name !== $path) {
+            Storage::disk($existing->upload_disk)->delete($existing->upload_stored_name);
+        }
+
+        return $upload;
+    }
+
+    /**
+     * Remove the user's avatar Upload record and its stored file, if one exists.
+     */
+    public function removeAvatar(User $user): bool
+    {
+        $existing = $user->avatarUpload()->first();
+
+        if (! $existing) {
+            return false;
+        }
+
+        Storage::disk($existing->upload_disk)->delete($existing->upload_stored_name);
+        $existing->delete();
+
+        return true;
     }
 }

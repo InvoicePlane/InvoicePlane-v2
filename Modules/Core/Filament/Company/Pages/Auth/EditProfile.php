@@ -98,6 +98,8 @@ class EditProfile extends BaseEditProfile
 
         if (filled($avatarPath)) {
             app(UserService::class)->updateAvatar($record, $avatarPath);
+        } else {
+            app(UserService::class)->removeAvatar($record);
         }
 
         return $record;
