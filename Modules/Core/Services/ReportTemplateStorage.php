@@ -95,6 +95,30 @@ class ReportTemplateStorage
         return $templates;
     }
 
+    /**
+     * Slug => display name options for template pickers. Company clones
+     * shadow system templates that share a slug, matching the resolution
+     * order used when rendering.
+     *
+     * @return array<string, string>
+     */
+    public function optionsForType(ReportTemplateType $type): array
+    {
+        $options = [];
+
+        foreach ($this->listSystem($type) as $template) {
+            $options[$template['slug']] = (string) ($template['manifest']['name'] ?? $template['slug']);
+        }
+
+        foreach ($this->listCompany($type) as $template) {
+            $options[$template['slug']] = (string) ($template['manifest']['name'] ?? $template['slug']);
+        }
+
+        ksort($options);
+
+        return $options;
+    }
+
     public function exists(string $scope, string $slug, ?ReportTemplateType $type = null): bool
     {
         return Storage::disk(self::DISK)->exists($this->path($scope, $slug, $type) . '/manifest.json');
