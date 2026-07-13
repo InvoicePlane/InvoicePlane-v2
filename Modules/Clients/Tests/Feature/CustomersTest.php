@@ -426,6 +426,81 @@ class CustomersTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
+    # region cc emails
+    #[Test]
+    #[Group('crud')]
+    public function it_stores_and_retrieves_cc_emails_as_an_array(): void
+    {
+        /* Arrange */
+        $cc = ['billing@acme.com', 'finance@acme.com'];
+
+        /* Act */
+        $customer = Relation::factory()->for($this->company)->create(['email_cc' => $cc]);
+        $loaded   = Relation::find($customer->id);
+
+        /* Assert */
+        $this->assertEquals($cc, $loaded->email_cc);
+        $this->assertDatabaseHas('relations', [
+            'id'       => $customer->id,
+            'email_cc' => json_encode($cc),
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_a_customer_with_cc_emails_through_a_modal(): void
+    {
+        /* Arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+            'email_cc'        => ['billing@acme.com', 'finance@acme.com'],
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* Assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('relations', [
+            'company_name' => $payload['company_name'],
+            'email_cc'     => json_encode($payload['email_cc']),
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_through_a_modal_with_an_invalid_cc_email(): void
+    {
+        /* Arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+            'email_cc'        => ['not-an-email'],
+        ];
+
+        /* Act & Assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['email_cc.0' => 'email']);
+    }
+    # endregion
+
     # region spicy
     # endregion
 }

@@ -40,6 +40,7 @@ class RelationService extends BaseService
                 'vat_number'         => $data['vat_number'] ?? null,
                 'currency_code'      => $data['currency_code'] ?? null,
                 'language'           => $data['language'] ?? null,
+                'email_cc'           => $data['email_cc'] ?? null,
                 'registered_at'      => $data['registered_at'] ?? now(),
             ]);
 
@@ -79,6 +80,7 @@ class RelationService extends BaseService
                 'vat_number'         => $data['vat_number'] ?? $relation->vat_number,
                 'currency_code'      => $data['currency_code'] ?? $relation->currency_code,
                 'language'           => $data['language'] ?? $relation->language,
+                'email_cc'           => $data['email_cc'] ?? $relation->email_cc,
                 'registered_at'      => $data['registered_at'] ?? $relation->registered_at,
             ]);
 

@@ -45,6 +45,7 @@ use Modules\Quotes\Models\Quote;
  * @property Contact              $contact
  * @property string|null          $currency_code
  * @property string|null          $language
+ * @property array|null           $email_cc
  * @property Company              $company
  * @property Collection|Contact[] $contacts
  * @property Collection|Expense[] $expenses
@@ -65,6 +66,7 @@ class Relation extends Model
         'relation_type'      => RelationType::class,
         'relation_status'    => RelationStatus::class,
         'enable_e_invoicing' => 'boolean',
+        'email_cc'           => 'array',
     ];
 
     protected $guarded = [];
