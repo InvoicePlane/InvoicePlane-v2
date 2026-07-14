@@ -25,6 +25,7 @@ use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
@@ -169,6 +170,7 @@ class CompanyPanelProvider extends PanelProvider
                 ProjectResource::class,
                 TaskResource::class,
                 QuoteResource::class,
+                NoteTemplateResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
             ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
@@ -236,6 +238,12 @@ class CompanyPanelProvider extends PanelProvider
 
                                 ...ProjectResource::getNavigationItems(),
                                 ...TaskResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make('Settings')
+                            //->icon('heroicon-o-cog-6-tooth')
+                            ->items([
+                                ...NoteTemplateResource::getNavigationItems(),
                             ]),
                     ]);
             })
