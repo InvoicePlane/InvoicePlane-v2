@@ -218,7 +218,6 @@ class QuoteForm
                     ->schema([
                         MarkdownEditor::make('notes')
                             ->label(trans('ip.notes'))
-                            ->toolbarButtons(['bold', 'italic'])
                             ->hintAction(InsertNoteTemplateAction::make('notes')),
                     ])
                     ->collapsed()
