@@ -6,6 +6,9 @@ use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
+use Modules\Core\Database\Seeders\PermissionsSeeder;
+use Modules\Core\Database\Seeders\RolesSeeder;
+use Modules\Core\Enums\UserRole;
 use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -43,6 +46,14 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
 
         $currentCompanyId = $this->user->getCurrentCompanyId();
         session(['current_company_id' => $currentCompanyId]);
+
+        /*
+         * Resources gate every page on Spatie permissions (canViewAny etc.),
+         * so the test user needs the seeded client_admin permission set.
+         */
+        (new PermissionsSeeder())->run();
+        (new RolesSeeder())->run();
+        $this->user->assignRole(UserRole::CUSTOMER_ADMIN->value);
 
         $this->withoutExceptionHandling();
     }

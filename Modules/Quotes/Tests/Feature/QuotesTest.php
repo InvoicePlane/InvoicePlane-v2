@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\TaxRate;
@@ -67,7 +68,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
 
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
@@ -141,7 +142,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_a_quote_through_a_modal_without_required_prospect(): void
     {
         /* Arrange */
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
 
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
@@ -297,7 +298,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
 
         $quote = Quote::factory()
             ->for($this->company)
@@ -377,7 +378,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
-        $documentGroup = Numbering::factory()->for($this->company)->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
 
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
