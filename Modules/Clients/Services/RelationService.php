@@ -4,6 +4,7 @@ namespace Modules\Clients\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Events\CustomerWasCreated;
@@ -51,6 +52,10 @@ class RelationService extends BaseService
                 $this->syncCommunications($relation, $data['communications']);
             }
 
+            if (isset($data['email_cc']) && is_array($data['email_cc'])) {
+                $this->syncCcEmails($relation, $data['email_cc']);
+            }
+
             DB::commit();
 
             event(new CustomerWasCreated());
@@ -90,6 +95,10 @@ class RelationService extends BaseService
 
             if (isset($data['communications']) && is_array($data['communications'])) {
                 $this->syncCommunications($relation, $data['communications']);
+            }
+
+            if (isset($data['email_cc']) && is_array($data['email_cc'])) {
+                $this->syncCcEmails($relation, $data['email_cc']);
             }
 
             DB::commit();
@@ -158,5 +167,19 @@ class RelationService extends BaseService
 
         $relation->communications()->delete();
         $relation->communications()->createMany($communicationsToSync);
+    }
+
+    protected function syncCcEmails(Relation $relation, array $emails): void
+    {
+        $relation->ccEmailCommunications()->delete();
+
+        foreach ($emails as $email) {
+            $relation->communications()->create([
+                'company_id'          => $relation->company_id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => $email,
+                'is_primary'          => false,
+            ]);
+        }
     }
 }

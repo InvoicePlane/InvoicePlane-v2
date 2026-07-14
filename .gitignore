@@ -1,6 +1,6 @@
 # Laravel – Core
 /public/fonts/
-/public/storage/
+/public/storage
 /storage/framework/
 /storage/generated-json/
 /storage/logs/
