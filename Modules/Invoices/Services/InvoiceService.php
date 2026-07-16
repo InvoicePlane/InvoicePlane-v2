@@ -6,7 +6,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
+use Modules\Core\Services\EmailTemplatePreviewService;
+use Modules\Core\Support\DateHelpers;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
@@ -15,9 +18,47 @@ use Throwable;
 
 class InvoiceService extends BaseService
 {
+    /**
+     * Title of the EmailTemplate used as the company's invoice email template.
+     */
+    public const INVOICE_EMAIL_TEMPLATE_TITLE = 'invoice_sent';
+
     public function model(): string
     {
         return Invoice::class;
+    }
+
+    /**
+     * Resolve the recipient/subject/body defaults for the "Email Invoice" modal,
+     * rendering the company's invoice email template against this invoice.
+     */
+    public function resolveEmailDefaults(Invoice $invoice): array
+    {
+        $invoice->loadMissing(['customer', 'company']);
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', self::INVOICE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $placeholders = [
+            'invoice.number'           => $invoice->invoice_number,
+            'invoice.total_formatted'  => number_format((float) $invoice->invoice_total, 2),
+            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
+            'customer.name'            => $invoice->customer?->company_name,
+            'company.name'             => $invoice->company?->name,
+        ];
+
+        $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
+
+        return [
+            'recipient' => $invoice->customer?->customer_email,
+            'subject'   => $template?->subject
+                ? EmailTemplatePreviewService::render($template->subject, $placeholders)
+                : $defaultSubject,
+            'body' => $template?->body
+                ? EmailTemplatePreviewService::render($template->body, $placeholders)
+                : '',
+        ];
     }
 
     public function createInvoice(array $data): Invoice

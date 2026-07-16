@@ -48,7 +48,7 @@ class EditInvoiceHeaderActionsTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertActionHidden('create_credit_note')
             ->assertActionVisible('download_pdf')
-            ->assertActionVisible('send_email')
+            ->assertActionVisible('email_invoice')
             ->assertActionVisible('create_recurring')
             ->assertActionVisible('copy_invoice')
             ->assertActionVisible('delete');
