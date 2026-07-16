@@ -51,7 +51,7 @@ class InvoiceService extends BaseService
         $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
 
         return [
-            'recipient' => $invoice->customer?->customer_email,
+            'recipient' => $invoice->customer?->email,
             'subject'   => $template?->subject
                 ? EmailTemplatePreview::render($template->subject, $placeholders)
                 : $defaultSubject,
