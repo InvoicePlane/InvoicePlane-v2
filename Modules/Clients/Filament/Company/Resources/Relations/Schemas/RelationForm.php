@@ -68,6 +68,10 @@ class RelationForm
                                                         }
                                                     }),
 
+                                                TextInput::make('email')
+                                                    ->label(trans('ip.email'))
+                                                    ->email(),
+
                                                 TextInput::make('trading_name')
                                                     ->label(trans('ip.trading_name'))
                                                     ->live(debounce: 500)
