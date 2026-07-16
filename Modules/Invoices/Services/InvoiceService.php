@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
-use Modules\Core\Services\EmailTemplatePreviewService;
 use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
@@ -41,11 +41,11 @@ class InvoiceService extends BaseService
             ->first();
 
         $placeholders = [
-            'invoice.number'           => $invoice->invoice_number,
-            'invoice.total_formatted'  => number_format((float) $invoice->invoice_total, 2),
+            'invoice.number'             => $invoice->invoice_number,
+            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
             'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
-            'customer.name'            => $invoice->customer?->company_name,
-            'company.name'             => $invoice->company?->name,
+            'customer.name'              => $invoice->customer?->company_name,
+            'company.name'               => $invoice->company?->name,
         ];
 
         $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
@@ -53,10 +53,10 @@ class InvoiceService extends BaseService
         return [
             'recipient' => $invoice->customer?->customer_email,
             'subject'   => $template?->subject
-                ? EmailTemplatePreviewService::render($template->subject, $placeholders)
+                ? EmailTemplatePreview::render($template->subject, $placeholders)
                 : $defaultSubject,
             'body' => $template?->body
-                ? EmailTemplatePreviewService::render($template->body, $placeholders)
+                ? EmailTemplatePreview::render($template->body, $placeholders)
                 : '',
         ];
     }
