@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\Core\Services;
+namespace Modules\Core\Support;
 
-class EmailTemplatePreviewService
+class EmailTemplatePreview
 {
     /**
      * Replace {{ key }} placeholders in $content with values from $placeholders.
