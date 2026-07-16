@@ -10,7 +10,9 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use InvalidArgumentException;
+use Modules\Core\Enums\Permission;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Services\InvoiceService;
 
@@ -96,13 +98,8 @@ class EditInvoice extends EditRecord
                 ->icon(Heroicon::OutlinedArrowDownTray)
                 ->action(fn () => app(InvoiceService::class)->generatePdf($this->getRecord())),
 
-            Action::make('send_email')
-                ->label(trans('ip.send_email'))
-                ->icon(Heroicon::OutlinedEnvelope)
-                ->action(fn () => Notification::make()
-                    ->title(trans('ip.not_yet_implemented'))
-                    ->warning()
-                    ->send()),
+            EmailInvoiceAction::make()
+                ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)),
 
             Action::make('create_recurring')
                 ->label(trans('ip.create_recurring'))

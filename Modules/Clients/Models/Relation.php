@@ -32,6 +32,7 @@ use Modules\Quotes\Models\Quote;
  * @property RelationStatus       $relation_status
  * @property string               $relation_number
  * @property string               $company_name
+ * @property string|null          $email
  * @property string|null          $trading_name
  * @property string|null          $unique_name
  * @property string|null          $id_number
@@ -182,7 +183,7 @@ class Relation extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getCustomerEmailAttribute()
+    public function getCustomerEmailAttribute(): ?string
     {
         return $this->email;
     }
