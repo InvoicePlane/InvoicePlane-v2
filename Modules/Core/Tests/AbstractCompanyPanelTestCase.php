@@ -3,10 +3,13 @@
 namespace Modules\Core\Tests;
 
 use Filament\Facades\Filament;
-use Filament\Schemas\Components\Livewire;
+use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
+use Modules\Core\Database\Seeders\PermissionsSeeder;
+use Modules\Core\Database\Seeders\RolesSeeder;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
@@ -44,6 +47,14 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
         $currentCompanyId = $this->user->getCurrentCompanyId();
         session(['current_company_id' => $currentCompanyId]);
 
+        /*
+         * Resources gate every page on Spatie permissions (canViewAny etc.),
+         * so the test user needs the seeded client_admin permission set.
+         */
+        (new PermissionsSeeder())->run();
+        (new RolesSeeder())->run();
+        $this->user->assignRole(UserRole::CUSTOMER_ADMIN->value);
+
         $this->withoutExceptionHandling();
     }
 
@@ -58,8 +69,9 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
      */
     protected function testLivewire($component, $params = [])
     {
+        session(['current_company_id' => $this->company->id]);
+
         return Livewire::actingAs($this->user)
-            ->withSession(['current_company_id' => $this->company->id])
             ->test($component, $params);
     }
 }
