@@ -98,3 +98,12 @@ refined-issues.json
 report-2026-07-17.md
 report.md
 scratch/
+.yarn/
+.yarnrc.yml
+agents/
+batch-order.json
+batch-summary.md
+excluded-issues.json
+merge-order.json
+state-map.json
+worktree-triage.md
