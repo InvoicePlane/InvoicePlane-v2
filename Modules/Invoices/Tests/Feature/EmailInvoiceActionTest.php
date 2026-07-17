@@ -59,7 +59,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component
             ->assertActionDataSet([
-                'recipient' => $invoice->customer->customer_email,
+                'recipient' => $invoice->customer->email,
                 'subject'   => 'New Invoice: INV-987654',
                 'body'      => "Dear {$invoice->customer->company_name}, your invoice #INV-987654 totals 150.00.",
             ]);
@@ -83,7 +83,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component
             ->assertActionDataSet([
-                'recipient' => $invoice->customer->customer_email,
+                'recipient' => $invoice->customer->email,
                 'subject'   => 'Invoice #INV-987654',
                 'body'      => '',
             ]);
