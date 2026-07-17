@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
@@ -39,6 +40,7 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $coc_number
  * @property string|null          $vat_number
  * @property CarbonInterface      $registered_at
+ * @property CarbonInterface|null $deleted_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
  * @property Invoice[]            $invoices
@@ -59,6 +61,7 @@ class Relation extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
 
