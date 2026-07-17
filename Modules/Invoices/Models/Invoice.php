@@ -27,7 +27,6 @@ use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Payments\Models\Payment;
 use Modules\Quotes\Models\Quote;
-use RuntimeException;
 
 /**
  * @property int                      $id
@@ -227,28 +226,6 @@ class Invoice extends Model
         }
 
         return parent::delete();
-    }
-
-    protected static function booted(): void
-    {
-        static::creating(function (self $invoice) {
-            if ($invoice->invoice_number === null) {
-                return;
-            }
-
-            $query = static::withoutGlobalScopes()
-                ->where('company_id', $invoice->company_id)
-                ->where('invoice_number', $invoice->invoice_number);
-
-            // A credit note is allowed to share the same number as its parent invoice
-            if ($invoice->creditinvoice_parent_id) {
-                $query->where('id', '!=', $invoice->creditinvoice_parent_id);
-            }
-
-            if ($query->exists()) {
-                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
-            }
-        });
     }
 
     /*

@@ -3,11 +3,14 @@
 namespace Modules\Core\Filament\Admin\Resources\EmailTemplates\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\EmailTemplateType;
+use Modules\Core\Services\EmailTemplateVariableResolver;
 
 class EmailTemplateForm
 {
@@ -46,6 +49,18 @@ class EmailTemplateForm
                                     ->default(null),
                                 TextInput::make('subject')
                                     ->label(trans('ip.subject')),
+                                Textarea::make('body')
+                                    ->label(trans('ip.body'))
+                                    ->rows(10),
+                            ])->columns(1),
+                        Section::make(heading:trans('ip.available_variables'))
+                            ->collapsed()
+                            ->schema([
+                                Schemas\Components\Text::make(fn (): HtmlString => new HtmlString(
+                                    collect(app(EmailTemplateVariableResolver::class)->variables())
+                                        ->map(fn (string $description, string $tag): string => '<div><code>' . e($tag) . '</code> — ' . e($description) . '</div>')
+                                        ->implode('')
+                                )),
                             ])->columns(1),
                     ]),
             ]);

@@ -7,6 +7,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
@@ -18,6 +19,8 @@ use Filament\Schemas\Schema;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
+use Modules\Clients\Models\Relation;
+use Modules\Clients\Services\ContactService;
 
 class RelationForm
 {
@@ -124,7 +127,7 @@ class RelationForm
                                                     ->label(trans('ip.vat_id')),
 
                                                 DatePicker::make('registered_at')
-                                                    ->label(trans('ip.date'))
+                                                    ->label(trans('ip.registered_at'))
                                                     ->required(),
                                             ]),
                                     ]),
@@ -198,7 +201,28 @@ class RelationForm
                                                 TextInput::make('last_name')
                                                     ->label(trans('ip.last'))
                                                     ->required(),
-                                            ]),
+                                            ])
+                                            ->createOptionUsing(function (array $data, ?Relation $record) {
+                                                // The mounted record is the Relation (client) this
+                                                // form belongs to. On the create-client form there is
+                                                // no persisted Relation yet, so there's no relation_id
+                                                // to attach the new Contact to — guard against that
+                                                // rather than violating the not-null relation_id column.
+                                                if ( ! $record?->exists) {
+                                                    Notification::make()
+                                                        ->title(trans('ip.save_client_before_adding_contact'))
+                                                        ->danger()
+                                                        ->send();
+
+                                                    return null;
+                                                }
+
+                                                return app(ContactService::class)->createContact([
+                                                    'relation_id' => $record->getKey(),
+                                                    'first_name'  => $data['first_name'],
+                                                    'last_name'   => $data['last_name'],
+                                                ])->getKey();
+                                            }),
 
                                         TagsInput::make('email_cc')
                                             ->label(trans('ip.cc_email_addresses'))

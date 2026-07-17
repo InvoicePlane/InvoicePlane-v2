@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
@@ -39,6 +40,7 @@ use Modules\Quotes\Models\Quote;
  * @property string|null          $coc_number
  * @property string|null          $vat_number
  * @property CarbonInterface      $registered_at
+ * @property CarbonInterface|null $deleted_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
  * @property Invoice[]            $invoices
@@ -59,6 +61,7 @@ class Relation extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
 
@@ -168,6 +171,20 @@ class Relation extends Model
         return $this->hasMany(Task::class, 'customer_id');
     }
 
+    /*
+     * Deleting a relation with linked records would orphan financial
+     * history, so delete actions and the service guard both check this.
+     */
+    public function hasLinkedRecords(): bool
+    {
+        return $this->invoices()->withoutGlobalScopes()->exists()
+            || $this->quotes()->withoutGlobalScopes()->exists()
+            || $this->payments()->withoutGlobalScopes()->exists()
+            || $this->expenses()->withoutGlobalScopes()->exists()
+            || $this->tasks()->withoutGlobalScopes()->exists()
+            || $this->projects()->withoutGlobalScopes()->exists();
+    }
+
     /**
      * Define a one-to-many relationship to User models.
      *
@@ -183,9 +200,24 @@ class Relation extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * The relation's email address, resolved from the primary contact's
+     * email communications (there is no email column on relations itself).
+     * A primary email communication wins over any other email communication.
+     */
     public function getCustomerEmailAttribute(): ?string
     {
-        return $this->email;
+        $contact = $this->primaryContact;
+
+        if ( ! $contact) {
+            return null;
+        }
+
+        $emails = $contact->communications
+            ->where('communication_type', CommunicationType::EMAIL->value);
+
+        return $emails->firstWhere('is_primary', true)?->communication_value
+            ?? $emails->first()?->communication_value;
     }
 
     public function getEmailCcAttribute(): array
