@@ -16,6 +16,7 @@ use Modules\Core\Models\Note;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Core\Traits\HasNotesAttribute;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
@@ -52,6 +53,7 @@ class Quote extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use HasNotesAttribute;
 
     public $timestamps = false;
 
