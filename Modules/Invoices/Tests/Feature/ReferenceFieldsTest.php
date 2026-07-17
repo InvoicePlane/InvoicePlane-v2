@@ -4,6 +4,7 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
@@ -19,7 +20,7 @@ class ReferenceFieldsTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer  = Relation::factory()->for($this->company)->customer()->create();
-        $numbering = Numbering::factory()->for($this->company)->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $invoice   = Invoice::factory()->for($this->company)->create([
             'customer_id'  => $customer->id,
             'numbering_id' => $numbering->id,
@@ -48,7 +49,7 @@ class ReferenceFieldsTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer  = Relation::factory()->for($this->company)->customer()->create();
-        $numbering = Numbering::factory()->for($this->company)->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
 
         /* Act */
         $invoice = Invoice::factory()->for($this->company)->create([
