@@ -69,9 +69,9 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
      */
     protected function testLivewire($component, $params = [])
     {
-        $this->actingAs($this->user)
-            ->withSession(['current_company_id' => $this->company->id]);
+        session(['current_company_id' => $this->company->id]);
 
-        return Livewire::test($component, $params);
+        return Livewire::actingAs($this->user)
+            ->test($component, $params);
     }
 }
