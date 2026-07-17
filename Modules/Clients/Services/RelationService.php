@@ -4,6 +4,7 @@ namespace Modules\Clients\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Events\CustomerWasCreated;
@@ -34,6 +35,7 @@ class RelationService extends BaseService
                 'relation_status'    => $data['relation_status'] ?? 'active',
                 'relation_number'    => $data['relation_number'] ?? $this->generateRelationNumber($data['relation_type']),
                 'company_name'       => $data['company_name'],
+                'email'              => $data['email'] ?? null,
                 'trading_name'       => $data['trading_name'] ?? null,
                 'unique_name'        => $data['unique_name'] ?? null,
                 'id_number'          => $data['id_number'] ?? null,
@@ -50,6 +52,10 @@ class RelationService extends BaseService
 
             if (isset($data['communications']) && is_array($data['communications'])) {
                 $this->syncCommunications($relation, $data['communications']);
+            }
+
+            if (isset($data['email_cc']) && is_array($data['email_cc'])) {
+                $this->syncCcEmails($relation, $data['email_cc']);
             }
 
             DB::commit();
@@ -73,6 +79,7 @@ class RelationService extends BaseService
                 'relation_type'      => $data['relation_type'] ?? $relation->relation_type,
                 'relation_status'    => $data['relation_status'] ?? $relation->relation_status,
                 'company_name'       => $data['company_name'] ?? $relation->company_name,
+                'email'              => $data['email'] ?? $relation->email,
                 'trading_name'       => $data['trading_name'] ?? $relation->trading_name,
                 'unique_name'        => $data['unique_name'] ?? $relation->unique_name,
                 'id_number'          => $data['id_number'] ?? $relation->id_number,
@@ -91,6 +98,10 @@ class RelationService extends BaseService
 
             if (isset($data['communications']) && is_array($data['communications'])) {
                 $this->syncCommunications($relation, $data['communications']);
+            }
+
+            if (isset($data['email_cc']) && is_array($data['email_cc'])) {
+                $this->syncCcEmails($relation, $data['email_cc']);
             }
 
             DB::commit();
@@ -180,5 +191,19 @@ class RelationService extends BaseService
 
         $relation->communications()->delete();
         $relation->communications()->createMany($communicationsToSync);
+    }
+
+    protected function syncCcEmails(Relation $relation, array $emails): void
+    {
+        $relation->ccEmailCommunications()->delete();
+
+        foreach ($emails as $email) {
+            $relation->communications()->create([
+                'company_id'          => $relation->company_id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => $email,
+                'is_primary'          => false,
+            ]);
+        }
     }
 }

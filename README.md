@@ -1,11 +1,11 @@
 # InvoicePlane v2
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://php.net)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue.svg)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-13%2B-red.svg)](https://laravel.com)
 [![Filament Version](https://img.shields.io/badge/Filament-5.x-orange.svg)](https://filamentphp.com)
 
-**InvoicePlane v2** is a modern, open-source invoicing and billing application built with Laravel 13, Filament 5, and Livewire. It features a modular architecture, multi-tenancy support, and comprehensive Peppol e-invoicing integration for European businesses.
+**InvoicePlane v2** is a modern, open-source invoicing and billing application built with Laravel, Filament, and Livewire. It features a modular architecture and multi-tenancy support. Peppol e-invoicing is a planned feature (see [Peppol E-Invoicing](#-peppol-e-invoicing) below) but is not yet implemented on the `develop` branch.
 
 ---
 
@@ -17,6 +17,7 @@
 - [Full Installation](#-full-installation)
 - [Configuration](#-configuration)
 - [Development](#-development)
+- [Module Structure](#-module-structure)
 - [Testing](#-testing)
 - [Peppol E-Invoicing](#-peppol-e-invoicing)
 - [Deployment](#-deployment)
@@ -30,7 +31,6 @@
 ## ✨ Features
 
 - **Invoice & Quote Management** - Create, send, and track invoices and quotes
-- **Peppol E-Invoicing** - Send invoices through the European Peppol network (UBL, FatturaPA, ZUGFeRD, and 8 more formats)
 - **Customer & Contact Handling** - Manage customers and relationships
 - **Payment Tracking & Reminders** - Track payments and send automated reminders
 - **Modular Architecture** - Laravel + Filament with clean module separation
@@ -44,7 +44,7 @@
 
 ## 📦 Requirements
 
-- **PHP** 8.2 or higher
+- **PHP** 8.3 or higher
 - **Composer** 2.x
 - **Node.js** 20+ and Yarn
 - **Database** MariaDB 10.11+ (recommended), MySQL 8.0+, or SQLite (dev only)
@@ -85,7 +85,7 @@ php artisan queue:work
 
 **Default Login:**
 - Admin Panel: `http://localhost:8000/admin`
-- Company Panel: `http://localhost:8000/company`
+- Company Panel: `http://localhost:8000/{search_code}` (tenant-scoped root path, e.g. `http://localhost:8000/ivplv2` for the seeded default company)
 - Email: `admin@invoiceplane.com` / Password: `password`
 
 > **Note:** For production deployment, see the [Deployment](#-deployment) section.
@@ -216,14 +216,7 @@ stopwaitsecs=3600
 
 ### Peppol Configuration
 
-To enable Peppol e-invoicing, configure in `.env`:
-
-```env
-PEPPOL_E_INVOICE_BE_API_KEY=your-api-key
-PEPPOL_E_INVOICE_BE_BASE_URL=https://api.e-invoice.be
-```
-
-See [PEPPOL_ARCHITECTURE.md](.github/PEPPOL_ARCHITECTURE.md) for complete setup.
+Peppol e-invoicing is **not yet implemented** on `develop` — see the [Peppol E-Invoicing](#-peppol-e-invoicing) section below for details and tracking issue.
 
 ---
 
@@ -245,6 +238,19 @@ docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && vendor/bin
 ```
 
 Or use the Makefile shorthand (see `Makefile` for available targets).
+
+**Without Docker:** if you don't have the Docker workspace set up, you can run the suite locally against an in-memory SQLite database instead. Create/edit `.env.testing`:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+```
+
+Then run tests normally:
+
+```bash
+php artisan test
+```
 
 See [RUNNING_TESTS.md](.github/RUNNING_TESTS.md) for advanced testing.
 
@@ -288,6 +294,46 @@ php artisan migrate:fresh --seed
 ```
 
 See [SEEDING.md](.github/SEEDING.md) for custom seeding.
+
+---
+
+## 📦 Module Structure
+
+All business logic lives under `Modules/` (via `nwidart/laravel-modules`), not in `app/`. The root `app/` directory is intentionally thin — it exists only for framework bootstrapping (`app/Providers/AppServiceProvider.php`); `app/Http/Controllers/` is empty because routing is handled entirely by Filament panel providers.
+
+There are 8 modules today: `Core`, `Clients`, `Invoices`, `Quotes`, `Payments`, `Products`, `Projects`, and `Expenses`. Every module follows the same internal layout:
+
+```
+Modules/<Name>/
+  Database/{Factories,Migrations,Seeders}/
+  Models/
+  Filament/{Admin,Company}/Resources/<Resource>/{Pages,Tables,Schemas}/
+  Services/
+  Enums/
+  Events/ Listeners/ Observers/
+  Traits/ Helpers/
+  Http/{Controllers,Requests,Middleware}/
+  Providers/
+  Tests/{Unit,Feature}/
+```
+
+- **`Filament/Admin/...`** and **`Filament/Company/...`** hold the resources/pages registered on the two main Filament panels (see [Panel Access](#-panel-access) below).
+- **`Services/`** hold the business-logic layer — services extend `Modules\Core\Services\BaseService` and accept/return plain arrays and Eloquent models (there is no separate DTO layer).
+- **`Tests/Unit`** and **`Tests/Feature`** are discovered automatically by PHPUnit across all modules (see `phpunit.xml`); there's no central `tests/` directory at the project root.
+
+Before adding a new resource/model/service, check the [Module Checklist](.github/CHECKLIST.md) to avoid duplicating something that already exists in another module.
+
+### Panel Access
+
+InvoicePlane v2 registers three Filament panels:
+
+| Panel | URL path | Tenanted | Typical users |
+|-------|----------|----------|----------------|
+| **Admin** | `/admin` | No | Super admins, admins, assistants |
+| **Company** | `/{search_code}` (root) | Yes — scoped to `Company` by `search_code` | Company admins and customers |
+| **User** | `/user` | No | Reserved for future use |
+
+The company panel has no fixed `/company` path — it is tenant-scoped and the tenant's `search_code` (lowercased) is the first URL segment, e.g. `/ivplv2/dashboard` for the seeded default company.
 
 ---
 
@@ -336,34 +382,9 @@ public function it_creates_invoice(): void
 
 ## 📧 Peppol E-Invoicing
 
-InvoicePlane v2 supports comprehensive Peppol e-invoicing with **11 format handlers**:
+**Status: not yet implemented on `develop`.** `Modules/Invoices/Config/config.php` defines an extensive configuration tree for a planned multi-format Peppol integration, but there is currently no consuming PHP code anywhere in the repository — no `PeppolService`, no provider adapters, nothing wired into the invoice send flow. The real implementation work lives on the unmerged branch `feature/126-implement-peppol`, tracked by issue [#126](https://github.com/InvoicePlane/InvoicePlane-v2/issues/126).
 
-### Supported Formats
-
-| Format | Description | Countries |
-|--------|-------------|-----------|
-| **UBL 2.1/2.4** | Universal Business Language | Most European countries |
-| **PEPPOL BIS 3.0** | Default Peppol format | Pan-European |
-| **CII** | Cross Industry Invoice | Germany, France, Austria |
-| **FatturaPA 1.2** | Italian format (mandatory) | Italy |
-| **Facturae 3.2** | Spanish format | Spain (public sector) |
-| **Factur-X** | French/German hybrid | France, Germany |
-| **ZUGFeRD 1.0/2.0** | German format | Germany |
-| **EHF 3.0** | Norwegian format | Norway |
-| **OIOUBL** | Danish format | Denmark |
-
-### Quick Setup
-
-1. Get API credentials from your Peppol access point provider
-2. Configure in `.env`:
-   ```env
-   PEPPOL_E_INVOICE_BE_API_KEY=your-key
-   PEPPOL_E_INVOICE_BE_BASE_URL=https://api.e-invoice.be
-   ```
-3. Configure customer Peppol IDs in the Customer panel
-4. Send invoice through Peppol from the invoice detail page
-
-For architecture details and advanced configuration, see [PEPPOL_ARCHITECTURE.md](.github/PEPPOL_ARCHITECTURE.md).
+If you're looking to contribute Peppol support, start with that issue and branch rather than the config file alone — the config schema exists, but the format handlers, access-point client, and UI wiring described in earlier drafts of this README were aspirational and have been removed here until they actually ship.
 
 ---
 

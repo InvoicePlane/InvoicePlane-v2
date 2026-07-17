@@ -16,7 +16,6 @@ use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Exceptions\RelationHasLinkedRecordsException;
 use Modules\Clients\Models\Relation;
-use Modules\Clients\Services\CustomerService;
 use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
@@ -114,7 +113,7 @@ class RelationsTable
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
-                            app(CustomerService::class)->updateCustomer($record, $data);
+                            app(RelationService::class)->updateRelation($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
