@@ -2,19 +2,25 @@
 
 namespace Modules\Clients\Filament\Company\Resources\Relations\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Exceptions\RelationHasLinkedRecordsException;
 use Modules\Clients\Models\Relation;
-use Modules\Clients\Services\CustomerService;
+use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 
 class RelationsTable
 {
@@ -88,16 +94,40 @@ class RelationsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
+                    ViewAction::make('view'),
+                    Action::make('create_invoice')
+                        ->label(trans('ip.create_invoice'))
+                        ->icon('heroicon-o-document-plus')
+                        ->visible(fn (Relation $record) => $record->relation_type === RelationType::CUSTOMER
+                            && auth()->user()?->can(Permission::CREATE_INVOICES->value))
+                        ->url(fn (Relation $record): string => InvoiceResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
+                    Action::make('create_quote')
+                        ->label(trans('ip.create_quote'))
+                        ->icon('heroicon-o-document-text')
+                        ->visible(fn () => auth()->user()?->can(Permission::CREATE_QUOTES->value))
+                        ->url(fn (Relation $record): string => QuoteResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
-                            app(CustomerService::class)->updateCustomer($record, $data);
+                            app(RelationService::class)->updateRelation($record, $data);
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
-                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_RELATIONS->value))
+                        ->visible(fn (Relation $record) => ! $record->hasLinkedRecords()
+                            && auth()->user()?->can(Permission::DELETE_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
-                            app(\Modules\Clients\Services\RelationService::class)->deleteRelation($record);
+                            try {
+                                app(RelationService::class)->deleteRelation($record);
+                            } catch (RelationHasLinkedRecordsException) {
+                                Notification::make()
+                                    ->title(trans('ip.cannot_delete_client_has_linked_records'))
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
                 ]),
             ])
