@@ -4,6 +4,7 @@ namespace Modules\Quotes\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
@@ -19,7 +20,7 @@ class ReferenceFieldsTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $prospect  = Relation::factory()->for($this->company)->customer()->create();
-        $numbering = Numbering::factory()->for($this->company)->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
         $quote     = Quote::factory()->for($this->company)->create([
             'prospect_id'  => $prospect->id,
             'numbering_id' => $numbering->id,
@@ -48,7 +49,7 @@ class ReferenceFieldsTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $prospect  = Relation::factory()->for($this->company)->customer()->create();
-        $numbering = Numbering::factory()->for($this->company)->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
 
         /* Act */
         $quote = Quote::factory()->for($this->company)->create([
