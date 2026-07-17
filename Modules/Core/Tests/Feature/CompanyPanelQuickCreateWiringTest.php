@@ -19,12 +19,13 @@ use ReflectionMethod;
  * added for Expenses only, GH #617) to Relations, Products, Invoices,
  * Quotes and Payments, via CompanyPanelProvider::withQuickCreate().
  *
- * Resources without a dedicated `create` page (all but Expenses, which
- * create records through a modal CreateAction on their list page) get a
- * quick-create URL pointing at the index page with `?action=create`, which
- * Filament's own `#[Url(as: 'action')]`-bound `$defaultAction` property
- * auto-mounts on load (see vendor/filament/filament resources/views
- * components/page/index.blade.php `wire:init="mountAction(...)"`).
+ * Resources without a dedicated `create` page (modal-only, creating records
+ * through a CreateAction on their list page) get a quick-create URL pointing
+ * at the index page with `?action=create`, which Filament's own
+ * `#[Url(as: 'action')]`-bound `$defaultAction` property auto-mounts on load
+ * (see vendor/filament/filament resources/views components/page/index.blade.php
+ * `wire:init="mountAction(...)"`). Resources with a dedicated create page
+ * (Invoices, Quotes, Expenses) link straight to it instead.
  */
 class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
 {
@@ -33,9 +34,16 @@ class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
         return [
             'Relations' => [RelationResource::class],
             'Products'  => [ProductResource::class],
-            'Invoices'  => [InvoiceResource::class],
-            'Quotes'    => [QuoteResource::class],
             'Payments'  => [PaymentResource::class],
+        ];
+    }
+
+    public static function dedicatedCreatePageResources(): array
+    {
+        return [
+            'Invoices' => [InvoiceResource::class],
+            'Quotes'   => [QuoteResource::class],
+            'Expenses' => [ExpenseResource::class],
         ];
     }
 
@@ -57,17 +65,18 @@ class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function it_points_expenses_at_its_dedicated_create_page_without_a_query_string(): void
+    #[DataProvider('dedicatedCreatePageResources')]
+    public function it_points_dedicated_create_page_resources_at_their_create_page_without_a_query_string(string $resourceClass): void
     {
         /* Arrange */
         $this->actingAs($this->user);
 
         /* Act */
-        $items = $this->withQuickCreate(ExpenseResource::class);
+        $items = $this->withQuickCreate($resourceClass);
 
         /* Assert */
         $url = $items[0]->getExtraAttributeBag()->get('data-quick-create-url');
-        $this->assertSame(ExpenseResource::getUrl('create'), $url);
+        $this->assertSame($resourceClass::getUrl('create'), $url);
         $this->assertStringNotContainsString('action=create', $url);
     }
 

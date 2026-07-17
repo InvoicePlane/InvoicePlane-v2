@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Schemas\InvoiceForm;
@@ -66,8 +67,9 @@ class InvoiceResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListInvoices::route('/'),
-            'edit'  => EditInvoice::route('/{record}/edit'),
+            'index'  => ListInvoices::route('/'),
+            'create' => CreateInvoice::route('/create'),
+            'edit'   => EditInvoice::route('/{record}/edit'),
         ];
     }
 
