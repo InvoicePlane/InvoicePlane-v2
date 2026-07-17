@@ -47,11 +47,11 @@ class CompanyDefaultsBootstrapService
         EmailTemplate::query()->firstOrCreate(
             [
                 'company_id' => $company->id,
-                'title'      => 'Default Template',
+                'title'      => 'invoice_sent',
             ],
             [
-                'subject'    => 'Invoice #{invoice.number}',
-                'body'       => 'Please find your invoice attached.',
+                'subject'    => 'Invoice #{{ invoice.number }}',
+                'body'       => 'Please find your invoice #{{ invoice.number }} attached.',
                 'from_name'  => $company->name,
                 'from_email' => 'billing@' . mb_strtolower(preg_replace('/[^A-Za-z0-9]/', '', $company->name)) . '.com',
                 'cc'         => null,
