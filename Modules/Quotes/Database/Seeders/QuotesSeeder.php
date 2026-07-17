@@ -3,6 +3,7 @@
 namespace Modules\Quotes\Database\Seeders;
 
 use Modules\Core\Database\Seeders\AbstractSeeder;
+use Modules\Core\Enums\NumberingType;
 use Modules\Quotes\Models\Quote;
 
 class QuotesSeeder extends AbstractSeeder
@@ -14,7 +15,7 @@ class QuotesSeeder extends AbstractSeeder
     protected function buildOne(): void
     {
         $prospect      = $this->findOrCreateProspect($this->companyId);
-        $documentGroup = $this->findOrCreateNumbering($this->companyId);
+        $documentGroup = $this->findOrCreateNumbering($this->companyId, NumberingType::QUOTE);
         $user          = $this->findOrCreateUser($this->companyId);
 
         Quote::factory()

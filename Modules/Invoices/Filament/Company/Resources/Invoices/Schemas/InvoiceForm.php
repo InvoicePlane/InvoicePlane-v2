@@ -13,10 +13,13 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Models\Setting;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Support\InvoiceCalculator;
+use Modules\Invoices\Support\InvoiceNumberGenerator;
 use Modules\Products\Models\Product;
 
 class InvoiceForm
@@ -63,7 +66,26 @@ class InvoiceForm
                                     ->schema([
                                         TextInput::make('invoice_number')
                                             ->label(trans('ip.invoice_number'))
-                                            ->required(),
+                                            ->required()
+                                            ->default(function (Get $get, string $operation) {
+                                                if ($operation !== 'create') {
+                                                    return null;
+                                                }
+
+                                                $status = $get('invoice_status') ?? InvoiceStatus::DRAFT->value;
+
+                                                if (
+                                                    $status === InvoiceStatus::DRAFT->value
+                                                    && ! Setting::getBool('generate_invoice_number_for_draft')
+                                                ) {
+                                                    return null;
+                                                }
+
+                                                $companyId = auth()->user()?->getCurrentCompanyId();
+
+                                                return (new InvoiceNumberGenerator($companyId))->generate();
+                                            })
+                                            ->dehydrated(),
 
                                         Select::make('invoice_status')
                                             ->label(trans('ip.invoice_status'))

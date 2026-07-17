@@ -888,6 +888,8 @@ return [
     'numbering_group_identifier_format' => 'Group Identifier Format',
     'duplicate_invoice_number'          => 'Duplicate invoice number :number for company :company',
     'duplicate_quote_number'            => 'Duplicate quote number :number for company :company',
+    'quote_created_with_number'         => 'Quote :number created',
+    'invoice_created_with_number'       => 'Invoice :number created',
     #endregion
 
     #region REPORT BUILDER
