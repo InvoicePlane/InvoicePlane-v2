@@ -23,7 +23,7 @@ class LoginResponse implements BaseLoginResponse
                 ->first()
                 ?? Company::query()->oldest('id')->first();
 
-            if (! $tenant) {
+            if ( ! $tenant) {
                 abort(500, trans('auth.fallback_company_not_found'));
             }
 
@@ -34,7 +34,7 @@ class LoginResponse implements BaseLoginResponse
                 ->first()
                 ?? $user->companies()->oldest('id')->first();
 
-            if (! $tenant) {
+            if ( ! $tenant) {
                 abort(500, trans('auth.no_company_found_for_user'));
             }
 

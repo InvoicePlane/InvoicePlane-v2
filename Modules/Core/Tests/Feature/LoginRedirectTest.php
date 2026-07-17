@@ -18,7 +18,6 @@ use Spatie\Permission\Models\Role;
 #[CoversClass(LoginResponse::class)]
 class LoginRedirectTest extends AbstractCompanyPanelTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,29 +31,6 @@ class LoginRedirectTest extends AbstractCompanyPanelTestCase
     {
         Carbon::setTestNow();
         parent::tearDown();
-    }
-
-    private function activeUser(array $overrides = []): User
-    {
-        return User::factory()->create(array_merge([
-            'is_active'         => true,
-            'email_verified_at' => Carbon::now(),
-            'password'          => bcrypt('password'),
-        ], $overrides));
-    }
-
-    private function ivplv2Company(): Company
-    {
-        return Company::factory()->create([
-            'search_code' => 'ivplv2',
-            'name'        => 'InvoicePlane Corporation',
-            'slug'        => 'invoiceplane-corporation',
-        ]);
-    }
-
-    private function elevatedRole(string $role): void
-    {
-        Role::query()->firstOrCreate(['name' => $role, 'guard_name' => 'web']);
     }
 
     # region elevated users
@@ -225,6 +201,29 @@ class LoginRedirectTest extends AbstractCompanyPanelTestCase
         $response->assertRedirect(
             route('filament.company.pages.dashboard', ['tenant' => 'acme'])
         );
+    }
+
+    private function activeUser(array $overrides = []): User
+    {
+        return User::factory()->create(array_merge([
+            'is_active'         => true,
+            'email_verified_at' => Carbon::now(),
+            'password'          => bcrypt('password'),
+        ], $overrides));
+    }
+
+    private function ivplv2Company(): Company
+    {
+        return Company::factory()->create([
+            'search_code' => 'ivplv2',
+            'name'        => 'InvoicePlane Corporation',
+            'slug'        => 'invoiceplane-corporation',
+        ]);
+    }
+
+    private function elevatedRole(string $role): void
+    {
+        Role::query()->firstOrCreate(['name' => $role, 'guard_name' => 'web']);
     }
 
     # endregion
