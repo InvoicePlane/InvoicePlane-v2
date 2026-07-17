@@ -99,8 +99,8 @@ class AbstractCalculator
      */
     protected function calculateItemSubtotal($item): float
     {
-        $quantity = (float) ($item['quantity'] ?? $item->quantity ?? 0);
-        $price    = (float) ($item['price'] ?? $item->price ?? 0);
+        $quantity = (float) (is_array($item) ? ($item['quantity'] ?? 0) : ($item->quantity ?? 0));
+        $price    = (float) (is_array($item) ? ($item['price'] ?? 0) : ($item->price ?? 0));
 
         return $quantity * $price;
     }
@@ -115,7 +115,7 @@ class AbstractCalculator
      */
     protected function calculateItemTaxes($item, float $subtotal): array
     {
-        $discount           = (float) ($item['discount'] ?? $item->discount ?? 0);
+        $discount           = (float) (is_array($item) ? ($item['discount'] ?? 0) : ($item->discount ?? 0));
         $discountedSubtotal = max($subtotal - $discount, 0);
 
         // Get tax rates from relationships if available, otherwise use 0

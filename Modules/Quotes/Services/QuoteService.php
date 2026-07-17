@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Modules\Core\Services\BaseService;
+use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Models\Quote;
 use Throwable;
@@ -33,6 +36,8 @@ class QuoteService extends BaseService
                 'numbering_id'           => $data['numbering_id'] ?? null,
                 'user_id'                => $data['user_id'] ?? auth()->id(),
                 'quote_number'           => $data['quote_number'],
+                'client_reference'       => $data['client_reference'] ?? null,
+                'work_order'             => $data['work_order'] ?? null,
                 'quote_status'           => $data['quote_status'],
                 'quoted_at'              => Carbon::parse($data['quoted_at']),
                 'quote_expires_at'       => Carbon::parse($data['quote_expires_at']),
@@ -93,6 +98,8 @@ class QuoteService extends BaseService
         try {
             $quote->update([
                 'prospect_id'            => $data['prospect_id'],
+                'client_reference'       => $data['client_reference'] ?? null,
+                'work_order'             => $data['work_order'] ?? null,
                 'quoted_at'              => $data['quoted_at'],
                 'quote_expires_at'       => $data['quote_expires_at'],
                 'quote_status'           => $data['quote_status'],
@@ -186,6 +193,72 @@ class QuoteService extends BaseService
         }
 
         return $quote;
+    }
+
+    /**
+     * Convert an accepted quote into a draft invoice.
+     *
+     * Copies the client, all quote items, and the summary fields onto a new
+     * unnumbered draft invoice, then marks the quote as Converted. Numbering
+     * is assigned when the invoice leaves draft.
+     *
+     * @throws InvalidArgumentException when the quote was already converted
+     */
+    public function convertQuoteToInvoice(Quote $quote): Invoice
+    {
+        if ($quote->quote_status === QuoteStatus::CONVERTED) {
+            throw new InvalidArgumentException(trans('ip.quote_already_converted'));
+        }
+
+        return DB::transaction(function () use ($quote) {
+            $invoice = Invoice::query()->create([
+                'company_id'               => $quote->company_id,
+                'customer_id'              => $quote->prospect_id,
+                'numbering_id'             => null,
+                'user_id'                  => auth()->id() ?? $quote->user_id,
+                'invoice_number'           => null,
+                'invoice_status'           => InvoiceStatus::DRAFT->value,
+                'invoice_sign'             => '1',
+                'invoiced_at'              => Carbon::today(),
+                'invoice_due_at'           => Carbon::today()->addDays(30),
+                'invoice_discount_amount'  => $quote->quote_discount_amount ?? 0,
+                'invoice_discount_percent' => $quote->quote_discount_percent ?? 0,
+                'item_tax_total'           => $quote->item_tax_total ?? 0,
+                'invoice_item_subtotal'    => $quote->quote_item_subtotal ?? 0,
+                'invoice_tax_total'        => $quote->quote_tax_total ?? 0,
+                'invoice_total'            => $quote->quote_total ?? 0,
+                'url_key'                  => Str::random(32),
+                'summary'                  => $quote->summary,
+                'terms'                    => $quote->terms,
+                'footer'                   => $quote->footer,
+            ]);
+
+            foreach ($quote->quoteItems as $item) {
+                $invoice->invoiceItems()->create([
+                    'company_id'      => $item->company_id,
+                    'product_id'      => $item->product_id,
+                    'product_unit_id' => $item->product_unit_id,
+                    'task_id'         => $item->task_id,
+                    'added_at'        => Carbon::today()->toDateString(),
+                    'item_name'       => $item->item_name,
+                    'quantity'        => $item->quantity,
+                    'price'           => $item->price,
+                    'discount'        => $item->discount,
+                    'subtotal'        => $item->subtotal,
+                    'tax_1'           => $item->tax_1,
+                    'tax_2'           => $item->tax_2,
+                    'tax_total'       => $item->tax_total,
+                    'total'           => $item->total,
+                    'tax_rate_id'     => $item->tax_rate_id,
+                    'tax_rate_2_id'   => $item->tax_rate_2_id,
+                    'description'     => $item->description,
+                ]);
+            }
+
+            $quote->update(['quote_status' => QuoteStatus::CONVERTED->value]);
+
+            return $invoice;
+        });
     }
 
     private function calculateItemTaxTotal(array $data): float

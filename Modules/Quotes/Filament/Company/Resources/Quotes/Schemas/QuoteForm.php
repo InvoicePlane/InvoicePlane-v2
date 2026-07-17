@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
@@ -104,6 +105,14 @@ class QuoteForm
                                             ->searchable()
                                             ->preload()
                                             ->native(false),
+
+                                        TextInput::make('client_reference')
+                                            ->label(trans('ip.client_reference'))
+                                            ->maxLength(255),
+
+                                        TextInput::make('work_order')
+                                            ->label(trans('ip.work_order'))
+                                            ->maxLength(255),
                                     ])
                                     ->columns(2),
                             ])
@@ -217,7 +226,7 @@ class QuoteForm
                     ->schema([
                         MarkdownEditor::make('notes')
                             ->label(trans('ip.notes'))
-                            ->toolbarButtons(['bold', 'italic']),
+                            ->hintAction(InsertNoteTemplateAction::make('notes')),
                     ])
                     ->collapsed()
                     ->columnSpanFull(),

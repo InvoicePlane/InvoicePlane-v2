@@ -167,6 +167,26 @@
         @apply rounded-lg;
     }
 
+    /*
+     * Filament's own gray-100 background on the active item's inner button
+     * sits on top of the dark background above (unreadable light pill on a
+     * dark sidebar) unless the child button itself is also overridden.
+     * Same fix applies to hover/focus-visible on any sidebar item button.
+     */
+    .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
+    .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-database-notifications-btn:hover {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
     .fi-sidebar-header {
         @apply bg-[var(--color-polarnight-700)];
     }
@@ -318,5 +338,57 @@
 
 .fi-main {
     @apply bg-[#ECEFF4] dark:bg-[#2E3440];
+}
+
+/*
+ * Base page background -- Filament's own light-gray fallback (.fi-body)
+ * otherwise shows through around/behind panel content.
+ */
+.fi-body {
+    @apply dark:bg-[var(--color-polarnight-900)];
+}
+
+/*
+ * Topbar items (e.g. tenant switcher trigger, user menu trigger) --
+ * same light-gray-on-dark hover/active pattern as the sidebar.
+ */
+.fi-topbar-item-btn:hover,
+.fi-topbar-item.fi-active .fi-topbar-item-btn,
+.fi-tenant-menu-trigger:hover,
+.fi-theme-switcher-btn:hover {
+    @apply !bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Dropdown menus (e.g. the user menu) -- item hover.
+ */
+.fi-dropdown-list-item:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Tabs -- hover state on an inactive tab.
+ */
+.fi-tabs-item:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Tables -- header row and clickable-row hover both default to a light
+ * gray fill that reads poorly against the dark Nord table background.
+ */
+.fi-ta-table > thead > tr {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+.fi-ta-row.fi-clickable:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Pagination -- active page number.
+ */
+.fi-pagination-item.fi-active .fi-pagination-item-btn {
+    @apply dark:!bg-[var(--color-polarnight-800)];
 }
 
