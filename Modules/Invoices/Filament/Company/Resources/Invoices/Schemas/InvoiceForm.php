@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Schemas;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -96,7 +97,14 @@ class InvoiceForm
                                             ->required()
                                             ->searchable()
                                             ->preload()
-                                            ->native(false),
+                                            ->native(false)
+                                            ->exists(
+                                                table: 'numbering',
+                                                column: 'id',
+                                                modifyRuleUsing: fn ($rule) => $rule
+                                                    ->where('type', NumberingType::INVOICE->value)
+                                                    ->where('company_id', Filament::getTenant()?->id),
+                                            ),
 
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),

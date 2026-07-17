@@ -774,6 +774,8 @@ return [
     'edit_profile'                              => 'edit_profile',
     'email_sent'                                => 'email_sent',
     'email_verified_at'                         => 'email_verified_at',
+    'invoice_email_sent_successfully'           => 'The invoice email has been queued for delivery.',
+    'invoice_email_no_recipient'                => 'This customer has no email address on file, so the invoice could not be sent.',
     'invoice_total'                             => 'Invoice total',
     'is_active'                                 => 'Is active',
     'is_compound'                               => 'Is compound',
