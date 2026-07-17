@@ -61,6 +61,12 @@ class DatabaseSeeder extends Seeder
         $bar->finish();
         $this->command->newLine(2);
 
+        $admin  = User::query()->where('email', 'admin@invoiceplane.com')->first();
+        $ivplv2 = Company::query()->whereRaw('LOWER(search_code) = ?', ['ivplv2'])->first();
+        if ($admin && $ivplv2) {
+            $admin->companies()->syncWithoutDetaching([$ivplv2->id]);
+        }
+
         $totalCompanies = Company::query()->count();
         $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);
         $companyBar->setMessage('Seeding company data');

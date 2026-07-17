@@ -4,6 +4,7 @@ namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Enums\Permission as PermissionEnum;
 use Modules\Core\Enums\UserRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -59,11 +60,22 @@ class RolesSeeder extends Seeder
 
     public function getDefaultRolePermissions(): array
     {
-        $permissionsSeeder = new PermissionsSeeder();
-        $allCrud           = $this->getAllCrudPermissions($permissionsSeeder->resources, $permissionsSeeder->basicActions);
-        $allSpecial        = $this->getAllSpecialPermissions($permissionsSeeder->specialPermissions);
-        $systemPermissions = $this->getSystemPermissions();
-        $allPermissions    = array_merge($allCrud, $allSpecial, $systemPermissions);
+        $allPermissions = array_column(PermissionEnum::cases(), 'value');
+
+        $customerResources = ['relations', 'contacts', 'invoices', 'quotes', 'payments', 'projects', 'tasks', 'products', 'expenses'];
+
+        $customerSpecialPermissions = [
+            PermissionEnum::DOWNLOAD_INVOICES->value,
+            PermissionEnum::EMAIL_INVOICES->value,
+            PermissionEnum::PRINT_INVOICES->value,
+            PermissionEnum::EMAIL_PAYMENTS->value,
+            PermissionEnum::EXPORT_PRODUCTS->value,
+            PermissionEnum::DOWNLOAD_QUOTES->value,
+            PermissionEnum::EMAIL_QUOTES->value,
+            PermissionEnum::PRINT_QUOTES->value,
+            PermissionEnum::EXPORT_REPORTS->value,
+            PermissionEnum::PRINT_REPORTS->value,
+        ];
 
         return [
             UserRole::SUPER_ADMIN->value => [
@@ -72,72 +84,71 @@ class RolesSeeder extends Seeder
             ],
             UserRole::ADMIN->value => [
                 'name'        => 'Administrator',
-                'permissions' => $allPermissions,
+                'permissions' => array_values(array_filter(
+                    $allPermissions,
+                    fn ($p) => ! in_array($p, [
+                        PermissionEnum::IMPERSONATE_USERS->value,
+                        PermissionEnum::BACKUP->value,
+                        PermissionEnum::RESTORE->value,
+                    ])
+                )),
             ],
+
             UserRole::ASSIST->value => [
                 'name'        => 'Assist',
-                'permissions' => array_merge(
-                    array_filter($allCrud, fn ($p) => ! str_starts_with($p, 'delete-')),
-                    array_filter($allSpecial, fn ($p) => ! in_array(explode('-', $p)[0], ['delete', 'manage'])),
-                    ['view-dashboard']
-                ),
+                'permissions' => array_values(array_filter(
+                    $allPermissions,
+                    fn ($p) => ! str_starts_with($p, 'delete-')
+                        && ! str_starts_with($p, 'manage-')
+                        && ! str_starts_with($p, 'approve-')
+                        && ! str_starts_with($p, 'reject-')
+                        && ! in_array($p, [
+                            PermissionEnum::IMPERSONATE_USERS->value,
+                            PermissionEnum::BACKUP->value,
+                            PermissionEnum::RESTORE->value,
+                            PermissionEnum::REFUND_PAYMENTS->value,
+                        ])
+                )),
             ],
+
             UserRole::CUSTOMER_ADMIN->value => [
                 'name'        => 'Customer Admin',
-                'permissions' => array_merge(
-                    array_filter($allCrud, fn ($p) => str_starts_with($p, 'view-')),
-                    array_filter(
-                        $allCrud,
-                        fn ($p) => str_starts_with($p, 'create-') || str_starts_with($p, 'edit-')
-                    ),
-                    array_filter(
-                        $allSpecial,
-                        fn ($p) => in_array(explode('-', $p)[0], ['download', 'print', 'email', 'export'])
-                    ),
-                    ['view-dashboard']
-                ),
+                'permissions' => array_unique(array_merge(
+                    array_values(array_filter(
+                        $allPermissions,
+                        function ($p) use ($customerResources) {
+                            $isBasicAction = str_starts_with($p, 'view-')
+                                || str_starts_with($p, 'create-')
+                                || str_starts_with($p, 'edit-')
+                                || str_starts_with($p, 'export-')
+                                || str_starts_with($p, 'duplicate-');
+                            $isCustomerResource = (bool) array_filter(
+                                $customerResources,
+                                fn ($r) => str_ends_with($p, '-' . $r)
+                            );
+
+                            return $isBasicAction && $isCustomerResource;
+                        }
+                    )),
+                    $customerSpecialPermissions,
+                    [PermissionEnum::VIEW_DASHBOARD->value, PermissionEnum::MANAGE_COMPANY_SETTINGS->value],
+                )),
             ],
             UserRole::CUSTOMER->value => [
                 'name'        => 'Customer',
                 'permissions' => [
-                    'view-contacts', 'edit-contacts',
-                    'view-invoices', 'download-invoices', 'print-invoices',
-                    'view-quotes', 'download-quotes', 'print-quotes',
-                    'view-payments',
-                    'view-dashboard',
+                    PermissionEnum::VIEW_CONTACTS->value,
+                    PermissionEnum::EDIT_CONTACTS->value,
+                    PermissionEnum::VIEW_INVOICES->value,
+                    PermissionEnum::DOWNLOAD_INVOICES->value,
+                    PermissionEnum::PRINT_INVOICES->value,
+                    PermissionEnum::VIEW_QUOTES->value,
+                    PermissionEnum::DOWNLOAD_QUOTES->value,
+                    PermissionEnum::PRINT_QUOTES->value,
+                    PermissionEnum::VIEW_PAYMENTS->value,
+                    PermissionEnum::VIEW_DASHBOARD->value,
                 ],
             ],
         ];
-    }
-
-    protected function getSystemPermissions(): array
-    {
-        return [
-            'view-dashboard', 'manage-company-settings', 'import', 'export', 'backup', 'restore',
-        ];
-    }
-
-    protected function getAllCrudPermissions(array $resources, array $basicActions): array
-    {
-        $permissions = [];
-        foreach ($resources as $resource) {
-            foreach ($basicActions as $action) {
-                $permissions[] = "{$action}-{$resource}";
-            }
-        }
-
-        return $permissions;
-    }
-
-    protected function getAllSpecialPermissions(array $specialPermissions): array
-    {
-        $permissions = [];
-        foreach ($specialPermissions as $resource => $actions) {
-            foreach ($actions as $action) {
-                $permissions[] = "{$action}-{$resource}";
-            }
-        }
-
-        return $permissions;
     }
 }

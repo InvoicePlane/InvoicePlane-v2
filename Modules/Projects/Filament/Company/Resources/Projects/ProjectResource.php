@@ -6,6 +6,8 @@ use BackedEnum;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
 use Modules\Projects\Filament\Company\Resources\Projects\Schemas\ProjectForm;
@@ -60,5 +62,30 @@ class ProjectResource extends BaseResource
         return [
             'index' => ListProjects::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_PROJECTS->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_PROJECTS->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_PROJECTS->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_PROJECTS->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_PROJECTS->value) ?? false;
     }
 }

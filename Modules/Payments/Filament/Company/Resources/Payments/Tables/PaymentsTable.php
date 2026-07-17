@@ -2,6 +2,7 @@
 
 namespace Modules\Payments\Filament\Company\Resources\Payments\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -9,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Services\PaymentService;
 
@@ -75,11 +77,21 @@ class PaymentsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PAYMENTS->value))
                         ->action(function (Payment $record, array $data) {
                             app(PaymentService::class)->updatePayment($record, $data);
                         })
                         ->modalWidth('full'),
+                    Action::make('email_receipt')
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_PAYMENTS->value))
+                        ->label(trans('ip.send_email'))
+                        ->action(function (Payment $record): void {}),
+                    Action::make('refund')
+                        ->visible(fn () => auth()->user()?->can(Permission::REFUND_PAYMENTS->value))
+                        ->label(trans('ip.refund'))
+                        ->action(function (Payment $record): void {}),
                     DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PAYMENTS->value))
                         ->action(function (Payment $record, array $data) {
                             app(PaymentService::class)->deletePayment($record);
                         }),
@@ -87,7 +99,8 @@ class PaymentsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PAYMENTS->value)),
                 ]),
             ])->defaultSort('paid_at', 'desc');
     }
