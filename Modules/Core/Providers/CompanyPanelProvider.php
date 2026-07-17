@@ -214,8 +214,14 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Expenses')
                             //->icon('heroicon-o-banknotes')
                             ->items([
-                                ...ExpenseResource::getNavigationItems(),
-                                ...ExpenseCategoryResource::getNavigationItems(),
+                                ...collect(ExpenseResource::getNavigationItems())
+                                    ->map(fn (NavigationItem $item): NavigationItem => $item->extraAttributes([
+                                        'data-quick-create-url' => ExpenseResource::canCreate()
+                                            ? ExpenseResource::getUrl('create')
+                                            : null,
+                                    ], merge: true))
+                                    ->all(),
+                                ...(ExpenseCategoryResource::shouldRegisterNavigation() ? ExpenseCategoryResource::getNavigationItems() : []),
                             ]),
 
                         NavigationGroup::make('Payments')
@@ -228,8 +234,8 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...ProductResource::getNavigationItems(),
-                                ...ProductCategoryResource::getNavigationItems(),
-                                ...ProductUnitResource::getNavigationItems(),
+                                ...(ProductCategoryResource::shouldRegisterNavigation() ? ProductCategoryResource::getNavigationItems() : []),
+                                ...(ProductUnitResource::shouldRegisterNavigation() ? ProductUnitResource::getNavigationItems() : []),
 
                                 ...ProjectResource::getNavigationItems(),
                                 ...TaskResource::getNavigationItems(),
