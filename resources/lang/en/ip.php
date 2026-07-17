@@ -1247,6 +1247,8 @@ return [
     'quote_number'        => 'Quote Number',
     'quoted_at'           => 'Quote Date',
     'expires_at'          => 'Expiry Date',
+    'client_reference'    => 'Client Reference',
+    'work_order'          => 'Work Order',
     'draft'               => 'Draft',
     'task_name'           => 'Task Name',
     'pending'             => 'Pending',
