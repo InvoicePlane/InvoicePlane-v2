@@ -17,7 +17,7 @@ class InvoiceObserver extends AbstractObserver
     public function saving(Invoice $invoice): void
     {
         if ($invoice->invoice_number !== null) {
-            $query = Invoice::query()
+            $query = Invoice::withoutGlobalScopes()
                 ->where('company_id', $invoice->company_id)
                 ->where('invoice_number', $invoice->invoice_number)
                 ->where('id', '!=', $invoice->id ?? 0);
@@ -36,7 +36,7 @@ class InvoiceObserver extends AbstractObserver
             }
 
             if ($query->exists()) {
-                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}' for company ID {$invoice->company_id}");
+                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
             }
         }
     }

@@ -3,6 +3,7 @@
 namespace Modules\Invoices\Tests\Feature;
 
 use Livewire\Livewire;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
@@ -59,7 +60,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component
             ->assertActionDataSet([
-                'recipient' => $invoice->customer->customer_email,
+                'recipient' => $invoice->customer->email,
                 'subject'   => 'New Invoice: INV-987654',
                 'body'      => "Dear {$invoice->customer->company_name}, your invoice #INV-987654 totals 150.00.",
             ]);
@@ -83,7 +84,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component
             ->assertActionDataSet([
-                'recipient' => $invoice->customer->customer_email,
+                'recipient' => $invoice->customer->email,
                 'subject'   => 'Invoice #INV-987654',
                 'body'      => '',
             ]);
@@ -113,7 +114,18 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
 
     private function createInvoice(array $attributes = []): Invoice
     {
-        $customer      = Relation::factory()->for($this->company)->customer()->create(['email' => 'customer@example.com']);
+        $customer = Relation::factory()->for($this->company)->customer()->create(['email' => 'customer@example.com']);
+        $contact  = $customer->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'customer@example.com',
+        ]);
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
         return Invoice::factory()->for($this->company)->create(array_merge([

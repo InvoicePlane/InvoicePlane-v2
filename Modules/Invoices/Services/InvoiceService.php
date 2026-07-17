@@ -4,14 +4,17 @@ namespace Modules\Invoices\Services;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\DateHelpers;
 use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Mail\InvoiceMailable;
 use Modules\Invoices\Models\Invoice;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -51,7 +54,7 @@ class InvoiceService extends BaseService
         $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
 
         return [
-            'recipient' => $invoice->customer?->email,
+            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
             'subject'   => $template?->subject
                 ? EmailTemplatePreview::render($template->subject, $placeholders)
                 : $defaultSubject,
@@ -76,6 +79,8 @@ class InvoiceService extends BaseService
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
                 'user_id'                  => auth()->id(),
                 'invoice_number'           => $data['invoice_number'],
+                'client_reference'         => $data['client_reference'] ?? null,
+                'work_order'               => $data['work_order'] ?? null,
                 'invoice_status'           => $data['invoice_status'],
                 'invoice_sign'             => $data['invoice_sign'] ?? '1',
                 'invoiced_at'              => Carbon::parse($data['invoiced_at']),
@@ -139,6 +144,8 @@ class InvoiceService extends BaseService
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
                 'user_id'                  => auth()->id(),
                 'invoice_number'           => $data['invoice_number'],
+                'client_reference'         => $data['client_reference'] ?? null,
+                'work_order'               => $data['work_order'] ?? null,
                 'invoice_status'           => $data['invoice_status'],
                 'invoice_sign'             => $data['invoice_sign'] ?? '1',
                 'invoiced_at'              => Carbon::parse($data['invoiced_at']),
@@ -241,6 +248,16 @@ class InvoiceService extends BaseService
     }
 
     /**
+     * Queue the invoice mailable for delivery using the given (possibly
+     * user-edited) recipient/subject/body, as resolved/prefilled by
+     * resolveEmailDefaults() and submitted via the "Email Invoice" modal.
+     */
+    public function sendInvoiceEmail(Invoice $invoice, string $recipient, string $subject, string $body): void
+    {
+        Mail::to($recipient)->queue(new InvoiceMailable($invoice, $subject, $body));
+    }
+
+    /**
      * Render the invoice document markup used by both the PDF driver and
      * the on-screen preview.
      */
@@ -329,6 +346,29 @@ class InvoiceService extends BaseService
 
             return $creditNote;
         });
+    }
+
+    /**
+     * Walk the invoice's customer → contacts → communications chain and
+     * return the first email address found, preferring a primary one.
+     */
+    private function resolveInvoiceRecipientEmail(Invoice $invoice): ?string
+    {
+        $invoice->loadMissing('customer.contacts.communications');
+
+        $customer = $invoice->customer;
+
+        if ( ! $customer) {
+            return null;
+        }
+
+        $emailCommunication = $customer->contacts
+            ->flatMap(fn ($contact) => $contact->communications)
+            ->filter(fn ($communication) => $communication->communication_type === CommunicationType::EMAIL->value)
+            ->sortByDesc('is_primary')
+            ->first();
+
+        return $emailCommunication?->communication_value;
     }
 
     private function calculateItemTaxTotal(array $data): float

@@ -50,12 +50,14 @@
         "psr-4": {
             "App\\": "app/",
             "Modules\\": "Modules/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Fable5\\": "automation/fable5/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Fable5\\Tests\\": "automation/fable5/tests/"
         }
     },
     "scripts": {
