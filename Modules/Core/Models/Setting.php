@@ -90,4 +90,19 @@ class Setting extends Model
             return $setting->setting_value;
         }
     }
+
+    /**
+     * Read a setting as a boolean, defaulting to $default when the key has
+     * never been set (no row in the settings table).
+     */
+    public static function getBool(string $key, bool $default = true): bool
+    {
+        $value = self::getByKey($key);
+
+        if ($value === null) {
+            return $default;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
 }

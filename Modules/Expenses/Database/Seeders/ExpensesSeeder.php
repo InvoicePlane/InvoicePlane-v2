@@ -4,6 +4,7 @@ namespace Modules\Expenses\Database\Seeders;
 
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Database\Seeders\AbstractSeeder;
+use Modules\Core\Enums\NumberingType;
 use Modules\Expenses\Models\Expense;
 
 class ExpensesSeeder extends AbstractSeeder
@@ -17,6 +18,11 @@ class ExpensesSeeder extends AbstractSeeder
         $customerId = $this->findOrCreateRelationOfType($this->companyId, RelationType::CUSTOMER)->id;
         $vendorId   = $this->findOrCreateRelationOfType($this->companyId, RelationType::VENDOR)->id;
         $categoryId = $this->findOrCreateExpenseCategory($this->companyId)->id;
+
+        // Expense has no numbering_id FK (it stores its generated number directly
+        // in expense_number), but an Expense-type Numbering scheme should still
+        // exist for the company so ExpenseNumberGenerator has something to use.
+        $this->findOrCreateNumbering($this->companyId, NumberingType::EXPENSE);
 
         Expense::factory()
             ->state([
