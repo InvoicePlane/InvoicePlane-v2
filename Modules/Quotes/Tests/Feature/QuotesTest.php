@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
-use Modules\Core\Models\Numbering;
 use Modules\Core\Models\NoteTemplate;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Models\Product;
@@ -336,6 +336,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'quote_status' => QuoteStatus::SENT->value,
         ]);
     }
+
     #[Test]
     #[Group('crud')]
     public function it_inserts_a_note_template_into_the_notes_field(): void
