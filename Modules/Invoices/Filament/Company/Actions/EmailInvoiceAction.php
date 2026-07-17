@@ -39,9 +39,19 @@ class EmailInvoiceAction
             })
             ->modalHeading(trans('ip.email_invoice'))
             ->modalSubmitActionLabel(trans('ip.send_email'))
-            ->action(fn () => Notification::make()
-                ->title(trans('ip.not_yet_implemented'))
-                ->warning()
-                ->send());
+            ->action(function (Invoice $record, array $data): void {
+                app(InvoiceService::class)->sendInvoiceEmail(
+                    $record,
+                    $data['recipient'],
+                    $data['subject'],
+                    $data['body'],
+                );
+
+                Notification::make()
+                    ->title(trans('ip.email_sent'))
+                    ->body(trans('ip.invoice_email_sent_successfully'))
+                    ->success()
+                    ->send();
+            });
     }
 }

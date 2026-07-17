@@ -14,8 +14,8 @@ use Modules\Core\Enums\NumberingType;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
-use Modules\Core\Models\Numbering;
 use Modules\Core\Models\NoteTemplate;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -37,21 +37,6 @@ use Spatie\Permission\PermissionRegistrar;
 #[CoversClass(ListInvoices::class)]
 class InvoicesTest extends AbstractCompanyPanelTestCase
 {
-    /**
-     * Grant the current test user one or more permissions, creating the
-     * underlying Spatie permission records first if they don't already exist.
-     */
-    private function grantPermission(Permission ...$permissions): void
-    {
-        foreach ($permissions as $permission) {
-            SpatiePermission::query()->firstOrCreate(['name' => $permission->value, 'guard_name' => 'web']);
-        }
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-        foreach ($permissions as $permission) {
-            $this->user->givePermissionTo($permission->value);
-        }
-    }
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -904,7 +889,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('send email')->table($invoice))
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
             ->callMountedAction();
 
         /* Assert */
@@ -937,12 +922,17 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'communication_value' => 'billing@example.com',
         ]);
 
-        EmailTemplate::query()->create([
-            'company_id' => $this->company->id,
-            'title'      => 'invoice_sent',
-            'subject'    => 'Invoice {{ invoice.number }} from {{ company.name }}',
-            'body'       => 'Hello {{ customer.name }}, your invoice {{ invoice.number }} is ready.',
-        ]);
+        /*
+         * Every company is auto-bootstrapped with an "invoice_sent" EmailTemplate
+         * (see CompanyObserver::created()), so update it rather than creating a
+         * second row with the same title.
+         */
+        EmailTemplate::forCompany($this->company->id)
+            ->where('title', 'invoice_sent')
+            ->update([
+                'subject' => 'Invoice {{ invoice.number }} from {{ company.name }}',
+                'body'    => 'Hello {{ customer.name }}, your invoice {{ invoice.number }} is ready.',
+            ]);
 
         $invoice = Invoice::factory()->for($this->company)->create([
             'customer_id'    => $relation->getKey(),
@@ -954,7 +944,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Act */
         Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('send email')->table($invoice))
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
             ->callMountedAction();
 
         /* Assert */
@@ -986,13 +976,28 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('send email')->table($invoice))
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
             ->callMountedAction();
 
         /* Assert */
         $component->assertSuccessful();
         Mail::assertNothingQueued();
         Mail::assertNothingSent();
+    }
+
+    /**
+     * Grant the current test user one or more permissions, creating the
+     * underlying Spatie permission records first if they don't already exist.
+     */
+    private function grantPermission(Permission ...$permissions): void
+    {
+        foreach ($permissions as $permission) {
+            SpatiePermission::query()->firstOrCreate(['name' => $permission->value, 'guard_name' => 'web']);
+        }
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        foreach ($permissions as $permission) {
+            $this->user->givePermissionTo($permission->value);
+        }
     }
     # endregion
 
