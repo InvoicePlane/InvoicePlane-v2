@@ -57,6 +57,17 @@ class CreateInvoice extends CreateRecord
         return app(InvoiceService::class)->createInvoice($data);
     }
 
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        $number = $this->record?->invoice_number;
+
+        if (filled($number)) {
+            return trans('ip.invoice_created_with_number', ['number' => $number]);
+        }
+
+        return parent::getCreatedNotificationTitle();
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if ($customerId = request()->integer('customer_id')) {

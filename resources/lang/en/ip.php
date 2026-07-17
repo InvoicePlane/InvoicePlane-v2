@@ -918,6 +918,8 @@ return [
     'numbering_group_identifier_format_help'        => 'A separate, optional format used only to group related numbers together (e.g. by year or batch) -- distinct from the main Format above. Uses the same placeholders: {{prefix}}, {{number}}, {{year}}, {{yy}}, {{month}}, {{day}}.',
     'duplicate_invoice_number'          => 'Duplicate invoice number :number for company :company',
     'duplicate_quote_number'            => 'Duplicate quote number :number for company :company',
+    'quote_created_with_number'         => 'Quote :number created',
+    'invoice_created_with_number'       => 'Invoice :number created',
     #endregion
 
     #region REPORT BUILDER

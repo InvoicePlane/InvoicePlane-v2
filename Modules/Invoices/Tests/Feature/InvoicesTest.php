@@ -16,6 +16,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -150,6 +151,11 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_invoice_through_a_modal_without_required_invoice_number(): void
     {
         /* Arrange */
+        // Draft-number auto-generation is disabled so the still-required
+        // invoice_number field isn't silently auto-filled, keeping this test
+        // a genuine check of the required rule (see InvoiceForm's generator wiring).
+        Setting::saveByKey('generate_invoice_number_for_draft', '0');
+
         $customer        = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
@@ -389,6 +395,11 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_invoice_without_required_invoice_number(): void
     {
         /* Arrange */
+        // Draft-number auto-generation is disabled so the still-required
+        // invoice_number field isn't silently auto-filled, keeping this test
+        // a genuine check of the required rule (see InvoiceForm's generator wiring).
+        Setting::saveByKey('generate_invoice_number_for_draft', '0');
+
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
         $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();

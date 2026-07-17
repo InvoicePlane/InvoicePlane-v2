@@ -56,6 +56,17 @@ class CreateQuote extends CreateRecord
         return app(QuoteService::class)->createQuote($data);
     }
 
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        $number = $this->record?->quote_number;
+
+        if (filled($number)) {
+            return trans('ip.quote_created_with_number', ['number' => $number]);
+        }
+
+        return parent::getCreatedNotificationTitle();
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if ($customerId = request()->integer('customer_id')) {

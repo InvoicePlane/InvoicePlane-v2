@@ -323,8 +323,13 @@ class Settings extends Page implements HasTable, HasForms
                                         ->label(trans('ip.invoices_due_after'))
                                         ->numeric(),
 
+                                    // Boolean setting -> Toggle, matching generate_quote_number_for_draft
+                                    // below and the other on/off switches on this page (einvoicing,
+                                    // disable_sidebar, etc). Read by Setting::getBool() from QuoteForm /
+                                    // InvoiceForm when populating the number field on create.
                                     Toggle::make('settings.generate_invoice_number_for_draft')
-                                        ->label(trans('ip.generate_invoice_number_for_draft')),
+                                        ->label(trans('ip.generate_invoice_number_for_draft'))
+                                        ->default(true),
 
                                     Toggle::make('settings.einvoicing')
                                         ->label(trans('ip.einvoicing_enable'))
@@ -487,13 +492,13 @@ class Settings extends Page implements HasTable, HasForms
                                         ->numeric()
                                         ->default(15),
 
-                                    Select::make('settings.generate_quote_number_for_draft')
+                                    // Boolean setting -> Toggle, matching generate_invoice_number_for_draft
+                                    // above (was previously a Yes/No Select, inconsistent with its
+                                    // invoice counterpart for the same kind of value). Read by
+                                    // Setting::getBool() from QuoteForm when populating quote_number on create.
+                                    Toggle::make('settings.generate_quote_number_for_draft')
                                         ->label(trans('ip.generate_quote_number_for_draft'))
-                                        ->options([
-                                            '0' => trans('ip.no'),
-                                            '1' => trans('ip.yes'),
-                                        ])
-                                        ->default('1'),
+                                        ->default(true),
                                 ]),
 
                             Section::make(trans('ip.pdf_settings'))

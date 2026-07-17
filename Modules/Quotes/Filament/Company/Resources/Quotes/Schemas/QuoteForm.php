@@ -17,9 +17,11 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
+use Modules\Core\Models\Setting;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
+use Modules\Quotes\Support\QuoteNumberGenerator;
 
 class QuoteForm
 {
@@ -69,7 +71,15 @@ class QuoteForm
                                     ->schema([
                                         TextInput::make('quote_number')
                                             ->label(trans('ip.quote_number'))
-                                            ->required(),
+                                            ->required()
+                                            ->default(function (Get $get, string $operation) {
+                                                if ($operation !== 'create') {
+                                                    return;
+                                                }
+
+                                                return self::generateQuoteNumber($get);
+                                            })
+                                            ->dehydrated(),
 
                                         Select::make('quote_status')
                                             ->label(trans('ip.quote_status'))
@@ -88,7 +98,18 @@ class QuoteForm
                                             )
                                             ->searchable()
                                             ->preload()
-                                            ->native(false),
+                                            ->native(false)
+                                            ->reactive()
+                                            ->afterStateUpdated(function (callable $set, Get $get, string $operation): void {
+                                                // Only (re)generate on create, and only when the field is still
+                                                // empty -- never clobber a number the user already typed or one
+                                                // that was already generated for this record.
+                                                if ($operation !== 'create' || filled($get('quote_number'))) {
+                                                    return;
+                                                }
+
+                                                $set('quote_number', self::generateQuoteNumber($get));
+                                            }),
 
                                         DatePicker::make('quoted_at')
                                             ->label(trans('ip.quote_date'))
@@ -231,5 +252,38 @@ class QuoteForm
                     ->collapsed()
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Generate a quote number for the create form, respecting the
+     * generate_quote_number_for_draft setting (default true) for draft
+     * status. Returns null when generation is skipped or no numbering
+     * scheme is available.
+     */
+    private static function generateQuoteNumber(Get $get): ?string
+    {
+        $status = $get('quote_status') ?? QuoteStatus::DRAFT->value;
+
+        if (
+            $status === QuoteStatus::DRAFT->value
+            && ! Setting::getBool('generate_quote_number_for_draft')
+        ) {
+            return null;
+        }
+
+        $companyId = auth()->user()?->getCurrentCompanyId();
+        $generator = new QuoteNumberGenerator($companyId);
+
+        // Prefer the explicitly selected numbering scheme; otherwise fall
+        // back to any Quote-type scheme for the company instead of the
+        // generator's conventional "Default Quote Numbering" group name,
+        // which seeded/company-created schemes won't necessarily carry.
+        if ($numberingId = $get('numbering_id')) {
+            $generator->forNumberingId((int) $numberingId);
+        } else {
+            $generator->forNumbering('');
+        }
+
+        return $generator->generate();
     }
 }
