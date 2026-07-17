@@ -22,6 +22,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
@@ -260,6 +261,11 @@ class CompanyPanelProvider extends PanelProvider
                     ->label(trans('ip.settings'))
                     ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
+                Action::make('admin-panel')
+                    ->label(trans('ip.admin_panel'))
+                    ->url('/admin')
+                    ->icon('heroicon-o-shield-check')
+                    ->visible(fn (): bool => auth()->user()?->hasAnyRole(UserRole::elevated()) ?? false),
                 'logout' => fn (Action $action) => $action
                     ->label(trans('ip.logout'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle'),
