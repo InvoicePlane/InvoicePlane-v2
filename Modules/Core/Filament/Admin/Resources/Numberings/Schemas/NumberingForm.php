@@ -2,10 +2,12 @@
 
 namespace Modules\Core\Filament\Admin\Resources\Numberings\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -14,6 +16,25 @@ use Modules\Core\Models\Company;
 
 class NumberingForm
 {
+    protected const FORMAT_TOKENS = ['{{prefix}}', '{{number}}', '{{year}}', '{{yy}}', '{{month}}', '{{day}}'];
+
+    /**
+     * @return array<Action>
+     */
+    protected static function tokenInsertActions(string $field): array
+    {
+        return array_map(
+            fn (string $token): Action => Action::make("insert_{$field}_" . str_replace(['{', '}'], '', $token))
+                ->label($token)
+                ->size('sm')
+                ->color('gray')
+                ->action(function (callable $set, callable $get) use ($field, $token): void {
+                    $set($field, ($get($field) ?? '') . $token);
+                }),
+            self::FORMAT_TOKENS
+        );
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -93,19 +114,24 @@ class NumberingForm
                                 Schemas\Components\Group::make()->schema([
                                     TextInput::make('prefix')
                                         ->label(trans('ip.numbering_prefix'))
-                                        ->placeholder('JOB'),
+                                        ->placeholder('INV'),
                                     TextInput::make('format')
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))
                                         ->helperText(trans('ip.numbering_format_help')),
+                                    Actions::make(self::tokenInsertActions('format'))
+                                        ->label(''),
                                     TextInput::make('group_identifier_format')
                                         ->label(trans('ip.numbering_group_identifier_format'))
-                                        ->placeholder('{PREFIX}-{YEAR}-{ID}'),
+                                        ->placeholder(trans('ip.numbering_group_identifier_format_placeholder'))
+                                        ->helperText(trans('ip.numbering_group_identifier_format_help')),
+                                    Actions::make(self::tokenInsertActions('group_identifier_format'))
+                                        ->label(''),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
                                         ->label('')
-                                        ->content(trans('ip.numbering_format_helper_admin'))
+                                        ->content(trans('ip.numbering_format_helper'))
                                         ->columnSpanFull(),
                                 ]),
                             ]),

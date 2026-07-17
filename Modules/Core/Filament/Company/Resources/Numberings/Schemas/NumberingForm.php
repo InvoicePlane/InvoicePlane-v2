@@ -2,11 +2,13 @@
 
 namespace Modules\Core\Filament\Company\Resources\Numberings\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -14,6 +16,25 @@ use Modules\Core\Enums\NumberingType;
 
 class NumberingForm
 {
+    protected const FORMAT_TOKENS = ['{{prefix}}', '{{number}}', '{{year}}', '{{yy}}', '{{month}}', '{{day}}'];
+
+    /**
+     * @return array<Action>
+     */
+    protected static function tokenInsertActions(string $field): array
+    {
+        return array_map(
+            fn (string $token): Action => Action::make("insert_{$field}_" . str_replace(['{', '}'], '', $token))
+                ->label($token)
+                ->size('sm')
+                ->color('gray')
+                ->action(function (callable $set, callable $get) use ($field, $token): void {
+                    $set($field, ($get($field) ?? '') . $token);
+                }),
+            self::FORMAT_TOKENS
+        );
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -88,6 +109,8 @@ class NumberingForm
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))
                                         ->helperText(trans('ip.numbering_format_help')),
+                                    Actions::make(self::tokenInsertActions('format'))
+                                        ->label(''),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
