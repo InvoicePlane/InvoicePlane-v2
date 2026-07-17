@@ -5,7 +5,6 @@ namespace Modules\Core\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Admin\Resources\Numberings\Pages\CreateNumbering;
-use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -18,7 +17,7 @@ class NumberingFormatBuilderTest extends AbstractAdminPanelTestCase
         $component = Livewire::actingAs($this->superAdmin())
             ->test(CreateNumbering::class)
             ->fillForm(['format' => '{{prefix}}-'])
-            ->mountAction('insert_format_number')
+            ->mountFormComponentAction('format', 'insert_format_number')
             ->callMountedAction();
 
         /* Assert */
@@ -33,14 +32,14 @@ class NumberingFormatBuilderTest extends AbstractAdminPanelTestCase
         $component = Livewire::actingAs($this->superAdmin())
             ->test(CreateNumbering::class)
             ->fillForm(['format' => '{{prefix}}', 'group_identifier_format' => '{{year}}-'])
-            ->mountAction('insert_group_identifier_format_number')
+            ->mountFormComponentAction('group_identifier_format', 'insert_group_identifier_format_number')
             ->callMountedAction();
 
         /* Assert */
         $component->assertSuccessful();
         $component->assertFormSet([
-            'format'                   => '{{prefix}}',
-            'group_identifier_format'  => '{{year}}-{{number}}',
+            'format'                  => '{{prefix}}',
+            'group_identifier_format' => '{{year}}-{{number}}',
         ]);
     }
 
@@ -62,14 +61,14 @@ class NumberingFormatBuilderTest extends AbstractAdminPanelTestCase
     {
         /* Arrange */
         $payload = [
-            'company_id'               => $this->company->id,
-            'type'                     => NumberingType::INVOICE->value,
-            'name'                     => '::numbering_name::',
-            'next_id'                  => 1,
-            'left_pad'                 => 4,
-            'prefix'                   => 'INV',
-            'format'                   => '{{prefix}}-{{number}}',
-            'group_identifier_format'  => '{{prefix}}-{{year}}-{{number}}',
+            'company_id'              => $this->company->id,
+            'type'                    => NumberingType::INVOICE->value,
+            'name'                    => '::numbering_name::',
+            'next_id'                 => 1,
+            'left_pad'                => 4,
+            'prefix'                  => 'INV',
+            'format'                  => '{{prefix}}-{{number}}',
+            'group_identifier_format' => '{{prefix}}-{{year}}-{{number}}',
         ];
 
         /* Act */
