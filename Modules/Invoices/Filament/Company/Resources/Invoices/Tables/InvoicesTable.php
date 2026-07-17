@@ -16,6 +16,7 @@ use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Services\InvoiceService;
+use RuntimeException;
 
 class InvoicesTable
 {
@@ -118,13 +119,20 @@ class InvoicesTable
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
                         ->label(trans('ip.send_email'))
                         ->action(function (Invoice $record): void {
-                            app(InvoiceService::class)->sendInvoiceEmail($record);
-                            // Optionally, show a notification
-                            \Filament\Notifications\Notification::make()
-                                ->title(trans('ip.email_sent'))
-                                ->body(trans('ip.invoice_email_sent_successfully'))
-                                ->success()
-                                ->send();
+                            try {
+                                app(InvoiceService::class)->sendInvoiceEmail($record);
+
+                                \Filament\Notifications\Notification::make()
+                                    ->title(trans('ip.email_sent'))
+                                    ->body(trans('ip.invoice_email_sent_successfully'))
+                                    ->success()
+                                    ->send();
+                            } catch (RuntimeException $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
                     DeleteAction::make('delete')
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_INVOICES->value))

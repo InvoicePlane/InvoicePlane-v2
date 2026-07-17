@@ -4,15 +4,29 @@ namespace Modules\Invoices\Services;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Clients\Enums\CommunicationType;
+use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Mail\InvoiceMailable;
 use Modules\Invoices\Models\Invoice;
+use RuntimeException;
 use Throwable;
 
 class InvoiceService extends BaseService
 {
+    private const DEFAULT_INVOICE_EMAIL_SUBJECT = 'New Invoice: {{ invoice.number }}';
+
+    private const DEFAULT_INVOICE_EMAIL_BODY = "Dear {{ customer.name }},\n\n"
+        . "A new invoice {{ invoice.number }} has been created for you.\n\n"
+        . "Amount Due: {{ invoice.total_formatted }}\n"
+        . "Due Date: {{ invoice.due_date_formatted }}\n\n"
+        . "Thank you for your business!\n\n"
+        . '{{ company.name }}';
+
     public function model(): string
     {
         return Invoice::class;
@@ -195,6 +209,73 @@ class InvoiceService extends BaseService
         }
 
         return $invoice;
+    }
+
+    /**
+     * Resolve the customer's primary contact email, render the invoice
+     * EmailTemplate (falling back to a default), and queue the invoice
+     * mailable for delivery.
+     *
+     * @throws RuntimeException when no recipient email address can be resolved
+     */
+    public function sendInvoiceEmail(Invoice $invoice): void
+    {
+        $recipientEmail = $this->resolveInvoiceRecipientEmail($invoice);
+
+        if ($recipientEmail === null) {
+            throw new RuntimeException(trans('ip.invoice_email_no_recipient'));
+        }
+
+        $template = EmailTemplate::query()
+            ->where('title', 'invoice_sent')
+            ->first();
+
+        $subjectTemplate = $template?->subject ?: self::DEFAULT_INVOICE_EMAIL_SUBJECT;
+        $bodyTemplate    = $template?->body ?: self::DEFAULT_INVOICE_EMAIL_BODY;
+
+        $subject = $this->renderInvoiceEmailTemplate($subjectTemplate, $invoice);
+        $body    = $this->renderInvoiceEmailTemplate($bodyTemplate, $invoice);
+
+        Mail::to($recipientEmail)->queue(new InvoiceMailable($invoice, $subject, $body));
+    }
+
+    /**
+     * Walk the invoice's customer → contacts → communications chain and
+     * return the first email address found, preferring a primary one.
+     */
+    private function resolveInvoiceRecipientEmail(Invoice $invoice): ?string
+    {
+        $invoice->loadMissing('customer.contacts.communications');
+
+        $customer = $invoice->customer;
+
+        if ( ! $customer) {
+            return null;
+        }
+
+        $emailCommunication = $customer->contacts
+            ->flatMap(fn ($contact) => $contact->communications)
+            ->filter(fn ($communication) => $communication->communication_type === CommunicationType::EMAIL->value)
+            ->sortByDesc('is_primary')
+            ->first();
+
+        return $emailCommunication?->communication_value;
+    }
+
+    /**
+     * Replace the invoice's mini-templating placeholders with real values.
+     */
+    private function renderInvoiceEmailTemplate(string $template, Invoice $invoice): string
+    {
+        $replacements = [
+            '{{ customer.name }}'             => $invoice->customer?->company_name ?? '',
+            '{{ invoice.number }}'             => $invoice->invoice_number ?? '',
+            '{{ invoice.total_formatted }}'    => number_format((float) $invoice->invoice_total, 2),
+            '{{ invoice.due_date_formatted }}' => $invoice->invoice_due_at?->format('Y-m-d') ?? '',
+            '{{ company.name }}'               => $invoice->company?->name ?? '',
+        ];
+
+        return strtr($template, $replacements);
     }
 
     private function calculateItemTaxTotal(array $data): float
