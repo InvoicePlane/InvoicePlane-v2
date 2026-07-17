@@ -197,8 +197,8 @@ class InvoicesTable
                         ->action(function (Invoice $record): void {}),
                     EmailInvoiceAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
-                        ->disabled(fn (Invoice $record): bool => blank($record->customer?->customer_email))
-                        ->tooltip(fn (Invoice $record): ?string => blank($record->customer?->customer_email)
+                        ->disabled(fn (Invoice $record): bool => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient']))
+                        ->tooltip(fn (Invoice $record): ?string => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient'])
                             ? trans('ip.customer_has_no_email')
                             : null),
                     DeleteAction::make('delete')
