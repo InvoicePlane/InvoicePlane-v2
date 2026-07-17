@@ -7,6 +7,10 @@
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
          displayDetailsOnPhpunitDeprecations="true"
+         failOnWarning="false"
+         failOnRisky="false"
+         failOnSkipped="false"
+         failOnIncomplete="false"
 >
     <testsuites>
         <testsuite name="Unit">

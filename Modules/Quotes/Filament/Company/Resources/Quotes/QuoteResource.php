@@ -42,6 +42,11 @@ class QuoteResource extends BaseResource
         return trans('ip.quotes');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return QuoteForm::configure($schema);

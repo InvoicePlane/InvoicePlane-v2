@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
@@ -217,7 +218,7 @@ class QuoteForm
                     ->schema([
                         MarkdownEditor::make('notes')
                             ->label(trans('ip.notes'))
-                            ->toolbarButtons(['bold', 'italic']),
+                            ->hintAction(InsertNoteTemplateAction::make('notes')),
                     ])
                     ->collapsed()
                     ->columnSpanFull(),

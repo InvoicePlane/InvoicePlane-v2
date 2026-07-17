@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Schemas\InvoiceForm;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Tables\InvoicesTable;
@@ -41,6 +42,11 @@ class InvoiceResource extends BaseResource
         return trans('ip.invoices');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return InvoiceForm::configure($schema);
@@ -61,6 +67,7 @@ class InvoiceResource extends BaseResource
     {
         return [
             'index' => ListInvoices::route('/'),
+            'edit'  => EditInvoice::route('/{record}/edit'),
         ];
     }
 

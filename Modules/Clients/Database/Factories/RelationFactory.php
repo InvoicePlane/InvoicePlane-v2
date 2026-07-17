@@ -39,6 +39,7 @@ class RelationFactory extends AbstractFactory
             'relation_status'    => $this->faker->randomElement(RelationStatus::cases())->value,
             'relation_number'    => $this->faker->bothify('??######'),
             'company_name'       => $companyName,
+            'email'              => $this->faker->safeEmail(),
             'trading_name'       => $tradingName,
             'unique_name'        => \Illuminate\Support\Str::slug($tradingName),
             'id_number'          => $this->faker->optional()->numerify('#########'),

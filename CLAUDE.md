@@ -195,6 +195,36 @@ DB_DATABASE=:memory:
 
 ---
 
+## Observers
+
+All model lifecycle business logic (duplicate checks, validation, side effects on save/create/update/delete) goes in `Observers/`, **not** inline `booted()` methods on the model.
+
+### Convention
+
+- Create `Modules/<Name>/Observers/<Model>Observer.php` extending `Modules\Core\Observers\AbstractObserver`
+- Register in the module's ServiceProvider `boot()`:
+  ```php
+  Model::observe(ModelObserver::class);
+  ```
+- Always use `Model::withoutGlobalScopes()` inside observers — global scopes (e.g. `BelongsToCompany`) may not be active in all contexts (unauthenticated, queued jobs, tests)
+- **Do not** add `static::creating()` / `static::saving()` callbacks inside `booted()` on the model — the Observer handles this
+
+### Example
+
+```php
+// Modules/Invoices/Observers/InvoiceObserver.php
+class InvoiceObserver extends AbstractObserver {
+    public function saving(Invoice $invoice): void {
+        // saving fires before both creating and updating — covers all writes
+    }
+}
+
+// Modules/Invoices/Providers/InvoicesServiceProvider.php  boot()
+Invoice::observe(InvoiceObserver::class);
+```
+
+---
+
 ## Key model notes
 
 - `Company::$primaryKey` = `id` (standard); URL slug is `search_code` (10 chars, unique, e.g. `ivplv2`)
