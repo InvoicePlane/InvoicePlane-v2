@@ -6,6 +6,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Services\InvoiceService;
+
 use function request;
 
 class CreateInvoice extends CreateRecord
@@ -42,6 +43,15 @@ class CreateInvoice extends CreateRecord
         $this->redirect($this->getRedirectUrl());
     }
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        if ($customerId = request()->integer('customer_id')) {
+            $this->form->fill(['customer_id' => $customerId]);
+        }
+    }
+
     protected function handleRecordCreation(array $data): Model
     {
         return app(InvoiceService::class)->createInvoice($data);
@@ -54,14 +64,5 @@ class CreateInvoice extends CreateRecord
         }
 
         return $data;
-    }
-
-    public function mount(): void
-    {
-        parent::mount();
-
-        if ($customerId = request()->integer('customer_id')) {
-            $this->form->fill(['customer_id' => $customerId]);
-        }
     }
 }
