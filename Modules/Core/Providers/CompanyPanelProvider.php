@@ -22,8 +22,12 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Enums\UserRole;
+use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\Dashboard;
-use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Filament\Company\Pages\MyCompanies;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
+use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
@@ -53,10 +57,10 @@ class CompanyPanelProvider extends PanelProvider
             ->id('company')
             ->path('')
             ->viteTheme('resources/css/filament/company/nord.css')
-            ->login()
-            ->profile(EditProfile::class, isSimple: false)
+            ->login(Login::class)
             ->passwordReset()
             ->emailVerification()
+            ->emailChangeVerification()
             ->maxContentWidth(Width::Full)
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->unsavedChangesAlerts()
@@ -167,11 +171,14 @@ class CompanyPanelProvider extends PanelProvider
                 ProjectResource::class,
                 TaskResource::class,
                 QuoteResource::class,
+                NoteTemplateResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
             ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
             ->pages([
                 Dashboard::class,
+                EditProfile::class,
+                MyCompanies::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -195,52 +202,57 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Customers')
                             //->icon('heroicon-o-user-group')
                             ->items([
-                                ...RelationResource::getNavigationItems(),
+                                ...self::withQuickCreate(RelationResource::class),
                             ]),
 
                         NavigationGroup::make('Quotes')
                             //->icon('heroicon-o-document-text')
                             ->items([
-                                ...QuoteResource::getNavigationItems(),
+                                ...self::withQuickCreate(QuoteResource::class),
                             ]),
 
                         NavigationGroup::make('Invoices')
                             //->icon('heroicon-o-banknotes')
                             ->items([
-                                ...InvoiceResource::getNavigationItems(),
+                                ...self::withQuickCreate(InvoiceResource::class),
                             ]),
 
                         NavigationGroup::make('Expenses')
                             //->icon('heroicon-o-banknotes')
                             ->items([
-                                ...ExpenseResource::getNavigationItems(),
-                                ...ExpenseCategoryResource::getNavigationItems(),
+                                ...self::withQuickCreate(ExpenseResource::class),
+                                ...(ExpenseCategoryResource::shouldRegisterNavigation() ? ExpenseCategoryResource::getNavigationItems() : []),
                             ]),
 
                         NavigationGroup::make('Payments')
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
-                                ...PaymentResource::getNavigationItems(),
+                                ...self::withQuickCreate(PaymentResource::class),
                             ]),
 
                         NavigationGroup::make('Resources')
                             //->icon('heroicon-o-archive-box')
                             ->items([
-                                ...ProductResource::getNavigationItems(),
-                                ...ProductCategoryResource::getNavigationItems(),
-                                ...ProductUnitResource::getNavigationItems(),
+                                ...self::withQuickCreate(ProductResource::class),
+                                ...(ProductCategoryResource::shouldRegisterNavigation() ? ProductCategoryResource::getNavigationItems() : []),
+                                ...(ProductUnitResource::shouldRegisterNavigation() ? ProductUnitResource::getNavigationItems() : []),
 
                                 ...ProjectResource::getNavigationItems(),
                                 ...TaskResource::getNavigationItems(),
+                            ]),
+
+                        NavigationGroup::make('Settings')
+                            //->icon('heroicon-o-cog-6-tooth')
+                            ->items([
+                                ...NoteTemplateResource::getNavigationItems(),
                             ]),
                     ]);
             })
             ->userMenuItems([
                 Action::make('switch-company')
-                    ->label('Switch Company')
+                    ->label(trans('ip.my_companies'))
                     ->icon('heroicon-o-building-office-2')
-                    ->modalHeading('Switch Company')
-                    ->modalContent(fn () => view('filament.company.widgets.switch-company-table')),
+                    ->url(fn () => MyCompanies::getUrl()),
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
@@ -249,11 +261,45 @@ class CompanyPanelProvider extends PanelProvider
                     ->label(trans('ip.settings'))
                     ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
+                Action::make('admin-panel')
+                    ->label(trans('ip.admin_panel'))
+                    ->url('/admin')
+                    ->icon('heroicon-o-shield-check')
+                    ->visible(fn (): bool => auth()->user()?->hasAnyRole(UserRole::elevated()) ?? false),
                 'logout' => fn (Action $action) => $action
                     ->label(trans('ip.logout'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle'),
             ]);
 
         return $companyPanel;
+    }
+
+    /**
+     * Attaches a sidebar quick-create ("+") button to a resource's navigation
+     * items, driven by the `data-quick-create-url` extra attribute consumed
+     * by `resources/views/vendor/filament-panels/components/sidebar/item.blade.php`.
+     *
+     * Resources with a dedicated `create` page link straight to it; resources
+     * that only create records via a modal action on their list page (no
+     * `create` page registered) link to the index page with `?action=create`,
+     * which Filament natively auto-mounts via its URL-bound action state.
+     *
+     * @param class-string<\Filament\Resources\Resource> $resourceClass
+     *
+     * @return array<NavigationItem>
+     */
+    private static function withQuickCreate(string $resourceClass): array
+    {
+        $hasCreatePage = array_key_exists('create', $resourceClass::getPages());
+
+        return collect($resourceClass::getNavigationItems())
+            ->map(fn (NavigationItem $item): NavigationItem => $item->extraAttributes([
+                'data-quick-create-url' => $resourceClass::canCreate()
+                    ? ($hasCreatePage
+                        ? $resourceClass::getUrl('create')
+                        : $resourceClass::getUrl('index', ['action' => 'create']))
+                    : null,
+            ], merge: true))
+            ->all();
     }
 }

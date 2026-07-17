@@ -4,10 +4,12 @@ namespace Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Invoices\Enums\RecurringFrequency;
 
@@ -40,14 +42,19 @@ class RecurringInvoicesTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_INVOICES->value))
+                        ->modalWidth('full'),
+                    DeleteAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_INVOICES->value)),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_INVOICES->value)),
                 ]),
             ]);
     }

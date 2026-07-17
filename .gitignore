@@ -1,6 +1,6 @@
 # Laravel – Core
 /public/fonts/
-/public/storage/
+/public/storage
 /storage/framework/
 /storage/generated-json/
 /storage/logs/
@@ -8,14 +8,9 @@
 
 .env*
 !.env.example
+!.env.testing
 !.env.testing.example
 /storage/*.key
-
-# Laravel – Modules (ignored generated sources)
-/Modules/*/resources/views/**
-Modules/**/Controllers/
-Modules/**/Http/Controllers/
-Modules/**/Http/Requests/
 
 # Vite / Filament / Livewire
 /.vite
@@ -40,6 +35,7 @@ package-lock.json
 
 # Pint
 /pint.txt
+/pint_output.log
 
 # PHPUnit
 /.phpunit.cache
@@ -78,5 +74,40 @@ package-lock.json
 /olddocs
 /.php-cs-fixer.cache
 *.sqlite
+/audit-report.json
 /failures.txt
 /yarnpack.txt
+batch-implementation-status.md
+conflicts.md
+fetch-issues.sh
+fruiit.md
+gh-commands.sh
+gh-comments/
+issues-full.json
+link-dependencies.sh
+linked-issues-plan.md
+low-hanging-fruit.json
+plan-2026-07-17.md
+plan-prompt.md
+plan.md
+project-config.json
+refined-issues.json
+report-2026-07-17.md
+report.md
+scratch/
+.yarn/
+.yarnrc.yml
+agents/
+batch-order.json
+batch-summary.md
+excluded-issues.json
+merge-order.json
+state-map.json
+worktree-triage.md
+/automation/
+/.claude/fable5/
+/automation/.idea/
+/automation/vendor/
+/automation/test-honesty/vendor/
+.claude/fable5/runtime/control.json
+upd.sh

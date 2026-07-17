@@ -1,5 +1,5 @@
 ---
-name: dto-contracts
+name: dto-contract
 description: Defines DTO structure, lifecycle, and transformation rules across the application
 license: MIT
 metadata:

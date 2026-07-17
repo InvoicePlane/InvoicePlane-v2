@@ -10,6 +10,7 @@ use Modules\Core\Database\Seeders\OwnerUserSeeder;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RoleHasPermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
+use Modules\Core\Database\Seeders\TaxRatesSeeder;
 use Modules\Core\Database\Seeders\UsersSeeder;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -61,6 +62,12 @@ class DatabaseSeeder extends Seeder
         $bar->finish();
         $this->command->newLine(2);
 
+        $admin  = User::query()->where('email', 'admin@invoiceplane.com')->first();
+        $ivplv2 = Company::query()->whereRaw('LOWER(search_code) = ?', ['ivplv2'])->first();
+        if ($admin && $ivplv2) {
+            $admin->companies()->syncWithoutDetaching([$ivplv2->id]);
+        }
+
         $totalCompanies = Company::query()->count();
         $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);
         $companyBar->setMessage('Seeding company data');
@@ -89,6 +96,8 @@ class DatabaseSeeder extends Seeder
             $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
 
             $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
+
+            (new TaxRatesSeeder())->buildOne($company->id);
 
             $this->command->info("===== END   Seeding company {$company->id} ({$company->name}) =====");
 
