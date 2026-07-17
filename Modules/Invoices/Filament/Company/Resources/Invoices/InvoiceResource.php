@@ -42,6 +42,11 @@ class InvoiceResource extends BaseResource
         return trans('ip.invoices');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return InvoiceForm::configure($schema);

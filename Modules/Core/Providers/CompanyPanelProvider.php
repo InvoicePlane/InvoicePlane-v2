@@ -201,44 +201,38 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Customers')
                             //->icon('heroicon-o-user-group')
                             ->items([
-                                ...RelationResource::getNavigationItems(),
+                                ...self::withQuickCreate(RelationResource::class),
                             ]),
 
                         NavigationGroup::make('Quotes')
                             //->icon('heroicon-o-document-text')
                             ->items([
-                                ...QuoteResource::getNavigationItems(),
+                                ...self::withQuickCreate(QuoteResource::class),
                             ]),
 
                         NavigationGroup::make('Invoices')
                             //->icon('heroicon-o-banknotes')
                             ->items([
-                                ...InvoiceResource::getNavigationItems(),
+                                ...self::withQuickCreate(InvoiceResource::class),
                             ]),
 
                         NavigationGroup::make('Expenses')
                             //->icon('heroicon-o-banknotes')
                             ->items([
-                                ...collect(ExpenseResource::getNavigationItems())
-                                    ->map(fn (NavigationItem $item): NavigationItem => $item->extraAttributes([
-                                        'data-quick-create-url' => ExpenseResource::canCreate()
-                                            ? ExpenseResource::getUrl('create')
-                                            : null,
-                                    ], merge: true))
-                                    ->all(),
+                                ...self::withQuickCreate(ExpenseResource::class),
                                 ...(ExpenseCategoryResource::shouldRegisterNavigation() ? ExpenseCategoryResource::getNavigationItems() : []),
                             ]),
 
                         NavigationGroup::make('Payments')
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
-                                ...PaymentResource::getNavigationItems(),
+                                ...self::withQuickCreate(PaymentResource::class),
                             ]),
 
                         NavigationGroup::make('Resources')
                             //->icon('heroicon-o-archive-box')
                             ->items([
-                                ...ProductResource::getNavigationItems(),
+                                ...self::withQuickCreate(ProductResource::class),
                                 ...(ProductCategoryResource::shouldRegisterNavigation() ? ProductCategoryResource::getNavigationItems() : []),
                                 ...(ProductUnitResource::shouldRegisterNavigation() ? ProductUnitResource::getNavigationItems() : []),
 
@@ -272,5 +266,34 @@ class CompanyPanelProvider extends PanelProvider
             ]);
 
         return $companyPanel;
+    }
+
+    /**
+     * Attaches a sidebar quick-create ("+") button to a resource's navigation
+     * items, driven by the `data-quick-create-url` extra attribute consumed
+     * by `resources/views/vendor/filament-panels/components/sidebar/item.blade.php`.
+     *
+     * Resources with a dedicated `create` page link straight to it; resources
+     * that only create records via a modal action on their list page (no
+     * `create` page registered) link to the index page with `?action=create`,
+     * which Filament natively auto-mounts via its URL-bound action state.
+     *
+     * @param class-string<\Filament\Resources\Resource> $resourceClass
+     *
+     * @return array<NavigationItem>
+     */
+    private static function withQuickCreate(string $resourceClass): array
+    {
+        $hasCreatePage = array_key_exists('create', $resourceClass::getPages());
+
+        return collect($resourceClass::getNavigationItems())
+            ->map(fn (NavigationItem $item): NavigationItem => $item->extraAttributes([
+                'data-quick-create-url' => $resourceClass::canCreate()
+                    ? ($hasCreatePage
+                        ? $resourceClass::getUrl('create')
+                        : $resourceClass::getUrl('index', ['action' => 'create']))
+                    : null,
+            ], merge: true))
+            ->all();
     }
 }
