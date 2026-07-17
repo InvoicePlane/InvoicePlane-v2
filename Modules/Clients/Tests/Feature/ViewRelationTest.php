@@ -71,6 +71,6 @@ class ViewRelationTest extends AbstractCompanyPanelTestCase
         app(RelationService::class)->deleteRelation($customer);
 
         /* Assert */
-        $this->assertDatabaseMissing('relations', ['id' => $customer->id]);
+        $this->assertSoftDeleted('relations', ['id' => $customer->id]);
     }
 }
