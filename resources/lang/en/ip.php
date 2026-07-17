@@ -543,6 +543,7 @@ return [
     #endregion
 
     #region QUOTES
+    'convert_to_invoice'              => 'Convert to Invoice',
     'copy_quote'                      => 'Copy Quote',
     'create_quote'                    => 'Create Quote',
     'default_quote_group'             => 'Default Quote Group',
@@ -941,6 +942,7 @@ return [
     'twelve_column_grid'     => '12-Column Grid',
     'group_detail_header'    => 'Group Detail Header',
     'group_detail_footer'    => 'Group Detail Footer',
+    'not_yet_implemented'    => 'Not yet implemented',
     #endregion
 
     #region TAX RATES
