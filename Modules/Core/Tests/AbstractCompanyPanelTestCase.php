@@ -3,7 +3,7 @@
 namespace Modules\Core\Tests;
 
 use Filament\Facades\Filament;
-use Filament\Schemas\Components\Livewire;
+use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
@@ -69,8 +69,9 @@ abstract class AbstractCompanyPanelTestCase extends BaseTestCase
      */
     protected function testLivewire($component, $params = [])
     {
+        session(['current_company_id' => $this->company->id]);
+
         return Livewire::actingAs($this->user)
-            ->withSession(['current_company_id' => $this->company->id])
             ->test($component, $params);
     }
 }
