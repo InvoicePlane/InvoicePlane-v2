@@ -4,6 +4,7 @@ namespace Modules\Invoices\Filament\Company\Widgets;
 
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -29,6 +30,15 @@ class RecentInvoicesWidget extends TableWidget
                 ->icon('heroicon-o-arrow-right')
                 ->color('primary'),
         ];
+    }
+
+    public function table(Table $table): Table
+    {
+        // InvoiceResource only registers an 'index' page — editing happens
+        // via a modal action on that page's table, not a dedicated edit/view
+        // page — so this is the most specific URL a row can link to.
+        return parent::table($table)
+            ->recordUrl(fn (Invoice $record): string => InvoiceResource::getUrl('index'));
     }
 
     protected function getTableQuery(): Builder|Relation|null

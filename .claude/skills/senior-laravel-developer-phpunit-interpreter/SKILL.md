@@ -29,7 +29,9 @@ Remove completely:
 
 ## Path Cleanup
 
-Replace `/home/runner/work/spotivel/` with an empty string. Do not replace any other paths.
+Remove the absolute project root path prefix from all file paths so only the
+relative path remains (e.g. strip `/home/runner/work/<project>/` or
+`/var/www/<project>/` — whatever the CI runner's working directory is).
 
 ---
 

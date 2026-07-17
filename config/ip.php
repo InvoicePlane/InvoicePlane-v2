@@ -36,4 +36,11 @@ return [
         '3' => '3',
     ],
     'export_version' => 2,
+
+    /*
+     * PDF rendering — driver class name under Modules\Core\Support\PDF\Drivers.
+     */
+    'pdfDriver'        => env('IP_PDF_DRIVER', 'domPDF'),
+    'paperSize'        => env('IP_PDF_PAPER_SIZE', 'a4'),
+    'paperOrientation' => env('IP_PDF_PAPER_ORIENTATION', 'portrait'),
 ];

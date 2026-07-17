@@ -3,11 +3,13 @@
 namespace Modules\Expenses\Filament\Company\Widgets;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
+use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Models\Expense;
 
 class RecentExpensesWidget extends TableWidget
@@ -15,6 +17,15 @@ class RecentExpensesWidget extends TableWidget
     protected static ?string $heading = 'Recent Expenses';
 
     protected static ?int $sort = 5;
+
+    public function table(Table $table): Table
+    {
+        // ExpenseResource only registers an 'index' page — editing happens
+        // via a modal action on that page's table, not a dedicated edit/view
+        // page — so this is the most specific URL a row can link to.
+        return parent::table($table)
+            ->recordUrl(fn (Expense $record): string => ExpenseResource::getUrl('index'));
+    }
 
     protected function getTableQuery(): Builder|Relation|null
     {

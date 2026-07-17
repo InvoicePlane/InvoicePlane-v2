@@ -3,6 +3,53 @@ volumes:
         driver: "local"
 
 services:
+    app:
+        container_name: 'ivplflmnt_app'
+        build:
+            context: ./docker-resources/php-fpm
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        networks:
+            - laravel
+
+    web:
+        container_name: 'ivplflmnt_web'
+        build:
+            context: ./docker-resources/apache
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "${APP_PORT:-8080}:80"
+        volumes:
+            - .:/usr/local/apache2/htdocs
+        depends_on:
+            - app
+        networks:
+            - laravel
+
+    # One-off command runner for tests, artisan, and composer — not started
+    # by default (profile "tools"). Examples:
+    #   docker compose run --rm cli composer install
+    #   docker compose run --rm cli php artisan migrate --seed
+    #   docker compose run --rm cli vendor/bin/phpunit --exclude-group failing,troubleshooting
+    cli:
+        container_name: 'ivplflmnt_cli'
+        build:
+            context: ./docker-resources/php-cli
+        profiles:
+            - tools
+        tty: true
+        environment:
+            APP_ENV: "${APP_ENV:-testing}"
+        volumes:
+            - .:/var/www/html
+        networks:
+            - laravel
+
     db:
         container_name: 'ivplflmnt_db'
         image: mariadb
@@ -11,11 +58,11 @@ services:
         ports:
             - "3306:3306"
         environment:
-            MARIADB_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
             MARIADB_DATABASE: "${DB_DATABASE}"
-            MARIADB_USER: "${DB_USERNAME}"
-            MARIADB_PASSWORD: "${DB_PASSWORD}"
             TZ: "Europe/London"
+        networks:
+            - laravel
 
     mailcatcher:
         container_name: 'ivplflmnt_mailcatcher'
@@ -25,6 +72,9 @@ services:
         ports:
             - "25:1025"
             - "1080:1080"
+        networks:
+            - laravel
+
     # phpmyadmin:
     #   container_name: 'ivplflmnt_phpmyadmin'
     #   image: phpmyadmin/phpmyadmin

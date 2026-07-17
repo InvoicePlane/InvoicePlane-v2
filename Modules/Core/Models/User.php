@@ -12,13 +12,18 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Enums\UserRole;
+use Modules\Core\Support\ProfileImage\ProfileImageFactory;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
@@ -29,6 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string                  $name
  * @property string                  $email
  * @property mixed                   $email_verified_at
+ * @property string                  $language
  * @property string                  $password
  * @property string                  $remember_token
  * @property mixed                   $created_at
@@ -130,6 +136,18 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
         return $this->hasMany(Upload::class);
     }
 
+    public function avatarUpload(): MorphOne
+    {
+        return $this->morphOne(Upload::class, 'uploadable')
+            ->where('file_description', 'avatar')
+            ->latestOfMany();
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->belongsTo(Relation::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Accessors
@@ -158,7 +176,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return null;
+        if ($avatar = $this->avatarUpload) {
+            return Storage::disk($avatar->upload_disk)->url($avatar->upload_stored_name);
+        }
+
+        return ProfileImageFactory::create()->getProfileImageUrl($this);
     }
 
     public function isSuperAdmin(): bool
