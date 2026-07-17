@@ -9,6 +9,7 @@ use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Models\Product;
@@ -16,6 +17,7 @@ use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -333,6 +335,33 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             'id'           => $quote->id,
             'quote_status' => QuoteStatus::SENT->value,
         ]);
+    }
+    #[Test]
+    #[Group('crud')]
+    public function it_inserts_a_note_template_into_the_notes_field(): void
+    {
+        /* Arrange */
+        $prospect = Relation::factory()->for($this->company)->prospect()->create();
+        $quote    = Quote::factory()->for($this->company)->create([
+            'prospect_id' => $prospect->id,
+            'user_id'     => $this->user->id,
+            'notes'       => null,
+        ]);
+        $template = NoteTemplate::factory()->for($this->company)->create([
+            'template_title' => 'SEO Terms',
+            'template_body'  => 'Payment due Net 30.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->callFormComponentAction('notes', 'insert_note_template_notes', [
+                'note_template_id' => $template->id,
+                'replace_content'  => true,
+            ]);
+
+        /* Assert */
+        $component->assertFormSet(['notes' => 'Payment due Net 30.']);
     }
     # endregion
 
