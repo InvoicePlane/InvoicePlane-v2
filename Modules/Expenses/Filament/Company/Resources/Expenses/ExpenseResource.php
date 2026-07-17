@@ -42,6 +42,11 @@ class ExpenseResource extends BaseResource
         return trans('ip.expenses');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ExpenseForm::configure($schema);
