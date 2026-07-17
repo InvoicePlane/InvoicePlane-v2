@@ -362,6 +362,7 @@ return [
     'sent'                                         => 'Sent',
     'sessions'                                     => 'Sessions',
     'set_new_password'                             => 'Set a new password',
+    'admin_panel'                                  => 'Admin Panel',
     'settings'                                     => 'Settings',
     'settings_successfully_saved'                  => 'Settings successfully saved',
     'setup_choose_language'                        => 'Choose a Language',
