@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Clients\Database\Factories\RelationFactory;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
@@ -32,12 +33,14 @@ use Modules\Quotes\Models\Quote;
  * @property RelationStatus       $relation_status
  * @property string               $relation_number
  * @property string               $company_name
+ * @property string|null          $email
  * @property string|null          $trading_name
  * @property string|null          $unique_name
  * @property string|null          $id_number
  * @property string|null          $coc_number
  * @property string|null          $vat_number
  * @property CarbonInterface      $registered_at
+ * @property CarbonInterface|null $deleted_at
  * @property mixed                $created_at
  * @property mixed                $updated_at
  * @property Invoice[]            $invoices
@@ -46,6 +49,7 @@ use Modules\Quotes\Models\Quote;
  * @property Contact              $contact
  * @property string|null          $currency_code
  * @property string|null          $language
+ * @property array                $email_cc
  * @property Company              $company
  * @property Collection|Contact[] $contacts
  * @property Collection|Expense[] $expenses
@@ -57,6 +61,7 @@ class Relation extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
 
@@ -69,6 +74,8 @@ class Relation extends Model
     ];
 
     protected $guarded = [];
+
+    protected $appends = ['email_cc'];
 
     /*
     |--------------------------------------------------------------------------
@@ -112,6 +119,11 @@ class Relation extends Model
     public function communications(): MorphMany
     {
         return $this->morphMany(Communication::class, 'communicationable');
+    }
+
+    public function ccEmailCommunications(): MorphMany
+    {
+        return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
     }
 
     public function contacts(): HasMany
@@ -159,6 +171,20 @@ class Relation extends Model
         return $this->hasMany(Task::class, 'customer_id');
     }
 
+    /*
+     * Deleting a relation with linked records would orphan financial
+     * history, so delete actions and the service guard both check this.
+     */
+    public function hasLinkedRecords(): bool
+    {
+        return $this->invoices()->withoutGlobalScopes()->exists()
+            || $this->quotes()->withoutGlobalScopes()->exists()
+            || $this->payments()->withoutGlobalScopes()->exists()
+            || $this->expenses()->withoutGlobalScopes()->exists()
+            || $this->tasks()->withoutGlobalScopes()->exists()
+            || $this->projects()->withoutGlobalScopes()->exists();
+    }
+
     /**
      * Define a one-to-many relationship to User models.
      *
@@ -192,6 +218,13 @@ class Relation extends Model
 
         return $emails->firstWhere('is_primary', true)?->communication_value
             ?? $emails->first()?->communication_value;
+    }
+
+    public function getEmailCcAttribute(): array
+    {
+        return $this->ccEmailCommunications()
+            ->pluck('communication_value')
+            ->all();
     }
 
     /*public function getPrimaryContactAttribute(): string

@@ -22,6 +22,7 @@ use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Services\InvoiceCopyService;
 use Modules\Invoices\Services\InvoiceService;
@@ -194,22 +195,8 @@ class InvoicesTable
                             so need for modal anymore'
                         )
                         ->action(function (Invoice $record): void {}),
-                    Action::make('send email')
-                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
-                        ->label(trans('ip.send_email'))
-                        ->disabled(fn (Invoice $record): bool => blank($record->customer?->customer_email))
-                        ->tooltip(fn (Invoice $record): ?string => blank($record->customer?->customer_email)
-                            ? trans('ip.customer_has_no_email')
-                            : null)
-                        ->action(function (Invoice $record): void {
-                            app(InvoiceService::class)->sendInvoiceEmail($record);
-                            // Optionally, show a notification
-                            \Filament\Notifications\Notification::make()
-                                ->title(trans('ip.email_sent'))
-                                ->body(trans('ip.invoice_email_sent_successfully'))
-                                ->success()
-                                ->send();
-                        }),
+                    EmailInvoiceAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)),
                     DeleteAction::make('delete')
                         ->visible(fn (Invoice $record) => auth()->user()?->can(Permission::DELETE_INVOICES->value)
                             && $record->invoice_status !== InvoiceStatus::PAID)
