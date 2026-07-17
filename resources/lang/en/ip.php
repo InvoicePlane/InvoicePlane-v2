@@ -623,6 +623,7 @@ return [
     #endregion
 
     #region INVOICES
+
     'copy_invoice'                            => 'Copy Invoice',
     'create_credit_invoice'                   => 'Create credit invoice',
     'create_credit_invoice_alert'             => 'Creating a credit invoice will make the current invoice <em>read-only</em> which means you will not be able to edit the invoice anymore. The credit invoice will contain the current state with all items but with negative amounts and balances.',
@@ -703,6 +704,7 @@ return [
     'pdf_invoice_footer_hint'                 => 'You can enter any HTML here which will be displayed on the bottom of your PDF invoices.',
     'set_to_read_only'                        => 'Set the Invoice to read-only on',
     'view_invoices'                           => 'View Invoices',
+
     #endregion
 
     #region EXPENSES

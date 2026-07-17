@@ -168,6 +168,20 @@ class Relation extends Model
         return $this->hasMany(Task::class, 'customer_id');
     }
 
+    /*
+     * Deleting a relation with linked records would orphan financial
+     * history, so delete actions and the service guard both check this.
+     */
+    public function hasLinkedRecords(): bool
+    {
+        return $this->invoices()->withoutGlobalScopes()->exists()
+            || $this->quotes()->withoutGlobalScopes()->exists()
+            || $this->payments()->withoutGlobalScopes()->exists()
+            || $this->expenses()->withoutGlobalScopes()->exists()
+            || $this->tasks()->withoutGlobalScopes()->exists()
+            || $this->projects()->withoutGlobalScopes()->exists();
+    }
+
     /**
      * Define a one-to-many relationship to User models.
      *
