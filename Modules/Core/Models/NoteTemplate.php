@@ -9,10 +9,10 @@ use Modules\Core\Database\Factories\NoteTemplateFactory;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
- * @property int    $id
- * @property int    $company_id
- * @property string $template_title
- * @property string $template_body
+ * @property int     $id
+ * @property int     $company_id
+ * @property string  $template_title
+ * @property string  $template_body
  * @property Company $company
  */
 class NoteTemplate extends Model
