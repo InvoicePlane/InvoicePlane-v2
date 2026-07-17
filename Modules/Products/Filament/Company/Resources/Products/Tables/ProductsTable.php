@@ -9,10 +9,13 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Modules\Core\Enums\Permission;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
 use Modules\Products\Services\ProductService;
 
 class ProductsTable
@@ -59,7 +62,20 @@ class ProductsTable
                     ->toggleable()
                     ->hiddenFrom('md'),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('category_id')
+                    ->label(trans('ip.category'))
+                    ->options(fn (): array => ProductCategory::query()
+                        ->orderBy('category_name')
+                        ->pluck('category_name', 'id')
+                        ->toArray()),
+                SelectFilter::make('unit_id')
+                    ->label(trans('ip.unit'))
+                    ->options(fn (): array => ProductUnit::query()
+                        ->orderBy('unit_name')
+                        ->pluck('unit_name', 'id')
+                        ->toArray()),
+            ])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')

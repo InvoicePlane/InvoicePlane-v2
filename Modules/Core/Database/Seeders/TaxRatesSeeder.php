@@ -23,6 +23,28 @@ class TaxRatesSeeder extends AbstractSeeder
         ['name' => 'US No Sales Tax (0%)', 'code' => 'US-SALES-ZERO', 'rate' => 0.00],
     ];
 
+    protected array $countryVatRates = [
+        'DE' => [
+            ['name' => 'Germany Standard VAT (19%)', 'code' => 'DE-VAT-STD-19', 'rate' => 19.00],
+            ['name' => 'Germany Reduced VAT (7%)', 'code' => 'DE-VAT-RED-7', 'rate' => 7.00],
+        ],
+        'NL' => [
+            ['name' => 'Netherlands Standard VAT (21%)', 'code' => 'NL-VAT-STD-21', 'rate' => 21.00],
+            ['name' => 'Netherlands Reduced VAT (9%)', 'code' => 'NL-VAT-RED-9', 'rate' => 9.00],
+        ],
+        'BE' => [
+            ['name' => 'Belgium Standard VAT (21%)', 'code' => 'BE-VAT-STD-21', 'rate' => 21.00],
+            ['name' => 'Belgium Reduced VAT (12%)', 'code' => 'BE-VAT-RED-12', 'rate' => 12.00],
+            ['name' => 'Belgium Reduced VAT (6%)', 'code' => 'BE-VAT-RED-6', 'rate' => 6.00],
+        ],
+        'FR' => [
+            ['name' => 'France Standard VAT (20%)', 'code' => 'FR-VAT-STD-20', 'rate' => 20.00],
+            ['name' => 'France Reduced VAT (10%)', 'code' => 'FR-VAT-RED-10', 'rate' => 10.00],
+            ['name' => 'France Reduced VAT (5.5%)', 'code' => 'FR-VAT-RED-5-5', 'rate' => 5.50],
+            ['name' => 'France Super Reduced VAT (2.1%)', 'code' => 'FR-VAT-SUP-2-1', 'rate' => 2.10],
+        ],
+    ];
+
     protected array $otherTaxRates = [
         ['name' => 'Standard VAT (20%)', 'code' => 'VAT-STD-20', 'rate' => 20.00],
         ['name' => 'Standard VAT (21%)', 'code' => 'VAT-STD-21', 'rate' => 21.00],
@@ -84,6 +106,34 @@ class TaxRatesSeeder extends AbstractSeeder
                     'calculate_vat' => false,
                     'is_active'     => true,
                 ];
+            }
+
+            foreach ($this->countryVatRates as $rate) {
+                foreach ($rate as $countryRate) {
+                    // Exclusive: VAT added on top of the listed price.
+                    $ratesToUpsert[] = [
+                        'company_id'    => $company->id,
+                        'name'          => $countryRate['name'] . ' - Excluding VAT',
+                        'code'          => $countryRate['code'] . '-EXCL',
+                        'rate'          => $countryRate['rate'],
+                        'tax_rate_type' => TaxRateType::EXCLUSIVE->value,
+                        'is_compound'   => false,
+                        'calculate_vat' => true,
+                        'is_active'     => true,
+                    ];
+
+                    // Inclusive: VAT already contained within the listed price.
+                    $ratesToUpsert[] = [
+                        'company_id'    => $company->id,
+                        'name'          => $countryRate['name'] . ' - Including VAT',
+                        'code'          => $countryRate['code'] . '-INCL',
+                        'rate'          => $countryRate['rate'],
+                        'tax_rate_type' => TaxRateType::INCLUSIVE->value,
+                        'is_compound'   => false,
+                        'calculate_vat' => true,
+                        'is_active'     => true,
+                    ];
+                }
             }
 
             foreach ($this->otherTaxRates as $rate) {
