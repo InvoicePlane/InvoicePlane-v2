@@ -230,8 +230,8 @@ class InvoiceListActionsTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component
             ->assertSuccessful()
-            ->assertActionDisabled(TestAction::make('send email')->table($invoiceWithoutEmail))
-            ->assertActionEnabled(TestAction::make('send email')->table($invoiceWithEmail));
+            ->assertActionDisabled(TestAction::make('email_invoice')->table($invoiceWithoutEmail))
+            ->assertActionEnabled(TestAction::make('email_invoice')->table($invoiceWithEmail));
     }
 
     #[Test]

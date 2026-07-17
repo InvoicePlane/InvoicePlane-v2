@@ -196,7 +196,11 @@ class InvoicesTable
                         )
                         ->action(function (Invoice $record): void {}),
                     EmailInvoiceAction::make()
-                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)),
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
+                        ->disabled(fn (Invoice $record): bool => blank($record->customer?->customer_email))
+                        ->tooltip(fn (Invoice $record): ?string => blank($record->customer?->customer_email)
+                            ? trans('ip.customer_has_no_email')
+                            : null),
                     DeleteAction::make('delete')
                         ->visible(fn (Invoice $record) => auth()->user()?->can(Permission::DELETE_INVOICES->value)
                             && $record->invoice_status !== InvoiceStatus::PAID)
