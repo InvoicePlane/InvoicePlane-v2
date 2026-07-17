@@ -105,6 +105,14 @@ class QuoteForm
                                             ->searchable()
                                             ->preload()
                                             ->native(false),
+
+                                        TextInput::make('client_reference')
+                                            ->label(trans('ip.client_reference'))
+                                            ->maxLength(255),
+
+                                        TextInput::make('work_order')
+                                            ->label(trans('ip.work_order'))
+                                            ->maxLength(255),
                                     ])
                                     ->columns(2),
                             ])

@@ -36,6 +36,8 @@ class QuoteService extends BaseService
                 'numbering_id'           => $data['numbering_id'] ?? null,
                 'user_id'                => $data['user_id'] ?? auth()->id(),
                 'quote_number'           => $data['quote_number'],
+                'client_reference'       => $data['client_reference'] ?? null,
+                'work_order'             => $data['work_order'] ?? null,
                 'quote_status'           => $data['quote_status'],
                 'quoted_at'              => Carbon::parse($data['quoted_at']),
                 'quote_expires_at'       => Carbon::parse($data['quote_expires_at']),
@@ -96,6 +98,8 @@ class QuoteService extends BaseService
         try {
             $quote->update([
                 'prospect_id'            => $data['prospect_id'],
+                'client_reference'       => $data['client_reference'] ?? null,
+                'work_order'             => $data['work_order'] ?? null,
                 'quoted_at'              => $data['quoted_at'],
                 'quote_expires_at'       => $data['quote_expires_at'],
                 'quote_status'           => $data['quote_status'],

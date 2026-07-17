@@ -99,6 +99,14 @@ class InvoiceForm
                                             ->preload()
                                             ->native(false),
 
+                                        TextInput::make('client_reference')
+                                            ->label(trans('ip.client_reference'))
+                                            ->maxLength(255),
+
+                                        TextInput::make('work_order')
+                                            ->label(trans('ip.work_order'))
+                                            ->maxLength(255),
+
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),
                                     ]),
