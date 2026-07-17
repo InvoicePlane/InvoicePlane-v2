@@ -7,13 +7,13 @@ use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
-use Spatie\Permission\Models\Role;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 
 #[CoversClass(ListUsers::class)]
 class UsersTest extends AbstractAdminPanelTestCase

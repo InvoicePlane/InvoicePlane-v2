@@ -15,23 +15,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 #[CoversClass(LoginResponse::class)]
 class LoginResponseTest extends AbstractAdminPanelTestCase
 {
-    // region helpers
-
-    private function makeUser(Company ...$companies): User
-    {
-        $user = User::factory()->create();
-        foreach ($companies as $company) {
-            $user->companies()->attach($company);
-        }
-
-        return $user;
-    }
-
-    private function dispatchResponse(): RedirectResponse
-    {
-        return (new LoginResponse())->toResponse(request());
-    }
-
     // endregion
 
     // region redirect destination
@@ -141,6 +124,22 @@ class LoginResponseTest extends AbstractAdminPanelTestCase
         $this->expectExceptionMessage('No company found for your account. Please contact an administrator.');
 
         $this->dispatchResponse();
+    }
+    // region helpers
+
+    private function makeUser(Company ...$companies): User
+    {
+        $user = User::factory()->create();
+        foreach ($companies as $company) {
+            $user->companies()->attach($company);
+        }
+
+        return $user;
+    }
+
+    private function dispatchResponse(): RedirectResponse
+    {
+        return (new LoginResponse())->toResponse(request());
     }
 
     // endregion
