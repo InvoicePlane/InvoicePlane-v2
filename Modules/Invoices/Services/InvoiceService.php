@@ -258,29 +258,6 @@ class InvoiceService extends BaseService
     }
 
     /**
-     * Walk the invoice's customer → contacts → communications chain and
-     * return the first email address found, preferring a primary one.
-     */
-    private function resolveInvoiceRecipientEmail(Invoice $invoice): ?string
-    {
-        $invoice->loadMissing('customer.contacts.communications');
-
-        $customer = $invoice->customer;
-
-        if ( ! $customer) {
-            return null;
-        }
-
-        $emailCommunication = $customer->contacts
-            ->flatMap(fn ($contact) => $contact->communications)
-            ->filter(fn ($communication) => $communication->communication_type === CommunicationType::EMAIL->value)
-            ->sortByDesc('is_primary')
-            ->first();
-
-        return $emailCommunication?->communication_value;
-    }
-
-    /**
      * Render the invoice document markup used by both the PDF driver and
      * the on-screen preview.
      */
@@ -369,6 +346,29 @@ class InvoiceService extends BaseService
 
             return $creditNote;
         });
+    }
+
+    /**
+     * Walk the invoice's customer → contacts → communications chain and
+     * return the first email address found, preferring a primary one.
+     */
+    private function resolveInvoiceRecipientEmail(Invoice $invoice): ?string
+    {
+        $invoice->loadMissing('customer.contacts.communications');
+
+        $customer = $invoice->customer;
+
+        if ( ! $customer) {
+            return null;
+        }
+
+        $emailCommunication = $customer->contacts
+            ->flatMap(fn ($contact) => $contact->communications)
+            ->filter(fn ($communication) => $communication->communication_type === CommunicationType::EMAIL->value)
+            ->sortByDesc('is_primary')
+            ->first();
+
+        return $emailCommunication?->communication_value;
     }
 
     private function calculateItemTaxTotal(array $data): float
