@@ -3,13 +3,13 @@
 namespace Modules\Core\Tests;
 
 use Filament\Facades\Filament;
+use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Carbon;
 use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
-use Livewire\Livewire;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
