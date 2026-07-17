@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\NumberFormatter;
+use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
@@ -29,6 +30,41 @@ class PaymentService extends BaseService
         } */
 
         return $payment;
+    }
+
+    /**
+     * Record a payment against an invoice and keep the invoice status in sync:
+     * fully paid invoices become Paid, partly paid Sent/Viewed invoices become
+     * Partially Paid (Overdue invoices stay Overdue until settled in full).
+     */
+    public function enterInvoicePayment(Invoice $invoice, array $data): Payment
+    {
+        return DB::transaction(function () use ($invoice, $data) {
+            /** @var Payment $payment */
+            $payment = $this->createPayment([
+                'customer_id'    => $invoice->customer_id,
+                'invoice_id'     => $invoice->id,
+                'payment_method' => $data['payment_method'],
+                'payment_status' => $data['payment_status'] ?? PaymentStatus::COMPLETED->value,
+                'payment_amount' => $data['payment_amount'],
+                'paid_at'        => $data['paid_at'],
+                'notes'          => $data['notes'] ?? null,
+            ]);
+
+            $this->syncInvoiceStatus($invoice);
+
+            return $payment;
+        });
+    }
+
+    /**
+     * The open balance of an invoice: total minus the sum of its payments.
+     */
+    public function amountOwed(Invoice $invoice): float
+    {
+        $paid = (float) $invoice->payments()->sum('payment_amount');
+
+        return max(round((float) $invoice->invoice_total - $paid, 4), 0.0);
     }
 
     public function updatePayment(Payment $payment, array $data): Payment
@@ -60,6 +96,19 @@ class PaymentService extends BaseService
         }
 
         return $payment;
+    }
+
+    protected function syncInvoiceStatus(Invoice $invoice): void
+    {
+        if ($this->amountOwed($invoice) <= 0.0) {
+            $invoice->update(['invoice_status' => InvoiceStatus::PAID]);
+
+            return;
+        }
+
+        if (in_array($invoice->invoice_status, [InvoiceStatus::SENT, InvoiceStatus::VIEWED], true)) {
+            $invoice->update(['invoice_status' => InvoiceStatus::PARTIALLY_PAID]);
+        }
     }
 
     protected function preparePaymentData(array $data): array
