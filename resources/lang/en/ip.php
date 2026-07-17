@@ -714,6 +714,7 @@ return [
     'expense_totals'     => 'Expense Totals',
     'expensed_at'        => 'Expense Date',
     'expenses'           => 'Expenses',
+    'quick_create_label' => 'Quick create :label',
     #endregion
 
     # Settings
