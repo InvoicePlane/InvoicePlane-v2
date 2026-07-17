@@ -6,6 +6,7 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Support\QuoteCalculator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 
 #[CoversClass(QuoteCalculator::class)]
 class QuoteCalculatorTest extends AbstractTestCase
@@ -40,10 +41,10 @@ class QuoteCalculatorTest extends AbstractTestCase
         /* Arrange */
         $document = $this->mockDocument();
 
-        $taxRate       = new \stdClass();
+        $taxRate       = new stdClass();
         $taxRate->rate = 21;
 
-        $item           = new \stdClass();
+        $item           = new stdClass();
         $item->quantity = 1;
         $item->price    = 100.00;
         $item->discount = 0;
@@ -63,18 +64,18 @@ class QuoteCalculatorTest extends AbstractTestCase
         /* Arrange */
         $document = $this->mockDocument();
 
-        $taxRate1       = new \stdClass();
+        $taxRate1       = new stdClass();
         $taxRate1->rate = 21;
 
-        $taxRate2       = new \stdClass();
+        $taxRate2       = new stdClass();
         $taxRate2->rate = 6;
 
-        $item            = new \stdClass();
-        $item->quantity  = 1;
-        $item->price     = 100.00;
-        $item->discount  = 0;
-        $item->taxRate   = $taxRate1;
-        $item->taxRate2  = $taxRate2;
+        $item           = new stdClass();
+        $item->quantity = 1;
+        $item->price    = 100.00;
+        $item->discount = 0;
+        $item->taxRate  = $taxRate1;
+        $item->taxRate2 = $taxRate2;
 
         /* Act */
         $totals = $this->calculator->calculateTotals($document, [$item]);
@@ -104,7 +105,7 @@ class QuoteCalculatorTest extends AbstractTestCase
     public function it_applies_document_level_percentage_discount(): void
     {
         /* Arrange */
-        $document                         = new \stdClass();
+        $document                         = new stdClass();
         $document->quote_discount_amount  = 0;
         $document->quote_discount_percent = 10;
 
@@ -231,7 +232,7 @@ class QuoteCalculatorTest extends AbstractTestCase
     public function it_applies_100_percent_document_discount_resulting_in_zero_total(): void
     {
         /* Arrange */
-        $document                         = new \stdClass();
+        $document                         = new stdClass();
         $document->quote_discount_amount  = 0;
         $document->quote_discount_percent = 100;
 
@@ -270,17 +271,17 @@ class QuoteCalculatorTest extends AbstractTestCase
         /* Arrange — two items with tax relationship objects */
         $document = $this->mockDocument();
 
-        $taxRate       = new \stdClass();
+        $taxRate       = new stdClass();
         $taxRate->rate = 10;
 
-        $item1           = new \stdClass();
+        $item1           = new stdClass();
         $item1->quantity = 1;
         $item1->price    = 100.00;
         $item1->discount = 0;
         $item1->taxRate  = $taxRate;
         $item1->taxRate2 = null;
 
-        $item2           = new \stdClass();
+        $item2           = new stdClass();
         $item2->quantity = 2;
         $item2->price    = 50.00;
         $item2->discount = 0;
@@ -318,7 +319,7 @@ class QuoteCalculatorTest extends AbstractTestCase
     public function it_applies_flat_document_discount(): void
     {
         /* Arrange */
-        $document                         = new \stdClass();
+        $document                         = new stdClass();
         $document->quote_discount_amount  = 30.00;
         $document->quote_discount_percent = 0;
 
@@ -380,9 +381,9 @@ class QuoteCalculatorTest extends AbstractTestCase
         $this->assertEqualsWithDelta(-120.0, $totals['total'], 0.001);
     }
 
-    private function mockDocument(): \stdClass
+    private function mockDocument(): stdClass
     {
-        $document                         = new \stdClass();
+        $document                         = new stdClass();
         $document->quote_discount_amount  = 0;
         $document->quote_discount_percent = 0;
 

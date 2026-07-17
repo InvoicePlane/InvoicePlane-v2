@@ -6,6 +6,7 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Invoices\Support\InvoiceCalculator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 
 #[CoversClass(InvoiceCalculator::class)]
 class InvoiceCalculatorTest extends AbstractTestCase
@@ -106,10 +107,10 @@ class InvoiceCalculatorTest extends AbstractTestCase
     public function it_applies_document_level_discount(): void
     {
         /* Arrange */
-        $document                    = new \stdClass();
-        $document->discount_amount   = 20.00;
-        $document->discount_percent  = 0;
-        $document->amount_paid       = 0;
+        $document                   = new stdClass();
+        $document->discount_amount  = 20.00;
+        $document->discount_percent = 0;
+        $document->amount_paid      = 0;
 
         $items = [
             ['quantity' => 1, 'price' => 100.00, 'discount' => 0, 'tax_rate_1' => 0, 'tax_rate_2' => 0],
@@ -127,7 +128,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     public function it_applies_percentage_discount(): void
     {
         /* Arrange */
-        $document                   = new \stdClass();
+        $document                   = new stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 10;
         $document->amount_paid      = 0;
@@ -257,7 +258,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     public function it_applies_100_percent_document_discount_resulting_in_zero_total(): void
     {
         /* Arrange */
-        $document                   = new \stdClass();
+        $document                   = new stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 100;
         $document->amount_paid      = 0;
@@ -333,7 +334,7 @@ class InvoiceCalculatorTest extends AbstractTestCase
     public function it_returns_correct_balance_after_partial_payment(): void
     {
         /* Arrange */
-        $document                   = new \stdClass();
+        $document                   = new stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 0;
         $document->amount_paid      = 50.00;
@@ -392,9 +393,9 @@ class InvoiceCalculatorTest extends AbstractTestCase
         $this->assertEqualsWithDelta(-100.0, $totals['total'], 0.001);
     }
 
-    private function mockDocument(): \stdClass
+    private function mockDocument(): stdClass
     {
-        $document                   = new \stdClass();
+        $document                   = new stdClass();
         $document->discount_amount  = 0;
         $document->discount_percent = 0;
         $document->amount_paid      = 0;
