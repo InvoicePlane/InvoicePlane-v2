@@ -26,6 +26,8 @@ class ProductUnitResource extends BaseResource
 
     protected static ?int $navigationSort = 50;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getModelLabel(): string
     {
         return trans('ip.unit');
