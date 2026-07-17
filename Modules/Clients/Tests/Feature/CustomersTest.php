@@ -203,6 +203,16 @@ class CustomersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_uses_a_dedicated_translation_key_for_the_registered_at_field_label(): void
+    {
+        /* Assert — `registered_at` must no longer reuse the generic, shared `ip.date`
+         * label (see RelationForm::configure()); it needs its own descriptive key. */
+        $this->assertNotEquals(trans('ip.date'), trans('ip.registered_at'));
+        $this->assertSame('Registration Date', trans('ip.registered_at'));
+    }
+
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload {
      *   "company_name": "Updated Name"
@@ -248,6 +258,77 @@ class CustomersTest extends AbstractCompanyPanelTestCase
                 $updatedData
             )
         );
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "first_name": "Jane",
+     *   "last_name": "Doe"
+     * }
+     */
+    public function it_creates_a_contact_through_the_primary_contact_select_inline_modal(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()
+            ->for($this->company)
+            ->create([
+                'company_name'    => 'Beta LLC',
+                'relation_type'   => RelationType::CUSTOMER,
+                'relation_status' => RelationStatus::ACTIVE,
+                'relation_number' => 'C123',
+                'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction([
+                TestAction::make('edit')->table($customer),
+                TestAction::make('createOption')->schemaComponent('primary_contact_id'),
+            ])
+            ->setActionData(['first_name' => 'Jane', 'last_name' => 'Doe'])
+            ->callMountedAction()
+            ->assertHasNoFormComponentActionErrors();
+
+        /* Assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseHas('contacts', [
+            'relation_id' => $customer->id,
+            'first_name'  => 'Jane',
+            'last_name'   => 'Doe',
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload {
+     *   "first_name": "Jane",
+     *   "last_name": "Doe"
+     * }
+     */
+    public function it_does_not_create_a_contact_through_the_primary_contact_select_when_creating_a_new_client(): void
+    {
+        /* Act — no client is persisted yet, so there is no relation_id to attach a new Contact to */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction([
+                TestAction::make('create'),
+                TestAction::make('createOption')->schemaComponent('primary_contact_id'),
+            ])
+            ->setActionData(['first_name' => 'Jane', 'last_name' => 'Doe'])
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+
+        $this->assertDatabaseMissing('contacts', [
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
     }
     #endregion
 
