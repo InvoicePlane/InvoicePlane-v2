@@ -9,6 +9,7 @@ use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Events\CustomerWasCreated;
 use Modules\Clients\Events\CustomerWasUpdated;
+use Modules\Clients\Exceptions\RelationHasLinkedRecordsException;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Services\BaseService;
 use Throwable;
@@ -116,8 +117,16 @@ class RelationService extends BaseService
 
     public function deleteRelation(Relation $relation): Relation
     {
+        $this->guardAgainstLinkedRecords($relation);
+
         DB::beginTransaction();
         try {
+            /*
+             * Contacts belong to the client (contacts.relation_id is
+             * ON DELETE RESTRICT), so they go with it; the relation's
+             * primary_contact_id FK is SET NULL, making this order safe.
+             */
+            $relation->contacts()->delete();
             $relation->delete();
             DB::commit();
         } catch (Throwable $e) {
@@ -126,6 +135,19 @@ class RelationService extends BaseService
         }
 
         return $relation;
+    }
+
+    /**
+     * Throw an exception if the relation has any linked business records.
+     * Uses withoutGlobalScopes to bypass company-scope and catch all related records.
+     *
+     * @throws RelationHasLinkedRecordsException
+     */
+    protected function guardAgainstLinkedRecords(Relation $relation): void
+    {
+        if ($relation->hasLinkedRecords()) {
+            throw new RelationHasLinkedRecordsException();
+        }
     }
 
     protected function generateRelationNumber(string $relationType): string

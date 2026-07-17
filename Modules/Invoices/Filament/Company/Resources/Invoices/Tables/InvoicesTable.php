@@ -8,15 +8,26 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use InvalidArgumentException;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceCopyService;
 use Modules\Invoices\Services\InvoiceService;
+use Modules\Payments\Enums\PaymentMethod;
+use Modules\Payments\Services\PaymentService;
 
 class InvoicesTable
 {
@@ -75,7 +86,15 @@ class InvoicesTable
                     ->sortable()
                     ->toggleable(),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('numbering_id')
+                    ->label(trans('ip.numbering'))
+                    ->options(fn (): array => Numbering::query()
+                        ->where('type', NumberingType::INVOICE->value)
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->toArray()),
+            ])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
@@ -107,6 +126,67 @@ class InvoicesTable
                             app(\Modules\Invoices\Services\InvoiceService::class)->updateInvoice($record, $data);
                         })
                         ->modalWidth('full'),
+                    Action::make('copy')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_INVOICES->value))
+                        ->label(trans('ip.copy_invoice'))
+                        ->icon('heroicon-o-document-duplicate')
+                        ->requiresConfirmation()
+                        ->action(function (Invoice $record) {
+                            app(InvoiceCopyService::class)->copy($record);
+                            Notification::make()
+                                ->title(trans('ip.invoice_copied'))
+                                ->success()
+                                ->send();
+                        }),
+                    Action::make('enter_payment')
+                        ->label(trans('ip.enter_payment'))
+                        ->icon('heroicon-o-banknotes')
+                        ->visible(fn (Invoice $record) => auth()->user()?->can(Permission::CREATE_PAYMENTS->value)
+                            && in_array($record->invoice_status, [
+                                InvoiceStatus::SENT,
+                                InvoiceStatus::VIEWED,
+                                InvoiceStatus::PARTIALLY_PAID,
+                                InvoiceStatus::OVERDUE,
+                            ], true))
+                        ->schema([
+                            Placeholder::make('invoice')
+                                ->label(trans('ip.invoice'))
+                                ->content(fn (Invoice $record) => mb_trim(
+                                    ($record->invoice_number ?? '#' . $record->id)
+                                    . ' – ' . ($record->customer?->company_name ?? '')
+                                )),
+                            TextInput::make('payment_amount')
+                                ->label(trans('ip.payment_amount'))
+                                ->numeric()
+                                ->minValue(0.01)
+                                ->required(),
+                            DatePicker::make('paid_at')
+                                ->label(trans('ip.paid_at'))
+                                ->required(),
+                            Select::make('payment_method')
+                                ->label(trans('ip.payment_method'))
+                                ->options(
+                                    collect(PaymentMethod::cases())
+                                        ->mapWithKeys(fn (PaymentMethod $method) => [
+                                            $method->value => $method->label(),
+                                        ])
+                                        ->toArray()
+                                )
+                                ->native(false)
+                                ->required(),
+                        ])
+                        ->fillForm(fn (Invoice $record) => [
+                            'payment_amount' => app(PaymentService::class)->amountOwed($record),
+                            'paid_at'        => now()->toDateString(),
+                        ])
+                        ->action(function (Invoice $record, array $data): void {
+                            app(PaymentService::class)->enterInvoicePayment($record, $data);
+
+                            Notification::make()
+                                ->title(trans('ip.payment_recorded'))
+                                ->success()
+                                ->send();
+                        }),
                     Action::make('download pdf')
                         ->visible(fn () => auth()->user()?->can(Permission::DOWNLOAD_INVOICES->value))
                         ->label(trans('ip.download_pdf'))
@@ -116,9 +196,14 @@ class InvoicesTable
                         )
                         ->action(function (Invoice $record): void {}),
                     EmailInvoiceAction::make()
-                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)),
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
+                        ->disabled(fn (Invoice $record): bool => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient']))
+                        ->tooltip(fn (Invoice $record): ?string => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient'])
+                            ? trans('ip.customer_has_no_email')
+                            : null),
                     DeleteAction::make('delete')
-                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_INVOICES->value))
+                        ->visible(fn (Invoice $record) => auth()->user()?->can(Permission::DELETE_INVOICES->value)
+                            && $record->invoice_status !== InvoiceStatus::PAID)
                         ->action(function (Invoice $record, array $data) {
                             try {
                                 app(InvoiceService::class)->deleteInvoice($record);
