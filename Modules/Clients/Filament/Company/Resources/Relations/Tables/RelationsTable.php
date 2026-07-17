@@ -2,19 +2,30 @@
 
 namespace Modules\Clients\Filament\Company\Resources\Relations\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Radio;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Exceptions\RelationHasLinkedRecordsException;
 use Modules\Clients\Models\Relation;
+use Modules\Clients\Services\RelationMergeService;
 use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 
 class RelationsTable
 {
@@ -88,6 +99,22 @@ class RelationsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
+                    ViewAction::make('view'),
+                    Action::make('create_invoice')
+                        ->label(trans('ip.create_invoice'))
+                        ->icon('heroicon-o-document-plus')
+                        ->visible(fn (Relation $record) => $record->relation_type === RelationType::CUSTOMER
+                            && auth()->user()?->can(Permission::CREATE_INVOICES->value))
+                        ->url(fn (Relation $record): string => InvoiceResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
+                    Action::make('create_quote')
+                        ->label(trans('ip.create_quote'))
+                        ->icon('heroicon-o-document-text')
+                        ->visible(fn () => auth()->user()?->can(Permission::CREATE_QUOTES->value))
+                        ->url(fn (Relation $record): string => QuoteResource::getUrl('create', [
+                            'customer_id' => $record->id,
+                        ])),
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
@@ -95,9 +122,17 @@ class RelationsTable
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
-                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_RELATIONS->value))
+                        ->visible(fn (Relation $record) => ! $record->hasLinkedRecords()
+                            && auth()->user()?->can(Permission::DELETE_RELATIONS->value))
                         ->action(function (Relation $record, array $data) {
-                            app(\Modules\Clients\Services\RelationService::class)->deleteRelation($record);
+                            try {
+                                app(RelationService::class)->deleteRelation($record);
+                            } catch (RelationHasLinkedRecordsException) {
+                                Notification::make()
+                                    ->title(trans('ip.cannot_delete_client_has_linked_records'))
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
                 ]),
             ])
@@ -105,7 +140,68 @@ class RelationsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_RELATIONS->value)),
+                    static::makeMergeBulkAction(),
                 ]),
             ])->defaultSort('company_name', 'asc');
+    }
+
+    protected static function makeMergeBulkAction(): BulkAction
+    {
+        return BulkAction::make('merge')
+            ->label(trans('ip.merge_clients'))
+            ->icon('heroicon-o-arrows-pointing-in')
+            ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
+            ->modalHeading(trans('ip.merge_clients'))
+            ->modalDescription(trans('ip.merge_clients_description'))
+            ->schema(fn (Collection $records): array => [
+                Radio::make('primary_id')
+                    ->label(trans('ip.merge_clients_primary'))
+                    ->helperText(trans('ip.merge_clients_primary_help'))
+                    ->options(
+                        $records->mapWithKeys(fn (Relation $record) => [
+                            $record->id => "{$record->company_name} ({$record->relation_number})",
+                        ])->all()
+                    )
+                    ->required(),
+            ])
+            ->action(function (Collection $records, array $data): void {
+                if ($records->count() !== 2) {
+                    Notification::make()
+                        ->title(trans('ip.merge_clients_select_two'))
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                $primary   = $records->firstWhere('id', (int) $data['primary_id']);
+                $duplicate = $records->firstWhere(fn (Relation $record) => $record->id !== (int) $data['primary_id']);
+
+                if ( ! $primary instanceof Relation || ! $duplicate instanceof Relation) {
+                    Notification::make()
+                        ->title(trans('ip.merge_clients_select_two'))
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                try {
+                    app(RelationMergeService::class)->merge($primary, $duplicate);
+                } catch (InvalidArgumentException $exception) {
+                    Notification::make()
+                        ->title($exception->getMessage())
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                Notification::make()
+                    ->title(trans('ip.merge_clients_success'))
+                    ->success()
+                    ->send();
+            })
+            ->deselectRecordsAfterCompletion();
     }
 }

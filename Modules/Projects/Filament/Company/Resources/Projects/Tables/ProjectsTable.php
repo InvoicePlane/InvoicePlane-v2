@@ -8,12 +8,16 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use InvalidArgumentException;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
+use Modules\Projects\Services\ProjectBillingService;
 use Modules\Projects\Services\ProjectService;
 
 class ProjectsTable
@@ -60,6 +64,31 @@ class ProjectsTable
                             app(ProjectService::class)->updateProject($record, $data);
                         })
                         ->modalWidth('full'),
+                    Action::make('bill_tasks')
+                        ->label(trans('ip.bill_tasks'))
+                        ->icon('heroicon-o-banknotes')
+                        ->visible(fn () => auth()->user()?->can(Permission::CREATE_INVOICES->value))
+                        ->schema(fn (Project $record) => [
+                            CheckboxList::make('task_ids')
+                                ->label(trans('ip.billable_tasks'))
+                                ->options(app(ProjectBillingService::class)->billableTaskOptions($record))
+                                ->required(),
+                        ])
+                        ->action(function (Project $record, array $data): void {
+                            try {
+                                app(ProjectBillingService::class)->billTasks($record, $data['task_ids'] ?? []);
+
+                                Notification::make()
+                                    ->title(trans('ip.tasks_billed_to_draft_invoice'))
+                                    ->success()
+                                    ->send();
+                            } catch (InvalidArgumentException $e) {
+                                Notification::make()
+                                    ->title($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
                     Action::make('duplicate')
                         ->label(trans('ip.duplicate'))
                         ->icon('heroicon-o-document-duplicate')

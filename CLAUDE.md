@@ -193,6 +193,52 @@ DB_CONNECTION=sqlite
 DB_DATABASE=:memory:
 ```
 
+### AAA phase comment style
+
+Phase labels (`Arrange`, `Act`, `Assert`) inside test methods **must** use block comments. Line comments (`//`) are **prohibited** for phase labels.
+
+```php
+/* Arrange */
+...
+/* Act */
+...
+/* Assert */
+
+/* Act & Assert */   ← combined phase label, same rule
+```
+
+**Never** write `// Arrange`, `// Act`, or `// Assert`.
+
+---
+
+## Observers
+
+All model lifecycle business logic (duplicate checks, validation, side effects on save/create/update/delete) goes in `Observers/`, **not** inline `booted()` methods on the model.
+
+### Convention
+
+- Create `Modules/<Name>/Observers/<Model>Observer.php` extending `Modules\Core\Observers\AbstractObserver`
+- Register in the module's ServiceProvider `boot()`:
+  ```php
+  Model::observe(ModelObserver::class);
+  ```
+- Always use `Model::withoutGlobalScopes()` inside observers — global scopes (e.g. `BelongsToCompany`) may not be active in all contexts (unauthenticated, queued jobs, tests)
+- **Do not** add `static::creating()` / `static::saving()` callbacks inside `booted()` on the model — the Observer handles this
+
+### Example
+
+```php
+// Modules/Invoices/Observers/InvoiceObserver.php
+class InvoiceObserver extends AbstractObserver {
+    public function saving(Invoice $invoice): void {
+        // saving fires before both creating and updating — covers all writes
+    }
+}
+
+// Modules/Invoices/Providers/InvoicesServiceProvider.php  boot()
+Invoice::observe(InvoiceObserver::class);
+```
+
 ---
 
 ## Key model notes
