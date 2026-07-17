@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Tables\QuotesTable;
@@ -41,6 +43,11 @@ class QuoteResource extends BaseResource
         return trans('ip.quotes');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return QuoteForm::configure($schema);
@@ -59,7 +66,9 @@ class QuoteResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListQuotes::route('/'),
+            'index'  => ListQuotes::route('/'),
+            'create' => CreateQuote::route('/create'),
+            'edit'   => EditQuote::route('/{record}/edit'),
         ];
     }
 

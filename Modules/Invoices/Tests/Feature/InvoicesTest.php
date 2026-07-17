@@ -10,6 +10,7 @@ use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -578,6 +579,34 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_item_subtotal' => 100,
             'invoice_total'         => 120,
         ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_inserts_a_note_template_into_the_notes_field(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+            'notes'       => null,
+        ]);
+        $template = NoteTemplate::factory()->for($this->company)->create([
+            'template_title' => 'SEO Terms',
+            'template_body'  => 'Payment due Net 30.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->callFormComponentAction('notes', 'insert_note_template_notes', [
+                'note_template_id' => $template->id,
+                'replace_content'  => true,
+            ]);
+
+        /* Assert */
+        $component->assertFormSet(['notes' => 'Payment due Net 30.']);
     }
 
     #[Test]

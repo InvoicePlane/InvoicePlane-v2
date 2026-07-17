@@ -43,6 +43,11 @@ class PaymentResource extends BaseResource
         return trans('ip.payments');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PaymentForm::configure($schema);

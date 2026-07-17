@@ -23,7 +23,7 @@ class ExpenseCategoryResource extends BaseResource
 
     protected static ?int $navigationSort = 20;
 
-    protected static bool $shouldRegisterNavigation = true;
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static bool $isScopedToTenant = true;
 
