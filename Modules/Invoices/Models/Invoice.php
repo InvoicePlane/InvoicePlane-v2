@@ -22,6 +22,7 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Core\Traits\HasNotesAttribute;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -67,6 +68,7 @@ class Invoice extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use HasNotesAttribute;
     use SoftDeletes;
 
     public $timestamps = false;
