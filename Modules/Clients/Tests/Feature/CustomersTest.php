@@ -6,6 +6,7 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
@@ -423,6 +424,99 @@ class CustomersTest extends AbstractCompanyPanelTestCase
         $component->assertSeeText('VISIBLE');
         $this->assertDatabaseHas('relations', ['id' => $customerB->id]);
         $component->assertDontSeeText('HIDDEN');
+    }
+    # endregion
+
+    # region cc emails
+    #[Test]
+    #[Group('crud')]
+    public function it_stores_and_retrieves_cc_emails_as_communications(): void
+    {
+        /* Arrange */
+        $cc = ['billing@acme.com', 'finance@acme.com'];
+
+        /* Act */
+        $customer = Relation::factory()->for($this->company)->create();
+        foreach ($cc as $email) {
+            $customer->communications()->create([
+                'company_id'          => $this->company->id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => $email,
+                'is_primary'          => false,
+            ]);
+        }
+        $loaded = Relation::find($customer->id);
+
+        /* Assert */
+        $this->assertEqualsCanonicalizing($cc, $loaded->email_cc);
+        foreach ($cc as $email) {
+            $this->assertDatabaseHas('communications', [
+                'communicationable_id'   => $customer->id,
+                'communicationable_type' => Relation::class,
+                'communication_type'     => CommunicationType::INVOICE_CC->value,
+                'communication_value'    => $email,
+            ]);
+        }
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_a_customer_with_cc_emails_through_a_modal(): void
+    {
+        /* Arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+            'email_cc'        => ['billing@acme.com', 'finance@acme.com'],
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* Assert */
+        $component->assertSuccessful();
+
+        $customer = Relation::where('company_name', $payload['company_name'])->firstOrFail();
+
+        foreach ($payload['email_cc'] as $email) {
+            $this->assertDatabaseHas('communications', [
+                'communicationable_id'   => $customer->id,
+                'communicationable_type' => Relation::class,
+                'communication_type'     => CommunicationType::INVOICE_CC->value,
+                'communication_value'    => $email,
+            ]);
+        }
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_through_a_modal_with_an_invalid_cc_email(): void
+    {
+        /* Arrange */
+        $payload = [
+            'company_name'    => 'Beta LLC',
+            'relation_type'   => RelationType::CUSTOMER,
+            'relation_status' => RelationStatus::ACTIVE,
+            'relation_number' => 'C123',
+            'registered_at'   => Carbon::parse('2025-01-01')->toDateString(),
+            'email_cc'        => ['not-an-email'],
+        ];
+
+        /* Act & Assert */
+        Livewire::actingAs($this->user)
+            ->test(ListRelations::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['email_cc.0' => 'email']);
     }
     # endregion
 

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Clients\Database\Factories\RelationFactory;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Models\Company;
@@ -31,6 +32,7 @@ use Modules\Quotes\Models\Quote;
  * @property RelationStatus       $relation_status
  * @property string               $relation_number
  * @property string               $company_name
+ * @property string|null          $email
  * @property string|null          $trading_name
  * @property string|null          $unique_name
  * @property string|null          $id_number
@@ -45,6 +47,7 @@ use Modules\Quotes\Models\Quote;
  * @property Contact              $contact
  * @property string|null          $currency_code
  * @property string|null          $language
+ * @property array                $email_cc
  * @property Company              $company
  * @property Collection|Contact[] $contacts
  * @property Collection|Expense[] $expenses
@@ -68,6 +71,8 @@ class Relation extends Model
     ];
 
     protected $guarded = [];
+
+    protected $appends = ['email_cc'];
 
     /*
     |--------------------------------------------------------------------------
@@ -111,6 +116,11 @@ class Relation extends Model
     public function communications(): MorphMany
     {
         return $this->morphMany(Communication::class, 'communicationable');
+    }
+
+    public function ccEmailCommunications(): MorphMany
+    {
+        return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
     }
 
     public function contacts(): HasMany
@@ -173,9 +183,16 @@ class Relation extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
-    public function getCustomerEmailAttribute()
+    public function getCustomerEmailAttribute(): ?string
     {
         return $this->email;
+    }
+
+    public function getEmailCcAttribute(): array
+    {
+        return $this->ccEmailCommunications()
+            ->pluck('communication_value')
+            ->all();
     }
 
     /*public function getPrimaryContactAttribute(): string
