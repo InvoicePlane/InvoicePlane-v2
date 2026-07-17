@@ -634,7 +634,7 @@ return [
     'delete_invoice_warning'                  => 'If you delete this invoice you will not be able to recover it later. Are you sure you want to permanently delete this invoice?',
     'email_invoice'                           => 'Email Invoice',
     'email_invoice_default_subject'           => 'Invoice #:number',
-    'recipient'                                => 'Recipient',
+    'recipient'                               => 'Recipient',
     'filter_invoices'                         => 'Filter Invoices',
     'generate_invoice_number_for_draft'       => 'Generate the invoice number for draft invoices',
     'invoice'                                 => 'Invoice',
