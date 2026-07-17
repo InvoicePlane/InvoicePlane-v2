@@ -1,7 +1,7 @@
 # InvoicePlane v2
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://php.net)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue.svg)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-13%2B-red.svg)](https://laravel.com)
 [![Filament Version](https://img.shields.io/badge/Filament-5.x-orange.svg)](https://filamentphp.com)
 
@@ -44,7 +44,7 @@
 
 ## 📦 Requirements
 
-- **PHP** 8.2 or higher
+- **PHP** 8.3 or higher
 - **Composer** 2.x
 - **Node.js** 20+ and Yarn
 - **Database** MariaDB 10.11+ (recommended), MySQL 8.0+, or SQLite (dev only)

@@ -22,8 +22,11 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Enums\UserRole;
+use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\Dashboard;
-use Modules\Core\Filament\Pages\Auth\EditProfile;
+use Modules\Core\Filament\Company\Pages\MyCompanies;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
@@ -55,9 +58,9 @@ class CompanyPanelProvider extends PanelProvider
             ->path('')
             ->viteTheme('resources/css/filament/company/nord.css')
             ->login(Login::class)
-            ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
             ->emailVerification()
+            ->emailChangeVerification()
             ->maxContentWidth(Width::Full)
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->unsavedChangesAlerts()
@@ -168,11 +171,14 @@ class CompanyPanelProvider extends PanelProvider
                 ProjectResource::class,
                 TaskResource::class,
                 QuoteResource::class,
+                NoteTemplateResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
             ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
             ->pages([
                 Dashboard::class,
+                EditProfile::class,
+                MyCompanies::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -234,14 +240,19 @@ class CompanyPanelProvider extends PanelProvider
                                 ...ProjectResource::getNavigationItems(),
                                 ...TaskResource::getNavigationItems(),
                             ]),
+
+                        NavigationGroup::make('Settings')
+                            //->icon('heroicon-o-cog-6-tooth')
+                            ->items([
+                                ...NoteTemplateResource::getNavigationItems(),
+                            ]),
                     ]);
             })
             ->userMenuItems([
                 Action::make('switch-company')
-                    ->label('Switch Company')
+                    ->label(trans('ip.my_companies'))
                     ->icon('heroicon-o-building-office-2')
-                    ->modalHeading('Switch Company')
-                    ->modalContent(fn () => view('filament.company.widgets.switch-company-table')),
+                    ->url(fn () => MyCompanies::getUrl()),
                 'profile' => fn (Action $action) => $action
                     ->label(trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
@@ -250,6 +261,11 @@ class CompanyPanelProvider extends PanelProvider
                     ->label(trans('ip.settings'))
                     ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
+                Action::make('admin-panel')
+                    ->label(trans('ip.admin_panel'))
+                    ->url('/admin')
+                    ->icon('heroicon-o-shield-check')
+                    ->visible(fn (): bool => auth()->user()?->hasAnyRole(UserRole::elevated()) ?? false),
                 'logout' => fn (Action $action) => $action
                     ->label(trans('ip.logout'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle'),
