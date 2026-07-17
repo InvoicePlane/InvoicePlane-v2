@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\CreateExpense;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Schemas\ExpenseForm;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Tables\ExpensesTable;
@@ -41,6 +42,11 @@ class ExpenseResource extends BaseResource
         return trans('ip.expenses');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ExpenseForm::configure($schema);
@@ -59,7 +65,8 @@ class ExpenseResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListExpenses::route('/'),
+            'index'  => ListExpenses::route('/'),
+            'create' => CreateExpense::route('/create'),
         ];
     }
 
