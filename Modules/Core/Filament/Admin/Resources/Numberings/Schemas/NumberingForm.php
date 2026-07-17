@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Filament\Admin\Resources\Numberings\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +15,8 @@ use Modules\Core\Models\Company;
 
 class NumberingForm
 {
+    protected const FORMAT_TOKENS = ['{{prefix}}', '{{number}}', '{{year}}', '{{yy}}', '{{month}}', '{{day}}'];
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -93,24 +96,50 @@ class NumberingForm
                                 Schemas\Components\Group::make()->schema([
                                     TextInput::make('prefix')
                                         ->label(trans('ip.numbering_prefix'))
-                                        ->placeholder('JOB'),
+                                        ->placeholder('INV'),
                                     TextInput::make('format')
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))
-                                        ->helperText(trans('ip.numbering_format_help')),
+                                        ->helperText(trans('ip.numbering_format_help'))
+                                        ->suffixActions(self::tokenInsertActions('format')),
                                     TextInput::make('group_identifier_format')
                                         ->label(trans('ip.numbering_group_identifier_format'))
-                                        ->placeholder('{PREFIX}-{YEAR}-{ID}'),
+                                        ->placeholder(trans('ip.numbering_group_identifier_format_placeholder'))
+                                        ->helperText(trans('ip.numbering_group_identifier_format_help'))
+                                        ->suffixActions(self::tokenInsertActions('group_identifier_format')),
                                 ]),
                                 Schemas\Components\Group::make()->schema([
                                     Placeholder::make('format_helper')
                                         ->label('')
-                                        ->content(trans('ip.numbering_format_helper_admin'))
+                                        ->content(trans('ip.numbering_format_helper'))
                                         ->columnSpanFull(),
                                 ]),
                             ]),
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Suffix actions on the field itself -- schemaComponent() only gets bound
+     * automatically here (via HasAffixes::cacheSuffixActions -> prepareAction),
+     * not for a standalone Actions::make() block, so $set/$get would silently
+     * no-op if these were placed as a separate schema component instead.
+     *
+     * @return array<Action>
+     */
+    protected static function tokenInsertActions(string $field): array
+    {
+        return array_map(
+            fn (string $token): Action => Action::make("insert_{$field}_" . str_replace(['{', '}'], '', $token))
+                ->label($token)
+                ->view(Action::BUTTON_VIEW) // suffixActions() defaults to icon-only; we want the token text visible
+                ->size('sm')
+                ->color('gray')
+                ->action(function (callable $set, callable $get) use ($field, $token): void {
+                    $set($field, ($get($field) ?? '') . $token);
+                }),
+            self::FORMAT_TOKENS
+        );
     }
 }
