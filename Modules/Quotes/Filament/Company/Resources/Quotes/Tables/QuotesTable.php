@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use InvalidArgumentException;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
@@ -118,8 +119,24 @@ class QuotesTable
                     Action::make('convert_to_invoice')
                         ->label(trans('ip.convert_to_invoice'))
                         ->icon('heroicon-o-arrow-right-circle')
-                        ->visible(fn () => auth()->user()?->can(Permission::CONVERT_TO_INVOICE_QUOTES->value))
-                        ->action(function (Quote $record): void {}),
+                        ->visible(fn (Quote $record) => $record->quote_status !== QuoteStatus::CONVERTED
+                            && auth()->user()?->can(Permission::CONVERT_TO_INVOICE_QUOTES->value))
+                        ->requiresConfirmation()
+                        ->action(function (Quote $record): void {
+                            try {
+                                app(QuoteService::class)->convertQuoteToInvoice($record);
+
+                                \Filament\Notifications\Notification::make()
+                                    ->title(trans('ip.quote_converted_to_invoice'))
+                                    ->success()
+                                    ->send();
+                            } catch (InvalidArgumentException $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
                     Action::make('archive')
                         ->label(trans('ip.archive'))
                         ->icon('heroicon-o-archive-box')

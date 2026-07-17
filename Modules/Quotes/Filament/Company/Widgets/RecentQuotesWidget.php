@@ -4,6 +4,7 @@ namespace Modules\Quotes\Filament\Company\Widgets;
 
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -29,6 +30,15 @@ class RecentQuotesWidget extends TableWidget
                 ->icon('heroicon-o-arrow-right')
                 ->color('primary'),
         ];
+    }
+
+    public function table(Table $table): Table
+    {
+        // QuoteResource only registers an 'index' page — editing happens via
+        // a modal action on that page's table, not a dedicated edit/view
+        // page — so this is the most specific URL a row can link to.
+        return parent::table($table)
+            ->recordUrl(fn (Quote $record): string => QuoteResource::getUrl('index'));
     }
 
     protected function getTableQuery(): Builder|Relation|null
