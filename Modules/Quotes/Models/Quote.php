@@ -19,7 +19,6 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
-use RuntimeException;
 
 /**
  * @property int                    $id
@@ -169,24 +168,6 @@ class Quote extends Model
             ->orderBy('quote_expires_at', 'desc')
             ->orderBy('quote_status', 'asc')
             ->limit($quoteLimit);
-    }
-
-    protected static function booted(): void
-    {
-        static::creating(function (self $quote) {
-            if ($quote->quote_number === null) {
-                return;
-            }
-
-            $exists = static::withoutGlobalScopes()
-                ->where('company_id', $quote->company_id)
-                ->where('quote_number', $quote->quote_number)
-                ->exists();
-
-            if ($exists) {
-                throw new RuntimeException("Duplicate quote number '{$quote->quote_number}'");
-            }
-        });
     }
 
     /*

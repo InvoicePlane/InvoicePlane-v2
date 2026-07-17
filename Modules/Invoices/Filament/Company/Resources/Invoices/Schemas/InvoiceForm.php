@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Support\InvoiceCalculator;
 use Modules\Products\Models\Product;
@@ -105,6 +106,14 @@ class InvoiceForm
                                                     ->where('type', NumberingType::INVOICE->value)
                                                     ->where('company_id', Filament::getTenant()?->id),
                                             ),
+
+                                        TextInput::make('client_reference')
+                                            ->label(trans('ip.client_reference'))
+                                            ->maxLength(255),
+
+                                        TextInput::make('work_order')
+                                            ->label(trans('ip.work_order'))
+                                            ->maxLength(255),
 
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),
@@ -232,7 +241,8 @@ class InvoiceForm
                             ->schema([
                                 MarkdownEditor::make('notes')
                                     ->label(trans('ip.notes'))
-                                    ->toolbarButtons(['bold', 'italic']),
+                                    ->toolbarButtons(['bold', 'italic'])
+                                    ->hintAction(InsertNoteTemplateAction::make('notes')),
                             ])
                             ->columnSpan(1),
 
@@ -252,7 +262,8 @@ class InvoiceForm
                     ->schema([
                         MarkdownEditor::make('invoice_terms')
                             ->toolbarButtons(['bold', 'italic'])
-                            ->label(trans('ip.invoice_terms')),
+                            ->label(trans('ip.invoice_terms'))
+                            ->hintAction(InsertNoteTemplateAction::make('invoice_terms')),
                     ])
                     ->columnSpanFull(),
             ]);

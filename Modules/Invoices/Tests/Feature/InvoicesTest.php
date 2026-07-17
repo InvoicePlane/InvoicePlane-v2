@@ -15,6 +15,7 @@ use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Models\NoteTemplate;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -62,7 +63,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -111,7 +112,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -165,7 +166,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -210,7 +211,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -253,7 +254,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -298,7 +299,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -349,7 +350,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     public function it_creates_an_invoice_with_items(): void
     {
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -405,7 +406,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -449,7 +450,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -491,7 +492,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -534,7 +535,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();
@@ -605,12 +606,40 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_inserts_a_note_template_into_the_notes_field(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+            'notes'       => null,
+        ]);
+        $template = NoteTemplate::factory()->for($this->company)->create([
+            'template_title' => 'SEO Terms',
+            'template_body'  => 'Payment due Net 30.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->callFormComponentAction('notes', 'insert_note_template_notes', [
+                'note_template_id' => $template->id,
+                'replace_content'  => true,
+            ]);
+
+        /* Assert */
+        $component->assertFormSet(['notes' => 'Payment due Net 30.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_an_invoice(): void
     {
         /* Arrange */
         $user            = $this->user;
         $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
         $taxRate         = TaxRate::factory()->for($this->company)->create();
         $productCategory = ProductCategory::factory()->for($this->company)->create();
         $productUnit     = ProductUnit::factory()->for($this->company)->create();

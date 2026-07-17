@@ -4,6 +4,8 @@ namespace Modules\Quotes\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Observers\QuoteObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -24,6 +26,7 @@ class QuotesServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
+        Quote::observe(QuoteObserver::class);
     }
 
     public function register(): void
