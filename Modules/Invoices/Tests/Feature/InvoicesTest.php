@@ -5,18 +5,24 @@ namespace Modules\Invoices\Tests\Feature;
 use Carbon\Carbon;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
-use Modules\Core\Models\Numbering;
+use Modules\Core\Enums\Permission;
+use Modules\Core\Models\Company;
+use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\NoteTemplate;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
+use Modules\Invoices\Mail\InvoiceMailable;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
 use Modules\Products\Models\Product;
@@ -25,6 +31,8 @@ use Modules\Products\Models\ProductUnit;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Permission as SpatiePermission;
+use Spatie\Permission\PermissionRegistrar;
 
 #[CoversClass(ListInvoices::class)]
 class InvoicesTest extends AbstractCompanyPanelTestCase
@@ -734,6 +742,262 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('invoices', ['id' => $invoiceB->id]);    // B is in the DB...
         $this->assertNotNull(Invoice::find($invoiceA->id));               // A is visible to tenant A
         $this->assertNull(Invoice::find($invoiceB->id));                  // B is NOT visible to tenant A
+    }
+    # endregion
+
+    # region numbering-group
+    #[Test]
+    #[Group('crud')]
+    public function it_moves_an_invoice_to_a_different_numbering_group(): void
+    {
+        /* Arrange */
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EDIT_INVOICES);
+
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $groupA   = Numbering::factory()->for($this->company)->create(['type' => NumberingType::INVOICE->value]);
+        $groupB   = Numbering::factory()->for($this->company)->create(['type' => NumberingType::INVOICE->value]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $groupA->id,
+            'invoice_number' => 'INV-2026-001',
+            'user_id'        => $this->user->id,
+        ]);
+
+        $payload = ['numbering_id' => $groupB->id];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->fillForm($payload)
+            ->mountAction('save')
+            ->callMountedAction();
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', [
+            'id'             => $invoice->id,
+            'numbering_id'   => $groupB->id,
+            'invoice_number' => 'INV-2026-001', // number unchanged
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_rejects_a_numbering_group_that_does_not_belong_to_the_current_company(): void
+    {
+        /* Arrange */
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EDIT_INVOICES);
+
+        $customer         = Relation::factory()->for($this->company)->customer()->create();
+        $ownGroup         = Numbering::factory()->for($this->company)->create(['type' => NumberingType::INVOICE->value]);
+        $otherCompany     = Company::factory()->create();
+        $foreignNumbering = Numbering::factory()->for($otherCompany)->create(['type' => NumberingType::INVOICE->value]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $ownGroup->id,
+            'invoice_number' => 'INV-2026-002',
+            'user_id'        => $this->user->id,
+        ]);
+
+        $payload = ['numbering_id' => $foreignNumbering->id];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->fillForm($payload)
+            ->mountAction('save')
+            ->callMountedAction();
+
+        /* Assert — a numbering group belonging to another company is not a valid option */
+        $component->assertHasFormErrors(['numbering_id']);
+
+        $this->assertDatabaseHas('invoices', [
+            'id'           => $invoice->id,
+            'numbering_id' => $ownGroup->id,
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_rejects_a_numbering_group_of_a_different_type(): void
+    {
+        /* Arrange */
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EDIT_INVOICES);
+
+        $customer     = Relation::factory()->for($this->company)->customer()->create();
+        $invoiceGroup = Numbering::factory()->for($this->company)->create(['type' => NumberingType::INVOICE->value]);
+        $quoteGroup   = Numbering::factory()->for($this->company)->create(['type' => NumberingType::QUOTE->value]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $invoiceGroup->id,
+            'invoice_number' => 'INV-2026-003',
+            'user_id'        => $this->user->id,
+        ]);
+
+        $payload = ['numbering_id' => $quoteGroup->id];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->fillForm($payload)
+            ->mountAction('save')
+            ->callMountedAction();
+
+        /* Assert — a Quote numbering group must never be selectable for an Invoice */
+        $component->assertHasFormErrors(['numbering_id']);
+    }
+    # endregion
+
+    # region email
+    #[Test]
+    #[Group('crud')]
+    public function it_dispatches_a_queued_mail_when_send_email_action_is_called(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create();
+        $contact  = $relation->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'customer@example.com',
+        ]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-001',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful()->assertHasNoErrors();
+
+        Mail::assertQueued(
+            InvoiceMailable::class,
+            fn ($mail) => $mail->hasTo('customer@example.com') && $mail->invoice->is($invoice)
+        );
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_uses_the_invoice_sent_email_template_when_one_exists_for_the_company(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create(['company_name' => 'Acme Corp']);
+        $contact  = $relation->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'billing@example.com',
+        ]);
+
+        /*
+         * Every company is auto-bootstrapped with an "invoice_sent" EmailTemplate
+         * (see CompanyObserver::created()), so update it rather than creating a
+         * second row with the same title.
+         */
+        EmailTemplate::forCompany($this->company->id)
+            ->where('title', 'invoice_sent')
+            ->update([
+                'subject' => 'Invoice {{ invoice.number }} from {{ company.name }}',
+                'body'    => 'Hello {{ customer.name }}, your invoice {{ invoice.number }} is ready.',
+            ]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-002',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        Mail::assertQueued(
+            InvoiceMailable::class,
+            fn ($mail) => $mail->hasTo('billing@example.com')
+                && str_contains($mail->emailSubject, 'INV-EMAIL-002')
+                && str_contains($mail->bodyText, 'Acme Corp')
+        );
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_shows_an_error_notification_when_the_customer_has_no_email_on_file(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create();
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-003',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful();
+        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
+    }
+
+    /**
+     * Grant the current test user one or more permissions, creating the
+     * underlying Spatie permission records first if they don't already exist.
+     */
+    private function grantPermission(Permission ...$permissions): void
+    {
+        foreach ($permissions as $permission) {
+            SpatiePermission::query()->firstOrCreate(['name' => $permission->value, 'guard_name' => 'web']);
+        }
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        foreach ($permissions as $permission) {
+            $this->user->givePermissionTo($permission->value);
+        }
     }
     # endregion
 
