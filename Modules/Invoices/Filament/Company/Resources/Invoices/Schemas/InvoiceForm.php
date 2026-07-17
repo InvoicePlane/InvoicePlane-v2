@@ -70,21 +70,10 @@ class InvoiceForm
                                             ->required()
                                             ->default(function (Get $get, string $operation) {
                                                 if ($operation !== 'create') {
-                                                    return null;
+                                                    return;
                                                 }
 
-                                                $status = $get('invoice_status') ?? InvoiceStatus::DRAFT->value;
-
-                                                if (
-                                                    $status === InvoiceStatus::DRAFT->value
-                                                    && ! Setting::getBool('generate_invoice_number_for_draft')
-                                                ) {
-                                                    return null;
-                                                }
-
-                                                $companyId = auth()->user()?->getCurrentCompanyId();
-
-                                                return (new InvoiceNumberGenerator($companyId))->generate();
+                                                return self::generateInvoiceNumber($get);
                                             })
                                             ->dehydrated(),
 
@@ -103,7 +92,18 @@ class InvoiceForm
                                             ->searchable()
                                             ->preload()
                                             ->native(false)
-                                            ->required(),
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(function (callable $set, Get $get, string $operation): void {
+                                                // Only (re)generate on create, and only when the field is still
+                                                // empty -- never clobber a number the user already typed or one
+                                                // that was already generated for this record.
+                                                if ($operation !== 'create' || filled($get('invoice_number'))) {
+                                                    return;
+                                                }
+
+                                                $set('invoice_number', self::generateInvoiceNumber($get));
+                                            }),
 
                                         DatePicker::make('invoiced_at')
                                             ->label(trans('ip.invoice_date'))
@@ -273,5 +273,38 @@ class InvoiceForm
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Generate an invoice number for the create form, respecting the
+     * generate_invoice_number_for_draft setting (default true) for draft
+     * status. Returns null when generation is skipped or no numbering
+     * scheme is available.
+     */
+    private static function generateInvoiceNumber(Get $get): ?string
+    {
+        $status = $get('invoice_status') ?? InvoiceStatus::DRAFT->value;
+
+        if (
+            $status === InvoiceStatus::DRAFT->value
+            && ! Setting::getBool('generate_invoice_number_for_draft')
+        ) {
+            return null;
+        }
+
+        $companyId = auth()->user()?->getCurrentCompanyId();
+        $generator = new InvoiceNumberGenerator($companyId);
+
+        // Prefer the explicitly selected numbering scheme; otherwise fall
+        // back to any Invoice-type scheme for the company instead of the
+        // generator's conventional "Default Invoice Numbering" group name,
+        // which seeded/company-created schemes won't necessarily carry.
+        if ($numberingId = $get('numbering_id')) {
+            $generator->forNumberingId((int) $numberingId);
+        } else {
+            $generator->forNumbering('');
+        }
+
+        return $generator->generate();
     }
 }

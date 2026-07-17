@@ -98,12 +98,18 @@ class InvoiceNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
             'left_pad' => 4,
         ]);
 
+        // invoice_status is set via a real Livewire property update (not
+        // fillForm, which bypasses afterStateUpdated hooks) so the form's
+        // reactive regeneration of invoice_number on status change actually
+        // fires -- mirroring a user picking "Sent" interactively in the modal.
         $payload = $this->basePayload($customer->id, $numbering->id, InvoiceStatus::SENT->value);
+        unset($payload['invoice_status']);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListInvoices::class, ['tenant' => Str::lower($this->company->search_code)])
             ->mountAction('create')
+            ->set('mountedActions.0.data.invoice_status', InvoiceStatus::SENT->value)
             ->fillForm($payload)
             ->callMountedAction();
 
