@@ -5,6 +5,7 @@ namespace Modules\Clients\Filament\Company\Resources\Relations\Schemas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
 use Filament\Schemas\Components\Fieldset;
@@ -66,6 +67,10 @@ class RelationForm
                                                             $set('unique_name', \Illuminate\Support\Str::slug($state));
                                                         }
                                                     }),
+
+                                                TextInput::make('email')
+                                                    ->label(trans('ip.email'))
+                                                    ->email(),
 
                                                 TextInput::make('trading_name')
                                                     ->label(trans('ip.trading_name'))
@@ -194,6 +199,13 @@ class RelationForm
                                                     ->label(trans('ip.last'))
                                                     ->required(),
                                             ]),
+
+                                        TagsInput::make('email_cc')
+                                            ->label(trans('ip.cc_email_addresses'))
+                                            ->splitKeys([',', 'Tab', ' '])
+                                            ->placeholder('cc@example.com')
+                                            ->nestedRecursiveRules('email')
+                                            ->helperText(trans('ip.cc_email_addresses_helper')),
                                     ]),
                             ])
                             ->columnSpan(1),
