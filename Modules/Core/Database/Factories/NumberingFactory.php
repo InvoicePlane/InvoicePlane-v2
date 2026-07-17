@@ -31,4 +31,17 @@ class NumberingFactory extends AbstractFactory
             'last_id'    => 0,
         ];
     }
+
+    /**
+     * Force this Numbering to an explicit type instead of the random one
+     * chosen by definition(), keeping name/prefix consistent with it.
+     */
+    public function ofType(NumberingType $type): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'type'   => $type->value,
+            'name'   => $type->label(),
+            'prefix' => $type->prefix(),
+        ]);
+    }
 }

@@ -16,9 +16,11 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Models\Setting;
 use Modules\Products\Models\Product;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Support\QuoteCalculator;
+use Modules\Quotes\Support\QuoteNumberGenerator;
 
 class QuoteForm
 {
@@ -68,7 +70,26 @@ class QuoteForm
                                     ->schema([
                                         TextInput::make('quote_number')
                                             ->label(trans('ip.quote_number'))
-                                            ->required(),
+                                            ->required()
+                                            ->default(function (Get $get, string $operation) {
+                                                if ($operation !== 'create') {
+                                                    return null;
+                                                }
+
+                                                $status = $get('quote_status') ?? QuoteStatus::DRAFT->value;
+
+                                                if (
+                                                    $status === QuoteStatus::DRAFT->value
+                                                    && ! Setting::getBool('generate_quote_number_for_draft')
+                                                ) {
+                                                    return null;
+                                                }
+
+                                                $companyId = auth()->user()?->getCurrentCompanyId();
+
+                                                return (new QuoteNumberGenerator($companyId))->generate();
+                                            })
+                                            ->dehydrated(),
 
                                         Select::make('quote_status')
                                             ->label(trans('ip.quote_status'))

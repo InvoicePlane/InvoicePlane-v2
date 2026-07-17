@@ -5,6 +5,7 @@ namespace Modules\Core\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
@@ -75,16 +76,17 @@ abstract class AbstractSeeder extends Seeder
         return $customer;
     }
 
-    protected function findOrCreateNumbering(?int $companyId): Numbering
+    protected function findOrCreateNumbering(?int $companyId, NumberingType $type): Numbering
     {
         /** @var Numbering|null $documentGroup */
         $documentGroup = Numbering::query()->where('company_id', $this->companyId)
+            ->where('type', $type->value)
             ->inRandomOrder()
             ->first();
 
         if ( ! $documentGroup) {
             /** @var Numbering $documentGroup */
-            $documentGroup = Numbering::factory()->state([
+            $documentGroup = Numbering::factory()->ofType($type)->state([
                 'company_id' => $companyId,
             ])
                 ->create();
@@ -119,7 +121,7 @@ abstract class AbstractSeeder extends Seeder
             ->first();
 
         if ( ! $invoice) {
-            $documentGroup = $this->findOrCreateNumbering($companyId);
+            $documentGroup = $this->findOrCreateNumbering($companyId, NumberingType::INVOICE);
 
             /** @var Invoice $invoice */
             $invoice = Invoice::factory()->state([

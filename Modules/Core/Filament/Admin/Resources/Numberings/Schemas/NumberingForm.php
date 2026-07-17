@@ -9,8 +9,10 @@ use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Collection;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\Numbering;
 
 class NumberingForm
 {
@@ -91,9 +93,12 @@ class NumberingForm
                             ->columns(2)
                             ->schema([
                                 Schemas\Components\Group::make()->schema([
-                                    TextInput::make('prefix')
+                                    Select::make('prefix')
                                         ->label(trans('ip.numbering_prefix'))
-                                        ->placeholder('JOB'),
+                                        ->placeholder('INV')
+                                        ->options(fn (?string $state): array => self::prefixOptions($state))
+                                        ->searchable()
+                                        ->native(false),
                                     TextInput::make('format')
                                         ->label(trans('ip.numbering_format'))
                                         ->placeholder(trans('ip.numbering_format_placeholder'))
@@ -112,5 +117,39 @@ class NumberingForm
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Build the option list for the Prefix dropdown: every NumberingType's
+     * default prefix (CUS, EXP, INV, PAY, PRJ, QUO, TSK), plus every distinct
+     * prefix already in use on any company's Numbering rows (admin manages
+     * numbering across all companies), plus the field's current value if set
+     * so editing an existing, non-standard prefix never looks blank/invalid.
+     *
+     * @return array<string, string>
+     */
+    private static function prefixOptions(?string $currentPrefix = null): array
+    {
+        $prefixes = Collection::make(NumberingType::cases())
+            ->map(fn (NumberingType $type): string => $type->prefix())
+            ->merge(
+                Numbering::query()
+                    ->withoutGlobalScopes()
+                    ->whereNotNull('prefix')
+                    ->where('prefix', '!=', '')
+                    ->distinct()
+                    ->pluck('prefix')
+            );
+
+        if (filled($currentPrefix)) {
+            $prefixes->push($currentPrefix);
+        }
+
+        return $prefixes
+            ->unique()
+            ->sort()
+            ->values()
+            ->mapWithKeys(fn (string $prefix): array => [$prefix => $prefix])
+            ->all();
     }
 }
