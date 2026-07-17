@@ -43,6 +43,8 @@ class RelationResourceAuthorizationTest extends AbstractCompanyPanelTestCase
     #[Test]
     public function it_blocks_viewing_the_list_without_view_relations_permission(): void
     {
+        $this->withoutRelationsPermissions();
+
         $this->assertFalse(RelationResource::canViewAny());
     }
 
@@ -56,6 +58,8 @@ class RelationResourceAuthorizationTest extends AbstractCompanyPanelTestCase
     #[Test]
     public function it_blocks_creating_without_create_relations_permission(): void
     {
+        $this->withoutRelationsPermissions();
+
         $this->assertFalse(RelationResource::canCreate());
     }
 
@@ -72,6 +76,7 @@ class RelationResourceAuthorizationTest extends AbstractCompanyPanelTestCase
     public function it_blocks_editing_without_edit_relations_permission(): void
     {
         $client = Relation::factory()->for($this->company)->create();
+        $this->withoutRelationsPermissions();
 
         $this->assertFalse(RelationResource::canEdit($client));
     }
@@ -89,7 +94,20 @@ class RelationResourceAuthorizationTest extends AbstractCompanyPanelTestCase
     public function it_blocks_deleting_without_delete_relations_permission(): void
     {
         $client = Relation::factory()->for($this->company)->create();
+        $this->withoutRelationsPermissions();
 
         $this->assertFalse(RelationResource::canDelete($client));
+    }
+
+    /**
+     * AbstractCompanyPanelTestCase assigns the client_admin role by default,
+     * which now includes Relations permissions -- strip it to test the
+     * genuinely-unauthorized case.
+     */
+    private function withoutRelationsPermissions(): void
+    {
+        $this->user->syncRoles([]);
+        $this->user->syncPermissions([]);
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

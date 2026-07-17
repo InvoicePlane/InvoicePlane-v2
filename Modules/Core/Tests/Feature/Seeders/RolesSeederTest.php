@@ -107,7 +107,7 @@ class RolesSeederTest extends AbstractTestCase
     }
 
     #[Test]
-    public function client_admin_has_no_import_or_delete_permissions(): void
+    public function client_admin_has_no_import_permissions(): void
     {
         /* Arrange */
         (new RolesSeeder())->run();
@@ -122,9 +122,11 @@ class RolesSeederTest extends AbstractTestCase
         $this->assertContains(PermissionEnum::VIEW_INVOICES->value, $permissionNames);
         $this->assertContains(PermissionEnum::EDIT_INVOICES->value, $permissionNames);
 
+        // client_admin legitimately has delete-* permissions for its own
+        // customer-owned resources (relations, invoices, quotes, etc.) --
+        // only import- stays fully off-limits.
         foreach ($permissionNames as $name) {
             $this->assertStringStartsNotWith('import-', $name);
-            $this->assertStringStartsNotWith('delete-', $name);
         }
     }
 
