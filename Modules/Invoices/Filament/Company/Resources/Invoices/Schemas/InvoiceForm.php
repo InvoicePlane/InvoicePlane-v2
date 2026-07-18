@@ -108,6 +108,7 @@ class InvoiceForm
 
                                         DatePicker::make('invoiced_at')
                                             ->label(trans('ip.invoice_date'))
+                                            ->default(now())
                                             ->required(),
 
                                         DatePicker::make('invoice_due_at')

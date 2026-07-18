@@ -123,11 +123,6 @@ class Contact extends Model
             ->first()?->contactable_value;
     }
 
-    public function getCompanyNameAttribute()
-    {
-        return $this->company_id ? Company::query()->find($this->company_id)->company_name : null;
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Factory

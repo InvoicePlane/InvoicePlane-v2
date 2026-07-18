@@ -5,7 +5,7 @@ namespace Modules\Core\Filament\Admin\Resources\Companies\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
-use Modules\Core\Services\CompaniesService;
+use Modules\Core\Services\CompanyService;
 
 class ListCompanies extends ListRecords
 {
@@ -15,11 +15,8 @@ class ListCompanies extends ListRecords
     {
         return [
             CreateAction::make()
-                ->mutateDataUsing(function (array $data) {
-                    return $data;
-                })
                 ->action(function (array $data) {
-                    app(CompaniesService::class)->createCompany($data);
+                    app(CompanyService::class)->createCompany($data);
                 })
                 ->modalWidth('full'),
         ];

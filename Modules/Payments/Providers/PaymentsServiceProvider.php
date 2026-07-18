@@ -4,11 +4,8 @@ namespace Modules\Payments\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Models\Schedule;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Observers\PaymentObserver;
-use Modules\Quotes\Providers\EventServiceProvider;
-use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

@@ -5,7 +5,6 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Models\Company;
@@ -51,7 +50,7 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function clearing_the_avatar_removes_the_upload_and_stored_file(): void
+    public function it_removes_the_upload_and_stored_file_when_avatar_is_cleared(): void
     {
         /* Arrange */
         Storage::fake('public');
@@ -74,7 +73,7 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function password_change_requires_matching_confirmation(): void
+    public function it_requires_matching_confirmation_for_password_change(): void
     {
         /* Act & Assert */
         $this->testLivewire(EditProfile::class)
@@ -105,7 +104,7 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function the_company_list_renders_for_the_authenticated_user(): void
+    public function it_renders_the_company_list_for_the_authenticated_user(): void
     {
         /* Act & Assert */
         $this->testLivewire(MyCompanies::class)
@@ -115,7 +114,7 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function switching_sets_the_tenant_and_redirects_to_the_target_dashboard(): void
+    public function it_sets_the_tenant_and_redirects_to_the_target_dashboard_when_switching(): void
     {
         /* Arrange */
         $otherCompany = Company::factory()->create(['search_code' => 'OTHERCO']);

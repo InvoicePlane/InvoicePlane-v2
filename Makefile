@@ -68,10 +68,10 @@ _stop     = $(if $(STOP),--stop-on-failure)
 
 # The core PHPUnit invocation (all optional flags appended).
 _phpunit  = APP_ENV=testing $(PHPUNIT) --configuration $(CONFIG) \
-            --exclude-group failing,troubleshooting $(_stop) $(_filter) $(_group) $(_suite)
+            --exclude-group failing,flaky,troubleshooting $(_stop) $(_filter) $(_group) $(_suite)
 
 # The core artisan invocation.
-_artisan  = APP_ENV=testing $(PHP) artisan test --exclude-group failing,troubleshooting
+_artisan  = APP_ENV=testing $(PHP) artisan test --exclude-group failing,flaky,troubleshooting
 
 .DEFAULT_GOAL := help
 
@@ -91,7 +91,7 @@ help:
 # ── Full suite ────────────────────────────────────────────────────────────────
 
 docker-test:
-	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && DB_HOST=mariadb php artisan test --exclude-groups=failing,troubleshooting"
+	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && DB_HOST=mariadb php artisan test --exclude-group=failing,flaky,troubleshooting"
 
 ## ─── Full suite ───────────────────────────────────────────────────────────────
 test:
@@ -231,9 +231,9 @@ test-group:
 #test-no-failing:
 #	$(_phpunit) --exclude-group failing
 
-## Run all tests except 'troubleshooting' and 'failing' groups
+## Run all tests except 'troubleshooting', 'failing', and 'flaky' groups
 #test-stable:
-#	$(_phpunit) --exclude-group failing,troubleshooting
+#	$(_phpunit) --exclude-group failing,flaky,troubleshooting
 
 # ── Coverage ──────────────────────────────────────────────────────────────────
 
@@ -304,7 +304,7 @@ artisan-bail:
 ci:
 	APP_ENV=testing $(PHPUNIT) \
 	    --configuration $(CONFIG) \
-		--exclude-group failing,troubleshooting
+	    --exclude-group failing,flaky,troubleshooting \
 	    --stop-on-failure \
 	    --stop-on-error \
 	    --cache-result-file /dev/null

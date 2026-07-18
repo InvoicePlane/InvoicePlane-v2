@@ -109,7 +109,7 @@ class ExpenseItemFactory extends Factory
             'item_id'       => $item->id,
             'unit_id'       => $unit->id,
             'added_at'      => $this->faker->dateTimeBetween('-3 years', 'yesterday')->format('Y-m-d'),
-            'item_name'     => $item->item_name,
+            'item_name'     => $item->product_name,
             'is_recurring'  => false,
             'quantity'      => $quantity,
             'price'         => $price,

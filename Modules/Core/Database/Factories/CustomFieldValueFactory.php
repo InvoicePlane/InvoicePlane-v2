@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Database\Factories;
 
+use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\CustomField;
 use Modules\Core\Models\CustomFieldValue;
 
@@ -11,14 +13,17 @@ class CustomFieldValueFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $this->resolveCompanyId();
-        $company   = $this->resolveCompany();
+        $company    = $this->resolveCompany() ?? Company::factory()->create();
+        $customField = CustomField::query()->where('company_id', $company->id)->inRandomOrder()->first()
+            ?? CustomField::factory()->for($company)->create();
+        $fieldable  = Relation::factory()->for($company)->create();
 
         return [
-            'custom_field_id'    => CustomField::query()->inRandomOrder()->first()->id,
-            'fieldable_type'     => fake()->word,
-            'fieldable_id'       => null,
-            'custom_field_value' => null,
+            'company_id'         => $company->id,
+            'custom_field_id'    => $customField->id,
+            'fieldable_type'     => $fieldable->getMorphClass(),
+            'fieldable_id'       => $fieldable->id,
+            'custom_field_value' => fake()->word,
         ];
     }
 }

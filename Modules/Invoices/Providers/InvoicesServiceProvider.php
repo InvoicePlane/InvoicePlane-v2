@@ -32,7 +32,11 @@ class InvoicesServiceProvider extends ServiceProvider
         InvoiceItem::observe(InvoiceItemObserver::class);
     }
 
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
+    }
 
     public function registerTranslations(): void
     {

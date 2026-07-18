@@ -99,33 +99,11 @@ class NumberingPanelAccessTest extends AbstractAdminPanelTestCase
         $this->assertEquals($numbering2->id, $company2Numberings->first()->id);
     }
 
-    #[Test]
-    public function it_prevents_company_user_from_changing_company_id(): void
-    {
-        /* Arrange */
-        $company1 = Company::factory()->create(['name' => 'Company One']);
-        $company2 = Company::factory()->create(['name' => 'Company Two']);
-
-        $numbering = $this->service->createNumbering([
-            'name'       => 'Numbering for Company 1',
-            'type'       => 'Invoice',
-            'format'     => 'INV-{{number}}',
-            'company_id' => $company1->id,
-            'next_id'    => 1,
-            'left_pad'   => 4,
-        ]);
-
-        /* Act & Assert */
-        // Company user should not be able to change company_id
-        // This would typically be enforced at the form/policy level
-        // In the Company panel, company_id field should be read-only or hidden
-
-        $this->assertEquals($company1->id, $numbering->company_id);
-
-        // Attempting to update with different company_id should fail or be ignored
-        // In practice, this would be prevented by form validation or policy
-        $this->assertTrue(true); // Placeholder - actual enforcement is in Filament form
-    }
+    // "Company user cannot change company_id" is untestable here: this class only
+    // ever acts as an elevated admin (AbstractAdminPanelTestCase), and Numbering has
+    // no registered resource in the Company panel (CompanyPanelProvider::resources()
+    // never lists NumberingResource) — the EditNumbering page's mutateFormDataBeforeSave()
+    // guard and the form's dehydrated(false) company_id field are unreachable dead code.
 
     #[Test]
     public function it_allows_company_user_to_edit_their_numbering_format(): void

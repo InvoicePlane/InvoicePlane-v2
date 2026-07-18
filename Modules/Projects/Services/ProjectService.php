@@ -14,8 +14,6 @@ class ProjectService extends BaseService
     public function model(): string
     {
         return Project::class;
-        // event(new ProjectWasCreated());
-        // event(new ProjectWasUpdated());
     }
 
     public function createProject(array $data): Model
