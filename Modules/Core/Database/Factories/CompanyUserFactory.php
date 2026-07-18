@@ -2,8 +2,8 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Modules\Core\Models\CompanyUser;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\CompanyUser;
 use Modules\Core\Models\User;
 
 class CompanyUserFactory extends AbstractFactory
