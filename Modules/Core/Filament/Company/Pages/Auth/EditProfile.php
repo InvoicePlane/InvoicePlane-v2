@@ -7,8 +7,8 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Panel;
 use Filament\Pages\PageConfiguration;
+use Filament\Panel;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -75,7 +75,7 @@ class EditProfile extends BaseEditProfile
         /** @var User $user */
         $user = $this->getUser();
 
-        $data['avatar']   = $user->avatarUpload?->upload_stored_name;
+        $data['avatar'] = $user->avatarUpload?->upload_stored_name;
         $data['language'] ??= $user->language ?? 'en';
 
         return $data;
