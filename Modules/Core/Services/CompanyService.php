@@ -65,4 +65,20 @@ class CompanyService extends BaseService
             throw $e;
         }
     }
+
+    public function deleteCompany(Company $company): bool
+    {
+        DB::beginTransaction();
+
+        try {
+            $deleted = (bool) $company->delete();
+
+            DB::commit();
+
+            return $deleted;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }

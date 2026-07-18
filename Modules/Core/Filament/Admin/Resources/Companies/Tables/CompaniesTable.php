@@ -35,8 +35,8 @@ class CompaniesTable
                         })
                         ->modalWidth('full'),
                     DeleteAction::make('delete')
-                        ->action(function (Company $record, array $data) {
-                            app(CompanyService::class)->deleteCompany($record, $data);
+                        ->action(function (Company $record) {
+                            app(CompanyService::class)->deleteCompany($record);
                         }),
                 ]),
             ])

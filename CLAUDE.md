@@ -25,7 +25,7 @@ Modules/Core/Providers/     # All three Filament panel providers live here
 | Module | Key models |
 |--------|-----------|
 | Core | User, Company, CompanyUser, TaxRate, Numbering, EmailTemplate, CustomField, Upload, Note, AuditLog, Setting, MailQueue |
-| Clients | Relation (table: `relations`), Contact, Address, Communication, ClientCustom (`PK: client_custom_id`) |
+| Clients | Relation (table: `relations`), Contact, Address, Communication |
 | Invoices | Invoice, InvoiceItem, RecurringInvoice |
 | Quotes | Quote, QuoteItem |
 | Payments | Payment |
@@ -245,8 +245,6 @@ Invoice::observe(InvoiceObserver::class);
 
 - `Company::$primaryKey` = `id` (standard); URL slug is `search_code` (10 chars, unique, e.g. `ivplv2`)
 - `User::$timestamps = false` — no created_at/updated_at on users table
-- `ClientCustom::$primaryKey = 'client_custom_id'` — non-standard PK
-- `Import::$primaryKey = 'import_id'` — non-standard PK
 - `Relation` model → table `relations` (not `customers`, not `clients`)
 - Soft deletes on: Invoice, Quote (and their items)
 - `BelongsToCompany` trait → adds `company()` BelongsTo, `scopeForCompany()`, and global scope

@@ -113,6 +113,7 @@ class QuoteForm
 
                                         DatePicker::make('quoted_at')
                                             ->label(trans('ip.quote_date'))
+                                            ->default(now())
                                             ->native(false),
 
                                         DatePicker::make('quote_expires_at')

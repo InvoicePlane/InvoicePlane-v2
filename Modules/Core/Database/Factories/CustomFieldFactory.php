@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Database\Factories;
 
+use Modules\Core\Models\Company;
 use Modules\Core\Models\CustomField;
 
 class CustomFieldFactory extends AbstractFactory
@@ -10,14 +11,14 @@ class CustomFieldFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $this->resolveCompanyId();
-        $company   = $this->resolveCompany();
+        $company = $this->resolveCompany() ?? Company::factory()->create();
 
         return [
-            'fieldable_type'     => fake()->word,
+            'company_id'         => $company->id,
+            'fieldable_type'     => \Modules\Clients\Models\Relation::class,
             'custom_field_label' => fake()->optional()->word,
-            'field_type'         => fake()->word,
-            'field_order'        => fake()->word,
+            'field_type'         => 'TEXT',
+            'field_order'        => fake()->numberBetween(0, 20),
         ];
     }
 }

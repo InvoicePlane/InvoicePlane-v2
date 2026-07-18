@@ -3,6 +3,7 @@
 namespace Modules\Core\Database\Factories;
 
 use Modules\Core\Models\AuditLog;
+use Modules\Core\Models\User;
 
 class AuditLogFactory extends AbstractFactory
 {
@@ -11,6 +12,10 @@ class AuditLogFactory extends AbstractFactory
     public function definition(): array
     {
         return [
+            'audit_id'   => User::query()->inRandomOrder()->first()->id,
+            'audit_type' => User::class,
+            'activity'   => fake()->word,
+            'info'       => fake()->sentence(),
         ];
     }
 }

@@ -13,8 +13,6 @@ class ProductService extends BaseService
     public function model(): string
     {
         return Product::class;
-        //event(new ProductWasCreated($product));
-        //event(new ProductWasUpdated($productToUpdate));
     }
 
     public function createProduct(array $data): Model

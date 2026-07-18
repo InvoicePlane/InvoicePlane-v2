@@ -25,10 +25,6 @@ class PaymentService extends BaseService
 
         $payment = Payment::query()->create($paymentData);
 
-        /* if ($payment->merchant_client_id) {
-            dispatch(new ProcessMerchantPaymentJob($payment));
-        } */
-
         return $payment;
     }
 

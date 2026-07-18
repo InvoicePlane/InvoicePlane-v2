@@ -3,6 +3,7 @@
 namespace Modules\Projects\Services;
 
 use Exception;
+use Illuminate\Container\Container as Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
@@ -11,6 +12,11 @@ use Throwable;
 
 class TaskService extends BaseService
 {
+    public function __construct(Application $app, private readonly ProjectService $projectService)
+    {
+        parent::__construct($app);
+    }
+
     public function model(): string
     {
         return Task::class;
@@ -20,7 +26,7 @@ class TaskService extends BaseService
     {
         DB::beginTransaction();
 
-        $customer_id = app(ProjectService::class)->getCustomer($data['project_id']);
+        $customer_id = $this->projectService->getCustomer($data['project_id']);
 
         try {
             $task = Task::query()->create([

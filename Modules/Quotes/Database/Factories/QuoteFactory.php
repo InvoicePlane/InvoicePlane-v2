@@ -83,7 +83,7 @@ class QuoteFactory extends AbstractFactory
                 ->first();
 
             if ( ! $taxRate) {
-                $taxRate = Product::factory()
+                $taxRate = TaxRate::factory()
                     ->state(['company_id' => $quote->company_id])
                     ->create();
             }

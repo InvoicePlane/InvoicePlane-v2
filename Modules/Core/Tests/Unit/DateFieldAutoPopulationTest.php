@@ -54,16 +54,16 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         $this->assertArrayHasKey('invoice_due_at', $formData, 'Invoice due date field should exist in form data');
 
         // Verify invoiced_at is populated with current date (with 1-second tolerance)
-        if ( ! empty($formData['invoiced_at'])) {
-            $actualInvoiceDate = Carbon::parse($formData['invoiced_at']);
-            $this->assertTrue(
-                $actualInvoiceDate->diffInSeconds($expectedDate) <= 1,
-                'Invoice date should be within 1 second of current time. Expected: ' . $expectedDate->toDateTimeString()
-                . ', Actual: ' . $actualInvoiceDate->toDateTimeString()
-            );
-        }
+        $this->assertNotEmpty($formData['invoiced_at'], 'invoiced_at should be auto-populated');
+        $actualInvoiceDate = Carbon::parse($formData['invoiced_at']);
+        $this->assertTrue(
+            $actualInvoiceDate->diffInSeconds($expectedDate) <= 1,
+            'Invoice date should be within 1 second of current time. Expected: ' . $expectedDate->toDateTimeString()
+            . ', Actual: ' . $actualInvoiceDate->toDateTimeString()
+        );
 
-        // Verify invoice_due_at is populated (typically current date + payment terms)
+        // invoice_due_at is a user-set deadline, not auto-populated to "now" — only
+        // verify it's a valid date if the form happens to provide a default for it.
         if ( ! empty($formData['invoice_due_at'])) {
             $actualDueDate = Carbon::parse($formData['invoice_due_at']);
             $this->assertInstanceOf(Carbon::class, $actualDueDate, 'Due date should be a valid Carbon instance');
@@ -88,6 +88,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertArrayHasKey('due_at', $formData, 'Task due date field should exist');
 
+        // due_at is the task's deadline, set by the user — not auto-populated to "now".
         if ( ! empty($formData['due_at'])) {
             $actualDueDate = Carbon::parse($formData['due_at']);
             $this->assertInstanceOf(Carbon::class, $actualDueDate, 'Due date should be a valid Carbon instance');
@@ -112,13 +113,12 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertArrayHasKey('quoted_at', $formData, 'Quote date field should exist');
 
-        if ( ! empty($formData['quoted_at'])) {
-            $actualQuoteDate = Carbon::parse($formData['quoted_at']);
-            $this->assertTrue(
-                $actualQuoteDate->diffInSeconds($expectedDate) <= 1,
-                'Quote date should be within 1 second of current time'
-            );
-        }
+        $this->assertNotEmpty($formData['quoted_at'], 'quoted_at should be auto-populated');
+        $actualQuoteDate = Carbon::parse($formData['quoted_at']);
+        $this->assertTrue(
+            $actualQuoteDate->diffInSeconds($expectedDate) <= 1,
+            'Quote date should be within 1 second of current time'
+        );
     }
 
     #[Test]
@@ -139,19 +139,20 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertArrayHasKey('paid_at', $formData, 'Payment date field should exist');
 
-        if ( ! empty($formData['paid_at'])) {
-            $actualPaymentDate = Carbon::parse($formData['paid_at']);
-            $this->assertTrue(
-                $actualPaymentDate->diffInSeconds($expectedDate) <= 1,
-                'Payment date should be within 1 second of current time'
-            );
-        }
+        $this->assertNotEmpty($formData['paid_at'], 'paid_at should be auto-populated');
+        $actualPaymentDate = Carbon::parse($formData['paid_at']);
+        $this->assertTrue(
+            $actualPaymentDate->diffInSeconds($expectedDate) <= 1,
+            'Payment date should be within 1 second of current time'
+        );
     }
 
+    // Timing/tolerance-based against a mid-test config('app.timezone') mutation —
+    // inherently flaky rather than a hard, deterministic environmental gap.
     #[Test]
     #[Group('date-auto-population')]
     #[Group('edge-cases')]
-    #[Group('failing')]
+    #[Group('flaky')]
     public function it_handles_timezone_differences_correctly(): void
     {
         /* Arrange */

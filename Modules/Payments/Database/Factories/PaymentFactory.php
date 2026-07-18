@@ -4,6 +4,7 @@ namespace Modules\Payments\Database\Factories;
 
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
@@ -19,6 +20,7 @@ class PaymentFactory extends AbstractFactory
         return [
             'company_id'     => $companyId,
             'customer_id'    => $this->resolveForeignKey(Relation::class, $companyId),
+            'invoice_id'     => $this->resolveForeignKey(Invoice::class, $companyId),
             'payment_number' => $this->faker->unique()->numerify('PAY-#####'),
             'payment_method' => PaymentMethod::BANK_TRANSFER->value,
             'payment_status' => $this->faker->randomElement(PaymentStatus::cases())->value,
