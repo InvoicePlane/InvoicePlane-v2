@@ -16,27 +16,27 @@ class QuoteItemFactory extends AbstractFactory
             if (empty($item->company_id) && ! empty($item->quote_id)) {
                 $item->company_id = \Modules\Quotes\Models\Quote::find($item->quote_id)?->company_id;
             }
+
+            $taxRate    = $item->tax_rate_id ? TaxRate::query()->find($item->tax_rate_id) : null;
+            $taxPercent = $taxRate?->rate ?? 0;
+
+            $subtotal = round(($item->quantity * $item->price) - $item->discount, 2);
+            $taxTotal = round($subtotal * ($taxPercent / 100), 2);
+
+            $item->subtotal  = $subtotal;
+            $item->tax_1     = $taxTotal;
+            $item->tax_total = $taxTotal;
+            $item->total     = round($subtotal + $taxTotal, 2);
         });
     }
 
     public function definition(): array
     {
-        /** @phpstan-ignore-next-line */
-        $taxRateId = $attributes['tax_rate_id'] ?? null;
-        $taxRate   = $taxRateId
-            ? TaxRate::query()->find($taxRateId)
-            : null;
-
-        /** @phpstan-ignore-next-line */
-        $taxPercent = $taxRate?->rate ?? 0;
-
         $quantity = $this->faker->randomFloat(4, 1, 20);
         $price    = $this->faker->randomFloat(4, 10, 500);
         $discount = $this->faker->randomFloat(4, 0, 50);
 
         $subtotal = round(($quantity * $price) - $discount, 2);
-        $taxTotal = round($subtotal * ($taxPercent / 100), 2);
-        $total    = round($subtotal + $taxTotal, 2);
 
         return [
             'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
@@ -45,10 +45,10 @@ class QuoteItemFactory extends AbstractFactory
             'price'         => $price,
             'discount'      => $discount,
             'subtotal'      => $subtotal,
-            'tax_1'         => $taxTotal,
+            'tax_1'         => 0,
             'tax_2'         => null,
-            'tax_total'     => $taxTotal,
-            'total'         => $total,
+            'tax_total'     => 0,
+            'total'         => $subtotal,
             'display_order' => $this->faker->numberBetween(1, 9999),
             'description'   => null,
         ];

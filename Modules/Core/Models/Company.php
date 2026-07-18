@@ -42,7 +42,6 @@ use Modules\Quotes\Models\QuoteItem;
  * @property string|null                   $logo
  * @property string                        $quote_template
  * @property string                        $invoice_template
- * @property Collection|Addressable[]      $addressables
  * @property Collection|Address[]          $addresses
  * @property Collection|Communication[]    $communications
  * @property Collection|User[]             $companyUsers

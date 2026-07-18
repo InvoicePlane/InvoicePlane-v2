@@ -3,6 +3,7 @@
 namespace Modules\Core\Database\Factories;
 
 use Modules\Core\Models\CompanyUser;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
 class CompanyUserFactory extends AbstractFactory
@@ -11,11 +12,11 @@ class CompanyUserFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $this->resolveCompanyId();
-        $company   = $this->resolveCompany();
+        $company = $this->resolveCompany() ?? Company::factory()->create();
 
         return [
-            'user_id' => User::query()->inRandomOrder()->first()->id,
+            'company_id' => $company->id,
+            'user_id'    => User::query()->inRandomOrder()->first()->id,
         ];
     }
 }

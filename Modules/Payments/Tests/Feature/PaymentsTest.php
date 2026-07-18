@@ -280,6 +280,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'customer_id'    => $customer->id,
             'payment_method' => PaymentMethod::BANK_TRANSFER,
             'payment_amount' => 250.00,
+            'paid_at'        => null,
         ];
 
         /* Act */
@@ -594,6 +595,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
             'customer_id'    => $customer->id,
             'payment_method' => PaymentMethod::BANK_TRANSFER,
             'payment_amount' => 250.00,
+            'paid_at'        => null,
         ];
 
         /* Act */

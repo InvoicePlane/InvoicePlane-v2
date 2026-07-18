@@ -88,11 +88,6 @@ class Relation extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function attachments(): void
-    {
-        // return $this->morphMany(Attachment, 'attachable');
-    }
-
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
@@ -227,10 +222,6 @@ class Relation extends Model
             ->all();
     }
 
-    /*public function getPrimaryContactAttribute(): string
-    {
-        return mb_trim($this->primary_ontact?->first_name . ' ' . $this->primary_contact?->last_name);
-    }*/
     /*
     |--------------------------------------------------------------------------
     | Scopes
