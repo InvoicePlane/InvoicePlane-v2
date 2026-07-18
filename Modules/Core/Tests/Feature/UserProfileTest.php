@@ -5,7 +5,6 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Models\Company;

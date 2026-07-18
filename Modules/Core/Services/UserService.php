@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Services;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -97,18 +96,18 @@ class UserService extends BaseService
 
         $upload = Upload::updateOrCreate(
             [
-                'uploadable_type'   => User::class,
-                'uploadable_id'     => $user->id,
-                'file_description'  => 'avatar',
+                'uploadable_type'  => User::class,
+                'uploadable_id'    => $user->id,
+                'file_description' => 'avatar',
             ],
             [
-                'company_id'            => $companyId,
-                'user_id'               => $user->id,
-                'upload_original_name'  => basename($path),
-                'upload_stored_name'    => $path,
-                'upload_mime_type'      => Storage::disk($disk)->mimeType($path) ?: 'application/octet-stream',
-                'upload_url_key'        => Str::random(20),
-                'upload_disk'           => $disk,
+                'company_id'           => $companyId,
+                'user_id'              => $user->id,
+                'upload_original_name' => basename($path),
+                'upload_stored_name'   => $path,
+                'upload_mime_type'     => Storage::disk($disk)->mimeType($path) ?: 'application/octet-stream',
+                'upload_url_key'       => Str::random(20),
+                'upload_disk'          => $disk,
             ]
         );
 
@@ -126,7 +125,7 @@ class UserService extends BaseService
     {
         $existing = $user->avatarUpload()->first();
 
-        if (! $existing) {
+        if ( ! $existing) {
             return false;
         }
 
