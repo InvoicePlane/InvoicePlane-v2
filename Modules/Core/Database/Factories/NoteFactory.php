@@ -13,8 +13,8 @@ class NoteFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $company  = $this->resolveCompany() ?? Company::factory()->create();
-        $notable  = Relation::factory()->for($company)->create();
+        $company = $this->resolveCompany() ?? Company::factory()->create();
+        $notable = Relation::factory()->for($company)->create();
 
         return [
             'company_id'   => $company->id,
