@@ -164,13 +164,6 @@ class ExpenseForm
                                 TextInput::make('subtotal')->numeric()->default(0)->disabled(),
                             ])
                             ->collapsed(false)
-                            /*->afterStateHydrated(function ($component, $state) {
-                                // overwrite any stray default state with what the request provided
-                                if (is_array($state) && $state !== []) {
-                                    // Normalize to numeric keys so Livewire/Filament don’t try to merge by UUID
-                                    $component->rawState(array_values($state));
-                                }
-                            })*/
                             ->afterStateUpdated(fn ($set, $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
                     ])
                     ->columnSpanFull(),

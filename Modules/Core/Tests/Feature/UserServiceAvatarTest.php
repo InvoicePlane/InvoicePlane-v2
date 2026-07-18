@@ -62,7 +62,7 @@ class UserServiceAvatarTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
-    public function removing_an_avatar_that_does_not_exist_is_a_no_op(): void
+    public function it_treats_removing_a_nonexistent_avatar_as_a_no_op(): void
     {
         /* Act */
         $removed = app(UserService::class)->removeAvatar($this->user);

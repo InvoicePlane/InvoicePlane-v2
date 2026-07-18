@@ -18,7 +18,7 @@ class ExpenseCategoryService extends BaseService
 
     public function createExpenseCategory(array $data): Model
     {
-        $companyId = session('current_company_id') ?? auth()->user()?->companies()->first()?->id;
+        $companyId = $this->getCompanyId();
 
         if ( ! $companyId) {
             throw new RuntimeException('Cannot create Expense Category: No current company ID.');
@@ -32,7 +32,7 @@ class ExpenseCategoryService extends BaseService
 
     public function updateExpenseCategory(ExpenseCategory $model, array $data): ExpenseCategory
     {
-        $companyId = session('current_company_id') ?? auth()->user()?->companies()->first()?->id;
+        $companyId = $this->getCompanyId();
 
         if ( ! $companyId) {
             throw new RuntimeException('Cannot update Expense Category: No current company ID.');

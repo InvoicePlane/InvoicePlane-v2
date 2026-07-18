@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services;
 
+use Illuminate\Container\Container as Application;
 use Modules\Core\Enums\Permission as PermissionEnum;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\User;
@@ -10,6 +11,11 @@ use Spatie\Permission\PermissionRegistrar;
 
 class RolesService extends BaseService
 {
+    public function __construct(Application $app, private readonly PermissionRegistrar $permissionRegistrar)
+    {
+        parent::__construct($app);
+    }
+
     public function model(): string
     {
         return Role::class;
@@ -42,6 +48,6 @@ class RolesService extends BaseService
             $role->syncPermissions($toSync);
         }
 
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        $this->permissionRegistrar->forgetCachedPermissions();
     }
 }

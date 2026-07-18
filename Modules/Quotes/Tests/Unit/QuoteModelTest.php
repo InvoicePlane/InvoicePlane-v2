@@ -69,6 +69,12 @@ class QuoteModelTest extends AbstractCompanyPanelTestCase
         $created = Quote::create($quote);
 
         /* Assert */
-        $this->assertDatabaseHas('quotes', ['id' => $created->id]);
+        $this->assertDatabaseHas('quotes', [
+            'id'         => $created->id,
+            'company_id' => $quote['company_id'],
+            'prospect_id' => $quote['prospect_id'],
+            'quote_number' => $quote['quote_number'],
+            'quote_total'  => $quote['quote_total'],
+        ]);
     }
 }

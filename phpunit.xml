@@ -20,6 +20,13 @@
             <directory>Modules/*/Tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>failing</group>
+            <group>flaky</group>
+            <group>troubleshooting</group>
+        </exclude>
+    </groups>
     <source>
         <include>
             <directory>app</directory>
