@@ -23,6 +23,7 @@ use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Support\InvoiceCalculator;
 use Modules\Invoices\Support\InvoiceNumberGenerator;
 use Modules\Products\Models\Product;
+use function collect;
 
 class InvoiceForm
 {
@@ -161,6 +162,7 @@ class InvoiceForm
                             ->schema([
                                 Grid::make(6) // Adjust the number of columns as needed
                                     ->schema([
+                                        ...self::getPositionNumberSchema(),
                                         Select::make('product_id')
                                             ->label(trans('ip.product'))
                                             ->options(Product::query()->pluck('product_name', 'id')->toArray())
@@ -290,6 +292,45 @@ class InvoiceForm
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    private static function getPositionNumberSchema(): array
+    {
+        $company = Filament::getTenant();
+
+        if (! $company || ! $company->getSettingBool('show_line_item_position_numbers')) {
+            return [];
+        }
+
+        return [
+            Placeholder::make('position_number')
+                ->label(trans('ip.position'))
+                ->columnSpan(1)
+                ->content(function ($getParent, $get) {
+                    $items = $getParent('invoiceItems');
+
+                    if (! is_array($items) || empty($items)) {
+                        return '1';
+                    }
+
+                    $currentProductId = $get('product_id');
+                    $position = 1;
+
+                    foreach ($items as $item) {
+                        if (! is_array($item)) {
+                            continue;
+                        }
+
+                        if (($item['product_id'] ?? null) === $currentProductId) {
+                            return (string) $position;
+                        }
+
+                        $position++;
+                    }
+
+                    return (string) $position;
+                }),
+        ];
     }
 
     /**

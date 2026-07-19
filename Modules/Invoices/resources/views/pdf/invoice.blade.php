@@ -31,6 +31,9 @@
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
         <thead>
             <tr>
+                @if ($invoice->company?->getSettingBool('show_line_item_position_numbers'))
+                    <th style="text-align: center; border-bottom: 2px solid #1f2937; padding: 6px 4px; width: 40px;">{{ trans('ip.position') }}</th>
+                @endif
                 <th style="text-align: left; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.item') }}</th>
                 <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.quantity') }}</th>
                 <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.price') }}</th>
@@ -41,6 +44,9 @@
         <tbody>
             @foreach ($invoice->invoiceItems as $item)
                 <tr>
+                    @if ($invoice->company?->getSettingBool('show_line_item_position_numbers'))
+                        <td style="text-align: center; border-bottom: 1px solid #e5e7eb; padding: 6px 4px; width: 40px;">{{ $loop->iteration }}</td>
+                    @endif
                     <td style="border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">
                         {{ $item->item_name }}
                         @if ($item->description)

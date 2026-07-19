@@ -1279,5 +1279,9 @@ return [
     'merge_clients_success'           => 'Clients merged successfully.',
     'merge_clients_same_record'       => 'A client cannot be merged into itself.',
     'merge_clients_different_company' => 'Both clients must belong to the same company.',
+
+    'show_line_item_position_numbers'      => 'Show position numbers on line items',
+    'show_line_item_position_numbers_help' => 'Display consecutive position numbers (1, 2, 3…) for each invoice line item in the form and PDF.',
+    'position'                             => 'Position',
     #endregion
 ];

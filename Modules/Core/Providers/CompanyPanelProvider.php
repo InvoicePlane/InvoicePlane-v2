@@ -24,6 +24,7 @@ use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
+use Modules\Core\Filament\Company\Pages\CompanySettings;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
@@ -179,6 +180,7 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
                 EditProfile::class,
                 MyCompanies::class,
+                CompanySettings::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -244,6 +246,10 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Settings')
                             //->icon('heroicon-o-cog-6-tooth')
                             ->items([
+                                NavigationItem::make('Company Settings')
+                                    ->icon('heroicon-o-cog-6-tooth')
+                                    ->url(CompanySettings::getUrl(['tenant' => $tenant]))
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.company-settings')),
                                 ...NoteTemplateResource::getNavigationItems(),
                             ]),
                     ]);
