@@ -42,7 +42,6 @@ class InvoiceObserver extends AbstractObserver
     }
 
     /**
-     * Handle the Invoice "deleting" event.
      * Prevent deleting an invoice while its credit notes still refer to it.
      */
     public function deleting(Invoice $invoice): void

@@ -16,6 +16,7 @@ use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ViewRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\ExpensesRelationManager;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\InvoicesRelationManager;
+use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\NotesRelationManager;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\ProjectsRelationManager;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\QuotesRelationManager;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\TasksRelationManager;
@@ -76,6 +77,7 @@ class RelationResource extends BaseResource
             ExpensesRelationManager::class,
             TasksRelationManager::class,
             ProjectsRelationManager::class,
+            NotesRelationManager::class,
         ];
     }
 
