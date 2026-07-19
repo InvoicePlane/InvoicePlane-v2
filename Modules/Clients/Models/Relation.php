@@ -16,6 +16,7 @@ use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
@@ -118,7 +119,7 @@ class Relation extends Model
 
     public function ccEmailCommunications(): MorphMany
     {
-        return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
+        return $this->communications()->whereIn('communication_type', CommunicationType::ccTypes());
     }
 
     public function contacts(): HasMany
@@ -139,6 +140,11 @@ class Relation extends Model
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'customer_id');
+    }
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'notable');
     }
 
     public function payments(): HasMany
