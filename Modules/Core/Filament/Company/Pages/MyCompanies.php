@@ -26,7 +26,18 @@ class MyCompanies extends Page implements HasTable
         $user = auth()->user();
 
         return $table
-            ->query(fn () => $user->companies()->getQuery())
+            ->query(function () use ($user) {
+                if (app()->environment('testing')) {
+                    fwrite(STDERR, sprintf(
+                        "[switch-diag] table query closure fired: user->id=%s spl_object_id(user)=%d visible_company_ids=%s\n",
+                        $user->id,
+                        spl_object_id($user),
+                        json_encode($user->companies()->pluck('companies.id')->all())
+                    ));
+                }
+
+                return $user->companies()->getQuery();
+            })
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('ip.name'))
