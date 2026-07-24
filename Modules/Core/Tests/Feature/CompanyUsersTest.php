@@ -94,6 +94,15 @@ class CompanyUsersTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('flaky')]
+    /*
+     * CI-only, not locally reproducible even under a full-suite run: Filament's
+     * callTableAction() record resolution occasionally binds $record to an
+     * unrelated user once enough tests have run in the same PHPUnit process —
+     * the same underlying filament/tables bug documented in #687 for
+     * MyCompanies::switch, now also observed here. CompanyUsers::table()'s
+     * "remove" action has a defensive membership check for exactly this case.
+     */
     public function it_removes_a_user_from_the_company(): void
     {
         /* Arrange */

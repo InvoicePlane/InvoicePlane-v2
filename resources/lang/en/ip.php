@@ -460,6 +460,7 @@ return [
     'user_added_to_company'                        => 'User added to company',
     'user_already_in_company'                      => 'That user is already a member of this company.',
     'user_name'                                    => 'User Name',
+    'user_not_in_company'                          => 'That user is not a member of this company.',
     'user_removed_from_company'                    => 'User removed from company',
     'user_subscriber_number'                       => 'Subscriber Number',
     'user_type'                                    => 'User Type',

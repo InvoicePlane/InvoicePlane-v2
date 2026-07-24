@@ -99,6 +99,15 @@ class CompanyUsers extends Page implements HasTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (User $record) use ($company): void {
+                        if (! $company->users()->whereKey($record->id)->exists()) {
+                            Notification::make()
+                                ->title(trans('ip.user_not_in_company'))
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
                         if ($company->users()->count() <= 1) {
                             Notification::make()
                                 ->title(trans('ip.cannot_remove_last_user'))
