@@ -10,10 +10,9 @@ Laravel 11 + Filament v4 + Livewire v3 invoicing app. Modular architecture via `
 composer install
 cp .env.example .env && php artisan key:generate
 php artisan migrate && php artisan db:seed
-# Tests (no MySQL locally? use SQLite)
+# Tests run against real MariaDB — no SQLite fallback (parity with CI)
 cp .env.testing.example .env.testing
-# set DB_CONNECTION=sqlite, DB_DATABASE=:memory: in .env.testing
-php artisan test
+docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
 ```
 
 ---
