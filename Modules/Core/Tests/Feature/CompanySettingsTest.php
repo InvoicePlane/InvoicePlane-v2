@@ -10,6 +10,7 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Payments\Enums\PaymentMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -217,6 +218,49 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
                 Setting::getForCompany($this->company->id, $key)
             );
         }
+    }
+    # endregion
+
+    # region enabled payment methods (#237, #241)
+    #[Test]
+    #[Group('per-company')]
+    public function it_defaults_to_all_payment_methods_enabled_for_a_new_company(): void
+    {
+        /* Act */
+        $component = Livewire::actingAs($this->user)->test(CompanySettings::class);
+
+        /* Assert */
+        $data = $component->get('data');
+        $this->assertSame(PaymentMethod::values(), $data[Setting::KEY_ENABLED_PAYMENT_METHODS]);
+    }
+
+    #[Test]
+    #[Group('per-company')]
+    public function it_persists_a_reduced_set_of_enabled_payment_methods(): void
+    {
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(CompanySettings::class)
+            ->set('data.' . Setting::KEY_ENABLED_PAYMENT_METHODS, [
+                PaymentMethod::CASH->value,
+                PaymentMethod::BANK_TRANSFER->value,
+            ])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert: persisted as JSON, decodes back to exactly the reduced set */
+        $stored = Setting::getForCompany($this->company->id, Setting::KEY_ENABLED_PAYMENT_METHODS);
+        $this->assertSame(
+            [PaymentMethod::CASH->value, PaymentMethod::BANK_TRANSFER->value],
+            json_decode($stored, true)
+        );
+
+        /* Assert: reloading the page reflects the saved (not default) set */
+        $reloaded = Livewire::actingAs($this->user)->test(CompanySettings::class)->get('data');
+        $this->assertSame(
+            [PaymentMethod::CASH->value, PaymentMethod::BANK_TRANSFER->value],
+            $reloaded[Setting::KEY_ENABLED_PAYMENT_METHODS]
+        );
     }
     # endregion
 

@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Company\Pages;
 
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -22,6 +23,7 @@ use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
+use Modules\Payments\Enums\PaymentMethod;
 use RuntimeException;
 
 /**
@@ -89,6 +91,14 @@ class CompanySettings extends Page implements HasForms
         $defaults[Setting::KEY_QUOTE_PDF_MARK_SENT] ??= '0';
         $defaults[Setting::KEY_SMTP_VERIFY_CERTS] ??= '1';
 
+        // Multi-value settings are stored JSON-encoded (Setting::saveForCompany
+        // json_encode()s non-scalars) — decode back into an array for the
+        // CheckboxList, defaulting to "all enabled" for a brand new company.
+        $enabledPaymentMethods = $defaults[Setting::KEY_ENABLED_PAYMENT_METHODS] ?? null;
+        $defaults[Setting::KEY_ENABLED_PAYMENT_METHODS] = filled($enabledPaymentMethods)
+            ? json_decode($enabledPaymentMethods, true)
+            : PaymentMethod::values();
+
         $this->form->fill($defaults);
     }
 
@@ -105,13 +115,19 @@ class CompanySettings extends Page implements HasForms
             }
 
             // Normalize: Toggles return bool, Selects can return null, etc.
-            if (is_bool($value)) {
+            // Arrays (e.g. CheckboxList) are passed through as-is —
+            // Setting::saveForCompany() JSON-encodes non-scalars itself.
+            if (is_array($value)) {
+                // no-op, saveForCompany() handles it
+            } elseif (is_bool($value)) {
                 $value = $value ? '1' : '0';
             } elseif ($value === null) {
                 $value = '';
+            } else {
+                $value = (string) $value;
             }
 
-            Setting::saveForCompany($companyId, $key, (string) $value);
+            Setting::saveForCompany($companyId, $key, $value);
         }
 
         $this->dispatch('saved');
@@ -364,6 +380,18 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
+                    Tab::make('Payments')
+                        ->schema([
+                            Section::make(trans('ip.payments'))->columns(1)->schema([
+                                CheckboxList::make(Setting::KEY_ENABLED_PAYMENT_METHODS)
+                                    ->label(trans('ip.enabled_payment_methods'))
+                                    ->options(collect(PaymentMethod::cases())
+                                        ->mapWithKeys(fn (PaymentMethod $method) => [$method->value => $method->label()])
+                                        ->toArray())
+                                    ->columns(2),
+                            ]),
+                        ]),
+
                     Tab::make('Email')
                         ->schema([
                             Section::make(trans('ip.email'))->columns(2)->schema([
@@ -463,6 +491,7 @@ class CompanySettings extends Page implements HasForms
             Setting::KEY_SMTP_PASSWORD,
             Setting::KEY_SMTP_SECURITY,
             Setting::KEY_SMTP_VERIFY_CERTS,
+            Setting::KEY_ENABLED_PAYMENT_METHODS,
         ];
     }
 

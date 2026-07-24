@@ -120,6 +120,8 @@ class Setting extends Model
 
     public const KEY_SMTP_VERIFY_CERTS = 'smtp_verify_certs';
 
+    public const KEY_ENABLED_PAYMENT_METHODS = 'enabled_payment_methods';
+
     public $timestamps = false;
 
     protected $guarded = ['id'];

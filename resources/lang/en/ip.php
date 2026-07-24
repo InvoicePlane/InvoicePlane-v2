@@ -622,6 +622,7 @@ return [
     'payment_method_paypal'         => 'PayPal',
     'payment_method_stripe'         => 'Stripe',
     'payment_methods'               => 'Payment Methods',
+    'enabled_payment_methods'       => 'Enabled Payment Methods',
     'payment_recorded'              => 'Payment recorded',
     'payment_reference'             => 'Payment Reference',
     'payment_status'                => 'Payment Status',
