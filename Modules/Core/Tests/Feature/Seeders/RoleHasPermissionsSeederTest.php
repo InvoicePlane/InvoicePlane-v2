@@ -35,7 +35,7 @@ class RoleHasPermissionsSeederTest extends AbstractTestCase
         $newPermission = Permission::create(['name' => 'view-a-brand-new-thing', 'guard_name' => 'web']);
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $seeder = new class extends RoleHasPermissionsSeeder {
+        $seeder = new class () extends RoleHasPermissionsSeeder {
             protected function getDefaultPermissionsForRole(string $roleName): array
             {
                 $permissions = parent::getDefaultPermissionsForRole($roleName);

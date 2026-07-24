@@ -2,7 +2,15 @@
 
 ## What this is
 
-Laravel 11 + Filament v4 + Livewire v3 invoicing app. Modular architecture via `nwidart/laravel-modules`. PHP 8.1+ enums, Spatie roles/permissions, multi-tenancy via Filament's built-in tenant system scoped to `Company`.
+Laravel 13 + Filament v5 + Livewire v4 invoicing app. Modular architecture via `nwidart/laravel-modules` v13. PHP 8.3+ (dev box: 8.4.23), Spatie roles/permissions, multi-tenancy via Filament's built-in tenant system scoped to `Company`.
+
+**Resolved versions** (from `composer.lock`):
+- `laravel/framework` 13.15.0 (PHP ^8.3)
+- `filament/filament` 5.6.7 (+ 9 sub-packages @ 5.6.7)
+- `livewire/livewire` 4.3.1
+- `nwidart/laravel-modules` 13.0.0
+- `spatie/laravel-permission` 8.0.0
+- `danharrin/livewire-rate-limiting` 2.2.0
 
 ---
 

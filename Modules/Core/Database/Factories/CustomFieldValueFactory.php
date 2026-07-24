@@ -13,10 +13,10 @@ class CustomFieldValueFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $company    = $this->resolveCompany() ?? Company::factory()->create();
+        $company     = $this->resolveCompany() ?? Company::factory()->create();
         $customField = CustomField::query()->where('company_id', $company->id)->inRandomOrder()->first()
             ?? CustomField::factory()->for($company)->create();
-        $fieldable  = Relation::factory()->for($company)->create();
+        $fieldable = Relation::factory()->for($company)->create();
 
         return [
             'company_id'         => $company->id,

@@ -8,7 +8,6 @@ use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Support\QuoteNumberGenerator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 
