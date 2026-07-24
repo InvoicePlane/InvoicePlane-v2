@@ -45,26 +45,15 @@ class MyCompanies extends Page implements HasTable
                 Action::make('switch')
                     ->label(trans('ip.switch'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle')
-                    ->action(function (Company $record): void {
-                        if (app()->environment('testing')) {
-                            fwrite(STDERR, sprintf(
-                                "[switch-diag] closure entry: record->id=%s spl_object_id(record)=%d spl_object_id(session())=%d\n",
-                                $record->id,
-                                spl_object_id($record),
-                                spl_object_id(session())
-                            ));
-                        }
+                    ->action(function (Company $record) use ($user): void {
+                        // Defense in depth: $record comes from Filament's table-action
+                        // record resolution, not a value we control directly. Refuse
+                        // to switch into a company the user isn't actually a member
+                        // of, regardless of how $record got resolved.
+                        abort_unless($user->companies()->whereKey($record->id)->exists(), 403);
 
                         session(['current_company_id' => $record->id]);
                         Filament::setTenant($record);
-
-                        if (app()->environment('testing')) {
-                            fwrite(STDERR, sprintf(
-                                "[switch-diag] after session() write: session('current_company_id')=%s spl_object_id(session())=%d\n",
-                                session('current_company_id'),
-                                spl_object_id(session())
-                            ));
-                        }
 
                         $this->redirect(route('filament.company.pages.dashboard', [
                             'tenant' => Str::lower($record->search_code),
