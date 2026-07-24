@@ -26,6 +26,7 @@ use Modules\Core\Enums\Permission;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
+use Modules\Core\Filament\Company\Pages\CompanyUsers;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
@@ -186,6 +187,7 @@ class CompanyPanelProvider extends PanelProvider
                 EditProfile::class,
                 MyCompanies::class,
                 CompanySettings::class,
+                CompanyUsers::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -254,6 +256,7 @@ class CompanyPanelProvider extends PanelProvider
                                 ...NoteTemplateResource::getNavigationItems(),
                                 ...TaxRateResource::getNavigationItems(),
                                 ...EmailTemplateResource::getNavigationItems(),
+                                ...CompanyUsers::getNavigationItems(),
                             ]),
                     ]);
             })
