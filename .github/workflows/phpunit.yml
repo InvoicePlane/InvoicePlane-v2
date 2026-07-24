@@ -51,7 +51,9 @@ jobs:
         run: php artisan migrate --force --env=testing
 
       - name: Run PHPUnit
-        # Matches the Makefile's local-dev default (see Makefile's _phpunit/_artisan
-        # vars): failing/flaky/troubleshooting-tagged tests are known issues tracked
-        # separately, not blockers for this run.
-        run: php artisan test --env=testing --exclude-group failing,flaky,troubleshooting
+        # No --exclude-group flag here on purpose: passing it explicitly on the
+        # CLI was found to override (not add to) phpunit.xml's own <groups>
+        # <exclude> config, causing failing/flaky/troubleshooting-tagged tests
+        # to run anyway — confirmed by testing both ways. phpunit.xml's own
+        # config already excludes them; rely on that instead.
+        run: php artisan test --env=testing
