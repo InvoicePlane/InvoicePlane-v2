@@ -62,7 +62,7 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertStringContainsString('INV-987654', $html);
-        $this->assertStringContainsString($invoice->customer->company_name, $html);
+        $this->assertStringContainsString(e($invoice->customer->company_name), $html);
         $this->assertStringContainsString('Widget', $html);
         $this->assertStringNotContainsString('<iframe', $html);
     }
