@@ -5,7 +5,9 @@ namespace Modules\Core\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
+use Modules\Core\Models\TaxRate;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -101,6 +103,76 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertSame('Pre-filled Co', $data[Setting::KEY_COMPANY_NAME] ?? null);
         $this->assertSame('EUR', $data[Setting::KEY_CURRENCY_CODE] ?? null);
+    }
+    # endregion
+
+    # region default-selection settings (#240, #242 — closes as already satisfied)
+    #[Test]
+    #[Group('per-company')]
+    public function it_offers_and_persists_the_default_invoice_numbering_scoped_to_the_company(): void
+    {
+        /* Arrange */
+        $ownNumbering    = Numbering::factory()->for($this->company)->create(['name' => 'Own Group']);
+        $otherCompany    = Company::factory()->create();
+        $otherNumbering  = Numbering::factory()->for($otherCompany)->create(['name' => 'Other Group']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)->test(CompanySettings::class);
+
+        /* Assert: only this company's numbering is offered */
+        $component->assertFormFieldExists(Setting::KEY_INVOICE_NUMBERING_ID);
+        $options = $component->instance()->getForm('form')
+            ->getComponent(Setting::KEY_INVOICE_NUMBERING_ID)
+            ->getOptions();
+        $this->assertArrayHasKey($ownNumbering->id, $options);
+        $this->assertArrayNotHasKey($otherNumbering->id, $options);
+
+        /* Act: select and save */
+        $component->set('data.' . Setting::KEY_INVOICE_NUMBERING_ID, $ownNumbering->id)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert: persisted */
+        $this->assertSame(
+            (string) $ownNumbering->id,
+            Setting::getForCompany($this->company->id, Setting::KEY_INVOICE_NUMBERING_ID)
+        );
+    }
+
+    #[Test]
+    #[Group('per-company')]
+    public function it_offers_and_persists_default_tax_rates_scoped_to_the_company(): void
+    {
+        /* Arrange */
+        $ownRate   = TaxRate::factory()->for($this->company)->create(['name' => 'Own VAT']);
+        $otherCompany = Company::factory()->create();
+        $otherRate = TaxRate::factory()->for($otherCompany)->create(['name' => 'Other VAT']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)->test(CompanySettings::class);
+
+        /* Assert: only this company's tax rate is offered for both defaults */
+        foreach ([Setting::KEY_DEFAULT_INVOICE_TAX_RATE_ID, Setting::KEY_DEFAULT_QUOTE_TAX_RATE_ID] as $key) {
+            $options = $component->instance()->getForm('form')->getComponent($key)->getOptions();
+            $this->assertArrayHasKey($ownRate->id, $options);
+            $this->assertArrayNotHasKey($otherRate->id, $options);
+        }
+
+        /* Act: select and save */
+        $component->set('data.' . Setting::KEY_DEFAULT_INVOICE_TAX_RATE_ID, $ownRate->id)
+            ->set('data.' . Setting::KEY_DEFAULT_QUOTE_TAX_RATE_ID, $ownRate->id)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert: persisted */
+        $this->assertSame(
+            (string) $ownRate->id,
+            Setting::getForCompany($this->company->id, Setting::KEY_DEFAULT_INVOICE_TAX_RATE_ID)
+        );
+        $this->assertSame(
+            (string) $ownRate->id,
+            Setting::getForCompany($this->company->id, Setting::KEY_DEFAULT_QUOTE_TAX_RATE_ID)
+        );
     }
     # endregion
 
