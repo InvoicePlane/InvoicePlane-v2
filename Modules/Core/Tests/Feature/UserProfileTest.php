@@ -134,14 +134,33 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
         $otherCompany = Company::factory()->create(['search_code' => 'OTHERCO']);
         $this->user->companies()->attach($otherCompany);
 
+        fwrite(STDERR, sprintf(
+            "[switch-diag] before callTableAction: otherCompany->id=%s spl_object_id(session())=%d\n",
+            $otherCompany->id,
+            spl_object_id(session())
+        ));
+
         /* Act */
         $component = $this->testLivewire(MyCompanies::class)
             ->callTableAction('switch', $otherCompany);
+
+        fwrite(STDERR, sprintf(
+            "[switch-diag] after callTableAction: session('current_company_id')=%s spl_object_id(session())=%d\n",
+            session('current_company_id'),
+            spl_object_id(session())
+        ));
 
         /* Assert */
         $component->assertRedirect(route('filament.company.pages.dashboard', [
             'tenant' => Str::lower($otherCompany->search_code),
         ]));
+
+        fwrite(STDERR, sprintf(
+            "[switch-diag] at final assertion: session('current_company_id')=%s spl_object_id(session())=%d otherCompany->id=%s\n",
+            session('current_company_id'),
+            spl_object_id(session()),
+            $otherCompany->id
+        ));
 
         $this->assertSame($otherCompany->id, session('current_company_id'));
     }
