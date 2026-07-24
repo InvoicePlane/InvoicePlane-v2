@@ -165,6 +165,13 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
     {
         $this->company->update(['vat_number' => 'VAT-GOLD-1', 'logo' => null]);
 
+        /* Create a 21% tax rate for this company */
+        $taxRate = \Modules\Core\Models\TaxRate::factory()->for($this->company)->create([
+            'name' => 'VAT Standard',
+            'rate' => 21.00,
+            'is_active' => true,
+        ]);
+
         $relation = Relation::factory()->create([
             'company_id'   => $this->company->id,
             'company_name' => 'Golden Client Ltd',
@@ -201,9 +208,11 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'footer'                   => 'Golden footer',
         ]);
 
-        InvoiceItem::factory()->create([
+        /* Create item directly without factory to avoid afterMaking recalculation */
+        InvoiceItem::create([
             'company_id' => $this->company->id,
             'invoice_id' => $invoice->id,
+            'tax_rate_id' => $taxRate->id,
             'item_name'  => 'Golden Widget',
             'quantity'   => 2,
             'price'      => 50.0000,
@@ -220,6 +229,13 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
     protected function goldenQuote(): \Modules\Quotes\Models\Quote
     {
         $this->company->update(['vat_number' => 'VAT-GOLD-1', 'logo' => null]);
+
+        /* Create a 21% tax rate for this company */
+        $taxRate = \Modules\Core\Models\TaxRate::factory()->for($this->company)->create([
+            'name' => 'VAT Standard',
+            'rate' => 21.00,
+            'is_active' => true,
+        ]);
 
         $relation = Relation::factory()->create([
             'company_id'   => $this->company->id,
@@ -248,9 +264,11 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
         ]);
 
         $quote->quoteItems()->delete();
-        \Modules\Quotes\Models\QuoteItem::factory()->create([
+        /* Create item directly without factory to avoid afterMaking recalculation */
+        \Modules\Quotes\Models\QuoteItem::create([
             'company_id' => $this->company->id,
             'quote_id'   => $quote->id,
+            'tax_rate_id' => $taxRate->id,
             'item_name'  => 'Golden Quote Widget',
             'quantity'   => 2,
             'price'      => 50.0000,
