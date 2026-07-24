@@ -3,7 +3,6 @@
 namespace Modules\Core\Models;
 
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -29,10 +28,6 @@ class Setting extends Model
 {
     use BelongsToCompany;
 
-    public $timestamps = false;
-
-    protected $guarded = ['id'];
-
     /*
     |--------------------------------------------------------------------------
     | Setting key constants
@@ -43,53 +38,91 @@ class Setting extends Model
     | becomes a fatal error at compile time rather than a silent miss at
     | runtime.
     */
-    public const KEY_COMPANY_NAME                  = 'company_name';
-    public const KEY_INVOICE_NUMBER_PREFIX         = 'invoice_number_prefix';
-    public const KEY_CURRENCY_CODE                 = 'currency_code';
-    public const KEY_DASHBOARD_SHOW_REVENUE_CHART  = 'dashboard_show_revenue_chart';
-    public const KEY_CRON_FREQUENCY                = 'cron_frequency';
-    public const KEY_DATE_FORMAT                   = 'date_format';
-    public const KEY_TIME_FORMAT                   = 'time_format';
-    public const KEY_INVOICE_NUMBERING_ID          = 'invoice_numbering_id';
+    public const KEY_COMPANY_NAME = 'company_name';
 
-    public const KEY_INVOICE_PDF_MARK_SENT         = 'invoice_pdf_mark_sent';
-    public const KEY_INVOICE_PDF_WATERMARK         = 'invoice_pdf_watermark';
-    public const KEY_INVOICE_PDF_PASSWORD          = 'invoice_pdf_password';
-    public const KEY_INVOICE_LOGO                  = 'invoice_logo';
+    public const KEY_INVOICE_NUMBER_PREFIX = 'invoice_number_prefix';
 
-    public const KEY_INVOICE_PDF_TEMPLATE          = 'invoice_pdf_template';
-    public const KEY_INVOICE_PAID_PDF_TEMPLATE     = 'invoice_paid_pdf_template';
-    public const KEY_INVOICE_OVERDUE_PDF_TEMPLATE  = 'invoice_overdue_pdf_template';
-    public const KEY_INVOICE_PUBLIC_TEMPLATE       = 'invoice_public_template';
-    public const KEY_INVOICE_EMAIL_TEMPLATE        = 'invoice_email_template';
-    public const KEY_INVOICE_PAID_EMAIL_TEMPLATE   = 'invoice_paid_email_template';
+    public const KEY_CURRENCY_CODE = 'currency_code';
+
+    public const KEY_DASHBOARD_SHOW_REVENUE_CHART = 'dashboard_show_revenue_chart';
+
+    public const KEY_CRON_FREQUENCY = 'cron_frequency';
+
+    public const KEY_DATE_FORMAT = 'date_format';
+
+    public const KEY_TIME_FORMAT = 'time_format';
+
+    public const KEY_INVOICE_NUMBERING_ID = 'invoice_numbering_id';
+
+    public const KEY_INVOICE_PDF_MARK_SENT = 'invoice_pdf_mark_sent';
+
+    public const KEY_INVOICE_PDF_WATERMARK = 'invoice_pdf_watermark';
+
+    public const KEY_INVOICE_PDF_PASSWORD = 'invoice_pdf_password';
+
+    public const KEY_INVOICE_LOGO = 'invoice_logo';
+
+    public const KEY_INVOICE_PDF_TEMPLATE = 'invoice_pdf_template';
+
+    public const KEY_INVOICE_PAID_PDF_TEMPLATE = 'invoice_paid_pdf_template';
+
+    public const KEY_INVOICE_OVERDUE_PDF_TEMPLATE = 'invoice_overdue_pdf_template';
+
+    public const KEY_INVOICE_PUBLIC_TEMPLATE = 'invoice_public_template';
+
+    public const KEY_INVOICE_EMAIL_TEMPLATE = 'invoice_email_template';
+
+    public const KEY_INVOICE_PAID_EMAIL_TEMPLATE = 'invoice_paid_email_template';
+
     public const KEY_INVOICE_OVERDUE_EMAIL_TEMPLATE = 'invoice_overdue_email_template';
-    public const KEY_INVOICE_PDF_FOOTER            = 'invoice_pdf_footer';
 
-    public const KEY_INVOICE_QR_CODE_ENABLED       = 'invoice_qr_code_enabled';
-    public const KEY_INVOICE_EMAIL_SUBJECT         = 'invoice_email_subject';
-    public const KEY_INVOICE_DEFAULT_TERMS         = 'invoice_default_terms';
-    public const KEY_INVOICE_DEFAULT_FOOTER        = 'invoice_default_footer';
+    public const KEY_INVOICE_PDF_FOOTER = 'invoice_pdf_footer';
 
-    public const KEY_QUOTE_VALIDITY_DAYS           = 'quote_validity_days';
-    public const KEY_QUOTE_PDF_MARK_SENT           = 'quote_pdf_mark_sent';
-    public const KEY_QUOTE_PDF_PASSWORD            = 'quote_pdf_password';
-    public const KEY_QUOTE_PDF_TEMPLATE            = 'quote_pdf_template';
-    public const KEY_QUOTE_PUBLIC_TEMPLATE         = 'quote_public_template';
-    public const KEY_QUOTE_EMAIL_TEMPLATE          = 'quote_email_template';
-    public const KEY_QUOTE_PDF_FOOTER              = 'quote_pdf_footer';
+    public const KEY_INVOICE_QR_CODE_ENABLED = 'invoice_qr_code_enabled';
 
-    public const KEY_DEFAULT_INVOICE_TAX_RATE_ID   = 'default_invoice_tax_rate_id';
-    public const KEY_DEFAULT_QUOTE_TAX_RATE_ID     = 'default_quote_tax_rate_id';
+    public const KEY_INVOICE_EMAIL_SUBJECT = 'invoice_email_subject';
 
-    public const KEY_EMAIL_FROM_ADDRESS            = 'email_from_address';
-    public const KEY_EMAIL_SEND_METHOD             = 'email_send_method';
-    public const KEY_SMTP_HOST                     = 'smtp_host';
-    public const KEY_SMTP_PORT                     = 'smtp_port';
-    public const KEY_SMTP_USERNAME                 = 'smtp_username';
-    public const KEY_SMTP_PASSWORD                 = 'smtp_password';
-    public const KEY_SMTP_SECURITY                 = 'smtp_security';
-    public const KEY_SMTP_VERIFY_CERTS             = 'smtp_verify_certs';
+    public const KEY_INVOICE_DEFAULT_TERMS = 'invoice_default_terms';
+
+    public const KEY_INVOICE_DEFAULT_FOOTER = 'invoice_default_footer';
+
+    public const KEY_QUOTE_VALIDITY_DAYS = 'quote_validity_days';
+
+    public const KEY_QUOTE_PDF_MARK_SENT = 'quote_pdf_mark_sent';
+
+    public const KEY_QUOTE_PDF_PASSWORD = 'quote_pdf_password';
+
+    public const KEY_QUOTE_PDF_TEMPLATE = 'quote_pdf_template';
+
+    public const KEY_QUOTE_PUBLIC_TEMPLATE = 'quote_public_template';
+
+    public const KEY_QUOTE_EMAIL_TEMPLATE = 'quote_email_template';
+
+    public const KEY_QUOTE_PDF_FOOTER = 'quote_pdf_footer';
+
+    public const KEY_DEFAULT_INVOICE_TAX_RATE_ID = 'default_invoice_tax_rate_id';
+
+    public const KEY_DEFAULT_QUOTE_TAX_RATE_ID = 'default_quote_tax_rate_id';
+
+    public const KEY_EMAIL_FROM_ADDRESS = 'email_from_address';
+
+    public const KEY_EMAIL_SEND_METHOD = 'email_send_method';
+
+    public const KEY_SMTP_HOST = 'smtp_host';
+
+    public const KEY_SMTP_PORT = 'smtp_port';
+
+    public const KEY_SMTP_USERNAME = 'smtp_username';
+
+    public const KEY_SMTP_PASSWORD = 'smtp_password';
+
+    public const KEY_SMTP_SECURITY = 'smtp_security';
+
+    public const KEY_SMTP_VERIFY_CERTS = 'smtp_verify_certs';
+
+    public $timestamps = false;
+
+    protected $guarded = ['id'];
 
     /*
     |--------------------------------------------------------------------------
@@ -130,7 +163,11 @@ class Setting extends Model
      */
     public static function getByKey($key)
     {
-        $setting = self::query()->where('setting_key', $key)->whereNull('company_id')->first();
+        $setting = self::query()
+            ->withoutGlobalScopes()
+            ->where('setting_key', $key)
+            ->whereNull('company_id')
+            ->first();
 
         return $setting?->setting_value;
     }

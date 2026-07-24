@@ -17,11 +17,11 @@ use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Illuminate\Support\Str;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
+use RuntimeException;
 
 /**
  * Per-company settings page. Replaces the global `ip.<key>` config writes
@@ -41,8 +41,8 @@ use Modules\Core\Models\TaxRate;
  */
 class CompanySettings extends Page implements HasForms
 {
-    use InteractsWithForms;
     use InteractsWithFormActions;
+    use InteractsWithForms;
 
     public array $data = [];
 
@@ -82,18 +82,18 @@ class CompanySettings extends Page implements HasForms
         // Boolean toggles: when null and the field's default is true, set true
         // so the form doesn't render every disabled toggle as "off" by default.
         $defaults[Setting::KEY_DASHBOARD_SHOW_REVENUE_CHART] ??= '1';
-        $defaults[Setting::KEY_INVOICE_QR_CODE_ENABLED]        ??= '0';
-        $defaults[Setting::KEY_INVOICE_PDF_MARK_SENT]          ??= '0';
-        $defaults[Setting::KEY_INVOICE_PDF_WATERMARK]          ??= '0';
-        $defaults[Setting::KEY_QUOTE_PDF_MARK_SENT]            ??= '0';
-        $defaults[Setting::KEY_SMTP_VERIFY_CERTS]              ??= '1';
+        $defaults[Setting::KEY_INVOICE_QR_CODE_ENABLED] ??= '0';
+        $defaults[Setting::KEY_INVOICE_PDF_MARK_SENT] ??= '0';
+        $defaults[Setting::KEY_INVOICE_PDF_WATERMARK] ??= '0';
+        $defaults[Setting::KEY_QUOTE_PDF_MARK_SENT] ??= '0';
+        $defaults[Setting::KEY_SMTP_VERIFY_CERTS] ??= '1';
 
         $this->form->fill($defaults);
     }
 
     public function save(): void
     {
-        $state    = $this->form->getState();
+        $state     = $this->form->getState();
         $companyId = $this->getCompanyId();
 
         foreach ($state as $key => $value) {
@@ -485,6 +485,6 @@ class CompanySettings extends Page implements HasForms
         }
 
         // last resort: throw — settings can't be saved without a company
-        throw new \RuntimeException('Cannot determine current company for CompanySettings');
+        throw new RuntimeException('Cannot determine current company for CompanySettings');
     }
 }
