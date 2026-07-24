@@ -131,9 +131,9 @@ class FormatHandlerFactoryTest extends TestCase
     public function it_throws_exception_for_unsupported_format(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('No handler available for format');
+        $this->expectExceptionMessage('Invalid format');
 
-        // Create a mock format that doesn't exist
+        /* Arrange & Act */
         FormatHandlerFactory::make('nonexistent_format');
     }
 

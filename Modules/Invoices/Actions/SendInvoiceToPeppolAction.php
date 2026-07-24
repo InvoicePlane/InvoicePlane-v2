@@ -104,11 +104,11 @@ class SendInvoiceToPeppolAction
      */
     protected function validateInvoiceState(Invoice $invoice): void
     {
-        // Check if invoice is in draft status - drafts should not be sent
-        if ($invoice->invoice_status === 'draft') {
+        /* Check if invoice is in draft status - drafts should not be sent */
+        if ($invoice->invoice_status?->value === 'draft' || $invoice->invoice_status === \Modules\Invoices\Enums\InvoiceStatus::DRAFT) {
             throw new InvalidArgumentException('Cannot send draft invoices to Peppol');
         }
 
-        // Additional business logic validation can be added here
+        /* Additional business logic validation can be added here */
     }
 }

@@ -65,21 +65,12 @@ class DocumentsClient extends EInvoiceBeClient
             'payload' => $documentData,
         ]);
 
-        try {
-            return $this->client->request(
-                RequestMethod::POST,
-                $this->buildUrl('api/documents'),
-                $options
-            );
-        } catch (\Illuminate\Http\Client\RequestException $e) {
-            // For validation errors (422), rate limiting (429), and server errors (500),
-            // return the response so caller can inspect the error details
-            if (in_array($e->response?->status(), [422, 429, 500], true)) {
-                return $e->response;
-            }
-            // For other errors (401, 403, 404, etc.), let the exception propagate
-            throw $e;
-        }
+        /* The client.request() will throw RequestException for unsuccessful responses */
+        return $this->client->request(
+            RequestMethod::POST,
+            $this->buildUrl('api/documents'),
+            $options
+        );
     }
 
     /**
@@ -146,6 +137,7 @@ class DocumentsClient extends EInvoiceBeClient
      */
     public function getDocumentStatus(string $documentId): Response
     {
+        /* The client.request() will throw RequestException for unsuccessful responses */
         return $this->client->request(
             RequestMethod::GET,
             $this->buildUrl("api/documents/{$documentId}/status"),
@@ -205,6 +197,7 @@ class DocumentsClient extends EInvoiceBeClient
      */
     public function cancelDocument(string $documentId): Response
     {
+        /* The client.request() will throw RequestException for unsuccessful responses */
         return $this->client->request(
             RequestMethod::DELETE,
             $this->buildUrl("api/documents/{$documentId}"),

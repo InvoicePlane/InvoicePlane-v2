@@ -72,7 +72,7 @@ class PeppolService
             throw new InvalidArgumentException('Invoice validation failed: ' . implode(', ', $validationErrors));
         }
 
-        // Transform invoice using the format handler
+        /* Transform invoice using the format handler */
         $documentData = $formatHandler->transform($invoice, $options);
 
         $this->logRequest('Peppol', 'POST /documents', [
@@ -85,11 +85,6 @@ class PeppolService
         try {
             $response     = $this->documentsClient->submitDocument($documentData);
             $responseData = $response->json();
-
-            // If response is not successful, throw exception
-            if ( ! $response->successful()) {
-                $response->throw();
-            }
 
             $this->logResponse('Peppol', 'POST /documents', $response->status(), $responseData);
 
