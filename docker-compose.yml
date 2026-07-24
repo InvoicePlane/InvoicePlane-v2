@@ -35,7 +35,10 @@ services:
     # by default (profile "tools"). Examples:
     #   docker compose run --rm cli composer install
     #   docker compose run --rm cli php artisan migrate --seed
-    #   docker compose run --rm cli vendor/bin/phpunit --exclude-group failing,troubleshooting
+    #   docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
+    #   (use `php artisan test`, not `vendor/bin/phpunit` directly — the two
+    #   have been observed to behave differently for this app's Livewire
+    #   form tests; artisan test is the reliable one, matching CI)
     cli:
         container_name: 'ivplflmnt_cli'
         build:
@@ -45,6 +48,17 @@ services:
         tty: true
         environment:
             APP_ENV: "${APP_ENV:-testing}"
+            # Overrides whatever's in .env.testing so the test suite always
+            # runs against real MariaDB here, matching CI — no per-developer
+            # sqlite fallback, no edits needed.
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: invoiceplane_test
+            DB_USERNAME: root
+            DB_PASSWORD: ""
+        depends_on:
+            - db
         volumes:
             - .:/var/www/html
         networks:
@@ -63,7 +77,11 @@ services:
             TZ: "Europe/London"
         volumes:
             - database:/var/lib/mysql
-            - ./docker-resources/mariadb/init:/docker-entrypoint-initdb.d
+            # Only runs on first boot of a fresh volume — provisions the
+            # dedicated invoiceplane_test database the `cli` service tests
+            # against. Reset with `docker compose down -v` if upgrading an
+            # existing volume that predates this.
+            - ./docker-resources/mariadb/init:/docker-entrypoint-initdb.d:ro
         networks:
             - laravel
 
