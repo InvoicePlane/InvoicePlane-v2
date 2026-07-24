@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
@@ -251,17 +252,23 @@ class CompanySettings extends Page implements HasForms
 
                                 Select::make(Setting::KEY_INVOICE_EMAIL_TEMPLATE)
                                     ->label(trans('ip.default_email_template'))
-                                    ->options([])
+                                    ->options(fn () => EmailTemplate::query()
+                                        ->where('company_id', $this->getCompanyId())
+                                        ->pluck('title', 'id'))
                                     ->placeholder(trans('ip.none')),
 
                                 Select::make(Setting::KEY_INVOICE_PAID_EMAIL_TEMPLATE)
                                     ->label(trans('ip.email_template_paid'))
-                                    ->options([])
+                                    ->options(fn () => EmailTemplate::query()
+                                        ->where('company_id', $this->getCompanyId())
+                                        ->pluck('title', 'id'))
                                     ->placeholder(trans('ip.none')),
 
                                 Select::make(Setting::KEY_INVOICE_OVERDUE_EMAIL_TEMPLATE)
                                     ->label(trans('ip.email_template_overdue'))
-                                    ->options([])
+                                    ->options(fn () => EmailTemplate::query()
+                                        ->where('company_id', $this->getCompanyId())
+                                        ->pluck('title', 'id'))
                                     ->placeholder(trans('ip.none')),
 
                                 Textarea::make(Setting::KEY_INVOICE_PDF_FOOTER)
@@ -326,7 +333,9 @@ class CompanySettings extends Page implements HasForms
 
                                 Select::make(Setting::KEY_QUOTE_EMAIL_TEMPLATE)
                                     ->label(trans('ip.quote_default_email_template'))
-                                    ->options([])
+                                    ->options(fn () => EmailTemplate::query()
+                                        ->where('company_id', $this->getCompanyId())
+                                        ->pluck('title', 'id'))
                                     ->placeholder(trans('ip.none')),
 
                                 Textarea::make(Setting::KEY_QUOTE_PDF_FOOTER)

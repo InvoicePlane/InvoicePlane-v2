@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Feature;
 use Livewire\Livewire;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Models\TaxRate;
@@ -173,6 +174,49 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
             (string) $ownRate->id,
             Setting::getForCompany($this->company->id, Setting::KEY_DEFAULT_QUOTE_TAX_RATE_ID)
         );
+    }
+    # endregion
+
+    # region default email template settings (#239)
+    #[Test]
+    #[Group('per-company')]
+    public function it_offers_and_persists_default_email_templates_scoped_to_the_company(): void
+    {
+        /* Arrange */
+        $ownTemplate    = EmailTemplate::factory()->for($this->company)->create(['title' => 'Own Template']);
+        $otherCompany   = Company::factory()->create();
+        $otherTemplate  = EmailTemplate::factory()->for($otherCompany)->create(['title' => 'Other Template']);
+
+        $keys = [
+            Setting::KEY_INVOICE_EMAIL_TEMPLATE,
+            Setting::KEY_INVOICE_PAID_EMAIL_TEMPLATE,
+            Setting::KEY_INVOICE_OVERDUE_EMAIL_TEMPLATE,
+            Setting::KEY_QUOTE_EMAIL_TEMPLATE,
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)->test(CompanySettings::class);
+
+        /* Assert: only this company's template is offered, for every key */
+        foreach ($keys as $key) {
+            $options = $component->instance()->getForm('form')->getComponent($key)->getOptions();
+            $this->assertArrayHasKey($ownTemplate->id, $options);
+            $this->assertArrayNotHasKey($otherTemplate->id, $options);
+        }
+
+        /* Act: select and save */
+        foreach ($keys as $key) {
+            $component->set('data.' . $key, $ownTemplate->id);
+        }
+        $component->call('save')->assertHasNoErrors();
+
+        /* Assert: persisted */
+        foreach ($keys as $key) {
+            $this->assertSame(
+                (string) $ownTemplate->id,
+                Setting::getForCompany($this->company->id, $key)
+            );
+        }
     }
     # endregion
 
