@@ -20,6 +20,11 @@ class CompanySettings extends Page implements HasForms
 
     public ?Company $company = null;
 
+    /**
+     * @var array<string, mixed>
+     */
+    public array $data = [];
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     protected string $view = 'core::filament.company.pages.company-settings';
