@@ -251,10 +251,14 @@ class InvoiceService extends BaseService
      * Queue the invoice mailable for delivery using the given (possibly
      * user-edited) recipient/subject/body, as resolved/prefilled by
      * resolveEmailDefaults() and submitted via the "Email Invoice" modal.
+     * CC recipients are pulled from the customer's stored CC addresses and
+     * the invoice email template's cc column, merged and de-duplicated.
      */
     public function sendInvoiceEmail(Invoice $invoice, string $recipient, string $subject, string $body): void
     {
-        Mail::to($recipient)->queue(new InvoiceMailable($invoice, $subject, $body));
+        Mail::to($recipient)
+            ->cc($this->resolveInvoiceCcEmails($invoice))
+            ->queue(new InvoiceMailable($invoice, $subject, $body));
     }
 
     /**
@@ -369,6 +373,35 @@ class InvoiceService extends BaseService
             ->first();
 
         return $emailCommunication?->communication_value;
+    }
+
+    /**
+     * Merge the customer's stored CC addresses with the invoice email
+     * template's cc column (comma/semicolon separated), validating each
+     * address and de-duplicating the result.
+     */
+    private function resolveInvoiceCcEmails(Invoice $invoice): array
+    {
+        $invoice->loadMissing('customer');
+
+        $clientCcEmails = $invoice->customer?->ccEmailCommunications()
+            ->pluck('communication_value')
+            ->all() ?? [];
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', self::INVOICE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $templateCcEmails = $template?->cc
+            ? preg_split('/[,;]+/', $template->cc)
+            : [];
+
+        return collect([...$clientCcEmails, ...$templateCcEmails])
+            ->map(fn (string $email) => mb_trim($email))
+            ->filter(fn (string $email) => filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     private function calculateItemTaxTotal(array $data): float

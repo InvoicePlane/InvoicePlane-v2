@@ -996,6 +996,158 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         Mail::assertNothingSent();
     }
 
+    #[Test]
+    #[Group('crud')]
+    public function it_ccs_the_customers_stored_cc_emails_on_the_invoice_mail(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create();
+        $contact  = $relation->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'customer@example.com',
+        ]);
+        $relation->communications()->createMany([
+            [
+                'company_id'          => $this->company->id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => 'cc1@example.com',
+                'is_primary'          => false,
+            ],
+            [
+                'company_id'          => $this->company->id,
+                'communication_type'  => CommunicationType::INVOICE_CC->value,
+                'communication_value' => 'cc2@example.com',
+                'is_primary'          => false,
+            ],
+        ]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-004',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        Mail::assertQueued(
+            InvoiceMailable::class,
+            fn ($mail) => $mail->hasCc('cc1@example.com') && $mail->hasCc('cc2@example.com')
+        );
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_merges_and_deduplicates_client_and_template_cc_emails(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create();
+        $contact  = $relation->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'customer@example.com',
+        ]);
+        $relation->communications()->create([
+            'company_id'          => $this->company->id,
+            'communication_type'  => CommunicationType::INVOICE_CC->value,
+            'communication_value' => 'shared@example.com',
+            'is_primary'          => false,
+        ]);
+
+        /*
+         * Every company is auto-bootstrapped with an "invoice_sent" EmailTemplate
+         * (see CompanyObserver::created()), so update it rather than creating a
+         * second row with the same title.
+         */
+        EmailTemplate::forCompany($this->company->id)
+            ->where('title', 'invoice_sent')
+            ->update(['cc' => 'shared@example.com, template@example.com']);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-005',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        Mail::assertQueued(InvoiceMailable::class, function ($mail) {
+            $ccAddresses = collect($mail->cc)->pluck('address');
+
+            return $mail->hasCc('shared@example.com')
+                && $mail->hasCc('template@example.com')
+                && $ccAddresses->filter(fn ($address) => $address === 'shared@example.com')->count() === 1;
+        });
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_sends_without_cc_when_the_customer_has_no_cc_emails(): void
+    {
+        /* Arrange */
+        Mail::fake();
+        $this->grantPermission(Permission::VIEW_INVOICES, Permission::EMAIL_INVOICES);
+
+        $relation = Relation::factory()->for($this->company)->customer()->create();
+        $contact  = $relation->contacts()->create([
+            'company_id' => $this->company->id,
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $contact->communications()->create([
+            'company_id'          => $this->company->id,
+            'is_primary'          => true,
+            'communication_type'  => CommunicationType::EMAIL->value,
+            'communication_value' => 'customer@example.com',
+        ]);
+
+        $invoice = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $relation->getKey(),
+            'invoice_number' => 'INV-EMAIL-006',
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'user_id'        => $this->user->id,
+        ]);
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(ListInvoices::class)
+            ->mountAction(TestAction::make('email_invoice')->table($invoice))
+            ->callMountedAction();
+
+        /* Assert */
+        Mail::assertQueued(InvoiceMailable::class, fn ($mail) => empty($mail->cc));
+    }
+
     /**
      * Grant the current test user one or more permissions, creating the
      * underlying Spatie permission records first if they don't already exist.
