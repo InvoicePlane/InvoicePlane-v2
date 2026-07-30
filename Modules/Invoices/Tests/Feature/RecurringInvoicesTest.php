@@ -31,11 +31,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -66,11 +66,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -106,11 +106,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -134,11 +134,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -173,11 +173,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -207,11 +207,11 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $this->markTestIncomplete();
 
         /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $invoice       = Invoice::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -288,12 +288,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
         $record = RecurringInvoice::factory()->create();
 
         $payload = [
-            'company_id'        => 'Value',
-            'invoice_id'        => 'Value',
+            'company_id'   => 'Value',
+            'invoice_id'   => 'Value',
             'numbering_id' => 'Value',
-            'frequency'         => 'Value',
-            'start_at'          => '2025-04-30',
-            'end_at'            => '2025-04-30',
+            'frequency'    => 'Value',
+            'start_at'     => '2025-04-30',
+            'end_at'       => '2025-04-30',
         ];
 
         /* act */
