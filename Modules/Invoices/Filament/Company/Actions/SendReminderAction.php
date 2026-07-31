@@ -30,10 +30,10 @@ class SendReminderAction
         return Action::make('send_reminder')
             ->label(trans('ip.send_reminder'))
             ->icon(Heroicon::OutlinedBellAlert)
-            ->disabled(fn (Invoice $record): bool => blank(app(InvoiceService::class)->resolveReminderDefaults($record)['recipient']))
-            ->tooltip(fn (Invoice $record): ?string => blank(app(InvoiceService::class)->resolveReminderDefaults($record)['recipient'])
-                ? trans('ip.customer_has_no_email')
-                : null)
+            ->disabled(fn (Invoice $record): bool => ! app(InvoiceService::class)->hasReminderRecipient($record))
+            ->tooltip(fn (Invoice $record): ?string => app(InvoiceService::class)->hasReminderRecipient($record)
+                ? null
+                : trans('ip.customer_has_no_email'))
             ->schema(function (Invoice $record) {
                 $defaults = app(InvoiceService::class)->resolveReminderDefaults($record);
 

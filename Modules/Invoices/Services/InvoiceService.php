@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Clients\Enums\CommunicationType;
+use Modules\Core\Enums\MailType;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\DateHelpers;
@@ -32,11 +33,6 @@ class InvoiceService extends BaseService
      */
     public const INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE = 'invoice_reminder';
 
-    /**
-     * MailQueue#type value used to identify reminder emails.
-     */
-    public const REMINDER_MAIL_TYPE = 'reminder';
-
     public function model(): string
     {
         return Invoice::class;
@@ -48,31 +44,10 @@ class InvoiceService extends BaseService
      */
     public function resolveEmailDefaults(Invoice $invoice): array
     {
-        $invoice->loadMissing(['customer', 'company']);
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_EMAIL_TEMPLATE_TITLE, 'ip.email_invoice_default_subject');
+        unset($defaults['template']);
 
-        $template = EmailTemplate::forCompany($invoice->company_id)
-            ->where('title', self::INVOICE_EMAIL_TEMPLATE_TITLE)
-            ->first();
-
-        $placeholders = [
-            'invoice.number'             => $invoice->invoice_number,
-            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
-            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
-            'customer.name'              => $invoice->customer?->company_name,
-            'company.name'               => $invoice->company?->name,
-        ];
-
-        $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
-
-        return [
-            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
-            'subject'   => $template?->subject
-                ? EmailTemplatePreview::render($template->subject, $placeholders)
-                : $defaultSubject,
-            'body' => $template?->body
-                ? EmailTemplatePreview::render($template->body, $placeholders)
-                : '',
-        ];
+        return $defaults;
     }
 
     public function createInvoice(array $data): Invoice
@@ -278,31 +253,21 @@ class InvoiceService extends BaseService
      */
     public function resolveReminderDefaults(Invoice $invoice): array
     {
-        $invoice->loadMissing(['customer', 'company']);
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE, 'ip.reminder_default_subject');
+        unset($defaults['template']);
 
-        $template = EmailTemplate::forCompany($invoice->company_id)
-            ->where('title', self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE)
-            ->first();
+        return $defaults;
+    }
 
-        $placeholders = [
-            'invoice.number'             => $invoice->invoice_number,
-            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
-            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
-            'customer.name'              => $invoice->customer?->company_name,
-            'company.name'               => $invoice->company?->name,
-        ];
-
-        $defaultSubject = trans('ip.reminder_default_subject', ['number' => $invoice->invoice_number]);
-
-        return [
-            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
-            'subject'   => $template?->subject
-                ? EmailTemplatePreview::render($template->subject, $placeholders)
-                : $defaultSubject,
-            'body' => $template?->body
-                ? EmailTemplatePreview::render($template->body, $placeholders)
-                : '',
-        ];
+    /**
+     * Lightweight check for whether this invoice's customer has a resolvable
+     * email address, without the EmailTemplate lookup/placeholder rendering
+     * that resolveReminderDefaults() does. Intended for cheap per-row
+     * disabled()/tooltip() checks on the "Send Reminder" table/header action.
+     */
+    public function hasReminderRecipient(Invoice $invoice): bool
+    {
+        return filled($this->resolveInvoiceRecipientEmail($invoice));
     }
 
     /**
@@ -313,7 +278,7 @@ class InvoiceService extends BaseService
      */
     public function sendReminder(Invoice $invoice, ?string $recipient = null, ?string $subject = null, ?string $body = null): void
     {
-        $defaults = $this->resolveReminderDefaults($invoice);
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE, 'ip.reminder_default_subject');
 
         $recipient ??= $defaults['recipient'];
         $subject ??= $defaults['subject'];
@@ -323,17 +288,12 @@ class InvoiceService extends BaseService
             throw new InvalidArgumentException(trans('ip.customer_has_no_email'));
         }
 
-        $template = EmailTemplate::forCompany($invoice->company_id)
-            ->where('title', self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE)
-            ->first();
-        $pdfBinary = PDFFactory::create()->getOutput($this->renderHtml($invoice));
-
-        Mail::to($recipient)->queue(new InvoiceReminderMailable($invoice, $subject, $body, $pdfBinary));
+        Mail::to($recipient)->queue(new InvoiceReminderMailable($invoice, $subject, $body));
 
         $invoice->mailQueue()->create([
             'mailable_type' => Invoice::class,
-            'type'          => self::REMINDER_MAIL_TYPE,
-            'from'          => $template?->from_email ?? (string) config('mail.from.address'),
+            'type'          => MailType::REMINDER,
+            'from'          => $defaults['template']?->from_email ?? (string) config('mail.from.address'),
             'to'            => $recipient,
             'cc'            => '',
             'bcc'           => '',
@@ -353,7 +313,7 @@ class InvoiceService extends BaseService
     public function lastReminderSentAt(Invoice $invoice): ?Carbon
     {
         $lastReminder = $invoice->mailQueue()
-            ->where('type', self::REMINDER_MAIL_TYPE)
+            ->where('type', MailType::REMINDER)
             ->latest('sent_at')
             ->first();
 
@@ -449,6 +409,44 @@ class InvoiceService extends BaseService
 
             return $creditNote;
         });
+    }
+
+    /**
+     * Shared resolution logic for the "Email Invoice" and "Send Reminder"
+     * modals: loads the named company EmailTemplate once, renders its
+     * subject/body against this invoice, and resolves the recipient. Returns
+     * the EmailTemplate alongside the rendered defaults so callers that also
+     * need template fields (e.g. sendReminder()'s from_email) don't have to
+     * re-query it.
+     */
+    private function resolveTemplateDefaults(Invoice $invoice, string $templateTitle, string $defaultSubjectTransKey): array
+    {
+        $invoice->loadMissing(['customer', 'company']);
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', $templateTitle)
+            ->first();
+
+        $placeholders = [
+            'invoice.number'             => $invoice->invoice_number,
+            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
+            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
+            'customer.name'              => $invoice->customer?->company_name,
+            'company.name'               => $invoice->company?->name,
+        ];
+
+        $defaultSubject = trans($defaultSubjectTransKey, ['number' => $invoice->invoice_number]);
+
+        return [
+            'template'  => $template,
+            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
+            'subject'   => $template?->subject
+                ? EmailTemplatePreview::render($template->subject, $placeholders)
+                : $defaultSubject,
+            'body' => $template?->body
+                ? EmailTemplatePreview::render($template->body, $placeholders)
+                : '',
+        ];
     }
 
     /**
