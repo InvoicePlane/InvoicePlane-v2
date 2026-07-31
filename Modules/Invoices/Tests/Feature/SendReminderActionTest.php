@@ -29,6 +29,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_prefills_the_modal_from_the_companys_reminder_email_template(): void
     {
+        /* Arrange */
         /*
          * Every company is auto-bootstrapped with an "invoice_reminder"
          * EmailTemplate (see CompanyDefaultsBootstrapService), so update it
