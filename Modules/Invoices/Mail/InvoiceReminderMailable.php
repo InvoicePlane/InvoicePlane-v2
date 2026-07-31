@@ -9,7 +9,9 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 
 class InvoiceReminderMailable extends Mailable implements ShouldQueue
 {
@@ -20,7 +22,6 @@ class InvoiceReminderMailable extends Mailable implements ShouldQueue
         public Invoice $invoice,
         public string $emailSubject,
         public string $bodyText,
-        public string $pdfBinary,
     ) {}
 
     public function envelope(): Envelope
@@ -37,12 +38,20 @@ class InvoiceReminderMailable extends Mailable implements ShouldQueue
         );
     }
 
+    /**
+     * Renders the PDF here, at send time, rather than in the caller ahead of
+     * queuing — a pre-rendered binary on a ShouldQueue mailable would get
+     * serialized into the queue payload (DB row / Redis value / SQS message)
+     * instead of being generated when the job actually runs.
+     */
     public function attachments(): array
     {
-        $filename = ($this->invoice->invoice_number ?: 'invoice-' . $this->invoice->id) . '.pdf';
+        $filename  = ($this->invoice->invoice_number ?: 'invoice-' . $this->invoice->id) . '.pdf';
+        $html      = app(InvoiceService::class)->renderHtml($this->invoice);
+        $pdfBinary = PDFFactory::create()->getOutput($html);
 
         return [
-            Attachment::fromData(fn () => $this->pdfBinary, $filename)
+            Attachment::fromData(fn () => $pdfBinary, $filename)
                 ->withMime('application/pdf'),
         ];
     }
