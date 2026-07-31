@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Modules\Core\Enums\Permission;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
+use Modules\Invoices\Filament\Company\Actions\SendReminderAction;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Services\InvoiceService;
 
@@ -100,6 +101,10 @@ class EditInvoice extends EditRecord
 
             EmailInvoiceAction::make()
                 ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)),
+
+            SendReminderAction::make()
+                ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value)
+                    && SendReminderAction::isOverdue($this->getRecord())),
 
             Action::make('create_recurring')
                 ->label(trans('ip.create_recurring'))

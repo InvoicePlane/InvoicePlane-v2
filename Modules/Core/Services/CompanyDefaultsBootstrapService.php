@@ -59,6 +59,22 @@ class CompanyDefaultsBootstrapService
             ]
         );
 
+        // Create default reminder email template
+        EmailTemplate::query()->firstOrCreate(
+            [
+                'company_id' => $company->id,
+                'title'      => 'invoice_reminder',
+            ],
+            [
+                'subject'    => 'Payment reminder — Invoice #{{ invoice.number }}',
+                'body'       => 'Invoice #{{ invoice.number }} is overdue. Please arrange payment at your earliest convenience.',
+                'from_name'  => $company->name,
+                'from_email' => 'billing@' . mb_strtolower(preg_replace('/[^A-Za-z0-9]/', '', $company->name)) . '.com',
+                'cc'         => null,
+                'bcc'        => null,
+            ]
+        );
+
         // Create default tax rate
         TaxRate::query()->firstOrCreate(
             [
