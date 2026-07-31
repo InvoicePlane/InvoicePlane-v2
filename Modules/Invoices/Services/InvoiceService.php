@@ -15,6 +15,7 @@ use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Mail\InvoiceMailable;
+use Modules\Invoices\Mail\InvoiceReminderMailable;
 use Modules\Invoices\Models\Invoice;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -25,6 +26,16 @@ class InvoiceService extends BaseService
      * Title of the EmailTemplate used as the company's invoice email template.
      */
     public const INVOICE_EMAIL_TEMPLATE_TITLE = 'invoice_sent';
+
+    /**
+     * Title of the EmailTemplate used as the company's overdue-invoice reminder template.
+     */
+    public const INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE = 'invoice_reminder';
+
+    /**
+     * MailQueue#type value used to identify reminder emails.
+     */
+    public const REMINDER_MAIL_TYPE = 'reminder';
 
     public function model(): string
     {
@@ -259,6 +270,94 @@ class InvoiceService extends BaseService
         Mail::to($recipient)
             ->cc($this->resolveInvoiceCcEmails($invoice))
             ->queue(new InvoiceMailable($invoice, $subject, $body));
+    }
+
+    /**
+     * Resolve the recipient/subject/body defaults for the "Send Reminder"
+     * modal, rendering the company's reminder email template against this invoice.
+     */
+    public function resolveReminderDefaults(Invoice $invoice): array
+    {
+        $invoice->loadMissing(['customer', 'company']);
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $placeholders = [
+            'invoice.number'             => $invoice->invoice_number,
+            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
+            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
+            'customer.name'              => $invoice->customer?->company_name,
+            'company.name'               => $invoice->company?->name,
+        ];
+
+        $defaultSubject = trans('ip.reminder_default_subject', ['number' => $invoice->invoice_number]);
+
+        return [
+            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
+            'subject'   => $template?->subject
+                ? EmailTemplatePreview::render($template->subject, $placeholders)
+                : $defaultSubject,
+            'body' => $template?->body
+                ? EmailTemplatePreview::render($template->body, $placeholders)
+                : '',
+        ];
+    }
+
+    /**
+     * Queue a payment reminder for the given (possibly user-edited)
+     * recipient/subject/body, attach the invoice PDF, and log a MailQueue
+     * entry of type "reminder" so the invoice's reminder history is auditable.
+     * Sending multiple reminders creates a separate MailQueue row each time.
+     */
+    public function sendReminder(Invoice $invoice, ?string $recipient = null, ?string $subject = null, ?string $body = null): void
+    {
+        $defaults = $this->resolveReminderDefaults($invoice);
+
+        $recipient ??= $defaults['recipient'];
+        $subject ??= $defaults['subject'];
+        $body ??= $defaults['body'];
+
+        if (blank($recipient)) {
+            throw new InvalidArgumentException(trans('ip.customer_has_no_email'));
+        }
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE)
+            ->first();
+        $pdfBinary = PDFFactory::create()->getOutput($this->renderHtml($invoice));
+
+        Mail::to($recipient)->queue(new InvoiceReminderMailable($invoice, $subject, $body, $pdfBinary));
+
+        $invoice->mailQueue()->create([
+            'mailable_type' => Invoice::class,
+            'type'          => self::REMINDER_MAIL_TYPE,
+            'from'          => $template?->from_email ?? (string) config('mail.from.address'),
+            'to'            => $recipient,
+            'cc'            => '',
+            'bcc'           => '',
+            'subject'       => $subject,
+            'body'          => $body,
+            'attach_pdf'    => true,
+            'is_sent'       => true,
+            'sent_at'       => now(),
+        ]);
+    }
+
+    /**
+     * The timestamp of the most recently sent reminder for this invoice, or
+     * null if none has been sent yet. Sourced from the invoice's own
+     * MailQueue history rather than a dedicated invoice column.
+     */
+    public function lastReminderSentAt(Invoice $invoice): ?Carbon
+    {
+        $lastReminder = $invoice->mailQueue()
+            ->where('type', self::REMINDER_MAIL_TYPE)
+            ->latest('sent_at')
+            ->first();
+
+        return $lastReminder?->sent_at;
     }
 
     /**
