@@ -23,6 +23,7 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
+use Modules\Invoices\Filament\Company\Actions\SendReminderAction;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Services\InvoiceCopyService;
 use Modules\Invoices\Services\InvoiceService;
@@ -201,6 +202,9 @@ class InvoicesTable
                         ->tooltip(fn (Invoice $record): ?string => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient'])
                             ? trans('ip.customer_has_no_email')
                             : null),
+                    SendReminderAction::make()
+                        ->visible(fn (Invoice $record): bool => auth()->user()?->can(Permission::EMAIL_INVOICES->value)
+                            && SendReminderAction::isOverdue($record)),
                     DeleteAction::make('delete')
                         ->visible(fn (Invoice $record) => auth()->user()?->can(Permission::DELETE_INVOICES->value)
                             && $record->invoice_status !== InvoiceStatus::PAID)
