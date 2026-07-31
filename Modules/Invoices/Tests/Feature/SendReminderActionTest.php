@@ -10,6 +10,7 @@ use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Models\Communication;
 use Modules\Clients\Models\Contact;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\MailType;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Numbering;
@@ -181,7 +182,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
         $invoice = $this->createOverdueInvoice();
         $invoice->mailQueue()->create([
             'mailable_type' => Invoice::class,
-            'type'          => InvoiceService::REMINDER_MAIL_TYPE,
+            'type'          => MailType::REMINDER,
             'from'          => 'billing@example.com',
             'to'            => 'customer@example.com',
             'cc'            => '',
@@ -253,9 +254,9 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('mail_queue', [
             'mailable_id'   => $invoice->id,
             'mailable_type' => Invoice::class,
-            'type'          => InvoiceService::REMINDER_MAIL_TYPE,
+            'type'          => MailType::REMINDER->value,
         ]);
-        $this->assertNotNull($invoice->mailQueue()->where('type', InvoiceService::REMINDER_MAIL_TYPE)->first()->sent_at);
+        $this->assertNotNull($invoice->mailQueue()->where('type', MailType::REMINDER)->first()->sent_at);
     }
 
     #[Test]
@@ -272,7 +273,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
         app(InvoiceService::class)->sendReminder($invoice, 'customer@example.com', 'Reminder', 'Body');
 
         /* Assert */
-        $this->assertSame(2, $invoice->mailQueue()->where('type', InvoiceService::REMINDER_MAIL_TYPE)->count());
+        $this->assertSame(2, $invoice->mailQueue()->where('type', MailType::REMINDER)->count());
     }
 
     private function createOverdueInvoice(array $attributes = []): Invoice
