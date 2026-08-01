@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\Core\Events\UserWasCreated;
 use Modules\Core\Events\UserWasUpdated;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Upload;
 use Modules\Core\Models\User;
 use Throwable;
@@ -133,5 +135,19 @@ class UserService extends BaseService
         $existing->delete();
 
         return true;
+    }
+
+    /**
+     * Guard against switching a user's active tenant to a company they aren't a
+     * member of. Called from the record resolved by Filament's table-action
+     * dispatch, which is not something callers otherwise verify — see #687.
+     *
+     * @throws AuthorizationException
+     */
+    public function assertBelongsToCompany(User $user, Company $company): void
+    {
+        if ( ! $user->companies()->whereKey($company->id)->exists()) {
+            throw new AuthorizationException("User {$user->id} is not a member of company {$company->id}.");
+        }
     }
 }
