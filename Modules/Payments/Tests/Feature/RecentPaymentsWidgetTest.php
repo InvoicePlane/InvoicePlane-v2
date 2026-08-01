@@ -45,4 +45,41 @@ class RecentPaymentsWidgetTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $component->assertSee(PaymentResource::getUrl('index'), false);
     }
+
+    #[Test]
+    #[Group('smoke')]
+    public function it_lists_newer_payments_before_older_payments(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $invoice  = Invoice::factory()
+            ->for($this->company)
+            ->create([
+                'customer_id' => $customer->id,
+                'user_id'     => $this->user->id,
+            ]);
+        $olderPayment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'payment_number' => 'PAY-OLDER',
+                'customer_id'    => $customer->id,
+                'invoice_id'     => $invoice->id,
+            ]);
+        $newerPayment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'payment_number' => 'PAY-NEWER',
+                'customer_id'    => $customer->id,
+                'invoice_id'     => $invoice->id,
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(RecentPaymentsWidget::class);
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$newerPayment, $olderPayment], inOrder: true);
+    }
 }

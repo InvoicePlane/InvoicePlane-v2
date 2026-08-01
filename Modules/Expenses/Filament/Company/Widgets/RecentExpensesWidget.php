@@ -30,7 +30,7 @@ class RecentExpensesWidget extends TableWidget
     protected function getTableQuery(): Builder|Relation|null
     {
         /** @var Builder<Expense> $query */
-        $query = Expense::query()->latest()->limit(10);
+        $query = Expense::query()->latest('id')->limit(10);
 
         return $query;
     }
