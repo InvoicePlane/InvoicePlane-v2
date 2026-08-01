@@ -104,6 +104,63 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
+    # region line item position numbers (#370)
+    #[Test]
+    #[Group('per-company')]
+    public function it_persists_the_show_line_item_position_numbers_toggle(): void
+    {
+        /* Arrange */
+        $this->assertFalse(
+            $this->company->getSettingBool(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS)
+        );
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(CompanySettings::class)
+            ->set('data.' . Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS, true)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertSame('1', Setting::getForCompany($this->company->id, Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS));
+        $this->assertTrue($this->company->fresh()->getSettingBool(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS));
+    }
+
+    #[Test]
+    #[Group('per-company')]
+    public function it_prefills_the_show_line_item_position_numbers_toggle(): void
+    {
+        /* Arrange */
+        $this->company->setSetting(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS, '1');
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CompanySettings::class);
+
+        /* Assert */
+        $this->assertTrue((bool) $component->get('data')[Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS]);
+    }
+
+    #[Test]
+    #[Group('per-company')]
+    public function it_can_disable_the_show_line_item_position_numbers_toggle(): void
+    {
+        /* Arrange */
+        $this->company->setSetting(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS, '1');
+        $this->assertTrue($this->company->fresh()->getSettingBool(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS));
+
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(CompanySettings::class)
+            ->set('data.' . Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS, false)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertFalse($this->company->fresh()->getSettingBool(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS));
+    }
+    # endregion
+
     # region getForCompany / getBoolForCompany
     #[Test]
     #[Group('per-company')]

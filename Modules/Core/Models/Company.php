@@ -284,6 +284,21 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->name;
     }
 
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        return Setting::getForCompany($this->id, $key, $default);
+    }
+
+    public function getSettingBool(string $key, bool $default = false): bool
+    {
+        return Setting::getBoolForCompany($this->id, $key, $default);
+    }
+
+    public function setSetting(string $key, mixed $value): void
+    {
+        Setting::saveForCompany($this->id, $key, $value);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Accessors

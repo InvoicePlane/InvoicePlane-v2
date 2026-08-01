@@ -247,6 +247,10 @@ class CompanyPanelProvider extends PanelProvider
                         NavigationGroup::make('Settings')
                             //->icon('heroicon-o-cog-6-tooth')
                             ->items([
+                                NavigationItem::make('Company Settings')
+                                    ->icon('heroicon-o-cog-6-tooth')
+                                    ->url(CompanySettings::getUrl(['tenant' => $tenant]))
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.settings')),
                                 ...NoteTemplateResource::getNavigationItems(),
                             ]),
                     ]);

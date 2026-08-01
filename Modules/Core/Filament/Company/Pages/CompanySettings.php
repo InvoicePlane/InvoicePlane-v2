@@ -87,6 +87,7 @@ class CompanySettings extends Page implements HasForms
         $defaults[Setting::KEY_INVOICE_PDF_WATERMARK] ??= '0';
         $defaults[Setting::KEY_QUOTE_PDF_MARK_SENT] ??= '0';
         $defaults[Setting::KEY_SMTP_VERIFY_CERTS] ??= '1';
+        $defaults[Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS] ??= '0';
 
         $this->form->fill($defaults);
     }
@@ -283,6 +284,10 @@ class CompanySettings extends Page implements HasForms
                             ]),
 
                             Section::make(trans('ip.other_settings'))->columns(2)->schema([
+                                Toggle::make(Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS)
+                                    ->label(trans('ip.show_line_item_position_numbers'))
+                                    ->helperText(trans('ip.show_line_item_position_numbers_help')),
+
                                 Textarea::make(Setting::KEY_INVOICE_DEFAULT_TERMS)
                                     ->label(trans('ip.default_terms'))
                                     ->rows(3),
@@ -437,6 +442,7 @@ class CompanySettings extends Page implements HasForms
             Setting::KEY_INVOICE_EMAIL_SUBJECT,
             Setting::KEY_INVOICE_DEFAULT_TERMS,
             Setting::KEY_INVOICE_DEFAULT_FOOTER,
+            Setting::KEY_SHOW_LINE_ITEM_POSITION_NUMBERS,
             Setting::KEY_QUOTE_VALIDITY_DAYS,
             Setting::KEY_QUOTE_PDF_MARK_SENT,
             Setting::KEY_QUOTE_PDF_PASSWORD,

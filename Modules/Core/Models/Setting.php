@@ -54,6 +54,8 @@ class Setting extends Model
 
     public const KEY_INVOICE_NUMBERING_ID = 'invoice_numbering_id';
 
+    public const KEY_SHOW_LINE_ITEM_POSITION_NUMBERS = 'show_line_item_position_numbers';
+
     public const KEY_INVOICE_PDF_MARK_SENT = 'invoice_pdf_mark_sent';
 
     public const KEY_INVOICE_PDF_WATERMARK = 'invoice_pdf_watermark';
