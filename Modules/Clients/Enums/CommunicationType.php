@@ -18,6 +18,9 @@ enum CommunicationType: string implements LabeledEnum
         return array_column(self::cases(), 'value');
     }
 
+    /**
+     * Communication types that should receive a CC copy of invoice emails.
+     */
     public static function ccTypes(): array
     {
         return [self::INVOICE_CC->value];
