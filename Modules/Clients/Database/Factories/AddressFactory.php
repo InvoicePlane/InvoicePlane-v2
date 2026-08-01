@@ -27,7 +27,7 @@ class AddressFactory extends AbstractFactory
         return [
             'address_type'      => $this->faker->randomElement(AddressType::cases())->value,
             'address_1'         => $this->faker->streetAddress,
-            'address_2'         => $this->faker->optional(0.7)->secondaryAddress,
+            'address_2'         => $this->faker->optional(0.7)->streetAddress,
             'number'            => $this->faker->buildingNumber,
             'postal_code'       => $this->faker->postcode,
             'city'              => $this->faker->city,
