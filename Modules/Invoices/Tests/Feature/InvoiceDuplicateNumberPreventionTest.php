@@ -171,4 +171,35 @@ class InvoiceDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
         $this->assertEquals('INV-2025-0001', $invoice->invoice_number);
         $this->assertEquals('paid', $invoice->invoice_status->value);
     }
+
+    #[Test]
+    public function it_prevents_deleting_an_invoice_with_a_credit_note(): void
+    {
+        /* Arrange */
+        $company = Company::factory()->create();
+        $parent  = Invoice::factory()->for($company)->create();
+        Invoice::factory()->for($company)->create([
+            'creditinvoice_parent_id' => $parent->id,
+        ]);
+
+        /* Act & Assert */
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('An invoice with a credit note cannot be deleted.');
+
+        $parent->delete();
+    }
+
+    #[Test]
+    public function it_allows_deleting_an_invoice_without_a_credit_note(): void
+    {
+        /* Arrange */
+        $company = Company::factory()->create();
+        $invoice = Invoice::factory()->for($company)->create();
+
+        /* Act */
+        $invoice->delete();
+
+        /* Assert */
+        $this->assertSoftDeleted('invoices', ['id' => $invoice->id]);
+    }
 }
