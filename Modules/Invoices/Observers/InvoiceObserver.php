@@ -40,4 +40,17 @@ class InvoiceObserver extends AbstractObserver
             }
         }
     }
+
+    /**
+     * Handle the Invoice "deleting" event.
+     * Prevent deleting an invoice while its credit notes still refer to it.
+     */
+    public function deleting(Invoice $invoice): void
+    {
+        if (Invoice::withoutGlobalScopes()
+            ->where('creditinvoice_parent_id', $invoice->id)
+            ->exists()) {
+            throw new RuntimeException('An invoice with a credit note cannot be deleted.');
+        }
+    }
 }
