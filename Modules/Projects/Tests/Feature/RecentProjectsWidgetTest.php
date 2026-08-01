@@ -37,4 +37,33 @@ class RecentProjectsWidgetTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $component->assertSee(ProjectResource::getUrl('index'), false);
     }
+
+    #[Test]
+    #[Group('smoke')]
+    public function it_lists_newer_projects_before_older_projects(): void
+    {
+        /* Arrange */
+        $customer     = Relation::factory()->for($this->company)->customer()->create();
+        $olderProject = Project::factory()
+            ->for($this->company)
+            ->create([
+                'project_number' => 'PRJ-OLDER',
+                'customer_id'    => $customer->id,
+            ]);
+        $newerProject = Project::factory()
+            ->for($this->company)
+            ->create([
+                'project_number' => 'PRJ-NEWER',
+                'customer_id'    => $customer->id,
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(RecentProjectsWidget::class);
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$newerProject, $olderProject], inOrder: true);
+    }
 }

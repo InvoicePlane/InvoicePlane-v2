@@ -30,7 +30,7 @@ class RecentProjectsWidget extends TableWidget
     protected function getTableQuery(): Builder|Relation|null
     {
         /** @var Builder<Project> $query */
-        $query = Project::query()->latest()->limit(10);
+        $query = Project::query()->latest('id')->limit(10);
 
         return $query;
     }

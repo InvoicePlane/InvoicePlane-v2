@@ -31,4 +31,26 @@ class RecentTasksWidgetTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $component->assertSee(TaskResource::getUrl('index'), false);
     }
+
+    #[Test]
+    #[Group('smoke')]
+    public function it_lists_newer_tasks_before_older_tasks(): void
+    {
+        /* Arrange */
+        $olderTask = Task::factory()
+            ->for($this->company)
+            ->create(['task_number' => 'TSK-OLDER']);
+        $newerTask = Task::factory()
+            ->for($this->company)
+            ->create(['task_number' => 'TSK-NEWER']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(RecentTasksWidget::class);
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$newerTask, $olderTask], inOrder: true);
+    }
 }
