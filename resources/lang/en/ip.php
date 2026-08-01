@@ -1282,6 +1282,20 @@ return [
 
     'show_line_item_position_numbers'      => 'Show position numbers on line items',
     'show_line_item_position_numbers_help' => 'Display consecutive position numbers (1, 2, 3…) for each invoice line item in the form and PDF.',
-    'position'                             => 'Position',
+    #endregion
+
+    #region COMPANY SETTINGS (2026-07-19, epic #508)
+    'dashboard_show_revenue_chart'    => 'Show Revenue Chart on Dashboard',
+    'cron_frequency'                  => 'Recurring Invoice Frequency',
+    'cron_frequency_daily'            => 'Daily',
+    'cron_frequency_weekly'           => 'Weekly',
+    'cron_frequency_monthly'          => 'Monthly',
+    'time_format'                     => 'Time Format',
+    'invoice_numbering'               => 'Numbering',
+    'invoice_number_prefix'           => 'Invoice Number Prefix',
+    'invoice_number_prefix_help'      => 'Prepended to every auto-generated invoice number for this company (e.g. INV-).',
+    'invoice_email_subject'           => 'Invoice Email Subject',
+    'default_invoice_footer'          => 'Default Invoice Footer',
+    'default_quote_tax_rate'          => 'Default Quote Tax Rate',
     #endregion
 ];

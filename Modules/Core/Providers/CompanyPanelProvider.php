@@ -22,6 +22,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
@@ -249,7 +250,7 @@ class CompanyPanelProvider extends PanelProvider
                                 NavigationItem::make('Company Settings')
                                     ->icon('heroicon-o-cog-6-tooth')
                                     ->url(CompanySettings::getUrl(['tenant' => $tenant]))
-                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.company-settings')),
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.settings')),
                                 ...NoteTemplateResource::getNavigationItems(),
                             ]),
                     ]);
@@ -265,8 +266,9 @@ class CompanyPanelProvider extends PanelProvider
                     ->url(EditProfile::getUrl()),
                 Action::make('settings')
                     ->label(trans('ip.settings'))
-                    ->url('/admin/settings')
-                    ->icon('heroicon-o-cog-6-tooth'),
+                    ->url(fn () => CompanySettings::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->visible(fn (): bool => auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false),
                 Action::make('admin-panel')
                     ->label(trans('ip.admin_panel'))
                     ->url('/admin')
