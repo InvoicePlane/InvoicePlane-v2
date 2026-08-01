@@ -19,7 +19,10 @@ use Filament\Schemas\Schema;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Core\Models\Setting;
+use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 use Modules\Invoices\Support\InvoiceCalculator;
 use Modules\Invoices\Support\InvoiceNumberGenerator;
 use Modules\Products\Models\Product;
@@ -115,6 +118,17 @@ class InvoiceForm
                                         DatePicker::make('invoice_due_at')
                                             ->label(trans('ip.invoice_due_at'))
                                             ->required(),
+
+                                        Placeholder::make('last_reminder_sent')
+                                            ->label(trans('ip.last_reminder_sent'))
+                                            ->visible(fn (string $operation): bool => $operation === 'edit')
+                                            ->content(function (?Invoice $record) {
+                                                $lastSentAt = $record ? app(InvoiceService::class)->lastReminderSentAt($record) : null;
+
+                                                return $lastSentAt
+                                                    ? DateHelpers::formatDate($lastSentAt)
+                                                    : trans('ip.reminder_never_sent');
+                                            }),
 
                                         Select::make('numbering_id')
                                             ->label(trans('ip.numbering'))

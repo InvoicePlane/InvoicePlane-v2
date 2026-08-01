@@ -29,6 +29,12 @@ class EmailTemplatesSeeder extends AbstractSeeder
                 'company_id' => $companyId,
             ],
             [
+                'title'      => 'invoice_reminder',
+                'subject'    => 'Payment reminder — Invoice #{{ invoice.number }}',
+                'body'       => "Dear {{ customer.name }},\n\nThis is a friendly reminder that invoice #{{ invoice.number }} for {{ invoice.total_formatted }} was due on {{ invoice.due_date_formatted }} and remains unpaid.\n\nPlease arrange payment at your earliest convenience. The invoice is attached for your reference.\n\nThank you,\n{{ company.name }}",
+                'company_id' => $companyId,
+            ],
+            [
                 'title'      => 'user_invitation',
                 'subject'    => 'You have been invited to {{ company.name }}',
                 'body'       => "Hello,\n\nYou have been invited to join {{ company.name }}.\n\nPlease click the link below to set up your account:\n{{ invitation_link }}\n\nThis invitation will expire in 7 days.\n\nIf you did not expect this invitation, you can safely ignore this email.\n\nBest regards,\n{{ company.name }}",

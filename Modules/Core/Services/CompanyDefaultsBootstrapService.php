@@ -43,6 +43,8 @@ class CompanyDefaultsBootstrapService
             $numberingData
         );
 
+        $fromEmail = 'billing@' . mb_strtolower(preg_replace('/[^A-Za-z0-9]/', '', $company->name)) . '.com';
+
         // Create default email template
         EmailTemplate::query()->firstOrCreate(
             [
@@ -53,7 +55,23 @@ class CompanyDefaultsBootstrapService
                 'subject'    => 'Invoice #{{ invoice.number }}',
                 'body'       => 'Please find your invoice #{{ invoice.number }} attached.',
                 'from_name'  => $company->name,
-                'from_email' => 'billing@' . mb_strtolower(preg_replace('/[^A-Za-z0-9]/', '', $company->name)) . '.com',
+                'from_email' => $fromEmail,
+                'cc'         => null,
+                'bcc'        => null,
+            ]
+        );
+
+        // Create default reminder email template
+        EmailTemplate::query()->firstOrCreate(
+            [
+                'company_id' => $company->id,
+                'title'      => 'invoice_reminder',
+            ],
+            [
+                'subject'    => 'Payment reminder — Invoice #{{ invoice.number }}',
+                'body'       => "Dear {{ customer.name }},\n\nThis is a friendly reminder that invoice #{{ invoice.number }} for {{ invoice.total_formatted }} was due on {{ invoice.due_date_formatted }} and remains unpaid.\n\nPlease arrange payment at your earliest convenience. The invoice is attached for your reference.\n\nThank you,\n{{ company.name }}",
+                'from_name'  => $company->name,
+                'from_email' => $fromEmail,
                 'cc'         => null,
                 'bcc'        => null,
             ]

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Clients\Enums\CommunicationType;
+use Modules\Core\Enums\MailType;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\DateHelpers;
@@ -15,6 +16,7 @@ use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Mail\InvoiceMailable;
+use Modules\Invoices\Mail\InvoiceReminderMailable;
 use Modules\Invoices\Models\Invoice;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
@@ -25,6 +27,11 @@ class InvoiceService extends BaseService
      * Title of the EmailTemplate used as the company's invoice email template.
      */
     public const INVOICE_EMAIL_TEMPLATE_TITLE = 'invoice_sent';
+
+    /**
+     * Title of the EmailTemplate used as the company's overdue-invoice reminder template.
+     */
+    public const INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE = 'invoice_reminder';
 
     public function model(): string
     {
@@ -37,31 +44,10 @@ class InvoiceService extends BaseService
      */
     public function resolveEmailDefaults(Invoice $invoice): array
     {
-        $invoice->loadMissing(['customer', 'company']);
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_EMAIL_TEMPLATE_TITLE, 'ip.email_invoice_default_subject');
+        unset($defaults['template']);
 
-        $template = EmailTemplate::forCompany($invoice->company_id)
-            ->where('title', self::INVOICE_EMAIL_TEMPLATE_TITLE)
-            ->first();
-
-        $placeholders = [
-            'invoice.number'             => $invoice->invoice_number,
-            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
-            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
-            'customer.name'              => $invoice->customer?->company_name,
-            'company.name'               => $invoice->company?->name,
-        ];
-
-        $defaultSubject = trans('ip.email_invoice_default_subject', ['number' => $invoice->invoice_number]);
-
-        return [
-            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
-            'subject'   => $template?->subject
-                ? EmailTemplatePreview::render($template->subject, $placeholders)
-                : $defaultSubject,
-            'body' => $template?->body
-                ? EmailTemplatePreview::render($template->body, $placeholders)
-                : '',
-        ];
+        return $defaults;
     }
 
     public function createInvoice(array $data): Invoice
@@ -251,10 +237,87 @@ class InvoiceService extends BaseService
      * Queue the invoice mailable for delivery using the given (possibly
      * user-edited) recipient/subject/body, as resolved/prefilled by
      * resolveEmailDefaults() and submitted via the "Email Invoice" modal.
+     * CC recipients are pulled from the customer's stored CC addresses and
+     * the invoice email template's cc column, merged and de-duplicated.
      */
     public function sendInvoiceEmail(Invoice $invoice, string $recipient, string $subject, string $body): void
     {
-        Mail::to($recipient)->queue(new InvoiceMailable($invoice, $subject, $body));
+        Mail::to($recipient)
+            ->cc($this->resolveInvoiceCcEmails($invoice))
+            ->queue(new InvoiceMailable($invoice, $subject, $body));
+    }
+
+    /**
+     * Resolve the recipient/subject/body defaults for the "Send Reminder"
+     * modal, rendering the company's reminder email template against this invoice.
+     */
+    public function resolveReminderDefaults(Invoice $invoice): array
+    {
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE, 'ip.reminder_default_subject');
+        unset($defaults['template']);
+
+        return $defaults;
+    }
+
+    /**
+     * Lightweight check for whether this invoice's customer has a resolvable
+     * email address, without the EmailTemplate lookup/placeholder rendering
+     * that resolveReminderDefaults() does. Intended for cheap per-row
+     * disabled()/tooltip() checks on the "Send Reminder" table/header action.
+     */
+    public function hasReminderRecipient(Invoice $invoice): bool
+    {
+        return filled($this->resolveInvoiceRecipientEmail($invoice));
+    }
+
+    /**
+     * Queue a payment reminder for the given (possibly user-edited)
+     * recipient/subject/body, attach the invoice PDF, and log a MailQueue
+     * entry of type "reminder" so the invoice's reminder history is auditable.
+     * Sending multiple reminders creates a separate MailQueue row each time.
+     */
+    public function sendReminder(Invoice $invoice, ?string $recipient = null, ?string $subject = null, ?string $body = null): void
+    {
+        $defaults = $this->resolveTemplateDefaults($invoice, self::INVOICE_REMINDER_EMAIL_TEMPLATE_TITLE, 'ip.reminder_default_subject');
+
+        $recipient ??= $defaults['recipient'];
+        $subject ??= $defaults['subject'];
+        $body ??= $defaults['body'];
+
+        if (blank($recipient)) {
+            throw new InvalidArgumentException(trans('ip.customer_has_no_email'));
+        }
+
+        Mail::to($recipient)->queue(new InvoiceReminderMailable($invoice, $subject, $body));
+
+        $invoice->mailQueue()->create([
+            'mailable_type' => Invoice::class,
+            'type'          => MailType::REMINDER,
+            'from'          => $defaults['template']?->from_email ?? (string) config('mail.from.address'),
+            'to'            => $recipient,
+            'cc'            => '',
+            'bcc'           => '',
+            'subject'       => $subject,
+            'body'          => $body,
+            'attach_pdf'    => true,
+            'is_sent'       => true,
+            'sent_at'       => now(),
+        ]);
+    }
+
+    /**
+     * The timestamp of the most recently sent reminder for this invoice, or
+     * null if none has been sent yet. Sourced from the invoice's own
+     * MailQueue history rather than a dedicated invoice column.
+     */
+    public function lastReminderSentAt(Invoice $invoice): ?Carbon
+    {
+        $lastReminder = $invoice->mailQueue()
+            ->where('type', MailType::REMINDER)
+            ->latest('sent_at')
+            ->first();
+
+        return $lastReminder?->sent_at;
     }
 
     /**
@@ -349,6 +412,44 @@ class InvoiceService extends BaseService
     }
 
     /**
+     * Shared resolution logic for the "Email Invoice" and "Send Reminder"
+     * modals: loads the named company EmailTemplate once, renders its
+     * subject/body against this invoice, and resolves the recipient. Returns
+     * the EmailTemplate alongside the rendered defaults so callers that also
+     * need template fields (e.g. sendReminder()'s from_email) don't have to
+     * re-query it.
+     */
+    private function resolveTemplateDefaults(Invoice $invoice, string $templateTitle, string $defaultSubjectTransKey): array
+    {
+        $invoice->loadMissing(['customer', 'company']);
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', $templateTitle)
+            ->first();
+
+        $placeholders = [
+            'invoice.number'             => $invoice->invoice_number,
+            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
+            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
+            'customer.name'              => $invoice->customer?->company_name,
+            'company.name'               => $invoice->company?->name,
+        ];
+
+        $defaultSubject = trans($defaultSubjectTransKey, ['number' => $invoice->invoice_number]);
+
+        return [
+            'template'  => $template,
+            'recipient' => $this->resolveInvoiceRecipientEmail($invoice),
+            'subject'   => $template?->subject
+                ? EmailTemplatePreview::render($template->subject, $placeholders)
+                : $defaultSubject,
+            'body' => $template?->body
+                ? EmailTemplatePreview::render($template->body, $placeholders)
+                : '',
+        ];
+    }
+
+    /**
      * Walk the invoice's customer → contacts → communications chain and
      * return the first email address found, preferring a primary one.
      */
@@ -369,6 +470,35 @@ class InvoiceService extends BaseService
             ->first();
 
         return $emailCommunication?->communication_value;
+    }
+
+    /**
+     * Merge the customer's stored CC addresses with the invoice email
+     * template's cc column (comma/semicolon separated), validating each
+     * address and de-duplicating the result.
+     */
+    private function resolveInvoiceCcEmails(Invoice $invoice): array
+    {
+        $invoice->loadMissing('customer');
+
+        $clientCcEmails = $invoice->customer?->ccEmailCommunications()
+            ->pluck('communication_value')
+            ->all() ?? [];
+
+        $template = EmailTemplate::forCompany($invoice->company_id)
+            ->where('title', self::INVOICE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $templateCcEmails = $template?->cc
+            ? preg_split('/[,;]+/', $template->cc)
+            : [];
+
+        return collect([...$clientCcEmails, ...$templateCcEmails])
+            ->map(fn (string $email) => mb_trim($email))
+            ->filter(fn (string $email) => filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     private function calculateItemTaxTotal(array $data): float
