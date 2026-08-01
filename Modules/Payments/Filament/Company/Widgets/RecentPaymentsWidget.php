@@ -28,7 +28,7 @@ class RecentPaymentsWidget extends TableWidget
     protected function getTableQuery(): Builder|Relation|null
     {
         /** @var Builder<Payment> $query */
-        $query = Payment::query()->latest()->limit(10);
+        $query = Payment::query()->latest('id')->limit(10);
 
         return $query;
     }

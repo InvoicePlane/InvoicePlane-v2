@@ -31,4 +31,26 @@ class RecentExpensesWidgetTest extends AbstractCompanyPanelTestCase
         $component->assertSuccessful();
         $component->assertSee(ExpenseResource::getUrl('index'), false);
     }
+
+    #[Test]
+    #[Group('smoke')]
+    public function it_lists_newer_expenses_before_older_expenses(): void
+    {
+        /* Arrange */
+        $olderExpense = Expense::factory()
+            ->for($this->company)
+            ->create(['expense_number' => 'EXP-OLDER']);
+        $newerExpense = Expense::factory()
+            ->for($this->company)
+            ->create(['expense_number' => 'EXP-NEWER']);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(RecentExpensesWidget::class);
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertCanSeeTableRecords([$newerExpense, $olderExpense], inOrder: true);
+    }
 }

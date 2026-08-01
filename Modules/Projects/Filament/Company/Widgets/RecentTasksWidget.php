@@ -30,7 +30,7 @@ class RecentTasksWidget extends TableWidget
     protected function getTableQuery(): Builder|Relation|null
     {
         /** @var Builder<Task> $query */
-        $query = Task::query()->latest()->limit(10);
+        $query = Task::query()->latest('id')->limit(10);
 
         return $query;
     }
