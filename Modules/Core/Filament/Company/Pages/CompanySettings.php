@@ -4,6 +4,7 @@ namespace Modules\Core\Filament\Company\Pages;
 
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -152,6 +153,33 @@ class CompanySettings extends Page implements HasForms
                                     ->maxLength(20)
                                     ->placeholder('INV-')
                                     ->helperText(trans('ip.invoice_number_prefix_help')),
+                            ]),
+
+                            Section::make(trans('ip.company_branding'))->columns(2)->schema([
+                                ColorPicker::make(Setting::KEY_PRIMARY_COLOR)
+                                    ->label(trans('ip.primary_color')),
+
+                                ColorPicker::make(Setting::KEY_ACCENT_COLOR)
+                                    ->label(trans('ip.accent_color')),
+
+                                Select::make(Setting::KEY_FONT_FAMILY)
+                                    ->label(trans('ip.font_family'))
+                                    ->options([
+                                        'Inter'           => 'Inter',
+                                        'Roboto'          => 'Roboto',
+                                        'Arial'           => 'Arial',
+                                        'Helvetica'       => 'Helvetica',
+                                        'Georgia'         => 'Georgia',
+                                        'Times New Roman' => 'Times New Roman',
+                                    ])
+                                    ->placeholder(trans('ip.none')),
+
+                                TextInput::make(Setting::KEY_FONT_SIZE)
+                                    ->label(trans('ip.font_size'))
+                                    ->numeric()
+                                    ->minValue(8)
+                                    ->maxValue(72)
+                                    ->placeholder('14'),
                             ]),
                         ]),
 
@@ -415,6 +443,10 @@ class CompanySettings extends Page implements HasForms
         return [
             Setting::KEY_COMPANY_NAME,
             Setting::KEY_INVOICE_NUMBER_PREFIX,
+            Setting::KEY_PRIMARY_COLOR,
+            Setting::KEY_ACCENT_COLOR,
+            Setting::KEY_FONT_FAMILY,
+            Setting::KEY_FONT_SIZE,
             Setting::KEY_CURRENCY_CODE,
             Setting::KEY_DASHBOARD_SHOW_REVENUE_CHART,
             Setting::KEY_CRON_FREQUENCY,

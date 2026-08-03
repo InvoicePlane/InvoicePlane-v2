@@ -42,6 +42,14 @@ class Setting extends Model
 
     public const KEY_INVOICE_NUMBER_PREFIX = 'invoice_number_prefix';
 
+    public const KEY_PRIMARY_COLOR = 'primary_color';
+
+    public const KEY_ACCENT_COLOR = 'accent_color';
+
+    public const KEY_FONT_FAMILY = 'font_family';
+
+    public const KEY_FONT_SIZE = 'font_size';
+
     public const KEY_CURRENCY_CODE = 'currency_code';
 
     public const KEY_DASHBOARD_SHOW_REVENUE_CHART = 'dashboard_show_revenue_chart';
