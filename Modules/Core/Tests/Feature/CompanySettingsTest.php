@@ -93,7 +93,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
             ->test(CompanySettings::class)
             ->set('data.' . Setting::KEY_PRIMARY_COLOR, '#ff0000')
             ->set('data.' . Setting::KEY_ACCENT_COLOR, '#00ff00')
-            ->set('data.' . Setting::KEY_FONT_FAMILY, 'Roboto')
+            ->set('data.' . Setting::KEY_FONT_FAMILY, 'Georgia')
             ->set('data.' . Setting::KEY_FONT_SIZE, 16)
             ->call('save')
             ->assertHasNoErrors();
@@ -101,7 +101,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertSame('#ff0000', Setting::getForCompany($this->company->id, Setting::KEY_PRIMARY_COLOR));
         $this->assertSame('#00ff00', Setting::getForCompany($this->company->id, Setting::KEY_ACCENT_COLOR));
-        $this->assertSame('Roboto', Setting::getForCompany($this->company->id, Setting::KEY_FONT_FAMILY));
+        $this->assertSame('Georgia', Setting::getForCompany($this->company->id, Setting::KEY_FONT_FAMILY));
         $this->assertSame('16', Setting::getForCompany($this->company->id, Setting::KEY_FONT_SIZE));
     }
 
