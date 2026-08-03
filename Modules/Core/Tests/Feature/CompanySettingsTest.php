@@ -86,6 +86,27 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('per-company')]
+    public function it_persists_company_branding_settings(): void
+    {
+        /* Act */
+        Livewire::actingAs($this->user)
+            ->test(CompanySettings::class)
+            ->set('data.' . Setting::KEY_PRIMARY_COLOR, '#ff0000')
+            ->set('data.' . Setting::KEY_ACCENT_COLOR, '#00ff00')
+            ->set('data.' . Setting::KEY_FONT_FAMILY, 'Roboto')
+            ->set('data.' . Setting::KEY_FONT_SIZE, 16)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertSame('#ff0000', Setting::getForCompany($this->company->id, Setting::KEY_PRIMARY_COLOR));
+        $this->assertSame('#00ff00', Setting::getForCompany($this->company->id, Setting::KEY_ACCENT_COLOR));
+        $this->assertSame('Roboto', Setting::getForCompany($this->company->id, Setting::KEY_FONT_FAMILY));
+        $this->assertSame('16', Setting::getForCompany($this->company->id, Setting::KEY_FONT_SIZE));
+    }
+
+    #[Test]
+    #[Group('per-company')]
     public function it_prefills_form_state_from_existing_settings(): void
     {
         /* Arrange */
