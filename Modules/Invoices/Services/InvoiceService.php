@@ -5,11 +5,13 @@ namespace Modules\Invoices\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Core\Enums\MailType;
 use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Models\Setting;
 use Modules\Core\Services\BaseService;
 use Modules\Core\Support\DateHelpers;
 use Modules\Core\Support\EmailTemplatePreview;
@@ -328,7 +330,10 @@ class InvoiceService extends BaseService
     {
         $invoice->loadMissing(['company', 'customer', 'invoiceItems']);
 
-        return view('invoices::pdf.invoice', ['invoice' => $invoice])->render();
+        return view('invoices::pdf.invoice', [
+            'invoice'  => $invoice,
+            'branding' => $this->resolveBranding($invoice),
+        ])->render();
     }
 
     /**
@@ -409,6 +414,29 @@ class InvoiceService extends BaseService
 
             return $creditNote;
         });
+    }
+
+    /**
+     * Company branding for the invoice PDF/preview: colors, font, and logo.
+     * Falls back to the current hardcoded look when a company hasn't set
+     * any branding, so existing invoices render unchanged.
+     *
+     * @return array{primary_color: string, accent_color: string, font_family: string, font_size: string, logo_path: ?string}
+     */
+    private function resolveBranding(Invoice $invoice): array
+    {
+        $companyId = $invoice->company_id;
+
+        $logoPath = Setting::getForCompany($companyId, Setting::KEY_INVOICE_LOGO);
+        $logoDisk = Storage::disk(config('filament.default_filesystem_disk'));
+
+        return [
+            'primary_color' => Setting::getForCompany($companyId, Setting::KEY_PRIMARY_COLOR) ?: '#1f2937',
+            'accent_color'  => Setting::getForCompany($companyId, Setting::KEY_ACCENT_COLOR) ?: '#6b7280',
+            'font_family'   => Setting::getForCompany($companyId, Setting::KEY_FONT_FAMILY) ?: 'DejaVu Sans, Helvetica, Arial, sans-serif',
+            'font_size'     => Setting::getForCompany($companyId, Setting::KEY_FONT_SIZE) ?: '12',
+            'logo_path'     => $logoPath && $logoDisk->exists($logoPath) ? $logoDisk->path($logoPath) : null,
+        ];
     }
 
     /**
