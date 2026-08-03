@@ -165,8 +165,6 @@ class CompanySettings extends Page implements HasForms
                                 Select::make(Setting::KEY_FONT_FAMILY)
                                     ->label(trans('ip.font_family'))
                                     ->options([
-                                        'Inter'           => 'Inter',
-                                        'Roboto'          => 'Roboto',
                                         'Arial'           => 'Arial',
                                         'Helvetica'       => 'Helvetica',
                                         'Georgia'         => 'Georgia',
