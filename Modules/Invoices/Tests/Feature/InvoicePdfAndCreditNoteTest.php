@@ -2,6 +2,8 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
@@ -9,6 +11,7 @@ use Modules\Core\Database\Seeders\PermissionsSeeder;
 use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Numbering;
+use Modules\Core\Models\Setting;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -61,6 +64,62 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
         $this->assertStringContainsString($invoice->customer->company_name, $html);
         $this->assertStringContainsString('Widget', $html);
         $this->assertStringNotContainsString('<iframe', $html);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_falls_back_to_default_branding_when_none_is_set(): void
+    {
+        /* Arrange */
+        $invoice = $this->createInvoice(InvoiceStatus::SENT, ['footer' => 'Thank you for your business.']);
+
+        /* Act */
+        $html = $this->service->renderHtml($invoice);
+
+        /* Assert */
+        $this->assertStringContainsString('#1f2937', $html);
+        $this->assertStringContainsString('#6b7280', $html);
+        $this->assertStringNotContainsString('<img', $html);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_renders_company_branding_colors_and_font_in_the_invoice_html(): void
+    {
+        /* Arrange */
+        Setting::saveForCompany($this->company->id, Setting::KEY_PRIMARY_COLOR, '#112233');
+        Setting::saveForCompany($this->company->id, Setting::KEY_ACCENT_COLOR, '#445566');
+        Setting::saveForCompany($this->company->id, Setting::KEY_FONT_FAMILY, 'Roboto');
+        Setting::saveForCompany($this->company->id, Setting::KEY_FONT_SIZE, '16');
+
+        $invoice = $this->createInvoice(InvoiceStatus::SENT, ['footer' => 'Thank you for your business.']);
+
+        /* Act */
+        $html = $this->service->renderHtml($invoice);
+
+        /* Assert */
+        $this->assertStringContainsString('#112233', $html);
+        $this->assertStringContainsString('#445566', $html);
+        $this->assertStringContainsString('Roboto', $html);
+        $this->assertStringContainsString('16px', $html);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_renders_the_company_logo_when_set(): void
+    {
+        /* Arrange */
+        Storage::fake('local');
+        $path = UploadedFile::fake()->image('logo.png')->store('invoice-logos', 'local');
+        Setting::saveForCompany($this->company->id, Setting::KEY_INVOICE_LOGO, $path);
+
+        $invoice = $this->createInvoice(InvoiceStatus::SENT);
+
+        /* Act */
+        $html = $this->service->renderHtml($invoice);
+
+        /* Assert */
+        $this->assertStringContainsString('<img src="' . Storage::disk('local')->path($path) . '"', $html);
     }
 
     // dompdf/dompdf is in composer.lock but not actually installed in the

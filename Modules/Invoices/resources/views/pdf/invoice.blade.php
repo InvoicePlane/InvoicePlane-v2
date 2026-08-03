@@ -1,8 +1,15 @@
 {{-- Invoice document markup — used by the PDF driver and the on-screen preview. --}}
-<div class="ip-invoice" style="font-family: DejaVu Sans, Helvetica, Arial, sans-serif; color: #1f2937; font-size: 12px; line-height: 1.5;">
+@php
+    $primaryColor = $branding['primary_color'];
+    $accentColor  = $branding['accent_color'];
+@endphp
+<div class="ip-invoice" style="font-family: {{ $branding['font_family'] }}; color: {{ $primaryColor }}; font-size: {{ $branding['font_size'] }}px; line-height: 1.5;">
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
         <tr>
             <td style="vertical-align: top;">
+                @if ($branding['logo_path'])
+                    <img src="{{ $branding['logo_path'] }}" alt="{{ $invoice->company?->name }}" style="max-height: 60px; max-width: 240px; margin-bottom: 8px;">
+                @endif
                 <div style="font-size: 20px; font-weight: bold;">{{ $invoice->company?->name }}</div>
             </td>
             <td style="vertical-align: top; text-align: right;">
@@ -31,11 +38,11 @@
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
         <thead>
             <tr>
-                <th style="text-align: left; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.item') }}</th>
-                <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.quantity') }}</th>
-                <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.price') }}</th>
-                <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.discount') }}</th>
-                <th style="text-align: right; border-bottom: 2px solid #1f2937; padding: 6px 4px;">{{ trans('ip.subtotal') }}</th>
+                <th style="text-align: left; border-bottom: 2px solid {{ $primaryColor }}; padding: 6px 4px;">{{ trans('ip.item') }}</th>
+                <th style="text-align: right; border-bottom: 2px solid {{ $primaryColor }}; padding: 6px 4px;">{{ trans('ip.quantity') }}</th>
+                <th style="text-align: right; border-bottom: 2px solid {{ $primaryColor }}; padding: 6px 4px;">{{ trans('ip.price') }}</th>
+                <th style="text-align: right; border-bottom: 2px solid {{ $primaryColor }}; padding: 6px 4px;">{{ trans('ip.discount') }}</th>
+                <th style="text-align: right; border-bottom: 2px solid {{ $primaryColor }}; padding: 6px 4px;">{{ trans('ip.subtotal') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +51,7 @@
                     <td style="border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">
                         {{ $item->item_name }}
                         @if ($item->description)
-                            <div style="color: #6b7280;">{{ $item->description }}</div>
+                            <div style="color: {{ $accentColor }};">{{ $item->description }}</div>
                         @endif
                     </td>
                     <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $item->quantity + 0 }}</td>
@@ -72,8 +79,8 @@
             </tr>
         @endif
         <tr>
-            <td style="padding: 4px; border-top: 2px solid #1f2937; font-weight: bold;">{{ trans('ip.total') }}</td>
-            <td style="text-align: right; padding: 4px; border-top: 2px solid #1f2937; font-weight: bold;">{{ number_format((float) $invoice->invoice_total, 2) }}</td>
+            <td style="padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ trans('ip.total') }}</td>
+            <td style="text-align: right; padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ number_format((float) $invoice->invoice_total, 2) }}</td>
         </tr>
     </table>
 
@@ -92,6 +99,6 @@
     @endif
 
     @if ($invoice->footer)
-        <div style="color: #6b7280; margin-top: 24px;">{{ $invoice->footer }}</div>
+        <div style="color: {{ $accentColor }}; margin-top: 24px;">{{ $invoice->footer }}</div>
     @endif
 </div>
