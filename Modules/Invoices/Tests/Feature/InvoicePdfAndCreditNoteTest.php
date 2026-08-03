@@ -89,7 +89,7 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         Setting::saveForCompany($this->company->id, Setting::KEY_PRIMARY_COLOR, '#112233');
         Setting::saveForCompany($this->company->id, Setting::KEY_ACCENT_COLOR, '#445566');
-        Setting::saveForCompany($this->company->id, Setting::KEY_FONT_FAMILY, 'Roboto');
+        Setting::saveForCompany($this->company->id, Setting::KEY_FONT_FAMILY, 'Georgia');
         Setting::saveForCompany($this->company->id, Setting::KEY_FONT_SIZE, '16');
 
         $invoice = $this->createInvoice(InvoiceStatus::SENT, ['footer' => 'Thank you for your business.']);
@@ -100,7 +100,7 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertStringContainsString('#112233', $html);
         $this->assertStringContainsString('#445566', $html);
-        $this->assertStringContainsString('Roboto', $html);
+        $this->assertStringContainsString('Georgia', $html);
         $this->assertStringContainsString('16px', $html);
     }
 
