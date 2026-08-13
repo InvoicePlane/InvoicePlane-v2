@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Models\Company;
@@ -12,6 +13,7 @@ use Modules\Core\Services\UserService;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
 
 #[CoversClass(EditProfile::class)]
 #[CoversClass(MyCompanies::class)]
@@ -130,5 +132,53 @@ class UserProfileTest extends AbstractCompanyPanelTestCase
         ]));
 
         $this->assertSame($otherCompany->id, session('current_company_id'));
+    }
+
+    #[Test]
+    public function it_blocks_switching_and_sends_warning_notification_when_user_does_not_belong_to_target_company(): void
+    {
+        /* Arrange */
+        $otherCompany = Company::factory()->create(['search_code' => 'OTHERCO']);
+        $this->user->companies()->attach($otherCompany);
+
+        $initialCompanyId = $this->company->id;
+        session(['current_company_id' => $initialCompanyId]);
+
+        $this->mock(UserService::class, function ($mock) {
+            $mock->shouldReceive('assertBelongsToCompany')
+                ->once()
+                ->andThrow(new \Illuminate\Auth\Access\AuthorizationException(trans('ip.user_not_in_company')));
+        });
+
+        /* Act */
+        $component = $this->testLivewire(MyCompanies::class)
+            ->callTableAction('switch', $otherCompany);
+
+        /* Assert */
+        $component->assertNotified()
+            ->assertNoRedirect();
+
+        $this->assertSame($initialCompanyId, session('current_company_id'));
+    }
+
+    #[Test]
+    public function it_allows_elevated_user_to_switch_to_any_company_without_explicit_pivot_record(): void
+    {
+        /* Arrange */
+        $superAdminRole = Role::firstOrCreate(['name' => UserRole::SUPER_ADMIN->value, 'guard_name' => 'web']);
+        $this->user->assignRole($superAdminRole);
+
+        $anyCompany = Company::factory()->create(['search_code' => 'ANYCO']);
+
+        /* Act */
+        $component = $this->testLivewire(MyCompanies::class)
+            ->callTableAction('switch', $anyCompany);
+
+        /* Assert */
+        $component->assertRedirect(route('filament.company.pages.dashboard', [
+            'tenant' => Str::lower($anyCompany->search_code),
+        ]));
+
+        $this->assertSame($anyCompany->id, session('current_company_id'));
     }
 }

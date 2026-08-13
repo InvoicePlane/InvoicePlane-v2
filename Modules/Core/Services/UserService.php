@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Events\UserWasCreated;
 use Modules\Core\Events\UserWasUpdated;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Upload;
 use Modules\Core\Models\User;
 use Throwable;
@@ -133,5 +135,26 @@ class UserService extends BaseService
         $existing->delete();
 
         return true;
+    }
+
+    /**
+     * Assert that the user has permission/membership to access the specified company.
+     * Elevated roles (super_admin, admin, assist) have access to all companies.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function assertBelongsToCompany(User $user, Company|int $company): void
+    {
+        if ($user->hasAnyRole(UserRole::elevated())) {
+            return;
+        }
+
+        $companyId = $company instanceof Company ? $company->id : $company;
+
+        if ( ! $user->companies()->where('companies.id', $companyId)->exists()) {
+            throw new \Illuminate\Auth\Access\AuthorizationException(
+                trans('ip.user_not_in_company') ?: 'You do not have access to this company.'
+            );
+        }
     }
 }
