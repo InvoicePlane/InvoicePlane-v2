@@ -129,18 +129,24 @@ class ProjectBillingTest extends AbstractCompanyPanelTestCase
     {
         $customer = Relation::factory()->for($this->company)->customer()->create();
 
-        return Project::factory()->for($this->company)->create([
+        /** @var Project $project */
+        $project = Project::factory()->for($this->company)->create([
             'customer_id' => $customer->id,
         ]);
+
+        return $project;
     }
 
     private function createTask(Project $project, array $attributes = []): Task
     {
-        return Task::factory()->for($this->company)->create(array_merge([
+        /** @var Task $task */
+        $task = Task::factory()->for($this->company)->create(array_merge([
             'customer_id' => $project->customer_id,
             'project_id'  => $project->id,
             'task_status' => TaskStatus::COMPLETED->value,
             'task_price'  => 100,
         ], $attributes));
+
+        return $task;
     }
 }

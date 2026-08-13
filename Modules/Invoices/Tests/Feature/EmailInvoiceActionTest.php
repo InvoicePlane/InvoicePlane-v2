@@ -128,7 +128,8 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
         ]);
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        return Invoice::factory()->for($this->company)->create(array_merge([
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->for($this->company)->create(array_merge([
             'invoice_number' => 'INV-987654',
             'customer_id'    => $customer->getKey(),
             'numbering_id'   => $documentGroup->getKey(),
@@ -138,5 +139,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
             'invoiced_at'    => '2025-05-10',
             'invoice_due_at' => '2025-06-09',
         ], $attributes));
+
+        return $invoice;
     }
 }

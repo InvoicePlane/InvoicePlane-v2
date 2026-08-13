@@ -129,10 +129,9 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 
-    public function mailQueue(): HasMany
+    public function mailQueue(): MorphMany
     {
-        return $this->hasMany(MailQueue::class, 'mailable_id')
-            ->where('mailable_type', self::class);
+        return $this->morphMany(MailQueue::class, 'mailable');
     }
 
     public function notes(): MorphMany
