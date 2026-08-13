@@ -129,6 +129,7 @@ class LoginResponseTest extends AbstractAdminPanelTestCase
 
     private function makeUser(Company ...$companies): User
     {
+        /** @var User $user */
         $user = User::factory()->create();
         foreach ($companies as $company) {
             $user->companies()->attach($company);
@@ -139,6 +140,7 @@ class LoginResponseTest extends AbstractAdminPanelTestCase
 
     private function dispatchResponse(): RedirectResponse
     {
+        /** @var RedirectResponse */
         return (new LoginResponse())->toResponse(request());
     }
 

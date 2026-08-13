@@ -300,7 +300,8 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
 
     private function makeInvoice(Relation $customer, Numbering $numbering, array $attributes = []): Invoice
     {
-        return Invoice::factory()->for($this->company)->create(array_merge([
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->for($this->company)->create(array_merge([
             'invoice_number' => 'INV-987654',
             'customer_id'    => $customer->getKey(),
             'numbering_id'   => $numbering->getKey(),
@@ -308,6 +309,8 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
             'is_read_only'   => false,
             'invoiced_at'    => '2025-05-10',
         ], $attributes));
+
+        return $invoice;
     }
 
     private function listInvoices()
