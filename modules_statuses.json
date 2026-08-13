@@ -7,5 +7,6 @@
     "Products": true,
     "Projects": true,
     "Quotes": true,
-    "ReportBuilder": true
+    "ReportBuilder": true,
+    "Subscriptions": true
 }
