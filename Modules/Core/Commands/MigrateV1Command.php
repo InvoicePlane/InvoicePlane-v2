@@ -36,22 +36,24 @@ class MigrateV1Command extends Command
 
         // 1. Resolve target company
         $companyInput = $this->option('company');
-        if (!$companyInput) {
+        if ( ! $companyInput) {
             $companies = Company::query()->get(['id', 'name', 'search_code']);
             if ($companies->isEmpty()) {
                 $this->error('No companies found in v2 database. Please create a company first.');
+
                 return self::FAILURE;
             }
-            $choices = $companies->mapWithKeys(fn ($c) => [$c->id => "{$c->name} ({$c->search_code})"])->all();
+            $choices   = $companies->mapWithKeys(fn ($c) => [$c->id => "{$c->name} ({$c->search_code})"])->all();
             $companyId = $this->choice('Select target company for migration', $choices);
-            $company = Company::findOrFail($companyId);
+            $company   = Company::findOrFail($companyId);
         } else {
             $company = is_numeric($companyInput)
                 ? Company::find($companyInput)
-                : Company::whereRaw('LOWER(search_code) = ?', [strtolower($companyInput)])->first();
+                : Company::whereRaw('LOWER(search_code) = ?', [mb_strtolower($companyInput)])->first();
 
-            if (!$company) {
+            if ( ! $company) {
                 $this->error("Target company '{$companyInput}' not found.");
+
                 return self::FAILURE;
             }
         }
@@ -59,13 +61,14 @@ class MigrateV1Command extends Command
         $this->info("Target Company: {$company->name} [search_code: {$company->search_code}, id: {$company->id}]");
 
         // 2. Build Migration Context
-        $dryRun = (bool) $this->option('dry-run');
-        $prefix = (string) $this->option('prefix');
+        $dryRun  = (bool) $this->option('dry-run');
+        $prefix  = (string) $this->option('prefix');
         $sqlPath = $this->option('sql');
 
         if ($sqlPath) {
-            if (!file_exists($sqlPath)) {
+            if ( ! file_exists($sqlPath)) {
                 $this->error("SQL dump file not found at: {$sqlPath}");
+
                 return self::FAILURE;
             }
             $this->info("Reading data from SQL dump: {$sqlPath}");
@@ -81,7 +84,7 @@ class MigrateV1Command extends Command
         $inspection = $manager->inspect($context);
 
         $headers = ['Entity', 'Source Count', 'Will Migrate', 'Unmappable / Skips'];
-        $rows = [];
+        $rows    = [];
         foreach ($inspection['entities'] as $entity => $data) {
             $rows[] = [
                 $data['label'],
@@ -92,7 +95,7 @@ class MigrateV1Command extends Command
         }
         $this->table($headers, $rows);
 
-        if (!empty($inspection['warnings'])) {
+        if ( ! empty($inspection['warnings'])) {
             $this->warn("\nWarnings detected:");
             foreach ($inspection['warnings'] as $warning) {
                 $this->warn(" - {$warning}");
@@ -103,12 +106,14 @@ class MigrateV1Command extends Command
             $this->info("\n[DRY RUN] Simulating full migration pass...");
             $res = $manager->run($context);
             $this->info("\n✓ Dry run completed successfully! 0 database records were written.");
+
             return self::SUCCESS;
         }
 
         // 4. Confirm before execution
-        if (!$this->option('force') && !$this->confirm("\nDo you wish to proceed with the actual migration?", true)) {
+        if ( ! $this->option('force') && ! $this->confirm("\nDo you wish to proceed with the actual migration?", true)) {
             $this->warn('Migration cancelled by user.');
+
             return self::SUCCESS;
         }
 
@@ -127,7 +132,7 @@ class MigrateV1Command extends Command
         // 6. Summary Report
         $this->info("\n================ Migration Summary ================");
         $summaryHeaders = ['Entity', 'Migrated', 'Skipped'];
-        $summaryRows = [];
+        $summaryRows    = [];
         foreach ($result['results'] as $key => $res) {
             $summaryRows[] = [$res['label'], $res['migrated'], $res['skipped']];
         }

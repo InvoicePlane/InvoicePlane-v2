@@ -29,13 +29,14 @@ use PHPUnit\Framework\Attributes\Test;
 class V1MigrationTest extends AbstractAdminPanelTestCase
 {
     protected string $fixturePath;
+
     protected V1MigrationManager $manager;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->fixturePath = module_path('Core', 'Tests/Fixtures/v1_fixture.sql');
-        $this->manager = app(V1MigrationManager::class);
+        $this->manager     = app(V1MigrationManager::class);
     }
 
     #[Test]
@@ -263,8 +264,8 @@ class V1MigrationTest extends AbstractAdminPanelTestCase
         $this->manager->run($context1);
 
         $relationCountAfterFirst = Relation::withoutGlobalScopes()->where('company_id', $targetCompany->id)->count();
-        $invoiceCountAfterFirst = Invoice::withoutGlobalScopes()->where('company_id', $targetCompany->id)->count();
-        $quoteCountAfterFirst = Quote::withoutGlobalScopes()->where('company_id', $targetCompany->id)->count();
+        $invoiceCountAfterFirst  = Invoice::withoutGlobalScopes()->where('company_id', $targetCompany->id)->count();
+        $quoteCountAfterFirst    = Quote::withoutGlobalScopes()->where('company_id', $targetCompany->id)->count();
 
         // Run second time on same target company
         $context2 = $this->manager->createContextFromSql(

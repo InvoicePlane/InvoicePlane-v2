@@ -6,6 +6,7 @@ use Modules\Core\Enums\TaxRateType;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\Migration\Contracts\EntityMigratorInterface;
 use Modules\Core\Services\Migration\MigrationContext;
+use Throwable;
 
 class TaxRateMigrator implements EntityMigratorInterface
 {
@@ -21,14 +22,14 @@ class TaxRateMigrator implements EntityMigratorInterface
 
     public function inspect(MigrationContext $context): array
     {
-        $rows = $context->getSourceTable('tax_rates');
+        $rows  = $context->getSourceTable('tax_rates');
         $notes = [];
 
         $willMigrate = 0;
-        $unmappable = 0;
+        $unmappable  = 0;
 
         foreach ($rows as $row) {
-            $name = trim((string) ($row['tax_rate_name'] ?? ''));
+            $name = mb_trim((string) ($row['tax_rate_name'] ?? ''));
             if ($name === '') {
                 $unmappable++;
                 $notes[] = "Tax rate row #{$row['tax_rate_id']} has empty name, will be skipped.";
@@ -47,16 +48,16 @@ class TaxRateMigrator implements EntityMigratorInterface
 
     public function migrate(MigrationContext $context): array
     {
-        $rows = $context->getSourceTable('tax_rates');
+        $rows     = $context->getSourceTable('tax_rates');
         $migrated = 0;
-        $skipped = 0;
-        $errors = [];
+        $skipped  = 0;
+        $errors   = [];
 
         foreach ($rows as $row) {
             $v1Id = $row['tax_rate_id'] ?? null;
-            $name = trim((string) ($row['tax_rate_name'] ?? ''));
+            $name = mb_trim((string) ($row['tax_rate_name'] ?? ''));
             $rate = (float) ($row['tax_rate_percent'] ?? 0.0);
-            $code = !empty($row['tax_rate_code']) ? (string) $row['tax_rate_code'] : strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $name) ?: 'TAX', 0, 10));
+            $code = ! empty($row['tax_rate_code']) ? (string) $row['tax_rate_code'] : mb_strtoupper(mb_substr(preg_replace('/[^a-zA-Z0-9]/', '', $name) ?: 'TAX', 0, 10));
 
             if ($name === '') {
                 $skipped++;
@@ -78,7 +79,7 @@ class TaxRateMigrator implements EntityMigratorInterface
                     ->where('name', $name)
                     ->first();
 
-                if (!$taxRate) {
+                if ( ! $taxRate) {
                     $taxRate = TaxRate::create([
                         'company_id'    => $context->getCompanyId(),
                         'name'          => $name,
@@ -104,7 +105,7 @@ class TaxRateMigrator implements EntityMigratorInterface
                 }
 
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate tax rate '{$name}': " . $e->getMessage();
                 $skipped++;
             }

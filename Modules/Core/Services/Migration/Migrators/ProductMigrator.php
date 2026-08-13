@@ -8,6 +8,7 @@ use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
+use Throwable;
 
 class ProductMigrator implements EntityMigratorInterface
 {
@@ -24,15 +25,15 @@ class ProductMigrator implements EntityMigratorInterface
     public function inspect(MigrationContext $context): array
     {
         $families = $context->getSourceTable('families');
-        $units = $context->getSourceTable('units');
+        $units    = $context->getSourceTable('units');
         $products = $context->getSourceTable('products');
 
-        $notes = [];
+        $notes       = [];
         $willMigrate = 0;
-        $unmappable = 0;
+        $unmappable  = 0;
 
         foreach ($products as $row) {
-            $name = trim((string) ($row['product_name'] ?? ''));
+            $name = mb_trim((string) ($row['product_name'] ?? ''));
             if ($name === '') {
                 $unmappable++;
                 $notes[] = "Product row #{$row['product_id']} has empty name, will be skipped.";
@@ -52,14 +53,14 @@ class ProductMigrator implements EntityMigratorInterface
     public function migrate(MigrationContext $context): array
     {
         $migrated = 0;
-        $skipped = 0;
-        $errors = [];
+        $skipped  = 0;
+        $errors   = [];
 
         // 1. Families -> ProductCategory
         $families = $context->getSourceTable('families');
         foreach ($families as $row) {
             $v1Id = $row['family_id'] ?? null;
-            $name = trim((string) ($row['family_name'] ?? ''));
+            $name = mb_trim((string) ($row['family_name'] ?? ''));
             if ($name === '') {
                 $skipped++;
                 continue;
@@ -79,7 +80,7 @@ class ProductMigrator implements EntityMigratorInterface
                     ->where('category_name', $name)
                     ->first();
 
-                if (!$category) {
+                if ( ! $category) {
                     $category = ProductCategory::create([
                         'company_id'    => $context->getCompanyId(),
                         'category_name' => $name,
@@ -91,7 +92,7 @@ class ProductMigrator implements EntityMigratorInterface
                     $context->mapId('product_categories', $v1Id, $category->id);
                 }
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate product category '{$name}': " . $e->getMessage();
                 $skipped++;
             }
@@ -100,9 +101,9 @@ class ProductMigrator implements EntityMigratorInterface
         // 2. Units -> ProductUnit
         $units = $context->getSourceTable('units');
         foreach ($units as $row) {
-            $v1Id = $row['unit_id'] ?? null;
-            $name = trim((string) ($row['unit_name'] ?? ''));
-            $namePlural = trim((string) ($row['unit_name_plrl'] ?? ''));
+            $v1Id       = $row['unit_id'] ?? null;
+            $name       = mb_trim((string) ($row['unit_name'] ?? ''));
+            $namePlural = mb_trim((string) ($row['unit_name_plrl'] ?? ''));
             if ($name === '') {
                 $skipped++;
                 continue;
@@ -122,7 +123,7 @@ class ProductMigrator implements EntityMigratorInterface
                     ->where('unit_name', $name)
                     ->first();
 
-                if (!$unit) {
+                if ( ! $unit) {
                     $unit = ProductUnit::create([
                         'company_id'     => $context->getCompanyId(),
                         'unit_name'      => $name,
@@ -135,7 +136,7 @@ class ProductMigrator implements EntityMigratorInterface
                     $context->mapId('product_units', $v1Id, $unit->id);
                 }
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate product unit '{$name}': " . $e->getMessage();
                 $skipped++;
             }
@@ -145,7 +146,7 @@ class ProductMigrator implements EntityMigratorInterface
         $products = $context->getSourceTable('products');
         foreach ($products as $row) {
             $v1Id = $row['product_id'] ?? null;
-            $name = trim((string) ($row['product_name'] ?? ''));
+            $name = mb_trim((string) ($row['product_name'] ?? ''));
             if ($name === '') {
                 $skipped++;
                 continue;
@@ -161,13 +162,13 @@ class ProductMigrator implements EntityMigratorInterface
 
             try {
                 $categoryId = $context->getId('product_categories', $row['family_id'] ?? null);
-                if (!$categoryId) {
+                if ( ! $categoryId) {
                     // Get or create a default category
                     $defaultCategory = ProductCategory::withoutGlobalScopes()
                         ->where('company_id', $context->getCompanyId())
                         ->first();
 
-                    if (!$defaultCategory) {
+                    if ( ! $defaultCategory) {
                         $defaultCategory = ProductCategory::create([
                             'company_id'    => $context->getCompanyId(),
                             'category_name' => 'General',
@@ -177,7 +178,7 @@ class ProductMigrator implements EntityMigratorInterface
                     $categoryId = $defaultCategory->id;
                 }
 
-                $unitId = $context->getId('product_units', $row['unit_id'] ?? null);
+                $unitId    = $context->getId('product_units', $row['unit_id'] ?? null);
                 $taxRateId = $context->getId('tax_rates', $row['tax_rate_id'] ?? null);
 
                 $product = Product::withoutGlobalScopes()
@@ -185,19 +186,19 @@ class ProductMigrator implements EntityMigratorInterface
                     ->where('product_name', $name)
                     ->first();
 
-                if (!$product) {
+                if ( ! $product) {
                     $product = Product::create([
                         'company_id'     => $context->getCompanyId(),
                         'category_id'    => $categoryId,
                         'unit_id'        => $unitId,
                         'tax_rate_id'    => $taxRateId,
                         'type'           => ProductType::PRODUCT,
-                        'code'           => !empty($row['product_sku']) ? (string) $row['product_sku'] : null,
+                        'code'           => ! empty($row['product_sku']) ? (string) $row['product_sku'] : null,
                         'product_name'   => $name,
-                        'description'    => !empty($row['product_description']) ? (string) $row['product_description'] : null,
+                        'description'    => ! empty($row['product_description']) ? (string) $row['product_description'] : null,
                         'price'          => (float) ($row['product_price'] ?? 0.0),
                         'cost_price'     => (float) ($row['purchase_price'] ?? 0.0),
-                        'product_tariff' => !empty($row['product_tariff']) ? (int) $row['product_tariff'] : null,
+                        'product_tariff' => ! empty($row['product_tariff']) ? (int) $row['product_tariff'] : null,
                     ]);
                     $context->recordCreated(Product::class, $product->id);
                 }
@@ -206,7 +207,7 @@ class ProductMigrator implements EntityMigratorInterface
                     $context->mapId('products', $v1Id, $product->id);
                 }
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate product #{$v1Id} '{$name}': " . $e->getMessage();
                 $skipped++;
             }
@@ -223,18 +224,18 @@ class ProductMigrator implements EntityMigratorInterface
 
     public function rollback(MigrationContext $context): int
     {
-        $productIds = $context->getCreatedIds(Product::class);
+        $productIds  = $context->getCreatedIds(Product::class);
         $categoryIds = $context->getCreatedIds(ProductCategory::class);
-        $unitIds = $context->getCreatedIds(ProductUnit::class);
+        $unitIds     = $context->getCreatedIds(ProductUnit::class);
 
         $deleted = 0;
-        if (!empty($productIds)) {
+        if ( ! empty($productIds)) {
             $deleted += Product::withoutGlobalScopes()->whereIn('id', $productIds)->delete();
         }
-        if (!empty($categoryIds)) {
+        if ( ! empty($categoryIds)) {
             $deleted += ProductCategory::withoutGlobalScopes()->whereIn('id', $categoryIds)->delete();
         }
-        if (!empty($unitIds)) {
+        if ( ! empty($unitIds)) {
             $deleted += ProductUnit::withoutGlobalScopes()->whereIn('id', $unitIds)->delete();
         }
 

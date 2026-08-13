@@ -22,19 +22,19 @@ class FinancialInvariantValidator
      */
     public function validate(MigrationContext $context): array
     {
-        $mismatches = [];
+        $mismatches      = [];
         $invoicesChecked = 0;
-        $quotesChecked = 0;
-        $passedCount = 0;
-        $failedCount = 0;
+        $quotesChecked   = 0;
+        $passedCount     = 0;
+        $failedCount     = 0;
 
         // Validate Invoices
-        $invoiceAmounts = $context->getSourceTable('invoice_amounts')->keyBy('invoice_id');
+        $invoiceAmounts    = $context->getSourceTable('invoice_amounts')->keyBy('invoice_id');
         $createdInvoiceIds = $context->getCreatedIds(Invoice::class);
 
         foreach ($createdInvoiceIds as $v2InvoiceId) {
             $invoice = Invoice::withoutGlobalScopes()->find($v2InvoiceId);
-            if (!$invoice) {
+            if ( ! $invoice) {
                 continue;
             }
 
@@ -47,7 +47,7 @@ class FinancialInvariantValidator
                 }
             }
 
-            if ($v1Id === null || !isset($invoiceAmounts[$v1Id])) {
+            if ($v1Id === null || ! isset($invoiceAmounts[$v1Id])) {
                 continue;
             }
 
@@ -63,14 +63,14 @@ class FinancialInvariantValidator
             ];
 
             // In v1, balance = invoice_total - invoice_paid
-            $expectedBalance = (float) ($v1Amount['invoice_balance'] ?? 0);
-            $actualBalance = (float) $invoice->invoice_total - (float) $invoice->payments()->sum('payment_amount');
+            $expectedBalance           = (float) ($v1Amount['invoice_balance'] ?? 0);
+            $actualBalance             = (float) $invoice->invoice_total - (float) $invoice->payments()->sum('payment_amount');
             $checks['invoice_balance'] = [$expectedBalance, $actualBalance];
 
             foreach ($checks as $field => [$expected, $actual]) {
                 if (abs($expected - $actual) > 0.01) {
                     $invoicePassed = false;
-                    $mismatches[] = [
+                    $mismatches[]  = [
                         'type'     => 'invoice',
                         'id'       => $invoice->id,
                         'number'   => (string) ($invoice->invoice_number ?? $invoice->id),
@@ -89,12 +89,12 @@ class FinancialInvariantValidator
         }
 
         // Validate Quotes
-        $quoteAmounts = $context->getSourceTable('quote_amounts')->keyBy('quote_id');
+        $quoteAmounts    = $context->getSourceTable('quote_amounts')->keyBy('quote_id');
         $createdQuoteIds = $context->getCreatedIds(Quote::class);
 
         foreach ($createdQuoteIds as $v2QuoteId) {
             $quote = Quote::withoutGlobalScopes()->find($v2QuoteId);
-            if (!$quote) {
+            if ( ! $quote) {
                 continue;
             }
 
@@ -106,7 +106,7 @@ class FinancialInvariantValidator
                 }
             }
 
-            if ($v1Id === null || !isset($quoteAmounts[$v1Id])) {
+            if ($v1Id === null || ! isset($quoteAmounts[$v1Id])) {
                 continue;
             }
 
@@ -122,7 +122,7 @@ class FinancialInvariantValidator
 
             foreach ($checks as $field => [$expected, $actual]) {
                 if (abs($expected - $actual) > 0.01) {
-                    $quotePassed = false;
+                    $quotePassed  = false;
                     $mismatches[] = [
                         'type'     => 'quote',
                         'id'       => $quote->id,
