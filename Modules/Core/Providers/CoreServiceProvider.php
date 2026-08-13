@@ -69,7 +69,11 @@ class CoreServiceProvider extends ServiceProvider
 
     protected function registerCommands(): void
     {
-        $this->commands([]);
+        $this->commands([
+            \Modules\Core\Commands\MigrateV1Command::class,
+            \Modules\Core\Commands\MakeUserCommand::class,
+            \Modules\Core\Commands\GenerateObservers::class,
+        ]);
     }
 
     protected function registerCommandSchedules(): void
