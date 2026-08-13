@@ -145,11 +145,15 @@ class EmailTemplateVariablesTest extends AbstractCompanyPanelTestCase
         $client->update(['primary_contact_id' => null]);
         $client->contacts()->delete();
 
-        return $client->fresh();
+        /** @var Relation $fresh */
+        $fresh = $client->fresh();
+
+        return $fresh;
     }
 
     protected function makeContact(Relation $client, array $attributes, ?string $email = null): Contact
     {
+        /** @var Contact $contact */
         $contact = Contact::factory()->create(array_merge([
             'company_id'  => $this->company->id,
             'relation_id' => $client->id,
@@ -170,7 +174,8 @@ class EmailTemplateVariablesTest extends AbstractCompanyPanelTestCase
 
     protected function makeInvoice(Relation $client): Invoice
     {
-        return Invoice::factory()->create([
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->create([
             'company_id'     => $this->company->id,
             'customer_id'    => $client->id,
             'user_id'        => $this->user->id,
@@ -178,5 +183,7 @@ class EmailTemplateVariablesTest extends AbstractCompanyPanelTestCase
             'invoiced_at'    => '2026-01-01',
             'invoice_total'  => 250,
         ]);
+
+        return $invoice;
     }
 }

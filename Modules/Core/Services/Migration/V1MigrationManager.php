@@ -241,9 +241,8 @@ class V1MigrationManager extends BaseService
         $context->log($isDryRun ? 'Starting migration DRY RUN...' : 'Starting migration execution...');
 
         $results = [];
-        $hasFatalError = false;
 
-        $executeLogic = function () use ($context, &$results, &$hasFatalError) {
+        $executeLogic = function () use ($context, &$results) {
             foreach ($this->migrators as $migrator) {
                 $context->log("Migrating {$migrator->label()}...");
                 $res = $migrator->migrate($context);
@@ -282,7 +281,7 @@ class V1MigrationManager extends BaseService
         $context->log('Migration ' . ($isDryRun ? 'dry run ' : '') . 'completed successfully.');
 
         return [
-            'success'              => !$hasFatalError && empty($context->getErrors()),
+            'success'              => empty($context->getErrors()),
             'is_dry_run'           => $isDryRun,
             'batch_id'             => $context->getBatchId(),
             'results'              => $results,
