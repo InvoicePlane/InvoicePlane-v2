@@ -48,6 +48,7 @@ use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
+use Modules\Subscriptions\Filament\Company\Resources\Subscriptions\SubscriptionResource;
 
 class CompanyPanelProvider extends PanelProvider
 {
@@ -169,6 +170,7 @@ class CompanyPanelProvider extends PanelProvider
                 ExpenseCategoryResource::class,
                 InvoiceResource::class,
                 PaymentResource::class,
+                SubscriptionResource::class,
                 ProductResource::class,
                 ProductUnitResource::class,
                 ProductCategoryResource::class,
@@ -222,6 +224,11 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...self::withQuickCreate(InvoiceResource::class),
+                            ]),
+
+                        NavigationGroup::make('Subscriptions')
+                            ->items([
+                                ...self::withQuickCreate(SubscriptionResource::class),
                             ]),
 
                         NavigationGroup::make('Expenses')
