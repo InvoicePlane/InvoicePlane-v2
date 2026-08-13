@@ -22,6 +22,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Core\Filament\Admin\Pages\Dashboard;
+use Modules\Core\Filament\Admin\Pages\ImportV1Page;
 use Modules\Core\Filament\Admin\Pages\RolePermissionsPage;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
@@ -140,11 +141,10 @@ class AdminPanelProvider extends PanelProvider
                                 ...SystemSettingResource::getNavigationItems(),
                             ]),*/
 
-                        /*NavigationGroup::make('Import Data')
-                            ->icon('heroicon-o-arrow-down-tray')
+                        NavigationGroup::make('Import')
                             ->items([
-                                ...ImportResource::getNavigationItems(),
-                            ]),*/
+                                ...ImportV1Page::getNavigationItems(),
+                            ]),
 
                         NavigationGroup::make(trans('ip.users_roles'))
                                                     //->icon('heroicon-o-users')
