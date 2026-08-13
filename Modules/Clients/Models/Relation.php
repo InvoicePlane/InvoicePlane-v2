@@ -116,10 +116,16 @@ class Relation extends Model
         return $this->morphMany(Communication::class, 'communicationable');
     }
 
+    /**
+     * @return MorphMany<Communication, $this>
+     */
     public function ccEmailCommunications(): MorphMany
     {
-        /* @var MorphMany */
-        return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
+        /** @var MorphMany<Communication, $this> $relation */
+        $relation = $this->morphMany(Communication::class, 'communicationable')
+            ->where('communication_type', CommunicationType::INVOICE_CC->value);
+
+        return $relation;
     }
 
     public function contacts(): HasMany

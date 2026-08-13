@@ -47,6 +47,7 @@ return [
     #endregion
 
     #region CORE
+    'user_not_in_company'                          => 'You do not have access to this company.',
     'Q1'                                           => 'Q1',
     'Q2'                                           => 'Q2',
     'Q3'                                           => 'Q3',
