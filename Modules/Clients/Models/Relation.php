@@ -119,7 +119,8 @@ class Relation extends Model
 
     public function ccEmailCommunications()
     {
-        return $this->communications()->whereIn('communication_type', CommunicationType::ccTypes());
+        /** @var MorphMany */
+        return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
     }
 
     public function contacts(): HasMany
