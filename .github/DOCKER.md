@@ -44,21 +44,38 @@ Visit: http://localhost:8080 (override the port with `APP_PORT` in `.env`).
 
 Both PHP images ship the full extension set the app needs: `intl`, `gd`,
 `pdo_mysql`, `bcmath`, `zip`, `exif`, `soap`, `redis`. The CLI image also has
-Composer, a 1G memory limit for the test suite, and bundled `pdo_sqlite`
-(the suite runs on an in-memory sqlite database — no db service needed for
-tests).
+Composer and a 1G memory limit for the test suite.
 
 ---
 
 ## Running the test suite
 
 ```bash
-docker compose run --rm cli vendor/bin/phpunit --exclude-group failing,troubleshooting
+docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
 ```
 
-`APP_ENV=testing` is the `cli` service default, so `.env.testing`
-(sqlite `:memory:`) is picked up automatically. See `RUNNING_TESTS.md` for
-filters, groups, and suites.
+Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to behave
+differently for this app: a raw `vendor/bin/phpunit` run silently drops some submitted field
+values in Livewire form tests. `artisan test` is the proven-reliable path and is what CI uses, so
+standardize on it.
+
+**Known issue (see [#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689)):** a
+freshly-`docker compose build`'t `cli` image has, at least once, reproduced this same
+field-dropping bug at scale (100+ false failures) even under `artisan test`, for reasons not yet
+isolated — despite extension/ini parity with a known-good image. Before trusting a full local run
+from a rebuilt `cli` image, sanity-check it against a small, known test first, e.g.:
+```bash
+docker compose run --rm cli php artisan test --filter=ContactsTest
+```
+All 11 assertions should pass. If any fail with "field is required" errors on data you know you
+supplied, don't trust the rest of that run — see the linked issue.
+
+`APP_ENV=testing` is the `cli` service default, and it always connects to
+the compose stack's real `db` service (MariaDB) for tests — the `cli`
+service injects `DB_CONNECTION=mysql`/`DB_HOST=db`/etc. itself, so nothing
+in `.env.testing` needs editing. This intentionally does not fall back to
+SQLite: SQLite's lenient identifier quoting has masked real bugs before that
+only surfaced against MariaDB in CI.
 
 ### File ownership on Linux
 
