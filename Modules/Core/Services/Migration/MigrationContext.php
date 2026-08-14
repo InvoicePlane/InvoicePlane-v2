@@ -7,13 +7,18 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
+use Throwable;
 
 class MigrationContext
 {
     protected Company $company;
+
     protected ?User $user = null;
+
     protected bool $dryRun = false;
+
     protected string $batchId;
+
     protected string $tablePrefix = 'ip_';
 
     /**
@@ -49,7 +54,7 @@ class MigrationContext
     protected ?ConnectionInterface $dbConnection = null;
 
     /**
-     * @var ?Closure(string $status, string $message): void
+     * @var ?Closure(string, string): void
      */
     protected ?Closure $progressCallback = null;
 
@@ -60,10 +65,10 @@ class MigrationContext
         ?string $batchId = null,
         string $tablePrefix = 'ip_'
     ) {
-        $this->company = $company;
-        $this->user = $user;
-        $this->dryRun = $dryRun;
-        $this->batchId = $batchId ?? ('v1_mig_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)));
+        $this->company     = $company;
+        $this->user        = $user;
+        $this->dryRun      = $dryRun;
+        $this->batchId     = $batchId ?? ('v1_mig_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)));
         $this->tablePrefix = $tablePrefix;
     }
 
@@ -95,6 +100,7 @@ class MigrationContext
     public function setDryRun(bool $dryRun): self
     {
         $this->dryRun = $dryRun;
+
         return $this;
     }
 
@@ -111,6 +117,7 @@ class MigrationContext
     public function setDbConnection(?ConnectionInterface $connection): self
     {
         $this->dbConnection = $connection;
+
         return $this;
     }
 
@@ -130,6 +137,7 @@ class MigrationContext
         foreach ($tables as $name => $rows) {
             $this->sourceTables[$name] = $rows instanceof Collection ? $rows : collect($rows);
         }
+
         return $this;
     }
 
@@ -141,7 +149,7 @@ class MigrationContext
     public function getSourceTable(string $table): Collection
     {
         $cleanName = str_starts_with($table, $this->tablePrefix)
-            ? substr($table, strlen($this->tablePrefix))
+            ? mb_substr($table, mb_strlen($this->tablePrefix))
             : $table;
 
         $fullName = $this->tablePrefix . $cleanName;
@@ -159,13 +167,15 @@ class MigrationContext
         if ($this->dbConnection) {
             try {
                 $rows = $this->dbConnection->table($fullName)->get();
+
                 return collect($rows)->map(fn ($r) => (array) $r);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Try clean name if prefixed failed
                 try {
                     $rows = $this->dbConnection->table($cleanName)->get();
+
                     return collect($rows)->map(fn ($r) => (array) $r);
-                } catch (\Throwable) {
+                } catch (Throwable) {
                     return collect();
                 }
             }
@@ -177,7 +187,7 @@ class MigrationContext
     public function hasSourceTable(string $table): bool
     {
         $cleanName = str_starts_with($table, $this->tablePrefix)
-            ? substr($table, strlen($this->tablePrefix))
+            ? mb_substr($table, mb_strlen($this->tablePrefix))
             : $table;
 
         $fullName = $this->tablePrefix . $cleanName;
@@ -190,7 +200,7 @@ class MigrationContext
             try {
                 return $this->dbConnection->getSchemaBuilder()->hasTable($fullName)
                     || $this->dbConnection->getSchemaBuilder()->hasTable($cleanName);
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 return false;
             }
         }
@@ -208,6 +218,7 @@ class MigrationContext
         if ($v1Id === null || $v1Id === '') {
             return null;
         }
+
         return $this->idMap[$entity][(string) $v1Id] ?? null;
     }
 
@@ -264,6 +275,7 @@ class MigrationContext
     public function setProgressCallback(?Closure $callback): self
     {
         $this->progressCallback = $callback;
+
         return $this;
     }
 

@@ -9,6 +9,7 @@ use Modules\Core\Services\Migration\Contracts\EntityMigratorInterface;
 use Modules\Core\Services\Migration\MigrationContext;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Models\Quote;
+use Throwable;
 
 class CustomFieldMigrator implements EntityMigratorInterface
 {
@@ -25,6 +26,7 @@ class CustomFieldMigrator implements EntityMigratorInterface
     public function inspect(MigrationContext $context): array
     {
         $fields = $context->getSourceTable('custom_fields');
+
         return [
             'source_count' => $fields->count(),
             'will_migrate' => $fields->count(),
@@ -35,15 +37,15 @@ class CustomFieldMigrator implements EntityMigratorInterface
 
     public function migrate(MigrationContext $context): array
     {
-        $fields = $context->getSourceTable('custom_fields');
+        $fields   = $context->getSourceTable('custom_fields');
         $migrated = 0;
-        $skipped = 0;
-        $errors = [];
+        $skipped  = 0;
+        $errors   = [];
 
         foreach ($fields as $row) {
-            $v1Id = $row['custom_field_id'] ?? null;
-            $table = trim((string) ($row['custom_field_table'] ?? ''));
-            $label = trim((string) ($row['custom_field_label'] ?? ''));
+            $v1Id  = $row['custom_field_id'] ?? null;
+            $table = mb_trim((string) ($row['custom_field_table'] ?? ''));
+            $label = mb_trim((string) ($row['custom_field_label'] ?? ''));
 
             if ($label === '') {
                 $skipped++;
@@ -59,10 +61,10 @@ class CustomFieldMigrator implements EntityMigratorInterface
             }
 
             try {
-                $fieldableType = match (strtolower($table)) {
+                $fieldableType = match (mb_strtolower($table)) {
                     'ip_invoice_custom', 'invoices' => Invoice::class,
-                    'ip_quote_custom', 'quotes'     => Quote::class,
-                    default                         => Relation::class,
+                    'ip_quote_custom', 'quotes' => Quote::class,
+                    default => Relation::class,
                 };
 
                 $customField = CustomField::withoutGlobalScopes()
@@ -71,7 +73,7 @@ class CustomFieldMigrator implements EntityMigratorInterface
                     ->where('custom_field_label', $label)
                     ->first();
 
-                if (!$customField) {
+                if ( ! $customField) {
                     $customField = CustomField::create([
                         'company_id'         => $context->getCompanyId(),
                         'fieldable_type'     => $fieldableType,
@@ -87,7 +89,7 @@ class CustomFieldMigrator implements EntityMigratorInterface
                 }
 
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate custom field '{$label}': " . $e->getMessage();
                 $skipped++;
             }
@@ -104,10 +106,10 @@ class CustomFieldMigrator implements EntityMigratorInterface
 
     public function rollback(MigrationContext $context): int
     {
-        $valIds = $context->getCreatedIds(CustomFieldValue::class);
+        $valIds   = $context->getCreatedIds(CustomFieldValue::class);
         $fieldIds = $context->getCreatedIds(CustomField::class);
 
-        if (!empty($valIds)) {
+        if ( ! empty($valIds)) {
             CustomFieldValue::withoutGlobalScopes()->whereIn('id', $valIds)->delete();
         }
 

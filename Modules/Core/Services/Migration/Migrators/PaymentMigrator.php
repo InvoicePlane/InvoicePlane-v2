@@ -8,6 +8,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Enums\PaymentMethod;
 use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
+use Throwable;
 
 class PaymentMigrator implements EntityMigratorInterface
 {
@@ -23,14 +24,14 @@ class PaymentMigrator implements EntityMigratorInterface
 
     public function inspect(MigrationContext $context): array
     {
-        $payments = $context->getSourceTable('payments');
-        $notes = [];
+        $payments    = $context->getSourceTable('payments');
+        $notes       = [];
         $willMigrate = 0;
-        $unmappable = 0;
+        $unmappable  = 0;
 
         foreach ($payments as $row) {
             $invoiceId = $row['invoice_id'] ?? null;
-            if (!$invoiceId) {
+            if ( ! $invoiceId) {
                 $unmappable++;
                 $notes[] = "Payment row #{$row['payment_id']} has no invoice_id, will be skipped.";
             } else {
@@ -48,20 +49,20 @@ class PaymentMigrator implements EntityMigratorInterface
 
     public function migrate(MigrationContext $context): array
     {
-        $payments = $context->getSourceTable('payments');
+        $payments       = $context->getSourceTable('payments');
         $paymentMethods = $context->getSourceTable('payment_methods')->keyBy('payment_method_id');
 
         $migrated = 0;
-        $skipped = 0;
-        $errors = [];
+        $skipped  = 0;
+        $errors   = [];
 
         foreach ($payments as $row) {
-            $v1Id = $row['payment_id'] ?? null;
+            $v1Id        = $row['payment_id'] ?? null;
             $v1InvoiceId = $row['invoice_id'] ?? null;
-            $v1MethodId = $row['payment_method_id'] ?? null;
+            $v1MethodId  = $row['payment_method_id'] ?? null;
 
             $v2InvoiceId = $context->getId('invoices', $v1InvoiceId);
-            if (!$v2InvoiceId) {
+            if ( ! $v2InvoiceId) {
                 $errors[] = "Payment #{$v1Id} skipped: invoice #{$v1InvoiceId} not migrated.";
                 $skipped++;
                 continue;
@@ -74,7 +75,7 @@ class PaymentMigrator implements EntityMigratorInterface
 
             try {
                 $invoice = Invoice::withoutGlobalScopes()->find($v2InvoiceId);
-                if (!$invoice) {
+                if ( ! $invoice) {
                     $errors[] = "Payment #{$v1Id} skipped: invoice ID {$v2InvoiceId} not found in database.";
                     $skipped++;
                     continue;
@@ -84,14 +85,14 @@ class PaymentMigrator implements EntityMigratorInterface
                 $methodEnum = $this->resolvePaymentMethod($methodName);
 
                 $amount = (float) ($row['payment_amount'] ?? 0.0);
-                $paidAt = !empty($row['payment_date']) ? $row['payment_date'] : now();
-                $note = !empty($row['payment_note']) ? (string) $row['payment_note'] : null;
+                $paidAt = ! empty($row['payment_date']) ? $row['payment_date'] : now();
+                $note   = ! empty($row['payment_note']) ? (string) $row['payment_note'] : null;
 
                 $payment = Payment::create([
                     'company_id'     => $context->getCompanyId(),
                     'customer_id'    => $invoice->customer_id,
                     'invoice_id'     => $invoice->id,
-                    'payment_number' => 'PAY-' . str_pad((string) ($v1Id ?? rand(100, 9999)), 5, '0', STR_PAD_LEFT),
+                    'payment_number' => 'PAY-' . mb_str_pad((string) ($v1Id ?? rand(100, 9999)), 5, '0', STR_PAD_LEFT),
                     'payment_method' => $methodEnum,
                     'payment_status' => PaymentStatus::COMPLETED,
                     'paid_at'        => $paidAt,
@@ -105,7 +106,7 @@ class PaymentMigrator implements EntityMigratorInterface
                 }
 
                 $migrated++;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors[] = "Failed to migrate payment #{$v1Id}: " . $e->getMessage();
                 $skipped++;
             }
@@ -120,9 +121,22 @@ class PaymentMigrator implements EntityMigratorInterface
         ];
     }
 
+    public function rollback(MigrationContext $context): int
+    {
+        $paymentIds = $context->getCreatedIds(Payment::class);
+        if (empty($paymentIds)) {
+            return 0;
+        }
+
+        return Payment::withoutGlobalScopes()
+            ->whereIn('id', $paymentIds)
+            ->where('company_id', $context->getCompanyId())
+            ->delete();
+    }
+
     protected function resolvePaymentMethod(string $name): PaymentMethod
     {
-        $normalized = strtolower(trim($name));
+        $normalized = mb_strtolower(mb_trim($name));
 
         if (str_contains($normalized, 'cash')) {
             return PaymentMethod::CASH;
@@ -138,18 +152,5 @@ class PaymentMigrator implements EntityMigratorInterface
         }
 
         return PaymentMethod::BANK_TRANSFER;
-    }
-
-    public function rollback(MigrationContext $context): int
-    {
-        $paymentIds = $context->getCreatedIds(Payment::class);
-        if (empty($paymentIds)) {
-            return 0;
-        }
-
-        return Payment::withoutGlobalScopes()
-            ->whereIn('id', $paymentIds)
-            ->where('company_id', $context->getCompanyId())
-            ->delete();
     }
 }
