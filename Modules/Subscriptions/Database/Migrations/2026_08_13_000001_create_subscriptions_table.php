@@ -48,6 +48,7 @@ return new class () extends Migration {
 
         Schema::create('subscription_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('subscription_id')->constrained('subscriptions')->cascadeOnDelete();
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
             $table->string('name');

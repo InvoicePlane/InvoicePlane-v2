@@ -4,6 +4,7 @@ namespace Modules\Subscriptions\Database\Factories;
 
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
 use Modules\Subscriptions\Enums\BillingInterval;
 use Modules\Subscriptions\Enums\IntervalUnit;
@@ -24,7 +25,7 @@ class SubscriptionFactory extends AbstractFactory
         return [
             'company_id'               => $companyId,
             'customer_id'              => $this->resolveCustomerId($company, $companyId),
-            'number'                   => 'SUB-' . $this->faker->unique()->numerify('#####'),
+            'number'                   => NumberingType::SUBSCRIPTION->prefix() . '-' . $this->faker->unique()->numerify('#####'),
             'name'                     => $this->faker->words(3, true) . ' Subscription',
             'status'                   => SubscriptionStatus::ACTIVE,
             'billing_interval'         => BillingInterval::MONTHLY,

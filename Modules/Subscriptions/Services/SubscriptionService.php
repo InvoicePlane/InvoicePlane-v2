@@ -4,6 +4,8 @@ namespace Modules\Subscriptions\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Enums\NumberingType;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Services\BaseService;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
@@ -65,18 +67,46 @@ class SubscriptionService extends BaseService
     }
 
     /**
-     * Generate a subscription number that is unique within the given company.
+     * Generate the next subscription number from the company's Subscription
+     * numbering scheme (the same Numbering system used for invoices/quotes,
+     * formerly known as "invoice groups"), creating a default scheme on
+     * first use.
      */
     private function generateUniqueNumber(?int $companyId): string
     {
-        do {
-            $number = 'SUB-' . mb_strtoupper(bin2hex(random_bytes(4)));
-        } while (Subscription::withoutGlobalScopes()
-            ->where('company_id', $companyId)
-            ->where('number', $number)
-            ->exists());
+        return DB::transaction(function () use ($companyId) {
+            /** @var Numbering $numbering */
+            $numbering = Numbering::query()
+                ->where('company_id', $companyId)
+                ->where('type', NumberingType::SUBSCRIPTION->value)
+                ->lockForUpdate()
+                ->first();
 
-        return $number;
+            if ( ! $numbering) {
+                $numbering = Numbering::query()->create([
+                    'company_id' => $companyId,
+                    'type'       => NumberingType::SUBSCRIPTION->value,
+                    'name'       => NumberingType::SUBSCRIPTION->label(),
+                    'next_id'    => 1,
+                    'left_pad'   => 4,
+                    'format'     => '{{prefix}}-{{number}}',
+                    'prefix'     => NumberingType::SUBSCRIPTION->prefix(),
+                    'last_id'    => 0,
+                ]);
+            }
+
+            $prefix = $numbering->resolvedPrefix();
+
+            do {
+                $number = $numbering->applyFormat($numbering->next_id, $prefix);
+                $numbering->increment('next_id');
+            } while (Subscription::withoutGlobalScopes()
+                ->where('company_id', $companyId)
+                ->where('number', $number)
+                ->exists());
+
+            return $number;
+        });
     }
 
     /**

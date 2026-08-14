@@ -16,6 +16,7 @@ use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Quotes\Models\Quote;
+use Modules\Subscriptions\Models\Subscription;
 use Throwable;
 
 class NumberingService
@@ -335,14 +336,15 @@ class NumberingService
     protected function getModelClassForType(mixed $type): ?string
     {
         return match ($type->value ?? $type) {
-            'Customer' => Customer::class,
-            'Expense'  => Expense::class,
-            'Invoice'  => Invoice::class,
-            'Payment'  => Payment::class,
-            'Project'  => Project::class,
-            'Quote'    => Quote::class,
-            'Task'     => Task::class,
-            default    => null,
+            'Customer'     => Customer::class,
+            'Expense'      => Expense::class,
+            'Invoice'      => Invoice::class,
+            'Payment'      => Payment::class,
+            'Project'      => Project::class,
+            'Quote'        => Quote::class,
+            'Subscription' => Subscription::class,
+            'Task'         => Task::class,
+            default        => null,
         };
     }
 
@@ -356,14 +358,15 @@ class NumberingService
     protected function getNumberFieldForType(mixed $type): ?string
     {
         return match ($type->value ?? $type) {
-            'Customer' => 'customer_number',
-            'Expense'  => 'expense_number',
-            'Invoice'  => 'invoice_number',
-            'Payment'  => 'payment_number',
-            'Project'  => 'project_number',
-            'Quote'    => 'quote_number',
-            'Task'     => 'task_number',
-            default    => null,
+            'Customer'     => 'customer_number',
+            'Expense'      => 'expense_number',
+            'Invoice'      => 'invoice_number',
+            'Payment'      => 'payment_number',
+            'Project'      => 'project_number',
+            'Quote'        => 'quote_number',
+            'Subscription' => 'number',
+            'Task'         => 'task_number',
+            default        => null,
         };
     }
 

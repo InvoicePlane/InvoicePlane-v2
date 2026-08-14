@@ -5,6 +5,8 @@ namespace Modules\Subscriptions\Tests\Feature;
 use Carbon\Carbon;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\NumberingType;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Models\Invoice;
 use Modules\Subscriptions\Enums\BillingInterval;
@@ -74,9 +76,60 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
 
         $this->assertDatabaseHas('subscription_items', [
             'subscription_id' => $subscription->id,
+            'company_id'      => $this->company->id,
             'name'            => 'Pro Seat License',
             'unit_price'      => 199.00,
         ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_generates_a_subscription_number_from_the_subscription_numbering_scheme(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $service  = app(SubscriptionService::class);
+
+        /* Act */
+        $subscription = $service->createSubscription([
+            'company_id'  => $this->company->id,
+            'customer_id' => $customer->id,
+            'name'        => 'Auto-Numbered Subscription',
+        ]);
+
+        /* Assert */
+        $numbering = Numbering::query()
+            ->where('company_id', $this->company->id)
+            ->where('type', NumberingType::SUBSCRIPTION->value)
+            ->first();
+
+        $this->assertNotNull($numbering);
+        $this->assertSame(NumberingType::SUBSCRIPTION->prefix(), $numbering->resolvedPrefix());
+        $this->assertStringStartsWith($numbering->resolvedPrefix() . '-', $subscription->number);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_increments_the_numbering_scheme_for_each_generated_subscription_number(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $service  = app(SubscriptionService::class);
+
+        /* Act */
+        $first  = $service->createSubscription([
+            'company_id'  => $this->company->id,
+            'customer_id' => $customer->id,
+            'name'        => 'First Auto-Numbered Subscription',
+        ]);
+        $second = $service->createSubscription([
+            'company_id'  => $this->company->id,
+            'customer_id' => $customer->id,
+            'name'        => 'Second Auto-Numbered Subscription',
+        ]);
+
+        /* Assert */
+        $this->assertNotSame($first->number, $second->number);
     }
 
     #[Test]

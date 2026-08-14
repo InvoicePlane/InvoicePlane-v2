@@ -1308,6 +1308,16 @@ return [
     'default_quote_tax_rate'       => 'Default Quote Tax Rate',
     #endregion
 
+    #region NAVIGATION GROUPS
+    'nav_group_customers'                     => 'Customers',
+    'nav_group_quotes'                        => 'Quotes',
+    'nav_group_invoices'                      => 'Invoices',
+    'nav_group_expenses'                      => 'Expenses',
+    'nav_group_payments'                      => 'Payments',
+    'nav_group_resources'                     => 'Resources',
+    'nav_group_settings'                      => 'Settings',
+    #endregion
+
     #region SUBSCRIPTIONS MODULE
     'subscription'                            => 'Subscription',
     'subscriptions'                           => 'Subscriptions',
