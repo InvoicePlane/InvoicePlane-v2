@@ -26,8 +26,8 @@ class SettingFactory extends AbstractFactory
         $companyId = $company instanceof Company ? $company->id : $company;
 
         return $this->state(fn (): array => [
-            'company_id'    => $companyId,
-            'setting_key'   => fake()->unique()->word,
+            'company_id'  => $companyId,
+            'setting_key' => fake()->unique()->word,
         ]);
     }
 }

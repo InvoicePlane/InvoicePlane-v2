@@ -20,6 +20,7 @@ use Modules\Core\Services\Migration\Migrators\QuoteMigrator;
 use Modules\Core\Services\Migration\Migrators\TaxRateMigrator;
 use Modules\Core\Services\Migration\Support\FinancialInvariantValidator;
 use Modules\Core\Services\Migration\Support\V1SqlDumpParser;
+use Throwable;
 
 class V1MigrationManager extends BaseService
 {
@@ -29,12 +30,13 @@ class V1MigrationManager extends BaseService
     protected array $migrators = [];
 
     protected V1SqlDumpParser $sqlParser;
+
     protected FinancialInvariantValidator $invariantValidator;
 
     public function __construct(\Illuminate\Container\Container $app)
     {
         parent::__construct($app);
-        $this->sqlParser = new V1SqlDumpParser();
+        $this->sqlParser          = new V1SqlDumpParser();
         $this->invariantValidator = new FinancialInvariantValidator();
         $this->registerDefaultMigrators();
     }
@@ -42,20 +44,6 @@ class V1MigrationManager extends BaseService
     public function model(): string
     {
         return Company::class;
-    }
-
-    protected function registerDefaultMigrators(): void
-    {
-        $this->migrators = [
-            new TaxRateMigrator(),
-            new ClientMigrator(),
-            new ProductMigrator(),
-            new CustomFieldMigrator(),
-            new InvoiceMigrator(),
-            new PaymentMigrator(),
-            new QuoteMigrator(),
-            new ProjectMigrator(),
-        ];
     }
 
     /**
@@ -77,8 +65,9 @@ class V1MigrationManager extends BaseService
         string $tablePrefix = 'ip_'
     ): MigrationContext {
         $context = new MigrationContext($company, $user, $dryRun, null, $tablePrefix);
-        $tables = $this->sqlParser->parse($sqlOrPath);
+        $tables  = $this->sqlParser->parse($sqlOrPath);
         $context->setSourceTables($tables);
+
         return $context;
     }
 
@@ -117,6 +106,7 @@ class V1MigrationManager extends BaseService
         }
 
         $context->setDbConnection($connection);
+
         return $context;
     }
 
@@ -124,6 +114,7 @@ class V1MigrationManager extends BaseService
      * Test connection credentials to a v1 MySQL database.
      *
      * @param array<string, mixed> $config
+     *
      * @return array{success: bool, message: string, tables_found: int}
      */
     public function testDbConnection(array $config, string $prefix = 'ip_'): array
@@ -141,8 +132,8 @@ class V1MigrationManager extends BaseService
         ]);
 
         try {
-            $pdo = DB::connection($tempConnName)->getPdo();
-            $tables = DB::connection($tempConnName)->select('SHOW TABLES');
+            $pdo         = DB::connection($tempConnName)->getPdo();
+            $tables      = DB::connection($tempConnName)->select('SHOW TABLES');
             $tablesFound = 0;
             foreach ($tables as $t) {
                 $tableName = array_values((array) $t)[0] ?? '';
@@ -156,7 +147,7 @@ class V1MigrationManager extends BaseService
                 'message'      => "Connected successfully. Found {$tablesFound} matching tables with prefix '{$prefix}'.",
                 'tables_found' => $tablesFound,
             ];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return [
                 'success'      => false,
                 'message'      => 'Connection failed: ' . $e->getMessage(),
@@ -178,13 +169,13 @@ class V1MigrationManager extends BaseService
      */
     public function inspect(MigrationContext $context): array
     {
-        $entities = [];
-        $totalSource = 0;
+        $entities         = [];
+        $totalSource      = 0;
         $totalWillMigrate = 0;
-        $totalUnmappable = 0;
+        $totalUnmappable  = 0;
 
         foreach ($this->migrators as $migrator) {
-            $inspection = $migrator->inspect($context);
+            $inspection                  = $migrator->inspect($context);
             $entities[$migrator->name()] = [
                 'label'        => $migrator->label(),
                 'source_count' => $inspection['source_count'],
@@ -211,6 +202,7 @@ class V1MigrationManager extends BaseService
      * Run the complete migration (or dry run).
      *
      * @param ?Closure(string $status, string $message): void $progressCallback
+     *
      * @return array{
      *     success: bool,
      *     is_dry_run: bool,
@@ -232,7 +224,7 @@ class V1MigrationManager extends BaseService
         if (class_exists(Filament::class)) {
             try {
                 Filament::setTenant($context->getCompany());
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // Ignore if panel tenant not configured in CLI
             }
         }
@@ -245,7 +237,7 @@ class V1MigrationManager extends BaseService
         $executeLogic = function () use ($context, &$results) {
             foreach ($this->migrators as $migrator) {
                 $context->log("Migrating {$migrator->label()}...");
-                $res = $migrator->migrate($context);
+                $res                        = $migrator->migrate($context);
                 $results[$migrator->name()] = [
                     'label'    => $migrator->label(),
                     'migrated' => $res['migrated'],
@@ -253,7 +245,7 @@ class V1MigrationManager extends BaseService
                     'errors'   => $res['errors'],
                 ];
 
-                if (!empty($res['errors'])) {
+                if ( ! empty($res['errors'])) {
                     foreach ($res['errors'] as $err) {
                         $context->error($err);
                     }
@@ -272,7 +264,7 @@ class V1MigrationManager extends BaseService
             ? ['passed' => true, 'invoices_checked' => 0, 'quotes_checked' => 0, 'passed_count' => 0, 'failed_count' => 0, 'mismatches' => []]
             : $this->invariantValidator->validate($context);
 
-        if (!$invariants['passed']) {
+        if ( ! $invariants['passed']) {
             $context->warn("Financial invariants validation found {$invariants['failed_count']} mismatches.");
         } else {
             $context->log("Financial invariants verified successfully for all {$invariants['invoices_checked']} invoices and {$invariants['quotes_checked']} quotes.");
@@ -303,7 +295,7 @@ class V1MigrationManager extends BaseService
         // Rollback in reverse dependency order
         $reverseMigrators = array_reverse($this->migrators);
         foreach ($reverseMigrators as $migrator) {
-            $count = $migrator->rollback($context);
+            $count                            = $migrator->rollback($context);
             $deletedCounts[$migrator->name()] = $count;
             $context->log("Rolled back {$count} {$migrator->label()} records.");
         }
@@ -313,6 +305,20 @@ class V1MigrationManager extends BaseService
             'batch_id'       => $context->getBatchId(),
             'deleted_counts' => $deletedCounts,
             'logs'           => $context->getLogs(),
+        ];
+    }
+
+    protected function registerDefaultMigrators(): void
+    {
+        $this->migrators = [
+            new TaxRateMigrator(),
+            new ClientMigrator(),
+            new ProductMigrator(),
+            new CustomFieldMigrator(),
+            new InvoiceMigrator(),
+            new PaymentMigrator(),
+            new QuoteMigrator(),
+            new ProjectMigrator(),
         ];
     }
 }
