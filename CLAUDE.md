@@ -195,11 +195,21 @@ User::factory()->create(['is_active' => true, 'email_verified_at' => now()])
 
 ### DB for tests
 
-Tests need a DB. Production CI uses MariaDB 11. For local dev without MySQL, set in `.env.testing`:
+Tests need a real MariaDB DB — matching CI (MariaDB 11) — not SQLite. SQLite's lenient identifier
+quoting has silently masked real bugs before (e.g. `->latest()` defaulting to a nonexistent
+`created_at` column on `$timestamps = false` models passed locally, failed on CI). Run via the
+`cli` compose service, which points at the stack's `db` service automatically:
 ```
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
+docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
 ```
+No `.env.testing` edits needed — the `cli` service injects `DB_CONNECTION=mysql`/`DB_HOST=db` etc.
+itself. Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to
+behave differently for this app's Livewire form tests; `artisan test` is the reliable one.
+**Known issue:** a freshly-rebuilt `cli` image has reproduced false Livewire-form failures at
+scale even under `artisan test`, for reasons not yet isolated — see
+[#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689) and sanity-check with
+`--filter=ContactsTest` (should be 11/11 passing) before trusting a full run from a rebuilt image.
+See `.github/DOCKER.md`.
 
 ### AAA phase comment style
 
