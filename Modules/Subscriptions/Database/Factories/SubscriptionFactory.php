@@ -4,6 +4,7 @@ namespace Modules\Subscriptions\Database\Factories;
 
 use Modules\Clients\Models\Relation;
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\Company;
 use Modules\Subscriptions\Enums\BillingInterval;
 use Modules\Subscriptions\Enums\IntervalUnit;
 use Modules\Subscriptions\Enums\SubscriptionStatus;
@@ -16,12 +17,13 @@ class SubscriptionFactory extends AbstractFactory
 
     public function definition(): array
     {
-        $companyId = $this->resolveCompanyId();
+        $company   = $this->resolveCompany();
+        $companyId = $company?->id ?? $this->resolveCompanyId();
         $startsAt  = $this->faker->dateTimeBetween('-6 months', 'now');
 
         return [
             'company_id'               => $companyId,
-            'customer_id'              => $this->resolveForeignKey(Relation::class, $companyId),
+            'customer_id'              => $this->resolveCustomerId($company, $companyId),
             'number'                   => 'SUB-' . $this->faker->unique()->numerify('#####'),
             'name'                     => $this->faker->words(3, true) . ' Subscription',
             'status'                   => SubscriptionStatus::ACTIVE,
@@ -44,6 +46,26 @@ class SubscriptionFactory extends AbstractFactory
             'canceled_at'              => null,
             'notes'                    => $this->faker->sentence(),
         ];
+    }
+
+    /**
+     * Resolve an existing customer for the company, falling back to a factory
+     * scoped to the same company so generated customers never end up on a
+     * different tenant than the subscription.
+     */
+    private function resolveCustomerId(?Company $company, ?int $companyId): mixed
+    {
+        if (app()->runningUnitTests() && $companyId !== null) {
+            $existing = Relation::query()->where('company_id', $companyId)
+                ->inRandomOrder()
+                ->first();
+
+            if ($existing) {
+                return $existing->id;
+            }
+        }
+
+        return $company ? Relation::factory()->for($company) : Relation::factory();
     }
 
     public function configure(): static

@@ -63,7 +63,7 @@ class SubscriptionsTable
 
                 TextColumn::make('price')
                     ->label(trans('ip.recurring_price'))
-                    ->money('USD')
+                    ->money(fn (Subscription $record) => $record->currency_code ?? 'USD')
                     ->sortable(),
 
                 TextColumn::make('current_period_ends_at')

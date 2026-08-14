@@ -46,8 +46,8 @@ class SubscriptionForm
 
                                         TextInput::make('number')
                                             ->label(trans('ip.subscription_code'))
-                                            ->default(fn () => 'SUB-' . mb_strtoupper(mb_substr(uniqid(), -6)))
-                                            ->required(),
+                                            ->placeholder(trans('ip.subscription_code_auto'))
+                                            ->helperText(trans('ip.subscription_code_helper')),
 
                                         Select::make('status')
                                             ->label(trans('ip.subscription_status'))
@@ -98,6 +98,11 @@ class SubscriptionForm
                                             ->numeric()
                                             ->prefix('$')
                                             ->required(),
+
+                                        TextInput::make('currency_code')
+                                            ->label(trans('ip.currency_code'))
+                                            ->default('USD')
+                                            ->maxLength(3),
                                     ])
                                     ->columns(2),
                             ]),
@@ -175,6 +180,8 @@ class SubscriptionForm
                                         TextInput::make('total')
                                             ->label(trans('ip.total'))
                                             ->numeric()
+                                            ->disabled()
+                                            ->dehydrated(false)
                                             ->placeholder(trans('ip.total_auto_calc')),
                                     ]),
                             ])

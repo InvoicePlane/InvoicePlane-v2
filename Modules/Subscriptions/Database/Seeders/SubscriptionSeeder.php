@@ -15,10 +15,9 @@ use Modules\Subscriptions\Models\SubscriptionItem;
 
 class SubscriptionSeeder extends Seeder
 {
-    public function run(): void
+    public function run($company = null): void
     {
-        $company = Company::query()->whereRaw('LOWER(search_code) = ?', ['ivplv2'])->first()
-            ?? Company::query()->first();
+        $company = is_int($company) ? Company::query()->find($company) : $company;
 
         if ( ! $company) {
             return;

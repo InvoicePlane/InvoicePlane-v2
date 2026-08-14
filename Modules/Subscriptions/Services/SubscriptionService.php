@@ -26,7 +26,7 @@ class SubscriptionService extends BaseService
     {
         return DB::transaction(function () use ($data) {
             $data['company_id'] ??= $this->getCompanyId();
-            $data['number'] ??= 'SUB-' . mb_strtoupper(uniqid());
+            $data['number'] ??= $this->generateUniqueNumber($data['company_id']);
 
             $startsAt          = isset($data['starts_at']) ? Carbon::parse($data['starts_at']) : Carbon::now();
             $data['starts_at'] = $startsAt;
@@ -65,6 +65,21 @@ class SubscriptionService extends BaseService
     }
 
     /**
+     * Generate a subscription number that is unique within the given company.
+     */
+    private function generateUniqueNumber(?int $companyId): string
+    {
+        do {
+            $number = 'SUB-' . mb_strtoupper(bin2hex(random_bytes(4)));
+        } while (Subscription::withoutGlobalScopes()
+            ->where('company_id', $companyId)
+            ->where('number', $number)
+            ->exists());
+
+        return $number;
+    }
+
+    /**
      * Calculate period start and end dates based on interval configuration.
      */
     public function calculateNextPeriodDates(
@@ -72,7 +87,8 @@ class SubscriptionService extends BaseService
         string|IntervalUnit $intervalUnit = IntervalUnit::MONTH,
         int $intervalCount = 1,
         ?Carbon $from = null
-    ): array {
+    ): array
+    {
         $from     = $from ? $from->copy() : Carbon::now();
         $startsAt = $from->copy();
         $endsAt   = $from->copy();
@@ -219,8 +235,10 @@ class SubscriptionService extends BaseService
      */
     public function processBillingCycle(Subscription $subscription): ?Invoice
     {
-        // Check if subscription should cancel at period end
-        if ($subscription->cancel_at_period_end) {
+        // Cancellation scheduled for period end only takes effect once the period has actually ended
+        if ($subscription->cancel_at_period_end
+            && $subscription->current_period_ends_at
+            && $subscription->current_period_ends_at->isPast()) {
             $this->cancelImmediately($subscription);
 
             return null;
@@ -231,6 +249,13 @@ class SubscriptionService extends BaseService
         }
 
         return DB::transaction(function () use ($subscription) {
+            /** @var Subscription $subscription */
+            $subscription = Subscription::query()->whereKey($subscription->id)->lockForUpdate()->firstOrFail();
+
+            if ($subscription->status === SubscriptionStatus::CANCELED || $subscription->status === SubscriptionStatus::PAUSED) {
+                return null;
+            }
+
             $userId = auth()->id()
                 ?? \Modules\Core\Models\User::query()->whereHas('companies', fn ($q) => $q->where('companies.id', $subscription->company_id))->first()?->id
                 ?? 1;
@@ -239,7 +264,7 @@ class SubscriptionService extends BaseService
                 'company_id'               => $subscription->company_id,
                 'customer_id'              => $subscription->customer_id,
                 'user_id'                  => $userId,
-                'invoice_number'           => 'INV-' . mb_strtoupper(mb_substr(uniqid(), -6)),
+                'invoice_number'           => 'INV-' . mb_strtoupper(bin2hex(random_bytes(4))),
                 'invoiced_at'              => Carbon::now(),
                 'invoice_due_at'           => Carbon::now()->addDays(14),
                 'invoice_status'           => InvoiceStatus::SENT,
@@ -250,7 +275,7 @@ class SubscriptionService extends BaseService
                 'invoice_tax_total'        => 0.0000,
                 'invoice_total'            => $subscription->price,
                 'summary'                  => "Subscription Invoice for {$subscription->name} ({$subscription->number})",
-                'url_key'                  => mb_strtolower(uniqid()),
+                'url_key'                  => mb_strtolower(bin2hex(random_bytes(16))),
             ]);
 
             // Copy items to invoice

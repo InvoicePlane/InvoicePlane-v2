@@ -35,7 +35,8 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
             ->test(ListSubscriptions::class);
 
         /* Assert */
-        $component->assertSuccessful();
+        $component->assertSuccessful()
+            ->assertCanSeeTableRecords([$subscription]);
     }
 
     #[Test]
@@ -242,5 +243,31 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
         /* Billing cycle advances period start and end */
         $this->assertNotNull($subscription->current_period_starts_at);
         $this->assertNotNull($subscription->current_period_ends_at);
+    }
+
+    #[Test]
+    #[Group('billing')]
+    public function it_keeps_billing_a_subscription_scheduled_to_cancel_until_its_period_ends(): void
+    {
+        /* Arrange */
+        $subscription = Subscription::factory()
+            ->for($this->company)
+            ->create([
+                'status'                   => SubscriptionStatus::ACTIVE,
+                'billing_interval'         => BillingInterval::MONTHLY,
+                'price'                    => 250.00,
+                'cancel_at_period_end'     => true,
+                'canceled_at'              => Carbon::now(),
+                'current_period_ends_at'   => Carbon::now()->addDays(10),
+            ]);
+        $service = app(SubscriptionService::class);
+
+        /* Act */
+        $invoice = $service->processBillingCycle($subscription);
+        $subscription->refresh();
+
+        /* Assert */
+        $this->assertInstanceOf(Invoice::class, $invoice);
+        $this->assertEquals(SubscriptionStatus::ACTIVE, $subscription->status);
     }
 }

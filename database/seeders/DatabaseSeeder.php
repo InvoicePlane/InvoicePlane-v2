@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
 
             $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
 
-            $this->call(SubscriptionSeeder::class);
+            $this->callWith(SubscriptionSeeder::class, $p);
 
             (new TaxRatesSeeder())->buildOne($company->id);
 
