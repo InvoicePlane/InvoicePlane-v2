@@ -38,12 +38,16 @@ class InvoiceListActionsTest extends AbstractCompanyPanelTestCase
          * assigns client_admin, which carries create/edit/delete/duplicate
          * on invoices, create-payments and email-invoices.
          */
-        $this->customer = Relation::factory()->for($this->company)->customer()->create();
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        /** @var Relation $customer */
+        $this->customer = $customer;
 
-        $this->numbering = Numbering::factory()
+        /** @var Numbering $numbering */
+        $numbering = Numbering::factory()
             ->for($this->company)
             ->state(['type' => NumberingType::INVOICE->value])
             ->create();
+        $this->numbering = $numbering;
     }
 
     #[Test]
@@ -66,6 +70,7 @@ class InvoiceListActionsTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertHasNoErrors();
 
+        /** @var Invoice|null $copy */
         $copy = Invoice::query()
             ->where('id', '!=', $invoice->id)
             ->orderByDesc('id')
@@ -278,12 +283,15 @@ class InvoiceListActionsTest extends AbstractCompanyPanelTestCase
 
     protected function makeInvoice(array $attributes = []): Invoice
     {
-        return Invoice::factory()->for($this->company)->create(array_merge([
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->for($this->company)->create(array_merge([
             'customer_id'  => $this->customer->id,
             'numbering_id' => $this->numbering->id,
             'user_id'      => $this->user->id,
             'is_read_only' => false,
         ], $attributes));
+
+        return $invoice;
     }
 
     protected function listInvoices()

@@ -140,10 +140,8 @@ class LoginResponseTest extends AbstractAdminPanelTestCase
 
     private function dispatchResponse(): RedirectResponse
     {
-        /** @var RedirectResponse $response */
-        $response = (new LoginResponse())->toResponse(request());
-
-        return $response;
+        /** @var RedirectResponse */
+        return (new LoginResponse())->toResponse(request());
     }
 
     // endregion

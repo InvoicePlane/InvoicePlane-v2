@@ -61,9 +61,11 @@ class EmailTemplateVariableResolver
     {
         $contacts = $client->contacts()->with('communications')->get();
 
-        return $contacts->firstWhere('default_to', true)
+        $contact = $contacts->firstWhere('default_to', true)
             ?? ($client->primary_contact_id ? $contacts->firstWhere('id', $client->primary_contact_id) : null)
             ?? $contacts->first();
+
+        return $contact instanceof Contact ? $contact : null;
     }
 
     protected function invoicingContactEmail(?Relation $client, ?Contact $contact): string

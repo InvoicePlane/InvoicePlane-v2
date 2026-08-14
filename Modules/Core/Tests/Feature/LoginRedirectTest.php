@@ -205,20 +205,26 @@ class LoginRedirectTest extends AbstractCompanyPanelTestCase
 
     private function activeUser(array $overrides = []): User
     {
-        return User::factory()->create(array_merge([
+        /** @var User $user */
+        $user = User::factory()->create(array_merge([
             'is_active'         => true,
             'email_verified_at' => Carbon::now(),
             'password'          => bcrypt('password'),
         ], $overrides));
+
+        return $user;
     }
 
     private function ivplv2Company(): Company
     {
-        return Company::factory()->create([
+        /** @var Company $company */
+        $company = Company::factory()->create([
             'search_code' => 'ivplv2',
             'name'        => 'InvoicePlane Corporation',
             'slug'        => 'invoiceplane-corporation',
         ]);
+
+        return $company;
     }
 
     private function elevatedRole(string $role): void
