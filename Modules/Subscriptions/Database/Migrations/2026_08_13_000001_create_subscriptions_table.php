@@ -40,7 +40,6 @@ return new class () extends Migration {
             $table->timestamp('canceled_at')->nullable();
 
             $table->text('notes')->nullable();
-            $table->timestamps();
             $table->softDeletes();
 
             $table->index(['company_id', 'status']);
@@ -57,7 +56,6 @@ return new class () extends Migration {
             $table->decimal('subtotal', 15, 4)->default(0.0000);
             $table->decimal('tax', 15, 4)->default(0.0000);
             $table->decimal('total', 15, 4)->default(0.0000);
-            $table->timestamps();
         });
     }
 
