@@ -17,8 +17,8 @@ enum CancellationType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::IMMEDIATE     => 'Cancel Immediately',
-            self::AT_PERIOD_END => 'Cancel at End of Billing Period',
+            self::IMMEDIATE     => trans('ip.cancellation_type_immediate'),
+            self::AT_PERIOD_END => trans('ip.cancellation_type_at_period_end'),
         };
     }
 

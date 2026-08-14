@@ -29,28 +29,28 @@ class SubscriptionForm
                         Schemas\Components\Group::make()
                             ->columnSpan(3)
                             ->schema([
-                                Section::make('Subscription Overview')
+                                Section::make(trans('ip.subscription_overview'))
                                     ->schema([
                                         TextInput::make('name')
-                                            ->label('Subscription Title')
+                                            ->label(trans('ip.subscription_title'))
                                             ->required()
-                                            ->placeholder('e.g. Enterprise Monthly Software License')
+                                            ->placeholder(trans('ip.subscription_title_placeholder'))
                                             ->columnSpanFull(),
 
                                         Select::make('customer_id')
-                                            ->label('Client / Customer')
+                                            ->label(trans('ip.subscription_client'))
                                             ->relationship('customer', 'company_name')
                                             ->searchable()
                                             ->preload()
                                             ->required(),
 
                                         TextInput::make('number')
-                                            ->label('Subscription Code / Ref')
+                                            ->label(trans('ip.subscription_code'))
                                             ->default(fn () => 'SUB-' . mb_strtoupper(mb_substr(uniqid(), -6)))
                                             ->required(),
 
                                         Select::make('status')
-                                            ->label('Subscription Status')
+                                            ->label(trans('ip.subscription_status'))
                                             ->options(
                                                 collect(SubscriptionStatus::cases())
                                                     ->mapWithKeys(fn ($s) => [$s->value => $s->label()])
@@ -61,10 +61,10 @@ class SubscriptionForm
                                     ])
                                     ->columns(2),
 
-                                Section::make('Billing Cycle Configuration')
+                                Section::make(trans('ip.billing_cycle_configuration'))
                                     ->schema([
                                         Select::make('billing_interval')
-                                            ->label('Billing Interval')
+                                            ->label(trans('ip.billing_interval'))
                                             ->options(
                                                 collect(BillingInterval::cases())
                                                     ->mapWithKeys(fn ($i) => [$i->value => $i->label()])
@@ -75,7 +75,7 @@ class SubscriptionForm
                                             ->required(),
 
                                         Select::make('interval_unit')
-                                            ->label('Custom Unit')
+                                            ->label(trans('ip.custom_unit'))
                                             ->options(
                                                 collect(IntervalUnit::cases())
                                                     ->mapWithKeys(fn ($u) => [$u->value => $u->label()])
@@ -86,7 +86,7 @@ class SubscriptionForm
                                             ->required(fn (Get $get) => $get('billing_interval') === BillingInterval::CUSTOM->value),
 
                                         TextInput::make('interval_count')
-                                            ->label('Custom Count (Frequency)')
+                                            ->label(trans('ip.custom_count'))
                                             ->numeric()
                                             ->default(1)
                                             ->minValue(1)
@@ -94,7 +94,7 @@ class SubscriptionForm
                                             ->required(fn (Get $get) => $get('billing_interval') === BillingInterval::CUSTOM->value),
 
                                         TextInput::make('price')
-                                            ->label('Recurring Price')
+                                            ->label(trans('ip.recurring_price'))
                                             ->numeric()
                                             ->prefix('$')
                                             ->required(),
@@ -105,39 +105,39 @@ class SubscriptionForm
                         Schemas\Components\Group::make()
                             ->columnSpan(2)
                             ->schema([
-                                Section::make('Lifecycle & Trial Dates')
+                                Section::make(trans('ip.lifecycle_and_trial_dates'))
                                     ->schema([
                                         DateTimePicker::make('starts_at')
-                                            ->label('Start Date')
+                                            ->label(trans('ip.start_date'))
                                             ->default(now())
                                             ->required(),
 
                                         DateTimePicker::make('ends_at')
-                                            ->label('Expiration / End Date')
+                                            ->label(trans('ip.expiration_date'))
                                             ->nullable(),
 
                                         DateTimePicker::make('trial_starts_at')
-                                            ->label('Trial Start Date')
+                                            ->label(trans('ip.trial_start_date'))
                                             ->nullable(),
 
                                         DateTimePicker::make('trial_ends_at')
-                                            ->label('Trial End Date')
+                                            ->label(trans('ip.trial_end_date'))
                                             ->nullable(),
 
                                         TextInput::make('grace_period_days')
-                                            ->label('Grace Period (Days)')
+                                            ->label(trans('ip.grace_period_days'))
                                             ->numeric()
                                             ->default(0),
 
                                         DateTimePicker::make('grace_period_ends_at')
-                                            ->label('Grace Period Expiration')
+                                            ->label(trans('ip.grace_period_expiration'))
                                             ->nullable(),
                                     ])
                                     ->columns(1),
                             ]),
                     ]),
 
-                Section::make('Subscription Line Items')
+                Section::make(trans('ip.subscription_line_items'))
                     ->schema([
                         Repeater::make('subscriptionItems')
                             ->relationship('subscriptionItems')
@@ -145,7 +145,7 @@ class SubscriptionForm
                                 Grid::make(5)
                                     ->schema([
                                         Select::make('product_id')
-                                            ->label('Product / Service')
+                                            ->label(trans('ip.product_service'))
                                             ->options(Product::query()->pluck('product_name', 'id')->toArray())
                                             ->searchable()
                                             ->preload()
@@ -158,24 +158,24 @@ class SubscriptionForm
                                             }),
 
                                         TextInput::make('name')
-                                            ->label('Description')
+                                            ->label(trans('ip.description'))
                                             ->required(),
 
                                         TextInput::make('quantity')
-                                            ->label('Qty')
+                                            ->label(trans('ip.quantity'))
                                             ->numeric()
                                             ->default(1)
                                             ->required(),
 
                                         TextInput::make('unit_price')
-                                            ->label('Unit Price')
+                                            ->label(trans('ip.unit_price'))
                                             ->numeric()
                                             ->required(),
 
                                         TextInput::make('total')
-                                            ->label('Total')
+                                            ->label(trans('ip.total'))
                                             ->numeric()
-                                            ->placeholder('Auto-calc'),
+                                            ->placeholder(trans('ip.total_auto_calc')),
                                     ]),
                             ])
                             ->columns(1)
@@ -184,10 +184,10 @@ class SubscriptionForm
                     ])
                     ->columnSpanFull(),
 
-                Section::make('Internal Notes')
+                Section::make(trans('ip.internal_notes'))
                     ->schema([
                         MarkdownEditor::make('notes')
-                            ->label('Subscription Notes')
+                            ->label(trans('ip.subscription_notes'))
                             ->toolbarButtons(['bold', 'italic', 'bulletList'])
                             ->columnSpanFull(),
                     ])

@@ -21,12 +21,12 @@ enum SubscriptionStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::ACTIVE          => 'Active',
-            self::TRIALING        => 'Trialing',
-            self::IN_GRACE_PERIOD => 'In Grace Period',
-            self::PAUSED          => 'Paused',
-            self::CANCELED        => 'Canceled',
-            self::EXPIRED         => 'Expired',
+            self::ACTIVE          => trans('ip.subscription_status_active'),
+            self::TRIALING        => trans('ip.subscription_status_trialing'),
+            self::IN_GRACE_PERIOD => trans('ip.subscription_status_in_grace_period'),
+            self::PAUSED          => trans('ip.subscription_status_paused'),
+            self::CANCELED        => trans('ip.subscription_status_canceled'),
+            self::EXPIRED         => trans('ip.subscription_status_expired'),
         };
     }
 

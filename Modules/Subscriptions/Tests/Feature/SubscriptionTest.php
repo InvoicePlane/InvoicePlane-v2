@@ -22,6 +22,7 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('smoke')]
     public function it_lists_subscriptions(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create([
@@ -29,9 +30,11 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
                 'status' => SubscriptionStatus::ACTIVE,
             ]);
 
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(ListSubscriptions::class);
 
+        /* Assert */
         $component->assertSuccessful();
     }
 
@@ -39,9 +42,11 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_subscription_with_monthly_interval(): void
     {
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->customer()->create();
+        $service  = app(SubscriptionService::class);
 
-        $service      = app(SubscriptionService::class);
+        /* Act */
         $subscription = $service->createSubscription([
             'company_id'       => $this->company->id,
             'customer_id'      => $customer->id,
@@ -57,6 +62,7 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
             ],
         ]);
 
+        /* Assert */
         $this->assertDatabaseHas('subscriptions', [
             'id'          => $subscription->id,
             'name'        => 'Pro Monthly Subscription',
@@ -76,9 +82,11 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_creates_subscription_with_custom_billing_cycle(): void
     {
+        /* Arrange */
         $customer = Relation::factory()->for($this->company)->customer()->create();
+        $service  = app(SubscriptionService::class);
 
-        $service      = app(SubscriptionService::class);
+        /* Act */
         $subscription = $service->createSubscription([
             'company_id'       => $this->company->id,
             'customer_id'      => $customer->id,
@@ -89,6 +97,7 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
             'price'            => 150.00,
         ]);
 
+        /* Assert */
         $this->assertEquals(BillingInterval::CUSTOM, $subscription->billing_interval);
         $this->assertEquals(IntervalUnit::DAY, $subscription->interval_unit);
         $this->assertEquals(14, $subscription->interval_count);
@@ -101,11 +110,12 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('lifecycle')]
     public function it_handles_trial_period(): void
     {
-        $customer = Relation::factory()->for($this->company)->customer()->create();
-
+        /* Arrange */
+        $customer    = Relation::factory()->for($this->company)->customer()->create();
         $trialEndsAt = Carbon::now()->addDays(14);
+        $service     = app(SubscriptionService::class);
 
-        $service      = app(SubscriptionService::class);
+        /* Act */
         $subscription = $service->createSubscription([
             'company_id'       => $this->company->id,
             'customer_id'      => $customer->id,
@@ -115,6 +125,7 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
             'price'            => 99.00,
         ]);
 
+        /* Assert */
         $this->assertEquals(SubscriptionStatus::TRIALING, $subscription->status);
         $this->assertTrue($subscription->isTrialing());
     }
@@ -123,14 +134,17 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('lifecycle')]
     public function it_handles_grace_period(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create(['status' => SubscriptionStatus::ACTIVE]);
-
         $service = app(SubscriptionService::class);
-        $service->enterGracePeriod($subscription, 7);
 
+        /* Act */
+        $service->enterGracePeriod($subscription, 7);
         $subscription->refresh();
+
+        /* Assert */
         $this->assertEquals(SubscriptionStatus::IN_GRACE_PERIOD, $subscription->status);
         $this->assertEquals(7, $subscription->grace_period_days);
         $this->assertTrue($subscription->isInGracePeriod());
@@ -140,21 +154,25 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('lifecycle')]
     public function it_pauses_and_resumes_subscription(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create(['status' => SubscriptionStatus::ACTIVE]);
-
         $service = app(SubscriptionService::class);
 
-        // Pause
+        /* Act */
         $service->pause($subscription);
         $subscription->refresh();
+
+        /* Assert */
         $this->assertEquals(SubscriptionStatus::PAUSED, $subscription->status);
         $this->assertNotNull($subscription->paused_at);
 
-        // Resume
+        /* Act */
         $service->resume($subscription);
         $subscription->refresh();
+
+        /* Assert */
         $this->assertEquals(SubscriptionStatus::ACTIVE, $subscription->status);
         $this->assertNull($subscription->paused_at);
     }
@@ -163,14 +181,17 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('lifecycle')]
     public function it_cancels_subscription_immediately(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create(['status' => SubscriptionStatus::ACTIVE]);
-
         $service = app(SubscriptionService::class);
-        $service->cancelImmediately($subscription);
 
+        /* Act */
+        $service->cancelImmediately($subscription);
         $subscription->refresh();
+
+        /* Assert */
         $this->assertEquals(SubscriptionStatus::CANCELED, $subscription->status);
         $this->assertNotNull($subscription->canceled_at);
         $this->assertNotNull($subscription->ends_at);
@@ -180,17 +201,20 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('lifecycle')]
     public function it_cancels_subscription_at_period_end(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create(['status' => SubscriptionStatus::ACTIVE]);
-
         $service = app(SubscriptionService::class);
-        $service->cancelAtPeriodEnd($subscription);
 
+        /* Act */
+        $service->cancelAtPeriodEnd($subscription);
         $subscription->refresh();
+
+        /* Assert */
         $this->assertTrue($subscription->cancel_at_period_end);
         $this->assertNotNull($subscription->canceled_at);
-        // Status remains active until period ends
+        /* Status remains active until period ends */
         $this->assertEquals(SubscriptionStatus::ACTIVE, $subscription->status);
     }
 
@@ -198,6 +222,7 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
     #[Group('billing')]
     public function it_processes_billing_cycle_and_generates_invoice(): void
     {
+        /* Arrange */
         $subscription = Subscription::factory()
             ->for($this->company)
             ->create([
@@ -205,15 +230,16 @@ class SubscriptionTest extends AbstractCompanyPanelTestCase
                 'billing_interval' => BillingInterval::MONTHLY,
                 'price'            => 250.00,
             ]);
-
         $service = app(SubscriptionService::class);
-        $invoice = $service->processBillingCycle($subscription);
 
+        /* Act */
+        $invoice = $service->processBillingCycle($subscription);
+        $subscription->refresh();
+
+        /* Assert */
         $this->assertInstanceOf(Invoice::class, $invoice);
         $this->assertEquals($subscription->customer_id, $invoice->customer_id);
-
-        $subscription->refresh();
-        // Billing cycle advances period start and end
+        /* Billing cycle advances period start and end */
         $this->assertNotNull($subscription->current_period_starts_at);
         $this->assertNotNull($subscription->current_period_ends_at);
     }

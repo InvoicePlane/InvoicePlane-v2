@@ -28,17 +28,17 @@ class SubscriptionResource extends BaseResource
 
     public static function getModelLabel(): string
     {
-        return 'Subscription';
+        return trans('ip.subscription');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Subscriptions';
+        return trans('ip.subscriptions');
     }
 
     public static function getNavigationLabel(): string
     {
-        return 'Subscriptions';
+        return trans('ip.subscriptions');
     }
 
     public static function getNavigationBadge(): ?string

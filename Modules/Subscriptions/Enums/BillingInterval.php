@@ -19,10 +19,10 @@ enum BillingInterval: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::WEEKLY  => 'Weekly',
-            self::MONTHLY => 'Monthly',
-            self::YEARLY  => 'Yearly',
-            self::CUSTOM  => 'Custom Cycle',
+            self::WEEKLY  => trans('ip.billing_interval_weekly'),
+            self::MONTHLY => trans('ip.billing_interval_monthly'),
+            self::YEARLY  => trans('ip.billing_interval_yearly'),
+            self::CUSTOM  => trans('ip.billing_interval_custom'),
         };
     }
 

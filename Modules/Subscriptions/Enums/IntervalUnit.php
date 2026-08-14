@@ -19,10 +19,10 @@ enum IntervalUnit: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DAY   => 'Day(s)',
-            self::WEEK  => 'Week(s)',
-            self::MONTH => 'Month(s)',
-            self::YEAR  => 'Year(s)',
+            self::DAY   => trans('ip.interval_unit_day'),
+            self::WEEK  => trans('ip.interval_unit_week'),
+            self::MONTH => trans('ip.interval_unit_month'),
+            self::YEAR  => trans('ip.interval_unit_year'),
         };
     }
 
