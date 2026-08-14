@@ -119,7 +119,7 @@ class Relation extends Model
 
     public function ccEmailCommunications()
     {
-        /** @var MorphMany */
+        /* @var MorphMany */
         return $this->communications()->where('communication_type', CommunicationType::INVOICE_CC->value);
     }
 
