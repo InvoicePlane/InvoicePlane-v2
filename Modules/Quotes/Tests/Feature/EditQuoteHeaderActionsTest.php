@@ -116,7 +116,8 @@ class EditQuoteHeaderActionsTest extends AbstractCompanyPanelTestCase
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        return Quote::factory()->for($this->company)->create(array_merge([
+        /** @var Quote $quote */
+        $quote = Quote::factory()->for($this->company)->create(array_merge([
             'quote_number' => 'Q-987654',
             'prospect_id'  => $prospect->getKey(),
             'numbering_id' => $documentGroup->getKey(),
@@ -124,5 +125,7 @@ class EditQuoteHeaderActionsTest extends AbstractCompanyPanelTestCase
             'quote_status' => $status->value,
             'quoted_at'    => '2025-05-10',
         ], $attributes));
+
+        return $quote;
     }
 }

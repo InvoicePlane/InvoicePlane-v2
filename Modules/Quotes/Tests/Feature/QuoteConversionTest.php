@@ -109,7 +109,8 @@ class QuoteConversionTest extends AbstractCompanyPanelTestCase
         $prospect      = Relation::factory()->for($this->company)->prospect()->create();
         $documentGroup = Numbering::factory()->for($this->company)->create();
 
-        return Quote::factory()->for($this->company)->create(array_merge([
+        /** @var Quote $quote */
+        $quote = Quote::factory()->for($this->company)->create(array_merge([
             'quote_number' => 'Q-' . fake()->unique()->numberBetween(1000, 99999),
             'prospect_id'  => $prospect->getKey(),
             'numbering_id' => $documentGroup->getKey(),
@@ -117,5 +118,7 @@ class QuoteConversionTest extends AbstractCompanyPanelTestCase
             'quote_status' => QuoteStatus::APPROVED->value,
             'quoted_at'    => '2025-05-10',
         ], $attributes));
+
+        return $quote;
     }
 }
