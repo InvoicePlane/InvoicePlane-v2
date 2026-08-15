@@ -48,6 +48,10 @@ package-lock.json
 /test.txt
 /todo.txt
 /unit_depr.txt
+*test*results*.log
+*test*output*.log
+/full-test-results*.log
+/output-stream*.log
 
 # PHPStan
 /phpstan.json
