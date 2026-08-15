@@ -92,7 +92,7 @@ return new class () extends Migration {
 
         $rows = DB::select(
             'SELECT COLUMN_NAME AS name FROM information_schema.columns '
-            ."WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+            . 'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
             [$database, $table, $column]
         );
 
@@ -119,7 +119,7 @@ return new class () extends Migration {
         $database = DB::connection()->getDatabaseName();
         $rows     = DB::select(
             'SELECT INDEX_NAME AS name FROM information_schema.statistics '
-            ."WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND INDEX_NAME = ?",
+            . 'WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND INDEX_NAME = ?',
             [$database, $table, $index]
         );
 
