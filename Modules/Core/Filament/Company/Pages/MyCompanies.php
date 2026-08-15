@@ -28,7 +28,7 @@ class MyCompanies extends Page implements HasTable
         /** @var User $user */
         $user = auth()->user();
 
-        $query = $user->hasRole(['super_admin', 'admin', 'assist'])
+        $query = $user->hasRole(UserRole::elevated())
             ? Company::query()
             : $user->companies()->getQuery();
 

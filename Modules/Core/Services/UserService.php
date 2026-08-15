@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Events\UserWasCreated;
 use Modules\Core\Events\UserWasUpdated;
 use Modules\Core\Models\Company;
@@ -147,7 +148,7 @@ class UserService extends BaseService
     public function assertBelongsToCompany(User $user, Company|int $company): void
     {
         $companyId = $company instanceof Company ? $company->id : $company;
-        $isElevated = $user->hasRole(['super_admin', 'admin', 'assist']);
+        $isElevated = $user->hasRole(UserRole::elevated());
 
         if ( ! $isElevated && ! $user->companies()->whereKey($companyId)->exists()) {
             throw new AuthorizationException(
