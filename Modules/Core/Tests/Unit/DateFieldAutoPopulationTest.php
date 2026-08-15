@@ -156,7 +156,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestSkipped(
             'Flaky in the container: the 2-second tolerance assertion is timing-sensitive '
-            .'against mid-test config() mutations; see issue #44 in batch #685 for context.'
+            . 'against mid-test config() mutations; see issue #44 in batch #685 for context.'
         );
 
         /* Arrange */
