@@ -3,9 +3,9 @@
 namespace Modules\Core\Filament\Company\Resources\CompanyUsers;
 
 use BackedEnum;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\TextInput;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -25,9 +25,9 @@ class CompanyUserResource extends Resource
 
     protected static ?string $navigationLabel = 'team_members';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->schema([
             TextInput::make('email')
                 ->label(trans('ip.email'))
                 ->email()
