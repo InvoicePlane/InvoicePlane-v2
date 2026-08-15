@@ -31,7 +31,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -66,7 +66,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -106,7 +106,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -134,7 +134,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -173,7 +173,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_recurringinvoice_without_required_start_at(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -190,10 +190,10 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
@@ -207,7 +207,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
         $user     = $this->user;
         $customer = Relation::factory()->for($company)->customer()->create();
@@ -238,7 +238,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $recurring = RecurringInvoice::factory()
             ->for($this->user->companies()->first())
@@ -282,7 +282,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         //$this->actingAs(User::factory()->create());
 
@@ -297,10 +297,10 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
             'end_at'       => '2025-04-30',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
@@ -318,7 +318,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 
