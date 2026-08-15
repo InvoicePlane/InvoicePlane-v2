@@ -51,6 +51,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_filters_numberings_by_current_company_id(): void
     {
         /* Arrange */
