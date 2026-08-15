@@ -35,6 +35,7 @@ class RelationListRowActionsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_shows_create_invoice_action_only_for_customer_relations(): void
     {
         /* Arrange */
@@ -53,6 +54,7 @@ class RelationListRowActionsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_shows_create_quote_action_for_all_relation_types(): void
     {
         /* Arrange */
@@ -71,6 +73,7 @@ class RelationListRowActionsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_hides_delete_action_when_relation_has_linked_records(): void
     {
         /* Arrange */

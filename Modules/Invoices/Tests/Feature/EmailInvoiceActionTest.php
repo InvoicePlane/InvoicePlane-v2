@@ -35,6 +35,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_prefills_the_modal_from_the_companys_invoice_email_template(): void
     {
         /*

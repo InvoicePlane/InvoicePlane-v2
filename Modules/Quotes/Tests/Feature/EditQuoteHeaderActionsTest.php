@@ -35,6 +35,7 @@ class EditQuoteHeaderActionsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_shows_all_header_actions_on_draft_quote(): void
     {
         /* Arrange */
