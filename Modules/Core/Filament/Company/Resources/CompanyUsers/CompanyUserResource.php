@@ -23,7 +23,7 @@ class CompanyUserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
-    protected static ?string $navigationLabel = 'Team Members';
+    protected static ?string $navigationLabel = 'team_members';
 
     public static function form(Form $form): Form
     {
@@ -52,7 +52,7 @@ class CompanyUserResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Tables\Actions\Action::make('remove')
-                    ->label('Remove')
+                    ->label(trans('ip.remove'))
                     ->icon('heroicon-m-trash-2')
                     ->color('danger')
                     ->action(function (User $record) {
