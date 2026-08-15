@@ -33,6 +33,8 @@ use Modules\Core\Filament\Company\Pages\Reports\InvoicesPerClientReport;
 use Modules\Core\Filament\Company\Pages\Reports\InvoicingHistoryReport;
 use Modules\Core\Filament\Company\Pages\Reports\PaymentHistoryReport;
 use Modules\Core\Filament\Company\Pages\Reports\SalesByDateReport;
+use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
+use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
