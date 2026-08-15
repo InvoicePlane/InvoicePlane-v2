@@ -2,12 +2,12 @@
 
 namespace Modules\Core\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Modules\Core\Enums\UserRole;
 use Modules\Core\Events\UserWasCreated;
 use Modules\Core\Events\UserWasUpdated;
 use Modules\Core\Models\Company;
@@ -138,23 +138,16 @@ class UserService extends BaseService
     }
 
     /**
-     * Assert that the user has permission/membership to access the specified company.
-     * Elevated roles (super_admin, admin, assist) have access to all companies.
+     * Guard against switching a user's active tenant to a company they aren't a
+     * member of. Called from the record resolved by Filament's table-action
+     * dispatch, which is not something callers otherwise verify — see #687.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
-    public function assertBelongsToCompany(User $user, Company|int $company): void
+    public function assertBelongsToCompany(User $user, Company $company): void
     {
-        if ($user->hasAnyRole(UserRole::elevated())) {
-            return;
-        }
-
-        $companyId = $company instanceof Company ? $company->id : $company;
-
-        if ( ! $user->companies()->where('companies.id', $companyId)->exists()) {
-            throw new \Illuminate\Auth\Access\AuthorizationException(
-                trans('ip.user_not_in_company') ?: 'You do not have access to this company.'
-            );
+        if ( ! $user->companies()->whereKey($company->id)->exists()) {
+            throw new AuthorizationException("User {$user->id} is not a member of company {$company->id}.");
         }
     }
 }
