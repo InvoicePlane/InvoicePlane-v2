@@ -17,11 +17,11 @@ class ListCompanyUsers extends ListRecords
     {
         return [
             Action::make('add_user')
-                ->label('Add Team Member')
+                ->label(trans('ip.add_team_member'))
                 ->icon('heroicon-m-plus')
                 ->form([
                     TextInput::make('email')
-                        ->label('Email')
+                        ->label(trans('ip.email'))
                         ->email()
                         ->required()
                         ->unique(ignoreRecord: true),
@@ -31,8 +31,8 @@ class ListCompanyUsers extends ListRecords
                     if (!$user) {
                         \Filament\Notifications\Notification::make()
                             ->danger()
-                            ->title('User not found')
-                            ->body("No user found with email '{$data['email']}'")
+                            ->title(trans('ip.user_not_found'))
+                            ->body(trans('ip.no_user_found_with_email', ['email' => $data['email']]))
                             ->send();
                         return;
                     }
@@ -41,12 +41,12 @@ class ListCompanyUsers extends ListRecords
 
                     \Filament\Notifications\Notification::make()
                         ->success()
-                        ->title('Team member added')
-                        ->body("{$user->name} has been added to the team.")
+                        ->title(trans('ip.team_member_added'))
+                        ->body(trans('ip.user_added_to_team', ['name' => $user->name]))
                         ->send();
                 })
-                ->modalHeading('Add Team Member')
-                ->modalSubmitActionLabel('Add Member'),
+                ->modalHeading(trans('ip.add_team_member'))
+                ->modalSubmitActionLabel(trans('ip.add_member')),
         ];
     }
 }
