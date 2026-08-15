@@ -93,6 +93,9 @@ help:
 docker-test:
 	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && DB_HOST=mariadb php artisan test --exclude-group=failing,flaky,troubleshooting"
 
+docker-test-fast:
+	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && $(PHPUNIT) --configuration $(CONFIG) --exclude-group failing,flaky,troubleshooting,slow"
+
 ## ─── Full suite ───────────────────────────────────────────────────────────────
 test:
 	$(_phpunit)
