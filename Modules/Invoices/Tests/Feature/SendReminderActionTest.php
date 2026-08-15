@@ -24,6 +24,7 @@ use Modules\Invoices\Services\InvoiceService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
+#[Group('slow')]
 class SendReminderActionTest extends AbstractCompanyPanelTestCase
 {
     #[Test]

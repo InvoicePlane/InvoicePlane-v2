@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(EditQuote::class)]
+#[Group('slow')]
 class EditQuoteHeaderActionsTest extends AbstractCompanyPanelTestCase
 {
     protected function setUp(): void

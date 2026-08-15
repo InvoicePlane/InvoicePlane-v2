@@ -22,6 +22,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+#[Group('slow')]
 class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
 {
     private InvoiceService $service;

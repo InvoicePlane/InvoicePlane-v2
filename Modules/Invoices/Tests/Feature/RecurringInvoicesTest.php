@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(RecurringInvoiceResource::class)]
+#[Group('slow')]
 class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;

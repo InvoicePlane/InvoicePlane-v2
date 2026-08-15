@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(EditInvoice::class)]
+#[Group('slow')]
 class EditInvoiceHeaderActionsTest extends AbstractCompanyPanelTestCase
 {
     protected function setUp(): void
