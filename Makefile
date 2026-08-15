@@ -2,13 +2,6 @@
 ## InvoicePlane v2 — Development Makefile
 ## ──────────────────────────────────────────────────────────────────────────────
 ##
-## NOTE: `vendor/bin/phpunit` (used by the targets below) and `php artisan
-## test` (make artisan-test) have been observed to behave differently for
-## this app — a raw phpunit run has silently dropped submitted field values
-## in Livewire form tests in some environments. If a target below reports a
-## failure that `make artisan-filter FILTER="..."` doesn't reproduce, prefer
-## the artisan-test variant; it matches what CI runs.
-##
 ## QUICK START
 ##   make test          Run the full PHPUnit suite (all tests)
 ##   make smoke         Run only @group smoke tests (fast sanity check)
