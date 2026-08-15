@@ -5,7 +5,6 @@ namespace Modules\Projects\Tests\Feature;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Projects\Enums\ProjectStatus;

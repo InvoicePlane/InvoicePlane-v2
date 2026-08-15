@@ -37,7 +37,7 @@
         "larastan/larastan": ">=3.10",
         "laravel/boost": ">=2.4",
         "laravel/pail": ">=1.2",
-        "laravel/pint": "dev-feat/blade",
+        "laravel/pint": "^1.13",
         "laravel/sail": ">=1.62",
         "laravel/tinker": ">=3.0",
         "mockery/mockery": ">=1.6",

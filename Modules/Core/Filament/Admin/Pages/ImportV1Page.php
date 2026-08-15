@@ -54,7 +54,7 @@ class ImportV1Page extends Page
 
     public bool $isExecuting = false;
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedArrowDownTray;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowDownTray;
 
     protected string $view = 'core::filament.admin.pages.import-v1';
 

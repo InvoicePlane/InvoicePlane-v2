@@ -63,8 +63,8 @@ class CustomFieldMigrator implements EntityMigratorInterface
             try {
                 $fieldableType = match (mb_strtolower($table)) {
                     'ip_invoice_custom', 'invoices' => Invoice::class,
-                    'ip_quote_custom', 'quotes' => Quote::class,
-                    default => Relation::class,
+                    'ip_quote_custom', 'quotes'     => Quote::class,
+                    default                         => Relation::class,
                 };
 
                 $customField = CustomField::withoutGlobalScopes()

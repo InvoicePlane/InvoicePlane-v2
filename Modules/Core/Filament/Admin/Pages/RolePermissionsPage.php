@@ -23,7 +23,7 @@ class RolePermissionsPage extends Page
 
     public string $superAdmin = '';
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedShieldCheck;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
     protected string $view = 'core::filament.admin.pages.role-permissions-page';
 

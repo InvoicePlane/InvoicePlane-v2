@@ -371,7 +371,7 @@ class NumberingService
     {
         return match ($type->value ?? $type) {
             'Invoice', 'Quote' => 'numbering_id',
-            default => null,
+            default            => null,
         };
     }
 

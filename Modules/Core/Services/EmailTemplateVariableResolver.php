@@ -36,7 +36,7 @@ class EmailTemplateVariableResolver
         ];
     }
 
-    public function resolve(string $text, Invoice | Quote $document): string
+    public function resolve(string $text, Invoice|Quote $document): string
     {
         $isInvoice = $document instanceof Invoice;
         $client    = $isInvoice ? $document->customer : $document->prospect;
