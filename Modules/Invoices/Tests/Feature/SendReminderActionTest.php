@@ -63,7 +63,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     #[Group('slow')]
-    public function it_falls_back_to_a_default_subject_and_blank_body_without_a_template(): void
+    public function it_falls_back_to_a_default_reminder_subject_and_blank_body_without_a_template(): void
     {
         /* Arrange */
         EmailTemplate::forCompany($this->company->id)->where('title', 'invoice_reminder')->delete();
@@ -87,7 +87,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('slow')]
     #[Group('crud')]
-    public function it_hides_the_action_without_the_email_invoices_permission(): void
+    public function it_hides_send_reminder_action_without_the_email_invoices_permission(): void
     {
         /* Arrange */
         $this->user->syncRoles([]);

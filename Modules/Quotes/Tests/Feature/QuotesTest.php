@@ -340,7 +340,7 @@ class QuotesTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     #[Group('slow')]
-    public function it_inserts_a_note_template_into_the_notes_field(): void
+    public function it_inserts_a_note_template_into_the_quote_notes_field(): void
     {
         /* Arrange */
         $prospect = Relation::factory()->for($this->company)->prospect()->create();
