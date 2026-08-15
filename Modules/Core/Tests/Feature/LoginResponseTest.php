@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Tests\Feature;
 
-use Illuminate\Http\RedirectResponse;
 use Modules\Core\Filament\Responses\LoginResponse;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
@@ -138,9 +137,8 @@ class LoginResponseTest extends AbstractAdminPanelTestCase
         return $user;
     }
 
-    private function dispatchResponse(): RedirectResponse
+    private function dispatchResponse()
     {
-        /* @var RedirectResponse */
         return (new LoginResponse())->toResponse(request());
     }
 
