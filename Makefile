@@ -99,7 +99,7 @@ test:
 
 ## Fast test run: excludes slow tests (~5-10 min)
 test-fast:
-	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && $(PHPUNIT) --configuration $(CONFIG) --exclude-group failing,flaky,troubleshooting,slow"
+	$(_phpunit) --exclude-group slow
 
 ## Run only the Unit test suite (Modules/*/Tests/Unit)
 unit:
