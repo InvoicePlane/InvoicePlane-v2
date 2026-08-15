@@ -75,6 +75,7 @@ class EditInvoiceHeaderActionsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_shows_create_credit_note_on_sent_invoice(): void
     {
         /* Arrange */

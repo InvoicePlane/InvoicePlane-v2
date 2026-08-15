@@ -128,6 +128,7 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('crud')]
     #[Group('failing')]
+    #[Group('slow')]
     public function it_generates_a_pdf_document(): void
     {
         /* Arrange */
@@ -146,6 +147,7 @@ class InvoicePdfAndCreditNoteTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_shows_the_preview_modal_on_the_edit_page(): void
     {
         /* Arrange */

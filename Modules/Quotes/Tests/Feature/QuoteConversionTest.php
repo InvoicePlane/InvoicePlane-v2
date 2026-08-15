@@ -83,6 +83,7 @@ class QuoteConversionTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_hides_the_convert_action_for_converted_quotes(): void
     {
         /* Arrange */

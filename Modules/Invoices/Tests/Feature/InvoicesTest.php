@@ -286,6 +286,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_updates_an_invoice_through_a_modal(): void
     {
         /* Arrange */
