@@ -382,19 +382,21 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'description' => 'Redesigning the corporate website',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertHasFormErrors(['project_name' => 'required']);
 
         $this->assertDatabaseMissing('projects', $payload);
     }
 
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload missing: starts_at
      * {
@@ -405,9 +407,9 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      */
     public function it_fails_to_create_project_without_required_starts_at(): void
     {
-        /* arrange */
+        /* Arrange */
         $company  = $this->user->companies()->first();
-        $customer = Relation::factory()->create(['client_name' => '::client_name::']);
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
 
         $payload = [
             'project_name' => 'Client Redesign',
@@ -415,14 +417,14 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             'ends_at'      => '2025-06-30',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProject::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
-        $component->assertHasFormErrors(['starts_at']);
+        /* Assert */
+        $component->assertHasFormErrors(['start_at']);
     }
 
     #[Test]
