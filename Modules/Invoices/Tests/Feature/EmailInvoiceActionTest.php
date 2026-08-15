@@ -68,6 +68,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_falls_back_to_a_default_subject_and_blank_body_without_a_template(): void
     {
         /* Arrange */
@@ -91,6 +92,7 @@ class EmailInvoiceActionTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('slow')]
     #[Group('crud')]
     public function it_hides_the_action_without_the_email_invoices_permission(): void
     {

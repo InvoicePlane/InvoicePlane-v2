@@ -221,6 +221,7 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_confirms_deleted_category_is_no_longer_findable(): void
     {
         /* Arrange */
