@@ -1,0 +1,89 @@
+Xdebug: [Step Debug] Could not connect to debugging client. Tried: host.docker.internal:9003 (through xdebug.client_host/xdebug.client_port).
+PHPUnit 12.5.29 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.24
+Configuration: /var/www/projects/ip2/phpunit.xml
+
+....[36;1mS[0m..............................................[41;37mF[0m[31;1mE[0m[31;1mE[0m..[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m  63 / 578 ( 10%)
+[36;1mS[0m[36;1mS[0m............................................................. 126 / 578 ( 21%)
+...............[36;1mS[0m[36;1mS[0m.....................................[36;1mS[0m....[36;1mS[0m... 189 / 578 ( 32%)
+............................................................... 252 / 578 ( 43%)
+........................................................[31;1mE[0m[31;1mE[0m..... 315 / 578 ( 54%)
+............................................................... 378 / 578 ( 65%)
+..............................................[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m[33;1mI[0m........ 441 / 578 ( 76%)
+..[41;37mF[0m.................[36;1mS[0m.....................................[36;1mS[0m..[36;1mS[0m[36;1mS[0m 504 / 578 ( 87%)
+....................................................[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m......[36;1mS[0m 567 / 578 ( 98%)
+[36;1mS[0m[36;1mS[0m[36;1mS[0m..[36;1mS[0m.....                                                     578 / 578 (100%)
+
+Time: 23:00.029, Memory: 229.00 MB
+
+There were 4 errors:
+
+1) Modules\Core\Tests\Unit\Services\UserServiceAssertBelongsToCompanyTest::it_allows_elevated_role_to_access_unattached_company
+Illuminate\Auth\Access\AuthorizationException: User 1 is not a member of company 2.
+
+/var/www/projects/ip2/Modules/Core/Services/UserService.php:150
+/var/www/projects/ip2/Modules/Core/Tests/Unit/Services/UserServiceAssertBelongsToCompanyTest.php:62
+
+2) Modules\Core\Tests\Unit\Services\UserServiceAssertBelongsToCompanyTest::it_accepts_integer_company_id
+TypeError: Modules\Core\Services\UserService::assertBelongsToCompany(): Argument #2 ($company) must be of type Modules\Core\Models\Company, int given, called in /var/www/projects/ip2/Modules/Core/Tests/Unit/Services/UserServiceAssertBelongsToCompanyTest.php on line 73
+
+/var/www/projects/ip2/Modules/Core/Services/UserService.php:147
+/var/www/projects/ip2/Modules/Core/Tests/Unit/Services/UserServiceAssertBelongsToCompanyTest.php:73
+
+3) Modules\Core\Tests\Feature\UserProfileTest::it_blocks_switching_and_sends_warning_notification_when_user_does_not_belong_to_target_company
+Illuminate\Auth\Access\AuthorizationException: You do not have access to this company.
+
+/var/www/projects/ip2/Modules/Core/Tests/Feature/UserProfileTest.php:162
+/var/www/projects/ip2/vendor/mockery/mockery/library/Mockery/Container.php:421
+/var/www/projects/ip2/vendor/mockery/mockery/library/Mockery.php:477
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Foundation/Testing/Concerns/InteractsWithContainer.php:77
+/var/www/projects/ip2/Modules/Core/Tests/Feature/UserProfileTest.php:159
+
+4) Modules\Core\Tests\Feature\UserProfileTest::it_allows_elevated_user_to_switch_to_any_company_without_explicit_pivot_record
+Filament\Actions\Exceptions\ActionNotResolvableException: Record [2] no longer exists.
+
+/var/www/projects/ip2/vendor/filament/actions/src/Concerns/InteractsWithActions.php:614
+/var/www/projects/ip2/vendor/filament/actions/src/Concerns/InteractsWithActions.php:508
+/var/www/projects/ip2/vendor/filament/actions/src/Concerns/InteractsWithActions.php:665
+/var/www/projects/ip2/vendor/filament/actions/src/Testing/TestsActions.php:145
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:132
+/var/www/projects/ip2/vendor/livewire/livewire/src/Features/SupportTesting/Testable.php:414
+/var/www/projects/ip2/vendor/filament/actions/src/Testing/TestsActions.php:220
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:132
+/var/www/projects/ip2/vendor/livewire/livewire/src/Features/SupportTesting/Testable.php:414
+/var/www/projects/ip2/vendor/filament/actions/src/Testing/TestsActions.php:84
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:132
+/var/www/projects/ip2/vendor/livewire/livewire/src/Features/SupportTesting/Testable.php:414
+/var/www/projects/ip2/vendor/filament/tables/src/Testing/TestsActions.php:69
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:132
+/var/www/projects/ip2/vendor/livewire/livewire/src/Features/SupportTesting/Testable.php:414
+/var/www/projects/ip2/Modules/Core/Tests/Feature/UserProfileTest.php:187
+
+--
+
+There were 2 failures:
+
+1) Modules\Core\Tests\Unit\Services\UserServiceAssertBelongsToCompanyTest::it_throws_authorization_exception_for_unattached_company
+Failed asserting that exception message 'User 1 is not a member of company 2.' contains 'You do not have access to this company.'.
+
+2) Modules\Invoices\Tests\Feature\SendReminderActionTest::it_logs_a_mail_queue_entry_of_type_reminder_when_a_reminder_is_sent
+Failed asserting that a row in the table [mail_queue] matches the attributes {
+    "mailable_id": 1,
+    "mailable_type": "Modules\\Invoices\\Models\\Invoice",
+    "type": "reminder"
+}.
+
+Found similar results: [
+    {
+        "mailable_id": 1,
+        "mailable_type": "invoice",
+        "type": "reminder"
+    }
+].
+
+/var/www/projects/ip2/vendor/laravel/framework/src/Illuminate/Foundation/Testing/Concerns/InteractsWithDatabase.php:51
+/var/www/projects/ip2/Modules/Invoices/Tests/Feature/SendReminderActionTest.php:254
+
+[37;41mERRORS![0m
+[37;41mTests: 578[0m[37;41m, Assertions: 2432[0m[37;41m, Errors: 4[0m[37;41m, Failures: 2[0m[37;41m, Skipped: 27[0m[37;41m, Incomplete: 9[0m[37;41m.[0m
