@@ -53,6 +53,10 @@ package-lock.json
 /full-test-results*.log
 /output-stream*.log
 
+# Font cache files (wkhtmltopdf)
+*.ufm.json
+*.afm.json
+
 # PHPStan
 /phpstan.json
 /phpstan-report.md
