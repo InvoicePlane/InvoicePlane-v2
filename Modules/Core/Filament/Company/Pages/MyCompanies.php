@@ -4,11 +4,13 @@ namespace Modules\Core\Filament\Company\Pages;
 
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Str;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
@@ -51,18 +53,26 @@ class MyCompanies extends Page implements HasTable
                     ->label(trans('ip.switch'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle')
                     ->action(function (Company $record) use ($user): void {
-                        // Defense in depth: $record comes from Filament's table-action
-                        // record resolution, not a value we control directly. Refuse
-                        // to switch into a company the user isn't actually a member
-                        // of, regardless of how $record got resolved.
-                        app(UserService::class)->assertBelongsToCompany($user, $record);
+                        try {
+                            // Defense in depth: $record comes from Filament's table-action
+                            // record resolution, not a value we control directly. Refuse
+                            // to switch into a company the user isn't actually a member
+                            // of, regardless of how $record got resolved.
+                            app(UserService::class)->assertBelongsToCompany($user, $record);
 
-                        session(['current_company_id' => $record->id]);
-                        Filament::setTenant($record);
+                            session(['current_company_id' => $record->id]);
+                            Filament::setTenant($record);
 
-                        $this->redirect(route('filament.company.pages.dashboard', [
-                            'tenant' => Str::lower($record->search_code),
-                        ]));
+                            $this->redirect(route('filament.company.pages.dashboard', [
+                                'tenant' => Str::lower($record->search_code),
+                            ]));
+                        } catch (AuthorizationException $e) {
+                            Notification::make()
+                                ->title(trans('ip.access_denied'))
+                                ->body($e->getMessage())
+                                ->warning()
+                                ->send();
+                        }
                     }),
             ])
             ->paginated(false);
