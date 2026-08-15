@@ -61,8 +61,8 @@ for pr in develop 709 700 692 685 684; do
 
   git checkout "$branch" --quiet 2>/dev/null || git checkout -b "$branch" "origin/$branch" --quiet 2>/dev/null || true
 
-  # Run tests with make target
-  if make artisan-parallel --no-print-directory > /tmp/test-$pr.log 2>&1; then
+  # Run tests with php artisan directly (more reliable than make)
+  if php artisan test -p --exclude-group failing,flaky,troubleshooting > /tmp/test-$pr.log 2>&1; then
     echo -e " ${GREEN}PASSED${NC}"
     echo "✅ PR#$pr - PASSED" >> "$RESULTS_FILE"
     pass_count=$((pass_count + 1))
