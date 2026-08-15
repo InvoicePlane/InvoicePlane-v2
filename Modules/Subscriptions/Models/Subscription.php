@@ -22,6 +22,8 @@ class Subscription extends Model
     use HasFactory;
     use SoftDeletes;
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     protected $casts = [

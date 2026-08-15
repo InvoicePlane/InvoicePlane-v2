@@ -11,6 +11,8 @@ class SubscriptionItem extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     protected $casts = [
