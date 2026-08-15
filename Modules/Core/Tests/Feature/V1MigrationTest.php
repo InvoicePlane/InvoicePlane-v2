@@ -26,6 +26,7 @@ use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteItem;
 use PHPUnit\Framework\Attributes\Test;
 
+#[Group('slow')]
 class V1MigrationTest extends AbstractAdminPanelTestCase
 {
     protected string $fixturePath;
