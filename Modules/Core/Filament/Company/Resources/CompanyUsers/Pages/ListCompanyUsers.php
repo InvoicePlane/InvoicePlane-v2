@@ -28,12 +28,13 @@ class ListCompanyUsers extends ListRecords
                 ])
                 ->action(function (array $data) {
                     $user = User::whereEmail($data['email'])->first();
-                    if (!$user) {
+                    if ( ! $user) {
                         \Filament\Notifications\Notification::make()
                             ->danger()
                             ->title(trans('ip.user_not_found'))
                             ->body(trans('ip.no_user_found_with_email', ['email' => $data['email']]))
                             ->send();
+
                         return;
                     }
 

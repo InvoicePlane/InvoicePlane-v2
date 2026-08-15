@@ -147,7 +147,7 @@ class UserService extends BaseService
      */
     public function assertBelongsToCompany(User $user, Company|int $company): void
     {
-        $companyId = $company instanceof Company ? $company->id : $company;
+        $companyId  = $company instanceof Company ? $company->id : $company;
         $isElevated = $user->hasRole(UserRole::elevated());
 
         if ( ! $isElevated && ! $user->companies()->whereKey($companyId)->exists()) {

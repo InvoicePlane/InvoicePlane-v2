@@ -39,7 +39,7 @@ class InvoiceListActionsTest extends AbstractCompanyPanelTestCase
          * on invoices, create-payments and email-invoices.
          */
         $customer = Relation::factory()->for($this->company)->customer()->create();
-        /** @var Relation $customer */
+        /* @var Relation $customer */
         $this->customer = $customer;
 
         /** @var Numbering $numbering */
