@@ -144,10 +144,15 @@ class UserService extends BaseService
      *
      * @throws AuthorizationException
      */
-    public function assertBelongsToCompany(User $user, Company $company): void
+    public function assertBelongsToCompany(User $user, Company|int $company): void
     {
-        if ( ! $user->companies()->whereKey($company->id)->exists()) {
-            throw new AuthorizationException("User {$user->id} is not a member of company {$company->id}.");
+        $companyId = $company instanceof Company ? $company->id : $company;
+        $isElevated = $user->hasRole(['super_admin', 'admin', 'assist']);
+
+        if ( ! $isElevated && ! $user->companies()->whereKey($companyId)->exists()) {
+            throw new AuthorizationException(
+                trans('ip.user_not_in_company') ?? 'You do not have access to this company.'
+            );
         }
     }
 }

@@ -253,7 +253,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertDatabaseHas('mail_queue', [
             'mailable_id'   => $invoice->id,
-            'mailable_type' => Invoice::class,
+            'mailable_type' => 'invoice',
             'type'          => MailType::REMINDER->value,
         ]);
         $this->assertNotNull($invoice->mailQueue()->where('type', MailType::REMINDER)->first()->sent_at);

@@ -26,8 +26,12 @@ class MyCompanies extends Page implements HasTable
         /** @var User $user */
         $user = auth()->user();
 
+        $query = $user->hasRole(['super_admin', 'admin', 'assist'])
+            ? Company::query()
+            : $user->companies()->getQuery();
+
         return $table
-            ->query(fn () => $user->companies()->getQuery())
+            ->query(fn () => $query)
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('ip.name'))
