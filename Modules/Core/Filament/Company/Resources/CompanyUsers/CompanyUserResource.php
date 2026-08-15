@@ -88,30 +88,35 @@ class CompanyUserResource extends Resource
     public static function canViewAny(): bool
     {
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
+
         return auth()->user()?->hasRole($roles) ?? false;
     }
 
     public static function canCreate(): bool
     {
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
+
         return auth()->user()?->hasRole($roles) ?? false;
     }
 
     public static function canView(Model $record): bool
     {
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
+
         return auth()->user()?->hasRole($roles) ?? false;
     }
 
     public static function canEdit(Model $record): bool
     {
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
+
         return auth()->user()?->hasRole($roles) ?? false;
     }
 
     public static function canDelete(Model $record): bool
     {
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
+
         return auth()->user()?->hasRole($roles) ?? false;
     }
 }
