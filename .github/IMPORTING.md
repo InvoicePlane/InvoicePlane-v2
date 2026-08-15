@@ -1,101 +1,143 @@
-# Importing Data
+# Data Import & Export Guide
 
-InvoicePlane supports importing data from external systems using CSV files. This guide outlines the requirements and steps for successful data import.
-
----
-
-## 📂 Accessing the Import Tool
-
-1. Navigate to **Settings**.
-2. Click on **Import Data**.
+InvoicePlane v2 supports importing data from InvoicePlane v1 databases and exporting data to CSV/Excel formats. This guide covers both workflows.
 
 ---
 
-## 📄 Import Requirements
+## Exporting Data
 
-To ensure a successful import:
+All modules support exporting data in CSV and Excel formats:
 
-- **File Format**: Files must be in **comma-delimited CSV** format.
-- **File Names**: Use the exact file names as listed below.
-- **Headers**: The first row must contain headers matching the specified column names.
-- **Columns**: All required columns must be present, even if some fields are empty.
-- **File Location**: Place CSV files in the `uploads/import` directory of your InvoicePlane installation.
-- **User Email**: The `user_email` in `invoices.csv` must correspond to an existing user in InvoicePlane.
+- **Clients & Contacts**: Export all relation and contact records
+- **Invoices & Quotes**: Export with full line items and totals
+- **Payments**: Export payment history with invoice links
+- **Products & Categories**: Export product catalog with pricing
+- **Projects & Tasks**: Export projects and associated tasks
+- **Expenses**: Export expense records with categories
+- **And more**: Consistent export support across all modules
 
-*Note: Failure to meet these requirements may result in import errors.*
+### How to Export
 
----
-
-## 📁 Supported Files and Structures
-
-### 1. `customers.csv`
-
-| Column Name         | Description                         |
-|---------------------|-------------------------------------|
-| `client_name`       | Customer's full name                |
-| `client_address_1`  | Primary address line                |
-| `client_address_2`  | Secondary address line              |
-| `client_city`       | City                                |
-| `client_state`      | State or province                   |
-| `client_zip`        | ZIP or postal code                  |
-| `client_country`    | Country                             |
-| `client_phone`      | Phone number                        |
-| `client_fax`        | Fax number                          |
-| `client_mobile`     | Mobile number                       |
-| `client_email`      | Email address                       |
-| `client_web`        | Website URL                         |
-| `client_vat_id`     | VAT identification number           |
-| `client_tax_code`   | Tax code                            |
-| `client_active`     | Status (`1` for active, `0` for inactive) |
-
-### 2. `invoices.csv`
-
-| Column Name             | Description                               |
-|-------------------------|-------------------------------------------|
-| `user_email`            | Email of the InvoicePlane user            |
-| `client_name`           | Name of the customer                      |
-| `invoice_date_created`  | Creation date (`YYYY-MM-DD`)              |
-| `invoice_date_due`      | Due date (`YYYY-MM-DD`)                   |
-| `invoice_number`        | Unique invoice number                     |
-| `invoice_terms`         | Payment terms                             |
-
-### 3. `invoice_items.csv`
-
-| Column Name        | Description                               |
-|--------------------|-------------------------------------------|
-| `invoice_number`   | Associated invoice number                 |
-| `item_tax_rate`    | Tax rate (e.g., `7.8` for 7.8%)           |
-| `item_date_added`  | Date added (`YYYY-MM-DD`)                 |
-| `item_name`        | Name of the item                          |
-| `item_description` | Description of the item                   |
-| `item_quantity`    | Quantity of the item                      |
-| `item_price`       | Price per item (numeric, no currency symbols) |
-
-### 4. `payments.csv`
-
-| Column Name      | Description                               |
-|------------------|-------------------------------------------|
-| `invoice_number` | Associated invoice number                 |
-| `payment_method` | Method of payment (e.g., Cash, Credit)    |
-| `payment_date`   | Date of payment (`YYYY-MM-DD`)            |
-| `payment_amount` | Amount paid (numeric, no currency symbols)|
-| `payment_note`   | Additional notes                          |
+1. Navigate to any list page (e.g., Invoices, Clients, Products)
+2. Use the **Export** action (typically in the header or row actions)
+3. Choose format: **CSV** or **Excel**
+4. Two versions available:
+   - **v2 Format**: Native InvoicePlane v2 schema
+   - **v1-Legacy Format**: Compatible with InvoicePlane v1 for backward compatibility
 
 ---
 
-## ⚠️ Important Notes
+## Importing from InvoicePlane v1
 
-- **Custom Fields**: Importing custom fields is not supported in the current version.
-- **Data Validation**: Ensure all data is accurate and conforms to the required formats to prevent import errors.
-- **Testing**: It's recommended to test imports with a small dataset before full-scale importing.
+The `import:db` command provides a robust pathway to migrate data from InvoicePlane v1 installations.
+
+### Requirements
+
+- **Source**: SQL dump from a v1 installation (e.g., `backup.sql`)
+- **Location**: Place dump file in `storage/app/private/imports/`
+- **Supported Entities**: 15 entity types with full data integrity:
+  - Tax Rates, Products & Categories, Custom Fields
+  - Users, Clients & Contacts
+  - Invoice Groups (Numbering), Invoices & Items
+  - Quotes & Items
+  - Payments
+  - Projects & Tasks
+  - Recurring Invoices
+  - Uploads & Attachments
+  - Email Templates, Settings, Notes
+
+### Quick Start
+
+#### Dry Run (Preview without Importing)
+
+```bash
+php artisan import:db backup.sql --dry-run
+```
+
+This shows:
+- How many records exist in the source
+- How many will migrate successfully
+- Which records cannot be imported and why
+- A detailed notes section explaining skipped data
+
+#### Import into New Company
+
+```bash
+php artisan import:db backup.sql
+```
+
+Creates a new company named `{filename} - {YYYY-MM-DD HH:MM:SS}` and imports all compatible records.
+
+#### Import into Existing Company
+
+```bash
+php artisan import:db backup.sql --company_id=22
+```
+
+If the company doesn't exist, it will be created with that ID.
+
+### Features
+
+- **Idempotent**: Re-running the same import twice skips already-imported records
+- **Dry Run Support**: Preview results before committing
+- **Financial Reconciliation**: Validates that totals in invoices/quotes match their line items
+- **Rollback Capable**: Store the batch ID to rollback if needed (future feature)
+- **Error Resilience**: Handles real-world data quality issues (missing fields, oversized values, orphaned records)
+
+### Understanding the Output
+
+After import, you'll see:
+
+```
+Migration Results:
++-----------+----------+---------+--------+
+| Entity    | Migrated | Skipped | Errors |
++-----------+----------+---------+--------+
+| Invoices  | 1,623    | 0       | 0      |
+| Clients   | 890      | 0       | 0      |
+| Payments  | 748      | 0       | 0      |
+...
+```
+
+**Skipped records** are documented in the Details section, with reasons (e.g., "Product row #363 has empty name, will be skipped").
+
+### Known Limitations
+
+1. **Email Templates**: The v2 `EmailTemplateType` enum is misconfigured; email templates may not import correctly (workaround: manually recreate in v2)
+2. **File Attachments**: File contents are not included in SQL dumps; re-upload manually
+3. **User Passwords**: v1 password hashes are not compatible; users must reset passwords or use SSO
 
 ---
 
-## 🛠️ Troubleshooting
+## Future: CSV & ImportAction UI
 
-- **Import Errors**: If the import process fails, double-check file formats, headers, and data consistency.
-- **Community Support**: For assistance, visit the [InvoicePlane Community Forums](https://community.invoiceplane.com/).
+The following import methods are planned but not yet implemented:
+
+- **CSV Import UI**: Per-module import wizards via Filament `ImportAction`
+- **Excel Import**: Read Excel files directly
+- **Bulk Operations**: Import products from external catalogs, clients from spreadsheets
+
+Track progress on [issue #85](https://github.com/InvoicePlane/InvoicePlane-v2/issues/85).
 
 ---
 
-*For more information and updates, refer to the [InvoicePlane Wiki](https://wiki.invoiceplane.com/en/2.0/system/importing-data).*
+## Troubleshooting
+
+### Import Errors
+
+- **"Dump file not found"**: Ensure the SQL file is in `storage/app/private/imports/`
+- **"No company found for your account"**: The system user must be attached to a company before import
+- **"Connection failed"**: v1 database credentials may be wrong (only for direct DB imports, not SQL dumps)
+
+### Validation Errors
+
+- **Email validation fails**: Check that email addresses in v1 are valid format
+- **Invoice totals mismatch**: Line item amounts don't sum to invoice total; review in v1 before importing
+- **Missing foreign keys**: Clients must exist before invoices can reference them
+
+---
+
+## Support
+
+- **Community**: [InvoicePlane Community Forums](https://community.invoiceplane.com/)
+- **Docs**: [InvoicePlane Wiki](https://wiki.invoiceplane.com/)
