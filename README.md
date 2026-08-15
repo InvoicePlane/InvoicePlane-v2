@@ -1,7 +1,7 @@
 # InvoicePlane v2
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue.svg)](https://php.net)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-blue.svg)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-13%2B-red.svg)](https://laravel.com)
 [![Filament Version](https://img.shields.io/badge/Filament-5.x-orange.svg)](https://filamentphp.com)
 
@@ -44,7 +44,7 @@
 
 ## 📦 Requirements
 
-- **PHP** 8.3 or higher
+- **PHP** 8.4 or higher
 - **Composer** 2.x
 - **Node.js** 20+ and Yarn
 - **Database** MariaDB 10.11+ (recommended), MySQL 8.0+, or SQLite (dev only)
@@ -239,22 +239,20 @@ docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && vendor/bin
 
 Or use the Makefile shorthand (see `Makefile` for available targets).
 
-**Preferred: Docker Compose.** The `cli` service runs the suite against a real MariaDB `db`
-service — the same engine CI uses — with no setup beyond `docker compose run`:
+**Without Docker:** if you don't have the Docker workspace set up, you can run the suite locally against an in-memory SQLite database instead. Create/edit `.env.testing`:
 
-```bash
-docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
 ```
 
-Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to behave
-differently for this app's Livewire form tests (`vendor/bin/phpunit` silently drops submitted
-field values in some environments); `artisan test` is the reliable one and matches CI. A
-freshly-rebuilt `cli` image has, at least once, reproduced this same problem even under
-`artisan test` for reasons not yet isolated — see
-[#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689) before trusting a full run.
+Then run tests normally:
 
-SQLite is intentionally not used for this project's tests: its lenient identifier quoting has
-masked real bugs that only surfaced on MariaDB in CI. See `.github/DOCKER.md`.
+```bash
+php artisan test
+```
+
+See [RUNNING_TESTS.md](.github/RUNNING_TESTS.md) for advanced testing.
 
 ### Code Quality
 
