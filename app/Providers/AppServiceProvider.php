@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'invoice' => Invoice::class,
         ]);
-        URL::forceScheme('https');
+
+        if (! app()->isLocal()) {
+            URL::forceScheme('https');
+        }
     }
 }
