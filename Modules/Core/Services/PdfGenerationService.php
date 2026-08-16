@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services;
 
+use Illuminate\Http\Response;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Models\Invoice;
@@ -51,14 +52,14 @@ class PdfGenerationService
         return PDFFactory::create()->getOutput($this->renderQuoteHtml($quote));
     }
 
-    public function downloadInvoice(Invoice $invoice)
+    public function downloadInvoice(Invoice $invoice): Response
     {
         return response($this->invoicePdf($invoice))
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="' . $this->filename('invoice', (string) $invoice->invoice_number) . '"');
     }
 
-    public function downloadQuote(Quote $quote)
+    public function downloadQuote(Quote $quote): Response
     {
         return response($this->quotePdf($quote))
             ->header('Content-Type', 'application/pdf')
