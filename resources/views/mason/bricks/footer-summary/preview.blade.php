@@ -7,4 +7,6 @@
             <p class="text-sm italic">{{ trans('ip.summary_placeholder') }}</p>
         @endif
     </div>
+
+</div>
 </div>

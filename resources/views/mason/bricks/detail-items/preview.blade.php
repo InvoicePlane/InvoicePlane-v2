@@ -2,7 +2,17 @@
     'config' => []
 ])
 
-<div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white">
+@php
+$width = match($config['_width'] ?? 'full') {
+    'one_third' => 'w-1/3',
+    'half' => 'w-1/2',
+    'two_thirds' => 'w-2/3',
+    default => 'w-full',
+};
+@endphp
+
+<div class="{{ $width }} inline-block align-top">
+    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
     <table class="w-full text-sm" style="font-size: {{ $config['font_size'] ?? 9 }}pt;">
         <thead class="bg-gray-100">
             <tr>
@@ -45,4 +55,6 @@
             @endfor
         </tbody>
     </table>
+
+</div>
 </div>

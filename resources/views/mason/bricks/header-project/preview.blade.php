@@ -17,4 +17,6 @@
             <div><strong>{{ trans('ip.status') }}:</strong> {{ trans('ip.in_progress') }}</div>
         @endif
     </div>
+
+</div>
 </div>

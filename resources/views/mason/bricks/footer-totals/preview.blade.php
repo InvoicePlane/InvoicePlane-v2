@@ -2,7 +2,17 @@
     'config' => []
 ])
 
-<div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white">
+@php
+$width = match($config['_width'] ?? 'full') {
+    'one_third' => 'w-1/3',
+    'half' => 'w-1/2',
+    'two_thirds' => 'w-2/3',
+    default => 'w-full',
+};
+@endphp
+
+<div class="{{ $width }} inline-block align-top">
+    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
     <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
         <table class="w-full max-w-xs ml-auto">
             @if($config['show_subtotal'] ?? true)
@@ -37,4 +47,6 @@
             @endif
         </table>
     </div>
+
+</div>
 </div>

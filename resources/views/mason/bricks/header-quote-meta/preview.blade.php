@@ -14,4 +14,6 @@
             <div><strong>{{ trans('ip.status') }}:</strong> {{ trans('ip.draft') }}</div>
         @endif
     </div>
+
+</div>
 </div>

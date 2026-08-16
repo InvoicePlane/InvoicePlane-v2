@@ -2,7 +2,17 @@
     'config' => []
 ])
 
-<div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white">
+@php
+$width = match($config['_width'] ?? 'full') {
+    'one_third' => 'w-1/3',
+    'half' => 'w-1/2',
+    'two_thirds' => 'w-2/3',
+    default => 'w-full',
+};
+@endphp
+
+<div class="{{ $width }} inline-block align-top">
+    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
     <div class="flex items-start gap-4">
         @if($config['show_logo'] ?? true)
             <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
@@ -26,5 +36,6 @@
                 <p class="text-sm text-gray-600">{{ trans('ip.vat_id') }}: 12345678</p>
             @endif
         </div>
+    </div>
     </div>
 </div>
