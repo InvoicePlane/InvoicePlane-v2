@@ -22,7 +22,7 @@ class HeaderCompanyBrick extends ReportBrick
         return trans('ip.company_header');
     }
 
-    public static function getIcon(): string | Htmlable | null
+    public static function getIcon(): string|Htmlable|null
     {
         return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M6 4h12v17H6z"/></svg>');
     }

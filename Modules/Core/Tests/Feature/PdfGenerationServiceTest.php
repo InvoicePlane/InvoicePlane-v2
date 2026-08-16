@@ -167,8 +167,8 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
 
         /* Create a 21% tax rate for this company */
         $taxRate = \Modules\Core\Models\TaxRate::factory()->for($this->company)->create([
-            'name' => 'VAT Standard',
-            'rate' => 21.00,
+            'name'      => 'VAT Standard',
+            'rate'      => 21.00,
             'is_active' => true,
         ]);
 
@@ -210,17 +210,17 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
 
         /* Create item directly without factory to avoid afterMaking recalculation */
         InvoiceItem::create([
-            'company_id' => $this->company->id,
-            'invoice_id' => $invoice->id,
+            'company_id'  => $this->company->id,
+            'invoice_id'  => $invoice->id,
             'tax_rate_id' => $taxRate->id,
-            'item_name'  => 'Golden Widget',
-            'quantity'   => 2,
-            'price'      => 50.0000,
-            'subtotal'   => 100.0000,
-            'tax_1'      => 21.0000,
-            'tax_2'      => 0,
-            'tax_total'  => 21.0000,
-            'total'      => 121.0000,
+            'item_name'   => 'Golden Widget',
+            'quantity'    => 2,
+            'price'       => 50.0000,
+            'subtotal'    => 100.0000,
+            'tax_1'       => 21.0000,
+            'tax_2'       => 0,
+            'tax_total'   => 21.0000,
+            'total'       => 121.0000,
         ]);
 
         return $invoice->fresh();
@@ -232,8 +232,8 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
 
         /* Create a 21% tax rate for this company */
         $taxRate = \Modules\Core\Models\TaxRate::factory()->for($this->company)->create([
-            'name' => 'VAT Standard',
-            'rate' => 21.00,
+            'name'      => 'VAT Standard',
+            'rate'      => 21.00,
             'is_active' => true,
         ]);
 
@@ -266,17 +266,17 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
         $quote->quoteItems()->delete();
         /* Create item directly without factory to avoid afterMaking recalculation */
         \Modules\Quotes\Models\QuoteItem::create([
-            'company_id' => $this->company->id,
-            'quote_id'   => $quote->id,
+            'company_id'  => $this->company->id,
+            'quote_id'    => $quote->id,
             'tax_rate_id' => $taxRate->id,
-            'item_name'  => 'Golden Quote Widget',
-            'quantity'   => 2,
-            'price'      => 50.0000,
-            'subtotal'   => 100.0000,
-            'tax_1'      => 21.0000,
-            'tax_2'      => 0,
-            'tax_total'  => 21.0000,
-            'total'      => 121.0000,
+            'item_name'   => 'Golden Quote Widget',
+            'quantity'    => 2,
+            'price'       => 50.0000,
+            'subtotal'    => 100.0000,
+            'tax_1'       => 21.0000,
+            'tax_2'       => 0,
+            'tax_total'   => 21.0000,
+            'total'       => 121.0000,
         ]);
 
         return $quote->fresh();

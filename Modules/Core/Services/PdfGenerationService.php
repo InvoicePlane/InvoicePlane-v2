@@ -68,7 +68,7 @@ class PdfGenerationService
     /**
      * @return array{manifest: array, bands: array<string, array>}
      */
-    public function resolveTemplate(Invoice | Quote $document): array
+    public function resolveTemplate(Invoice|Quote $document): array
     {
         $type = $document instanceof Invoice ? ReportTemplateType::INVOICE : ReportTemplateType::QUOTE;
 

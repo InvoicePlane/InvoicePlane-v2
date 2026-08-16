@@ -17,7 +17,7 @@ use Modules\Core\Services\ReportTemplateStorage;
  */
 abstract class BaseReportTemplatesPage extends Page
 {
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-duplicate';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-duplicate';
 
     protected string $view = 'core::filament.pages.reports.report-templates';
 
