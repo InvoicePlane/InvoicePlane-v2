@@ -119,11 +119,21 @@ abstract class BaseReportTemplatesPage extends Page
                     ->maxLength(100),
             ])
             ->action(function (array $arguments, array $data): void {
+                $template = [
+                    'scope' => (string) $arguments['scope'],
+                    'slug' => (string) $arguments['slug'],
+                    'type' => (string) $arguments['type'],
+                ];
+
+                if (! $this->canModify($template)) {
+                    return;
+                }
+
                 $this->storage()->rename(
-                    (string) $arguments['scope'],
-                    (string) $arguments['slug'],
+                    $template['scope'],
+                    $template['slug'],
                     (string) $data['name'],
-                    ReportTemplateType::tryFrom((string) $arguments['type']),
+                    ReportTemplateType::tryFrom($template['type']),
                 );
 
                 Notification::make()->title(trans('ip.template_renamed'))->success()->send();
@@ -138,10 +148,20 @@ abstract class BaseReportTemplatesPage extends Page
             ->color('danger')
             ->requiresConfirmation()
             ->action(function (array $arguments): void {
+                $template = [
+                    'scope' => (string) $arguments['scope'],
+                    'slug' => (string) $arguments['slug'],
+                    'type' => (string) $arguments['type'],
+                ];
+
+                if (! $this->canModify($template)) {
+                    return;
+                }
+
                 $this->storage()->delete(
-                    (string) $arguments['scope'],
-                    (string) $arguments['slug'],
-                    ReportTemplateType::tryFrom((string) $arguments['type']),
+                    $template['scope'],
+                    $template['slug'],
+                    ReportTemplateType::tryFrom($template['type']),
                 );
 
                 Notification::make()->title(trans('ip.template_deleted'))->success()->send();
