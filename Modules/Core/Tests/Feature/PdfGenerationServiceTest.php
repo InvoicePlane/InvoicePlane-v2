@@ -172,8 +172,7 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'is_active' => true,
         ]);
 
-        $relation = Relation::factory()->create([
-            'company_id'   => $this->company->id,
+        $relation = Relation::factory()->for($this->company)->create([
             'company_name' => 'Golden Client Ltd',
         ]);
 
@@ -187,8 +186,7 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'country'      => 'NL',
         ]);
 
-        $invoice = Invoice::factory()->create([
-            'company_id'               => $this->company->id,
+        $invoice = Invoice::factory()->for($this->company)->create([
             'customer_id'              => $relation->id,
             'user_id'                  => $this->user->id,
             'invoice_number'           => 'INV-GOLD-0001',
@@ -237,14 +235,12 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'is_active' => true,
         ]);
 
-        $relation = Relation::factory()->create([
-            'company_id'   => $this->company->id,
+        $relation = Relation::factory()->for($this->company)->create([
             'company_name' => 'Golden Client Ltd',
         ]);
         $relation->addresses()->delete();
 
-        $quote = \Modules\Quotes\Models\Quote::factory()->create([
-            'company_id'             => $this->company->id,
+        $quote = \Modules\Quotes\Models\Quote::factory()->for($this->company)->create([
             'prospect_id'            => $relation->id,
             'user_id'                => $this->user->id,
             'quote_number'           => 'Q-GOLD-0001',
