@@ -3,18 +3,18 @@
 ])
 
 @php
-$width = match($config['_width'] ?? 'full') {
-    'one_third' => 'w-1/3',
-    'half' => 'w-1/2',
-    'two_thirds' => 'w-2/3',
-    default => 'w-full',
+$widthValue = match($config['_width'] ?? 'full') {
+    'one_third' => '33.33%',
+    'half' => '50%',
+    'two_thirds' => '66.66%',
+    default => '100%'
 };
 @endphp
 
-<div style="float: left; padding: 8px; box-sizing: border-box; width: {{ match($config['_width'] ?? 'full') { 'one_third' => '33.33%', 'half' => '50%', 'two_thirds' => '66.66%', default => '100%' } }};">
-    <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #ff0000 !important; min-height: 120px; height: 100%;">
-    <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
-        <table class="w-full max-w-xs ml-auto">
+<div style="display: inline-block; vertical-align: top; width: {{ $widthValue }}; padding-right: 8px; box-sizing: border-box;">
+    <div style="display: block; width: 100%; min-height: 100px; border: 1px solid #999; padding: 12px; border-radius: 4px; background-color: #CCCCCC; font-size: 11px; color: #333; box-sizing: border-box;">
+        <strong>{{ trans('ip.totals') }}</strong>
+        <table style="width: 100%; margin-top: 6px; font-size: 10px;">
             @if($config['show_subtotal'] ?? true)
                 <tr>
                     <td class="p-1 font-semibold">{{ trans('ip.subtotal') }}:</td>
@@ -47,6 +47,4 @@ $width = match($config['_width'] ?? 'full') {
             @endif
         </table>
     </div>
-
-</div>
 </div>
