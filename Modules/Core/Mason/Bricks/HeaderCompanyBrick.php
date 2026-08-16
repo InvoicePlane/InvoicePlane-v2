@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
+use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Mason\ReportBrick;
 
 class HeaderCompanyBrick extends ReportBrick
@@ -55,6 +56,10 @@ class HeaderCompanyBrick extends ReportBrick
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
+                Select::make('_width')
+                    ->label(trans('ip.width'))
+                    ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
+                    ->default(ReportBlockWidth::FULL->value),
                 Checkbox::make('show_vat_id')
                     ->label(trans('ip.show_vat_id'))
                     ->default(true),

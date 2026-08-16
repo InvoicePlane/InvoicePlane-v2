@@ -4,6 +4,8 @@ namespace Modules\Core\Mason\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
+use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
@@ -54,6 +56,10 @@ class DetailInvoiceProjectBrick extends ReportBrick
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
+                Select::make('_width')
+                    ->label(trans('ip.width'))
+                    ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
+                    ->default(ReportBlockWidth::FULL->value),
                 Checkbox::make('show_project_name')
                     ->label(trans('ip.show_project_name'))
                     ->default(true),

@@ -223,7 +223,13 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
                     continue;
                 }
 
-                $bandHtml .= (string) $brickClass::toPreviewHtml($entry['config']);
+                $config = $entry['config'];
+                // Preserve width for preview rendering
+                if (!isset($config['_width'])) {
+                    $config['_width'] = $entry['width'] ?? 'full';
+                }
+
+                $bandHtml .= (string) $brickClass::toPreviewHtml($config);
             }
 
             if ($bandHtml) {

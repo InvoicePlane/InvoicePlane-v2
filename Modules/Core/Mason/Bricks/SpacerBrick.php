@@ -3,7 +3,9 @@
 namespace Modules\Core\Mason\Bricks;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Modules\Core\Enums\ReportBlockWidth;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBand;
@@ -59,6 +61,10 @@ class SpacerBrick extends ReportBrick
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
+                Select::make('_width')
+                    ->label(trans('ip.width'))
+                    ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
+                    ->default(ReportBlockWidth::FULL->value),
                 TextInput::make('height')
                     ->label(trans('ip.spacer_height'))
                     ->numeric()
