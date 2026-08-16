@@ -1334,4 +1334,15 @@ return [
     'user_not_found'                          => 'User Not Found',
     'users_roles'                             => 'Users & Roles',
     #endregion
+    #region UNTRANSLATED-STRINGS FIX (hardcoded labels)
+    'company_name_label'                      => 'Company Name',
+    'insert_template'                         => 'Insert Template',
+    'template'                                => 'Template',
+    'replace_existing_content'                => 'Replace existing content',
+    'auto_check_updates'                      => 'Auto Check Updates',
+    'auto_install_security_updates'           => 'Auto Install Security Updates',
+    'update_channel'                          => 'Update Channel',
+    'update_check_interval_hours'             => 'Update Check Interval (hours)',
+    'update_notification_email'               => 'Update Notification Email',
+    #endregion
 ];

@@ -18,12 +18,12 @@ class NoteTemplatesTable
         return $table
             ->columns([
                 TextColumn::make('template_title')
-                    ->label('Title')
+                    ->label(trans('ip.title'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('template_body')
-                    ->label('Body')
+                    ->label(trans('ip.body'))
                     ->limit(50)
                     ->searchable(),
             ])
