@@ -120,9 +120,10 @@ abstract class BaseReportTemplatesPage extends Page
             ])
             ->action(function (array $arguments, array $data): void {
                 $template = [
-                    'scope' => (string) $arguments['scope'],
-                    'slug'  => (string) $arguments['slug'],
-                    'type'  => (string) $arguments['type'],
+                    'scope'    => (string) $arguments['scope'],
+                    'slug'     => (string) $arguments['slug'],
+                    'type'     => (string) $arguments['type'],
+                    'editable' => (bool) ($arguments['editable'] ?? false),
                 ];
 
                 if ( ! $this->canModify($template)) {
@@ -149,9 +150,10 @@ abstract class BaseReportTemplatesPage extends Page
             ->requiresConfirmation()
             ->action(function (array $arguments): void {
                 $template = [
-                    'scope' => (string) $arguments['scope'],
-                    'slug'  => (string) $arguments['slug'],
-                    'type'  => (string) $arguments['type'],
+                    'scope'    => (string) $arguments['scope'],
+                    'slug'     => (string) $arguments['slug'],
+                    'type'     => (string) $arguments['type'],
+                    'editable' => (bool) ($arguments['editable'] ?? false),
                 ];
 
                 if ( ! $this->canModify($template)) {
