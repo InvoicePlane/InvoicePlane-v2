@@ -11,8 +11,23 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div style="float: left; padding: 8px; box-sizing: border-box; width: {{ match($config['_width'] ?? 'full') { 'one_third' => '33.33%', 'half' => '50%', 'two_thirds' => '66.66%', default => '100%' } }};">
-    <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #f3f4f6; min-height: 120px; height: 100%;">
+@php
+$widthValue = match($config['_width'] ?? 'full') {
+    'one_third' => '33.33%',
+    'half' => '50%',
+    'two_thirds' => '66.66%',
+    default => '100%'
+};
+$bgColor = match($config['_width'] ?? 'full') {
+    'one_third' => '#fcd34d',
+    'half' => '#86efac',
+    'two_thirds' => '#93c5fd',
+    default => '#fca5a5'
+};
+@endphp
+<div style="float: left; padding: 8px; box-sizing: border-box; width: {{ $widthValue }};">
+    <div style="border: 3px solid black; padding: 12px; border-radius: 6px; background-color: {{ $bgColor }}; min-height: 120px; height: 100%;">
+    COMPANY [{{ $config['_width'] ?? 'NONE' }}]
     <div class="flex items-start gap-4">
         @if($config['show_logo'] ?? true)
             <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
