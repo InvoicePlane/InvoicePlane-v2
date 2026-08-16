@@ -11,8 +11,8 @@ $widthValue = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div style="display: inline-block; vertical-align: top; padding: 4px; box-sizing: border-box; width: {{ $widthValue }};">
-    <div style="border: 1px solid #999; padding: 12px; border-radius: 4px; background-color: #CCCCCC; min-height: 100px; font-size: 10px; color: #333;">
+<div style="display: inline-block; vertical-align: top; width: {{ $widthValue }}; padding-right: 8px; box-sizing: border-box;">
+    <div style="display: block; width: 100%; min-height: 100px; border: 1px solid #999; padding: 12px; border-radius: 4px; background-color: #CCCCCC; font-size: 10px; color: #333; box-sizing: border-box;">
         <strong>{{ trans('ip.line_items') }}</strong>
         <table style="width: 100%; margin-top: 6px; font-size: 9px;">
             <tr style="border-bottom: 1px solid #999;">

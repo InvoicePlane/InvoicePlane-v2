@@ -27,8 +27,12 @@
 }
 
 .mason-block {
-    flex: 0 0 auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
     min-width: 0;
+    padding-right: 8px;
+    box-sizing: border-box;
     transition: box-shadow 0.2s ease;
 }
 
@@ -38,6 +42,7 @@
 }
 
 .mason-block-content {
+    width: 100%;
     font-size: 0;
 }
 .mason-block-content > * {
@@ -224,7 +229,29 @@
             }
         })
 
+        function applyBlockWidths() {
+            document.querySelectorAll('.mason-block').forEach(blockEl => {
+                const configStr = blockEl.getAttribute('data-config')
+                if (configStr) {
+                    try {
+                        const config = JSON.parse(configStr)
+                        const widthValue = config._width || 'full'
+                        const widthPercent = {
+                            'one_third': '33.33%',
+                            'half': '50%',
+                            'two_thirds': '66.66%',
+                            'full': '100%'
+                        }[widthValue] || '100%'
+                        blockEl.style.flexBasis = widthPercent
+                    } catch (e) {
+                        // Fallback if config parsing fails
+                    }
+                }
+            })
+        }
+
         window.addEventListener('load', function () {
+            applyBlockWidths()
             updateAllMoveButtons()
             postToParent({ type: 'ready' })
         })
@@ -289,6 +316,16 @@
                     blockEl.setAttribute('data-brick-id', brickId)
                     blockEl.setAttribute('data-config', JSON.stringify(config))
                     blockEl.setAttribute('data-total-blocks', blocks.length.toString())
+
+                    // Set width based on brick config
+                    const widthValue = config._width || 'full'
+                    const widthPercent = {
+                        'one_third': '33.33%',
+                        'half': '50%',
+                        'two_thirds': '66.66%',
+                        'full': '100%'
+                    }[widthValue] || '100%'
+                    blockEl.style.flexBasis = widthPercent
 
                     blockEl.innerHTML = `
                         <div class="mason-block-controls">

@@ -233,7 +233,7 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
             }
 
             if ($bandHtml) {
-                $html .= '<div style="overflow: auto; clear: both; margin-bottom: 16px;">' . $bandHtml . '<div style="clear: both;"></div></div>';
+                $html .= '<div style="display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 16px;">' . $bandHtml . '</div>';
             }
         }
 
