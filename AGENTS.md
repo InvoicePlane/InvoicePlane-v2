@@ -11,7 +11,7 @@ composer install
 cp .env.example .env && php artisan key:generate
 php artisan migrate && php artisan db:seed
 # Tests (no MySQL locally? use SQLite)
-cp .env.testing.example .env.testing
+cp -n .env.testing.example .env.testing
 # set DB_CONNECTION=sqlite, DB_DATABASE=:memory: in .env.testing
 php artisan test
 ```

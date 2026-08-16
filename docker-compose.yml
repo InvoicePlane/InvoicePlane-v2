@@ -47,6 +47,9 @@ services:
             APP_ENV: "${APP_ENV:-testing}"
         volumes:
             - .:/var/www/html
+        depends_on:
+            db:
+                condition: service_healthy
         networks:
             - laravel
 
@@ -61,6 +64,13 @@ services:
             MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
             MARIADB_DATABASE: "${DB_DATABASE}"
             TZ: "Europe/London"
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            timeout: 20s
+            retries: 10
+        volumes:
+            - database:/var/lib/mysql
+            - ./docker-resources/mariadb/init:/docker-entrypoint-initdb.d
         networks:
             - laravel
 
