@@ -40,6 +40,7 @@ package-lock.json
 # PHPUnit
 /.phpunit.cache
 /.phpunit.result.cache
+/coverage-report/
 /depr.txt
 /htmloutput.txt
 /phpunit*.txt

@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         cacheResult="false"
+         recordTestRunHistory="false"
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
          displayDetailsOnPhpunitDeprecations="true"
@@ -25,6 +25,7 @@
             <group>failing</group>
             <group>flaky</group>
             <group>troubleshooting</group>
+            <group>slow</group>
         </exclude>
     </groups>
     <source>
