@@ -61,6 +61,9 @@ services:
             - db
         volumes:
             - .:/var/www/html
+        depends_on:
+            db:
+                condition: service_healthy
         networks:
             - laravel
 
@@ -75,6 +78,10 @@ services:
             MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
             MARIADB_DATABASE: "${DB_DATABASE}"
             TZ: "Europe/London"
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            timeout: 20s
+            retries: 10
         volumes:
             - database:/var/lib/mysql
             # Only runs on first boot of a fresh volume — provisions the
