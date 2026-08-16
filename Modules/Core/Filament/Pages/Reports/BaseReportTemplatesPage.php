@@ -121,11 +121,11 @@ abstract class BaseReportTemplatesPage extends Page
             ->action(function (array $arguments, array $data): void {
                 $template = [
                     'scope' => (string) $arguments['scope'],
-                    'slug' => (string) $arguments['slug'],
-                    'type' => (string) $arguments['type'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
                 ];
 
-                if (! $this->canModify($template)) {
+                if ( ! $this->canModify($template)) {
                     return;
                 }
 
@@ -150,11 +150,11 @@ abstract class BaseReportTemplatesPage extends Page
             ->action(function (array $arguments): void {
                 $template = [
                     'scope' => (string) $arguments['scope'],
-                    'slug' => (string) $arguments['slug'],
-                    'type' => (string) $arguments['type'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
                 ];
 
-                if (! $this->canModify($template)) {
+                if ( ! $this->canModify($template)) {
                     return;
                 }
 
