@@ -11,8 +11,8 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} float-left">
-    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
+<div class="{{ $width }} float-left p-2" style="box-sizing: border-box;">
+    <div class="border-2 border-dashed border-gray-400 p-3 rounded bg-gray-100 h-full" style="min-height: 120px;">
     <div style="font-size: {{ $config['font_size'] ?? 8 }}pt;" class="text-gray-600">
         @if(!empty($config['footer_content']))
             <div class="prose prose-sm max-w-none">

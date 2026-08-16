@@ -214,6 +214,8 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
         $html = '';
 
         foreach (ReportBand::ordered() as $band) {
+            $bandHtml = '';
+
             foreach (MasonDocumentConverter::toBandEntries($this->data['bands'][$band->value] ?? []) as $entry) {
                 $brickClass = ReportBricksCollection::findById($entry['brick']);
 
@@ -221,7 +223,11 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
                     continue;
                 }
 
-                $html .= (string) $brickClass::toPreviewHtml($entry['config']);
+                $bandHtml .= (string) $brickClass::toPreviewHtml($entry['config']);
+            }
+
+            if ($bandHtml) {
+                $html .= '<div style="overflow: auto; clear: both; margin-bottom: 16px;">' . $bandHtml . '<div style="clear: both;"></div></div>';
             }
         }
 

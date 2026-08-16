@@ -11,8 +11,8 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} float-left">
-    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
+<div class="{{ $width }} float-left p-2" style="box-sizing: border-box;">
+    <div class="border-2 border-dashed border-gray-400 p-3 rounded bg-gray-100 h-full" style="min-height: 120px;">
     <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
         <table class="w-full text-sm">
             @if($config['show_invoice_number'] ?? true)

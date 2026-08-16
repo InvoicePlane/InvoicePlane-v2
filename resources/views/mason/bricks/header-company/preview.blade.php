@@ -11,8 +11,8 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} float-left">
-    <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
+<div class="{{ $width }} float-left p-2" style="box-sizing: border-box;">
+    <div class="border-2 border-dashed border-gray-400 p-3 rounded bg-gray-100 h-full" style="min-height: 120px;">
     <div class="flex items-start gap-4">
         @if($config['show_logo'] ?? true)
             <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
