@@ -152,6 +152,7 @@ class DateFieldAutoPopulationTest extends AbstractCompanyPanelTestCase
     #[Test]
     #[Group('date-auto-population')]
     #[Group('edge-cases')]
+    #[Group('flaky')]
     public function it_handles_timezone_differences_correctly(): void
     {
         $this->markTestSkipped(
