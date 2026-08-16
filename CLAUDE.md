@@ -317,3 +317,8 @@ No DTO layer — services accept arrays and return Eloquent models.
 - `Str::lower($company->search_code)` is always the URL tenant parameter
 - The three tenant middleware classes live at `Modules/Core/Http/Middleware/`
 - Panel providers live at `Modules/Core/Providers/`, not `app/Providers/`
+
+# LESSONS
+
+- Never write `*/` inside a PHP docblock (e.g. glob patterns like `Header*/Detail*`) — it terminates the comment and causes a parse error.
+- When running a test suite in the background, redirect FULL output to a file — never pipe through `tail`/`head`, it destroys the failure details and forces a rerun.
