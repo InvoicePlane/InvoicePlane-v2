@@ -103,14 +103,12 @@ class InvoiceTemplateSelectionTest extends AbstractCompanyPanelTestCase
 
     protected function invoice(): Invoice
     {
-        $relation  = Relation::factory()->create(['company_id' => $this->company->id]);
-        $numbering = \Modules\Core\Models\Numbering::factory()->create([
-            'company_id' => $this->company->id,
-            'type'       => \Modules\Core\Enums\NumberingType::INVOICE->value,
+        $relation  = Relation::factory()->for($this->company)->create();
+        $numbering = \Modules\Core\Models\Numbering::factory()->for($this->company)->create([
+            'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
-        return Invoice::factory()->create([
-            'company_id'   => $this->company->id,
+        return Invoice::factory()->for($this->company)->create([
             'customer_id'  => $relation->id,
             'user_id'      => $this->user->id,
             'numbering_id' => $numbering->id,
