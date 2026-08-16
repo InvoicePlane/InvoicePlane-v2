@@ -11,7 +11,7 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }}" style="float: left; padding: 8px; box-sizing: border-box;">
+<div style="float: left; padding: 8px; box-sizing: border-box; width: {{ match($config['_width'] ?? 'full') { 'one_third' => '33.33%', 'half' => '50%', 'two_thirds' => '66.66%', default => '100%' } }};">
     <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #f3f4f6; min-height: 120px; height: 100%;">
     <div class="flex items-start gap-4">
         @if($config['show_logo'] ?? true)

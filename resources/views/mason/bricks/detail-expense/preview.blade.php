@@ -11,8 +11,8 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }}" style="float: left; padding: 8px; box-sizing: border-box;">
-    <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #f3f4f6; min-height: 120px; height: 100%;">
+<div style="float: left; padding: 8px; box-sizing: border-box; width: {{ match($config['_width'] ?? 'full') { 'one_third' => '33.33%', 'half' => '50%', 'two_thirds' => '66.66%', default => '100%' } }};">
+    <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #ff0000 !important; min-height: 120px; height: 100%;">
     <table class="w-full text-sm" style="font-size: {{ $config['font_size'] ?? 9 }}pt;">
         <thead class="bg-gray-100">
             <tr>
