@@ -11,7 +11,7 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} float-left p-2" style="box-sizing: border-box;">
+<div class="{{ $width }}" style="float: left; padding: 8px; box-sizing: border-box;">
     <div class="border-2 border-dashed border-gray-300 rounded bg-gray-50 flex items-center justify-center text-xs text-gray-500"
      style="height: {{ min((int) ($config['height'] ?? 20), 100) }}px;" h-full">
     {{ trans('ip.spacer') }} — {{ (int) ($config['height'] ?? 20) }}px

@@ -11,8 +11,8 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} float-left p-2" style="box-sizing: border-box;">
-    <div class="border-2 border-dashed border-gray-400 p-3 rounded bg-gray-100 h-full" style="min-height: 120px;">
+<div class="{{ $width }}" style="float: left; padding: 8px; box-sizing: border-box;">
+    <div style="border: 2px dashed #9ca3af; padding: 12px; border-radius: 6px; background-color: #f3f4f6; min-height: 120px; height: 100%;">
     <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
         <h3 class="font-semibold text-base mb-2">{{ trans('ip.bill_to') }}</h3>
         <p class="text-gray-700">{{ trans('ip.client_name') }}</p>
