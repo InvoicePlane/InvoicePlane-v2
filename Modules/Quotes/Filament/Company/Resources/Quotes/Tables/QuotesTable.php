@@ -82,17 +82,13 @@ class QuotesTable
                         ->successNotificationTitle(trans('ip.quote_duplicated')),
                     Action::make('download pdf')
                         ->visible(fn () => auth()->user()?->can(Permission::DOWNLOAD_QUOTES->value))
-                        ->label(trans('ip.download_pdf'))
-                        ->action(function (Quote $record) {
-                            $pdfService = app(\Modules\Core\Services\PdfGenerationService::class);
 
-                            return response()->streamDownload(
-                                function () use ($pdfService, $record): void {
-                                    echo $pdfService->quotePdf($record);
-                                },
-                                'quote-' . ($record->quote_number ?: $record->id) . '.pdf',
-                            );
-                        }),
+                        ->label(trans('ip.download_pdf'))
+                        ->modalDescription(
+                            'todo: make sure we can download the PDF of the Quote through an action,
+                            so need for modal anymore'
+                        )
+                        ->action(function (Quote $record): void {}),
                     Action::make('send email')
                         ->label(trans('ip.send_email'))
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_QUOTES->value))

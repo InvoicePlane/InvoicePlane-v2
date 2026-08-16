@@ -185,8 +185,7 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
                 EditProfile::class,
                 MyCompanies::class,
-                ReportTemplates::class,
-                ReportBuilder::class,
+                CompanySettings::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -236,11 +235,6 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...self::withQuickCreate(PaymentResource::class),
-                            ]),
-
-                        NavigationGroup::make(trans('ip.report_templates'))
-                            ->items([
-                                ...ReportTemplates::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Resources')

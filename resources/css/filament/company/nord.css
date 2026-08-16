@@ -1,10 +1,8 @@
 @import 'tailwindcss';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import '../../../../vendor/awcodes/mason/resources/css/plugin.css';
 
 @source '../../../../Modules/**/resources/views/**/*';
 @source '../../../../Modules/**/*.php';
-@source '../../../../vendor/awcodes/mason/resources/**/*.blade.php';
 @source '../../../../resources/views/filament/tenant/**/*';
 
 @theme {

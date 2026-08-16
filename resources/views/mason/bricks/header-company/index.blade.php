@@ -6,7 +6,7 @@
 <div class="company-header" style="font-size: {{ $config['font_size'] ?? 10 }}pt; text-align: {{ $config['text_align'] ?? 'left' }};">
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
-            @if(($config['show_logo'] ?? true) && !empty($data['company']['logo_path']))
+            @if(($config['show_logo'] ?? true) && isset($data['company']['logo_path']))
                 <td width="100" valign="top">
                     <img src="{{ $data['company']['logo_path'] }}" alt="{{ trans('ip.logo') }}" style="max-width: 100px; max-height: 80px;">
                 </td>
