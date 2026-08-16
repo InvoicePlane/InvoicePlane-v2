@@ -66,6 +66,10 @@ class SubscriptionFactory extends AbstractFactory
             }
         }
 
+        if ($companyId !== null) {
+            $company = $company ?? Company::find($companyId);
+        }
+
         return $company ? Relation::factory()->for($company) : Relation::factory();
     }
 

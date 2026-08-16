@@ -15,7 +15,7 @@ use Modules\Subscriptions\Models\SubscriptionItem;
 
 class SubscriptionSeeder extends Seeder
 {
-    public function run($company = null): void
+    public function run(mixed $company = null): void
     {
         $company = is_int($company) ? Company::query()->find($company) : $company;
 
@@ -25,7 +25,7 @@ class SubscriptionSeeder extends Seeder
 
         $customer = Relation::query()->where('company_id', $company->id)->first();
         if ( ! $customer) {
-            $customer = Relation::factory()->create(['company_id' => $company->id]);
+            $customer = Relation::factory()->for($company)->create();
         }
 
         $product = Product::query()->where('company_id', $company->id)->first();
