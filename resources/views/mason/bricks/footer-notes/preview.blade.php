@@ -11,7 +11,7 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} inline-block align-top">
+<div class="{{ $width }} float-left">
     <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
     <div style="font-size: {{ $config['font_size'] ?? 8 }}pt;" class="text-gray-600">
         @if(!empty($config['footer_content']))

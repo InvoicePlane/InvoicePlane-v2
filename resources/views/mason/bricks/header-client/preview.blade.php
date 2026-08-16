@@ -11,7 +11,7 @@ $width = match($config['_width'] ?? 'full') {
 };
 @endphp
 
-<div class="{{ $width }} inline-block align-top">
+<div class="{{ $width }} float-left">
     <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white h-full">
     <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
         <h3 class="font-semibold text-base mb-2">{{ trans('ip.bill_to') }}</h3>
