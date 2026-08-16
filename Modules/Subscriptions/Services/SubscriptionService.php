@@ -67,49 +67,6 @@ class SubscriptionService extends BaseService
     }
 
     /**
-     * Generate the next subscription number from the company's Subscription
-     * numbering scheme (the same Numbering system used for invoices/quotes,
-     * formerly known as "invoice groups"), creating a default scheme on
-     * first use.
-     */
-    private function generateUniqueNumber(?int $companyId): string
-    {
-        return DB::transaction(function () use ($companyId) {
-            /** @var Numbering $numbering */
-            $numbering = Numbering::query()
-                ->where('company_id', $companyId)
-                ->where('type', NumberingType::SUBSCRIPTION->value)
-                ->lockForUpdate()
-                ->first();
-
-            if ( ! $numbering) {
-                $numbering = Numbering::query()->create([
-                    'company_id' => $companyId,
-                    'type'       => NumberingType::SUBSCRIPTION->value,
-                    'name'       => NumberingType::SUBSCRIPTION->label(),
-                    'next_id'    => 1,
-                    'left_pad'   => 4,
-                    'format'     => '{{prefix}}-{{number}}',
-                    'prefix'     => NumberingType::SUBSCRIPTION->prefix(),
-                    'last_id'    => 0,
-                ]);
-            }
-
-            $prefix = $numbering->resolvedPrefix();
-
-            do {
-                $number = $numbering->applyFormat($numbering->next_id, $prefix);
-                $numbering->increment('next_id');
-            } while (Subscription::withoutGlobalScopes()
-                ->where('company_id', $companyId)
-                ->where('number', $number)
-                ->exists());
-
-            return $number;
-        });
-    }
-
-    /**
      * Calculate period start and end dates based on interval configuration.
      */
     public function calculateNextPeriodDates(
@@ -117,8 +74,7 @@ class SubscriptionService extends BaseService
         string|IntervalUnit $intervalUnit = IntervalUnit::MONTH,
         int $intervalCount = 1,
         ?Carbon $from = null
-    ): array
-    {
+    ): array {
         $from     = $from ? $from->copy() : Carbon::now();
         $startsAt = $from->copy();
         $endsAt   = $from->copy();
@@ -283,7 +239,7 @@ class SubscriptionService extends BaseService
             $subscription = Subscription::query()->whereKey($subscription->id)->lockForUpdate()->firstOrFail();
 
             if ($subscription->status === SubscriptionStatus::CANCELED || $subscription->status === SubscriptionStatus::PAUSED) {
-                return null;
+                return;
             }
 
             $userId = auth()->id()
@@ -373,5 +329,48 @@ class SubscriptionService extends BaseService
         }
 
         $subscription->update(['price' => $totalPrice]);
+    }
+
+    /**
+     * Generate the next subscription number from the company's Subscription
+     * numbering scheme (the same Numbering system used for invoices/quotes,
+     * formerly known as "invoice groups"), creating a default scheme on
+     * first use.
+     */
+    private function generateUniqueNumber(?int $companyId): string
+    {
+        return DB::transaction(function () use ($companyId) {
+            /** @var Numbering $numbering */
+            $numbering = Numbering::query()
+                ->where('company_id', $companyId)
+                ->where('type', NumberingType::SUBSCRIPTION->value)
+                ->lockForUpdate()
+                ->first();
+
+            if ( ! $numbering) {
+                $numbering = Numbering::query()->create([
+                    'company_id' => $companyId,
+                    'type'       => NumberingType::SUBSCRIPTION->value,
+                    'name'       => NumberingType::SUBSCRIPTION->label(),
+                    'next_id'    => 1,
+                    'left_pad'   => 4,
+                    'format'     => '{{prefix}}-{{number}}',
+                    'prefix'     => NumberingType::SUBSCRIPTION->prefix(),
+                    'last_id'    => 0,
+                ]);
+            }
+
+            $prefix = $numbering->resolvedPrefix();
+
+            do {
+                $number = $numbering->applyFormat($numbering->next_id, $prefix);
+                $numbering->increment('next_id');
+            } while (Subscription::withoutGlobalScopes()
+                ->where('company_id', $companyId)
+                ->where('number', $number)
+                ->exists());
+
+            return $number;
+        });
     }
 }

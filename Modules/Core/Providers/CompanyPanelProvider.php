@@ -19,6 +19,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
@@ -204,7 +205,7 @@ class CompanyPanelProvider extends PanelProvider
                     ->items([
                         NavigationItem::make(trans('ip.dashboard'))
                             ->icon('heroicon-o-home')
-                            ->url(route('filament.company.pages.dashboard', ['tenant' => $tenant]))
+                            ->url(route('filament.company.pages.dashboard', ['tenant' => Str::lower($tenant)]))
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.dashboard')),
                     ])
                     ->groups([
