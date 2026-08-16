@@ -52,7 +52,14 @@ class PaymentHistoryReport extends BaseTabularReportPage
 
     protected function csvHeaders(): array
     {
-        return ['Date', 'Payment number', 'Method', 'Invoice', 'Client', 'Amount'];
+        return [
+            trans('ip.payment_date'),
+            trans('ip.payment_number'),
+            trans('ip.payment_method'),
+            trans('ip.invoice_number'),
+            trans('ip.client'),
+            trans('ip.amount'),
+        ];
     }
 
     protected function csvRow($record): array

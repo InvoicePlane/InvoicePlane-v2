@@ -190,6 +190,7 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
                 EditProfile::class,
                 MyCompanies::class,
+                CompanySettings::class,
                 PaymentHistoryReport::class,
                 InvoicingHistoryReport::class,
                 InvoicedByClientReport::class,

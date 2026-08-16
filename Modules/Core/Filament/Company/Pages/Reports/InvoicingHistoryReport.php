@@ -54,7 +54,13 @@ class InvoicingHistoryReport extends BaseTabularReportPage
 
     protected function csvHeaders(): array
     {
-        return ['Invoice number', 'Date', 'Status', 'Client', 'Total'];
+        return [
+            trans('ip.invoice_number'),
+            trans('ip.invoice_date'),
+            trans('ip.invoice_status'),
+            trans('ip.client'),
+            trans('ip.total'),
+        ];
     }
 
     protected function csvRow($record): array

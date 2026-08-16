@@ -51,7 +51,11 @@ class SalesByDateReport extends BaseTabularReportPage
 
     protected function csvHeaders(): array
     {
-        return ['Date', 'Paid invoices', 'Revenue'];
+        return [
+            trans('ip.date'),
+            trans('ip.invoices'),
+            trans('ip.total'),
+        ];
     }
 
     protected function csvRow($record): array

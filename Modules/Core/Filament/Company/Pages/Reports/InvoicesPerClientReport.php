@@ -51,7 +51,11 @@ class InvoicesPerClientReport extends BaseTabularReportPage
 
     protected function csvHeaders(): array
     {
-        return ['Client', 'Invoices', 'Average value'];
+        return [
+            trans('ip.client'),
+            trans('ip.invoices'),
+            trans('ip.average_value'),
+        ];
     }
 
     protected function csvRow($record): array

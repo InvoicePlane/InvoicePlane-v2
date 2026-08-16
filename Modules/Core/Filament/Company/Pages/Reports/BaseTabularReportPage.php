@@ -94,15 +94,27 @@ abstract class BaseTabularReportPage extends Page implements HasTable
 
                 return response()->streamDownload(function (): void {
                     $handle = fopen('php://output', 'wb');
-                    fputcsv($handle, $this->csvHeaders());
+                    fputcsv($handle, $this->sanitizeCsvRow($this->csvHeaders()));
 
-                    foreach ($this->reportQuery()->get() as $record) {
-                        fputcsv($handle, $this->csvRow($record));
+                    foreach ($this->reportQuery()->lazy() as $record) {
+                        fputcsv($handle, $this->sanitizeCsvRow($this->csvRow($record)));
                     }
 
                     fclose($handle);
                 }, $filename, ['Content-Type' => 'text/csv']);
             });
+    }
+
+    private function sanitizeCsvRow(array $row): array
+    {
+        return array_map(function ($value): string {
+            $value = (string) $value;
+            if (str_starts_with($value, '=') || str_starts_with($value, '+') ||
+                str_starts_with($value, '-') || str_starts_with($value, '@')) {
+                return "'" . $value;
+            }
+            return $value;
+        }, $row);
     }
 
     /**

@@ -19,10 +19,8 @@ class CompanyTabularReportsTest extends AbstractCompanyPanelTestCase
     #[Test]
     public function it_renders_every_report_page(): void
     {
-        $relation = Relation::factory()->create(['company_id' => $this->company->id]);
-        Invoice::factory()->create([
-            'company_id'  => $this->company->id,
-            'customer_id' => $relation->id,
+        $relation = Relation::factory()->for($this->company)->create();
+        Invoice::factory()->for($this->company)->for($relation, 'customer')->create([
             'user_id'     => $this->user->id,
             'invoiced_at' => now()->toDateString(),
         ]);
@@ -147,11 +145,9 @@ class CompanyTabularReportsTest extends AbstractCompanyPanelTestCase
     {
         $company ??= $this->company;
 
-        $relation = Relation::factory()->create(['company_id' => $company->id]);
-        $invoice  = Invoice::factory()->create([
-            'company_id'  => $company->id,
-            'customer_id' => $attributes['customer_id'] ?? $relation->id,
-            'user_id'     => $this->user->id,
+        $relation = Relation::factory()->for($company)->create();
+        $invoice  = Invoice::factory()->for($company)->for($relation, 'customer')->create([
+            'user_id' => $this->user->id,
         ]);
 
         return Payment::factory()->for($company)->create(array_merge([
