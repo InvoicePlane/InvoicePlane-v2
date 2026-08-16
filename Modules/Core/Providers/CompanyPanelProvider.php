@@ -187,6 +187,7 @@ class CompanyPanelProvider extends PanelProvider
                 Dashboard::class,
                 EditProfile::class,
                 MyCompanies::class,
+                CompanySettings::class,
                 ReportTemplates::class,
                 ReportBuilder::class,
             ])
