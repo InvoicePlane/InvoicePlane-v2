@@ -48,16 +48,6 @@ class SubscriptionForm
                                             ->label(trans('ip.subscription_code'))
                                             ->placeholder(trans('ip.subscription_code_auto'))
                                             ->helperText(trans('ip.subscription_code_helper')),
-
-                                        Select::make('status')
-                                            ->label(trans('ip.subscription_status'))
-                                            ->options(
-                                                collect(SubscriptionStatus::cases())
-                                                    ->mapWithKeys(fn ($s) => [$s->value => $s->label()])
-                                                    ->toArray()
-                                            )
-                                            ->default(SubscriptionStatus::ACTIVE->value)
-                                            ->required(),
                                     ])
                                     ->columns(2),
 

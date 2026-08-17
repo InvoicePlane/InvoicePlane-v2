@@ -54,7 +54,10 @@ class SubscriptionsTable
                     ->label(trans('ip.billing_cycle'))
                     ->formatStateUsing(function ($state, Subscription $record) {
                         if ($record->billing_interval === BillingInterval::CUSTOM) {
-                            return "Every {$record->interval_count} {$record->interval_unit?->value}(s)";
+                            return trans('ip.custom_billing_interval', [
+                                'count' => $record->interval_count,
+                                'unit' => $record->interval_unit?->label() ?? 'n/a',
+                            ]);
                         }
 
                         return $record->billing_interval?->label() ?? $state;

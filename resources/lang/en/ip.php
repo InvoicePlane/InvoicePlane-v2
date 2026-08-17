@@ -1334,6 +1334,7 @@ return [
     'billing_cycle'                           => 'Billing Cycle',
     'custom_unit'                             => 'Custom Unit',
     'custom_count'                            => 'Custom Count (Frequency)',
+    'custom_billing_interval'                 => 'Every :count :unit(s)',
     'recurring_price'                         => 'Recurring Price',
     'subscription_currency_code'              => 'Currency',
     'lifecycle_and_trial_dates'               => 'Lifecycle & Trial Dates',

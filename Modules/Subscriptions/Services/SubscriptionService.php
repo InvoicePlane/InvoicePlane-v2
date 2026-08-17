@@ -131,6 +131,12 @@ class SubscriptionService extends BaseService
      */
     public function pause(Subscription $subscription, ?Carbon $resumeAt = null): Subscription
     {
+        $subscription = $subscription->lockForUpdate()->fresh();
+
+        if (! in_array($subscription->status, [SubscriptionStatus::ACTIVE, SubscriptionStatus::TRIALING])) {
+            throw new \InvalidArgumentException("Cannot pause subscription with status: {$subscription->status->value}");
+        }
+
         $subscription->update([
             'status'    => SubscriptionStatus::PAUSED,
             'paused_at' => Carbon::now(),
@@ -145,6 +151,12 @@ class SubscriptionService extends BaseService
      */
     public function resume(Subscription $subscription): Subscription
     {
+        $subscription = $subscription->lockForUpdate()->fresh();
+
+        if ($subscription->status !== SubscriptionStatus::PAUSED) {
+            throw new \InvalidArgumentException("Cannot resume subscription with status: {$subscription->status->value}");
+        }
+
         $now = Carbon::now();
 
         // Determine if trial is still valid

@@ -85,7 +85,7 @@ class CompanyPanelProvider extends PanelProvider
                 $tenant = request('tenant');
                 //\Filament\Facades\Filament::getTenant()?->search_code
 
-                return route('filament.company.pages.dashboard', ['tenant' => $tenant]);
+                return route('filament.company.pages.dashboard', ['tenant' => Str::lower($tenant)]);
             })
 
             ->tenantMiddleware([
