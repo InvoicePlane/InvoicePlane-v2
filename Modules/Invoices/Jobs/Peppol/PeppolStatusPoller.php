@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Modules\Invoices\Enums\PeppolTransmissionStatus;
 use Modules\Invoices\Events\Peppol\PeppolAcknowledgementReceived;
 use Modules\Invoices\Models\PeppolTransmission;
 use Modules\Invoices\Peppol\Providers\ProviderFactory;
@@ -36,36 +37,37 @@ class PeppolStatusPoller implements ShouldQueue
      * the transmission state accordingly, and logs per-transmission errors without aborting the batch.
      *
      * Logs the start and completion of the polling job and includes the number of transmissions checked.
-     * /
-     * public function handle(): void
-     * {
-     * $this->logPeppolInfo('Starting Peppol status polling job');
-     *
-     * // Get all transmissions awaiting acknowledgement
-     * $transmissions = PeppolTransmission::query()->where('status', PeppolTransmissionStatus::SENT)
-     * ->whereNotNull('external_id')
-     * ->whereNull('acknowledged_at')
-     * ->where('sent_at', '<', now()->subMinutes(5)) // Allow 5 min grace period
-     * ->limit(100) // Process in batches
-     * ->get();
-     *
-     * foreach ($transmissions as $transmission) {
-     * try {
-     * $this->checkStatus($transmission);
-     * } catch (\Exception $e) {
-     * $this->logPeppolError('Failed to check transmission status', [
-     * 'transmission_id' => $transmission->id,
-     * 'error' => $e->getMessage(),
-     * ]);
-     * }
-     * }
-     *
-     * $this->logPeppolInfo('Completed Peppol status polling', [
-     * 'checked' => $transmissions->count(),
-     * ]);
-     * }
-     *
-     * /**
+     */
+    public function handle(): void
+    {
+        $this->logPeppolInfo('Starting Peppol status polling job');
+
+        // Get all transmissions awaiting acknowledgement (without global scope since this is a system job)
+        $transmissions = PeppolTransmission::withoutGlobalScopes()
+            ->where('status', PeppolTransmissionStatus::SENT)
+            ->whereNotNull('external_id')
+            ->whereNull('acknowledged_at')
+            ->where('sent_at', '<', now()->subMinutes(5)) // Allow 5 min grace period
+            ->limit(100) // Process in batches
+            ->get();
+
+        foreach ($transmissions as $transmission) {
+            try {
+                $this->checkStatus($transmission);
+            } catch (\Exception $e) {
+                $this->logPeppolError('Failed to check transmission status', [
+                    'transmission_id' => $transmission->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $this->logPeppolInfo('Completed Peppol status polling', [
+            'checked' => $transmissions->count(),
+        ]);
+    }
+
+    /**
      * Polls the external provider for a transmission's delivery status and updates the local record accordingly.
      *
      * Marks the transmission as accepted or rejected based on the provider status, fires a PeppolAcknowledgementReceived

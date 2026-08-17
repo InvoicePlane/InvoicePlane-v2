@@ -179,16 +179,21 @@ class SendInvoiceToPeppolJob implements ShouldQueue
      */
     protected function getOrCreateTransmission(): PeppolTransmission
     {
-        // If transmission ID provided, use that
+        // If transmission ID provided, use that (scoped to company for safety)
         if ($this->transmissionId) {
-            return PeppolTransmission::findOrFail($this->transmissionId);
+            return PeppolTransmission::withoutGlobalScopes()
+                ->where('company_id', $this->invoice->company_id)
+                ->findOrFail($this->transmissionId);
         }
 
         // Calculate idempotency key
         $idempotencyKey = $this->calculateIdempotencyKey();
 
-        // Try to find existing transmission
-        $transmission = PeppolTransmission::query()->where('idempotency_key', $idempotencyKey)->first();
+        // Try to find existing transmission (scoped to company)
+        $transmission = PeppolTransmission::withoutGlobalScopes()
+            ->where('company_id', $this->invoice->company_id)
+            ->where('idempotency_key', $idempotencyKey)
+            ->first();
 
         if ($transmission) {
             $this->logPeppolInfo('Found existing transmission', ['transmission_id' => $transmission->id]);
@@ -198,6 +203,7 @@ class SendInvoiceToPeppolJob implements ShouldQueue
 
         // Create new transmission
         $transmission = PeppolTransmission::create([
+            'company_id'      => $this->invoice->company_id,
             'invoice_id'      => $this->invoice->id,
             'customer_id'     => $this->invoice->customer_id,
             'integration_id'  => $this->integration->id,

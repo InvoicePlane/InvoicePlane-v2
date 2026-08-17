@@ -40,8 +40,9 @@ class RetryFailedTransmissions implements ShouldQueue
     {
         $this->logPeppolInfo('Starting retry failed transmissions job');
 
-        // Get transmissions ready for retry
-        $transmissions = PeppolTransmission::query()->where('status', PeppolTransmissionStatus::RETRYING)
+        // Get transmissions ready for retry (without global scope since this is a system job)
+        $transmissions = PeppolTransmission::withoutGlobalScopes()
+            ->where('status', PeppolTransmissionStatus::RETRYING)
             ->where('next_retry_at', '<=', now())
             ->limit(50) // Process in batches
             ->get();
