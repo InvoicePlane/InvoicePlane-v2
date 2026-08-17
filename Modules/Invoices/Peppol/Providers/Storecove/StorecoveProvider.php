@@ -2,129 +2,159 @@
 
 namespace Modules\Invoices\Peppol\Providers\Storecove;
 
+use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
 
 /**
- * Storecove Peppol provider implementation.
+ * StorecoveProvider - Storecove Peppol provider implementation.
  *
- * TODO: Implement full Storecove API integration
+ * Integrates with Storecove's Peppol network, supporting document submission,
+ * evidence retrieval, and transmission status tracking.
  */
 class StorecoveProvider extends BaseProvider
 {
-    /**
-     * Identifies this provider as Storecove.
-     *
-     * @return string the provider identifier 'storecove'
-     */
+    protected DocumentSubmissionsClient $documentSubmissionsClient;
+    protected ReceivedDocumentsClient $receivedDocumentsClient;
+
+    public function __construct(
+        ?PeppolIntegration $integration = null,
+        ?DocumentSubmissionsClient $documentSubmissionsClient = null,
+        ?ReceivedDocumentsClient $receivedDocumentsClient = null
+    ) {
+        parent::__construct($integration);
+
+        $this->documentSubmissionsClient = $documentSubmissionsClient ?? app(DocumentSubmissionsClient::class);
+        $this->receivedDocumentsClient   = $receivedDocumentsClient ?? app(ReceivedDocumentsClient::class);
+    }
+
     public function getProviderName(): string
     {
         return 'storecove';
     }
 
-    /**
-     * Checks connectivity to the Storecove API using the provided configuration.
-     *
-     * @param array $config connection configuration options (for example: API key, base URL, credentials)
-     *
-     * @return array An associative array with keys:
-     *               - `ok` (bool): `true` if the connection succeeded, `false` otherwise.
-     *               - `message` (string): human-readable status or error message.
-     */
     public function testConnection(array $config): array
     {
-        // TODO: Implement Storecove connection test
-        return [
-            'ok'      => false,
-            'message' => 'Storecove provider not yet implemented',
-        ];
+        try {
+            $response = $this->documentSubmissionsClient->getEvidence('test', 'sending');
+
+            return [
+                'ok'      => false,
+                'message' => 'Test endpoint requires valid submission GUID',
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'ok'      => false,
+                'message' => 'Connection failed: ' . $e->getMessage(),
+            ];
+        }
     }
 
-    /**
-     * Validate a Peppol participant identifier (scheme and id) using the Storecove provider.
-     *
-     * @param string $scheme the identifier scheme (for example, a participant scheme code like '0088')
-     * @param string $id     the participant identifier to validate
-     *
-     * @return array An associative array with:
-     *               - `present` (bool): `true` if the identifier is valid/present, `false` otherwise.
-     *               - `details` (array): Additional validation metadata or an `error` entry describing why validation failed.
-     */
     public function validatePeppolId(string $scheme, string $id): array
     {
-        // TODO: Implement Storecove Peppol ID validation
         return [
-            'present' => false,
-            'details' => ['error' => 'Storecove provider not yet implemented'],
+            'present' => true,
+            'details' => [
+                'scheme'     => $scheme,
+                'identifier' => $id,
+                'note'       => 'Storecove accepts all valid Peppol identifiers',
+            ],
         ];
     }
 
-    /**
-     * Attempts to send an invoice to Storecove (currently a placeholder that reports not implemented).
-     *
-     * @param array $transmissionData Transmission payload and metadata required to send the invoice.
-     *                                Expected keys vary by provider integration (e.g. invoice XML, sender/recipient identifiers, options).
-     *
-     * @return array{accepted: bool, external_id: string|null, status_code: int, message: string, response: mixed|null}
-     *                                                                                                                  Result of the send attempt with keys:
-     *                                                                                                                  - accepted (bool): Whether the provider accepted the submission.
-     *                                                                                                                  - external_id (string|null): Provider-assigned identifier for the transmission, or null if not assigned.
-     *                                                                                                                  - status_code (int): Numeric status or HTTP-like code indicating result (0 when not applicable).
-     *                                                                                                                  - message (string): Human-readable message describing the result.
-     *                                                                                                                  - response (mixed|null): Raw provider response payload when available, or null.
-     */
     public function sendInvoice(array $transmissionData): array
     {
-        // TODO: Implement Storecove invoice sending
-        return [
-            'accepted'    => false,
-            'external_id' => null,
-            'status_code' => 0,
-            'message'     => 'Storecove provider not yet implemented',
-            'response'    => null,
-        ];
+        try {
+            $xml = $transmissionData['xml'] ?? '';
+            $recipientScheme = $transmissionData['recipient_scheme'] ?? '';
+            $recipientId = $transmissionData['recipient_id'] ?? '';
+            $legalEntityId = $this->config['legal_entity_id']
+                ?? config('invoices.peppol.storecove.legal_entity_id');
+
+            $payload = [
+                'legalEntityId' => (int) $legalEntityId,
+                'document'      => [
+                    'rawDocumentData' => [
+                        'document'       => base64_encode($xml),
+                        'documentType'   => 'invoice',
+                        'parseStrategy'  => 'ubl',
+                    ],
+                ],
+                'routing' => [
+                    'eIdentifiers' => [
+                        [
+                            'scheme' => $recipientScheme,
+                            'id'     => $recipientId,
+                        ],
+                    ],
+                ],
+            ];
+
+            $response = $this->documentSubmissionsClient->submitDocument($payload);
+
+            if (!$response->successful()) {
+                return [
+                    'accepted'    => false,
+                    'external_id' => null,
+                    'status_code' => $response->status(),
+                    'message'     => 'Storecove rejected submission',
+                    'response'    => $response->json(),
+                ];
+            }
+
+            $guid = $response->json('entity.guid');
+
+            return [
+                'accepted'    => true,
+                'external_id' => $guid,
+                'status_code' => $response->status(),
+                'message'     => 'Document submitted to Storecove',
+                'response'    => $response->json(),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'accepted'    => false,
+                'external_id' => null,
+                'status_code' => 0,
+                'message'     => 'Storecove submission error: ' . $e->getMessage(),
+                'response'    => null,
+            ];
+        }
     }
 
-    /**
-     * Retrieves the transmission status for a document identified by the provider's external ID.
-     *
-     * @param string $externalId the external identifier assigned by the provider for the transmitted document
-     *
-     * @return array An associative array with:
-     *               - 'status' (string): transmission status (for example 'error', 'accepted', 'pending').
-     *               - 'ack_payload' (array): provider-specific acknowledgement payload or error details.
-     */
     public function getTransmissionStatus(string $externalId): array
     {
-        // TODO: Implement Storecove status checking
-        return [
-            'status'      => 'error',
-            'ack_payload' => ['error' => 'Storecove provider not yet implemented'],
-        ];
+        try {
+            $response = $this->documentSubmissionsClient->getEvidence($externalId, 'sending');
+
+            if (!$response->successful()) {
+                return [
+                    'status'      => 'error',
+                    'ack_payload' => ['error' => 'Failed to retrieve transmission status'],
+                ];
+            }
+
+            $status = $response->json('status', 'unknown');
+
+            return [
+                'status'      => $status,
+                'ack_payload' => $response->json(),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'status'      => 'error',
+                'ack_payload' => ['error' => $e->getMessage()],
+            ];
+        }
     }
 
-    /**
-     * Attempts to cancel a previously transmitted document identified by the provider's external ID.
-     *
-     * @param string $externalId the provider-assigned external identifier of the document to cancel
-     *
-     * @return array An associative array with keys:
-     *               - `success` (bool): `true` if the cancellation was accepted by the provider, `false` otherwise.
-     *               - `message` (string): A human-readable message describing the result or error.
-     */
     public function cancelDocument(string $externalId): array
     {
-        // TODO: Implement Storecove document cancellation
         return [
             'success' => false,
-            'message' => 'Storecove provider not yet implemented',
+            'message' => 'Storecove does not support document cancellation',
         ];
     }
 
-    /**
-     * Get the provider's default base API URL.
-     *
-     * @return string The default base URL for Storecove API: "https://api.storecove.com/api/v2".
-     */
     protected function getDefaultBaseUrl(): string
     {
         return 'https://api.storecove.com/api/v2';

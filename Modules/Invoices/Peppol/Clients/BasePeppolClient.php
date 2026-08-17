@@ -2,7 +2,8 @@
 
 namespace Modules\Invoices\Peppol\Clients;
 
-use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
+use Modules\Invoices\Http\Contracts\HttpClientInterface;
+use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
  * BasePeppolClient - Base class for all Peppol provider API clients.
@@ -14,12 +15,14 @@ use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
  */
 abstract class BasePeppolClient
 {
+    use LogsPeppolActivity;
+
     /**
      * The HTTP client with exception handling.
      *
-     * @var HttpClientExceptionHandler
+     * @var HttpClientInterface
      */
-    protected HttpClientExceptionHandler $client;
+    protected HttpClientInterface $client;
 
     /**
      * API key for authentication.
@@ -45,11 +48,11 @@ abstract class BasePeppolClient
     /**
      * Constructor.
      *
-     * @param HttpClientExceptionHandler $client  The HTTP client
-     * @param string                     $apiKey  The API key for authentication
-     * @param string                     $baseUrl The base URL for the API
+     * @param HttpClientInterface $client  The HTTP client
+     * @param string              $apiKey  The API key for authentication
+     * @param string              $baseUrl The base URL for the API
      */
-    public function __construct(HttpClientExceptionHandler $client, string $apiKey, string $baseUrl)
+    public function __construct(HttpClientInterface $client, string $apiKey, string $baseUrl)
     {
         $this->client  = $client;
         $this->apiKey  = $apiKey;
@@ -69,9 +72,9 @@ abstract class BasePeppolClient
     /**
      * Get the HTTP client instance.
      *
-     * @return HttpClientExceptionHandler
+     * @return HttpClientInterface
      */
-    public function getClient(): HttpClientExceptionHandler
+    public function getClient(): HttpClientInterface
     {
         return $this->client;
     }

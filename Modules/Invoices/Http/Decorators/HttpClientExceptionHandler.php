@@ -5,35 +5,35 @@ namespace Modules\Invoices\Http\Decorators;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
-use Modules\Invoices\Http\Clients\ApiClient;
+use Modules\Invoices\Http\Contracts\HttpClientInterface;
 use Modules\Invoices\Http\RequestMethod;
 use Modules\Invoices\Http\Traits\LogsApiRequests;
 use Throwable;
 
 /**
- * HttpClientExceptionHandler - Decorator for ApiClient that handles exceptions.
+ * HttpClientExceptionHandler - Decorator for HttpClientInterface that handles exceptions.
  *
- * This decorator wraps the ApiClient to provide comprehensive exception handling,
- * logging, and error reporting for HTTP requests. It ensures that all HTTP errors
- * are properly caught, logged, and can be handled gracefully by the application.
+ * This decorator wraps any HttpClientInterface implementation to provide comprehensive
+ * exception handling, logging, and error reporting for HTTP requests. It ensures that all
+ * HTTP errors are properly caught, logged, and can be handled gracefully by the application.
  */
-class HttpClientExceptionHandler
+class HttpClientExceptionHandler implements HttpClientInterface
 {
     use LogsApiRequests;
 
     /**
-     * The wrapped ApiClient instance.
+     * The wrapped HTTP client instance.
      *
-     * @var ApiClient
+     * @var HttpClientInterface
      */
-    protected ApiClient $client;
+    protected HttpClientInterface $client;
 
     /**
      * Constructor.
      *
-     * @param ApiClient $client The client to decorate
+     * @param HttpClientInterface $client The client to decorate
      */
-    public function __construct(ApiClient $client)
+    public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
     }

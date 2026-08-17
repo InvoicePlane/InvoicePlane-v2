@@ -22,6 +22,7 @@ return [
         |
         */
         'default_provider' => env('PEPPOL_PROVIDER', 'e_invoice_be'),
+        /* Supported: "e_invoice_be", "storecove", "lets_peppol", "super_pdp", "qonto" */
 
         /*
         |--------------------------------------------------------------------------
@@ -37,6 +38,22 @@ return [
             'api_key'  => env('PEPPOL_E_INVOICE_BE_API_KEY', ''),
             'base_url' => env('PEPPOL_E_INVOICE_BE_BASE_URL', 'https://api.e-invoice.be'),
             'timeout'  => env('PEPPOL_E_INVOICE_BE_TIMEOUT', 30),
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Storecove Configuration
+        |--------------------------------------------------------------------------
+        |
+        | Configuration for the Storecove Peppol access point.
+        | See: https://www.storecove.com/documentation/api
+        |
+        */
+        'storecove' => [
+            'api_key'         => env('PEPPOL_STORECOVE_API_KEY', ''),
+            'legal_entity_id' => env('PEPPOL_STORECOVE_LEGAL_ENTITY_ID', ''),
+            'base_url'        => env('PEPPOL_STORECOVE_BASE_URL', 'https://api.storecove.com/api/v2'),
+            'timeout'         => env('PEPPOL_STORECOVE_TIMEOUT', 30),
         ],
 
         /*

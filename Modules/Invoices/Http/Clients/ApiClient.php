@@ -5,6 +5,7 @@ namespace Modules\Invoices\Http\Clients;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Modules\Invoices\Http\Contracts\HttpClientInterface;
 use Modules\Invoices\Http\RequestMethod;
 
 /**
@@ -13,7 +14,7 @@ use Modules\Invoices\Http\RequestMethod;
  * This client provides a single request() method for all HTTP operations,
  * with built-in authentication handling.
  */
-class ApiClient
+class ApiClient implements HttpClientInterface
 {
     /**
      * Make an HTTP request.
@@ -24,8 +25,10 @@ class ApiClient
      *
      * @return Response
      */
-    public function request(RequestMethod $method, string $uri, array $options = []): Response
+    public function request(RequestMethod|string $method, string $uri, array $options = []): Response
     {
+        $methodEnum = $method instanceof RequestMethod ? $method : RequestMethod::from(mb_strtolower($method));
+
         $client = Http::timeout($options['timeout'] ?? 30);
 
         $client = $this->applyAuth($client, $options);
@@ -36,7 +39,7 @@ class ApiClient
         }
 
         return $client
-            ->{$method->value}($uri, $options['payload'] ?? [])
+            ->{$methodEnum->value}($uri, $options['payload'] ?? [])
             ->throw();
     }
 
