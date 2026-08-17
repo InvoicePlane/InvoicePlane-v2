@@ -264,6 +264,7 @@ class LetsPeppolProvider extends BaseProvider
      * Get the list of required settings/credentials for LetsPeppol OAuth2.
      *
      * These fields define what configuration values must be stored in the database.
+     * Base URL is hardcoded in the LetsPeppolClient class.
      *
      * @return array<string> List of setting names
      */
@@ -273,7 +274,6 @@ class LetsPeppolProvider extends BaseProvider
             'client_id',      // OAuth2 client ID (from LetsPeppol dashboard)
             'client_secret',  // OAuth2 client secret (should be encrypted)
             'access_token',   // Bearer token (obtained via OAuth2 authentication)
-            'base_url',       // API base URL (defaults to https://api.letspeppol.com/api/v1)
         ];
     }
 }

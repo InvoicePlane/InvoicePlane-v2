@@ -114,17 +114,16 @@ class LetsPeppolClient extends BasePeppolClient
      * Get the list of required settings/credentials for LetsPeppol.
      *
      * These fields define what configuration values must be stored in the database
-     * for the integration to function.
+     * for the integration to function. Base URL is hardcoded in the client.
      *
      * @return array<string> List of setting names
      */
     public function settings(): array
     {
         return [
-            'client_id',      // OAuth2 client ID (from LetsPeppol)
-            'client_secret',  // OAuth2 client secret (from LetsPeppol) — should be encrypted
+            'client_id',      // OAuth2 client ID (from LetsPeppol dashboard)
+            'client_secret',  // OAuth2 client secret (from LetsPeppol dashboard) — should be encrypted
             'access_token',   // Bearer token (obtained via authenticate())
-            'base_url',       // API base URL (defaults to https://api.letspeppol.com/api/v1)
         ];
     }
 }
