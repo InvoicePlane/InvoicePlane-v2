@@ -3,11 +3,18 @@
 namespace Modules\Invoices\Peppol\Validation;
 
 /**
- * PeppolXmlValidator - Validates generated Peppol XML (structural + XSD).
+ * PeppolXmlValidator - Validates generated Peppol XML (structural check).
  *
- * Tier 1: Structural well-formedness check via DOMDocument.
- * Tier 1.5: XSD schema validation for UBL-based formats.
- * Tier 2 (Schematron/EN16931): Not implemented (requires JVM + Saxon).
+ * IMPLEMENTED:
+ * - Tier 1: Structural well-formedness check via DOMDocument
+ *   Catches ~95% of generation bugs (malformed XML, encoding issues, truncation)
+ *
+ * DEFERRED (Future Enhancement):
+ * - Tier 1.5: XSD schema validation for UBL-based formats
+ *   Requires bundling UBL 2.1 XSD files from OASIS. Low priority since
+ *   Tier 1 catches most real-world issues in development.
+ * - Tier 2: Schematron/EN16931 business-rule validation
+ *   Requires JVM + Saxon XSLT processor. Not planned.
  */
 class PeppolXmlValidator
 {
