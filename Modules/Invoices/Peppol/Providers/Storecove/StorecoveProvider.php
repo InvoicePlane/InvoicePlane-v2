@@ -3,6 +3,8 @@
 namespace Modules\Invoices\Peppol\Providers\Storecove;
 
 use Modules\Invoices\Models\PeppolIntegration;
+use Modules\Invoices\Peppol\Clients\Storecove\DocumentSubmissionsClient;
+use Modules\Invoices\Peppol\Clients\Storecove\ReceivedDocumentsClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
 
 /**
@@ -13,18 +15,35 @@ use Modules\Invoices\Peppol\Providers\BaseProvider;
  */
 class StorecoveProvider extends BaseProvider
 {
-    protected object $documentSubmissionsClient;
-    protected object $receivedDocumentsClient;
+    protected DocumentSubmissionsClient $documentSubmissionsClient;
+    protected ReceivedDocumentsClient $receivedDocumentsClient;
 
     public function __construct(
         ?PeppolIntegration $integration = null,
-        ?object $documentSubmissionsClient = null,
-        ?object $receivedDocumentsClient = null
+        ?DocumentSubmissionsClient $documentSubmissionsClient = null,
+        ?ReceivedDocumentsClient $receivedDocumentsClient = null
     ) {
         parent::__construct($integration);
 
-        $this->documentSubmissionsClient = $documentSubmissionsClient ?? app(DocumentSubmissionsClient::class);
-        $this->receivedDocumentsClient   = $receivedDocumentsClient ?? app(ReceivedDocumentsClient::class);
+        if ($documentSubmissionsClient) {
+            $this->documentSubmissionsClient = $documentSubmissionsClient;
+        } else {
+            $this->documentSubmissionsClient = new DocumentSubmissionsClient(
+                app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
+                $this->getApiKey() ?? 'default-key',
+                $this->getDefaultBaseUrl()
+            );
+        }
+
+        if ($receivedDocumentsClient) {
+            $this->receivedDocumentsClient = $receivedDocumentsClient;
+        } else {
+            $this->receivedDocumentsClient = new ReceivedDocumentsClient(
+                app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
+                $this->getApiKey() ?? 'default-key',
+                $this->getDefaultBaseUrl()
+            );
+        }
     }
 
     public function getProviderName(): string
@@ -161,11 +180,11 @@ class StorecoveProvider extends BaseProvider
 
     public function getApiKey(): ?string
     {
-        return $this->config['api_key'] ?? $this->integration?->configurations()?->where('key', 'api_key')->value('config_value');
+        return $this->config['api_key'] ?? $this->integration?->configurations()?->where('config_key', 'api_key')->value('config_value');
     }
 
     public function getLegalEntityId(): ?string
     {
-        return $this->config['legal_entity_id'] ?? $this->integration?->configurations()?->where('key', 'legal_entity_id')->value('config_value');
+        return $this->config['legal_entity_id'] ?? $this->integration?->configurations()?->where('config_key', 'legal_entity_id')->value('config_value');
     }
 }

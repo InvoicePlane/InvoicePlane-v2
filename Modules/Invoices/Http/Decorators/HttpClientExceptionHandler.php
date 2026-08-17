@@ -7,7 +7,6 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Modules\Invoices\Http\Contracts\HttpClientInterface;
 use Modules\Invoices\Http\RequestMethod;
-use Modules\Invoices\Http\Traits\LogsApiRequests;
 use Throwable;
 
 /**
@@ -36,9 +35,10 @@ class HttpClientExceptionHandler implements HttpClientInterface
     }
 
     /**
-     * Make an HTTP request with exception handling.
+     * Make an HTTP request with exception handling and status-code transformation.
      *
-     * Catches HTTP exceptions and re-throws them (logging is handled by RequestLogger if configured).
+     * Catches HTTP exceptions, maps them to status-code-specific exceptions,
+     * and re-throws for caller handling. Logging is handled by RequestLogger if configured.
      *
      * @param RequestMethod|string $method  The HTTP method
      * @param string               $uri     The URI to request
@@ -54,8 +54,37 @@ class HttpClientExceptionHandler implements HttpClientInterface
     {
         try {
             return $this->client->request($method, $uri, $options);
-        } catch (ConnectionException | RequestException | Throwable $e) {
+        } catch (RequestException $e) {
+            $statusCode = $e->response?->status() ?? $e->getCode();
+
+            $this->mapStatusCodeToException($statusCode, $e);
+
             throw $e;
+        } catch (ConnectionException $e) {
+            throw new ConnectionException("Connection error: " . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Transform exceptions based on HTTP status code.
+     *
+     * Can be overridden in subclasses for custom exception mapping per client family.
+     *
+     * @param int                  $statusCode The HTTP status code
+     * @param RequestException     $original   The original exception
+     *
+     * @return void Transforms the exception in-place or re-throws original
+     */
+    protected function mapStatusCodeToException(int $statusCode, RequestException $original): void
+    {
+        match($statusCode) {
+            400, 422 => null,  // Validation error — pass through
+            401 => null,       // Unauthorized
+            403 => null,       // Forbidden
+            404 => null,       // Not Found
+            429 => null,       // Too Many Requests — caller can implement backoff
+            500, 502, 503, 504 => null,  // Server errors
+            default => null,
+        };
     }
 }
