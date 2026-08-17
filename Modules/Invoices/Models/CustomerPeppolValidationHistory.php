@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\User;
+use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Enums\PeppolValidationStatus;
 
 /**
  * @property int                                $id
+ * @property int                                $company_id
  * @property int                                $customer_id
  * @property int|null                           $integration_id
  * @property int|null                           $validated_by
@@ -27,6 +29,8 @@ use Modules\Invoices\Enums\PeppolValidationStatus;
  */
 class CustomerPeppolValidationHistory extends Model
 {
+    use BelongsToCompany;
+
     public $timestamps = true;
 
     protected $table = 'customer_peppol_validation_history';

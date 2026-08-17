@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Models\Company;
+use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Enums\PeppolErrorType;
 use Modules\Invoices\Enums\PeppolTransmissionStatus;
 
 /**
  * @property int                          $id
+ * @property int                          $company_id
  * @property int                          $invoice_id
  * @property int                          $customer_id
  * @property int                          $integration_id
@@ -28,6 +31,7 @@ use Modules\Invoices\Enums\PeppolTransmissionStatus;
  * @property \Carbon\Carbon|null          $next_retry_at
  * @property \Carbon\Carbon|null          $created_at
  * @property \Carbon\Carbon|null          $updated_at
+ * @property Company                      $company
  * @property Invoice                      $invoice
  * @property Relation                     $customer
  * @property PeppolIntegration            $integration
@@ -35,6 +39,8 @@ use Modules\Invoices\Enums\PeppolTransmissionStatus;
  */
 class PeppolTransmission extends Model
 {
+    use BelongsToCompany;
+
     public $timestamps = true;
 
     protected $table = 'peppol_transmissions';

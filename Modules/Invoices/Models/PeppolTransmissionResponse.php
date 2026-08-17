@@ -4,9 +4,11 @@ namespace Modules\Invoices\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Traits\BelongsToCompany;
 
 /**
  * @property int                $id
+ * @property int                $company_id
  * @property int                $transmission_id
  * @property string             $response_key
  * @property string             $response_value
@@ -14,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PeppolTransmissionResponse extends Model
 {
+    use BelongsToCompany;
+
     public $timestamps = false;
 
     protected $table = 'peppol_transmission_responses';
