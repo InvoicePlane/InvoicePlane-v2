@@ -2,8 +2,10 @@
 
 namespace Modules\Invoices\Actions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Client\RequestException;
 use InvalidArgumentException;
+use Modules\Core\Models\User;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Peppol\Services\PeppolService;
 
@@ -41,14 +43,23 @@ class SendInvoiceToPeppolAction
      *
      * @param Invoice              $invoice        The invoice to send
      * @param array<string, mixed> $additionalData Optional additional data (e.g., Peppol ID)
+     * @param User|null            $user           Optional user for authorization check; if null, uses current auth user
      *
      * @return array<string, mixed> The result of the operation
      *
      * @throws RequestException         If the Peppol API request fails
      * @throws InvalidArgumentException If the invoice data is invalid
+     * @throws AuthorizationException   If user is not authorized to edit the invoice
      */
-    public function execute(Invoice $invoice, array $additionalData = []): array
+    public function execute(Invoice $invoice, array $additionalData = [], ?User $user = null): array
     {
+        $user = $user ?? auth()->user();
+
+        // Verify user can edit this invoice
+        if ($user && ! $user->can('update', $invoice)) {
+            throw new AuthorizationException('You are not authorized to send this invoice to Peppol');
+        }
+
         // Load necessary relationships
         $invoice->load(['customer', 'invoiceItems']);
 
