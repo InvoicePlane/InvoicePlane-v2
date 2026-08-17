@@ -13,13 +13,13 @@ use Modules\Invoices\Peppol\Providers\BaseProvider;
  */
 class StorecoveProvider extends BaseProvider
 {
-    protected DocumentSubmissionsClient $documentSubmissionsClient;
-    protected ReceivedDocumentsClient $receivedDocumentsClient;
+    protected object $documentSubmissionsClient;
+    protected object $receivedDocumentsClient;
 
     public function __construct(
         ?PeppolIntegration $integration = null,
-        ?DocumentSubmissionsClient $documentSubmissionsClient = null,
-        ?ReceivedDocumentsClient $receivedDocumentsClient = null
+        ?object $documentSubmissionsClient = null,
+        ?object $receivedDocumentsClient = null
     ) {
         parent::__construct($integration);
 
