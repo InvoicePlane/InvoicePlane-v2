@@ -148,22 +148,6 @@ class PeppolDocumentFormatTest extends TestCase
         $this->assertEquals(PeppolDocumentFormat::UBL_24, $format);
     }
 
-    public function test_it_throws_on_invalid_enum_value(): void
-    {
-        $this->markTestIncomplete('weird test');
-
-        $this->expectException(ValueError::class);
-        PeppolDocumentFormat::from('invalid_value');
-    }
-
-    public function test_it_throws_on_invalid_enum_value_name(): void
-    {
-        $this->markTestIncomplete('weird test');
-
-        $this->expectException(ValueError::class);
-        PeppolDocumentFormat::from('not_a_real_enum');
-    }
-
     #[Test]
     #[Group('failing')]
     public function it_provides_description_for_formats(): void
