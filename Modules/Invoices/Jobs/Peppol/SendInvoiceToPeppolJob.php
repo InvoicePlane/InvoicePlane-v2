@@ -128,8 +128,6 @@ class SendInvoiceToPeppolJob implements ShouldQueue
             if (isset($transmission)) {
                 $this->handleFailure($transmission, $e);
             }
-
-            throw $e;
         }
     }
 

@@ -53,7 +53,7 @@ abstract class BasePeppolClient
     {
         $this->client  = $client;
         $this->apiKey  = $apiKey;
-        $this->baseUrl = mb_rtrim($baseUrl, '/');
+        $this->baseUrl = rtrim($baseUrl, '/');
     }
 
     /**

@@ -56,7 +56,7 @@ class TrackingClient extends EInvoiceBeClient
         $url     = $this->buildUrl("/tracking/{$documentId}/history");
         $options = $this->getRequestOptions();
 
-        return $this->client->request(RequestMethod::GET->value, $url, $options);
+        return $this->client->request(RequestMethod::GET, $url, $options);
     }
 
     /**
@@ -86,7 +86,7 @@ class TrackingClient extends EInvoiceBeClient
         $url     = $this->buildUrl("/tracking/{$documentId}/status");
         $options = $this->getRequestOptions();
 
-        return $this->client->request(RequestMethod::GET->value, $url, $options);
+        return $this->client->request(RequestMethod::GET, $url, $options);
     }
 
     /**
@@ -121,7 +121,7 @@ class TrackingClient extends EInvoiceBeClient
         $url     = $this->buildUrl("/tracking/{$documentId}/confirmation");
         $options = $this->getRequestOptions();
 
-        return $this->client->request(RequestMethod::GET->value, $url, $options);
+        return $this->client->request(RequestMethod::GET, $url, $options);
     }
 
     /**
@@ -170,7 +170,7 @@ class TrackingClient extends EInvoiceBeClient
             'payload' => $filters,
         ]);
 
-        return $this->client->request(RequestMethod::GET->value, $url, $options);
+        return $this->client->request(RequestMethod::GET, $url, $options);
     }
 
     /**
@@ -203,6 +203,6 @@ class TrackingClient extends EInvoiceBeClient
         $url     = $this->buildUrl("/tracking/{$documentId}/errors");
         $options = $this->getRequestOptions();
 
-        return $this->client->request(RequestMethod::GET->value, $url, $options);
+        return $this->client->request(RequestMethod::GET, $url, $options);
     }
 }

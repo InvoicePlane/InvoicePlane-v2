@@ -72,19 +72,23 @@ class PeppolTransformerService
      *         country_code: null|string
      *     }
      * } Supplier structure with address fields mapped for Peppol.
-     * protected function transformSupplier(Invoice $invoice): array
-     * {
-     * return [
-     * 'name' => config('invoices.peppol.supplier.name', $invoice->company->name ?? ''),
-     * 'vat_number' => config('invoices.peppol.supplier.vat'),
-     * 'address' => [
-     * 'street' => config('invoices.peppol.supplier.street'),
-     * 'city' => config('invoices.peppol.supplier.city'),
-     * 'postal_code' => config('invoices.peppol.supplier.postal'),
-     * 'country_code' => config('invoices.peppol.supplier.country'),
-     * ],
-     * ];
-     * }
+     */
+    protected function transformSupplier(Invoice $invoice): array
+    {
+        return [
+            'name'       => config('invoices.peppol.supplier.name', $invoice->company->name ?? ''),
+            'vat_number' => config('invoices.peppol.supplier.vat'),
+            'address'    => [
+                'street'       => config('invoices.peppol.supplier.street'),
+                'city'         => config('invoices.peppol.supplier.city'),
+                'postal_code'  => config('invoices.peppol.supplier.postal'),
+                'country_code' => config('invoices.peppol.supplier.country'),
+            ],
+        ];
+    }
+
+    /**
+     * Transform customer information for Peppol output.
      *
      * @param Invoice $invoice the invoice containing the customer and address data to transform
      *
