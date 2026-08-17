@@ -53,7 +53,7 @@ class SendInvoiceToPeppolAction
      */
     public function execute(Invoice $invoice, array $additionalData = [], ?User $user = null): array
     {
-        $user = $user ?? auth()->user();
+        $user ??= auth()->user();
 
         // Verify user can edit this invoice
         if ($user && ! $user->can('update', $invoice)) {

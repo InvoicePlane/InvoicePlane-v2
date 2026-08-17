@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Jobs\Peppol;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -54,10 +55,10 @@ class PeppolStatusPoller implements ShouldQueue
         foreach ($transmissions as $transmission) {
             try {
                 $this->checkStatus($transmission);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logPeppolError('Failed to check transmission status', [
                     'transmission_id' => $transmission->id,
-                    'error' => $e->getMessage(),
+                    'error'           => $e->getMessage(),
                 ]);
             }
         }
