@@ -180,11 +180,11 @@ class StorecoveProvider extends BaseProvider
 
     public function getApiKey(): ?string
     {
-        return $this->config['api_key'] ?? $this->integration?->configurations()?->where('config_key', 'api_key')->value('config_value');
+        return $this->config['api_key'] ?? null;
     }
 
     public function getLegalEntityId(): ?string
     {
-        return $this->config['legal_entity_id'] ?? $this->integration?->configurations()?->where('config_key', 'legal_entity_id')->value('config_value');
+        return $this->config['legal_entity_id'] ?? null;
     }
 }
