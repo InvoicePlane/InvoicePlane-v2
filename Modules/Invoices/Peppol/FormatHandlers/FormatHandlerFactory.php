@@ -104,7 +104,7 @@ class FormatHandlerFactory
                 $format = PeppolDocumentFormat::from($customer->peppol_format);
 
                 return self::create($format);
-            } catch (ValueError | RuntimeException $e) {
+            } catch (ValueError|RuntimeException $e) {
                 // Invalid format or handler not available, continue to fallback
                 \Illuminate\Support\Facades\Log::info("Customer's preferred Peppol format '{$customer->peppol_format}' is not available, falling back to recommended format", [
                     'customer_id'  => $customer->id,

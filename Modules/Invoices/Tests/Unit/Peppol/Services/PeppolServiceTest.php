@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Tests\Unit\Peppol\Services;
 
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;

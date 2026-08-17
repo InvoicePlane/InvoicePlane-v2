@@ -87,13 +87,13 @@ enum PeppolDocumentFormat: string
     public static function recommendedForCountry(?string $countryCode): self
     {
         return match (mb_strtoupper($countryCode ?? '')) {
-            'DE', 'FR', 'AT' => self::CII,
-            'IT' => self::FATTURAPA_12,
-            'ES' => self::FACTURAE_32,
-            'DK' => self::OIOUBL,
-            'NO' => self::EHF_30,
+            'DE', 'FR', 'AT'                       => self::CII,
+            'IT'                                   => self::FATTURAPA_12,
+            'ES'                                   => self::FACTURAE_32,
+            'DK'                                   => self::OIOUBL,
+            'NO'                                   => self::EHF_30,
             'NL', 'BE', 'GB', 'SE', 'FI', 'XX', '' => self::UBL_24,
-            default => self::UBL_24,
+            default                                => self::UBL_24,
         };
     }
 
@@ -173,7 +173,7 @@ enum PeppolDocumentFormat: string
     {
         return match ($this) {
             self::FACTURX, self::ZUGFERD_10, self::ZUGFERD_20 => 'pdf',
-            default => 'xml',
+            default                                           => 'xml',
         };
     }
 
@@ -186,7 +186,7 @@ enum PeppolDocumentFormat: string
     {
         return match ($this) {
             self::FACTURX, self::ZUGFERD_10, self::ZUGFERD_20 => true,
-            default => false,
+            default                                           => false,
         };
     }
 
@@ -199,11 +199,11 @@ enum PeppolDocumentFormat: string
     {
         return match ($this) {
             self::UBL_21, self::UBL_24, self::OIOUBL, self::EHF_30 => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
-            self::CII, self::FACTURX, self::ZUGFERD_20 => 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
-            self::ZUGFERD_10    => 'urn:ferd:CrossIndustryDocument:invoice:1p0',
-            self::FACTURAE_32   => 'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
-            self::FATTURAPA_12  => 'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
-            self::PEPPOL_BIS_30 => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+            self::CII, self::FACTURX, self::ZUGFERD_20             => 'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100',
+            self::ZUGFERD_10                                       => 'urn:ferd:CrossIndustryDocument:invoice:1p0',
+            self::FACTURAE_32                                      => 'http://www.facturae.gob.es/formato/Versiones/Facturaev3_2.xml',
+            self::FATTURAPA_12                                     => 'http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2',
+            self::PEPPOL_BIS_30                                    => 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
         };
     }
 

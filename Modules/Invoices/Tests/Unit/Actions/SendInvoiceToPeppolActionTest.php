@@ -3,7 +3,6 @@
 namespace Modules\Invoices\Tests\Unit\Actions;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Modules\Clients\Models\Relation;
@@ -194,7 +193,6 @@ class SendInvoiceToPeppolActionTest extends AbstractCompanyPanelTestCase
 
         $this->action->execute($invoice);
     }
-
 
     #[Test]
     #[Group('peppol')]
