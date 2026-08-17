@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Invoices\Http\Clients\ApiClient;
 use Modules\Invoices\Http\Contracts\HttpClientInterface;
 use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
+use Modules\Invoices\Http\Decorators\RateLimiter;
+use Modules\Invoices\Http\Decorators\RequestLogger;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Observers\InvoiceItemObserver;
@@ -41,7 +43,21 @@ class InvoicesServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
         $this->app->bind(HttpClientInterface::class, function ($app) {
-            return new HttpClientExceptionHandler($app->make(ApiClient::class));
+            /* Layer 1: Base client */
+            $client = new ApiClient();
+
+            /* Layer 2: Rate limiting */
+            $client = new RateLimiter($client);
+
+            /* Layer 3: Exception handling */
+            $client = new HttpClientExceptionHandler($client);
+
+            /* Layer 4: Logging (conditional) */
+            if (config('logging.requests')) {
+                $client = new RequestLogger($client);
+            }
+
+            return $client;
         });
     }
 
