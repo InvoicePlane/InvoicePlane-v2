@@ -17,11 +17,14 @@ return new class () extends Migration {
     {
         Schema::create('peppol_transmission_responses', function (Blueprint $table): void {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('transmission_id');
             $table->string('response_key', 100);
             $table->text('response_value');
 
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('transmission_id')->references('id')->on('peppol_transmissions')->onDelete('cascade');
+            $table->index(['company_id', 'transmission_id']);
             $table->index(['transmission_id', 'response_key']);
         });
     }

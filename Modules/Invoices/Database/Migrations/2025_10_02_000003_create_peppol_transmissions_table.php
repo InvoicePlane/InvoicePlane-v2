@@ -16,6 +16,7 @@ return new class () extends Migration {
     {
         Schema::create('peppol_transmissions', function (Blueprint $table): void {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('integration_id');
@@ -34,10 +35,12 @@ return new class () extends Migration {
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
             $table->foreign('integration_id')->references('id')->on('peppol_integrations')->onDelete('cascade');
 
+            $table->index(['company_id', 'status']);
             $table->index(['invoice_id', 'integration_id']);
             $table->index('status');
             $table->index('external_id');

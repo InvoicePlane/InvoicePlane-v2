@@ -14,6 +14,7 @@ return new class () extends Migration {
     {
         Schema::create('customer_peppol_validation_history', function (Blueprint $table): void {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('integration_id')->nullable()->comment('Which integration was used for validation');
             $table->unsignedBigInteger('validated_by')->nullable()->comment('User who triggered validation');
@@ -24,10 +25,12 @@ return new class () extends Migration {
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('relations')->onDelete('cascade');
             $table->foreign('integration_id')->references('id')->on('peppol_integrations')->onDelete('set null');
             $table->foreign('validated_by')->references('id')->on('users')->onDelete('set null');
 
+            $table->index(['company_id', 'customer_id']);
             $table->index(['customer_id', 'created_at']);
             $table->index('validation_status');
         });
