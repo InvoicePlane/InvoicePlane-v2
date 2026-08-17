@@ -67,8 +67,7 @@ class StorecoveProvider extends BaseProvider
             $xml = $transmissionData['xml'] ?? '';
             $recipientScheme = $transmissionData['recipient_scheme'] ?? '';
             $recipientId = $transmissionData['recipient_id'] ?? '';
-            $legalEntityId = $this->config['legal_entity_id']
-                ?? config('invoices.peppol.storecove.legal_entity_id');
+            $legalEntityId = $this->getLegalEntityId();
 
             $payload = [
                 'legalEntityId' => (int) $legalEntityId,
@@ -158,5 +157,15 @@ class StorecoveProvider extends BaseProvider
     protected function getDefaultBaseUrl(): string
     {
         return 'https://api.storecove.com/api/v2';
+    }
+
+    public function getApiKey(): ?string
+    {
+        return $this->config['api_key'] ?? $this->integration?->configurations()?->where('key', 'api_key')->value('config_value');
+    }
+
+    public function getLegalEntityId(): ?string
+    {
+        return $this->config['legal_entity_id'] ?? $this->integration?->configurations()?->where('key', 'legal_entity_id')->value('config_value');
     }
 }

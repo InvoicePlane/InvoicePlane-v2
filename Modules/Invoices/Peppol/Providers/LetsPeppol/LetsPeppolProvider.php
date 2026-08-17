@@ -149,4 +149,14 @@ class LetsPeppolProvider extends BaseProvider
     {
         return 'https://api.letspeppol.com/api/v1';
     }
+
+    public function getClientId(): ?string
+    {
+        return $this->config['client_id'] ?? $this->integration?->configurations()?->where('key', 'client_id')->value('config_value');
+    }
+
+    public function getClientSecret(): ?string
+    {
+        return $this->config['client_secret'] ?? $this->integration?->configurations()?->where('key', 'client_secret')->value('config_value');
+    }
 }

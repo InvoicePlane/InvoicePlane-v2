@@ -38,6 +38,11 @@ class LetsPeppolClient extends BasePeppolClient
 
     protected function getTimeout(): int
     {
-        return config('invoices.peppol.lets_peppol.timeout', 30);
+        return 30;
+    }
+
+    public static function getTokenUrl(): string
+    {
+        return 'https://auth.letspeppol.com/oauth/token';
     }
 }

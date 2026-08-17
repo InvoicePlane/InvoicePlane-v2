@@ -32,6 +32,6 @@ class QontoClient extends BasePeppolClient
 
     protected function getTimeout(): int
     {
-        return config('invoices.peppol.qonto.timeout', 30);
+        return 30;
     }
 }

@@ -31,6 +31,11 @@ class SuperPdpClient extends BasePeppolClient
 
     protected function getTimeout(): int
     {
-        return config('invoices.peppol.super_pdp.timeout', 30);
+        return 30;
+    }
+
+    public static function getTokenUrl(): string
+    {
+        return 'https://auth.superpdp.com/oauth/token';
     }
 }

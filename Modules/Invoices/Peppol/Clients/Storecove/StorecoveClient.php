@@ -22,6 +22,6 @@ class StorecoveClient extends BasePeppolClient
 
     protected function getTimeout(): int
     {
-        return config('invoices.peppol.storecove.timeout', 30);
+        return 30;
     }
 }

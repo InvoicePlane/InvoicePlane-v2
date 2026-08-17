@@ -100,4 +100,14 @@ class QontoProvider extends BaseProvider
     {
         return 'https://thirdparty.qonto.com/api';
     }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->config['access_token'] ?? $this->integration?->configurations()?->where('key', 'access_token')->value('config_value');
+    }
+
+    public function getStagingToken(): ?string
+    {
+        return $this->config['staging_token'] ?? $this->integration?->configurations()?->where('key', 'staging_token')->value('config_value');
+    }
 }
