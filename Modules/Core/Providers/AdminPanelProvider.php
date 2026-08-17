@@ -22,7 +22,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Core\Filament\Admin\Pages\Dashboard;
-//use Modules\Core\Filament\Admin\Pages\ReportTemplates;
+use Modules\Core\Filament\Admin\Pages\ReportTemplates;
 use Modules\Core\Filament\Admin\Pages\RolePermissionsPage;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
@@ -134,10 +134,10 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 ...TaxRateResource::getNavigationItems(),
                             ]),
-                        /*NavigationGroup::make(trans('ip.report_templates'))
+                        NavigationGroup::make(trans('ip.report_templates'))
                             ->items([
                                 ...ReportTemplates::getNavigationItems(),
-                            ]),*/
+                            ]),
 
                         /*NavigationGroup::make('System Settings')
                             ->icon('heroicon-o-cog-8-tooth')
