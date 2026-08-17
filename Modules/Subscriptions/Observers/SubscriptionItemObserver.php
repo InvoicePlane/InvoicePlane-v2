@@ -8,7 +8,7 @@ use Modules\Subscriptions\Models\SubscriptionItem;
 
 class SubscriptionItemObserver extends AbstractObserver
 {
-    public function creating(SubscriptionItem $item): void
+    public function creating($item): void
     {
         if (empty($item->company_id) && $item->subscription_id) {
             $subscription = Subscription::withoutGlobalScopes()->find($item->subscription_id);
