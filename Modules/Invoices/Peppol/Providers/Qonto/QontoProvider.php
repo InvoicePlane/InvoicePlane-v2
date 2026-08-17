@@ -103,11 +103,19 @@ class QontoProvider extends BaseProvider
 
     public function getAccessToken(): ?string
     {
-        return $this->config['access_token'] ?? $this->integration?->configurations()?->where('key', 'access_token')->value('config_value');
+        return $this->config['access_token'] ?? null;
     }
 
     public function getStagingToken(): ?string
     {
-        return $this->config['staging_token'] ?? $this->integration?->configurations()?->where('key', 'staging_token')->value('config_value');
+        return $this->config['staging_token'] ?? null;
+    }
+
+    public function settings(): array
+    {
+        return [
+            'access_token',   // Bearer token for API authentication
+            'staging_token',  // Optional staging/test token (should be encrypted)
+        ];
     }
 }

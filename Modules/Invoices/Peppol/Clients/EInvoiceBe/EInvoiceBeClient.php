@@ -5,6 +5,11 @@ namespace Modules\Invoices\Peppol\Clients\EInvoiceBe;
 use Modules\Invoices\Peppol\Clients\BasePeppolClient;
 
 /**
+ * @api-json authenticate request: {"api_key":"..."}
+ * @api-json authenticate response: true (or false)
+ */
+
+/**
  * EInvoiceBeClient - Base client for e-invoice.be Peppol provider.
  *
  * This client provides authentication and base configuration specific to
@@ -37,5 +42,35 @@ class EInvoiceBeClient extends BasePeppolClient
     protected function getTimeout(): int
     {
         return (int) config('invoices.peppol.e_invoice_be.timeout', 90);
+    }
+
+    /**
+     * Authenticate with e-invoice.be using API key.
+     *
+     * e-invoice.be uses simple API key authentication — no token exchange required.
+     * This method validates the API key is present.
+     *
+     * @param array $credentials Must contain 'api_key'
+     *
+     * @return bool True if API key is present and valid
+     */
+    public function authenticate(array $credentials = []): bool
+    {
+        return !empty($credentials['api_key']);
+    }
+
+    /**
+     * Get the list of required settings/credentials for e-invoice.be.
+     *
+     * These fields define what configuration values must be stored in the database.
+     * Base URL is hardcoded in the client.
+     *
+     * @return array<string> List of setting names
+     */
+    public function settings(): array
+    {
+        return [
+            'api_key',  // API key from e-invoice.be dashboard
+        ];
     }
 }

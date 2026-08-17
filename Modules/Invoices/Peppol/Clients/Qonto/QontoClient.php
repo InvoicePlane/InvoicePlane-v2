@@ -34,4 +34,35 @@ class QontoClient extends BasePeppolClient
     {
         return 30;
     }
+
+    /**
+     * Authenticate with Qonto using bearer token (API key).
+     *
+     * Qonto uses simple bearer token authentication — no token exchange required.
+     * This method validates the API key is present.
+     *
+     * @param array $credentials Must contain 'access_token' or 'api_key'
+     *
+     * @return bool True if API key/token is present and valid
+     */
+    public function authenticate(array $credentials = []): bool
+    {
+        return !empty($credentials['access_token'] || $credentials['api_key']);
+    }
+
+    /**
+     * Get the list of required settings/credentials for Qonto.
+     *
+     * These fields define what configuration values must be stored in the database.
+     * Base URL is hardcoded in the client.
+     *
+     * @return array<string> List of setting names
+     */
+    public function settings(): array
+    {
+        return [
+            'access_token',   // Bearer token for API authentication
+            'staging_token',  // Optional staging/test token (should be encrypted)
+        ];
+    }
 }

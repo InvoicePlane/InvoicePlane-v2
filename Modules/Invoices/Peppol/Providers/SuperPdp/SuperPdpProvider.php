@@ -83,11 +83,25 @@ class SuperPdpProvider extends BaseProvider
 
     public function getClientId(): ?string
     {
-        return $this->config['client_id'] ?? $this->integration?->configurations()?->where('key', 'client_id')->value('config_value');
+        return $this->config['client_id'] ?? null;
     }
 
     public function getClientSecret(): ?string
     {
-        return $this->config['client_secret'] ?? $this->integration?->configurations()?->where('key', 'client_secret')->value('config_value');
+        return $this->config['client_secret'] ?? null;
+    }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->config['access_token'] ?? null;
+    }
+
+    public function settings(): array
+    {
+        return [
+            'client_id',      // OAuth2 client ID (from SuperPDP)
+            'client_secret',  // OAuth2 client secret (should be encrypted)
+            'access_token',   // Bearer token (obtained via OAuth2 authentication)
+        ];
     }
 }

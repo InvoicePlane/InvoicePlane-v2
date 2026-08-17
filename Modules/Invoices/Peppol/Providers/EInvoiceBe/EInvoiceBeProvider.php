@@ -351,6 +351,31 @@ class EInvoiceBeProvider extends BaseProvider
     }
 
     /**
+     * Get the API key from integration configuration.
+     *
+     * @return string|null The API key, or null if not configured
+     */
+    public function getApiKey(): ?string
+    {
+        return $this->config['api_key'] ?? null;
+    }
+
+    /**
+     * Get the list of required settings/credentials for e-invoice.be.
+     *
+     * These fields define what configuration values must be stored in the database.
+     * Base URL is hardcoded in the provider.
+     *
+     * @return array<string> List of setting names
+     */
+    public function settings(): array
+    {
+        return [
+            'api_key',  // API key from e-invoice.be dashboard
+        ];
+    }
+
+    /**
      * Provide the default base URL for the e-invoice.be API.
      *
      * @return string The default base URL for the e-invoice.be API.
