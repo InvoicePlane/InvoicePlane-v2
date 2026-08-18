@@ -6,6 +6,7 @@ use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\CreditNoteClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\DocumentClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\InvoiceClient;
+use Modules\Invoices\Peppol\Clients\LetsPeppol\LetsPeppolClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\ParticipantClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\TransmissionClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
@@ -261,19 +262,14 @@ class LetsPeppolProvider extends BaseProvider
     }
 
     /**
-     * Get the list of required settings/credentials for LetsPeppol OAuth2.
+     * Get the declarative settings schema for LetsPeppol OAuth2.
      *
-     * These fields define what configuration values must be stored in the database.
-     * Base URL is hardcoded in the LetsPeppolClient class.
+     * Delegates to the client's static method for a single source of truth.
      *
-     * @return array<string> List of setting names
+     * @return array<string, array> map of config key => settings metadata
      */
-    public function settings(): array
+    public static function settings(): array
     {
-        return [
-            'client_id',      // OAuth2 client ID (from LetsPeppol dashboard)
-            'client_secret',  // OAuth2 client secret (should be encrypted)
-            'access_token',   // Bearer token (obtained via OAuth2 authentication)
-        ];
+        return LetsPeppolClient::settings();
     }
 }

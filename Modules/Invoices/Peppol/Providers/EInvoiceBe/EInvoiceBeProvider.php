@@ -5,6 +5,7 @@ namespace Modules\Invoices\Peppol\Providers\EInvoiceBe;
 use Carbon\Carbon;
 use Exception;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\DocumentsClient;
+use Modules\Invoices\Peppol\Clients\EInvoiceBe\EInvoiceBeClient;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\HealthClient;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\ParticipantsClient;
 use Modules\Invoices\Peppol\Clients\EInvoiceBe\TrackingClient;
@@ -361,18 +362,15 @@ class EInvoiceBeProvider extends BaseProvider
     }
 
     /**
-     * Get the list of required settings/credentials for e-invoice.be.
+     * Get the declarative settings schema for e-invoice.be.
      *
-     * These fields define what configuration values must be stored in the database.
-     * Base URL is hardcoded in the provider.
+     * Delegates to the client's static method for a single source of truth.
      *
-     * @return array<string> List of setting names
+     * @return array<string, array> map of config key => settings metadata
      */
-    public function settings(): array
+    public static function settings(): array
     {
-        return [
-            'api_key',  // API key from e-invoice.be dashboard
-        ];
+        return EInvoiceBeClient::settings();
     }
 
     /**

@@ -24,4 +24,27 @@ class StorecoveClient extends BasePeppolClient
     {
         return 30;
     }
+
+    /**
+     * Get the declarative settings schema for Storecove.
+     *
+     * @return array<string, array> map of config key => settings metadata
+     */
+    public static function settings(): array
+    {
+        return [
+            'api_key' => [
+                'label'       => 'API Key',
+                'required'    => true,
+                'sensitive'   => true,
+                'managed'     => false,
+            ],
+            'legal_entity_id' => [
+                'label'       => 'Legal Entity ID',
+                'required'    => true,
+                'sensitive'   => false,
+                'managed'     => false,
+            ],
+        ];
+    }
 }

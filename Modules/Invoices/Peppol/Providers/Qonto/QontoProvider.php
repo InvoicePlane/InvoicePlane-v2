@@ -4,6 +4,7 @@ namespace Modules\Invoices\Peppol\Providers\Qonto;
 
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Clients\Qonto\ClientInvoicesClient;
+use Modules\Invoices\Peppol\Clients\Qonto\QontoClient;
 use Modules\Invoices\Peppol\Clients\Qonto\SupplierInvoicesClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
 use Modules\Invoices\Services\InvoiceService;
@@ -111,11 +112,15 @@ class QontoProvider extends BaseProvider
         return $this->config['staging_token'] ?? null;
     }
 
-    public function settings(): array
+    /**
+     * Get the declarative settings schema for Qonto.
+     *
+     * Delegates to the client's static method for a single source of truth.
+     *
+     * @return array<string, array> map of config key => settings metadata
+     */
+    public static function settings(): array
     {
-        return [
-            'access_token',   // Bearer token for API authentication
-            'staging_token',  // Optional staging/test token (should be encrypted)
-        ];
+        return QontoClient::settings();
     }
 }

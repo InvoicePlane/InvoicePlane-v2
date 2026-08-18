@@ -60,17 +60,19 @@ class EInvoiceBeClient extends BasePeppolClient
     }
 
     /**
-     * Get the list of required settings/credentials for e-invoice.be.
+     * Get the declarative settings schema for e-invoice.be.
      *
-     * These fields define what configuration values must be stored in the database.
-     * Base URL is hardcoded in the client.
-     *
-     * @return array<string> List of setting names
+     * @return array<string, array> map of config key => settings metadata
      */
-    public function settings(): array
+    public static function settings(): array
     {
         return [
-            'api_key',  // API key from e-invoice.be dashboard
+            'api_key' => [
+                'label'       => 'API Key',
+                'required'    => true,
+                'sensitive'   => true,
+                'managed'     => false,
+            ],
         ];
     }
 }

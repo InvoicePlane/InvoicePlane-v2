@@ -51,18 +51,25 @@ class QontoClient extends BasePeppolClient
     }
 
     /**
-     * Get the list of required settings/credentials for Qonto.
+     * Get the declarative settings schema for Qonto.
      *
-     * These fields define what configuration values must be stored in the database.
-     * Base URL is hardcoded in the client.
-     *
-     * @return array<string> List of setting names
+     * @return array<string, array> map of config key => settings metadata
      */
-    public function settings(): array
+    public static function settings(): array
     {
         return [
-            'access_token',   // Bearer token for API authentication
-            'staging_token',  // Optional staging/test token (should be encrypted)
+            'access_token' => [
+                'label'       => 'Access Token',
+                'required'    => true,
+                'sensitive'   => true,
+                'managed'     => false,
+            ],
+            'staging_token' => [
+                'label'       => 'Staging Token',
+                'required'    => false,
+                'sensitive'   => true,
+                'managed'     => false,
+            ],
         ];
     }
 }

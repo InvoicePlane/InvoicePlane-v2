@@ -4,6 +4,7 @@ namespace Modules\Invoices\Peppol\Providers\SuperPdp;
 
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Clients\SuperPdp\InvoicesClient;
+use Modules\Invoices\Peppol\Clients\SuperPdp\SuperPdpClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
 use Modules\Invoices\Services\InvoiceService;
 use Modules\Core\Support\PDF\PDFFactory;
@@ -96,12 +97,15 @@ class SuperPdpProvider extends BaseProvider
         return $this->config['access_token'] ?? null;
     }
 
-    public function settings(): array
+    /**
+     * Get the declarative settings schema for SuperPDP OAuth2.
+     *
+     * Delegates to the client's static method for a single source of truth.
+     *
+     * @return array<string, array> map of config key => settings metadata
+     */
+    public static function settings(): array
     {
-        return [
-            'client_id',      // OAuth2 client ID (from SuperPDP)
-            'client_secret',  // OAuth2 client secret (should be encrypted)
-            'access_token',   // Bearer token (obtained via OAuth2 authentication)
-        ];
+        return SuperPdpClient::settings();
     }
 }

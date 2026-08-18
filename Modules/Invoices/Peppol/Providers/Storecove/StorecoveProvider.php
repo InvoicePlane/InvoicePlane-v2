@@ -5,6 +5,7 @@ namespace Modules\Invoices\Peppol\Providers\Storecove;
 use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Clients\Storecove\DocumentSubmissionsClient;
 use Modules\Invoices\Peppol\Clients\Storecove\ReceivedDocumentsClient;
+use Modules\Invoices\Peppol\Clients\Storecove\StorecoveClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
 
 /**
@@ -186,5 +187,17 @@ class StorecoveProvider extends BaseProvider
     public function getLegalEntityId(): ?string
     {
         return $this->config['legal_entity_id'] ?? null;
+    }
+
+    /**
+     * Get the declarative settings schema for Storecove.
+     *
+     * Delegates to the client's static method for a single source of truth.
+     *
+     * @return array<string, array> map of config key => settings metadata
+     */
+    public static function settings(): array
+    {
+        return StorecoveClient::settings();
     }
 }

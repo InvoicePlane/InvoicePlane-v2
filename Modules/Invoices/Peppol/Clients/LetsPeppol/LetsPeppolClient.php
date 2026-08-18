@@ -111,19 +111,31 @@ class LetsPeppolClient extends BasePeppolClient
     }
 
     /**
-     * Get the list of required settings/credentials for LetsPeppol.
+     * Get the declarative settings schema for LetsPeppol OAuth2.
      *
-     * These fields define what configuration values must be stored in the database
-     * for the integration to function. Base URL is hardcoded in the client.
-     *
-     * @return array<string> List of setting names
+     * @return array<string, array> map of config key => settings metadata
      */
-    public function settings(): array
+    public static function settings(): array
     {
         return [
-            'client_id',      // OAuth2 client ID (from LetsPeppol dashboard)
-            'client_secret',  // OAuth2 client secret (from LetsPeppol dashboard) — should be encrypted
-            'access_token',   // Bearer token (obtained via authenticate())
+            'client_id' => [
+                'label'       => 'OAuth2 Client ID',
+                'required'    => true,
+                'sensitive'   => false,
+                'managed'     => false,
+            ],
+            'client_secret' => [
+                'label'       => 'OAuth2 Client Secret',
+                'required'    => true,
+                'sensitive'   => true,
+                'managed'     => false,
+            ],
+            'access_token' => [
+                'label'       => 'Access Token',
+                'required'    => false,
+                'sensitive'   => true,
+                'managed'     => true,
+            ],
         ];
     }
 }
