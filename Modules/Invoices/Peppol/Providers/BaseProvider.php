@@ -111,7 +111,7 @@ abstract class BaseProvider implements ProviderInterface
     /**
      * Default authenticate implementation for providers using static credentials.
      *
-     * Checks that all required settings from the provider's schema are present and non-empty.
+     * Checks that all settings from the provider's schema are present and non-empty.
      * This default implementation is used by EInvoiceBeProvider, QontoProvider, and StorecoveProvider.
      * OAuth2 providers (LetsPeppolProvider, SuperPdpProvider) override this with their own logic.
      *
@@ -121,11 +121,9 @@ abstract class BaseProvider implements ProviderInterface
     {
         $settings = static::settings();
 
-        foreach ($settings as $key => $metadata) {
-            if ($metadata['required'] ?? false) {
-                if (empty($this->config[$key])) {
-                    return false;
-                }
+        foreach ($settings as $key) {
+            if (empty($this->config[$key])) {
+                return false;
             }
         }
 

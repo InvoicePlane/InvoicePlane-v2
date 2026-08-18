@@ -51,25 +51,12 @@ class QontoClient extends BasePeppolClient
     }
 
     /**
-     * Get the declarative settings schema for Qonto.
+     * Get the list of configuration keys this provider requires from merchant_clients.
      *
-     * @return array<string, array> map of config key => settings metadata
+     * @return array<string>
      */
     public static function settings(): array
     {
-        return [
-            'access_token' => [
-                'label'       => 'Access Token',
-                'required'    => true,
-                'sensitive'   => true,
-                'managed'     => false,
-            ],
-            'staging_token' => [
-                'label'       => 'Staging Token',
-                'required'    => false,
-                'sensitive'   => true,
-                'managed'     => false,
-            ],
-        ];
+        return ['access_token', 'staging_token'];
     }
 }

@@ -38,31 +38,12 @@ class SuperPdpClient extends BasePeppolClient
     }
 
     /**
-     * Get the declarative settings schema for SuperPDP OAuth2.
+     * Get the list of configuration keys this provider requires from merchant_clients.
      *
-     * @return array<string, array> map of config key => settings metadata
+     * @return array<string>
      */
     public static function settings(): array
     {
-        return [
-            'client_id' => [
-                'label'       => 'OAuth2 Client ID',
-                'required'    => true,
-                'sensitive'   => false,
-                'managed'     => false,
-            ],
-            'client_secret' => [
-                'label'       => 'OAuth2 Client Secret',
-                'required'    => true,
-                'sensitive'   => true,
-                'managed'     => false,
-            ],
-            'access_token' => [
-                'label'       => 'Access Token',
-                'required'    => false,
-                'sensitive'   => true,
-                'managed'     => true,
-            ],
-        ];
+        return ['client_id', 'client_secret', 'access_token'];
     }
 }

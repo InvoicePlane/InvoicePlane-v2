@@ -88,12 +88,11 @@ interface ProviderInterface
     public function authenticate(): bool;
 
     /**
-     * Get the declarative settings schema for this provider.
+     * Get the list of configuration keys this provider requires from merchant_clients.
      *
-     * Describes which configuration keys are needed, their types, whether they're required/sensitive,
-     * and whether the system manages them (managed=true for computed fields like access_token).
+     * Each key is retrieved from the merchant_clients table, scoped by company_id and provider name.
      *
-     * @return array<string, array> map of config key => settings metadata
+     * @return array<string> list of config keys (e.g., ['api_key'], ['client_id', 'client_secret', 'access_token'])
      */
     public static function settings(): array;
 
