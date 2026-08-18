@@ -78,6 +78,26 @@ interface ProviderInterface
     public function cancelDocument(string $externalId): array;
 
     /**
+     * Authenticate the provider using stored credentials.
+     *
+     * Implementation varies by provider: OAuth2 clients refresh an access token, static-credential
+     * providers validate that required keys are present.
+     *
+     * @return bool true if authentication succeeded or credentials are valid, false otherwise
+     */
+    public function authenticate(): bool;
+
+    /**
+     * Get the declarative settings schema for this provider.
+     *
+     * Describes which configuration keys are needed, their types, whether they're required/sensitive,
+     * and whether the system manages them (managed=true for computed fields like access_token).
+     *
+     * @return array<string, array> map of config key => settings metadata
+     */
+    public static function settings(): array;
+
+    /**
      * Classify a provider error into a generic category.
      *
      * Maps provider responses to one of three categories to guide retry or handling:
