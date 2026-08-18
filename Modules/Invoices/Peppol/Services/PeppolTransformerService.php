@@ -53,7 +53,7 @@ class PeppolTransformerService
      */
     protected function getInvoiceTypeCode(Invoice $invoice): string
     {
-        // TODO: Detect credit note vs invoice
+        // The Invoice model does not currently support credit notes — always return standard invoice code
         return '380'; // Standard commercial invoice
     }
 
@@ -141,7 +141,7 @@ class PeppolTransformerService
                 ],
                 'tax' => [
                     'category_code' => 'S', // Standard rate
-                    'percent'       => $item->tax_rate ?? 0,
+                    'percent'       => $item->taxRate?->rate ?? 0,
                     'amount'        => $item->tax_total ?? 0,
                 ],
             ];
@@ -162,16 +162,36 @@ class PeppolTransformerService
      */
     protected function transformTaxTotals(Invoice $invoice): array
     {
+        // Group invoice items by tax_rate_id and sum taxable_amount and tax_amount per group
+        $taxGroups = $invoice->invoiceItems
+            ->groupBy('tax_rate_id')
+            ->map(function ($items) {
+                $taxableAmount = $items->sum('subtotal');
+                $taxAmount = $items->sum('tax_total');
+                $taxRate = $items->first()->taxRate?->rate ?? 0;
+
+                return [
+                    'taxable_amount' => $taxableAmount,
+                    'tax_amount'     => $taxAmount,
+                    'tax_category'   => [
+                        'code'    => 'S',
+                        'percent' => $taxRate,
+                    ],
+                ];
+            })
+            ->values()
+            ->toArray();
+
         return [
             [
                 'tax_amount'    => $invoice->tax_total ?? 0,
-                'tax_subtotals' => [
+                'tax_subtotals' => $taxGroups ?: [
                     [
                         'taxable_amount' => $invoice->subtotal ?? 0,
                         'tax_amount'     => $invoice->tax_total ?? 0,
                         'tax_category'   => [
                             'code'    => 'S',
-                            'percent' => 21, // TODO: Calculate from invoice items
+                            'percent' => 0,
                         ],
                     ],
                 ],

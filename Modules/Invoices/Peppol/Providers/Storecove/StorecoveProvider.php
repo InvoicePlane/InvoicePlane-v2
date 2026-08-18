@@ -55,11 +55,37 @@ class StorecoveProvider extends BaseProvider
     public function testConnection(array $config): array
     {
         try {
-            $response = $this->documentSubmissionsClient->getEvidence('test', 'sending');
+            // Call a real endpoint with a non-existent GUID
+            // 404 means API key was accepted (endpoint reachable but resource not found)
+            // 401/403 means authentication failed
+            // Any 2xx means success
+            $response = $this->documentSubmissionsClient->getEvidence('connectivity-check', 'sending');
+
+            if ($response->status() === 404) {
+                // 404 on a valid endpoint = API key worked, just invalid GUID (expected)
+                return [
+                    'ok'      => true,
+                    'message' => 'Connection successful',
+                ];
+            }
+
+            if ($response->status() === 401 || $response->status() === 403) {
+                return [
+                    'ok'      => false,
+                    'message' => 'Invalid API key or unauthorized',
+                ];
+            }
+
+            if ($response->successful()) {
+                return [
+                    'ok'      => true,
+                    'message' => 'Connection successful',
+                ];
+            }
 
             return [
                 'ok'      => false,
-                'message' => 'Test endpoint requires valid submission GUID',
+                'message' => 'Connection failed: ' . ($response->body() ?: 'HTTP ' . $response->status()),
             ];
         } catch (\Throwable $e) {
             return [
