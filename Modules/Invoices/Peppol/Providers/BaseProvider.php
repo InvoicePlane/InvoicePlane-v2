@@ -107,4 +107,28 @@ abstract class BaseProvider implements ProviderInterface
             ?? config("invoices.peppol.{$this->getProviderName()}.base_url")
             ?? $this->getDefaultBaseUrl();
     }
+
+    /**
+     * Default authenticate implementation for providers using static credentials.
+     *
+     * Checks that all required settings from the provider's schema are present and non-empty.
+     * This default implementation is used by EInvoiceBeProvider, QontoProvider, and StorecoveProvider.
+     * OAuth2 providers (LetsPeppolProvider, SuperPdpProvider) override this with their own logic.
+     *
+     * @return bool true if all required settings are configured, false otherwise
+     */
+    public function authenticate(): bool
+    {
+        $settings = static::settings();
+
+        foreach ($settings as $key => $metadata) {
+            if ($metadata['required'] ?? false) {
+                if (empty($this->config[$key])) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

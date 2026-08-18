@@ -10,12 +10,14 @@ use Modules\Invoices\Peppol\Clients\LetsPeppol\LetsPeppolClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\ParticipantClient;
 use Modules\Invoices\Peppol\Clients\LetsPeppol\TransmissionClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
+use Modules\Invoices\Peppol\Providers\Concerns\RefreshesOAuth2Token;
 
 /**
  * LetsPeppolProvider - LetsPeppol OAuth2 Peppol provider.
  */
 class LetsPeppolProvider extends BaseProvider
 {
+    use RefreshesOAuth2Token;
     protected object $invoiceClient;
     protected object $creditNoteClient;
     protected object $participantClient;
@@ -228,37 +230,14 @@ class LetsPeppolProvider extends BaseProvider
     /**
      * Authenticate with LetsPeppol using OAuth2 client-credentials flow.
      *
-     * Fetches an access token using the stored client_id and client_secret,
-     * then saves the token back to the integration configuration for future requests.
+     * Ensures a valid access token exists, fetching and persisting a new one if needed.
+     * Tokens are stored in merchant_clients with expiry tracking for automatic refresh.
      *
-     * @return bool True if authentication succeeded and token was saved
+     * @return bool True if authentication succeeded and token is valid
      */
     public function authenticate(): bool
     {
-        $clientId = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-
-        if (!$clientId || !$clientSecret) {
-            return false;
-        }
-
-        // Create a temporary LetsPeppol base client to fetch the token
-        $baseClient = new \Modules\Invoices\Peppol\Clients\LetsPeppol\LetsPeppolClient(
-            app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-            'placeholder',
-            $this->getDefaultBaseUrl()
-        );
-
-        // Perform OAuth2 client-credentials authentication
-        if ($baseClient->authenticate(['client_id' => $clientId, 'client_secret' => $clientSecret])) {
-            // Extract the access token from the client
-            // Note: In a real implementation, the authenticate() method would store
-            // the token in a way we can retrieve it. For now, we'd need to adjust the pattern.
-            // This is deferred to Phase 9 credential encryption implementation.
-            return true;
-        }
-
-        return false;
+        return $this->ensureAuthenticated();
     }
 
     /**
@@ -271,5 +250,31 @@ class LetsPeppolProvider extends BaseProvider
     public static function settings(): array
     {
         return LetsPeppolClient::settings();
+    }
+
+    /**
+     * Get the OAuth2 client class for LetsPeppol.
+     *
+     * @return string the full class name
+     */
+    protected function getOAuth2ClientClass(): ?string
+    {
+        return LetsPeppolClient::class;
+    }
+
+    /**
+     * Propagate the access token to all resource clients.
+     *
+     * Called after token refresh to ensure all clients use the new token.
+     *
+     * @param string $token the new access token
+     */
+    protected function propagateAccessToken(string $token): void
+    {
+        $this->invoiceClient->setAccessToken($token);
+        $this->creditNoteClient->setAccessToken($token);
+        $this->participantClient->setAccessToken($token);
+        $this->transmissionClient->setAccessToken($token);
+        $this->documentClient->setAccessToken($token);
     }
 }

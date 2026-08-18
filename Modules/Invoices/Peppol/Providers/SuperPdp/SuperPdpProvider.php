@@ -6,11 +6,13 @@ use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Peppol\Clients\SuperPdp\InvoicesClient;
 use Modules\Invoices\Peppol\Clients\SuperPdp\SuperPdpClient;
 use Modules\Invoices\Peppol\Providers\BaseProvider;
+use Modules\Invoices\Peppol\Providers\Concerns\RefreshesOAuth2Token;
 use Modules\Invoices\Services\InvoiceService;
 use Modules\Core\Support\PDF\PDFFactory;
 
 class SuperPdpProvider extends BaseProvider
 {
+    use RefreshesOAuth2Token;
     protected object $invoicesClient;
 
     public function __construct(
@@ -107,5 +109,40 @@ class SuperPdpProvider extends BaseProvider
     public static function settings(): array
     {
         return SuperPdpClient::settings();
+    }
+
+    /**
+     * Authenticate with SuperPDP using OAuth2 client-credentials flow.
+     *
+     * Ensures a valid access token exists, fetching and persisting a new one if needed.
+     * Tokens are stored in merchant_clients with expiry tracking for automatic refresh.
+     *
+     * @return bool True if authentication succeeded and token is valid
+     */
+    public function authenticate(): bool
+    {
+        return $this->ensureAuthenticated();
+    }
+
+    /**
+     * Get the OAuth2 client class for SuperPDP.
+     *
+     * @return string the full class name
+     */
+    protected function getOAuth2ClientClass(): ?string
+    {
+        return SuperPdpClient::class;
+    }
+
+    /**
+     * Propagate the access token to all resource clients.
+     *
+     * Called after token refresh to ensure all clients use the new token.
+     *
+     * @param string $token the new access token
+     */
+    protected function propagateAccessToken(string $token): void
+    {
+        $this->invoicesClient->setAccessToken($token);
     }
 }
