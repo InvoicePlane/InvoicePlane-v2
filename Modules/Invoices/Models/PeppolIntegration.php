@@ -6,6 +6,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Models\Company;
+use Modules\Core\Models\MerchantClient;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Enums\PeppolConnectionStatus;
 
@@ -13,14 +14,13 @@ use Modules\Invoices\Enums\PeppolConnectionStatus;
  * @property int                       $id
  * @property int                       $company_id
  * @property string                    $provider_name
- * @property string|null               $encrypted_api_token
  * @property PeppolConnectionStatus    $test_connection_status
  * @property string|null               $test_connection_message
  * @property CarbonInterface|null      $test_connection_at
  * @property bool                      $enabled
  * @property Company                   $company
  * @property PeppolTransmission[]      $transmissions
- * @property PeppolIntegrationConfig[] $configurations
+ * @property MerchantClient[]          $configurations
  */
 class PeppolIntegration extends Model
 {
@@ -38,6 +38,18 @@ class PeppolIntegration extends Model
         'test_connection_at'     => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        // Do not apply global company scope to this model during Filament admin access,
+        // where an admin managing integrations across companies should see all of them.
+        // This is a shared cross-company registry, not company-scoped data.
+        if (app()->runningInConsole()) {
+            static::addGlobalScope('skip_company_scope', function ($query): void {
+                // In console (migrations, commands), skip the global scope entirely
+            });
+        }
+    }
+
     /**
      * Get the transmissions associated with this integration.
      *
@@ -51,59 +63,46 @@ class PeppolIntegration extends Model
     /**
      * Get the Eloquent relation for this integration's configuration entries.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany relation to PeppolIntegrationConfig models keyed by `integration_id`
+     * Credentials are now stored in the shared merchant_clients table, scoped by company and provider.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany relation to MerchantClient models
      */
     public function configurations(): HasMany
     {
-        return $this->hasMany(PeppolIntegrationConfig::class, 'integration_id');
-    }
-
-    /**
-     * Return the decrypted API token for the integration.
-     *
-     * @return string|null the decrypted API token, or null if no token is stored
-     */
-    public function getApiTokenAttribute(): ?string
-    {
-        return $this->encrypted_api_token ? decrypt($this->encrypted_api_token) : null;
-    }
-
-    /**
-     * Store the API token on the model in encrypted form.
-     *
-     * If `$value` is null the stored encrypted token will be set to null.
-     *
-     * @param string|null $value the plaintext API token to encrypt and store, or null to clear it
-     */
-    public function setApiTokenAttribute(?string $value): void
-    {
-        $this->encrypted_api_token = $value ? encrypt($value) : null;
+        return $this->hasMany(MerchantClient::class, 'company_id', 'company_id')
+            ->where('driver', $this->provider_name);
     }
 
     /**
      * Provide integration configurations as an associative array keyed by configuration keys.
      *
-     * @return array associative array mapping configuration keys (`config_key`) to their values (`config_value`)
+     * Maps merchant_clients rows (from the shared credential table) to merchant_key/merchant_value pairs.
+     *
+     * @return array associative array mapping credential keys (merchant_key) to their values (merchant_value)
      */
     public function getConfigAttribute(): array
     {
-        return collect($this->configurations)->pluck('config_value', 'config_key')->toArray();
+        return collect($this->configurations)->pluck('merchant_value', 'merchant_key')->toArray();
     }
 
     /**
      * Upserts integration configuration entries from an associative array.
      *
-     * Each array key is saved as `config_key` and its corresponding value as `config_value`
-     * on the related configurations; existing entries are updated and missing ones created.
+     * Each array key is saved as `merchant_key` and its corresponding value as `merchant_value`
+     * on the related merchant_clients rows; existing entries are updated and missing ones created.
      *
      * @param array $config associative array of configuration entries where keys are configuration keys and values are configuration values
      */
     public function setConfig(array $config): void
     {
         foreach ($config as $key => $value) {
-            $this->configurations()->updateOrCreate(
-                ['config_key' => $key],
-                ['config_value' => $value]
+            MerchantClient::updateOrCreate(
+                [
+                    'company_id'    => $this->company_id,
+                    'driver'        => $this->provider_name,
+                    'merchant_key'  => $key,
+                ],
+                ['merchant_value' => $value]
             );
         }
     }
@@ -118,9 +117,12 @@ class PeppolIntegration extends Model
      */
     public function getConfigValue(string $key, $default = null)
     {
-        $config = $this->configurations()->where('config_key', $key)->first();
+        $config = MerchantClient::where('company_id', $this->company_id)
+            ->where('driver', $this->provider_name)
+            ->where('merchant_key', $key)
+            ->first();
 
-        return $config ? $config->config_value : $default;
+        return $config ? $config->merchant_value : $default;
     }
 
     /**

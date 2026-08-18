@@ -33,17 +33,16 @@ class PeppolManagementService
     /**
      * Create a new Peppol integration for a company, persist its configuration, and emit a creation event.
      *
-     * The integration is created disabled (awaiting testing) and its configuration is stored via the integration's
-     * key-value configuration relationship.
+     * The integration is created disabled (awaiting testing) and its configuration is stored via the
+     * shared merchant_clients key-value credential table.
      *
-     * @param int         $companyId    the ID of the company that will own the integration
-     * @param string      $providerName the provider identifier/name for the Peppol integration
-     * @param array       $config       associative configuration values to attach to the integration
-     * @param string|null $apiToken     optional provider API token; automatically encrypted via the model's setApiTokenAttribute accessor
+     * @param int   $companyId    the ID of the company that will own the integration
+     * @param string $providerName the provider identifier/name for the Peppol integration
+     * @param array $config       associative configuration values to attach to the integration
      *
      * @return PeppolIntegration the newly created PeppolIntegration model (initially disabled until tested)
      */
-    public function createIntegration(int $companyId, string $providerName, array $config, ?string $apiToken = null): PeppolIntegration
+    public function createIntegration(int $companyId, string $providerName, array $config): PeppolIntegration
     {
         DB::beginTransaction();
 
@@ -51,14 +50,50 @@ class PeppolManagementService
             $integration                = new PeppolIntegration();
             $integration->company_id    = $companyId;
             $integration->provider_name = $providerName;
-            $integration->api_token     = $apiToken; // Encrypted automatically via setApiTokenAttribute accessor
             $integration->enabled       = false; // Start disabled until tested
             $integration->save();
 
-            // Set configuration using the key-value relationship
+            // Set configuration using the key-value relationship (stores in merchant_clients)
             $integration->setConfig($config);
 
             event(new PeppolIntegrationCreated($integration));
+
+            DB::commit();
+
+            return $integration;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Update an existing Peppol integration's configuration and enabled status.
+     *
+     * @param PeppolIntegration $integration the integration to update
+     * @param array             $config      associative configuration values (replaces existing config)
+     * @param bool|null         $enabled     optional enabled status; if null, leaves unchanged
+     *
+     * @return PeppolIntegration the updated integration
+     */
+    public function updateIntegration(PeppolIntegration $integration, array $config, ?bool $enabled = null): PeppolIntegration
+    {
+        DB::beginTransaction();
+
+        try {
+            if ($enabled !== null) {
+                $integration->enabled = $enabled;
+                $integration->save();
+            }
+
+            // Update configuration (replaces existing merchant_client rows for this provider)
+            // First delete old entries for this provider
+            \Modules\Core\Models\MerchantClient::where('company_id', $integration->company_id)
+                ->where('driver', $integration->provider_name)
+                ->delete();
+
+            // Then insert new entries
+            $integration->setConfig($config);
 
             DB::commit();
 

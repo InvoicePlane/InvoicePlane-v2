@@ -95,16 +95,6 @@ abstract class BaseProvider implements ProviderInterface
     }
 
     /**
-     * Retrieve the API token for the current provider.
-     *
-     * @return string|null the API token for the provider, or `null` if no token is configured
-     */
-    protected function getApiToken(): ?string
-    {
-        return $this->integration?->api_token ?? config("invoices.peppol.{$this->getProviderName()}.api_key");
-    }
-
-    /**
      * Resolve the provider's base URL.
      *
      * Looks up a base URL from the provider instance config, then from the application
