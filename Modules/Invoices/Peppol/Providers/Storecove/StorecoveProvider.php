@@ -31,7 +31,7 @@ class StorecoveProvider extends BaseProvider
         } else {
             $this->documentSubmissionsClient = new DocumentSubmissionsClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getApiKey() ?? 'default-key',
+                $this->getApiKey() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }
@@ -41,7 +41,7 @@ class StorecoveProvider extends BaseProvider
         } else {
             $this->receivedDocumentsClient = new ReceivedDocumentsClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getApiKey() ?? 'default-key',
+                $this->getApiKey() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }

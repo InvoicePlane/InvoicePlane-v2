@@ -37,7 +37,7 @@ class LetsPeppolProvider extends BaseProvider
         } else {
             $this->invoiceClient = new InvoiceClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getAccessToken() ?? 'default-token',
+                $this->getAccessToken() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }
@@ -47,7 +47,7 @@ class LetsPeppolProvider extends BaseProvider
         } else {
             $this->creditNoteClient = new CreditNoteClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getAccessToken() ?? 'default-token',
+                $this->getAccessToken() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }
@@ -57,7 +57,7 @@ class LetsPeppolProvider extends BaseProvider
         } else {
             $this->participantClient = new ParticipantClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getAccessToken() ?? 'default-token',
+                $this->getAccessToken() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }
@@ -67,7 +67,7 @@ class LetsPeppolProvider extends BaseProvider
         } else {
             $this->transmissionClient = new TransmissionClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getAccessToken() ?? 'default-token',
+                $this->getAccessToken() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }
@@ -77,7 +77,7 @@ class LetsPeppolProvider extends BaseProvider
         } else {
             $this->documentClient = new DocumentClient(
                 app(\Modules\Invoices\Http\Contracts\HttpClientInterface::class),
-                $this->getAccessToken() ?? 'default-token',
+                $this->getAccessToken() ?? '',
                 $this->getDefaultBaseUrl()
             );
         }

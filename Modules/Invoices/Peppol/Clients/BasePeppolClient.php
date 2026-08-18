@@ -3,6 +3,7 @@
 namespace Modules\Invoices\Peppol\Clients;
 
 use Modules\Invoices\Http\Contracts\HttpClientInterface;
+use Modules\Invoices\Http\RequestMethod;
 use Modules\Invoices\Traits\LogsPeppolActivity;
 
 /**
@@ -44,6 +45,22 @@ abstract class BasePeppolClient
      * @var int
      */
     protected int $timeout = 60;
+
+    /**
+     * OAuth2 access token for providers that use OAuth2 authentication.
+     *
+     * @var string
+     */
+    protected string $accessToken = '';
+
+    /**
+     * Response from the most recent OAuth2 token endpoint call.
+     *
+     * Stores decoded JSON including expires_in, token_type, etc.
+     *
+     * @var array|null
+     */
+    protected ?array $lastAuthResponse = null;
 
     /**
      * Constructor.
@@ -122,5 +139,91 @@ abstract class BasePeppolClient
     protected function getTimeout(): int
     {
         return $this->timeout;
+    }
+
+    /**
+     * Set the OAuth2 access token.
+     *
+     * @param string $token the access token to set
+     */
+    public function setAccessToken(string $token): void
+    {
+        $this->accessToken = $token;
+    }
+
+    /**
+     * Get the OAuth2 token endpoint URL for this provider.
+     *
+     * Override this method to provide an OAuth2 token endpoint URL. Return null (default)
+     * to indicate this provider uses static credential authentication (e.g., API key).
+     *
+     * @return string|null the OAuth2 token endpoint URL, or null if not using OAuth2
+     */
+    protected function tokenUrl(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Authenticate the client using provided credentials.
+     *
+     * Default behavior:
+     * - If tokenUrl() is null (static credentials), validates that apiKey is present
+     * - If tokenUrl() is set (OAuth2), exchanges client_id/client_secret for access_token
+     *
+     * Subclasses may override this method for custom authentication logic.
+     *
+     * @param array $credentials array of credentials; typically contains 'client_id' and 'client_secret' for OAuth2
+     *
+     * @return bool true if authentication succeeded, false otherwise
+     */
+    public function authenticate(array $credentials = []): bool
+    {
+        $url = $this->tokenUrl();
+
+        // Static credential authentication: just validate API key is present
+        if ($url === null) {
+            return !empty($this->apiKey);
+        }
+
+        // OAuth2 client-credentials flow
+        if (empty($credentials['client_id']) || empty($credentials['client_secret'])) {
+            return false;
+        }
+
+        try {
+            $options = [
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'payload' => [
+                    'grant_type'    => 'client_credentials',
+                    'client_id'     => $credentials['client_id'],
+                    'client_secret' => $credentials['client_secret'],
+                ],
+            ];
+
+            $response = $this->client->request(RequestMethod::POST, $url, $options);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->accessToken = $data['access_token'] ?? '';
+                $this->lastAuthResponse = $data;
+
+                return true;
+            }
+
+            return false;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get the response from the most recent token endpoint call.
+     *
+     * @return array|null the decoded response, or null if no authentication has been attempted
+     */
+    public function getLastAuthResponse(): ?array
+    {
+        return $this->lastAuthResponse;
     }
 }
