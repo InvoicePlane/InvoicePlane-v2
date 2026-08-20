@@ -1228,6 +1228,7 @@ return [
     'template_renamed'          => 'Template renamed',
     'template_deleted'          => 'Template deleted',
     'template_saved'            => 'Template saved',
+    'template_not_editable'     => 'This template cannot be modified from this panel',
     'move_to_band'              => 'Move to band…',
     'from_band'                 => 'From band',
     'to_band'                   => 'To band',

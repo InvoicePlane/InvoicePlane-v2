@@ -141,4 +141,64 @@ class CompanyReportBuilderTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertSame('New Name', $this->storage->load('company', 'old-name')['manifest']['name']);
     }
+
+    #[Test]
+    public function it_refuses_to_rename_a_system_template_from_the_company_panel(): void
+    {
+        /* Act */
+        $this->testLivewire(ReportTemplates::class)
+            ->callAction('rename', data: ['name' => 'Hijacked'], arguments: [
+                'scope'    => 'system',
+                'type'     => 'invoice',
+                'slug'     => 'default',
+                'editable' => true,
+            ])
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertSame(
+            'Default Invoice',
+            $this->storage->load('system', 'default', ReportTemplateType::INVOICE)['manifest']['name'],
+        );
+    }
+
+    #[Test]
+    public function it_refuses_to_delete_a_system_template_from_the_company_panel(): void
+    {
+        /* Arrange */
+        $this->storage->clone('system', 'default', 'Spare', ReportTemplateType::INVOICE, 'system');
+
+        /* Act */
+        $this->testLivewire(ReportTemplates::class)
+            ->callAction('delete', arguments: [
+                'scope'    => 'system',
+                'type'     => 'invoice',
+                'slug'     => 'spare',
+                'editable' => true,
+            ])
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertNotNull($this->storage->load('system', 'spare', ReportTemplateType::INVOICE));
+    }
+
+    #[Test]
+    public function it_does_not_take_the_editable_flag_from_action_arguments(): void
+    {
+        /* Arrange */
+        $page = $this->testLivewire(ReportTemplates::class)->instance();
+
+        /* Act & Assert */
+        $this->assertFalse($page->canModify([
+            'scope'    => 'system',
+            'slug'     => 'anything',
+            'type'     => 'invoice',
+            'editable' => true,
+        ]));
+        $this->assertTrue($page->canModify([
+            'scope' => 'company',
+            'slug'  => 'anything',
+            'type'  => 'invoice',
+        ]));
+    }
 }

@@ -2,8 +2,10 @@
 
 namespace Modules\Core\Providers;
 
+use Awcodes\Mason\Support\IframeRenderer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Mason\ReportIframeRenderer;
 use Modules\Core\Models\Company;
 use Modules\Core\Observers\CompanyObserver;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -34,6 +36,19 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        /*
+         * Mason's preview iframe must paint report bricks with their
+         * builder previews, not with the print rendering. MasonController
+         * resolves the renderer out of the container, so swapping the
+         * binding is enough.
+         */
+        $this->app->bind(
+            IframeRenderer::class,
+            fn ($app, array $parameters): ReportIframeRenderer => new ReportIframeRenderer(
+                is_array($parameters['blocks'] ?? null) ? $parameters['blocks'] : [],
+            ),
+        );
     }
 
     public function registerViews(): void

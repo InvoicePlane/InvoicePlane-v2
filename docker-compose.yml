@@ -57,8 +57,6 @@ services:
             DB_DATABASE: invoiceplane_test
             DB_USERNAME: root
             DB_PASSWORD: ""
-        depends_on:
-            - db
         volumes:
             - .:/var/www/html
         depends_on:

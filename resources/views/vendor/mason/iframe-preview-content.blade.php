@@ -6,16 +6,34 @@
     gap: 0;
 }
 
+/*
+ * Drop zones sit between the blocks in document order, but a full-width bar
+ * between two half-width blocks would push them onto separate rows and wreck
+ * the very layout being edited. So a zone takes up no space at all until a
+ * drag is under way, and only then expands into a full-width bar in its real
+ * position. They used to carry order: 9999 instead, which kept the layout
+ * intact but stacked every drop target at the bottom of the canvas, nowhere
+ * near the place the brick would actually land.
+ */
 .mason-drop-zone {
-    flex-basis: 100% !important;
-    min-height: 2rem !important;
-    order: 9999;
+    display: none;
+    flex-basis: 100%;
+    min-height: 2rem;
     background-color: #FFFACD;
     border: 2px dashed #FFD700;
     border-radius: 4px;
     margin: 6px 0;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     opacity: 0.7;
+}
+
+body.mason-dragging .mason-drop-zone:not(.mason-drop-zone--empty) {
+    display: block;
+}
+
+/* The empty-band prompt is the canvas itself, so it is always on show. */
+.mason-drop-zone--empty {
+    display: flex;
 }
 
 .mason-drop-zone:hover,
@@ -69,7 +87,7 @@
 <div id="mason-preview-container">
     @if (empty($blocks))
         <div
-            class="mason-drop-zone"
+            class="mason-drop-zone mason-drop-zone--empty"
             data-drop-index="0"
             style="
                 min-height: 4rem;
@@ -164,10 +182,27 @@
 <script>
     ;(function () {
         const container = document.getElementById('mason-preview-container')
+        // Keep the semicolon: a Blade directive that ends a line swallows the
+        // newline after it, welding this onto the statement below.
+        const placeholderText = @json(__('mason::mason.preview.placeholder'));
+        const INSTANCE_NAME_PREFIX = 'mason-preview-iframe-'
+
         let selectedBlock = null
         let dblClickToEdit = false
         let isDisabled = false
-        let instanceId = null
+
+        /*
+         * Every band on the page runs its own Mason component, and they all
+         * listen on the same parent window, filtering by instanceId. Waiting
+         * for the parent to tell us who we are left a window in which our
+         * messages carried instanceId: null — which no component filters out,
+         * so a single click could be acted on by all five bands at once. The
+         * iframe's own window.name already encodes the state path, so read it
+         * from there and only fall back to the parent's word for it.
+         */
+        let instanceId = window.name && window.name.startsWith(INSTANCE_NAME_PREFIX)
+            ? window.name.slice(INSTANCE_NAME_PREFIX.length)
+            : null
 
         function postToParent(message) {
             window.parent.postMessage({ ...message, instanceId }, '*')
@@ -281,17 +316,20 @@
         })
 
         function updateContent(blocks) {
-            if (!Array.isArray(blocks) || blocks.length === 0) {
-                postToParent({ type: 'contentUpdated' })
-                return
+            if (!Array.isArray(blocks)) {
+                blocks = []
             }
 
             // Clear current content
             container.innerHTML = ''
 
-            // Render placeholder or blocks
+            /*
+             * Removing the last brick used to return early, before the clear
+             * above — so the deleted brick stayed on the canvas and the drop
+             * prompt never came back, leaving the band impossible to refill.
+             */
             if (blocks.length === 0) {
-                container.innerHTML = `<div class="mason-drop-zone" data-drop-index="0" style="min-height: 4rem; display: flex; align-items: center; justify-content: center; color: #9ca3af; position: absolute; inset: 0; margin: 0;">Drop content here</div>`
+                container.innerHTML = `<div class="mason-drop-zone mason-drop-zone--empty" data-drop-index="0" style="min-height: 4rem; align-items: center; justify-content: center; color: #9ca3af; position: absolute; inset: 0; margin: 0;">${placeholderText}</div>`
             } else {
                 container.innerHTML = '<div class="mason-drop-zone" data-drop-index="0" style="min-height: 2rem"></div>'
 
@@ -538,6 +576,34 @@
         let draggedBlockIndex = null
         let draggedBlock = null
         let dragOverIndex = null
+        let dragIdleTimer = null
+
+        /*
+         * Reveals the drop zones for the duration of a drag. A drag that
+         * starts in the sidebar ends in the parent document, so there is no
+         * dragend here to close it out — hence the idle timer alongside the
+         * explicit clears on drop and dragend.
+         */
+        function markDragging() {
+            document.body.classList.add('mason-dragging')
+            clearTimeout(dragIdleTimer)
+            dragIdleTimer = setTimeout(clearDragFeedback, 1200)
+        }
+
+        function clearDragFeedback() {
+            clearTimeout(dragIdleTimer)
+            document.body.classList.remove('mason-dragging')
+
+            container
+                .querySelectorAll('.mason-drop-zone.active')
+                .forEach((zone) => {
+                    zone.classList.remove('active')
+                })
+            container.querySelectorAll('.mason-block').forEach((block) => {
+                block.style.outline = ''
+                block.style.outlineOffset = ''
+            })
+        }
 
         container.addEventListener('dragstart', function (e) {
             const block = e.target.closest('.mason-block')
@@ -580,6 +646,8 @@
 
             e.dataTransfer.effectAllowed = 'move'
             e.dataTransfer.setData('text/plain', draggedBlockIndex.toString())
+
+            markDragging()
         })
 
         container.addEventListener('dragend', function (e) {
@@ -602,15 +670,7 @@
                 }
             }
 
-            container
-                .querySelectorAll('.mason-drop-zone.active')
-                .forEach((zone) => {
-                    zone.classList.remove('active')
-                })
-            container.querySelectorAll('.mason-block').forEach((block) => {
-                block.style.outline = ''
-                block.style.outlineOffset = ''
-            })
+            clearDragFeedback()
 
             draggedBlock = null
             draggedBlockIndex = null
@@ -619,6 +679,10 @@
 
         container.addEventListener('dragover', function (e) {
             e.preventDefault()
+
+            // Also covers bricks dragged in from the sidebar, whose dragstart
+            // fires in the parent document rather than here.
+            markDragging()
 
             if (draggedBlockIndex !== null) {
                 const dropZone = e.target.closest('.mason-drop-zone')
@@ -681,15 +745,7 @@
             e.preventDefault()
             e.stopPropagation()
 
-            container
-                .querySelectorAll('.mason-drop-zone.active')
-                .forEach((zone) => {
-                    zone.classList.remove('active')
-                })
-            container.querySelectorAll('.mason-block').forEach((block) => {
-                block.style.outline = ''
-                block.style.outlineOffset = ''
-            })
+            clearDragFeedback()
 
             if (draggedBlockIndex !== null) {
                 let dropZone = e.target.closest('.mason-drop-zone')
@@ -720,11 +776,20 @@
                     }
                 }
 
-                if (
-                    targetIndex !== null &&
-                    !isNaN(targetIndex) &&
-                    targetIndex !== draggedBlockIndex
-                ) {
+                /*
+                 * Both of these describe a drop that changes nothing: the
+                 * slot the brick already occupies, and the slot immediately
+                 * after it. The second one matters because the host component
+                 * reserves to === from + 1 for the "move down" button and
+                 * reads it as a swap, so sending it would shunt the brick down
+                 * a place instead of leaving it put. Dropping a brick onto
+                 * itself resolves to that same index.
+                 */
+                const isNoOpDrop =
+                    targetIndex === draggedBlockIndex ||
+                    targetIndex === draggedBlockIndex + 1
+
+                if (targetIndex !== null && !isNaN(targetIndex) && !isNoOpDrop) {
                     const allBlocks = container.querySelectorAll('.mason-block')
                     const totalBlocks = allBlocks.length
 

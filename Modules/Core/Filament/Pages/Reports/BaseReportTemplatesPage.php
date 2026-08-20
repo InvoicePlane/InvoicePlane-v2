@@ -120,13 +120,14 @@ abstract class BaseReportTemplatesPage extends Page
             ])
             ->action(function (array $arguments, array $data): void {
                 $template = [
-                    'scope'    => (string) $arguments['scope'],
-                    'slug'     => (string) $arguments['slug'],
-                    'type'     => (string) $arguments['type'],
-                    'editable' => (bool) ($arguments['editable'] ?? false),
+                    'scope' => (string) $arguments['scope'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
                 ];
 
                 if ( ! $this->canModify($template)) {
+                    $this->denyModification();
+
                     return;
                 }
 
@@ -150,13 +151,14 @@ abstract class BaseReportTemplatesPage extends Page
             ->requiresConfirmation()
             ->action(function (array $arguments): void {
                 $template = [
-                    'scope'    => (string) $arguments['scope'],
-                    'slug'     => (string) $arguments['slug'],
-                    'type'     => (string) $arguments['type'],
-                    'editable' => (bool) ($arguments['editable'] ?? false),
+                    'scope' => (string) $arguments['scope'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
                 ];
 
                 if ( ! $this->canModify($template)) {
+                    $this->denyModification();
+
                     return;
                 }
 
@@ -170,13 +172,31 @@ abstract class BaseReportTemplatesPage extends Page
             });
     }
 
+    /**
+     * Whether this panel may rename or delete the given template.
+     *
+     * Editability is always derived from the panel's own scope, never from
+     * the caller-supplied payload — action arguments come from the browser,
+     * so an "editable" flag in them would be trivially forgeable.
+     */
     public function canModify(array $template): bool
     {
-        if ( ! $template['editable']) {
+        $scope = (string) ($template['scope'] ?? '');
+
+        $editable = $this->managesSystemScope()
+            ? $scope === ReportTemplateStorage::SCOPE_SYSTEM
+            : $scope === ReportTemplateStorage::SCOPE_COMPANY;
+
+        if ( ! $editable) {
             return false;
         }
 
-        return ! ($template['scope'] === ReportTemplateStorage::SCOPE_SYSTEM && $template['slug'] === 'default');
+        return ! ($scope === ReportTemplateStorage::SCOPE_SYSTEM && ($template['slug'] ?? '') === 'default');
+    }
+
+    protected function denyModification(): void
+    {
+        Notification::make()->title(trans('ip.template_not_editable'))->danger()->send();
     }
 
     protected function storage(): ReportTemplateStorage

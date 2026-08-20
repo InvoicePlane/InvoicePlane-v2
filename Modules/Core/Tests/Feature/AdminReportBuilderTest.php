@@ -2,10 +2,12 @@
 
 namespace Modules\Core\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Filament\Admin\Pages\ReportBuilder;
+use Modules\Core\Mason\Bricks\SpacerBrick;
 use Modules\Core\Filament\Admin\Pages\ReportTemplates;
 use Modules\Core\Services\ReportTemplateStorage;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
@@ -87,6 +89,81 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $lastHeader = end($saved['bands']['header']);
         $this->assertSame('spacer', $lastHeader['brick']);
         $this->assertSame(['height' => 33], $lastHeader['config']);
+    }
+
+    #[Test]
+    public function it_lifts_the_block_width_out_of_the_config_when_saving(): void
+    {
+        /* Arrange */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
+
+        $bands             = $component->get('data.bands');
+        $bands['header'][] = [
+            'type'  => 'masonBrick',
+            'attrs' => ['id' => 'spacer', 'config' => ['height' => 12, '_width' => 'two_thirds']],
+        ];
+
+        /* Act */
+        $component->set('data.bands', $bands)->call('save')->assertHasNoErrors();
+
+        /* Assert */
+        $saved      = $this->storage->load('system', 'default', ReportTemplateType::INVOICE);
+        $lastHeader = end($saved['bands']['header']);
+
+        $this->assertSame('two_thirds', $lastHeader['width']);
+        $this->assertArrayNotHasKey('_width', $lastHeader['config']);
+    }
+
+    #[Test]
+    public function it_hands_the_stored_width_back_to_the_canvas_on_load(): void
+    {
+        /* Arrange */
+        $this->storage->save(
+            'system',
+            'default',
+            ['name' => 'Default Invoice', 'type' => 'invoice'],
+            ['header' => [['brick' => 'header_company', 'width' => 'half', 'config' => []]]],
+            ReportTemplateType::INVOICE,
+        );
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
+
+        /* Assert */
+        $bands = $component->get('data.bands');
+        $this->assertSame('half', $bands['header'][0]['attrs']['config']['_width']);
+    }
+
+    #[Test]
+    public function it_previews_an_inserted_brick_with_the_builder_rendering(): void
+    {
+        /* Arrange */
+        $config    = ['_width' => 'half', 'height' => 24];
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
+
+        /* Act */
+        $component->callAction(
+            TestAction::make('handleBrick')->schemaComponent('bands.header'),
+            data: $config,
+            arguments: ['id' => 'spacer', 'mode' => 'insert', 'dragPosition' => 0],
+        );
+
+        /* Assert — the canvas preview must be the builder rendering, never
+           toHtml(), which is the print output and needs entity data. */
+        $inserted = $component->get('data.bands')['header'][0];
+
+        $this->assertSame('spacer', $inserted['attrs']['id']);
+        $this->assertSame(
+            SpacerBrick::toPreviewHtml($config),
+            base64_decode($inserted['attrs']['preview']),
+        );
+        $this->assertNotSame(
+            SpacerBrick::toHtml($config),
+            base64_decode($inserted['attrs']['preview']),
+        );
     }
 
     #[Test]

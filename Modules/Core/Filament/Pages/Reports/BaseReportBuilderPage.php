@@ -9,11 +9,14 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Mason\MasonDocumentConverter;
+use Modules\Core\Mason\ReportBrickAction;
 use Modules\Core\Mason\ReportBricksCollection;
 use Modules\Core\Services\ReportTemplateStorage;
 
@@ -90,6 +93,7 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
             $fields[] = Mason::make('bands.' . $band->value)
                 ->label($band->getLabel())
                 ->bricks(ReportBricksCollection::forBand($band))
+                ->registerActions([ReportBrickAction::make()])
                 ->disabled( ! $this->canSave());
         }
 
@@ -148,17 +152,28 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
                     ->label(trans('ip.from_band'))
                     ->options($this->bandOptions())
                     ->required()
-                    ->live(),
+                    ->live()
+                    /*
+                     * Both dependent selects have to be cleared by hand.
+                     * Filament recomputes their options but keeps whatever
+                     * was picked before, so a stale index would silently
+                     * move a different brick than the one on screen.
+                     */
+                    ->afterStateUpdated(function (Set $set): void {
+                        $set('position', null);
+                        $set('to_band', null);
+                    }),
                 Select::make('position')
                     ->label(trans('ip.brick'))
-                    ->options(function (\Filament\Schemas\Components\Utilities\Get $get): array {
+                    ->options(function (Get $get): array {
                         return $this->brickOptionsForBand((string) $get('from_band'));
                     })
                     ->required()
-                    ->live(),
+                    ->live()
+                    ->afterStateUpdated(fn (Set $set) => $set('to_band', null)),
                 Select::make('to_band')
                     ->label(trans('ip.to_band'))
-                    ->options(function (\Filament\Schemas\Components\Utilities\Get $get): array {
+                    ->options(function (Get $get): array {
                         return $this->targetBandOptions((string) $get('from_band'), $get('position'));
                     })
                     ->required(),
@@ -277,6 +292,12 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
      */
     protected function targetBandOptions(string $fromBand, mixed $position): array
     {
+        // No brick picked yet — casting null to 0 would offer the bands of
+        // whichever brick happens to sit first in the source band.
+        if ($position === null || $position === '') {
+            return [];
+        }
+
         $node       = $this->data['bands'][$fromBand][(int) $position] ?? null;
         $brickClass = $node ? ReportBricksCollection::findById((string) ($node['attrs']['id'] ?? '')) : null;
 

@@ -76,8 +76,7 @@ class MasonDocumentConverter
             $config = is_array($attrs['config'] ?? null) ? $attrs['config'] : [];
 
             $width = ReportBlockWidth::tryFrom((string) ($config[self::WIDTH_KEY] ?? '')) ?? ReportBlockWidth::FULL;
-            // Keep _width in config so preview templates can access it for layout
-            // unset($config[self::WIDTH_KEY]);
+            unset($config[self::WIDTH_KEY]);
 
             $entries[] = [
                 'brick'  => (string) ($attrs['id'] ?? ''),
