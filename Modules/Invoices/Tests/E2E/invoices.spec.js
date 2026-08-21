@@ -1,28 +1,18 @@
 import { test, expect } from '@playwright/test';
+import { tenantPath } from '../../Core/Tests/E2E/tenant-path.js';
 
 test.describe('Invoices', () => {
-  test('invoices page loads without errors', async ({ page }) => {
-    // Page is pre-authenticated from global-setup.js
-    await page.goto('/invoices');
+  test('list page renders the invoices table', async ({ page }) => {
+    await page.goto(tenantPath('/invoices'));
 
-    // Verify page loaded successfully
-    await expect(page).not.toHaveTitle(/error/i);
-    await expect(page.locator('text=Invoices')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /invoices/i })).toBeVisible();
+    await expect(page.locator('table')).toBeVisible();
   });
 
-  test('create invoice page is accessible', async ({ page }) => {
-    await page.goto('/invoices/create');
+  test('create page renders the invoice form', async ({ page }) => {
+    await page.goto(tenantPath('/invoices/create'));
 
-    // Verify form loads
-    await expect(page).not.toHaveTitle(/error/i);
     await expect(page.locator('form')).toBeVisible();
-  });
-
-  test('invoice list shows records', async ({ page }) => {
-    await page.goto('/invoices');
-
-    // Should have a data table or records visible
-    const table = page.locator('table');
-    await expect(table).toBeVisible({ timeout: 5000 });
+    await expect(page.getByLabel(/client/i)).toBeVisible();
   });
 });

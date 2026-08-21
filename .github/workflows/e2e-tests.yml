@@ -94,8 +94,12 @@ jobs:
         run: npm run e2e
         env:
           APP_URL: http://127.0.0.1:8000
-          E2E_EMAIL: ${{ secrets.E2E_EMAIL || 'testuser@invoiceplane.test' }}
+          # Defaults match the account DatabaseSeeder always creates and
+          # attaches to the `ivplv2` company; override via secrets if a
+          # dedicated E2E account is introduced later.
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL || 'admin@invoiceplane.com' }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD || 'password' }}
+          E2E_TENANT: ${{ secrets.E2E_TENANT || 'ivplv2' }}
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: invoiceplane_test

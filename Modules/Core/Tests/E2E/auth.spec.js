@@ -1,35 +1,40 @@
 import { test, expect } from '@playwright/test';
 import { login, logout } from './auth-helpers.js';
+import { tenantPath } from './tenant-path.js';
 
 test.describe('Authentication', () => {
-  test('user can access dashboard when authenticated', async ({ page }) => {
-    // Page is pre-authenticated from global-setup.js
-    await page.goto('/dashboard');
+  test('authenticated session reaches the tenant dashboard', async ({ page }) => {
+    // Session is pre-authenticated via global-setup.js.
+    await page.goto(tenantPath('/dashboard'));
 
-    await expect(page).toHaveURL(/dashboard/);
-    await expect(page.locator('text=Dashboard')).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(tenantPath('/dashboard')));
+    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible();
   });
 
-  test('logout redirects to login page', async ({ page }) => {
-    // Start authenticated
-    await page.goto('/dashboard');
+  test('logout redirects to the login page', async ({ page }) => {
+    await page.goto(tenantPath('/dashboard'));
 
-    // Logout
     await logout(page);
 
-    // Should be back at login
-    await expect(page).toHaveURL(/login/);
+    await expect(page).toHaveURL(/\/login/);
   });
 
-  test('login works with valid credentials', async ({ page }) => {
-    // Logout first to test login flow
-    await page.goto('/dashboard');
+  test('login redirects back to the tenant dashboard', async ({ page }) => {
+    await page.goto(tenantPath('/dashboard'));
     await logout(page);
 
-    // Now test login
     await login(page);
 
-    // Should be on dashboard
-    await expect(page).toHaveURL(/dashboard/);
+    await expect(page).toHaveURL(new RegExp(tenantPath('/dashboard')));
+  });
+
+  test('invalid credentials are rejected', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[name="email"]', 'nobody@invoiceplane.test');
+    await page.fill('[name="password"]', 'wrong-password');
+    await page.click('[type="submit"]');
+
+    await expect(page).toHaveURL(/\/login/);
+    await expect(page.locator('body')).toContainText(/these credentials do not match|failed/i);
   });
 });
