@@ -3,8 +3,14 @@ import path from 'path';
 import { E2E_BASE_URL } from './Modules/Core/Tests/E2E/config.js';
 
 export default defineConfig({
-  testDir: './Modules/*/Tests/E2E',
-  testMatch: '**/*.spec.js',
+  // testDir does not support glob patterns (only testMatch does) — the
+  // literal directory './Modules/*/Tests/E2E' never existed, so this
+  // config discovered zero tests no matter what ran `npx playwright test`.
+  // Scoped to `Modules/` (not repo root) so the directory walk never touches
+  // storage/ (root-owned files from Docker runs make it unreadable) or
+  // vendor/node_modules.
+  testDir: './Modules',
+  testMatch: '*/Tests/E2E/**/*.spec.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { tenantPath } from '../../Core/Tests/E2E/tenant-path.js';
+import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 
 test.describe('Products', () => {
   test('list page renders the products table', async ({ page }) => {

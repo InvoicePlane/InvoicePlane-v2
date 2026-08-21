@@ -12,15 +12,19 @@ import { tenantPath } from './tenant-path.js';
 
 export async function login(page, email = E2E_EMAIL, password = E2E_PASSWORD) {
   await page.goto('/login');
-  await page.fill('[name="email"]', email);
-  await page.fill('[name="password"]', password);
+  // Filament v5 form inputs bind via wire:model, not a native `name`
+  // attribute — `[name="email"]` never matches anything real.
+  await page.fill('input[type="email"]', email);
+  await page.fill('input[type="password"]', password);
   await page.click('[type="submit"]');
   await page.waitForURL(new RegExp(tenantPath('/dashboard')));
 }
 
 export async function logout(page) {
   await page.click('[aria-label="User menu"]');
-  await page.getByRole('menuitem', { name: /log ?out/i }).click();
+  // The dropdown item is a plain <button>, not an ARIA menu/menuitem —
+  // Filament's dropdown doesn't use menu semantics here.
+  await page.getByRole('button', { name: /log ?out/i }).click();
   await page.waitForURL(/\/login/);
 }
 

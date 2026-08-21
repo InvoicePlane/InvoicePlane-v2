@@ -16,6 +16,8 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Core\Models\Setting;
@@ -55,6 +57,17 @@ class InvoiceForm
                                                     ->label(trans('ip.customer_name'))
                                                     ->required(),
                                             ])
+                                            ->createOptionUsing(function (array $data) {
+                                                // Filament's default createOptionUsing() does a
+                                                // raw Relation::create($data), which omits
+                                                // relation_type/relation_number/registered_at —
+                                                // all NOT NULL with no DB default — and 500s.
+                                                // RelationService::createRelation() fills those.
+                                                return app(RelationService::class)->createRelation([
+                                                    'relation_type' => RelationType::CUSTOMER->value,
+                                                    'company_name'  => $data['company_name'],
+                                                ])->getKey();
+                                            })
                                             ->reactive(),
 
                                         Placeholder::make('customer_info')

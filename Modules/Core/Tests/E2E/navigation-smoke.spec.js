@@ -64,5 +64,8 @@ for (const route of KNOWN_ROUTES) {
 test('sidebar navigation is present on the dashboard', async ({ page }) => {
   await page.goto(tenantPath('/dashboard'));
 
-  await expect(page.getByRole('navigation')).toBeVisible();
+  // The page has two <nav> landmarks (topbar + sidebar) — bare
+  // getByRole('navigation') is a strict-mode violation; scope to the one
+  // this test actually means.
+  await expect(page.getByRole('navigation', { name: 'Sidebar navigation' })).toBeVisible();
 });
