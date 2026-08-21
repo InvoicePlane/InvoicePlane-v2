@@ -19,8 +19,14 @@ export default async function globalSetup() {
   await page.fill('input[type="password"]', E2E_PASSWORD);
   await page.click('[type="submit"]');
 
-  // LoginResponse redirects into the tenant-scoped dashboard.
-  await page.waitForURL(new RegExp(tenantPath('/dashboard')));
+  // LoginResponse redirects into the tenant-scoped dashboard. Every request
+  // in this dev environment pays Xdebug step-debug connection overhead, so
+  // under sustained load (e.g. several full-suite runs back to back) the
+  // default 30s action timeout has been observed to trip here even though
+  // login itself is working correctly — this runs once for the whole
+  // suite, so a generous timeout is cheap insurance against that, not a
+  // mask for a real bug.
+  await page.waitForURL(new RegExp(tenantPath('/dashboard')), { timeout: 60000 });
 
   await context.storageState({ path: authFile });
 

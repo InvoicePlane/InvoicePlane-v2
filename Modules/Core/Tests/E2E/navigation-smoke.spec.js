@@ -36,6 +36,9 @@ const KNOWN_ROUTES = [
   '/note-templates',
   '/email-templates',
   '/company-users',
+  '/settings',
+  '/my-profile',
+  '/my-companies',
 ];
 
 const ERROR_MARKERS = [
@@ -49,8 +52,10 @@ const ERROR_MARKERS = [
 
 for (const route of KNOWN_ROUTES) {
   test(`page loads without a boot error: ${route}`, async ({ page }) => {
+    /* Arrange & Act */
     const response = await page.goto(tenantPath(route));
 
+    /* Assert */
     expect(response, `no response for ${route}`).not.toBeNull();
     expect(response.status(), `HTTP ${response.status()} on ${route}`).toBeLessThan(400);
 
@@ -62,8 +67,10 @@ for (const route of KNOWN_ROUTES) {
 }
 
 test('sidebar navigation is present on the dashboard', async ({ page }) => {
+  /* Arrange & Act */
   await page.goto(tenantPath('/dashboard'));
 
+  /* Assert */
   // The page has two <nav> landmarks (topbar + sidebar) — bare
   // getByRole('navigation') is a strict-mode violation; scope to the one
   // this test actually means.

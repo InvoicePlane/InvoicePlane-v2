@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
+import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
 
 test.describe('Relations (Customers)', () => {
-  test('list page renders the relations table', async ({ page }) => {
+  test('list page shows real, correctly-scoped seeded relations', async ({ page }) => {
+    /* Arrange */
     await page.goto(tenantPath('/relations'));
 
-    await expect(page.locator('table')).toBeVisible();
+    /* Act & Assert */
+    // Modules/Clients/Enums/RelationStatus.php — ACTIVE, INACTIVE.
+    await assertRealListContent(page, /^(Active|Inactive)$/i);
   });
 });

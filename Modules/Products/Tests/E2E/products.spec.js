@@ -1,22 +1,29 @@
 import { test, expect } from '@playwright/test';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
+import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
 
 test.describe('Products', () => {
-  test('list page renders the products table', async ({ page }) => {
+  test('list page shows real, correctly-scoped seeded products', async ({ page }) => {
+    /* Arrange */
     await page.goto(tenantPath('/products'));
 
-    await expect(page.locator('table')).toBeVisible();
+    /* Act & Assert */
+    await assertRealListContent(page);
   });
 
-  test('product categories page loads', async ({ page }) => {
+  test('product categories page shows real, correctly-scoped seeded categories', async ({ page }) => {
+    /* Arrange */
     await page.goto(tenantPath('/product-categories'));
 
-    await expect(page.locator('table')).toBeVisible();
+    /* Act & Assert */
+    await assertRealListContent(page);
   });
 
-  test('product units page loads', async ({ page }) => {
+  test('product units page shows real, correctly-scoped seeded units', async ({ page }) => {
+    /* Arrange */
     await page.goto(tenantPath('/product-units'));
 
-    await expect(page.locator('table')).toBeVisible();
+    /* Act & Assert */
+    await assertRealListContent(page);
   });
 });
