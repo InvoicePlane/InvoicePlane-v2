@@ -46,7 +46,21 @@ class CompanyForm
                             ->schema([
                                 TextInput::make('search_code')
                                     ->label(trans('ip.search_code'))
-                                    ->required(),
+                                    ->required()
+                                    // companies.search_code is varchar(10) —
+                                    // without this, a longer value passes
+                                    // client-side validation and then blows
+                                    // up as an unhandled 500 SQL truncation
+                                    // error instead of a form validation
+                                    // message.
+                                    ->maxLength(10)
+                                    // companies.search_code also has a
+                                    // unique DB constraint — without this,
+                                    // a duplicate hits the same "unhandled
+                                    // 500 instead of a validation message"
+                                    // failure mode as the length issue
+                                    // above.
+                                    ->unique(ignoreRecord: true),
                                 TextInput::make('vat_number')
                                     ->label(trans('ip.vat_id'))
                                     ->nullable(),
