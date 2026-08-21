@@ -34,6 +34,16 @@ class SidebarQuickCreateItemTest extends AbstractCompanyPanelTestCase
         </ul>
         BLADE;
 
+    public const TEMPLATE_WITH_BADGE = <<<'BLADE'
+        <ul>
+            <x-filament-panels::sidebar.item
+                :url="$url"
+                :badge="$badge"
+                :attributes="$attributes"
+            >{{ $label }}</x-filament-panels::sidebar.item>
+        </ul>
+        BLADE;
+
     // Compiling the vendor sidebar item view hits a stale view-cache file-permission
     // error (touch(): Utime failed) in the ip2-test-php:8.4 image.
     #[Test]
@@ -92,5 +102,41 @@ class SidebarQuickCreateItemTest extends AbstractCompanyPanelTestCase
         // The item itself still renders normally.
         $this->assertStringContainsString('fi-sidebar-item-btn', $html);
         $this->assertStringContainsString('Invoices', $html);
+    }
+
+    // Compiling the vendor sidebar item view hits a stale view-cache file-permission
+    // error (touch(): Utime failed) in the ip2-test-php:8.4 image.
+    #[Test]
+    #[Group('failing')]
+    public function it_keeps_the_badge_visible_alongside_a_long_label_when_a_quick_create_button_is_present(): void
+    {
+        /* Arrange */
+        Filament::setCurrentPanel(Filament::getPanel('company'));
+
+        $item = NavigationItem::make('A Very Long Navigation Item Label That Could Overflow The Sidebar Width')
+            ->icon('heroicon-o-banknotes')
+            ->url('https://example.test/expenses')
+            ->extraAttributes([
+                'data-quick-create-url' => 'https://example.test/expenses/create',
+            ]);
+
+        /* Act */
+        $html = Blade::render(self::TEMPLATE_WITH_BADGE, [
+            'url'        => $item->getUrl(),
+            'label'      => $item->getLabel(),
+            'badge'      => '42',
+            'attributes' => \Filament\Support\prepare_inherited_attributes($item->getExtraAttributeBag()),
+        ]);
+
+        /* Assert */
+        // The label text is wrapped in its own shrinkable/truncating element
+        // rather than being an unshrinkable anonymous flex item, so a long
+        // label can't force the badge out of the clipped label container.
+        $this->assertMatchesRegularExpression(
+            '/<span[^>]*overflow: hidden;[^>]*>\s*A Very Long Navigation Item Label/',
+            $html,
+        );
+        $this->assertStringContainsString('42', $html);
+        $this->assertStringContainsString('fi-sidebar-item-quick-create-btn', $html);
     }
 }
