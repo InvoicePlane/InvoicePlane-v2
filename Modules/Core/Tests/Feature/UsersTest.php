@@ -53,6 +53,58 @@ class UsersTest extends AbstractAdminPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
+    public function it_creates_a_user_through_a_modal(): void
+    {
+        /* Arrange */
+        $payload = [
+            'name'  => 'New Admin User',
+            'email' => 'new-admin-user@example.test',
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ListUsers::class)
+            ->mountAction('create')
+            ->fillForm(array_merge($payload, ['password' => 'password']))
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertSuccessful()
+            ->assertHasNoFormErrors();
+        $this->assertDatabaseHas('users', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_a_user_through_a_modal_with_a_duplicate_email(): void
+    {
+        /* Arrange — regression guard: users.email has a unique DB
+         * constraint; without ->unique() on the form field, a duplicate hit
+         * an unhandled SQL 500 instead of a validation message
+         * (UserForm.php, UserService::createUser does no uniqueness check
+         * of its own). */
+        User::factory()->create(['email' => 'duplicate@example.test']);
+
+        $payload = [
+            'name'     => 'Another User',
+            'email'    => 'duplicate@example.test',
+            'password' => 'password',
+        ];
+
+        /* Act */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListUsers::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['email']);
+
+        /* Assert */
+        $this->assertDatabaseMissing('users', ['name' => $payload['name']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_user(): void
     {
         /* Arrange */

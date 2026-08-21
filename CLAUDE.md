@@ -202,16 +202,23 @@ quoting has silently masked real bugs before (e.g. `->latest()` defaulting to a 
 own `docker-compose.yml` `app`/`cli` services are unused pre-release, do not use them), with `-e`
 overrides pointing at MariaDB instead of `.env.testing`'s SQLite default:
 ```
-docker exec -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
+docker exec -e XDEBUG_MODE=off -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
   ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test --exclude-group failing,troubleshooting"
 ```
 Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to
 behave differently for this app's Livewire form tests; `artisan test` is the reliable one.
+`XDEBUG_MODE=off` is a confirmed ~2-3x speedup for normal runs (the container's php.ini defaults
+to `xdebug.mode=debug`); switch to `-e XDEBUG_MODE=coverage` only when running with `--coverage`.
 **Known issue:** a rebuilt/changed environment has reproduced false Livewire-form failures at
 scale even under `artisan test`, for reasons not yet isolated — see
 [#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689) and sanity-check with
 `--filter=ContactsTest` (should be 11/11 passing) before trusting a full run after any environment
-change. See `.github/DOCKER.md`.
+change. A related, separately-observed symptom: some Livewire table-row-action tests (e.g.
+`CompanyUsersTest`'s "remove" tests) reliably pass alone but fail when run alongside other test
+classes — the mounted action's injected `$record` doesn't match the actual target row. Same
+"combined-run-only, root cause not yet isolated" profile as #689; not reproducible as a real
+production bug (a live request never shares process state with 20+ unrelated prior tests). See
+`.github/DOCKER.md`.
 
 ### AAA phase comment style
 

@@ -45,7 +45,26 @@ class TaxRateForm
                                             // always reports hidden/zero
                                             // height regardless of state, so
                                             // the failure was invisible too.
-                                            ->required(),
+                                            ->required()
+                                            // tax_rates also has a unique DB
+                                            // constraint on (company_id, code)
+                                            // — without this, a duplicate
+                                            // code hits the same "unhandled
+                                            // 500 instead of a validation
+                                            // message" failure mode as the
+                                            // missing ->required() above did.
+                                            // Scoped to 'code' alone (not
+                                            // true composite uniqueness)
+                                            // since every admin-created tax
+                                            // rate lands on the acting
+                                            // admin's own active company
+                                            // anyway (BelongsToCompany, see
+                                            // the Numbering company-scoping
+                                            // note elsewhere in this
+                                            // codebase) — this is at worst
+                                            // stricter than the real DB
+                                            // constraint, never looser.
+                                            ->unique(ignoreRecord: true),
 
                                         Toggle::make('is_active')
                                             ->label(trans('ip.is_active'))

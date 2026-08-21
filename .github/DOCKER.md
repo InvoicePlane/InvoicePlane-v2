@@ -55,10 +55,16 @@ docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivpl
 Tests need real MariaDB, not the SQLite default in `.env.testing` — SQLite's lenient identifier
 quoting has masked real bugs before that only surfaced against MariaDB in CI. Override the DB
 connection with `-e` flags on `docker exec` (env vars passed this way take precedence over
-`.env.testing`, so nothing else needs to change):
+`.env.testing`, so nothing else needs to change).
+
+`ivpldock-workspace-1`'s php.ini has `xdebug.mode=debug` on by default (for IDE step-debugging).
+That's dead weight for a plain test run — every request tries and fails to reach a debug client —
+so pass `-e XDEBUG_MODE=off` for normal runs; it's a confirmed ~2-3x speedup (roughly 1.2-1.7s/test
+instead of 2.5-4s/test). Use `-e XDEBUG_MODE=coverage` instead when you actually need
+`--coverage`.
 
 ```bash
-docker exec -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
+docker exec -e XDEBUG_MODE=off -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
   ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test --exclude-group failing,troubleshooting"
 ```
 
@@ -73,7 +79,7 @@ failures) even under `artisan test`, for reasons not yet isolated. Before trusti
 any environment change, sanity-check it against a small, known test first:
 
 ```bash
-docker exec -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
+docker exec -e XDEBUG_MODE=off -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
   ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test --filter=ContactsTest"
 ```
 

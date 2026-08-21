@@ -27,6 +27,12 @@ class CompanyForm
                                 TextInput::make('name')
                                     ->label(trans('ip.name'))
                                     ->required()
+                                    // companies.name also has a unique DB
+                                    // constraint (like search_code below) —
+                                    // without this, a duplicate name passes
+                                    // client validation and blows up as an
+                                    // unhandled SQL 500.
+                                    ->unique(ignoreRecord: true)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state, '_'))),
 
@@ -34,6 +40,12 @@ class CompanyForm
                                     ->label(trans('ip.slug'))
                                     ->required()
                                     ->readOnly()
+                                    // companies.slug is also unique; two
+                                    // different names can still slugify to
+                                    // the same value (e.g. "Foo!" / "Foo?"),
+                                    // so this needs its own uniqueness check
+                                    // independent of the name check above.
+                                    ->unique(ignoreRecord: true)
                                     ->dehydrated(),
                             ]),
 

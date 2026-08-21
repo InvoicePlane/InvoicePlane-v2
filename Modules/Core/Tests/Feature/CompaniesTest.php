@@ -116,6 +116,85 @@ class CompaniesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_fails_to_create_company_through_a_modal_when_search_code_exceeds_max_length(): void
+    {
+        /* Arrange — regression guard: companies.search_code is varchar(10);
+         * without ->maxLength(10) on the form field, a longer value passed
+         * client validation and blew up as an unhandled SQL truncation 500
+         * instead of a form validation message. */
+        $payload = [
+            'search_code' => 'ELEVENCHARS', // 11 chars — exceeds the varchar(10) column
+            'name'        => 'InvoicePlane Corp',
+        ];
+
+        /* Act */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['search_code']);
+
+        /* Assert */
+        $this->assertDatabaseMissing('companies', ['name' => $payload['name']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_company_through_a_modal_with_a_duplicate_name(): void
+    {
+        /* Arrange — regression guard: companies.name also has a unique DB
+         * constraint (like search_code); without ->unique() on the form
+         * field, a duplicate name hit an unhandled SQL 500 instead of a
+         * validation message. */
+        Company::factory()->create(['name' => 'Duplicate Corp']);
+
+        $payload = [
+            'search_code' => 'DUPNAME1',
+            'name'        => 'Duplicate Corp',
+        ];
+
+        /* Act */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['name']);
+
+        /* Assert */
+        $this->assertDatabaseMissing('companies', ['search_code' => $payload['search_code']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_company_through_a_modal_with_a_duplicate_search_code(): void
+    {
+        /* Arrange — regression guard: companies.search_code has a unique DB
+         * constraint; without ->unique() on the form field, a duplicate hit
+         * the same "unhandled 500 instead of a validation message" failure
+         * mode as the length issue above. */
+        Company::factory()->create(['search_code' => 'DUPCODE']);
+
+        $payload = [
+            'search_code' => 'DUPCODE',
+            'name'        => 'Another Company',
+        ];
+
+        /* Act */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ListCompanies::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasFormErrors(['search_code']);
+
+        /* Assert */
+        $this->assertDatabaseMissing('companies', ['name' => $payload['name']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload {
      *   "name": "Updated Corp"
