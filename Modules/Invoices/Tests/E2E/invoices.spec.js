@@ -1,6 +1,7 @@
 import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
+import { assertAddRowIncrementsRepeater } from '../../../Core/Tests/E2E/error-capture.js';
 
 test.describe('Invoices', () => {
   test('list page shows real, correctly-scoped seeded invoices', async ({ page }) => {
@@ -36,24 +37,13 @@ test.describe('Invoices', () => {
   });
 
   test('"Add New Row" on the invoice items repeater adds a real row, with no errors', async ({ page }) => {
-    /* Arrange */
-    const errors = [];
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', (err) => errors.push(err.message));
-
-    await page.goto(tenantPath('/invoices/create'));
+    /* Arrange, Act & Assert */
     // The "Invoice Items" section starts collapsed — the "Add New Row"
     // button doesn't exist in the DOM until it's expanded.
-    await page.getByRole('heading', { name: 'Invoice Items' }).click();
-    const addButton = page.getByRole('button', { name: 'Add New Row' });
-    await expect(addButton).toBeVisible();
-    const itemsBefore = await page.locator('.fi-fo-repeater-item').count();
-
-    /* Act */
-    await addButton.click();
-
-    /* Assert */
-    await expect(page.locator('.fi-fo-repeater-item')).toHaveCount(itemsBefore + 1);
-    expect(errors, `unexpected error(s) adding an invoice item row:\n${errors.join('\n')}`).toHaveLength(0);
+    await assertAddRowIncrementsRepeater(page, {
+      createPath: '/invoices/create',
+      sectionHeading: 'Invoice Items',
+      itemLabel: 'invoice item',
+    });
   });
 });

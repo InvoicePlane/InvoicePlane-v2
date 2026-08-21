@@ -1,6 +1,7 @@
 import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
+import { assertAddRowIncrementsRepeater } from '../../../Core/Tests/E2E/error-capture.js';
 
 test.describe('Expenses', () => {
   test('list page shows real, correctly-scoped seeded expenses', async ({ page }) => {
@@ -30,22 +31,8 @@ test.describe('Expenses', () => {
   });
 
   test('"Add New Row" on the expense items repeater adds a real row, with no errors', async ({ page }) => {
-    /* Arrange */
-    const errors = [];
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', (err) => errors.push(err.message));
-
-    await page.goto(tenantPath('/expenses/create'));
-    const addButton = page.getByRole('button', { name: 'Add New Row' });
-    await expect(addButton).toBeVisible();
-    const itemsBefore = await page.locator('.fi-fo-repeater-item').count();
-
-    /* Act */
-    await addButton.click();
-
-    /* Assert */
-    await expect(page.locator('.fi-fo-repeater-item')).toHaveCount(itemsBefore + 1);
-    expect(errors, `unexpected error(s) adding an expense item row:\n${errors.join('\n')}`).toHaveLength(0);
+    /* Arrange, Act & Assert */
+    await assertAddRowIncrementsRepeater(page, { createPath: '/expenses/create', itemLabel: 'expense item' });
   });
 
   test('expense categories page shows real, correctly-scoped seeded categories', async ({ page }) => {

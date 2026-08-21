@@ -1,6 +1,7 @@
 import { test, expect } from './test.js';
 import { tenantPath } from './tenant-path.js';
 import { assertRealListContent } from './list-assertions.js';
+import { captureConsoleErrors } from './error-capture.js';
 
 test.describe('Company Users', () => {
   test('list page shows real, correctly-scoped seeded team members', async ({ page }) => {
@@ -13,9 +14,7 @@ test.describe('Company Users', () => {
 
   test('"Add Team Member" adds a known existing user and they appear in the list', async ({ page }) => {
     /* Arrange */
-    const errors = [];
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', (err) => errors.push(err.message));
+    const errors = captureConsoleErrors(page);
 
     // Seeded deterministically by database/seeders/DatabaseSeeder.php: a
     // real User row that belongs to no company, specifically so this test
@@ -44,9 +43,7 @@ test.describe('Company Users', () => {
 
   test('"Add Team Member" opens without error and rejects an unknown email gracefully', async ({ page }) => {
     /* Arrange */
-    const errors = [];
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', (err) => errors.push(err.message));
+    const errors = captureConsoleErrors(page);
 
     await page.goto(tenantPath('/company-users'));
     const addButton = page.getByRole('button', { name: 'Add Team Member' });

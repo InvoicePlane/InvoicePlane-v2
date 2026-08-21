@@ -1,5 +1,6 @@
 import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
+import { captureConsoleErrors } from '../../../Core/Tests/E2E/error-capture.js';
 
 /**
  * Regression coverage for two real bugs this exact workflow has already
@@ -18,9 +19,7 @@ import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 test.describe('Invoice: inline customer creation', () => {
   test('creating a customer from the invoice form assigns it to the invoice, with no errors', async ({ page }) => {
     /* Arrange */
-    const errors = [];
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
-    page.on('pageerror', (err) => errors.push(err.message));
+    const errors = captureConsoleErrors(page);
 
     await page.goto(tenantPath('/invoices/create'));
 
