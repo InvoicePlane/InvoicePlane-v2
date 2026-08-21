@@ -1,54 +1,65 @@
 # Docker Setup for InvoicePlane V2
 
-This guide explains how to run InvoicePlane V2 using Docker.
+This guide explains how to run InvoicePlane V2 against the **`ivpldock`** stack — the actual
+Docker environment used for local development on this box. It's a shared stack (not specific to
+this repo) that several projects are mounted into; check `docker ps` if in doubt, container names
+always start with `ivpldock-`.
+
+> **Note:** this repo also ships its own `docker-compose.yml` (services named `app`/`cli`). That
+> stack is **not** what's used for local dev right now — it's unfinished, conflicts with
+> `ivpldock` on shared ports (3306, etc.), and will be sorted out at release time. Until then,
+> ignore it and use `ivpldock` as documented below.
 
 ---
 
 ## Prerequisites
 
-- Docker installed (https://www.docker.com/)
-- Docker Compose v2+
-
----
-
-## Quick Start
-
-```bash
-git clone https://github.com/InvoicePlane/InvoicePlane-v2.git
-cd InvoicePlane-v2
-
-cp .env.example .env
-
-# Install dependencies and bootstrap the app — no PHP required on the host:
-docker compose run --rm app composer install
-docker compose run --rm app php artisan key:generate
-docker compose up -d
-docker compose run --rm app php artisan migrate --seed
-```
-
-Visit: http://localhost:8080 (override the port with `APP_PORT` in `.env`).
+- The `ivpldock` stack already running (`docker ps` should show `ivpldock-workspace-1`,
+  `ivpldock-mariadb-1`, `ivpldock-nginx-1`, etc.)
+- This repo checked out at `/var/www/projects/invoiceplane-2/ivplv2` inside the stack (same path
+  on the host, under `/data/Projects/...`)
 
 ---
 
 ## Services
 
-| Service | Image | Purpose |
-|---|---|---|
-| `web` | `docker-resources/apache` (httpd 2.4 alpine) | Serves `public/`, proxies PHP to `app` |
-| `app` | `docker-resources/php-fpm` (PHP 8.4 fpm alpine) | Laravel application (FPM) — also used to run artisan/composer/tests |
-| `db` | `mariadb` | Database (port 3306) |
-| `mailcatcher` | `sj26/mailcatcher` | Catches outgoing mail — UI on port 1080 |
+| Container | Purpose |
+|---|---|
+| `ivpldock-workspace-1` | Where you run `php`, `composer`, `artisan`, `npm` — shell in here for everything dev-related |
+| `ivpldock-nginx-1` | Serves the app — vhost `ip2.test` (port 80) points at this repo's `public/` |
+| `ivpldock-php-fpm-1` / `ivpldock-php-worker-1` | PHP-FPM + queue worker |
+| `ivpldock-mariadb-1` | Database, reachable inside the network as host `mariadb`, also exposed on host port 3306 |
+| `ivpldock-redis-1` | Cache/sessions, host `redis` |
+| `ivpldock-beanstalkd-1` / `ivpldock-beanstalkd-console-1` | Queue backend |
+| `ivpldock-phpmyadmin-1` | DB admin UI — http://localhost:8081 |
 
-The PHP image ships the full extension set the app needs: `intl`, `gd`,
-`pdo_mysql`, `bcmath`, `zip`, `exif`, `soap`, `redis`, plus Composer.
+The app is reachable in a browser at **http://ip2.test** (already in `/etc/hosts` → 127.0.0.1).
+
+---
+
+## Running commands
+
+Everything runs via `docker exec` into `ivpldock-workspace-1`:
+
+```bash
+docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan migrate"
+docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && composer install"
+docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && vendor/bin/pint"
+docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && vendor/bin/phpstan analyse"
+```
 
 ---
 
 ## Running the test suite
 
+Tests need real MariaDB, not the SQLite default in `.env.testing` — SQLite's lenient identifier
+quoting has masked real bugs before that only surfaced against MariaDB in CI. Override the DB
+connection with `-e` flags on `docker exec` (env vars passed this way take precedence over
+`.env.testing`, so nothing else needs to change):
+
 ```bash
-docker compose run --rm -e APP_ENV=testing -e DB_DATABASE=invoiceplane_test app \
-  php artisan test --exclude-group failing,troubleshooting
+docker exec -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
+  ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test --exclude-group failing,troubleshooting"
 ```
 
 Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to behave
@@ -56,53 +67,39 @@ differently for this app: a raw `vendor/bin/phpunit` run silently drops some sub
 values in Livewire form tests. `artisan test` is the proven-reliable path and is what CI uses, so
 standardize on it.
 
-**Known issue (see [#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689)):** a
-freshly-`docker compose build`'t `app` image has, at least once, reproduced this same
-field-dropping bug at scale (100+ false failures) even under `artisan test`, for reasons not yet
-isolated — despite extension/ini parity with a known-good image. Before trusting a full local run
-from a rebuilt image, sanity-check it against a small, known test first, e.g.:
-```bash
-docker compose run --rm -e APP_ENV=testing -e DB_DATABASE=invoiceplane_test app \
-  php artisan test --filter=ContactsTest
-```
-All 11 assertions should pass. If any fail with "field is required" errors on data you know you
-supplied, don't trust the rest of that run — see the linked issue.
-
-The `-e` overrides above point the run at the dedicated `invoiceplane_test` database on the same
-`db` service, so tests never touch your dev data. This intentionally does not fall back to
-SQLite: SQLite's lenient identifier quoting has masked real bugs before that only surfaced against
-MariaDB in CI.
-
-### File ownership on Linux
-
-The image creates its user with uid/gid `1000`. If your host user differs, rebuild with your ids
-so files written into the mounted repo (vendor/, storage/, compiled views) stay owned by you:
+**Known issue (see [#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689)):** rebuilt
+images/environments have, at least once, reproduced a field-dropping bug at scale (100+ false
+failures) even under `artisan test`, for reasons not yet isolated. Before trusting a full run after
+any environment change, sanity-check it against a small, known test first:
 
 ```bash
-docker compose build --build-arg UID=$(id -u) --build-arg GID=$(id -g) app
+docker exec -e APP_ENV=testing -e DB_CONNECTION=mariadb -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test \
+  ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test --filter=ContactsTest"
 ```
+
+All 11 tests / 48 assertions should pass. If any fail with "field is required" errors on data you
+know you supplied, don't trust the rest of that run — see the linked issue.
 
 ---
 
-## Useful Commands
+## Running E2E (Playwright) tests
 
-| Action | Command |
-|---|---|
-| Start services | `docker compose up -d` |
-| Stop services | `docker compose down` |
-| View logs | `docker compose logs -f` |
-| Run artisan | `docker compose exec app php artisan <command>` |
-| Run composer | `docker compose exec app composer <command>` |
-| Rebuild containers | `docker compose build --no-cache` |
+```bash
+cd /data/Projects/invoiceplane-2/ivplv2
+CI=true APP_URL=http://ip2.test npx playwright test
+```
+
+`ip2.test` is the vhost that actually points at this repo's `public/` — don't use `ivplv2.test`,
+that vhost on this box points at an unrelated checkout.
 
 ---
 
 ## Troubleshooting
 
-- **Port already in use**: set `APP_PORT` in `.env` (web) or adjust ports in `docker-compose.yml`
-- **Permission issues**: rebuild the `app` image with your `UID`/`GID` (see above)
-- **Missing .env config**: re-run `cp .env.example .env` and adjust
-- **Tests fail with `could not find driver` or missing `intl`**: you are running on host PHP — use the `app` container instead
+- **Wrong app loads in the browser**: double check you're hitting `ip2.test`, not `ivplv2.test`.
+- **Tests fail with `could not find driver` or missing `intl`**: you're running on host PHP —
+  always run through `ivpldock-workspace-1`.
+- **Container not found**: run `docker ps` and confirm the `ivpldock` stack is actually up.
 
 ---
 
