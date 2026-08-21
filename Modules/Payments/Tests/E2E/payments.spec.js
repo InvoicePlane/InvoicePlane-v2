@@ -12,4 +12,55 @@ test.describe('Payments', () => {
     // refunded, partially_refunded.
     await assertRealListContent(page, /^(completed|failed|pending|refunded|partially[ _]refunded)$/i);
   });
+
+  test('creating a payment persists it and it appears in the list', async ({ page }) => {
+    /* Arrange */
+    // Payments have no dedicated /payments/create page — PaymentResource
+    // only registers an 'index' route; creation happens through the
+    // "New Payment" header modal on the list page.
+    await page.goto(tenantPath('/payments'));
+    await page.getByRole('button', { name: 'New Payment' }).click();
+    const modal = page.getByRole('dialog');
+
+    /* Act */
+    await modal.getByRole('combobox', { name: /^invoice/i }).click();
+    await page.keyboard.type('1', { delay: 30 });
+    // The Invoice field's own search results render as plain text, not
+    // native <option>s — a bare "INV-" match also hits the invoice number
+    // shown in the (still-present-but-covered) list table behind the
+    // modal, so the " – <customer>" suffix disambiguates the real option.
+    const invoiceOption = page.getByText(/^INV-\d+-\d+ . /).first();
+    const invoiceLabel = (await invoiceOption.innerText()).trim();
+    const invoiceNumber = invoiceLabel.split(' ')[0];
+    await invoiceOption.click();
+
+    await modal.getByLabel('Payment Date*').fill('2024-01-15');
+
+    await modal.getByLabel('Payment Method*').click();
+    await page.getByRole('option', { name: 'Bank Transfer', exact: true }).click();
+
+    await modal.getByLabel('Payment Status*').click();
+    await page.getByRole('option', { name: 'Completed', exact: true }).click();
+
+    const uniqueAmount = '4217.93';
+    await modal.getByLabel('Payment Amount*').fill(uniqueAmount);
+
+    await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
+
+    /* Assert */
+    await expect(modal).toBeHidden({ timeout: 10000 });
+
+    /* Act & Assert */
+    await page.goto(tenantPath('/payments'));
+    const search = page.getByPlaceholder(/search/i);
+    await search.click();
+    await search.pressSequentially(invoiceNumber, { delay: 30 });
+
+    const resultRow = page.locator('table tbody tr').first();
+    await expect(resultRow).toContainText(invoiceNumber, { timeout: 10000 });
+    await expect(resultRow).toContainText(uniqueAmount);
+    // The payment_status column renders the raw enum value (lowercase),
+    // not its Title Case ->label() — matches the list test's own regex.
+    await expect(resultRow).toContainText('completed');
+  });
 });
