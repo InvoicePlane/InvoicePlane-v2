@@ -713,15 +713,15 @@ class Settings extends Page implements HasTable, HasForms
                                 ->columns(2)
                                 ->schema([
                                     Toggle::make('settings.auto_check_updates')
-                                        ->label('Auto Check Updates')
+                                        ->label(trans('ip.auto_check_updates'))
                                         ->default(true),
 
                                     Toggle::make('settings.auto_install_security_updates')
-                                        ->label('Auto Install Security Updates')
+                                        ->label(trans('ip.auto_install_security_updates'))
                                         ->default(false),
 
                                     Select::make('settings.update_channel')
-                                        ->label('Update Channel')
+                                        ->label(trans('ip.update_channel'))
                                         ->options([
                                             'stable' => 'Stable',
                                             'beta'   => 'Beta',
@@ -731,7 +731,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
 
                                     TextInput::make('settings.update_check_interval')
-                                        ->label('Update Check Interval (hours)')
+                                        ->label(trans('ip.update_check_interval_hours'))
                                         ->numeric()
                                         ->minValue(1)
                                         ->maxValue(168)
@@ -739,7 +739,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
 
                                     TextInput::make('settings.update_notification_email')
-                                        ->label('Update Notification Email')
+                                        ->label(trans('ip.update_notification_email'))
                                         ->email()
                                         ->nullable(),
 

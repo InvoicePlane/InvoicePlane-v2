@@ -14,17 +14,17 @@ class InsertNoteTemplateAction
     public static function make(string $field): Action
     {
         return Action::make('insert_note_template_' . $field)
-            ->label('Insert Template')
+            ->label(trans('ip.insert_template'))
             ->icon('heroicon-o-document-duplicate')
             ->schema([
                 Select::make('note_template_id')
-                    ->label('Template')
+                    ->label(trans('ip.template'))
                     ->options(fn () => NoteTemplate::forCompany()->pluck('template_title', 'id'))
                     ->searchable()
                     ->required(),
 
                 Toggle::make('replace_content')
-                    ->label('Replace existing content')
+                    ->label(trans('ip.replace_existing_content'))
                     ->default(false),
             ])
             ->modalHeading('Insert Note Template')
