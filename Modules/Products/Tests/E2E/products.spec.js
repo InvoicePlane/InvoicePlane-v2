@@ -1,6 +1,7 @@
 import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
+import { maximizeTableRecordsPerPage } from '../../../Core/Tests/E2E/error-capture.js';
 
 test.describe('Products', () => {
   test('list page shows real, correctly-scoped seeded products', async ({ page }) => {
@@ -77,8 +78,11 @@ test.describe('Products', () => {
     /* Act & Assert */
     // This table has no searchable columns (Modules/Products/Filament/
     // Company/Resources/ProductCategories/Tables/ProductCategoriesTable.php)
-    // — no search box to filter by, so just confirm the new row rendered.
+    // — no search box to filter by, so bump the page size to its max
+    // (rather than just the new row rendered on page 1) to stay sturdy as
+    // repeated runs accumulate rows past the default page size.
     await page.goto(tenantPath('/product-categories'));
+    await maximizeTableRecordsPerPage(page);
     await expect(page.getByText(categoryName)).toBeVisible({ timeout: 15000 });
   });
 
@@ -105,9 +109,9 @@ test.describe('Products', () => {
     await expect(modal).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
-    // No searchable columns on this table either (ProductUnitsTable.php) —
-    // just confirm the new row rendered.
+    // No searchable columns on this table either (ProductUnitsTable.php).
     await page.goto(tenantPath('/product-units'));
+    await maximizeTableRecordsPerPage(page);
     await expect(page.getByText(unitName)).toBeVisible({ timeout: 15000 });
   });
 });
