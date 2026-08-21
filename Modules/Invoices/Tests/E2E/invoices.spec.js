@@ -1,27 +1,28 @@
-import { test, expect } from '../E2E/fixtures.js';
+import { test, expect } from '@playwright/test';
 
 test.describe('Invoices', () => {
-  test('invoices page loads without errors', async ({ authenticatedPage }) => {
-    await authenticatedPage.goto('/invoices');
+  test('invoices page loads without errors', async ({ page }) => {
+    // Page is pre-authenticated from global-setup.js
+    await page.goto('/invoices');
 
     // Verify page loaded successfully
-    await expect(authenticatedPage).not.toHaveTitle(/error/i);
-    await expect(authenticatedPage.locator('text=Invoices')).toBeVisible();
+    await expect(page).not.toHaveTitle(/error/i);
+    await expect(page.locator('text=Invoices')).toBeVisible();
   });
 
-  test('create invoice page is accessible', async ({ authenticatedPage }) => {
-    await authenticatedPage.goto('/invoices/create');
+  test('create invoice page is accessible', async ({ page }) => {
+    await page.goto('/invoices/create');
 
     // Verify form loads
-    await expect(authenticatedPage).not.toHaveTitle(/error/i);
-    await expect(authenticatedPage.locator('form')).toBeVisible();
+    await expect(page).not.toHaveTitle(/error/i);
+    await expect(page.locator('form')).toBeVisible();
   });
 
-  test('invoice list shows records', async ({ authenticatedPage }) => {
-    await authenticatedPage.goto('/invoices');
+  test('invoice list shows records', async ({ page }) => {
+    await page.goto('/invoices');
 
     // Should have a data table or records visible
-    const table = authenticatedPage.locator('table');
+    const table = page.locator('table');
     await expect(table).toBeVisible({ timeout: 5000 });
   });
 });
