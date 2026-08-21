@@ -5,7 +5,9 @@
  * Use these helpers if a test needs to reset auth or perform logout
  */
 
-export async function login(page, email = 'testuser@invoiceplane.test', password = 'password') {
+import { E2E_EMAIL, E2E_PASSWORD } from './config.js';
+
+export async function login(page, email = E2E_EMAIL, password = E2E_PASSWORD) {
   await page.goto('/login');
   await page.fill('[name="email"]', email);
   await page.fill('[name="password"]', password);

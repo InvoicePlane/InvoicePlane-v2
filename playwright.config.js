@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
+import { E2E_BASE_URL } from './Modules/Core/Tests/E2E/config.js';
 
 export default defineConfig({
   testDir: './Modules/*/Tests/E2E',
@@ -15,7 +16,7 @@ export default defineConfig({
   ],
   globalSetup: path.resolve('./Modules/Core/Tests/E2E/global-setup.js'),
   use: {
-    baseURL: process.env.APP_URL || 'http://localhost:8000',
+    baseURL: E2E_BASE_URL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
