@@ -34,7 +34,18 @@ class TaxRateForm
                                     ->schema([
                                         TextInput::make('code')
                                             ->label(trans('ip.tax_rate_code'))
-                                            ->nullable(),
+                                            // tax_rates.code is NOT NULL with
+                                            // no DB default — leaving this
+                                            // blank (it looked optional,
+                                            // no asterisk) passed client
+                                            // validation and then blew up as
+                                            // an unhandled SQLSTATE 500 on
+                                            // every submission, silently:
+                                            // the modal's outer wrapper
+                                            // always reports hidden/zero
+                                            // height regardless of state, so
+                                            // the failure was invisible too.
+                                            ->required(),
 
                                         Toggle::make('is_active')
                                             ->label(trans('ip.is_active'))
