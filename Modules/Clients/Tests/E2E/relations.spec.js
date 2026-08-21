@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
 

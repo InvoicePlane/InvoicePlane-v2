@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test.js';
 import { tenantPath } from './tenant-path.js';
 
 /**

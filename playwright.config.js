@@ -19,6 +19,7 @@ export default defineConfig({
     ['html'],
     ['github'],
     ['list'],
+    ['./Modules/Core/Tests/E2E/error-summary-reporter.js'],
   ],
   globalSetup: path.resolve('./Modules/Core/Tests/E2E/global-setup.js'),
   use: {
