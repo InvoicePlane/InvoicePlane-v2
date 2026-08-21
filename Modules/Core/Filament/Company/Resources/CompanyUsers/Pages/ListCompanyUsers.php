@@ -3,10 +3,10 @@
 namespace Modules\Core\Filament\Company\Resources\CompanyUsers\Pages;
 
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
 class ListCompanyUsers extends ListRecords
@@ -20,11 +20,15 @@ class ListCompanyUsers extends ListRecords
                 ->label(trans('ip.add_team_member'))
                 ->icon('heroicon-m-plus')
                 ->form([
+                    // No ->unique() here: this field looks up an EXISTING
+                    // user by email on purpose (that's the whole point of
+                    // "Add Team Member") — a uniqueness rule against the
+                    // users table would reject every valid email, since a
+                    // real user's email is by definition already taken.
                     TextInput::make('email')
                         ->label(trans('ip.email'))
                         ->email()
-                        ->required()
-                        ->unique(ignoreRecord: true),
+                        ->required(),
                 ])
                 ->action(function (array $data) {
                     $user = User::whereEmail($data['email'])->first();
@@ -38,7 +42,7 @@ class ListCompanyUsers extends ListRecords
                         return;
                     }
 
-                    Company::getTenant()?->users()->syncWithoutDetaching([$user->id]);
+                    Filament::getTenant()?->users()->syncWithoutDetaching([$user->id]);
 
                     \Filament\Notifications\Notification::make()
                         ->success()

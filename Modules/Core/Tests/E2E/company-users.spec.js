@@ -1,7 +1,47 @@
 import { test, expect } from './test.js';
 import { tenantPath } from './tenant-path.js';
+import { assertRealListContent } from './list-assertions.js';
 
 test.describe('Company Users', () => {
+  test('list page shows real, correctly-scoped seeded team members', async ({ page }) => {
+    /* Arrange */
+    await page.goto(tenantPath('/company-users'));
+
+    /* Act & Assert */
+    await assertRealListContent(page);
+  });
+
+  test('"Add Team Member" adds a known existing user and they appear in the list', async ({ page }) => {
+    /* Arrange */
+    const errors = [];
+    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(msg.text()); });
+    page.on('pageerror', (err) => errors.push(err.message));
+
+    // Seeded deterministically by database/seeders/DatabaseSeeder.php: a
+    // real User row that belongs to no company, specifically so this test
+    // can exercise the success path (look up an existing user, add them to
+    // the current tenant) without depending on another test's random data.
+    const knownEmail = 'e2e-unattached-user@invoiceplane.test';
+
+    await page.goto(tenantPath('/company-users'));
+    const addButton = page.getByRole('button', { name: 'Add Team Member' });
+    await expect(addButton).toBeVisible();
+
+    /* Act */
+    await addButton.click();
+    const modal = page.getByRole('dialog');
+    const emailField = modal.getByLabel(/email/i);
+    await expect(emailField).toBeVisible();
+    await emailField.fill(knownEmail);
+    await modal.getByRole('button', { name: 'Add Member' }).click();
+
+    /* Assert */
+    await expect(page.getByText('Team Member Added')).toBeVisible();
+    await page.reload();
+    await expect(page.getByText('E2E Unattached User')).toBeVisible();
+    expect(errors, `unexpected error(s) adding a known team member:\n${errors.join('\n')}`).toHaveLength(0);
+  });
+
   test('"Add Team Member" opens without error and rejects an unknown email gracefully', async ({ page }) => {
     /* Arrange */
     const errors = [];

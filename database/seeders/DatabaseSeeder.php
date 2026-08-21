@@ -68,6 +68,16 @@ class DatabaseSeeder extends Seeder
             $admin->companies()->syncWithoutDetaching([$ivplv2->id]);
         }
 
+        // Deterministic, real-but-unattached user: exists in the database
+        // but belongs to no company, so E2E tests can exercise the "Add
+        // Team Member" success path (look up a known real user, add them
+        // to the current tenant) without depending on the random emails
+        // UsersSeeder generates per company below.
+        User::factory()->create([
+            'email' => 'e2e-unattached-user@invoiceplane.test',
+            'name'  => 'E2E Unattached User',
+        ]);
+
         $totalCompanies = Company::query()->count();
         $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);
         $companyBar->setMessage('Seeding company data');
