@@ -1,15 +1,12 @@
-import { test, expect } from '@playwright/test';
-
-const TEST_EMAIL = 'testuser@invoiceplane.test';
-const TEST_PASSWORD = 'password';
+import { test, expect } from './fixtures.js';
 
 test.describe('Authentication', () => {
   test('user can login and access dashboard', async ({ page }) => {
     await page.goto('/login');
-    
+
     // Fill login form
-    await page.fill('[name="email"]', TEST_EMAIL);
-    await page.fill('[name="password"]', TEST_PASSWORD);
+    await page.fill('[name="email"]', 'testuser@invoiceplane.test');
+    await page.fill('[name="password"]', 'password');
     await page.click('[type="submit"]');
 
     // Should redirect to dashboard
@@ -19,10 +16,9 @@ test.describe('Authentication', () => {
   });
 
   test('logout redirects to login page', async ({ page }) => {
-    // Login first
     await page.goto('/login');
-    await page.fill('[name="email"]', TEST_EMAIL);
-    await page.fill('[name="password"]', TEST_PASSWORD);
+    await page.fill('[name="email"]', 'testuser@invoiceplane.test');
+    await page.fill('[name="password"]', 'password');
     await page.click('[type="submit"]');
     await page.waitForNavigation();
 
