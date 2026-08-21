@@ -64,6 +64,9 @@ class RelationForm
                                                 TextInput::make('company_name')
                                                     ->label(trans('ip.company_name'))
                                                     ->required()
+                                                    // relations.company_name
+                                                    // is varchar(150).
+                                                    ->maxLength(150)
                                                     ->live(debounce: 500)
                                                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                                                         if ( ! $get('trading_name')) {
@@ -77,6 +80,9 @@ class RelationForm
 
                                                 TextInput::make('trading_name')
                                                     ->label(trans('ip.trading_name'))
+                                                    // relations.trading_name
+                                                    // is varchar(70).
+                                                    ->maxLength(70)
                                                     ->live(debounce: 500)
                                                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                                                         $set('unique_name', \Illuminate\Support\Str::slug($state));
@@ -100,7 +106,10 @@ class RelationForm
 
                                                 TextInput::make('relation_number')
                                                     ->label(trans('ip.relation_number'))
-                                                    ->required(),
+                                                    ->required()
+                                                    // relations.relation_number
+                                                    // is varchar(30).
+                                                    ->maxLength(30),
                                             ]),
                                     ]),
                             ])
@@ -118,13 +127,19 @@ class RelationForm
                                             ->columns(2)
                                             ->schema([
                                                 TextInput::make('id_number')
-                                                    ->label(trans('ip.id_number')),
+                                                    ->label(trans('ip.id_number'))
+                                                    // relations.id_number is varchar(70).
+                                                    ->maxLength(70),
 
                                                 TextInput::make('coc_number')
-                                                    ->label(trans('ip.coc_number')),
+                                                    ->label(trans('ip.coc_number'))
+                                                    // relations.coc_number is varchar(70).
+                                                    ->maxLength(70),
 
                                                 TextInput::make('vat_number')
-                                                    ->label(trans('ip.vat_id')),
+                                                    ->label(trans('ip.vat_id'))
+                                                    // relations.vat_number is varchar(70).
+                                                    ->maxLength(70),
 
                                                 DatePicker::make('registered_at')
                                                     ->label(trans('ip.registered_at'))

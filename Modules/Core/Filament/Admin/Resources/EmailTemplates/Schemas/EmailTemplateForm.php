@@ -51,7 +51,14 @@ class EmailTemplateForm
                                     ->label(trans('ip.subject')),
                                 Textarea::make('body')
                                     ->label(trans('ip.body'))
-                                    ->rows(10),
+                                    ->rows(10)
+                                    // email_templates.body is a NOT NULL
+                                    // longText column with no default —
+                                    // without this, a blank body passes
+                                    // client validation and blows up as an
+                                    // unhandled SQL 500. Shared by both the
+                                    // admin and company panel resources.
+                                    ->required(),
                             ])->columns(1),
                         Section::make(heading:trans('ip.available_variables'))
                             ->collapsed()

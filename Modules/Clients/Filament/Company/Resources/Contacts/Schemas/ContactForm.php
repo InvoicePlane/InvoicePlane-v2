@@ -65,11 +65,17 @@ class ContactForm
                             ->schema([
                                 TextInput::make('first_name')
                                     ->label(trans('ip.first_name'))
-                                    ->required(),
+                                    ->required()
+                                    // contacts.first_name is varchar(50) —
+                                    // without this, a longer value passes
+                                    // client validation and blows up as an
+                                    // unhandled SQL 500.
+                                    ->maxLength(50),
 
                                 TextInput::make('last_name')
                                     ->label(trans('ip.last_name'))
-                                    ->required(),
+                                    ->required()
+                                    ->maxLength(50),
 
                                 Placeholder::make('primary_email')
                                     ->label(trans('ip.email'))

@@ -19,7 +19,7 @@ class EmailTemplateFactory extends AbstractFactory
             'title'      => $this->faker->sentence(),
             'type'       => $this->faker->randomElement(EmailTemplateType::cases())->value,
             'subject'    => $this->faker->word,
-            'body'       => '',
+            'body'       => $this->faker->paragraph(),
             'from_name'  => $this->faker->name(),
             'from_email' => $this->faker->safeEmail(),
             'cc'         => $this->faker->safeEmail(),

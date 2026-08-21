@@ -48,7 +48,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $payload = [
             'title'      => 'Test Email',
             'subject'    => 'Welcome',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'type'       => EmailTemplateType::TEXT->value,
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
@@ -80,7 +80,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         /* Arrange */
         $payload = [
             'subject'    => 'Welcome',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'type'       => EmailTemplateType::TEXT->value,
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
@@ -112,7 +112,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $payload = [
             'title'      => 'Welcome',
             'subject'    => 'Test Email',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
         ];
@@ -183,7 +183,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $payload = [
             'title'      => 'Test Email',
             'subject'    => 'Welcome',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'type'       => EmailTemplateType::TEXT->value,
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
@@ -209,7 +209,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         /* Arrange */
         $payload = [
             'subject'    => 'Welcome',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'type'       => EmailTemplateType::TEXT->value,
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
@@ -236,7 +236,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
         $payload = [
             'title'      => 'Welcome',
             'subject'    => 'Test Email',
-            'body'       => '',
+            'body'       => 'This is the email body content.',
             'from_name'  => 'Acme Support',
             'from_email' => 'support@acme.com',
         ];
