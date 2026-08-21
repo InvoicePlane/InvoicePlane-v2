@@ -65,12 +65,23 @@ test.describe('Admin: Tax Rates', () => {
     await modal.getByLabel('Tax rate type*').click();
     await page.getByRole('option', { name: 'Exclusive', exact: true }).click();
     await modal.getByLabel('Percentage*').fill('5');
+    const codeField = modal.getByLabel('Tax rate code*');
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    // The form stays open with a validation error, not a silent "success".
-    await page.waitForTimeout(1000);
-    await expect(modal.getByLabel('Name*')).toBeVisible();
+    // ->required() on a Filament TextInput is enforced via the native
+    // HTML `required` attribute — the browser blocks the submission
+    // itself (a native "Please fill out this field" bubble, not a
+    // Livewire-rendered error) before any request reaches the server at
+    // all. Assert the real mechanism: the field fails native constraint
+    // validation, not just "the modal still looks open".
+    const isValid = await codeField.evaluate((el) => el.checkValidity());
+    expect(isValid, 'the code field should fail native required validation').toBe(false);
+    const validationMessage = await codeField.evaluate((el) => el.validationMessage);
+    expect(validationMessage).not.toBe('');
+    // And confirm the request genuinely never fired: the form is still
+    // showing what was typed, not reset or replaced by a fresh empty form.
+    await expect(modal.getByLabel('Name*')).toHaveValue(/E2E No Code Rate/);
     expect(errors, `unexpected error(s) submitting without a code:\n${errors.join('\n')}`).toHaveLength(0);
   });
 });
