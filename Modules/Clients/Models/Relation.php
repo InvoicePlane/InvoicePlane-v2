@@ -117,7 +117,7 @@ class Relation extends Model
         return $this->morphMany(Communication::class, 'communicationable');
     }
 
-    public function ccEmailCommunications()
+    public function ccEmailCommunications(): MorphMany
     {
         return $this->communications()->whereIn('communication_type', CommunicationType::ccTypes());
     }
