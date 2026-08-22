@@ -77,6 +77,25 @@ class InvoiceCompanySnapshotTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    public function it_renders_the_snapshotted_id_and_coc_numbers_on_the_pdf_not_the_companys_current_ones(): void
+    {
+        /* Arrange */
+        $this->company->update(['id_number' => 'ID-OLD', 'coc_number' => 'COC-OLD']);
+        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $invoice  = app(InvoiceService::class)->createInvoice($this->invoicePayload($customer));
+        $this->company->update(['id_number' => 'ID-NEW', 'coc_number' => 'COC-NEW']);
+
+        /* Act */
+        $html = app(InvoiceService::class)->renderHtml($invoice->fresh());
+
+        /* Assert */
+        $this->assertStringContainsString('ID-OLD', $html);
+        $this->assertStringContainsString('COC-OLD', $html);
+        $this->assertStringNotContainsString('ID-NEW', $html);
+        $this->assertStringNotContainsString('COC-NEW', $html);
+    }
+
+    #[Test]
     public function it_falls_back_to_the_live_company_name_for_invoices_created_before_the_snapshot_existed(): void
     {
         /* Arrange */
