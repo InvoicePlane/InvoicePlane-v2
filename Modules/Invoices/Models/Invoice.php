@@ -55,6 +55,10 @@ use Modules\Quotes\Models\Quote;
  * @property string|null              $summary
  * @property string|null              $terms
  * @property string|null              $footer
+ * @property string|null              $company_name
+ * @property string|null              $company_vat_number
+ * @property string|null              $company_id_number
+ * @property string|null              $company_coc_number
  * @property Company                  $company
  * @property Customer                 $customer
  * @property Numbering                $group

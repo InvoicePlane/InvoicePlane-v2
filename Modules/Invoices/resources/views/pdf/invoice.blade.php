@@ -8,9 +8,12 @@
         <tr>
             <td style="vertical-align: top;">
                 @if ($branding['logo_path'])
-                    <img src="{{ $branding['logo_path'] }}" alt="{{ $invoice->company?->name }}" style="max-height: 60px; max-width: 240px; margin-bottom: 8px;">
+                    <img src="{{ $branding['logo_path'] }}" alt="{{ $invoice->company_name ?? $invoice->company?->name }}" style="max-height: 60px; max-width: 240px; margin-bottom: 8px;">
                 @endif
-                <div style="font-size: 20px; font-weight: bold;">{{ $invoice->company?->name }}</div>
+                <div style="font-size: 20px; font-weight: bold;">{{ $invoice->company_name ?? $invoice->company?->name }}</div>
+                @if ($invoice->company_vat_number ?? $invoice->company?->vat_number)
+                    <div>{{ trans('ip.vat_id_short') }}: {{ $invoice->company_vat_number ?? $invoice->company?->vat_number }}</div>
+                @endif
             </td>
             <td style="vertical-align: top; text-align: right;">
                 <div style="font-size: 18px; font-weight: bold; text-transform: uppercase;">{{ trans('ip.invoice') }}</div>
