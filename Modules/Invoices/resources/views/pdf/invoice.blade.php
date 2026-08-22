@@ -14,6 +14,12 @@
                 @if ($invoice->company_vat_number ?? $invoice->company?->vat_number)
                     <div>{{ trans('ip.vat_id_short') }}: {{ $invoice->company_vat_number ?? $invoice->company?->vat_number }}</div>
                 @endif
+                @if ($invoice->company_id_number ?? $invoice->company?->id_number)
+                    <div>{{ trans('ip.id_number') }}: {{ $invoice->company_id_number ?? $invoice->company?->id_number }}</div>
+                @endif
+                @if ($invoice->company_coc_number ?? $invoice->company?->coc_number)
+                    <div>{{ trans('ip.coc_number') }}: {{ $invoice->company_coc_number ?? $invoice->company?->coc_number }}</div>
+                @endif
             </td>
             <td style="vertical-align: top; text-align: right;">
                 <div style="font-size: 18px; font-weight: bold; text-transform: uppercase;">{{ trans('ip.invoice') }}</div>
