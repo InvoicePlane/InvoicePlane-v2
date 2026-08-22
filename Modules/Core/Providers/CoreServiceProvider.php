@@ -73,6 +73,7 @@ class CoreServiceProvider extends ServiceProvider
             \Modules\Core\Commands\MigrateV1Command::class,
             \Modules\Core\Commands\MakeUserCommand::class,
             \Modules\Core\Commands\GenerateObservers::class,
+            \Modules\Core\Commands\ExportFormDbSchemaCommand::class,
         ]);
     }
 

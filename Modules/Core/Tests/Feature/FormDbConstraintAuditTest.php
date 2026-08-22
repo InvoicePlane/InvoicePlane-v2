@@ -15,6 +15,7 @@ use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
+use Modules\Core\Support\FormDbGapKnownExceptions;
 use Modules\Core\Tests\CreatesApplication;
 use PHPUnit\Framework\Attributes\Test;
 use Throwable;
@@ -35,24 +36,6 @@ class FormDbConstraintAuditTest extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
-
-    /**
-     * "ResourceClass:field" => reason. Only add an entry here with a real
-     * reason — this list is itself reviewed by this test's own diff, so it
-     * can't grow silently.
-     */
-    private const array KNOWN_GAPS = [
-        // Numbering's company scoping is a known architectural gap (see
-        // project memory / CLAUDE.md) — the composite (company_id, type,
-        // year, month) uniqueness on numberings isn't mirrored in the form
-        // because company_id itself isn't reliably form-driven there.
-        'Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource:type' => 'composite uniqueness spans company_id, which the admin panel does not reliably scope per the known BelongsToCompany gap',
-        // Deliberate: "Add Team Member" looks up an EXISTING user by email
-        // on purpose — a uniqueness rule here would reject every valid
-        // email, since a real user's email is by definition already taken.
-        // See the comment on this field in ListCompanyUsers.php.
-        'Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource:email' => 'this field intentionally looks up an existing user, uniqueness would break its entire purpose',
-    ];
 
     private User $superAdmin;
 
@@ -165,7 +148,7 @@ class FormDbConstraintAuditTest extends BaseTestCase
 
             $gapKey = "{$resourceClass}:{$name}";
 
-            if (in_array($gapKey, array_keys(self::KNOWN_GAPS), true)) {
+            if (in_array($gapKey, array_keys(FormDbGapKnownExceptions::KNOWN_GAPS), true)) {
                 continue;
             }
 
@@ -301,7 +284,7 @@ class FormDbConstraintAuditTest extends BaseTestCase
             $anyGuarded = false;
 
             foreach ($indexedFields as $col) {
-                if (in_array("{$resourceClass}:{$col}", array_keys(self::KNOWN_GAPS), true)) {
+                if (in_array("{$resourceClass}:{$col}", array_keys(FormDbGapKnownExceptions::KNOWN_GAPS), true)) {
                     $anyGuarded = true;
 
                     continue 2;
