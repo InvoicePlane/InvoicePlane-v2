@@ -12,6 +12,7 @@ use Modules\Core\Enums\MailType;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
@@ -68,6 +69,38 @@ class EmailQuoteActionTest extends AbstractCompanyPanelTestCase
                 'recipient' => 'prospect@example.com',
                 'subject'   => 'New Quote: QUO-987654',
                 'body'      => "Dear {$quote->prospect->company_name}, your quote #QUO-987654 totals 150.00.",
+            ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    #[Group('slow')]
+    public function it_prefills_the_modal_from_the_bootstrapped_default_quote_template(): void
+    {
+        /*
+         * Arrange
+         *
+         * Uses the "quote_sent" EmailTemplate exactly as CompanyDefaultsBootstrapService
+         * seeds it (translated subject/body), without overwriting or deleting it.
+         */
+        $quote = $this->createQuote(['quote_total' => 150]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->assertSuccessful()
+            ->mountAction('email_quote');
+
+        /* Assert */
+        $placeholders = [
+            'quote.number' => $quote->quote_number,
+        ];
+
+        $component
+            ->assertActionDataSet([
+                'recipient' => 'prospect@example.com',
+                'subject'   => EmailTemplatePreview::render(trans('ip.quote_sent_template_default_subject'), $placeholders),
+                'body'      => EmailTemplatePreview::render(trans('ip.quote_sent_template_default_body'), $placeholders),
             ]);
     }
 

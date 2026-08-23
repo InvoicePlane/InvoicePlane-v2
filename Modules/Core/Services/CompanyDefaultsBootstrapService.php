@@ -84,8 +84,8 @@ class CompanyDefaultsBootstrapService
                 'title'      => 'quote_sent',
             ],
             [
-                'subject'    => 'Quote #{{ quote.number }}',
-                'body'       => 'Please find your quote #{{ quote.number }} attached.',
+                'subject'    => trans('ip.quote_sent_template_default_subject'),
+                'body'       => trans('ip.quote_sent_template_default_body'),
                 'from_name'  => $company->name,
                 'from_email' => $fromEmail,
                 'cc'         => null,
