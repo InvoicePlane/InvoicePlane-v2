@@ -595,6 +595,8 @@ return [
     
     'email_quote_default_subject'     => 'Quote #:number',
     'quote_email_sent_successfully'   => 'The quote email has been queued for delivery.',
+    'quote_sent_template_default_subject' => 'Quote #{{ quote.number }}',
+    'quote_sent_template_default_body'    => 'Please find your quote #{{ quote.number }} attached.',
     'quote_viewed'                    => 'This quote has been viewed',
     'quoted_at'                       => 'Quote Date',
     'quotes'                          => 'Quotes',
