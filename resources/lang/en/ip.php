@@ -592,6 +592,9 @@ return [
     'quote_templates'                 => 'Quote Templates',
     'quote_to_invoice'                => 'Quote to Invoice',
     'quote_duplicated'                => 'Quote duplicated successfully',
+    
+    'email_quote_default_subject'     => 'Quote #:number',
+    'quote_email_sent_successfully'   => 'The quote email has been queued for delivery.',
     'quote_viewed'                    => 'This quote has been viewed',
     'quoted_at'                       => 'Quote Date',
     'quotes'                          => 'Quotes',
