@@ -91,11 +91,11 @@ class EmailQuoteActionTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->mountAction('email_quote');
 
-        /* Assert */
         $placeholders = [
             'quote.number' => $quote->quote_number,
         ];
 
+        /* Assert */
         $component
             ->assertActionDataSet([
                 'recipient' => 'prospect@example.com',
