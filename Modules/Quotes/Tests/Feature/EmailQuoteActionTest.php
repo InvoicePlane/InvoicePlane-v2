@@ -41,6 +41,8 @@ class EmailQuoteActionTest extends AbstractCompanyPanelTestCase
     public function it_prefills_the_modal_from_the_companys_quote_email_template(): void
     {
         /*
+         * Arrange
+         *
          * Every company is auto-bootstrapped with a "quote_sent" EmailTemplate
          * (see CompanyDefaultsBootstrapService::bootstrap()), so update it
          * rather than creating a second row with the same title.
