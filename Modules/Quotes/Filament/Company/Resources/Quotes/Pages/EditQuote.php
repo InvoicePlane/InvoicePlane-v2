@@ -8,7 +8,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Filament\Company\Actions\EmailQuoteAction;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Services\QuoteService;
 
@@ -51,18 +53,18 @@ class EditQuote extends EditRecord
             Action::make('download_pdf')
                 ->label(trans('ip.download_pdf'))
                 ->icon(Heroicon::OutlinedArrowDownTray)
-                ->action(fn () => Notification::make()
-                    ->title(trans('ip.not_yet_implemented'))
-                    ->warning()
-                    ->send()),
+                ->action(fn () => app(QuoteService::class)->generatePdf($this->getRecord())),
 
-            Action::make('send_email')
-                ->label(trans('ip.send_email'))
-                ->icon(Heroicon::OutlinedEnvelope)
-                ->action(fn () => Notification::make()
-                    ->title(trans('ip.not_yet_implemented'))
-                    ->warning()
-                    ->send()),
+            EmailQuoteAction::make()
+                ->visible(fn () => auth()->user()?->can(Permission::EMAIL_QUOTES->value))
+                ->disabled(function (): bool {
+                    return blank(app(QuoteService::class)->resolveEmailDefaults($this->getRecord())['recipient']);
+                })
+                ->tooltip(function (): ?string {
+                    return blank(app(QuoteService::class)->resolveEmailDefaults($this->getRecord())['recipient'])
+                        ? trans('ip.customer_has_no_email')
+                        : null;
+                }),
 
             Action::make('convert_to_invoice')
                 ->label(trans('ip.convert_to_invoice'))
