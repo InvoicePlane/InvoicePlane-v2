@@ -150,22 +150,47 @@ async function extractFieldMeta(scope) {
     const wrappers = Array.from(scopeEl.querySelectorAll('.fi-fo-field'));
     const out = [];
 
+    // Same "page form" vs "modal action" split as the fi-select id below:
+    // wire:model's value is "data.<field>" on a dedicated create PAGE, but
+    // "mountedActions.0.data.<field>" inside a header-action MODAL — and in
+    // the modal case there's no `name` attribute at all. A CSS prefix
+    // selector can't handle a variable-index "mountedActions.N." prefix, so
+    // match broadly and extract the key with a regex instead. The attribute
+    // NAME itself also varies: a field with ->live() or similar renders as
+    // wire:model.live.debounce.500ms="..." (Livewire modifiers appended to
+    // the attribute name) rather than plain wire:model — getAttribute()
+    // with a fixed name misses those entirely, so scan all attributes for
+    // one starting with "wire:model".
+    const DATA_PATH_RE = /^(?:data\.|mountedActions\.\d+\.data\.)(.+)$/;
+
     for (const wrp of wrappers) {
-      const nativeCtl = wrp.querySelector(
-        'input[wire\\:model^="data."], select[wire\\:model^="data."], textarea[wire\\:model^="data."], '
-        + 'input[name^="data."], select[name^="data."], textarea[name^="data."]'
+      let nativeCtl = null;
+      let nativeRawKey = null;
+      for (const el of wrp.querySelectorAll('input, select, textarea')) {
+        const wireModelAttr = Array.from(el.attributes).find((a) => a.name.startsWith('wire:model'));
+        const match = DATA_PATH_RE.exec((wireModelAttr && wireModelAttr.value) || el.getAttribute('name') || '');
+        if (match) {
+          nativeCtl = el;
+          nativeRawKey = match[1];
+          break;
+        }
+      }
+      // Two confirmed-live id shapes for a Filament custom-select combobox:
+      // "form.<field>" on a dedicated create PAGE, but "mountedActionSchema0.
+      // <field>" when the create form is opened as a header-action MODAL
+      // (mountAction) — which is how most resources in this app create
+      // records (Relations, Payments, Products, ...). Missing the second
+      // shape silently dropped every such field from this audit entirely.
+      const fiSelectBtn = wrp.querySelector(
+        'button[role="combobox"][id^="form."], button[role="combobox"][id^="mountedActionSchema"]'
       );
-      const fiSelectBtn = wrp.querySelector('button[role="combobox"][id^="form."]');
 
       let name = null;
       let kind = null;
       let required = false;
 
       if (nativeCtl) {
-        const wireModel = nativeCtl.getAttribute('wire:model');
-        const nameAttr = nativeCtl.getAttribute('name');
-        const rawKey = (wireModel || nameAttr || '').replace(/^data\./, '');
-        name = rawKey.replace(/\[\]$/, '');
+        name = nativeRawKey.replace(/\[\]$/, '');
         const tag = nativeCtl.tagName;
         const type = (nativeCtl.getAttribute('type') || '').toLowerCase();
         required = nativeCtl.required || nativeCtl.getAttribute('aria-required') === 'true';
@@ -177,7 +202,7 @@ async function extractFieldMeta(scope) {
         else if (type === 'number') kind = 'number';
         else kind = 'text';
       } else if (fiSelectBtn) {
-        name = fiSelectBtn.id.replace(/^form\./, '');
+        name = fiSelectBtn.id.replace(/^(?:form|mountedActionSchema\d+)\./, '');
         kind = 'fi-select';
         // No native `required` to read here — Filament signals it only via
         // the label's required-mark <sup>, the same convention every
@@ -190,7 +215,10 @@ async function extractFieldMeta(scope) {
 
       if (!name || name.includes('.')) continue; // nested/repeater path — out of scope
 
-      out.push({ name, kind, required });
+      // fi-select's real DOM id (e.g. "mountedActionSchema0.relation_type")
+      // is kept verbatim so later lookups target the actual element instead
+      // of re-deriving a "form.<name>" id that's wrong for modal actions.
+      out.push({ name, kind, required, id: fiSelectBtn ? fiSelectBtn.id : null });
     }
 
     return out;
@@ -198,7 +226,16 @@ async function extractFieldMeta(scope) {
 }
 
 function nativeControlLocator(scope, name) {
-  return scope.locator(`[name="data.${name}"], [wire\\:model="data.${name}"]`);
+  // Match by id suffix ("form.<name>" or "mountedActionSchema0.<name>"),
+  // not by wire:model value: a field with ->live() or similar renders its
+  // binding as wire:model.live.debounce.500ms="..." — a different
+  // attribute NAME, which a value-based CSS selector like [wire\:model$=…]
+  // can never match (CSS has no attribute-name wildcard). id is stable
+  // regardless of Livewire modifiers, so key off that instead. The leading
+  // "." in the suffix guards against a false match on a different field
+  // whose name happens to end the same way (e.g. "name" inside
+  // "company_name") since field names never contain ".".
+  return scope.locator(`[id$=".${name}"], [name$=".${name}"]`);
 }
 
 /**
@@ -210,6 +247,17 @@ function nativeControlLocator(scope, name) {
  */
 async function fillValidValue(scope, page, field) {
   const ctl = nativeControlLocator(scope, field.name);
+
+  // A required, readOnly field (e.g. RelationForm's unique_name) is driven
+  // by another field's ->afterStateUpdated()/->afterStateHydrated() hook,
+  // not direct user input — Playwright correctly refuses to .fill() it
+  // ("element is not editable"). Treat it as already-satisfied rather than
+  // un-fillable: it's real, dehydrated, submitted input, just not typed by
+  // hand, the same "not this generic filler's concern" boundary the
+  // backend audit draws around disabled/non-dehydrated fields.
+  if (await ctl.evaluate((el) => el.readOnly).catch(() => false)) {
+    return;
+  }
 
   switch (field.kind) {
     case 'text':
@@ -239,7 +287,7 @@ async function fillValidValue(scope, page, field) {
       throw new Error(`native-select '${field.name}' has no non-empty option to pick`);
     }
     case 'fi-select': {
-      const btn = scope.locator(`#form\\.${field.name}`);
+      const btn = scope.locator(`[id="${field.id}"]`);
       await btn.click();
       const controlsId = await btn.getAttribute('aria-controls');
       const listbox = page.locator(`#${controlsId}`);
@@ -270,12 +318,12 @@ async function assertOmissionRejected(scope, page, field) {
     // one evaluate() call — more reliable here than chaining Playwright's
     // locator .filter({has}) across a scope that can be either a dialog or
     // the full page body.
-    const text = await scope.evaluate((scopeEl, name) => {
-      const btn = scopeEl.querySelector(`#form\\.${name}`) || document.querySelector(`#form\\.${name}`);
+    const text = await scope.evaluate((scopeEl, id) => {
+      const btn = scopeEl.querySelector(`[id="${id}"]`) || document.querySelector(`[id="${id}"]`);
       const wrp = btn ? btn.closest('.fi-fo-field') : null;
       const err = wrp ? wrp.querySelector('.fi-fo-field-wrp-error-message') : null;
       return err ? err.textContent.trim() : '';
-    }, field.name);
+    }, field.id);
     return { rejected: text !== '', mechanism: 'livewire-error-message', detail: text };
   }
 
