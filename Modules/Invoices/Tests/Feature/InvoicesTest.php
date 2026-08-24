@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Models\Relation;
+use Modules\Core\Enums\MailType;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Company;
@@ -586,14 +587,27 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'invoice_tax_total'     => 20,
             'invoice_total'         => 120,
         ]);
+        $invoice->mailQueue()->create([
+            'mailable_type' => Invoice::class,
+            'type'          => MailType::REMINDER,
+            'from'          => 'billing@example.com',
+            'to'            => 'customer@example.com',
+            'cc'            => '',
+            'bcc'           => '',
+            'subject'       => 'Reminder',
+            'body'          => 'Reminder body',
+            'attach_pdf'    => true,
+            'is_sent'       => true,
+            'sent_at'       => now(),
+        ]);
 
-        /* Act — load the edit page and verify it renders without errors */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(EditInvoice::class, ['record' => $invoice->id]);
 
+        /* Assert */
         $component->assertSuccessful();
 
-        /* Assert — invoice exists in DB with correct initial totals */
         $this->assertDatabaseHas('invoices', [
             'id'                    => $invoice->id,
             'invoice_item_subtotal' => 100,
