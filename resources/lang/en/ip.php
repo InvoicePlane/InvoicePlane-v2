@@ -576,8 +576,12 @@ return [
     'quote_pre_password'              => 'Quote standard PDF password (optional)',
     'quote_rejected'                  => 'This quote has been rejected',
     'quote_sent'                      => 'This quote has been sent',
+    'quote_already_signed'            => 'This quote has already been signed.',
+    'quote_password_incorrect'        => 'The password you entered is incorrect.',
     'quote_signature_invalid_format'  => 'The signature data must be a base64-encoded image.',
     'quote_signature_storage_failed'  => 'The signature could not be saved. Please try again.',
+    'quote_signed_confirmation'       => 'Signed by :name on :date.',
+    'quote_signed_successfully'       => 'The quote has been signed. Thank you.',
     'quote_status'                    => 'Status',
     'quote_status_approved'           => 'Approved',
     'quote_status_draft'              => 'Draft',
@@ -1351,5 +1355,8 @@ return [
     'update_channel'                          => 'Update Channel',
     'update_check_interval_hours'             => 'Update Check Interval (hours)',
     'update_notification_email'               => 'Update Notification Email',
+    'view_and_sign_quote'                     => 'View & Sign Quote',
+    'signer_name'                             => 'Your Name',
+    'clear_signature'                         => 'Clear',
     #endregion
 ];
