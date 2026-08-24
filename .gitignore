@@ -141,3 +141,7 @@ error-report.md
 /playwright-report/
 /test-results/
 /testrunner/
+/screenshot_*.png
+/screenshot*.png
+/debug-*.png
+/report-builder-*.png
