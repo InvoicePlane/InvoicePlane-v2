@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBand;
+use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Mason\MasonDocumentConverter;
 use Modules\Core\Mason\ReportBrickAction;
@@ -244,7 +245,16 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
                     $config[MasonDocumentConverter::WIDTH_KEY] = $entry['width'] ?? 'full';
                 }
 
-                $bandHtml .= (string) $brickClass::toPreviewHtml($config);
+                $width = ReportBlockWidth::tryFrom((string) ($config[MasonDocumentConverter::WIDTH_KEY] ?? '')) ?? ReportBlockWidth::FULL;
+                $percent = match ($width) {
+                    ReportBlockWidth::ONE_THIRD  => '33.33%',
+                    ReportBlockWidth::HALF       => '50%',
+                    ReportBlockWidth::TWO_THIRDS => '66.66%',
+                    ReportBlockWidth::FULL       => '100%',
+                };
+
+                $previewHtml = (string) $brickClass::toPreviewHtml($config);
+                $bandHtml .= '<div style="flex: 0 0 ' . $percent . '; max-width: ' . $percent . '; padding-right: 8px; box-sizing: border-box;">' . $previewHtml . '</div>';
             }
 
             if ($bandHtml) {

@@ -2,13 +2,16 @@
 
 namespace Modules\Core\Tests\Unit;
 
+use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Mason\Bricks\DetailItemsBrick;
 use Modules\Core\Mason\Bricks\FooterNotesBrick;
 use Modules\Core\Mason\Bricks\FooterTotalsBrick;
 use Modules\Core\Mason\Bricks\HeaderClientBrick;
 use Modules\Core\Mason\Bricks\HeaderCompanyBrick;
 use Modules\Core\Mason\Bricks\HeaderInvoiceMetaBrick;
+use Modules\Core\Mason\ReportBricksCollection;
 use Modules\Core\Tests\AbstractTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 class MasonBricksTest extends AbstractTestCase
@@ -283,6 +286,42 @@ class MasonBricksTest extends AbstractTestCase
         foreach ($bricks as $brick) {
             $icon = $brick::getIcon();
             $this->assertNotNull($icon);
+        }
+    }
+
+    public static function widthProvider(): array
+    {
+        return [
+            'one_third'  => [ReportBlockWidth::ONE_THIRD->value],
+            'half'       => [ReportBlockWidth::HALF->value],
+            'two_thirds' => [ReportBlockWidth::TWO_THIRDS->value],
+            'full'       => [ReportBlockWidth::FULL->value],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('widthProvider')]
+    public function it_does_not_self_apply_inline_width_percentage_in_preview_templates(string $width): void
+    {
+        /* Arrange & Act & Assert */
+        $fractionalPercentages = ['33.33%', '50%', '66.66%'];
+
+        foreach (ReportBricksCollection::all() as $brickClass) {
+            $html = (string) $brickClass::toPreviewHtml(['_width' => $width]);
+
+            foreach ($fractionalPercentages as $percent) {
+                $this->assertStringNotContainsString(
+                    "width: {$percent}",
+                    $html,
+                    "Brick [{$brickClass}] should not self-apply width [{$percent}] in preview HTML.",
+                );
+            }
+
+            $this->assertStringNotContainsString(
+                'display: inline-block; vertical-align: top;',
+                $html,
+                "Brick [{$brickClass}] should not contain outer inline-block width wrapper.",
+            );
         }
     }
 }

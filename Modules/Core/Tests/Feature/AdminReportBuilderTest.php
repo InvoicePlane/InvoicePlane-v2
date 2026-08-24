@@ -12,6 +12,7 @@ use Modules\Core\Mason\Bricks\SpacerBrick;
 use Modules\Core\Filament\Admin\Pages\ReportTemplates;
 use Modules\Core\Services\ReportTemplateStorage;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 class AdminReportBuilderTest extends AbstractAdminPanelTestCase
@@ -191,6 +192,54 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
             (string) HeaderCompanyBrick::toHtml($headerCompanyConfig),
             $modalContent,
         );
+    }
+
+    public static function bandWidthsProvider(): array
+    {
+        return [
+            'half and half' => [
+                [
+                    ['brick' => 'header_company', 'width' => 'half', 'config' => []],
+                    ['brick' => 'header_client', 'width' => 'half', 'config' => []],
+                ],
+                ['flex: 0 0 50%', 'flex: 0 0 50%'],
+            ],
+            'one third and two thirds' => [
+                [
+                    ['brick' => 'header_company', 'width' => 'one_third', 'config' => []],
+                    ['brick' => 'header_client', 'width' => 'two_thirds', 'config' => []],
+                ],
+                ['flex: 0 0 33.33%', 'flex: 0 0 66.66%'],
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('bandWidthsProvider')]
+    public function it_renders_preview_modal_with_correct_flex_width_wrappers(array $bandEntries, array $expectedFlexStyles): void
+    {
+        /* Arrange */
+        $this->storage->save(
+            'system',
+            'custom-layout',
+            ['name' => 'Custom Layout', 'type' => 'invoice'],
+            ['header' => $bandEntries],
+            ReportTemplateType::INVOICE,
+        );
+
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'custom-layout']);
+
+        /* Act */
+        $component->mountAction('preview');
+
+        /* Assert */
+        $action       = $component->instance()->previewAction();
+        $modalContent = (string) $action->getModalContent();
+
+        foreach ($expectedFlexStyles as $style) {
+            $this->assertStringContainsString($style, $modalContent);
+        }
     }
 
     #[Test]
