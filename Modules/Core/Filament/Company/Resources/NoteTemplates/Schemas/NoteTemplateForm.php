@@ -16,12 +16,12 @@ class NoteTemplateForm
                 Section::make('Template')
                     ->schema([
                         TextInput::make('template_title')
-                            ->label('Title')
+                            ->label(trans('ip.title'))
                             ->required()
                             ->maxLength(255),
 
                         MarkdownEditor::make('template_body')
-                            ->label('Body')
+                            ->label(trans('ip.body'))
                             ->required()
                             ->toolbarButtons([
                                 'bold', 'italic', 'strike', 'link',

@@ -15,6 +15,7 @@ use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
 use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Filament\Company\Actions\EmailQuoteAction;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Services\QuoteService;
 
@@ -93,13 +94,16 @@ class QuotesTable
                                 'quote-' . ($record->quote_number ?: $record->id) . '.pdf',
                             );
                         }),
-                    Action::make('send email')
-                        ->label(trans('ip.send_email'))
+                    EmailQuoteAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_QUOTES->value))
-
-                        ->modalDescription('todo: make sure we can email the Quote through an action,
-                            so need for modal anymore')
-                        ->action(function (Quote $record): void {}),
+                        ->disabled(function (Quote $record): bool {
+                            return blank(app(QuoteService::class)->resolveEmailDefaults($record)['recipient']);
+                        })
+                        ->tooltip(function (Quote $record): ?string {
+                            return blank(app(QuoteService::class)->resolveEmailDefaults($record)['recipient'])
+                                ? trans('ip.customer_has_no_email')
+                                : null;
+                        }),
                     Action::make('print')
                         ->label(trans('ip.print'))
                         ->icon('heroicon-o-printer')

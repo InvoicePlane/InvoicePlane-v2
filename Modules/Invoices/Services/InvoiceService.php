@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Core\Enums\MailType;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Setting;
 use Modules\Core\Services\BaseService;
@@ -60,9 +61,14 @@ class InvoiceService extends BaseService
             $itemTaxTotal    = $this->calculateItemTaxTotal($data);
             $invoiceTaxTotal = $this->calculateInvoiceTaxTotal($data);
             $invoiceTotal    = $this->calculateInvoiceTotal($data, $itemTaxTotal, $invoiceTaxTotal);
+            $company         = Company::find($this->getCompanyId());
 
             $invoice = Invoice::query()->create([
                 'customer_id'              => $data['customer_id'],
+                'company_name'             => $company?->name,
+                'company_vat_number'       => $company?->vat_number,
+                'company_id_number'        => $company?->id_number,
+                'company_coc_number'       => $company?->coc_number,
                 'numbering_id'             => $data['numbering_id'] ?? null,
                 'creditinvoice_parent_id'  => $data['creditinvoice_parent_id'] ?? null,
                 'user_id'                  => auth()->id(),
@@ -374,6 +380,10 @@ class InvoiceService extends BaseService
                 'creditinvoice_parent_id'  => $invoice->id,
                 'user_id'                  => auth()->id() ?? $invoice->user_id,
                 'invoice_number'           => null,
+                'company_name'             => $invoice->company_name,
+                'company_vat_number'       => $invoice->company_vat_number,
+                'company_id_number'        => $invoice->company_id_number,
+                'company_coc_number'       => $invoice->company_coc_number,
                 'invoice_status'           => InvoiceStatus::DRAFT->value,
                 'invoice_sign'             => '-1',
                 'invoiced_at'              => Carbon::today(),
@@ -460,7 +470,7 @@ class InvoiceService extends BaseService
             'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
             'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
             'customer.name'              => $invoice->customer?->company_name,
-            'company.name'               => $invoice->company?->name,
+            'company.name'               => $invoice->company_name ?? $invoice->company?->name,
         ];
 
         $defaultSubject = trans($defaultSubjectTransKey, ['number' => $invoice->invoice_number]);

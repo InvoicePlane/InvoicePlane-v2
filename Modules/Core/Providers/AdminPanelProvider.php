@@ -178,12 +178,12 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->userMenuItems([
-                'profile' => MenuItem::make()->label('Edit profile'),
+                'profile' => MenuItem::make()->label(trans('ip.edit_profile')),
                 MenuItem::make()
-                    ->label('Settings')
+                    ->label(trans('ip.settings'))
                     ->url('/admin/settings')
                     ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->label('Translate Sign Out'),
+                'logout' => MenuItem::make()->label(trans('ip.logout')),
             ])
             ->middleware([
                 EncryptCookies::class,
