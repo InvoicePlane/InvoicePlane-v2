@@ -10,6 +10,7 @@ use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteSignature;
 use Modules\Quotes\Services\QuoteService;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(QuoteService::class)]
@@ -19,6 +20,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     private const VALID_PNG_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 
     #[Test]
+    #[Group('crud')]
     public function it_stores_a_captured_signature_on_a_quote(): void
     {
         /* Arrange */
@@ -39,6 +41,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_links_a_signature_to_a_user_when_a_user_id_is_provided(): void
     {
         /* Arrange */
@@ -62,6 +65,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_reports_a_quote_as_unsigned_when_no_signature_has_been_captured(): void
     {
         /* Arrange */
@@ -75,6 +79,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_reports_a_quote_as_signed_after_a_signature_is_captured(): void
     {
         /* Arrange */
@@ -90,6 +95,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_does_not_change_the_quote_status_when_a_signature_is_captured(): void
     {
         /* Arrange */
@@ -104,6 +110,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
     public function it_throws_when_the_signature_data_is_not_a_valid_base64_image(): void
     {
         /* Arrange */
@@ -116,6 +123,21 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     }
 
     #[Test]
+    #[Group('crud')]
+    public function it_throws_when_the_payload_is_valid_base64_but_not_actually_an_image(): void
+    {
+        /* Arrange */
+        Storage::fake(config('filament.default_filesystem_disk'));
+        $quote     = Quote::factory()->for($this->company)->create();
+        $notAnImage = 'data:image/png;base64,' . base64_encode('this is not image bytes');
+
+        /* Act & Assert */
+        $this->expectException(InvalidArgumentException::class);
+        app(QuoteService::class)->captureSignature($quote, $notAnImage, 'Jane Client');
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_supports_capturing_more_than_one_signature_on_the_same_quote(): void
     {
         /* Arrange */
