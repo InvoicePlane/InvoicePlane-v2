@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Filament\Admin\Pages\ReportBuilder;
+use Modules\Core\Mason\Bricks\HeaderCompanyBrick;
 use Modules\Core\Mason\Bricks\SpacerBrick;
 use Modules\Core\Filament\Admin\Pages\ReportTemplates;
 use Modules\Core\Services\ReportTemplateStorage;
@@ -163,6 +164,32 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->assertNotSame(
             SpacerBrick::toHtml($config),
             base64_decode($inserted['attrs']['preview']),
+        );
+    }
+
+    #[Test]
+    public function it_previews_template_via_modal_action_using_builder_rendering(): void
+    {
+        /* Arrange */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
+
+        /* Act */
+        $component->mountAction('preview');
+
+        /* Assert */
+        $action       = $component->instance()->previewAction();
+        $modalContent = (string) $action->getModalContent();
+
+        $headerCompanyConfig = $component->get('data.bands')['header'][0]['attrs']['config'] ?? [];
+
+        $this->assertStringContainsString(
+            (string) HeaderCompanyBrick::toPreviewHtml($headerCompanyConfig),
+            $modalContent,
+        );
+        $this->assertStringNotContainsString(
+            (string) HeaderCompanyBrick::toHtml($headerCompanyConfig),
+            $modalContent,
         );
     }
 

@@ -240,8 +240,8 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
 
                 $config = $entry['config'];
                 // Preserve width for preview rendering
-                if (!isset($config['_width'])) {
-                    $config['_width'] = $entry['width'] ?? 'full';
+                if (!isset($config[MasonDocumentConverter::WIDTH_KEY])) {
+                    $config[MasonDocumentConverter::WIDTH_KEY] = $entry['width'] ?? 'full';
                 }
 
                 $bandHtml .= (string) $brickClass::toPreviewHtml($config);
