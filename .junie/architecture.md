@@ -134,6 +134,6 @@ $relation->addresses()        // MorphMany<Address>
 
 ```
 APP_EXTREME_LOGGING=true   # verbose company-scope debug output
-DB_CONNECTION=sqlite       # use for local dev / tests without MySQL
-DB_DATABASE=:memory:       # paired with sqlite for in-memory test DB
+DB_CONNECTION=mysql        # tests run against real MariaDB, no SQLite fallback
+DB_DATABASE=invoiceplane_test
 ```
