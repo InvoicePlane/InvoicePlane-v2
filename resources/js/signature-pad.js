@@ -8,8 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resizeCanvas = () => {
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
+        // clientWidth/clientHeight are driven by CSS (w-full / fixed height
+        // on the element), not by the canvas.width/height backing-store
+        // attributes set below — so they stay stable across repeated calls
+        // instead of compounding with the device pixel ratio each time.
+        const cssWidth = canvas.clientWidth;
+        const cssHeight = canvas.clientHeight;
+        canvas.width = cssWidth * ratio;
+        canvas.height = cssHeight * ratio;
         canvas.getContext('2d').scale(ratio, ratio);
         pad.clear();
     };

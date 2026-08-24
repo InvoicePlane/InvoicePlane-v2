@@ -43,7 +43,7 @@
                     <input type="text" name="signer_name" id="signer_name" required
                            class="w-full rounded border border-gray-300 mb-4 px-2 py-1">
 
-                    <canvas id="signature-pad" class="border border-gray-300 rounded w-full" height="200"></canvas>
+                    <canvas id="signature-pad" class="border border-gray-300 rounded w-full h-50"></canvas>
                     <input type="hidden" name="signature_data" id="signature_data">
 
                     <div class="flex items-center justify-between mt-3">
