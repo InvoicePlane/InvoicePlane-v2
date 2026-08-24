@@ -128,11 +128,10 @@ Run a group:    `php artisan test --group smoke`
 
 ## Database for tests
 
-CI uses MariaDB 11. Locally, if no MySQL is running, add to `.env.testing`:
-```
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
-```
+Tests run against real MariaDB — no SQLite fallback (parity with CI). `.env.testing`
+already ships with the right `DB_CONNECTION=mysql` config; don't switch it to sqlite
+even for a quick local run, it can mask real bugs SQLite's lenient identifier
+quoting would let slide.
 
 Carbon is frozen to `2026-01-01 00:00:00` in both panel test base classes — use `Carbon::parse('2026-01-01')` in expected date assertions.
 
@@ -145,5 +144,5 @@ Carbon is frozen to `2026-01-01 00:00:00` in both panel test base classes — us
 | Model created with `null` company_id | Add `->for($this->company)` to factory call |
 | Livewire test throws "No tenant" | `Filament::setTenant($company)` in setUp |
 | Role check silently fails | Create Spatie `Role` DB record before `assignRole()` |
-| Test hits MySQL instead of SQLite | Check `.env.testing` has `DB_CONNECTION=sqlite` |
+| Test hits SQLite instead of MariaDB | Check `.env.testing` has `DB_CONNECTION=mysql` |
 | `assertRedirect` fails on login test | Set `filament()->setCurrentPanel(filament()->getPanel('company'))` in setUp |
