@@ -77,6 +77,22 @@ class CompanyDefaultsBootstrapService
             ]
         );
 
+        // Create default quote email template
+        EmailTemplate::query()->firstOrCreate(
+            [
+                'company_id' => $company->id,
+                'title'      => 'quote_sent',
+            ],
+            [
+                'subject'    => trans('ip.quote_sent_template_default_subject'),
+                'body'       => trans('ip.quote_sent_template_default_body'),
+                'from_name'  => $company->name,
+                'from_email' => $fromEmail,
+                'cc'         => null,
+                'bcc'        => null,
+            ]
+        );
+
         // Create default tax rate
         TaxRate::query()->firstOrCreate(
             [

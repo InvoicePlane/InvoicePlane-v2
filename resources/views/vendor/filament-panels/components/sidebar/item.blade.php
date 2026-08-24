@@ -32,6 +32,16 @@
      * Every other `NavigationItem` in every panel (admin/company/user)
      * does not set this attribute, so this block renders nothing for them
      * and the rest of the template is byte-for-byte identical to vendor.
+     *
+     * When a quick-create button IS present, the badge is also moved to sit
+     * directly next to the label (instead of Filament's default far-right
+     * placement via `justify-content: space-between`), since the far right
+     * edge is now occupied by the absolutely-positioned "+" button and the
+     * two would otherwise overlap. Because the label span becomes a flex
+     * container in this case, the slot text is wrapped in its own
+     * shrinkable/truncating span — a plain flex item has no implicit
+     * min-width, so without that wrapper a long label would push the badge
+     * out of the clipped container instead of eliding with an ellipsis.
      */
     $quickCreateUrl = $attributes->get('data-quick-create-url');
 @endphp
@@ -105,12 +115,31 @@
                 x-transition:enter-start="fi-transition-enter-start"
                 x-transition:enter-end="fi-transition-enter-end"
             @endif
+            @if (filled($quickCreateUrl))
+                style="display: flex; align-items: center; gap: 0.375rem; flex-grow: 1; min-width: 0;"
+            @endif
             class="fi-sidebar-item-label"
         >
-            {{ $slot }}
+            @if (filled($quickCreateUrl))
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1 1 auto;">
+                    {{ $slot }}
+                </span>
+            @else
+                {{ $slot }}
+            @endif
+
+            @if (filled($badge) && filled($quickCreateUrl))
+                <x-filament::badge
+                    :color="$badgeColor"
+                    :tooltip="$badgeTooltip"
+                    style="flex-shrink: 0;"
+                >
+                    {{ $badge }}
+                </x-filament::badge>
+            @endif
         </span>
 
-        @if (filled($badge))
+        @if (filled($badge) && blank($quickCreateUrl))
             <span
                 @if ($sidebarCollapsible && (! $subNavigation))
                     x-show="$store.sidebar.isOpen"
@@ -141,7 +170,7 @@
             @endif
             aria-label="{{ trans('ip.quick_create_label', ['label' => strip_tags($slot->toHtml())]) }}"
             title="{{ trans('ip.quick_create_label', ['label' => strip_tags($slot->toHtml())]) }}"
-            style="position: absolute; top: 50%; right: 0.75rem; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 9999px;"
+            style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 1.5rem; border-radius: 9999px;"
             class="fi-sidebar-item-quick-create-btn"
         >
             {{

@@ -7,6 +7,7 @@ use Modules\Core\Contracts\LabeledEnum;
 enum MailType: string implements LabeledEnum
 {
     case REMINDER = 'reminder';
+    case SENT = 'sent';
 
     public static function values(): array
     {
@@ -17,6 +18,7 @@ enum MailType: string implements LabeledEnum
     {
         return match ($this) {
             self::REMINDER => 'Reminder',
+            self::SENT => 'Sent',
         };
     }
 
@@ -24,6 +26,7 @@ enum MailType: string implements LabeledEnum
     {
         return match ($this) {
             self::REMINDER => 'warning',
+            self::SENT => 'success',
         };
     }
 }
