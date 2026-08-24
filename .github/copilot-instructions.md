@@ -14,7 +14,7 @@ These instructions contain verified facts about the InvoicePlane v2 codebase. **
 - **Permissions:** `spatie/laravel-permission`
 - **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
 - **DB (production):** MariaDB 11
-- **DB (tests):** SQLite `:memory:` or MariaDB 11 (CI)
+- **DB (tests):** MariaDB 11 — no SQLite fallback (parity with CI)
 - **Code quality:** Laravel Pint (PSR-12), PHPStan, Rector
 
 ---
