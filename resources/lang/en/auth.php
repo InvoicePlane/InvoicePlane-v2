@@ -17,4 +17,5 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
     'no_company_found_for_user' => 'No company found for your account. Please contact an administrator.',
+    'fallback_company_not_found' => 'No company is available to sign in to. Please contact an administrator.',
 ];

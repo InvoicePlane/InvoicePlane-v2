@@ -4,6 +4,7 @@ namespace Modules\Invoices\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Models\Company;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 
@@ -16,11 +17,17 @@ class InvoiceCopyService
     public function copy(Invoice $invoice): Invoice
     {
         return DB::transaction(function () use ($invoice) {
+            $company = Company::find($invoice->company_id);
+
             $copy = Invoice::query()->create([
                 'customer_id'              => $invoice->customer_id,
                 'numbering_id'             => $invoice->numbering_id,
                 'user_id'                  => auth()->id(),
                 'invoice_number'           => null,
+                'company_name'             => $company?->name,
+                'company_vat_number'       => $company?->vat_number,
+                'company_id_number'        => $company?->id_number,
+                'company_coc_number'       => $company?->coc_number,
                 'invoice_status'           => InvoiceStatus::DRAFT,
                 'invoice_sign'             => $invoice->invoice_sign ?? '1',
                 'invoiced_at'              => now(),

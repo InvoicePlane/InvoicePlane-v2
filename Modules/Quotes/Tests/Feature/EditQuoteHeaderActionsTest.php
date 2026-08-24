@@ -49,7 +49,7 @@ class EditQuoteHeaderActionsTest extends AbstractCompanyPanelTestCase
         $component
             ->assertSuccessful()
             ->assertActionVisible('download_pdf')
-            ->assertActionVisible('send_email')
+            ->assertActionVisible('email_quote')
             ->assertActionVisible('convert_to_invoice')
             ->assertActionVisible('copy_quote')
             ->assertActionVisible('delete');

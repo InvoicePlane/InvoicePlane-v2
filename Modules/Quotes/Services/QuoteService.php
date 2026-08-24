@@ -5,17 +5,33 @@ namespace Modules\Quotes\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Clients\Enums\CommunicationType;
+use Modules\Core\Enums\MailType;
+use Modules\Core\Models\EmailTemplate;
+use Modules\Core\Models\Setting;
 use Modules\Core\Services\BaseService;
+use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\EmailTemplatePreview;
+use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Enums\QuoteStatus;
+use Modules\Quotes\Mail\QuoteMailable;
 use Modules\Quotes\Models\Quote;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class QuoteService extends BaseService
 {
+    /**
+     * Title of the EmailTemplate used as the company's quote email template.
+     */
+    public const QUOTE_EMAIL_TEMPLATE_TITLE = 'quote_sent';
+
     public function model(): string
     {
         return Quote::class;
@@ -259,6 +275,198 @@ class QuoteService extends BaseService
 
             return $invoice;
         });
+    }
+
+    /**
+     * Resolve the recipient/subject/body defaults for the "Email Quote" modal,
+     * rendering the company's quote email template against this quote.
+     */
+    public function resolveEmailDefaults(Quote $quote): array
+    {
+        $defaults = $this->resolveTemplateDefaults($quote);
+        unset($defaults['template']);
+
+        return $defaults;
+    }
+
+    /**
+     * Queue the quote mailable for delivery using the given (possibly
+     * user-edited) recipient/subject/body, as resolved/prefilled by
+     * resolveEmailDefaults() and submitted via the "Email Quote" modal.
+     * Logs a MailQueue entry so the quote's send history is auditable, and
+     * transitions a draft quote to Sent on first send.
+     */
+    public function sendQuoteEmail(Quote $quote, string $recipient, string $subject, string $body): void
+    {
+        Mail::to($recipient)
+            ->cc($this->resolveQuoteCcEmails($quote))
+            ->queue(new QuoteMailable($quote, $subject, $body));
+
+        $template = EmailTemplate::forCompany($quote->company_id)
+            ->where('title', self::QUOTE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $quote->mailQueue()->create([
+            'mailable_type' => Quote::class,
+            'type'          => MailType::SENT,
+            'from'          => $template?->from_email ?? (string) config('mail.from.address'),
+            'to'            => $recipient,
+            'cc'            => '',
+            'bcc'           => '',
+            'subject'       => $subject,
+            'body'          => $body,
+            'attach_pdf'    => true,
+            'is_sent'       => true,
+            'sent_at'       => now(),
+        ]);
+
+        if ($quote->quote_status === QuoteStatus::DRAFT) {
+            $quote->update(['quote_status' => QuoteStatus::SENT]);
+        }
+    }
+
+    /**
+     * Render the quote document markup used by both the PDF driver and the
+     * on-screen preview.
+     */
+    public function renderHtml(Quote $quote): string
+    {
+        $quote->loadMissing(['company', 'prospect', 'quoteItems']);
+
+        return view('quotes::pdf.quote', [
+            'quote'    => $quote,
+            'branding' => $this->resolveBranding($quote),
+        ])->render();
+    }
+
+    /**
+     * Stream the quote as a PDF download named after the quote number.
+     */
+    public function generatePdf(Quote $quote): StreamedResponse
+    {
+        $driver   = PDFFactory::create();
+        $output   = $driver->getOutput($this->renderHtml($quote));
+        $filename = ($quote->quote_number ?: 'quote-draft-' . $quote->id) . '.pdf';
+
+        return response()->streamDownload(
+            function () use ($output): void {
+                echo $output;
+            },
+            $filename,
+            ['Content-Type' => 'application/pdf'],
+        );
+    }
+
+    /**
+     * Company branding for the quote PDF/preview: colors, font, and logo.
+     * Falls back to the current hardcoded look when a company hasn't set
+     * any branding.
+     *
+     * @return array{primary_color: string, accent_color: string, font_family: string, font_size: string, logo_path: ?string}
+     */
+    private function resolveBranding(Quote $quote): array
+    {
+        $companyId = $quote->company_id;
+
+        $logoPath = Setting::getForCompany($companyId, Setting::KEY_INVOICE_LOGO);
+        $logoDisk = Storage::disk(config('filament.default_filesystem_disk'));
+
+        return [
+            'primary_color' => Setting::getForCompany($companyId, Setting::KEY_PRIMARY_COLOR) ?: '#1f2937',
+            'accent_color'  => Setting::getForCompany($companyId, Setting::KEY_ACCENT_COLOR) ?: '#6b7280',
+            'font_family'   => Setting::getForCompany($companyId, Setting::KEY_FONT_FAMILY) ?: 'DejaVu Sans, Helvetica, Arial, sans-serif',
+            'font_size'     => Setting::getForCompany($companyId, Setting::KEY_FONT_SIZE) ?: '12',
+            'logo_path'     => $logoPath && $logoDisk->exists($logoPath) ? $logoDisk->path($logoPath) : null,
+        ];
+    }
+
+    /**
+     * Shared resolution logic for the "Email Quote" modal: loads the
+     * company's quote EmailTemplate, renders its subject/body against this
+     * quote, and resolves the recipient. Returns the EmailTemplate alongside
+     * the rendered defaults so callers that also need template fields (e.g.
+     * sendQuoteEmail()'s from_email) don't have to re-query it.
+     */
+    private function resolveTemplateDefaults(Quote $quote): array
+    {
+        $quote->loadMissing(['prospect', 'company']);
+
+        $template = EmailTemplate::forCompany($quote->company_id)
+            ->where('title', self::QUOTE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $placeholders = [
+            'quote.number'                => $quote->quote_number,
+            'quote.total_formatted'       => number_format((float) $quote->quote_total, 2),
+            'quote.expires_at_formatted'  => DateHelpers::formatDate($quote->quote_expires_at),
+            'customer.name'               => $quote->prospect?->company_name,
+            'company.name'                => $quote->company?->name,
+        ];
+
+        $defaultSubject = trans('ip.email_quote_default_subject', ['number' => $quote->quote_number]);
+
+        return [
+            'template'  => $template,
+            'recipient' => $this->resolveQuoteRecipientEmail($quote),
+            'subject'   => $template?->subject
+                ? EmailTemplatePreview::render($template->subject, $placeholders)
+                : $defaultSubject,
+            'body' => $template?->body
+                ? EmailTemplatePreview::render($template->body, $placeholders)
+                : '',
+        ];
+    }
+
+    /**
+     * Walk the quote's prospect → contacts → communications chain and
+     * return the first email address found, preferring a primary one.
+     */
+    private function resolveQuoteRecipientEmail(Quote $quote): ?string
+    {
+        $quote->loadMissing('prospect.contacts.communications');
+
+        $prospect = $quote->prospect;
+
+        if ( ! $prospect) {
+            return null;
+        }
+
+        $emailCommunication = $prospect->contacts
+            ->flatMap(fn ($contact) => $contact->communications)
+            ->filter(fn ($communication) => $communication->communication_type === CommunicationType::EMAIL->value)
+            ->sortByDesc('is_primary')
+            ->first();
+
+        return $emailCommunication?->communication_value;
+    }
+
+    /**
+     * Merge the prospect's stored CC addresses with the quote email
+     * template's cc column (comma/semicolon separated), validating each
+     * address and de-duplicating the result.
+     */
+    private function resolveQuoteCcEmails(Quote $quote): array
+    {
+        $quote->loadMissing('prospect');
+
+        $prospectCcEmails = $quote->prospect?->ccEmailCommunications()
+            ->pluck('communication_value')
+            ->all() ?? [];
+
+        $template = EmailTemplate::forCompany($quote->company_id)
+            ->where('title', self::QUOTE_EMAIL_TEMPLATE_TITLE)
+            ->first();
+
+        $templateCcEmails = $template?->cc
+            ? preg_split('/[,;]+/', $template->cc)
+            : [];
+
+        return collect([...$prospectCcEmails, ...$templateCcEmails])
+            ->map(fn (string $email) => mb_trim($email))
+            ->filter(fn (string $email) => filter_var($email, FILTER_VALIDATE_EMAIL) !== false)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     private function calculateItemTaxTotal(array $data): float

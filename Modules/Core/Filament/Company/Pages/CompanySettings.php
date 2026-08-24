@@ -145,7 +145,7 @@ class CompanySettings extends Page implements HasForms
                         ->schema([
                             Section::make()->columns(2)->schema([
                                 TextInput::make(Setting::KEY_COMPANY_NAME)
-                                    ->label('Company Name')
+                                    ->label(trans('ip.company_name_label'))
                                     ->maxLength(255),
 
                                 TextInput::make(Setting::KEY_INVOICE_NUMBER_PREFIX)

@@ -245,11 +245,6 @@ class CompanyPanelProvider extends PanelProvider
                                 ...self::withQuickCreate(PaymentResource::class),
                             ]),
 
-                        NavigationGroup::make(trans('ip.report_templates'))
-                            ->items([
-                                ...ReportTemplates::getNavigationItems(),
-                            ]),
-
                         NavigationGroup::make(trans('ip.nav_group_resources'))
                             //->icon('heroicon-o-archive-box')
                             ->items([
