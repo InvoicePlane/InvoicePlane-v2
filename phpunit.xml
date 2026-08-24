@@ -39,6 +39,15 @@
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
+        <!-- Real MariaDB, no SQLite fallback (parity with CI) — see AGENTS.md.
+             Not force="true": an explicit shell/docker-exec -e override (e.g.
+             DB_HOST=mariadb for the ivpldock dev stack, per CLAUDE.md) still wins. -->
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_DATABASE" value="invoiceplane_test"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value="root"/>
         <env name="IMPORT_DB_DATABASE" value="invoiceplane_test"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
