@@ -119,9 +119,15 @@ class FormDbConstraintAuditTest extends BaseTestCase
         try {
             $component = Livewire::actingAs($actingAs)->test($indexPage->getPage(), $params);
         } catch (Throwable $e) {
-            // A resource that can't even boot its index page isn't this
-            // test's concern (covered by that resource's own tests) — skip
-            // rather than false-alarm on an unrelated failure.
+            // Unlike the per-field checks below, a boot failure has no
+            // per-field KNOWN_GAPS entry to hide behind — silently
+            // returning here let a resource whose index page can't even
+            // boot skip this audit entirely, undetected. Record it as a
+            // violation instead; a resource that's expected to fail to
+            // boot in this context belongs in KNOWN_GAPS, not a silent
+            // catch.
+            $this->violations[] = "{$resourceClass}::form() — index page failed to boot: {$e->getMessage()}";
+
             return;
         }
 

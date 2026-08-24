@@ -57,7 +57,7 @@ class InvoiceForm
                                                     ->label(trans('ip.customer_name'))
                                                     ->required(),
                                             ])
-                                            ->createOptionUsing(function (array $data) {
+                                            ->createOptionUsing(function (array $data): int {
                                                 // Filament's default createOptionUsing() does a
                                                 // raw Relation::create($data), which omits
                                                 // relation_type/relation_number/registered_at —

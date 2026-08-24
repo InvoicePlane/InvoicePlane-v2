@@ -38,7 +38,12 @@ test.describe('Products', () => {
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden({ timeout: 10000 });
+    // Not expect(modal).toBeHidden(): this app's modal wrapper (role="dialog")
+    // is `position: static; height: 0` by Filament's own CSS regardless of
+    // open/closed state (see company-users.spec.js), so that assertion is
+    // trivially true even while the modal is still open. Assert on the
+    // submitted field itself instead.
+    await expect(modal.getByLabel('Code (SKU)*')).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
     await page.goto(tenantPath('/products'));
@@ -73,7 +78,12 @@ test.describe('Products', () => {
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden({ timeout: 10000 });
+    // Not expect(modal).toBeHidden(): this app's modal wrapper (role="dialog")
+    // is `position: static; height: 0` by Filament's own CSS regardless of
+    // open/closed state (see company-users.spec.js), so that assertion is
+    // trivially true even while the modal is still open. Assert on the
+    // submitted field itself instead.
+    await expect(modal.getByLabel('Family*')).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
     // This table has no searchable columns (Modules/Products/Filament/
@@ -106,7 +116,12 @@ test.describe('Products', () => {
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden({ timeout: 10000 });
+    // Not expect(modal).toBeHidden(): this app's modal wrapper (role="dialog")
+    // is `position: static; height: 0` by Filament's own CSS regardless of
+    // open/closed state (see company-users.spec.js), so that assertion is
+    // trivially true even while the modal is still open. Assert on the
+    // submitted field itself instead.
+    await expect(modal.getByLabel('Unit*')).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
     // No searchable columns on this table either (ProductUnitsTable.php).

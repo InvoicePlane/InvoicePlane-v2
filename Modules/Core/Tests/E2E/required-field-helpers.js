@@ -39,6 +39,7 @@
  */
 
 import { execSync } from 'child_process';
+import { test, expect } from './test.js';
 import { tenantPath } from './tenant-path.js';
 
 const NON_FORM_COLUMNS = new Set(['id', 'created_at', 'updated_at', 'deleted_at']);
@@ -48,22 +49,31 @@ const NON_FORM_COLUMNS = new Set(['id', 'created_at', 'updated_at', 'deleted_at'
  * resources belonging to one module (matched by the `Modules\<Name>\`
  * segment of resourceClass), plus the shared knownGaps allowlist.
  *
- * Always runs inside the project's real dev container (see CLAUDE.md's
- * Docker section), never bare host PHP: bare `php artisan` only reaches
- * the DB when DB_HOST is 127.0.0.1, which it isn't on this dev box
- * (DB_HOST=mariadb, a container-internal hostname) — going straight to
+ * On a dev box, this always runs inside the project's real dev container
+ * (see CLAUDE.md's Docker section), never bare host PHP: bare `php artisan`
+ * only reaches the DB when DB_HOST is 127.0.0.1, which it isn't on this dev
+ * box (DB_HOST=mariadb, a container-internal hostname) — going straight to
  * Docker is the one path that reliably works with no per-environment
  * debugging. Override the container/path via env vars if they differ from
  * this repo's documented dev stack.
+ *
+ * In CI (.github/workflows/e2e-tests.yml), PHP runs directly on the
+ * ubuntu-latest runner with DB_HOST=127.0.0.1 — there is no
+ * ivpldock-workspace-1 container to exec into, so `php artisan` is invoked
+ * directly there instead.
  */
 export function loadSchemaForModule(moduleName) {
-  const container = process.env.MIND_THE_GAP_DOCKER_CONTAINER || 'ivpldock-workspace-1';
-  const appPath = process.env.MIND_THE_GAP_DOCKER_APP_PATH || '/var/www/projects/invoiceplane-2/ivplv2';
+  const raw = process.env.CI
+    ? execSync('php artisan mind-the-gap:export-schema', { encoding: 'utf8' })
+    : (() => {
+        const container = process.env.MIND_THE_GAP_DOCKER_CONTAINER || 'ivpldock-workspace-1';
+        const appPath = process.env.MIND_THE_GAP_DOCKER_APP_PATH || '/var/www/projects/invoiceplane-2/ivplv2';
 
-  const raw = execSync(
-    `docker exec -e XDEBUG_MODE=off ${container} sh -c "cd ${appPath} && php artisan mind-the-gap:export-schema"`,
-    { encoding: 'utf8' }
-  );
+        return execSync(
+          `docker exec -e XDEBUG_MODE=off ${container} sh -c "cd ${appPath} && php artisan mind-the-gap:export-schema"`,
+          { encoding: 'utf8' }
+        );
+      })();
 
   const schema = JSON.parse(raw);
   const prefix = `Modules\\${moduleName}\\`;
@@ -310,4 +320,55 @@ export async function testRequiredFieldOmission(page, resource, targetFieldName)
   }
 
   return assertOmissionRejected(scope, page, target);
+}
+
+/**
+ * Registers one `mind-the-gap-again` test per required column of every
+ * resource in `moduleName`, via `testRequiredFieldOmission` above.
+ *
+ * A `result.skipped` outcome (no create form, target field not rendered as
+ * required, or an unfillable sibling field) used to `return` straight out
+ * of the test — which Playwright reports as a PASS, with only an
+ * annotation attached. That let a real form/DB mismatch (exactly the bug
+ * class this suite exists to catch) hide behind a green checkmark.
+ *
+ * Now only a skip whose gap is explicitly declared in
+ * FormDbGapKnownExceptions::KNOWN_GAPS (the same registry
+ * FormDbConstraintAuditTest.php uses) is allowed to skip; every other skip
+ * reason fails the test, the same "record it or it's a bug" discipline
+ * FormDbConstraintAuditTest.php already applies on the backend.
+ */
+export function registerRequiredFieldOmissionTests(moduleName) {
+  const schema = loadSchemaForModule(moduleName);
+
+  for (const resource of schema.resources) {
+    const fields = requiredColumns(resource);
+    if (fields.length === 0) continue;
+
+    test.describe(`mind-the-gap-again: ${resource.panel}/${resource.slug}`, () => {
+      for (const column of fields) {
+        test(`omitting required '${column.name}' is rejected by the browser`, async ({ page }) => {
+          const result = await testRequiredFieldOmission(page, resource, column.name);
+
+          if (result.skipped) {
+            test.info().annotations.push({ type: 'skipped-reason', description: result.skipped });
+
+            const gapKey = `${resource.resourceClass}:${column.name}`;
+            if (Object.prototype.hasOwnProperty.call(schema.knownGaps, gapKey)) {
+              test.skip(true, result.skipped);
+              return;
+            }
+
+            throw new Error(
+              `Undeclared skip for ${gapKey}: ${result.skipped}\n`
+              + 'If this is a deliberate, reviewed gap, register it in '
+              + "FormDbGapKnownExceptions::KNOWN_GAPS — don't leave it silently skipped."
+            );
+          }
+
+          expect(result.rejected, `mechanism=${result.mechanism} detail=${result.detail}`).toBe(true);
+        });
+      }
+    });
+  }
 }

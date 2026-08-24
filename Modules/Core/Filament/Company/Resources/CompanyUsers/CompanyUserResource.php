@@ -13,7 +13,12 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\Pages\ListCompanyUsers;
 use Modules\Core\Models\User;
@@ -44,7 +49,14 @@ class CompanyUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(fn () => Filament::getTenant()?->users() ?? User::query())
+            ->query(function (): Builder|BelongsToMany {
+                $tenant = Filament::getTenant();
+
+                // Fail closed: without a tenant there is no company to scope
+                // this list to, so it must show nothing — falling back to
+                // User::query() would leak every user across every company.
+                return $tenant?->users() ?? User::query()->whereRaw('1 = 0');
+            })
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('ip.name'))
@@ -61,7 +73,7 @@ class CompanyUserResource extends Resource
                     ->label(trans('ip.remove'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
-                    ->action(function (User $record) {
+                    ->action(function (User $record): void {
                         Filament::getTenant()?->users()->detach($record->id);
                     })
                     ->requiresConfirmation(),
@@ -69,7 +81,7 @@ class CompanyUserResource extends Resource
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->action(function ($records) {
+                        ->action(function (EloquentCollection|Collection|LazyCollection $records): void {
                             $company = Filament::getTenant();
                             foreach ($records as $record) {
                                 $company?->users()->detach($record->id);

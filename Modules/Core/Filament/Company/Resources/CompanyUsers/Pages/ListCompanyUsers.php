@@ -30,7 +30,7 @@ class ListCompanyUsers extends ListRecords
                         ->email()
                         ->required(),
                 ])
-                ->action(function (array $data) {
+                ->action(function (array $data): void {
                     $user = User::whereEmail($data['email'])->first();
                     if ( ! $user) {
                         \Filament\Notifications\Notification::make()
@@ -42,7 +42,17 @@ class ListCompanyUsers extends ListRecords
                         return;
                     }
 
-                    Filament::getTenant()?->users()->syncWithoutDetaching([$user->id]);
+                    $tenant = Filament::getTenant();
+                    if ( ! $tenant) {
+                        \Filament\Notifications\Notification::make()
+                            ->danger()
+                            ->title(trans('ip.loading_error'))
+                            ->send();
+
+                        return;
+                    }
+
+                    $tenant->users()->syncWithoutDetaching([$user->id]);
 
                     \Filament\Notifications\Notification::make()
                         ->success()

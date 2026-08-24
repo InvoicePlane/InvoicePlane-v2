@@ -111,7 +111,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
          * on (company_id, code); without ->unique() on the form field, a
          * duplicate code hit an unhandled SQL 500 instead of a validation
          * message, the same failure mode as the missing ->required() below. */
-        TaxRate::factory()->create(['code' => 'DUPTAX']);
+        TaxRate::factory()->for($this->company)->create(['code' => 'DUPTAX']);
 
         $payload = [
             'tax_rate_type' => TaxRateType::EXCLUSIVE,

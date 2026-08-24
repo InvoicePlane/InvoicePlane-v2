@@ -21,8 +21,14 @@ test.describe('Admin: Companies', () => {
     /* Act */
     const name = `E2E Admin Company ${Date.now()}`;
     await modal.getByLabel('Name*').fill(name);
-    // companies.search_code is varchar(10) in the database.
-    const searchCode = `e2e${Date.now()}`.slice(0, 10);
+    // companies.search_code is varchar(10) in the database. Date.now()'s
+    // *leading* digits barely change (they only roll over every ~16
+    // minutes), so slice(0, 10) on `e2e${Date.now()}` kept only those
+    // near-static digits and dropped the fast-changing ones — every run in
+    // the same window produced the same code. Keep the trailing digits of
+    // the timestamp instead (where the real entropy lives), while
+    // preserving the recognizable "e2e" prefix.
+    const searchCode = `e2e${Date.now().toString().slice(-7)}`;
     await modal.getByLabel('Search code*').fill(searchCode);
 
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();

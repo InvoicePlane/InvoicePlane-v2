@@ -39,7 +39,11 @@ class ContactForm
                                     ->createOptionForm([
                                         TextInput::make('company_name')
                                             ->label(trans('ip.customer_name'))
-                                            ->required(),
+                                            ->required()
+                                            // relations.company_name is varchar(150) —
+                                            // same overlong-input 500 risk as the main
+                                            // RelationForm's company_name field.
+                                            ->maxLength(150),
                                     ])
                                     ->reactive(),
 

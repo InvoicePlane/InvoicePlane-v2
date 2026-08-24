@@ -59,6 +59,13 @@ for (const route of KNOWN_ROUTES) {
     expect(response, `no response for ${route}`).not.toBeNull();
     expect(response.status(), `HTTP ${response.status()} on ${route}`).toBeLessThan(400);
 
+    // A redirect to /login (e.g. an auth/session problem) also returns a
+    // sub-400 status with no error marker in the body — without this, the
+    // test would pass even though it never actually reached the target
+    // page.
+    const actualPath = new URL(page.url()).pathname;
+    expect(actualPath, `expected to land on ${tenantPath(route)}, got ${actualPath}`).toBe(tenantPath(route));
+
     const bodyText = await page.locator('body').innerText();
     for (const marker of ERROR_MARKERS) {
       expect(bodyText, `found error marker "${marker}" on ${route}`).not.toContain(marker);

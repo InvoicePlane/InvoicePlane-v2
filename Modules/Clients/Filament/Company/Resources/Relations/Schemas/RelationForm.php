@@ -212,10 +212,15 @@ class RelationForm
                                             ->createOptionForm([
                                                 TextInput::make('first_name')
                                                     ->label(trans('ip.first'))
-                                                    ->required(),
+                                                    ->required()
+                                                    // contacts.first_name is varchar(50) —
+                                                    // same overlong-input 500 risk as the
+                                                    // main ContactForm's first_name field.
+                                                    ->maxLength(50),
                                                 TextInput::make('last_name')
                                                     ->label(trans('ip.last'))
-                                                    ->required(),
+                                                    ->required()
+                                                    ->maxLength(50),
                                             ])
                                             ->createOptionUsing(function (array $data, ?Relation $record) {
                                                 // The mounted record is the Relation (client) this
