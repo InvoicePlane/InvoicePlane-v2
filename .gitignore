@@ -58,6 +58,12 @@ package-lock.json
 *.ufm.json
 *.afm.json
 
+# Playwright / testrunner
+/testrunner/
+/test-results/
+/playwright-report/
+auth.json
+
 # PHPStan
 /phpstan.json
 /phpstan-report.md
@@ -90,6 +96,7 @@ batch-implementation-status.md
 conflicts.md
 fetch-issues.sh
 fruiit.md
+error-report.md
 gh-commands.sh
 gh-comments/
 issues-full.json
@@ -136,12 +143,3 @@ summary-feature-parity.md
 plan-2026-07-19.md
 storage/dompdf_log
 untouched.json
-auth.json
-error-report.md
-/playwright-report/
-/test-results/
-/testrunner/
-/screenshot_*.png
-/screenshot*.png
-/debug-*.png
-/report-builder-*.png
