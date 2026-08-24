@@ -577,6 +577,7 @@ return [
     'quote_rejected'                  => 'This quote has been rejected',
     'quote_sent'                      => 'This quote has been sent',
     'quote_signature_invalid_format'  => 'The signature data must be a base64-encoded image.',
+    'quote_signature_storage_failed'  => 'The signature could not be saved. Please try again.',
     'quote_status'                    => 'Status',
     'quote_status_approved'           => 'Approved',
     'quote_status_draft'              => 'Draft',

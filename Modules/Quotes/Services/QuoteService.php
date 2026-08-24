@@ -23,6 +23,7 @@ use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Mail\QuoteMailable;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteSignature;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
@@ -346,18 +347,25 @@ class QuoteService extends BaseService
         $disk = config('filament.default_filesystem_disk');
         $path = 'quote-signatures/' . $quote->id . '/' . Str::random(40) . '.' . $extension;
 
-        Storage::disk($disk)->put($path, $binary);
+        if ( ! Storage::disk($disk)->put($path, $binary)) {
+            throw new RuntimeException(trans('ip.quote_signature_storage_failed'));
+        }
 
-        return $quote->signatures()->create([
-            'company_id'      => $quote->company_id,
-            'user_id'         => $userId,
-            'signer_name'     => $signerName,
-            'signature_disk'  => $disk,
-            'signature_path'  => $path,
-            'signed_at'       => now(),
-            'ip_address'      => $ipAddress,
-            'user_agent'      => $userAgent,
-        ]);
+        try {
+            return $quote->signatures()->create([
+                'company_id'      => $quote->company_id,
+                'user_id'         => $userId,
+                'signer_name'     => $signerName,
+                'signature_disk'  => $disk,
+                'signature_path'  => $path,
+                'signed_at'       => now(),
+                'ip_address'      => $ipAddress,
+                'user_agent'      => $userAgent,
+            ]);
+        } catch (Throwable $e) {
+            Storage::disk($disk)->delete($path);
+            throw $e;
+        }
     }
 
     /**
@@ -435,6 +443,12 @@ class QuoteService extends BaseService
             ! preg_match('/^data:(image\/(?:png|jpeg|webp));base64,(?<payload>.+)$/', $signatureData, $matches)
             || ($binary = base64_decode($matches['payload'], true)) === false
         ) {
+            throw new InvalidArgumentException(trans('ip.quote_signature_invalid_format'));
+        }
+
+        $detectedImage = @getimagesizefromstring($binary);
+
+        if ($detectedImage === false || $detectedImage['mime'] !== $matches[1]) {
             throw new InvalidArgumentException(trans('ip.quote_signature_invalid_format'));
         }
 
