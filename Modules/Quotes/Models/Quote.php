@@ -48,6 +48,7 @@ use Modules\Quotes\Enums\QuoteStatus;
  * @property Relation               $relation
  * @property User                   $user
  * @property Collection|QuoteItem[] $quote_items
+ * @property Collection|QuoteSignature[] $signatures
  */
 class Quote extends Model
 {
@@ -116,6 +117,11 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
+    public function signatures(): HasMany
+    {
+        return $this->hasMany(QuoteSignature::class, 'quote_id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -154,6 +160,11 @@ class Quote extends Model
         }
 
         return 'secondary';
+    }
+
+    public function isSigned(): bool
+    {
+        return $this->signatures()->exists();
     }
 
     /*

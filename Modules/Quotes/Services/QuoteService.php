@@ -22,6 +22,7 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Mail\QuoteMailable;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteSignature;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
@@ -326,6 +327,40 @@ class QuoteService extends BaseService
     }
 
     /**
+     * Capture a client (or user-linked) signature against a quote, storing
+     * the decoded image on the configured Filament filesystem disk and
+     * recording a QuoteSignature row. Does not change the quote's status.
+     *
+     * @throws InvalidArgumentException when $signatureData isn't a valid base64 data URL
+     */
+    public function captureSignature(
+        Quote $quote,
+        string $signatureData,
+        string $signerName,
+        ?int $userId = null,
+        ?string $ipAddress = null,
+        ?string $userAgent = null,
+    ): QuoteSignature {
+        [$extension, $binary] = $this->decodeSignatureData($signatureData);
+
+        $disk = config('filament.default_filesystem_disk');
+        $path = 'quote-signatures/' . $quote->id . '/' . Str::random(40) . '.' . $extension;
+
+        Storage::disk($disk)->put($path, $binary);
+
+        return $quote->signatures()->create([
+            'company_id'      => $quote->company_id,
+            'user_id'         => $userId,
+            'signer_name'     => $signerName,
+            'signature_disk'  => $disk,
+            'signature_path'  => $path,
+            'signed_at'       => now(),
+            'ip_address'      => $ipAddress,
+            'user_agent'      => $userAgent,
+        ]);
+    }
+
+    /**
      * Render the quote document markup used by both the PDF driver and the
      * on-screen preview.
      */
@@ -378,6 +413,32 @@ class QuoteService extends BaseService
             'font_size'     => Setting::getForCompany($companyId, Setting::KEY_FONT_SIZE) ?: '12',
             'logo_path'     => $logoPath && $logoDisk->exists($logoPath) ? $logoDisk->path($logoPath) : null,
         ];
+    }
+
+    /**
+     * Decode a `data:image/<type>;base64,<payload>` string into a
+     * [file extension, raw binary] pair.
+     *
+     * @return array{0: string, 1: string}
+     *
+     * @throws InvalidArgumentException when the input isn't a valid base64 image data URL
+     */
+    private function decodeSignatureData(string $signatureData): array
+    {
+        $mimeToExtension = [
+            'image/png'  => 'png',
+            'image/jpeg' => 'jpg',
+            'image/webp' => 'webp',
+        ];
+
+        if (
+            ! preg_match('/^data:(image\/(?:png|jpeg|webp));base64,(?<payload>.+)$/', $signatureData, $matches)
+            || ($binary = base64_decode($matches['payload'], true)) === false
+        ) {
+            throw new InvalidArgumentException(trans('ip.quote_signature_invalid_format'));
+        }
+
+        return [$mimeToExtension[$matches[1]], $binary];
     }
 
     /**

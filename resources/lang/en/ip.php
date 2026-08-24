@@ -576,6 +576,7 @@ return [
     'quote_pre_password'              => 'Quote standard PDF password (optional)',
     'quote_rejected'                  => 'This quote has been rejected',
     'quote_sent'                      => 'This quote has been sent',
+    'quote_signature_invalid_format'  => 'The signature data must be a base64-encoded image.',
     'quote_status'                    => 'Status',
     'quote_status_approved'           => 'Approved',
     'quote_status_draft'              => 'Draft',
