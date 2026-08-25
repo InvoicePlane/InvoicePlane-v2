@@ -1,17 +1,11 @@
-<div class="bg-white p-4 border-2 border-dashed border-gray-300 rounded" style="font-size: {{ $config['font_size'] ?? 10 }}pt; text-align: {{ $config['text_align'] ?? 'right' }};">
-    <div class="font-bold text-lg mb-2">{{ trans('ip.quote_metadata') }}</div>
-    <div class="space-y-1 text-gray-600">
-        @if($config['show_quote_number'] ?? true)
-            <div><strong>{{ trans('ip.quote_number') }}:</strong> QUO-001</div>
-        @endif
-        @if($config['show_quoted_at'] ?? true)
-            <div><strong>{{ trans('ip.quoted_at') }}:</strong> {{ now()->format('Y-m-d') }}</div>
-        @endif
-        @if($config['show_expires_at'] ?? true)
-            <div><strong>{{ trans('ip.expires_at') }}:</strong> {{ now()->addDays(30)->format('Y-m-d') }}</div>
-        @endif
-        @if($config['show_status'] ?? true)
-            <div><strong>{{ trans('ip.status') }}:</strong> {{ trans('ip.draft') }}</div>
-        @endif
+@props([
+    'config' => []
+])
+
+    <div style="display: block; width: 100%; min-height: 100px; border: 1px solid #999; padding: 12px; border-radius: 4px; background-color: #CCCCCC; font-size: 11px; color: #333; box-sizing: border-box;">
+        <strong>{{ trans('ip.quote_metadata') }}</strong>
+        @if($config['show_quote_number'] ?? true)<br>{{ trans('ip.quote_number') }}: {{ 'QUO-001' }}@endif
+        @if($config['show_quoted_at'] ?? true)<br>{{ trans('ip.quoted_at') }}: {{ now()->format('Y-m-d') }}@endif
+        @if($config['show_expires_at'] ?? true)<br>{{ trans('ip.expires_at') }}: {{ now()->addDays(30)->format('Y-m-d') }}@endif
+        @if($config['show_status'] ?? true)<br>{{ trans('ip.status') }}: {{ trans('ip.draft') }}@endif
     </div>
-</div>

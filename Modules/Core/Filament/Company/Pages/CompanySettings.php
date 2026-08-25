@@ -6,6 +6,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,6 +19,7 @@ use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Modules\Core\Enums\PanelTheme;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
@@ -89,6 +91,12 @@ class CompanySettings extends Page implements HasForms
         $defaults[Setting::KEY_QUOTE_PDF_MARK_SENT] ??= '0';
         $defaults[Setting::KEY_SMTP_VERIFY_CERTS] ??= '1';
 
+        // The panel always renders *some* theme, so the field should show the
+        // one currently in effect rather than nothing at all.
+        $defaults[Setting::KEY_PANEL_THEME] = PanelTheme::fromValue(
+            $defaults[Setting::KEY_PANEL_THEME] ?? null,
+        )->value;
+
         $this->form->fill($defaults);
     }
 
@@ -96,6 +104,12 @@ class CompanySettings extends Page implements HasForms
     {
         $state     = $this->form->getState();
         $companyId = $this->getCompanyId();
+
+        // The stylesheet is a <link> in the document head, so a Livewire
+        // round-trip cannot swap it. Note the change here and finish with a
+        // full page load below.
+        $themeChanged = PanelTheme::fromValue(Setting::getForCompany($companyId, Setting::KEY_PANEL_THEME))
+            !== PanelTheme::fromValue($state[Setting::KEY_PANEL_THEME] ?? null);
 
         foreach ($state as $key => $value) {
             // Skip foreign keys the form doesn't really own — e.g. unknown
@@ -112,6 +126,12 @@ class CompanySettings extends Page implements HasForms
             }
 
             Setting::saveForCompany($companyId, $key, (string) $value);
+        }
+
+        if ($themeChanged) {
+            $this->redirect(static::getUrl());
+
+            return;
         }
 
         $this->dispatch('saved');
@@ -153,6 +173,22 @@ class CompanySettings extends Page implements HasForms
                                     ->maxLength(20)
                                     ->placeholder('INV-')
                                     ->helperText(trans('ip.invoice_number_prefix_help')),
+                            ]),
+
+                            Section::make(trans('ip.panel_appearance'))->columns(2)->schema([
+                                // Radio rather than Select: it is a six-way
+                                // visual choice, and Radio is the only option
+                                // component that renders per-option
+                                // descriptions.
+                                Radio::make(Setting::KEY_PANEL_THEME)
+                                    ->label(trans('ip.panel_theme'))
+                                    ->options(PanelTheme::options())
+                                    ->descriptions(array_map(
+                                        fn (PanelTheme $theme): string => $theme->description(),
+                                        array_column(PanelTheme::cases(), null, 'value'),
+                                    ))
+                                    ->helperText(trans('ip.panel_theme_help'))
+                                    ->columnSpanFull(),
                             ]),
 
                             Section::make(trans('ip.company_branding'))->columns(2)->schema([
@@ -445,6 +481,7 @@ class CompanySettings extends Page implements HasForms
             Setting::KEY_ACCENT_COLOR,
             Setting::KEY_FONT_FAMILY,
             Setting::KEY_FONT_SIZE,
+            Setting::KEY_PANEL_THEME,
             Setting::KEY_CURRENCY_CODE,
             Setting::KEY_DASHBOARD_SHOW_REVENUE_CHART,
             Setting::KEY_CRON_FREQUENCY,

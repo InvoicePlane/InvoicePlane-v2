@@ -2,9 +2,9 @@
     'config' => []
 ])
 
-<div class="border-2 border-dashed border-gray-300 p-4 rounded bg-white">
-    <div style="text-align: {{ $config['text_align'] ?? 'right' }}; font-size: {{ $config['font_size'] ?? 10 }}pt;">
-        <table class="w-full max-w-xs ml-auto">
+    <div style="display: block; width: 100%; min-height: 100px; border: 1px solid #999; padding: 12px; border-radius: 4px; background-color: #CCCCCC; font-size: 11px; color: #333; box-sizing: border-box;">
+        <strong>{{ trans('ip.totals') }}</strong>
+        <table style="width: 100%; margin-top: 6px; font-size: 10px;">
             @if($config['show_subtotal'] ?? true)
                 <tr>
                     <td class="p-1 font-semibold">{{ trans('ip.subtotal') }}:</td>
@@ -37,4 +37,3 @@
             @endif
         </table>
     </div>
-</div>

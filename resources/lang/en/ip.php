@@ -1215,6 +1215,36 @@ return [
     'footer_content'       => 'Footer Content',
     'footer_placeholder'   => 'Add footer notes here...',
 
+    // Report Builder utility bricks
+    'page_break'       => 'Page Break',
+    'page_break_hint'  => 'Starts a new page at this position',
+    'spacer'           => 'Spacer',
+    'configure_spacer' => 'Configure Spacer',
+    'spacer_settings'  => 'Spacer Settings',
+    'spacer_height'    => 'Height (px)',
+
+    // Report Builder pages
+    'report_templates'          => 'Report Templates',
+    'report_builder'            => 'Report Builder',
+    'rename'                    => 'Rename',
+    'open_builder'              => 'Open Builder',
+    'company_template'          => 'Company Template',
+    'no_report_templates'       => 'No report templates found. Run "php artisan reports:sync-system" to install the defaults.',
+    'system_template_read_only' => 'System templates are read-only. Clone this template to customize it.',
+    'template_cloned'           => 'Template cloned',
+    'template_renamed'          => 'Template renamed',
+    'template_deleted'          => 'Template deleted',
+    'template_saved'            => 'Template saved',
+    'template_not_editable'     => 'This template cannot be modified from this panel',
+    'move_to_band'              => 'Move to band…',
+    'from_band'                 => 'From band',
+    'to_band'                   => 'To band',
+    'brick'                     => 'Brick',
+    'brick_moved'               => 'Brick moved',
+    'brick_not_allowed_in_band' => 'This brick is not allowed in the selected band',
+    'pdf_template'              => 'PDF Template',
+    'company_default_template'  => 'Company default',
+
     // New brick translations
     'invoice_product_details'           => 'Invoice Product Details',
     'configure_invoice_product_details' => 'Configure Invoice Product Details',
@@ -1351,5 +1381,14 @@ return [
     'update_channel'                          => 'Update Channel',
     'update_check_interval_hours'             => 'Update Check Interval (hours)',
     'update_notification_email'               => 'Update Notification Email',
+    'panel_appearance'                        => 'Panel Appearance',
+    'panel_theme'                             => 'Theme',
+    'panel_theme_help'                        => 'Applies to everyone in this company. Saving reloads the page so the new stylesheet takes effect.',
+    'panel_theme_base_description'            => 'Balanced slate neutrals with InvoicePlane blue accents. The default.',
+    'panel_theme_invoiceplane_description'    => 'Solid coloured sidebar and topbar in the InvoicePlane palette.',
+    'panel_theme_invoiceplane_blue_description' => 'Stock Filament chrome, rebranded with InvoicePlane blue accents.',
+    'panel_theme_nord_description'            => 'Cool Nord palette with a dark sidebar and topbar.',
+    'panel_theme_orange_description'          => 'Warm orange accents on light chrome.',
+    'panel_theme_reddit_description'          => 'High-contrast orange-red accents.',
     #endregion
 ];

@@ -8,6 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/css/filament/company/base.css',
                 'resources/css/filament/company/invoiceplane.css',
                 'resources/css/filament/company/invoiceplane-blue.css',
                 'resources/css/filament/company/nord.css',
