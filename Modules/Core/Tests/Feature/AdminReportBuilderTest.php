@@ -295,4 +295,22 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->assertNotNull($clone);
         $this->assertSame('Modern Invoice', $clone['manifest']['name']);
     }
+
+    #[Test]
+    public function it_registers_report_templates_in_admin_panel_navigation(): void
+    {
+        /* Arrange */
+        $this->actingAs($this->superAdmin());
+        filament()->setCurrentPanel(filament()->getPanel('admin'));
+
+        /* Act */
+        $navigation = filament()->getPanel('admin')->getNavigation();
+        $urls = collect($navigation)
+            ->flatMap(fn ($group) => $group->getItems())
+            ->map(fn ($item) => $item->getUrl())
+            ->all();
+
+        /* Assert */
+        $this->assertContains(ReportTemplates::getUrl(), $urls);
+    }
 }
