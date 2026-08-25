@@ -10,4 +10,6 @@ Route::name('quotes.guest.')->prefix('quotes/{quote:url_key}')->group(function (
         ->name('password');
     Route::post('/sign', [GuestQuoteController::class, 'sign'])->name('sign');
     Route::get('/pdf', [GuestQuoteController::class, 'pdf'])->name('pdf');
+    Route::get('/logo', [GuestQuoteController::class, 'logo'])->name('logo');
+    Route::get('/signatures/{signature}', [GuestQuoteController::class, 'signatureImage'])->name('signature');
 });

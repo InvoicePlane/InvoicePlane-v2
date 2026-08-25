@@ -582,6 +582,7 @@ return [
     'quote_signature_storage_failed'  => 'The signature could not be saved. Please try again.',
     'quote_signed_confirmation'       => 'Signed by :name on :date.',
     'quote_signed_successfully'       => 'The quote has been signed. Thank you.',
+    'quote_signatures'                => 'Signatures',
     'quote_status'                    => 'Status',
     'quote_status_approved'           => 'Approved',
     'quote_status_draft'              => 'Draft',
