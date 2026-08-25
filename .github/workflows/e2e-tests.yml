@@ -1,0 +1,113 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mariadb:10.8
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+          MARIADB_DATABASE: invoiceplane_test
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php-action@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring,pdo,pdo_mysql
+          tools: composer
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Install npm dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Setup environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run migrations and seeders
+        run: php artisan migrate --seed
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: invoiceplane_test
+          DB_USERNAME: root
+          DB_PASSWORD: ''
+
+      - name: Start application server
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8000 &
+          sleep 5
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: invoiceplane_test
+          DB_USERNAME: root
+          DB_PASSWORD: ''
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run E2E tests
+        run: npm run e2e
+        env:
+          APP_URL: http://127.0.0.1:8000
+          # Defaults match the account DatabaseSeeder always creates and
+          # attaches to the `ivplv2` company; override via secrets if a
+          # dedicated E2E account is introduced later.
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL || 'admin@invoiceplane.com' }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD || 'password' }}
+          E2E_TENANT: ${{ secrets.E2E_TENANT || 'ivplv2' }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: invoiceplane_test
+          DB_USERNAME: root
+          DB_PASSWORD: ''
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
