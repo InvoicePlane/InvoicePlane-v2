@@ -19,7 +19,7 @@
     <div class="w-full">
         <div class="w-full"
              x-data="{
-            bands: @js($bandsConfig).map(band => ({ ...band, blocks: [] })),
+            bands: @js($bandsConfig).map(band => ({ ...band, blocks: [], isCollapsed: false })),
             systemBlockDefinitions: @js($systemBlocksArray),
             init() {
                 window.reportBuilder = this;
@@ -190,15 +190,18 @@
                         >
                             {{-- Band Header (Floating-style Label) --}}
                             <div
-                                class="absolute left-6 text-xs font-black tracking-widest text-white rounded-lg shadow-sm z-10"
+                                class="cursor-pointer select-none text-xs font-black tracking-widest text-white rounded-lg shadow-sm z-10 flex items-center justify-between"
                                 :style="{ backgroundColor: band.border }"
                                 style="padding:12px !important;"
+                                @click="band.isCollapsed = !band.isCollapsed"
                             >
                                 <span x-text="band.name"></span>
+                                <span class="ml-2 font-mono text-sm" x-text="band.isCollapsed ? '+' : '−'"></span>
                             </div>
 
                             <div
-                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors gap-6 items-start content-start"
+                                x-show="!band.isCollapsed"
+                                class="min-h-[140px] rounded-lg border-2 border-dashed transition-colors gap-6 items-start content-start mt-4"
                                 :class="{
                                     'border-primary-400 bg-primary-500/5': hoveredBand === idx,
                                     'border-[#4c566a]/30 dark:border-white/10': hoveredBand !== idx,

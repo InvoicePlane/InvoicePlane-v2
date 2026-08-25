@@ -60,6 +60,25 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
+    public function it_renders_all_bands_as_collapsible_sections(): void
+    {
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
+
+        /** @var ReportBuilder $instance */
+        $instance = $component->instance();
+        $schema = $instance->getForm('form');
+        $components = $schema->getComponents();
+
+        $this->assertCount(5, $components);
+        foreach ($components as $section) {
+            $this->assertInstanceOf(\Filament\Schemas\Components\Section::class, $section);
+            $this->assertTrue($section->isCollapsible());
+        }
+    }
+
+    #[Test]
     public function it_returns_not_found_for_an_unknown_template(): void
     {
         /* Assert */

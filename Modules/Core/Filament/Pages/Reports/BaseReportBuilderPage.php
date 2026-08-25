@@ -9,6 +9,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -91,11 +92,15 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
         $fields = [];
 
         foreach (ReportBand::ordered() as $band) {
-            $fields[] = Mason::make('bands.' . $band->value)
-                ->label($band->getLabel())
-                ->bricks(ReportBricksCollection::forBand($band))
-                ->registerActions([ReportBrickAction::make()])
-                ->disabled( ! $this->canSave());
+            $fields[] = Section::make($band->getLabel())
+                ->collapsible()
+                ->schema([
+                    Mason::make('bands.' . $band->value)
+                        ->hiddenLabel()
+                        ->bricks(ReportBricksCollection::forBand($band))
+                        ->registerActions([ReportBrickAction::make()])
+                        ->disabled( ! $this->canSave()),
+                ]);
         }
 
         return $schema->components($fields)->statePath('data');
