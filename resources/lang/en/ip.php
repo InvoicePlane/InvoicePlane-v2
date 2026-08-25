@@ -592,7 +592,7 @@ return [
     'quote_templates'                 => 'Quote Templates',
     'quote_to_invoice'                => 'Quote to Invoice',
     'quote_duplicated'                => 'Quote duplicated successfully',
-    
+
     'email_quote_default_subject'     => 'Quote #:number',
     'quote_email_sent_successfully'   => 'The quote email has been queued for delivery.',
     'quote_sent_template_default_subject' => 'Quote #{{ quote.number }}',
@@ -1224,6 +1224,7 @@ return [
     // Report Builder pages
     'report_templates'          => 'Report Templates',
     'report_builder'            => 'Report Builder',
+    'group_band_notice'         => 'Group break detection is not yet active. Blocks in this band render sequentially without per-group repeating.',
     'rename'                    => 'Rename',
     'open_builder'              => 'Open Builder',
     'company_template'          => 'Company Template',

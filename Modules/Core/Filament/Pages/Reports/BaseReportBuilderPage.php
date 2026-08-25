@@ -92,15 +92,20 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
         $fields = [];
 
         foreach (ReportBand::ordered() as $band) {
-            $fields[] = Section::make($band->getLabel())
-                ->collapsible()
-                ->schema([
-                    Mason::make('bands.' . $band->value)
-                        ->hiddenLabel()
-                        ->bricks(ReportBricksCollection::forBand($band))
-                        ->registerActions([ReportBrickAction::make()])
-                        ->disabled( ! $this->canSave()),
-                ]);
+            $section = Section::make($band->getLabel())
+                ->collapsible();
+
+            if (in_array($band, [ReportBand::GROUP_HEADER, ReportBand::GROUP_FOOTER], true)) {
+                $section->description(trans('ip.group_band_notice'));
+            }
+
+            $fields[] = $section->schema([
+                Mason::make('bands.' . $band->value)
+                    ->hiddenLabel()
+                    ->bricks(ReportBricksCollection::forBand($band))
+                    ->registerActions([ReportBrickAction::make()])
+                    ->disabled( ! $this->canSave()),
+            ]);
         }
 
         return $schema->components($fields)->statePath('data');

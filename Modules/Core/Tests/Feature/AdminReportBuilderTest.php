@@ -75,6 +75,9 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         foreach ($components as $section) {
             $this->assertInstanceOf(\Filament\Schemas\Components\Section::class, $section);
             $this->assertTrue($section->isCollapsible());
+            if (in_array($section->getHeading(), ['Group Header', 'Group Footer'], true)) {
+                $this->assertSame(trans('ip.group_band_notice'), $section->getDescription());
+            }
         }
     }
 
