@@ -360,7 +360,7 @@ class QuoteService extends BaseService
                 'signature_path'  => $path,
                 'signed_at'       => now(),
                 'ip_address'      => $ipAddress,
-                'user_agent'      => $userAgent,
+                'user_agent'      => $userAgent === null ? null : Str::limit($userAgent, 255, ''),
             ]);
         } catch (Throwable $e) {
             Storage::disk($disk)->delete($path);

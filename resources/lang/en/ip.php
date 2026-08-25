@@ -1361,5 +1361,8 @@ return [
     'view_and_sign_quote'                     => 'View & Sign Quote',
     'signer_name'                             => 'Your Name',
     'clear_signature'                         => 'Clear',
+    'draw_signature'                          => 'Draw',
+    'type_signature'                          => 'Type',
+    'typed_signature_label'                   => 'Type your signature',
     #endregion
 ];
