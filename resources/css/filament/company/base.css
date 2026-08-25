@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/awcodes/mason/resources/css/plugin.css';
+
+@source '../../../../Modules/**/resources/views/**/*';
+@source '../../../../Modules/**/*.php';
+@source '../../../../vendor/awcodes/mason/resources/**/*.blade.php';
+@source '../../../../resources/views/filament/tenant/**/*';
+
+/*
+ * Base theme -- palette first, overrides last.
+ *
+ * Filament ships a complete, well-balanced set of surface styles (body,
+ * topbar, sidebar, sections, tables, inputs) that are all expressed in terms
+ * of the `gray` ramp plus the semantic ramps. It injects those ramps at
+ * runtime from the panel's `colors()` config as raw `--gray-*` / `--primary-*`
+ * custom properties on `:root`, and `theme.css` maps the Tailwind utilities
+ * (`bg-gray-50`, `text-primary-600`, ...) onto them via `@theme inline`.
+ *
+ * So the whole panel can be recoloured by replacing those raw variables --
+ * every component follows automatically and stays tonally consistent. That is
+ * what this file does, and it is why there are almost no component rules
+ * below. Redefining a handful of surfaces by hand instead (as nord.css does)
+ * is what produces mismatches such as a light-gray page wrapped around a
+ * near-black table: the hand-painted surfaces move, the ~200 components that
+ * still read the untouched default ramp do not.
+ *
+ * `:root:root` (specificity 0,2,0) is deliberate -- it beats Filament's own
+ * `:root` block regardless of whether the panel stylesheet happens to be
+ * loaded before or after the inline <style> it renders in <head>.
+ */
+:root:root {
+    /*
+     * Neutrals -- a cool slate that sits under the brand blue. The dark end is
+     * deliberately lifted off black (#0f1720, not #000) so dark-mode tables and
+     * cards read as layered surfaces instead of holes in the page.
+     */
+    --gray-50: #f7f9fb;
+    --gray-100: #eef2f7;
+    --gray-200: #e0e6ef;
+    --gray-300: #c7d1de;
+    --gray-400: #94a2b6;
+    --gray-500: #6b7c94;
+    --gray-600: #4f6178;
+    --gray-700: #3a4a5e;
+    --gray-800: #26323f;
+    --gray-900: #1b2532;
+    --gray-950: #0f1720;
+
+    /* Brand -- InvoicePlane blue. */
+    --primary-50: #f2f7fd;
+    --primary-100: #e3effb;
+    --primary-200: #c1dff6;
+    --primary-300: #8fc0ee;
+    --primary-400: #429ae1;
+    --primary-500: #2684d1;
+    --primary-600: #1868b1;
+    --primary-700: #145390;
+    --primary-800: #154777;
+    --primary-900: #173c63;
+    --primary-950: #0f2742;
+
+    /* Danger -- red. */
+    --danger-50: #fef2f2;
+    --danger-100: #fee2e2;
+    --danger-200: #fecaca;
+    --danger-300: #fca5a5;
+    --danger-400: #f87171;
+    --danger-500: #ef4444;
+    --danger-600: #dc2626;
+    --danger-700: #b91c1c;
+    --danger-800: #991b1b;
+    --danger-900: #7f1d1d;
+    --danger-950: #450a0a;
+
+    /* Success -- emerald. */
+    --success-50: #ecfdf5;
+    --success-100: #d1fae5;
+    --success-200: #a7f3d0;
+    --success-300: #6ee7b7;
+    --success-400: #34d399;
+    --success-500: #10b981;
+    --success-600: #059669;
+    --success-700: #047857;
+    --success-800: #065f46;
+    --success-900: #064e3b;
+    --success-950: #022c22;
+
+    /* Warning -- amber. */
+    --warning-50: #fffbeb;
+    --warning-100: #fef3c7;
+    --warning-200: #fde68a;
+    --warning-300: #fcd34d;
+    --warning-400: #fbbf24;
+    --warning-500: #f59e0b;
+    --warning-600: #d97706;
+    --warning-700: #b45309;
+    --warning-800: #92400e;
+    --warning-900: #78350f;
+    --warning-950: #451a03;
+
+    /* Info -- sky, kept clearly distinct from the brand blue. */
+    --info-50: #f0f9ff;
+    --info-100: #e0f2fe;
+    --info-200: #bae6fd;
+    --info-300: #7dd3fc;
+    --info-400: #38bdf8;
+    --info-500: #0ea5e9;
+    --info-600: #0284c7;
+    --info-700: #0369a1;
+    --info-800: #075985;
+    --info-900: #0c4a6e;
+    --info-950: #082f49;
+}
+
+/*
+ * Accents on top of the stock components -- kept to the few places where the
+ * default gray reads as flat rather than wrong.
+ */
+
+/*
+ * Active navigation item: Filament tints it gray-100 and only colours the
+ * label. A brand-tinted pill makes the current page findable at a glance.
+ */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    @apply bg-primary-50! dark:bg-primary-400/10!;
+}
+
+/*
+ * Table header: a faint tint separates it from the rows without the hard
+ * border-per-row look, and keeps the header legible on both surfaces.
+ */
+.fi-ta-table > thead {
+    @apply bg-gray-50/80 dark:bg-white/5;
+
+    & .fi-ta-header-cell-label,
+    & .fi-ta-header-cell-sort-btn {
+        @apply text-gray-600 dark:text-gray-300;
+    }
+}

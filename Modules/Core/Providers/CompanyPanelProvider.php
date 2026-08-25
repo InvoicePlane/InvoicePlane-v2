@@ -34,6 +34,7 @@ use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
 use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
+use Modules\Core\Http\Middleware\ApplyCompanyTheme;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
@@ -62,7 +63,7 @@ class CompanyPanelProvider extends PanelProvider
             ->default()
             ->id('company')
             ->path('')
-            ->viteTheme('resources/css/filament/company/nord.css')
+            ->viteTheme('resources/css/filament/company/base.css')
             ->login(Login::class)
             ->passwordReset()
             ->emailVerification()
@@ -90,6 +91,9 @@ class CompanyPanelProvider extends PanelProvider
                 SetTenantFromQueryString::class,
                 ConfigureTenant::class,
                 EnsureUserCanAccessCompany::class,
+                // Re-points viteTheme() at the company's chosen stylesheet;
+                // must stay last, after the tenant is settled.
+                ApplyCompanyTheme::class,
             ], isPersistent: true)
             // #endregion
 

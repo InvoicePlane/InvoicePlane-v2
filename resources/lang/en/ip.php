@@ -1379,5 +1379,14 @@ return [
     'update_channel'                          => 'Update Channel',
     'update_check_interval_hours'             => 'Update Check Interval (hours)',
     'update_notification_email'               => 'Update Notification Email',
+    'panel_appearance'                        => 'Panel Appearance',
+    'panel_theme'                             => 'Theme',
+    'panel_theme_help'                        => 'Applies to everyone in this company. Saving reloads the page so the new stylesheet takes effect.',
+    'panel_theme_base_description'            => 'Balanced slate neutrals with InvoicePlane blue accents. The default.',
+    'panel_theme_invoiceplane_description'    => 'Solid coloured sidebar and topbar in the InvoicePlane palette.',
+    'panel_theme_invoiceplane_blue_description' => 'Stock Filament chrome, rebranded with InvoicePlane blue accents.',
+    'panel_theme_nord_description'            => 'Cool Nord palette with a dark sidebar and topbar.',
+    'panel_theme_orange_description'          => 'Warm orange accents on light chrome.',
+    'panel_theme_reddit_description'          => 'High-contrast orange-red accents.',
     #endregion
 ];
