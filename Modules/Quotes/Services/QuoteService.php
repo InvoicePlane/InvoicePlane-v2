@@ -22,6 +22,8 @@ use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Mail\QuoteMailable;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteSignature;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
@@ -326,16 +328,62 @@ class QuoteService extends BaseService
     }
 
     /**
+     * Capture a client (or user-linked) signature against a quote, storing
+     * the decoded image on the configured Filament filesystem disk and
+     * recording a QuoteSignature row. Does not change the quote's status.
+     *
+     * @throws InvalidArgumentException when $signatureData isn't a valid base64 data URL
+     */
+    public function captureSignature(
+        Quote $quote,
+        string $signatureData,
+        string $signerName,
+        ?int $userId = null,
+        ?string $ipAddress = null,
+        ?string $userAgent = null,
+    ): QuoteSignature {
+        [$extension, $binary] = $this->decodeSignatureData($signatureData);
+
+        $disk = config('filament.default_filesystem_disk');
+        $path = 'quote-signatures/' . $quote->id . '/' . Str::random(40) . '.' . $extension;
+
+        if ( ! Storage::disk($disk)->put($path, $binary)) {
+            throw new RuntimeException(trans('ip.quote_signature_storage_failed'));
+        }
+
+        try {
+            return $quote->signatures()->create([
+                'company_id'      => $quote->company_id,
+                'user_id'         => $userId,
+                'signer_name'     => $signerName,
+                'signature_disk'  => $disk,
+                'signature_path'  => $path,
+                'signed_at'       => now(),
+                'ip_address'      => $ipAddress,
+                'user_agent'      => $userAgent === null ? null : Str::limit($userAgent, 255, ''),
+            ]);
+        } catch (Throwable $e) {
+            Storage::disk($disk)->delete($path);
+            throw $e;
+        }
+    }
+
+    /**
      * Render the quote document markup used by both the PDF driver and the
      * on-screen preview.
+     *
+     * dompdf can read local filesystem paths directly, but a browser
+     * rendering the guest preview can't — pass $forBrowser to swap embedded
+     * images for the guest routes that stream them instead.
      */
-    public function renderHtml(Quote $quote): string
+    public function renderHtml(Quote $quote, bool $forBrowser = false): string
     {
-        $quote->loadMissing(['company', 'prospect', 'quoteItems']);
+        $quote->loadMissing(['company', 'prospect', 'quoteItems', 'signatures']);
 
         return view('quotes::pdf.quote', [
-            'quote'    => $quote,
-            'branding' => $this->resolveBranding($quote),
+            'quote'      => $quote,
+            'branding'   => $this->resolveBranding($quote, $forBrowser),
+            'signatures' => $this->resolveSignatureImages($quote, $forBrowser),
         ])->render();
     }
 
@@ -358,26 +406,107 @@ class QuoteService extends BaseService
     }
 
     /**
+     * Resolve the company's invoice logo to a [disk, path] pair, or null
+     * when no logo is set or the stored file is missing. Used both to embed
+     * the logo in the PDF and to serve it via the guest logo route.
+     *
+     * @return array{disk: string, path: string}|null
+     */
+    public function resolveLogoPath(Quote $quote): ?array
+    {
+        $disk = config('filament.default_filesystem_disk');
+        $path = Setting::getForCompany($quote->company_id, Setting::KEY_INVOICE_LOGO);
+
+        if ( ! $path || ! Storage::disk($disk)->exists($path)) {
+            return null;
+        }
+
+        return ['disk' => $disk, 'path' => $path];
+    }
+
+    /**
      * Company branding for the quote PDF/preview: colors, font, and logo.
      * Falls back to the current hardcoded look when a company hasn't set
      * any branding.
      *
      * @return array{primary_color: string, accent_color: string, font_family: string, font_size: string, logo_path: ?string}
      */
-    private function resolveBranding(Quote $quote): array
+    private function resolveBranding(Quote $quote, bool $forBrowser): array
     {
         $companyId = $quote->company_id;
-
-        $logoPath = Setting::getForCompany($companyId, Setting::KEY_INVOICE_LOGO);
-        $logoDisk = Storage::disk(config('filament.default_filesystem_disk'));
+        $logo      = $this->resolveLogoPath($quote);
 
         return [
             'primary_color' => Setting::getForCompany($companyId, Setting::KEY_PRIMARY_COLOR) ?: '#1f2937',
             'accent_color'  => Setting::getForCompany($companyId, Setting::KEY_ACCENT_COLOR) ?: '#6b7280',
             'font_family'   => Setting::getForCompany($companyId, Setting::KEY_FONT_FAMILY) ?: 'DejaVu Sans, Helvetica, Arial, sans-serif',
             'font_size'     => Setting::getForCompany($companyId, Setting::KEY_FONT_SIZE) ?: '12',
-            'logo_path'     => $logoPath && $logoDisk->exists($logoPath) ? $logoDisk->path($logoPath) : null,
+            'logo_path'     => $logo === null
+                ? null
+                : ($forBrowser ? route('quotes.guest.logo', $quote) : Storage::disk($logo['disk'])->path($logo['path'])),
         ];
+    }
+
+    /**
+     * Resolve each signature's stored image to a src usable in an <img> tag
+     * — an absolute filesystem path for the PDF driver, or a guest route
+     * URL for the browser preview — skipping any whose file is missing.
+     *
+     * @return array<int, array{signer_name: string, signed_at: ?\Illuminate\Support\Carbon, path: string}>
+     */
+    private function resolveSignatureImages(Quote $quote, bool $forBrowser): array
+    {
+        return $quote->signatures
+            ->map(function (QuoteSignature $signature) use ($quote, $forBrowser): ?array {
+                $disk = Storage::disk($signature->signature_disk);
+
+                if ( ! $disk->exists($signature->signature_path)) {
+                    return null;
+                }
+
+                return [
+                    'signer_name' => $signature->signer_name,
+                    'signed_at'   => $signature->signed_at,
+                    'path'        => $forBrowser
+                        ? route('quotes.guest.signature', [$quote, $signature])
+                        : $disk->path($signature->signature_path),
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Decode a `data:image/<type>;base64,<payload>` string into a
+     * [file extension, raw binary] pair.
+     *
+     * @return array{0: string, 1: string}
+     *
+     * @throws InvalidArgumentException when the input isn't a valid base64 image data URL
+     */
+    private function decodeSignatureData(string $signatureData): array
+    {
+        $mimeToExtension = [
+            'image/png'  => 'png',
+            'image/jpeg' => 'jpg',
+            'image/webp' => 'webp',
+        ];
+
+        if (
+            ! preg_match('/^data:(image\/(?:png|jpeg|webp));base64,(?<payload>.+)$/', $signatureData, $matches)
+            || ($binary = base64_decode($matches['payload'], true)) === false
+        ) {
+            throw new InvalidArgumentException(trans('ip.quote_signature_invalid_format'));
+        }
+
+        $detectedImage = @getimagesizefromstring($binary);
+
+        if ($detectedImage === false || $detectedImage['mime'] !== $matches[1]) {
+            throw new InvalidArgumentException(trans('ip.quote_signature_invalid_format'));
+        }
+
+        return [$mimeToExtension[$matches[1]], $binary];
     }
 
     /**
