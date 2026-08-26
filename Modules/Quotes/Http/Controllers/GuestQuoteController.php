@@ -7,10 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\View as ViewContract;
 use InvalidArgumentException;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Models\QuoteSignature;
 use Modules\Quotes\Services\QuoteService;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -25,7 +27,7 @@ class GuestQuoteController extends Controller
 
         return View::make('quotes::guest.show', [
             'quote'     => $quote,
-            'html'      => app(QuoteService::class)->renderHtml($quote),
+            'html'      => app(QuoteService::class)->renderHtml($quote, forBrowser: true),
             'signature' => $quote->signatures()->latest('signed_at')->first(),
         ]);
     }
@@ -95,6 +97,29 @@ class GuestQuoteController extends Controller
         abort_if($this->isPasswordRequired($quote), 403);
 
         return app(QuoteService::class)->generatePdf($quote);
+    }
+
+    public function logo(Quote $quote): StreamedResponse
+    {
+        abort_if($this->isPasswordRequired($quote), 403);
+
+        $logoPath = app(QuoteService::class)->resolveLogoPath($quote);
+
+        abort_if($logoPath === null, 404);
+
+        return Storage::disk($logoPath['disk'])->response($logoPath['path']);
+    }
+
+    public function signatureImage(Quote $quote, QuoteSignature $signature): StreamedResponse
+    {
+        abort_if($this->isPasswordRequired($quote), 403);
+        abort_unless($signature->quote_id === $quote->id, 404);
+
+        $disk = Storage::disk($signature->signature_disk);
+
+        abort_unless($disk->exists($signature->signature_path), 404);
+
+        return $disk->response($signature->signature_path);
     }
 
     private function isPasswordRequired(Quote $quote): bool

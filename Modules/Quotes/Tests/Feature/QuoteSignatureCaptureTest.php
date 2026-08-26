@@ -152,4 +152,36 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertSame(2, $quote->signatures()->count());
     }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_truncates_an_overlong_user_agent_to_fit_the_column(): void
+    {
+        /* Arrange */
+        Storage::fake(config('filament.default_filesystem_disk'));
+        $quote      = Quote::factory()->for($this->company)->create();
+        $userAgent  = str_repeat('a', 500);
+
+        /* Act */
+        $signature = app(QuoteService::class)->captureSignature(
+            $quote,
+            self::VALID_PNG_DATA_URL,
+            'Jane Client',
+            userAgent: $userAgent,
+        );
+
+        /* Assert */
+        $this->assertSame(255, strlen($signature->fresh()->user_agent));
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_a_valid_signature_via_its_factory(): void
+    {
+        /* Act */
+        $signature = QuoteSignature::factory()->create();
+
+        /* Assert */
+        $this->assertNotNull($signature->company_id);
+    }
 }

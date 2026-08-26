@@ -3,6 +3,7 @@
 namespace Modules\Quotes\Database\Factories;
 
 use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteSignature;
@@ -16,6 +17,7 @@ class QuoteSignatureFactory extends AbstractFactory
         $companyId = $this->resolveCompanyId();
 
         return [
+            'company_id'     => $companyId ?? Company::factory(),
             'quote_id'       => $this->resolveForeignKey(Quote::class, $companyId),
             'user_id'        => null,
             'signer_name'    => fake()->name(),

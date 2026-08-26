@@ -43,13 +43,35 @@
                     <input type="text" name="signer_name" id="signer_name" required
                            class="w-full rounded border border-gray-300 mb-4 px-2 py-1">
 
-                    <canvas id="signature-pad" class="border border-gray-300 rounded w-full h-50"></canvas>
-                    <input type="hidden" name="signature_data" id="signature_data">
+                    <fieldset class="mb-3">
+                        <legend class="text-sm font-medium mb-1">{{ trans('ip.view_and_sign_quote') }}</legend>
+                        <div class="flex gap-4">
+                            <label class="text-sm inline-flex items-center gap-1">
+                                <input type="radio" name="signature_mode" value="draw" id="signature-mode-draw" checked>
+                                {{ trans('ip.draw_signature') }}
+                            </label>
+                            <label class="text-sm inline-flex items-center gap-1">
+                                <input type="radio" name="signature_mode" value="type" id="signature-mode-type">
+                                {{ trans('ip.type_signature') }}
+                            </label>
+                        </div>
+                    </fieldset>
 
-                    <div class="flex items-center justify-between mt-3">
-                        <button type="button" id="signature-clear" class="text-sm underline">
+                    <div id="signature-draw-panel">
+                        <canvas id="signature-pad" class="border border-gray-300 rounded w-full h-50"></canvas>
+                        <button type="button" id="signature-clear" class="text-sm underline mt-2">
                             {{ trans('ip.clear_signature') }}
                         </button>
+                    </div>
+
+                    <div id="signature-type-panel" class="hidden">
+                        <label for="signature-text" class="block text-sm font-medium mb-1">{{ trans('ip.typed_signature_label') }}</label>
+                        <input type="text" id="signature-text" class="w-full rounded border border-gray-300 px-2 py-1">
+                    </div>
+
+                    <input type="hidden" name="signature_data" id="signature_data">
+
+                    <div class="flex items-center justify-end mt-3">
                         <button type="submit" class="bg-gray-900 text-white rounded px-4 py-2">
                             {{ trans('ip.submit') }}
                         </button>

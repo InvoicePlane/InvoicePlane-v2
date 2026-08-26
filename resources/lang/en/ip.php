@@ -582,6 +582,7 @@ return [
     'quote_signature_storage_failed'  => 'The signature could not be saved. Please try again.',
     'quote_signed_confirmation'       => 'Signed by :name on :date.',
     'quote_signed_successfully'       => 'The quote has been signed. Thank you.',
+    'quote_signatures'                => 'Signatures',
     'quote_status'                    => 'Status',
     'quote_status_approved'           => 'Approved',
     'quote_status_draft'              => 'Draft',
@@ -1358,5 +1359,8 @@ return [
     'view_and_sign_quote'                     => 'View & Sign Quote',
     'signer_name'                             => 'Your Name',
     'clear_signature'                         => 'Clear',
+    'draw_signature'                          => 'Draw',
+    'type_signature'                          => 'Type',
+    'typed_signature_label'                   => 'Type your signature',
     #endregion
 ];

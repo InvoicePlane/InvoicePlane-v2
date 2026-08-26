@@ -9,6 +9,7 @@ use Modules\Core\Tests\AbstractTestCase;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Http\Controllers\GuestQuoteController;
 use Modules\Quotes\Models\Quote;
+use Modules\Quotes\Services\QuoteService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -190,5 +191,68 @@ class GuestQuoteViewTest extends AbstractTestCase
         /* Assert */
         $response->assertForbidden();
         $this->assertSame(0, $quote->signatures()->count());
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_streams_a_captured_signature_image_via_its_guest_route(): void
+    {
+        /* Arrange */
+        $quote     = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $signature = app(QuoteService::class)->captureSignature($quote, self::VALID_PNG_DATA_URL, 'Jane Client');
+
+        /* Act */
+        $response = $this->get(route('quotes.guest.signature', [$quote, $signature]));
+
+        /* Assert */
+        $response->assertSuccessful();
+        $response->assertHeader('Content-Type', 'image/png');
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_blocks_the_signature_image_when_password_protected_and_unverified(): void
+    {
+        /* Arrange */
+        $quote     = Quote::factory()->for($this->company)->create(['quote_password' => 'secret']);
+        $signature = app(QuoteService::class)->captureSignature($quote, self::VALID_PNG_DATA_URL, 'Jane Client');
+
+        /* Act */
+        $response = $this->get(route('quotes.guest.signature', [$quote, $signature]));
+
+        /* Assert */
+        $response->assertForbidden();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_returns_404_for_a_signature_belonging_to_a_different_quote(): void
+    {
+        /* Arrange */
+        $quote        = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $otherQuote   = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $signature    = app(QuoteService::class)->captureSignature($otherQuote, self::VALID_PNG_DATA_URL, 'Jane Client');
+
+        /* Act */
+        $response = $this->get(route('quotes.guest.signature', [$quote, $signature]));
+
+        /* Assert */
+        $response->assertNotFound();
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_embeds_signature_image_guest_routes_not_local_paths_in_the_browser_preview(): void
+    {
+        /* Arrange */
+        $quote     = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $signature = app(QuoteService::class)->captureSignature($quote, self::VALID_PNG_DATA_URL, 'Jane Client');
+
+        /* Act */
+        $response = $this->get(route('quotes.guest.show', $quote));
+
+        /* Assert */
+        $response->assertSee(route('quotes.guest.signature', [$quote, $signature]), false);
+        $response->assertDontSee($signature->fresh()->signature_path);
     }
 }
