@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
             'invoice' => Invoice::class,
         ]);
 
-        if (! app()->isLocal()) {
+        if ( ! app()->isLocal()) {
             URL::forceScheme('https');
         }
     }

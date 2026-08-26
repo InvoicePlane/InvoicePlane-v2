@@ -353,14 +353,14 @@ class QuoteService extends BaseService
 
         try {
             return $quote->signatures()->create([
-                'company_id'      => $quote->company_id,
-                'user_id'         => $userId,
-                'signer_name'     => $signerName,
-                'signature_disk'  => $disk,
-                'signature_path'  => $path,
-                'signed_at'       => now(),
-                'ip_address'      => $ipAddress,
-                'user_agent'      => $userAgent === null ? null : Str::limit($userAgent, 255, ''),
+                'company_id'     => $quote->company_id,
+                'user_id'        => $userId,
+                'signer_name'    => $signerName,
+                'signature_disk' => $disk,
+                'signature_path' => $path,
+                'signed_at'      => now(),
+                'ip_address'     => $ipAddress,
+                'user_agent'     => $userAgent === null ? null : Str::limit($userAgent, 255, ''),
             ]);
         } catch (Throwable $e) {
             Storage::disk($disk)->delete($path);
@@ -525,11 +525,11 @@ class QuoteService extends BaseService
             ->first();
 
         $placeholders = [
-            'quote.number'                => $quote->quote_number,
-            'quote.total_formatted'       => number_format((float) $quote->quote_total, 2),
-            'quote.expires_at_formatted'  => DateHelpers::formatDate($quote->quote_expires_at),
-            'customer.name'               => $quote->prospect?->company_name,
-            'company.name'                => $quote->company?->name,
+            'quote.number'               => $quote->quote_number,
+            'quote.total_formatted'      => number_format((float) $quote->quote_total, 2),
+            'quote.expires_at_formatted' => DateHelpers::formatDate($quote->quote_expires_at),
+            'customer.name'              => $quote->prospect?->company_name,
+            'company.name'               => $quote->company?->name,
         ];
 
         $defaultSubject = trans('ip.email_quote_default_subject', ['number' => $quote->quote_number]);
