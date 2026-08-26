@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Mason;
+namespace Modules\Core\ReportBuilder;
 
 use Modules\Core\Enums\ReportBlockWidth;
 

@@ -3,8 +3,8 @@
 namespace Modules\Core\Tests\Unit;
 
 use Awcodes\Mason\Support\IframeRenderer;
-use Modules\Core\Mason\ReportBricksCollection;
-use Modules\Core\Mason\ReportIframeRenderer;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
+use Modules\Core\ReportBuilder\ReportIframeRenderer;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
 

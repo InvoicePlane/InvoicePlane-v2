@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
-use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\ReportBrick;
 
 class DetailQuoteProductBrick extends ReportBrick
 {
@@ -35,14 +35,14 @@ class DetailQuoteProductBrick extends ReportBrick
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.detail-quote-product.preview', [
+        return view('core::report-builder.bricks.detail-quote-product.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.detail-quote-product.index', [
+        return view('core::report-builder.bricks.detail-quote-product.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();

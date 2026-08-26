@@ -11,7 +11,7 @@ use JsonException;
 use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportTemplateType;
-use Modules\Core\Mason\ReportBricksCollection;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
 use RuntimeException;
 
 /**

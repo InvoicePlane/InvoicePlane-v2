@@ -10,7 +10,7 @@ use Modules\Quotes\Models\Quote;
 
 /**
  * Builds the data arrays consumed by the brick index views
- * (resources/views/mason/bricks/*). Keys follow the view contract:
+ * (Modules/Core/resources/views/report-builder/bricks/*). Keys follow the view contract:
  * company, client, invoice/quote, items, totals, terms, summary, footer.
  */
 class ReportDataMapper

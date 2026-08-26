@@ -3,12 +3,12 @@
 namespace Modules\Core\Tests\Unit;
 
 use Modules\Core\Enums\ReportBand;
-use Modules\Core\Mason\Bricks\DetailItemsBrick;
-use Modules\Core\Mason\Bricks\FooterTotalsBrick;
-use Modules\Core\Mason\Bricks\HeaderCompanyBrick;
-use Modules\Core\Mason\Bricks\PageBreakBrick;
-use Modules\Core\Mason\Bricks\SpacerBrick;
-use Modules\Core\Mason\ReportBricksCollection;
+use Modules\Core\ReportBuilder\Bricks\DetailItemsBrick;
+use Modules\Core\ReportBuilder\Bricks\FooterTotalsBrick;
+use Modules\Core\ReportBuilder\Bricks\HeaderCompanyBrick;
+use Modules\Core\ReportBuilder\Bricks\PageBreakBrick;
+use Modules\Core\ReportBuilder\Bricks\SpacerBrick;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
 

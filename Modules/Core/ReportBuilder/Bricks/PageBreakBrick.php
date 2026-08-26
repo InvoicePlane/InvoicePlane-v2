@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBand;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\ReportBuilder\ReportBrick;
 
 class PageBreakBrick extends ReportBrick
 {
@@ -37,14 +37,14 @@ class PageBreakBrick extends ReportBrick
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.page-break.preview', [
+        return view('core::report-builder.bricks.page-break.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.page-break.index', [
+        return view('core::report-builder.bricks.page-break.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();

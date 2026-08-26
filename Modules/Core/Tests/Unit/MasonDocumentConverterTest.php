@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Tests\Unit;
 
-use Modules\Core\Mason\MasonDocumentConverter;
+use Modules\Core\ReportBuilder\MasonDocumentConverter;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\Test;
 

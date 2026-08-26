@@ -1,48 +1,48 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
-use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\ReportBrick;
 
-class DetailQuoteProjectBrick extends ReportBrick
+class DetailInvoiceProjectBrick extends ReportBrick
 {
     public static function getId(): string
     {
-        return 'detail_quote_project';
+        return 'detail_invoice_project';
     }
 
     public static function getLabel(): string
     {
-        return trans('ip.quote_project_details');
+        return trans('ip.invoice_project_details');
     }
 
     public static function getIcon(): string|Htmlable|null
     {
-        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>');
+        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h10M7 11h10M7 7h10"/></svg>');
     }
 
     public static function getPreviewLabel(array $config): string
     {
-        return trans('ip.quote_project_details');
+        return trans('ip.invoice_project_details');
     }
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.detail-quote-project.preview', [
+        return view('core::report-builder.bricks.detail-invoice-project.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.detail-quote-project.index', [
+        return view('core::report-builder.bricks.detail-invoice-project.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
@@ -51,8 +51,8 @@ class DetailQuoteProjectBrick extends ReportBrick
     public static function configureBrickAction(Action $action): Action
     {
         return $action
-            ->label(trans('ip.configure_quote_project_details'))
-            ->modalHeading(trans('ip.quote_project_details_settings'))
+            ->label(trans('ip.configure_invoice_project_details'))
+            ->modalHeading(trans('ip.invoice_project_details_settings'))
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([

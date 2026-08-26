@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Filament\Admin\Pages\ReportBuilder;
-use Modules\Core\Mason\Bricks\HeaderCompanyBrick;
-use Modules\Core\Mason\Bricks\SpacerBrick;
 use Modules\Core\Filament\Admin\Pages\ReportTemplates;
+use Modules\Core\ReportBuilder\Bricks\HeaderCompanyBrick;
+use Modules\Core\ReportBuilder\Bricks\SpacerBrick;
 use Modules\Core\Services\ReportTemplateStorage;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -28,6 +28,26 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->storage = new ReportTemplateStorage();
 
         $this->artisan('reports:sync-system');
+    }
+
+    public static function bandWidthsProvider(): array
+    {
+        return [
+            'half and half' => [
+                [
+                    ['brick' => 'header_company', 'width' => 'half', 'config' => []],
+                    ['brick' => 'header_client', 'width' => 'half', 'config' => []],
+                ],
+                ['flex: 0 0 50%', 'flex: 0 0 50%'],
+            ],
+            'one third and two thirds' => [
+                [
+                    ['brick' => 'header_company', 'width' => 'one_third', 'config' => []],
+                    ['brick' => 'header_client', 'width' => 'two_thirds', 'config' => []],
+                ],
+                ['flex: 0 0 33.33%', 'flex: 0 0 66.66%'],
+            ],
+        ];
     }
 
     #[Test]
@@ -67,8 +87,8 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
             ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'default']);
 
         /** @var ReportBuilder $instance */
-        $instance = $component->instance();
-        $schema = $instance->getForm('form');
+        $instance   = $component->instance();
+        $schema     = $instance->getForm('form');
         $components = $schema->getComponents();
 
         $this->assertCount(5, $components);
@@ -146,7 +166,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->storage->save(
             'system',
             'default',
-            ['name' => 'Default Invoice', 'type' => 'invoice'],
+            ['name'   => 'Default Invoice', 'type' => 'invoice'],
             ['header' => [['brick' => 'header_company', 'width' => 'half', 'config' => []]]],
             ReportTemplateType::INVOICE,
         );
@@ -216,26 +236,6 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         );
     }
 
-    public static function bandWidthsProvider(): array
-    {
-        return [
-            'half and half' => [
-                [
-                    ['brick' => 'header_company', 'width' => 'half', 'config' => []],
-                    ['brick' => 'header_client', 'width' => 'half', 'config' => []],
-                ],
-                ['flex: 0 0 50%', 'flex: 0 0 50%'],
-            ],
-            'one third and two thirds' => [
-                [
-                    ['brick' => 'header_company', 'width' => 'one_third', 'config' => []],
-                    ['brick' => 'header_client', 'width' => 'two_thirds', 'config' => []],
-                ],
-                ['flex: 0 0 33.33%', 'flex: 0 0 66.66%'],
-            ],
-        ];
-    }
-
     #[Test]
     #[DataProvider('bandWidthsProvider')]
     public function it_renders_preview_modal_with_correct_flex_width_wrappers(array $bandEntries, array $expectedFlexStyles): void
@@ -244,7 +244,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->storage->save(
             'system',
             'custom-layout',
-            ['name' => 'Custom Layout', 'type' => 'invoice'],
+            ['name'   => 'Custom Layout', 'type' => 'invoice'],
             ['header' => $bandEntries],
             ReportTemplateType::INVOICE,
         );
@@ -327,7 +327,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $navigation = filament()->getPanel('admin')->getNavigation();
-        $urls = collect($navigation)
+        $urls       = collect($navigation)
             ->flatMap(fn ($group) => $group->getItems())
             ->map(fn ($item) => $item->getUrl())
             ->all();

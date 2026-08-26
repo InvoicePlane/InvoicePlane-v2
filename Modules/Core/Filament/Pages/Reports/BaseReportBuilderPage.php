@@ -17,9 +17,9 @@ use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportBlockWidth;
 use Modules\Core\Enums\ReportTemplateType;
-use Modules\Core\Mason\MasonDocumentConverter;
-use Modules\Core\Mason\ReportBrickAction;
-use Modules\Core\Mason\ReportBricksCollection;
+use Modules\Core\ReportBuilder\MasonDocumentConverter;
+use Modules\Core\ReportBuilder\ReportBrickAction;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
 use Modules\Core\Services\ReportTemplateStorage;
 
 /**
@@ -251,11 +251,11 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
 
                 $config = $entry['config'];
                 // Preserve width for preview rendering
-                if (!isset($config[MasonDocumentConverter::WIDTH_KEY])) {
+                if ( ! isset($config[MasonDocumentConverter::WIDTH_KEY])) {
                     $config[MasonDocumentConverter::WIDTH_KEY] = $entry['width'] ?? 'full';
                 }
 
-                $width = ReportBlockWidth::tryFrom((string) ($config[MasonDocumentConverter::WIDTH_KEY] ?? '')) ?? ReportBlockWidth::FULL;
+                $width   = ReportBlockWidth::tryFrom((string) ($config[MasonDocumentConverter::WIDTH_KEY] ?? '')) ?? ReportBlockWidth::FULL;
                 $percent = match ($width) {
                     ReportBlockWidth::ONE_THIRD  => '33.33%',
                     ReportBlockWidth::HALF       => '50%',

@@ -4,7 +4,7 @@ namespace Modules\Core\Services;
 
 use Modules\Core\Enums\ReportBand;
 use Modules\Core\Enums\ReportBlockWidth;
-use Modules\Core\Mason\ReportBricksCollection;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
 
 /**
  * Renders a report template (manifest + bands) with entity data into the
@@ -53,7 +53,7 @@ class ReportRenderer
         foreach ($entries as $entry) {
             if (($entry['brick'] ?? null) === 'page_break') {
                 $html .= $this->renderRows($segment, $data);
-                $html .= (string) \Modules\Core\Mason\Bricks\PageBreakBrick::toHtml($entry['config'] ?? [], $data);
+                $html .= (string) \Modules\Core\ReportBuilder\Bricks\PageBreakBrick::toHtml($entry['config'] ?? [], $data);
                 $segment = [];
 
                 continue;

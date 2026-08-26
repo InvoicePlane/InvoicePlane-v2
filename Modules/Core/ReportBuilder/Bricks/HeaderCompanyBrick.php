@@ -1,48 +1,48 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\ReportBrick;
 
-class HeaderProjectBrick extends ReportBrick
+class HeaderCompanyBrick extends ReportBrick
 {
     public static function getId(): string
     {
-        return 'header_project';
+        return 'header_company';
     }
 
     public static function getLabel(): string
     {
-        return trans('ip.project_header');
+        return trans('ip.company_header');
     }
 
     public static function getIcon(): string|Htmlable|null
     {
-        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 16h5"/></svg>');
+        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M6 4h12v17H6z"/></svg>');
     }
 
     public static function getPreviewLabel(array $config): string
     {
-        return trans('ip.project_header');
+        return trans('ip.company_header');
     }
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.header-project.preview', [
+        return view('core::report-builder.bricks.header-company.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.header-project.index', [
+        return view('core::report-builder.bricks.header-company.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
@@ -51,8 +51,8 @@ class HeaderProjectBrick extends ReportBrick
     public static function configureBrickAction(Action $action): Action
     {
         return $action
-            ->label(trans('ip.configure_project'))
-            ->modalHeading(trans('ip.project_settings'))
+            ->label(trans('ip.configure_company_header'))
+            ->modalHeading(trans('ip.company_header_settings'))
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
@@ -60,27 +60,31 @@ class HeaderProjectBrick extends ReportBrick
                     ->label(trans('ip.width'))
                     ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
                     ->default(ReportBlockWidth::FULL->value),
-                Checkbox::make('show_project_number')
-                    ->label(trans('ip.show_project_number'))
+                Checkbox::make('show_vat_id')
+                    ->label(trans('ip.show_vat_id'))
                     ->default(true),
-                Checkbox::make('show_project_name')
-                    ->label(trans('ip.show_project_name'))
+                Checkbox::make('show_phone')
+                    ->label(trans('ip.show_phone'))
                     ->default(true),
-                Checkbox::make('show_start_date')
-                    ->label(trans('ip.show_start_date'))
+                Checkbox::make('show_email')
+                    ->label(trans('ip.show_email'))
                     ->default(true),
-                Checkbox::make('show_end_date')
-                    ->label(trans('ip.show_end_date'))
-                    ->default(true),
-                Checkbox::make('show_status')
-                    ->label(trans('ip.show_status'))
+                Checkbox::make('show_address')
+                    ->label(trans('ip.show_address'))
                     ->default(true),
                 TextInput::make('font_size')
                     ->label(trans('ip.font_size'))
                     ->numeric()
                     ->default(10)
-                    ->minValue(6)
+                    ->minValue(8)
                     ->maxValue(16),
+                Select::make('font_weight')
+                    ->label(trans('ip.font_weight'))
+                    ->options([
+                        'normal' => trans('ip.font_weight_normal'),
+                        'bold'   => trans('ip.font_weight_bold'),
+                    ])
+                    ->default('bold'),
                 Select::make('text_align')
                     ->label(trans('ip.text_align'))
                     ->options([

@@ -1,48 +1,48 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\ReportBrick;
 
-class FooterTotalsBrick extends ReportBrick
+class HeaderClientBrick extends ReportBrick
 {
     public static function getId(): string
     {
-        return 'footer_totals';
+        return 'header_client';
     }
 
     public static function getLabel(): string
     {
-        return trans('ip.totals_section');
+        return trans('ip.client_header');
     }
 
     public static function getIcon(): string|Htmlable|null
     {
-        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>');
+        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>');
     }
 
     public static function getPreviewLabel(array $config): string
     {
-        return trans('ip.totals_section');
+        return trans('ip.client_header');
     }
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.footer-totals.preview', [
+        return view('core::report-builder.bricks.header-client.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.footer-totals.index', [
+        return view('core::report-builder.bricks.header-client.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
@@ -51,8 +51,8 @@ class FooterTotalsBrick extends ReportBrick
     public static function configureBrickAction(Action $action): Action
     {
         return $action
-            ->label(trans('ip.configure_totals'))
-            ->modalHeading(trans('ip.totals_settings'))
+            ->label(trans('ip.configure_client_header'))
+            ->modalHeading(trans('ip.client_header_settings'))
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
@@ -60,23 +60,14 @@ class FooterTotalsBrick extends ReportBrick
                     ->label(trans('ip.width'))
                     ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
                     ->default(ReportBlockWidth::FULL->value),
-                Checkbox::make('show_subtotal')
-                    ->label(trans('ip.show_subtotal'))
+                Checkbox::make('show_phone')
+                    ->label(trans('ip.show_phone'))
                     ->default(true),
-                Checkbox::make('show_tax')
-                    ->label(trans('ip.show_tax'))
+                Checkbox::make('show_email')
+                    ->label(trans('ip.show_email'))
                     ->default(true),
-                Checkbox::make('show_total')
-                    ->label(trans('ip.show_total'))
-                    ->default(true),
-                Checkbox::make('show_paid')
-                    ->label(trans('ip.show_paid'))
-                    ->default(false),
-                Checkbox::make('show_balance')
-                    ->label(trans('ip.show_balance'))
-                    ->default(false),
-                Checkbox::make('highlight_total')
-                    ->label(trans('ip.highlight_total'))
+                Checkbox::make('show_address')
+                    ->label(trans('ip.show_address'))
                     ->default(true),
                 TextInput::make('font_size')
                     ->label(trans('ip.font_size'))

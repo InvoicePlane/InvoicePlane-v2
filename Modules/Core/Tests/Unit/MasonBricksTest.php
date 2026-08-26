@@ -3,19 +3,29 @@
 namespace Modules\Core\Tests\Unit;
 
 use Modules\Core\Enums\ReportBlockWidth;
-use Modules\Core\Mason\Bricks\DetailItemsBrick;
-use Modules\Core\Mason\Bricks\FooterNotesBrick;
-use Modules\Core\Mason\Bricks\FooterTotalsBrick;
-use Modules\Core\Mason\Bricks\HeaderClientBrick;
-use Modules\Core\Mason\Bricks\HeaderCompanyBrick;
-use Modules\Core\Mason\Bricks\HeaderInvoiceMetaBrick;
-use Modules\Core\Mason\ReportBricksCollection;
+use Modules\Core\ReportBuilder\Bricks\DetailItemsBrick;
+use Modules\Core\ReportBuilder\Bricks\FooterNotesBrick;
+use Modules\Core\ReportBuilder\Bricks\FooterTotalsBrick;
+use Modules\Core\ReportBuilder\Bricks\HeaderClientBrick;
+use Modules\Core\ReportBuilder\Bricks\HeaderCompanyBrick;
+use Modules\Core\ReportBuilder\Bricks\HeaderInvoiceMetaBrick;
+use Modules\Core\ReportBuilder\ReportBricksCollection;
 use Modules\Core\Tests\AbstractTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
 class MasonBricksTest extends AbstractTestCase
 {
+    public static function widthProvider(): array
+    {
+        return [
+            'one_third'  => [ReportBlockWidth::ONE_THIRD->value],
+            'half'       => [ReportBlockWidth::HALF->value],
+            'two_thirds' => [ReportBlockWidth::TWO_THIRDS->value],
+            'full'       => [ReportBlockWidth::FULL->value],
+        ];
+    }
+
     #[Test]
     public function it_header_company_brick_has_correct_id(): void
     {
@@ -287,16 +297,6 @@ class MasonBricksTest extends AbstractTestCase
             $icon = $brick::getIcon();
             $this->assertNotNull($icon);
         }
-    }
-
-    public static function widthProvider(): array
-    {
-        return [
-            'one_third'  => [ReportBlockWidth::ONE_THIRD->value],
-            'half'       => [ReportBlockWidth::HALF->value],
-            'two_thirds' => [ReportBlockWidth::TWO_THIRDS->value],
-            'full'       => [ReportBlockWidth::FULL->value],
-        ];
     }
 
     #[Test]

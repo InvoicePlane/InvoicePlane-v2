@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Core\Mason\Bricks;
+namespace Modules\Core\ReportBuilder\Bricks;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Modules\Core\Enums\ReportBlockWidth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
-use Modules\Core\Mason\ReportBrick;
+use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\ReportBrick;
 
 class HeaderInvoiceMetaBrick extends ReportBrick
 {
@@ -35,14 +35,14 @@ class HeaderInvoiceMetaBrick extends ReportBrick
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('mason.bricks.header-invoice-meta.preview', [
+        return view('core::report-builder.bricks.header-invoice-meta.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('mason.bricks.header-invoice-meta.index', [
+        return view('core::report-builder.bricks.header-invoice-meta.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
