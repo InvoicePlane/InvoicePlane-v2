@@ -8,7 +8,9 @@ use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,11 +47,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection|Expense[]    $expenses
  * @property Collection|Quote[]      $quotes*           @property Upload[]                $uploads
  */
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasTenants, HasDefaultTenant, MustVerifyEmailContract
 {
     use CanResetPassword;
     use HasFactory;
     use HasRoles;
+    use MustVerifyEmail;
     use Notifiable;
 
     public $timestamps = false;

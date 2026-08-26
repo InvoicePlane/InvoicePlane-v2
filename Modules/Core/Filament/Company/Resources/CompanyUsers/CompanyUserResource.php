@@ -3,18 +3,24 @@
 namespace Modules\Core\Filament\Company\Resources\CompanyUsers;
 
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\Pages\ListCompanyUsers;
-use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
 class CompanyUserResource extends Resource
@@ -24,6 +30,11 @@ class CompanyUserResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
     protected static ?string $navigationLabel = 'team_members';
+
+    // Users relate to companies via a many-to-many pivot (User::companies()),
+    // not a direct ownership relation Filament can auto-scope by. The table
+    // query above already scopes manually to the current tenant.
+    protected static bool $isScopedToTenant = false;
 
     public static function form(Schema $schema): Schema
     {
@@ -38,7 +49,14 @@ class CompanyUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(fn () => Company::getTenant()?->users() ?? User::query())
+            ->query(function (): Builder|BelongsToMany {
+                $tenant = Filament::getTenant();
+
+                // Fail closed: without a tenant there is no company to scope
+                // this list to, so it must show nothing — falling back to
+                // User::query() would leak every user across every company.
+                return $tenant?->users() ?? User::query()->whereRaw('1 = 0');
+            })
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('ip.name'))
@@ -51,20 +69,20 @@ class CompanyUserResource extends Resource
             ])
             ->filters([])
             ->actions([
-                \Filament\Tables\Actions\Action::make('remove')
+                Action::make('remove')
                     ->label(trans('ip.remove'))
-                    ->icon('heroicon-m-trash-2')
+                    ->icon('heroicon-m-trash')
                     ->color('danger')
-                    ->action(function (User $record) {
-                        Company::getTenant()?->users()->detach($record->id);
+                    ->action(function (User $record): void {
+                        Filament::getTenant()?->users()->detach($record->id);
                     })
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->action(function ($records) {
-                            $company = Company::getTenant();
+                        ->action(function (EloquentCollection|Collection|LazyCollection $records): void {
+                            $company = Filament::getTenant();
                             foreach ($records as $record) {
                                 $company?->users()->detach($record->id);
                             }

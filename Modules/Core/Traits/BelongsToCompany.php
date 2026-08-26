@@ -117,7 +117,15 @@ trait BelongsToCompany
     protected static function bootBelongsToCompany(): void
     {
         static::creating(function ($model): void {
-            if (isset($model->company_id) && empty($model->company_id)) {
+            // Not isset($model->company_id) && empty(...): Eloquent's
+            // __isset() returns false for an attribute that was never
+            // touched at all (e.g. Relation::create([...]) with no
+            // 'company_id' key in the array whatsoever), not just one
+            // explicitly set to null/'' — so that combined check silently
+            // skipped backfilling company_id, leaving a NOT NULL column
+            // NULL and blowing up as an unhandled SQL 500. empty() alone
+            // is null-safe and catches both cases.
+            if (empty($model->company_id)) {
                 $companyId         = static::getCurrentCompanyId();
                 $model->company_id = $companyId;
                 if (config('app.extreme_logging', env('APP_EXTREME_LOGGING', false))) {

@@ -36,7 +36,15 @@ class UserForm
                                     ->label(trans('ip.email'))
                                     ->email()
                                     ->required()
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    // users.email has a unique DB constraint;
+                                    // without this, a duplicate email passes
+                                    // client validation and blows up as an
+                                    // unhandled SQL 500 instead of a form
+                                    // validation message (UserService::
+                                    // createUser/updateUser do no uniqueness
+                                    // check of their own).
+                                    ->unique(ignoreRecord: true),
                                 DatePicker::make('email_verified_at')
                                     ->label(trans('ip.email_verified_at')),
                                 TextInput::make('password')

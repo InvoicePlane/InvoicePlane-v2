@@ -23,11 +23,16 @@ class ProductUnitForm
                                 TextInput::make('unit_name')
                                     ->label(trans('ip.unit'))
                                     ->required()
-                                    ->maxLength(255)
+                                    // product_units.unit_name is varchar(50)
+                                    // — the previous ->maxLength(255) here
+                                    // let client validation pass values the
+                                    // DB would reject with an unhandled SQL
+                                    // 500.
+                                    ->maxLength(50)
                                     ->autofocus(),
                                 TextInput::make('unit_name_plrl')
                                     ->label(trans('ip.unit_name_plrl'))
-                                    ->maxLength(255),
+                                    ->maxLength(50),
                             ]),
 
                         // Right column - can be left empty or used for additional fields
