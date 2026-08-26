@@ -34,7 +34,11 @@ class QuoteMailable extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            htmlString: nl2br(e($this->bodyText)),
+            view: 'quotes::mail.quote',
+            with: [
+                'bodyText' => $this->bodyText,
+                'signUrl'  => route('quotes.guest.show', $this->quote),
+            ],
         );
     }
 

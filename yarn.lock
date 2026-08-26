@@ -791,6 +791,11 @@ shell-quote@1.9.0:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.9.0.tgz#e108b1a136586d5964edb3300016d4bedba0fe57"
   integrity sha512-Iov+JwFv/2HcTpcwNMKd8+IWNb8tboQJNQTkAY/LLVK7gGH9jy+LGkVqPxfekHl+yMmiqXszdGWXgkfml7hjqA==
 
+signature_pad@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/signature_pad/-/signature_pad-5.1.4.tgz#a406682c47d8d68b9db006c540fec867d9c12884"
+  integrity sha512-q0wO5a+U+AWPVcVmiNXz7FY4Ad1QiE8wto/3Yn41WVqepoVVYMvkb1CTokaWPUUAHWDLLabH3/acODeWM9jCrg==
+
 source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.2.1.tgz#1ce5650fddd87abc099eda37dcff024c2667ae46"

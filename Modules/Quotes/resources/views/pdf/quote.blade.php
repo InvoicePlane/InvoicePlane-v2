@@ -110,4 +110,22 @@
     @if ($quote->footer)
         <div style="color: {{ $accentColor }}; margin-top: 24px;">{{ $quote->footer }}</div>
     @endif
+
+    @if (count($signatures) > 0)
+        <div style="margin-top: 24px;">
+            <div style="font-weight: bold; margin-bottom: 8px;">{{ trans('ip.quote_signatures') }}</div>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    @foreach ($signatures as $signature)
+                        <td style="vertical-align: bottom; padding: 0 12px 0 0; width: {{ (int) (100 / count($signatures)) }}%;">
+                            <img src="{{ $signature['path'] }}" alt="{{ $signature['signer_name'] }}" style="max-height: 80px; max-width: 100%; border-bottom: 1px solid {{ $primaryColor }};">
+                            <div style="margin-top: 4px;">
+                                {{ trans('ip.quote_signed_confirmation', ['name' => $signature['signer_name'], 'date' => $signature['signed_at']?->format('Y-m-d')]) }}
+                            </div>
+                        </td>
+                    @endforeach
+                </tr>
+            </table>
+        </div>
+    @endif
 </div>
