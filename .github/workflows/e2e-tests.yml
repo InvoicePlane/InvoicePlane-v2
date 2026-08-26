@@ -60,6 +60,16 @@ jobs:
       - name: Install npm dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build frontend assets
+        # Every page Playwright navigates to goes through a real running
+        # `php artisan serve` and a real browser — including Filament's own
+        # per-panel Vite themes (resources/css/filament/**, see CLAUDE.md)
+        # and any view using @vite(...) directly (e.g. the guest quote
+        # views' resources/css/guest.css). Without a built manifest this
+        # isn't a narrow failure, it 500s essentially every page in the
+        # whole E2E suite, not just Vite-specific tests.
+        run: yarn build
+
       - name: Setup environment
         run: |
           cp .env.example .env

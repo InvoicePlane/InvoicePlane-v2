@@ -42,6 +42,24 @@ jobs:
           php-extensions: 'mbstring, bcmath, pdo_mysql'
           composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend assets
+        # Feature tests render real Blade views with @vite(...) directives
+        # (e.g. GuestQuoteViewTest exercises resources/css/guest.css) —
+        # without a built manifest those fail with "Unable to locate file in
+        # Vite manifest", not a PHP bug. quickstart.yml already builds assets
+        # before its own artisan test run for the same reason; mirror that
+        # here.
+        run: yarn build
+
       - name: Prepare Laravel environment
         run: |
           cp .env.testing.example .env.testing
