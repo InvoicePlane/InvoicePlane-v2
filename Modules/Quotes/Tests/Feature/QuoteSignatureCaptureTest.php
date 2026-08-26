@@ -128,7 +128,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         Storage::fake(config('filament.default_filesystem_disk'));
-        $quote     = Quote::factory()->for($this->company)->create();
+        $quote      = Quote::factory()->for($this->company)->create();
         $notAnImage = 'data:image/png;base64,' . base64_encode('this is not image bytes');
 
         /* Act & Assert */
@@ -159,8 +159,8 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         Storage::fake(config('filament.default_filesystem_disk'));
-        $quote      = Quote::factory()->for($this->company)->create();
-        $userAgent  = str_repeat('a', 500);
+        $quote     = Quote::factory()->for($this->company)->create();
+        $userAgent = str_repeat('a', 500);
 
         /* Act */
         $signature = app(QuoteService::class)->captureSignature(
@@ -171,7 +171,7 @@ class QuoteSignatureCaptureTest extends AbstractCompanyPanelTestCase
         );
 
         /* Assert */
-        $this->assertSame(255, strlen($signature->fresh()->user_agent));
+        $this->assertSame(255, mb_strlen($signature->fresh()->user_agent));
     }
 
     #[Test]

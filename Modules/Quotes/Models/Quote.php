@@ -22,32 +22,32 @@ use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
 
 /**
- * @property int                    $id
- * @property int                    $company_id
- * @property int                    $prospect_id
- * @property int|null               $numbering_id
- * @property int                    $user_id
- * @property string                 $quote_number
- * @property QuoteStatus            $quote_status
- * @property Carbon|null            $quoted_at
- * @property Carbon|null            $quote_expires_at
- * @property float                  $quote_discount_amount
- * @property float                  $quote_discount_percent
- * @property float|null             $item_tax_total
- * @property float                  $quote_item_subtotal
- * @property float                  $quote_tax_total
- * @property float                  $quote_total
- * @property string|null            $quote_password
- * @property string|null            $url_key
- * @property string|null            $template
- * @property string|null            $summary
- * @property string|null            $terms
- * @property string|null            $footer
- * @property Company                $company
- * @property Numbering|null         $numbering
- * @property Relation               $relation
- * @property User                   $user
- * @property Collection|QuoteItem[] $quote_items
+ * @property int                         $id
+ * @property int                         $company_id
+ * @property int                         $prospect_id
+ * @property int|null                    $numbering_id
+ * @property int                         $user_id
+ * @property string                      $quote_number
+ * @property QuoteStatus                 $quote_status
+ * @property Carbon|null                 $quoted_at
+ * @property Carbon|null                 $quote_expires_at
+ * @property float                       $quote_discount_amount
+ * @property float                       $quote_discount_percent
+ * @property float|null                  $item_tax_total
+ * @property float                       $quote_item_subtotal
+ * @property float                       $quote_tax_total
+ * @property float                       $quote_total
+ * @property string|null                 $quote_password
+ * @property string|null                 $url_key
+ * @property string|null                 $template
+ * @property string|null                 $summary
+ * @property string|null                 $terms
+ * @property string|null                 $footer
+ * @property Company                     $company
+ * @property Numbering|null              $numbering
+ * @property Relation                    $relation
+ * @property User                        $user
+ * @property Collection|QuoteItem[]      $quote_items
  * @property Collection|QuoteSignature[] $signatures
  */
 class Quote extends Model
@@ -117,6 +117,7 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
+    /** @return HasMany<QuoteSignature, $this> */
     public function signatures(): HasMany
     {
         return $this->hasMany(QuoteSignature::class, 'quote_id');
