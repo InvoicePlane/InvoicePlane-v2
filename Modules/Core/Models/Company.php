@@ -5,7 +5,6 @@ namespace Modules\Core\Models;
 use Filament\Models\Contracts\HasCurrentTenantLabel;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -301,7 +300,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     | Factory
     |--------------------------------------------------------------------------
     */
-    protected static function newFactory(): Factory
+    protected static function newFactory(): CompanyFactory
     {
         return CompanyFactory::new();
     }

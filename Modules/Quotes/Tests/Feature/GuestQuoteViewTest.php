@@ -229,9 +229,9 @@ class GuestQuoteViewTest extends AbstractTestCase
     public function it_returns_404_for_a_signature_belonging_to_a_different_quote(): void
     {
         /* Arrange */
-        $quote        = Quote::factory()->for($this->company)->create(['quote_password' => null]);
-        $otherQuote   = Quote::factory()->for($this->company)->create(['quote_password' => null]);
-        $signature    = app(QuoteService::class)->captureSignature($otherQuote, self::VALID_PNG_DATA_URL, 'Jane Client');
+        $quote      = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $otherQuote = Quote::factory()->for($this->company)->create(['quote_password' => null]);
+        $signature  = app(QuoteService::class)->captureSignature($otherQuote, self::VALID_PNG_DATA_URL, 'Jane Client');
 
         /* Act */
         $response = $this->get(route('quotes.guest.signature', [$quote, $signature]));

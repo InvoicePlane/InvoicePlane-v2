@@ -12,18 +12,18 @@ use Modules\Core\Traits\BelongsToCompany;
 use Modules\Quotes\Database\Factories\QuoteSignatureFactory;
 
 /**
- * @property int          $id
- * @property int          $company_id
- * @property int          $quote_id
- * @property int|null     $user_id
- * @property string       $signer_name
- * @property string       $signature_disk
- * @property string       $signature_path
- * @property Carbon       $signed_at
- * @property string|null  $ip_address
- * @property string|null  $user_agent
- * @property Quote        $quote
- * @property User|null    $user
+ * @property int         $id
+ * @property int         $company_id
+ * @property int         $quote_id
+ * @property int|null    $user_id
+ * @property string      $signer_name
+ * @property string      $signature_disk
+ * @property string      $signature_path
+ * @property Carbon      $signed_at
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property Quote       $quote
+ * @property User|null   $user
  */
 class QuoteSignature extends Model
 {
