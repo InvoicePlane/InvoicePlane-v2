@@ -2,7 +2,6 @@
 
 namespace Modules\Products\Filament\Company\Resources\ProductUnits\Schemas;
 
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
@@ -13,25 +12,31 @@ class ProductUnitForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->statePath('data')
             ->components([
-                Schemas\Components\Group::make()->schema([
-                    Grid::make(2)
-                        ->schema([
-                            TextInput::make('unit_name')
-                                ->inlineLabel()
-                                ->label(trans('ip.unit'))
-                                ->required()
-                                ->autofocus(),
-                            TextInput::make('unit_name_plrl')
-                                ->inlineLabel()
-                                ->label(trans('ip.unit_name_plrl')),
-                        ]),
-                ])->columns(1),
-                Schemas\Components\Group::make()->schema([
-                    Placeholder::make('explanation Product Unit')
-                        ->label('just some text'),
-                ])->columns(1),
+                Grid::make(2)
+                    ->columnSpanFull()
+                    ->schema([
+                        // Left column
+                        Schemas\Components\Group::make()
+                            ->columnSpan(1)
+                            ->schema([
+                                TextInput::make('unit_name')
+                                    ->label(trans('ip.unit'))
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->autofocus(),
+                                TextInput::make('unit_name_plrl')
+                                    ->label(trans('ip.unit_name_plrl'))
+                                    ->maxLength(255),
+                            ]),
+
+                        // Right column - can be left empty or used for additional fields
+                        Schemas\Components\Group::make()
+                            ->columnSpan(1)
+                            ->schema([
+                                // Add any additional fields if needed
+                            ]),
+                    ]),
             ]);
     }
 }

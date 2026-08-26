@@ -13,22 +13,20 @@ use Modules\Products\Models\ProductUnit;
 use Modules\Quotes\Database\Factories\QuoteItemFactory;
 
 /**
- * Class QuoteItem.
- *
  * @property int        $id
  * @property int        $quote_id
- * @property int        $item_id
+ * @property int        $product_id
  * @property int        $tax_rate_id
  * @property int        $tax_rate_2_id
- * @property Carbon     $item_date_added
- * @property string     $name
+ * @property Carbon     $added_at
+ * @property string     $item_name
  * @property float|null $quantity
  * @property float|null $price
  * @property float      $subtotal
  * @property float      $tax_1
  * @property float      $tax_2
  * @property float      $tax
- * @property float|null $item_discount
+ * @property float|null $discount
  * @property float      $total
  * @property float|null $discount_amount
  * @property int        $display_order
@@ -62,6 +60,16 @@ class QuoteItem extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function productUnit(): BelongsTo
+    {
+        return $this->belongsTo(ProductUnit::class, 'product_unit_id');
+    }
+
     public function quote(): BelongsTo
     {
         return $this->belongsTo(Quote::class, 'quote_id');
@@ -69,27 +77,12 @@ class QuoteItem extends Model
 
     public function taxRate(): BelongsTo
     {
-        return $this->belongsTo(TaxRate::class, 'item_tax_rate_id');
-    }
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class, 'item_product_id');
-    }
-
-    public function productUnit(): BelongsTo
-    {
-        return $this->belongsTo(ProductUnit::class, 'item_unit_id');
-    }
-
-    /*public function taxRate(): BelongsTo
-    {
         return $this->belongsTo(TaxRate::class);
-    }*/
+    }
 
     public function taxRate2(): BelongsTo
     {
-        return $this->belongsTo('Modules\TaxRates\Models\TaxRate', 'tax_rate_2_id');
+        return $this->belongsTo(TaxRate::class, 'tax_rate_2_id');
     }
 
     /*

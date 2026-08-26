@@ -10,13 +10,13 @@ Thank you for considering contributing to **InvoicePlane V2** — a Laravel + Fi
 - **Filament** used for all UI
 - **Livewire** used for reactive components
 - **Modular** folder structure only:
-  - `Modules/{Module}/Filament/Admin/Resources/`
-  - `Modules/{Module}/Services/`
-  - `Modules/{Module}/Tests/Feature/`
+ - `Modules/{Module}/Filament/Admin/Resources/`
+ - `Modules/{Module}/Services/`
+ - `Modules/{Module}/Tests/Feature/`
 - Use:
-  - `BelongsToCompany` trait for multi-tenancy
-  - `DTOs` + `Transformers` for all data
-  - `Services` for all business logic
+ - `BelongsToCompany` trait for multi-tenancy
+ - `DTOs` + `Transformers` for all data
+ - `Services` for all business logic
 
 ---
 
@@ -53,8 +53,8 @@ All tests should have:
 /**
  * @payload missing: invoice_number
  * {
- *   "customer_id": 1,
- *   "due_date": "2025-06-01"
+ * "customer_id": 1,
+ * "due_date": "2025-06-01"
  * }
  */
 public function it_fails_to_create_invoice_without_required_invoice_number(): void
@@ -69,8 +69,6 @@ Pull Requests
 - Translate if needed
 - Add tests where you can
 
-
-
 ---
 
 Translation
@@ -80,8 +78,6 @@ All strings use trans('...')
 Translations managed via Crowdin:
 https://translations.invoiceplane.com
 
-
-
 ---
 
 Community
@@ -90,6 +86,4 @@ Discord: https://discord.gg/PPzD2hTrXt
 
 Community Forums: https://community.invoiceplane.com
 
-GitHub Issues: https://github.com/InvoicePlane/InvoicePlane/issues
-
-
+GitHub Issues: https://github.com/InvoicePlane/InvoicePlane-v2/issues

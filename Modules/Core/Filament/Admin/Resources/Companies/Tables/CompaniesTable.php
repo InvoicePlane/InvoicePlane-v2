@@ -4,10 +4,13 @@ namespace Modules\Core\Filament\Admin\Resources\Companies\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Models\Company;
+use Modules\Core\Services\CompanyService;
 
 class CompaniesTable
 {
@@ -24,12 +27,20 @@ class CompaniesTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->action(function (Company $record, array $data) {
+                            app(CompanyService::class)->updateCompany($record, $data);
+                        })
+                        ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->action(function (Company $record) {
+                            app(CompanyService::class)->deleteCompany($record);
+                        }),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

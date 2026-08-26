@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
 use Modules\Core\Filament\Admin\Resources\Users\Schemas\UserForm;
 use Modules\Core\Filament\Admin\Resources\Users\Tables\UsersTable;
@@ -54,5 +56,31 @@ class UserResource extends Resource
         return [
             'index' => ListUsers::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_USERS->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_USERS->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_USERS->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_USERS->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return ! $record->isSuperAdmin()
+            && (auth()->user()?->can(Permission::DELETE_USERS->value) ?? false);
     }
 }

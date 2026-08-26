@@ -38,7 +38,7 @@ class ContactForm
                                     ->native(false)
                                     ->createOptionForm([
                                         TextInput::make('company_name')
-                                            ->label(trans('ip.client_name'))
+                                            ->label(trans('ip.customer_name'))
                                             ->required(),
                                     ])
                                     ->reactive(),
@@ -74,9 +74,9 @@ class ContactForm
                                 Placeholder::make('primary_email')
                                     ->label(trans('ip.email'))
                                     ->content(
-                                        fn (?Contact $record = null) => $record ?
-                                            optional($record->communications)
-                                                ->where('contactable_type', CommunicationType::EMAIL->value)
+                                        fn (?Contact $record = null) => $record
+                                            ? optional($record->communications)
+                                                ->where('communication_type', CommunicationType::EMAIL->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'
                                             : '-'
@@ -85,9 +85,9 @@ class ContactForm
                                 Placeholder::make('primary_phone')
                                     ->label(trans('ip.phone'))
                                     ->content(
-                                        fn (?Contact $record = null) => $record ?
-                                            optional($record->communications)
-                                                ->where('contactable_type', CommunicationType::PHONE->value)
+                                        fn (?Contact $record = null) => $record
+                                            ? optional($record->communications)
+                                                ->where('communication_type', CommunicationType::PHONE->value)
                                                 ->where('is_primary', true)
                                                 ->first()?->contactable_value ?? '-'
                                             : '-'

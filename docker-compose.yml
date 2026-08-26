@@ -3,6 +3,67 @@ volumes:
         driver: "local"
 
 services:
+    app:
+        container_name: 'ivplflmnt_app'
+        build:
+            context: ./docker-resources/php-fpm
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        networks:
+            - laravel
+
+    web:
+        container_name: 'ivplflmnt_web'
+        build:
+            context: ./docker-resources/apache
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "${APP_PORT:-8080}:80"
+        volumes:
+            - .:/usr/local/apache2/htdocs
+        depends_on:
+            - app
+        networks:
+            - laravel
+
+    # One-off command runner for tests, artisan, and composer — not started
+    # by default (profile "tools"). Examples:
+    #   docker compose run --rm cli composer install
+    #   docker compose run --rm cli php artisan migrate --seed
+    #   docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
+    #   (use `php artisan test`, not `vendor/bin/phpunit` directly — the two
+    #   have been observed to behave differently for this app's Livewire
+    #   form tests; artisan test is the reliable one, matching CI)
+    cli:
+        container_name: 'ivplflmnt_cli'
+        build:
+            context: ./docker-resources/php-cli
+        profiles:
+            - tools
+        tty: true
+        environment:
+            APP_ENV: "${APP_ENV:-testing}"
+            # Overrides whatever's in .env.testing so the test suite always
+            # runs against real MariaDB here, matching CI — no per-developer
+            # sqlite fallback, no edits needed.
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: invoiceplane_test
+            DB_USERNAME: root
+            DB_PASSWORD: ""
+        depends_on:
+            - db
+        volumes:
+            - .:/var/www/html
+        networks:
+            - laravel
+
     db:
         container_name: 'ivplflmnt_db'
         image: mariadb
@@ -11,11 +72,18 @@ services:
         ports:
             - "3306:3306"
         environment:
-            MARIADB_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
             MARIADB_DATABASE: "${DB_DATABASE}"
-            MARIADB_USER: "${DB_USERNAME}"
-            MARIADB_PASSWORD: "${DB_PASSWORD}"
             TZ: "Europe/London"
+        volumes:
+            - database:/var/lib/mysql
+            # Only runs on first boot of a fresh volume — provisions the
+            # dedicated invoiceplane_test database the `cli` service tests
+            # against. Reset with `docker compose down -v` if upgrading an
+            # existing volume that predates this.
+            - ./docker-resources/mariadb/init:/docker-entrypoint-initdb.d:ro
+        networks:
+            - laravel
 
     mailcatcher:
         container_name: 'ivplflmnt_mailcatcher'
@@ -25,6 +93,9 @@ services:
         ports:
             - "25:1025"
             - "1080:1080"
+        networks:
+            - laravel
+
     # phpmyadmin:
     #   container_name: 'ivplflmnt_phpmyadmin'
     #   image: phpmyadmin/phpmyadmin

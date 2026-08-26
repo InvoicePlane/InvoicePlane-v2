@@ -3,37 +3,71 @@
 namespace Modules\Projects\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
+use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
+use Throwable;
 
 class ProjectService extends BaseService
 {
     public function model(): string
     {
         return Project::class;
-        // event(new ProjectWasCreated());
-        // event(new ProjectWasUpdated());
     }
 
     public function createProject(array $data): Model
     {
-        return $this->create([
-            'name'        => $data['name'],
-            'description' => $data['description'] ?? null,
-            'starts_at'   => $data['starts_at'],
-            'ends_at'     => $data['ends_at'] ?? null,
-        ]);
+        DB::beginTransaction();
+        try {
+            $project = Project::query()->create([
+                'customer_id'    => $data['customer_id'],
+                'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
+                'project_name'   => $data['project_name'],
+                'description'    => $data['description'] ?? null,
+                'start_at'       => $data['start_at'] ?? now(),
+                'end_at'         => $data['end_at'] ?? null,
+            ]);
+
+            DB::commit();
+
+            return $project;
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public function updateProject(Project $model, array $data): Project
+    public function updateProject(Project $project, array $data): Project
     {
-        $model->update([
-            'name'        => $data['name'],
-            'description' => $data['description'] ?? null,
-            'starts_at'   => $data['starts_at'],
-            'ends_at'     => $data['ends_at'] ?? null,
+        $project->update([
+            'customer_id'    => $data['customer_id'],
+            'project_status' => $data['project_status'] ?? ProjectStatus::PLANNED->value,
+            'project_name'   => $data['project_name'],
+            'description'    => $data['description'] ?? null,
+            'start_at'       => $data['start_at'] ?? now(),
+            'end_at'         => $data['end_at'] ?? null,
         ]);
 
-        return $model;
+        return $project;
+    }
+
+    public function getCustomer(int $project_id): int
+    {
+        return Project::query()->where('id', $project_id)->value('customer_id');
+    }
+
+    public function deleteProject(Project $project): Project
+    {
+        DB::beginTransaction();
+        try {
+            $project->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $project;
     }
 }

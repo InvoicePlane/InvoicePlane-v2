@@ -21,7 +21,7 @@ enum TaxRateType: string implements LabeledEnum
         return match ($this) {
             self::EXCLUSIVE => 'Exclusive',
             self::INCLUSIVE => 'Inclusive',
-            self::ZERO      => 'Zero Rated',
+            self::ZERO      => 'Zero',
             self::EXEMPT    => 'Exempt',
         };
     }

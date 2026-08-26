@@ -6,11 +6,12 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum QuoteStatus: string implements LabeledEnum
 {
-    case DRAFT    = 'draft';
-    case SENT     = 'sent';
-    case VIEWED   = 'viewed';
-    case APPROVED = 'approved';
-    case CANCELED = 'canceled';
+    case DRAFT     = 'draft';
+    case SENT      = 'sent';
+    case VIEWED    = 'viewed';
+    case APPROVED  = 'approved';
+    case REJECTED  = 'rejected';
+    case CONVERTED = 'converted';
 
     /**
      * case DRAFT = 1;.
@@ -33,22 +34,24 @@ enum QuoteStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT    => 'ip.draft',
-            self::SENT     => 'ip.sent',
-            self::VIEWED   => 'ip.viewed',
-            self::APPROVED => 'ip.approved',
-            self::CANCELED => 'ip.canceled',
+            self::DRAFT     => trans('ip.quote_status_draft'),
+            self::SENT      => trans('ip.quote_status_sent'),
+            self::VIEWED    => trans('ip.quote_status_viewed'),
+            self::APPROVED  => trans('ip.quote_status_approved'),
+            self::REJECTED  => trans('ip.quote_status_rejected'),
+            self::CONVERTED => trans('ip.quote_status_converted'),
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::DRAFT    => 'gray',
-            self::SENT     => 'green',
-            self::VIEWED   => 'info',
-            self::APPROVED => 'success',
-            self::CANCELED => 'danger',
+            self::DRAFT     => 'gray',
+            self::SENT      => 'green',
+            self::VIEWED    => 'info',
+            self::APPROVED  => 'success',
+            self::REJECTED  => 'danger',
+            self::CONVERTED => 'warning',
         };
     }
 }

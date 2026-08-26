@@ -3,16 +3,20 @@
 namespace Modules\Invoices\Filament\Company\Resources\Invoices;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Schemas\InvoiceForm;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Tables\InvoicesTable;
 use Modules\Invoices\Models\Invoice;
 
-class InvoiceResource extends Resource
+class InvoiceResource extends BaseResource
 {
     protected static ?string $model = Invoice::class;
 
@@ -39,6 +43,11 @@ class InvoiceResource extends Resource
         return trans('ip.invoices');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return InvoiceForm::configure($schema);
@@ -58,7 +67,29 @@ class InvoiceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListInvoices::route('/'),
+            'index'  => ListInvoices::route('/'),
+            'create' => CreateInvoice::route('/create'),
+            'edit'   => EditInvoice::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_INVOICES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_INVOICES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_INVOICES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_INVOICES->value) ?? false;
     }
 }

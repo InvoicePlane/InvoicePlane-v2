@@ -3,9 +3,11 @@
 namespace Modules\Expenses\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Expenses\Models\ExpenseCategory;
 use RuntimeException;
+use Throwable;
 
 class ExpenseCategoryService extends BaseService
 {
@@ -16,13 +18,13 @@ class ExpenseCategoryService extends BaseService
 
     public function createExpenseCategory(array $data): Model
     {
-        $companyId = session('current_company_id') ?? auth()->user()?->companies()->first()?->id;
+        $companyId = $this->getCompanyId();
 
         if ( ! $companyId) {
             throw new RuntimeException('Cannot create Expense Category: No current company ID.');
         }
 
-        return $this->create([
+        return ExpenseCategory::query()->create([
             'company_id'    => $companyId,
             'category_name' => $data['category_name'],
         ]);
@@ -30,7 +32,7 @@ class ExpenseCategoryService extends BaseService
 
     public function updateExpenseCategory(ExpenseCategory $model, array $data): ExpenseCategory
     {
-        $companyId = session('current_company_id') ?? auth()->user()?->companies()->first()?->id;
+        $companyId = $this->getCompanyId();
 
         if ( ! $companyId) {
             throw new RuntimeException('Cannot update Expense Category: No current company ID.');
@@ -42,5 +44,19 @@ class ExpenseCategoryService extends BaseService
         ]);
 
         return $model;
+    }
+
+    public function deleteExpenseCategory(ExpenseCategory $expenseCategory): ExpenseCategory
+    {
+        DB::beginTransaction();
+        try {
+            $expenseCategory->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $expenseCategory;
     }
 }

@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Expenses\Models\ExpenseItem;
 
 class ExpenseItemsTable
 {
@@ -70,12 +71,27 @@ class ExpenseItemsTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(
+                            fn (array $data, ExpenseItem $record) => array_merge($data, [
+                                'product_name' => $record->product?->product_name ?? '',
+                            ])
+                        )
+                        ->action(function (ExpenseItem $record, array $data) {
+                            $record->update($data);
+
+                            if ($expense = $record->expense) {
+                                $expense->update([
+                                    'expense_amount' => $expense->expenseItems()->sum('subtotal'),
+                                ]);
+                            }
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

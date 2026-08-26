@@ -20,11 +20,11 @@ enum PaymentMethod: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::BANK_TRANSFER => 'Bank Transfer',
-            self::CASH          => 'Cash',
-            self::CREDIT_CARD   => 'Credit Card',
-            self::PAYPAL        => 'PayPal',
-            self::STRIPE        => 'Stripe',
+            self::BANK_TRANSFER => trans('ip.payment_method_bank_transfer'),
+            self::CASH          => trans('ip.payment_method_cash'),
+            self::CREDIT_CARD   => trans('ip.payment_method_credit_card'),
+            self::PAYPAL        => trans('ip.payment_method_paypal'),
+            self::STRIPE        => trans('ip.payment_method_stripe'),
         };
     }
 

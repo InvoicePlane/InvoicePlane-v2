@@ -7,11 +7,14 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.1",
-        "axios": "^1.8",
-        "concurrently": "^9.1",
-        "laravel-vite-plugin": "^1.2",
-        "tailwindcss": "^4.1",
-        "vite": "^6.3"
+        "@tailwindcss/vite": "^4.3",
+        "axios": "^1.17",
+        "concurrently": "^10.0",
+        "laravel-vite-plugin": "^3.1",
+        "tailwindcss": "^4.3",
+        "vite": "^8.0"
+    },
+    "dependencies": {
+        "signature_pad": "^5.1.4"
     }
 }

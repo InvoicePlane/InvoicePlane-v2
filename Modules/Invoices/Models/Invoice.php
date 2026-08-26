@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,16 +12,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Clients\Models\Customer;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\MailQueue;
 use Modules\Core\Models\Note;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Core\Traits\HasNotesAttribute;
 use Modules\Expenses\Models\Expense;
 use Modules\Invoices\Database\Factories\InvoiceFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -28,45 +30,50 @@ use Modules\Payments\Models\Payment;
 use Modules\Quotes\Models\Quote;
 
 /**
- * @property int                             $id
- * @property int                             $company_id
- * @property int                             $customer_id
- * @property int                             $group_id
- * @property int                             $user_id
- * @property string|null                     $number
- * @property Carbon                          $invoiced_at
- * @property int                             $invoice_status_id
- * @property Carbon                          $due_at
- * @property string                          $url_key
- * @property string|null                     $currency_code
- * @property float                           $exchange_rate
- * @property bool                            $is_viewed
- * @property string                          $sign
- * @property float                           $subtotal
- * @property float|null                      $item_tax_total
- * @property float                           $tax
- * @property float                           $total
- * @property float                           $paid
- * @property float                           $balance
- * @property float                           $discount
- * @property string|null                     $template
- * @property string|null                     $summary
- * @property string|null                     $terms
- * @property string|null                     $footer
- * @property Company                         $company
- * @property Customer                        $customer
- * @property DocumentGroup                   $group
- * @property User                            $user
- * @property Collection|Expense[]            $expenses
- * @property Collection|InvoiceItem[]        $invoice_items
- * @property Collection|TaxRate[]            $tax_rates
- * @property Collection|InvoiceTransaction[] $invoice_transactions
- * @property Collection|Payment[]            $payments
+ * @property int                      $id
+ * @property int                      $company_id
+ * @property int                      $customer_id
+ * @property int                      $group_id
+ * @property int                      $user_id
+ * @property string|null              $number
+ * @property CarbonInterface          $invoiced_at
+ * @property int                      $invoice_status_id
+ * @property CarbonInterface          $due_at
+ * @property string                   $url_key
+ * @property string|null              $currency_code
+ * @property float                    $exchange_rate
+ * @property bool                     $is_viewed
+ * @property string                   $sign
+ * @property float                    $subtotal
+ * @property float|null               $item_tax_total
+ * @property float                    $tax
+ * @property float                    $total
+ * @property float                    $paid
+ * @property float                    $balance
+ * @property float                    $discount
+ * @property string|null              $template
+ * @property string|null              $summary
+ * @property string|null              $terms
+ * @property string|null              $footer
+ * @property string|null              $company_name
+ * @property string|null              $company_vat_number
+ * @property string|null              $company_id_number
+ * @property string|null              $company_coc_number
+ * @property Company                  $company
+ * @property Customer                 $customer
+ * @property Numbering                $group
+ * @property User                     $user
+ * @property Collection|Expense[]     $expenses
+ * @property Collection|InvoiceItem[] $invoice_items
+ * @property Collection|TaxRate[]     $tax_rates
+ * @property Collection|Payment[]     $payments
  */
 class Invoice extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use HasNotesAttribute;
+    use SoftDeletes;
 
     public $timestamps = false;
 
@@ -94,31 +101,6 @@ class Invoice extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?MorphMany
-    {
-        //return $this->morphMany(Activity::class, 'audit');
-        return null;
-    }
-
-    public function attachments(): ?MorphMany
-    {
-        // return $this->morphMany(Attachment::class, 'attachable');
-        return null;
-    }
-
-    public function clientAttachments(): MorphMany
-    {
-        $relationship = $this->morphMany('Attachment', 'attachable');
-
-        if ($this->status_text == 'paid') {
-            $relationship->whereIn('client_visibility', [1, 2]);
-        } else {
-            $relationship->where('client_visibility', 1);
-        }
-
-        return $relationship;
-    }
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
@@ -134,9 +116,9 @@ class Invoice extends Model
         return $this->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
-        return $this->belongsTo(DocumentGroup::class, 'document_group_id');
+        return $this->belongsTo(Numbering::class, 'numbering_id');
     }
 
     public function expenses(): HasMany
@@ -177,11 +159,6 @@ class Invoice extends Model
             ->withPivot('id', 'include_item_tax', 'tax_total');
     }
 
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(InvoiceTransaction::class);
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -192,12 +169,69 @@ class Invoice extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for invoice_due_at.
+     *
+     * @return string
+     */
+    public function getDueIntensityAttribute(): string
+    {
+        if ( ! $this->invoice_due_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->invoice_due_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
 
     /*
     |--------------------------------------------------------------------------
     | Scopes
     |--------------------------------------------------------------------------
     */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $invoiceLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('invoice_status', [InvoiceStatus::DRAFT, InvoiceStatus::PAID])
+            ->orderBy('invoice_due_at', 'desc')
+            ->orderBy('invoice_status', 'asc')
+            ->limit($invoiceLimit);
+    }
+
+    public function delete(): bool
+    {
+        // When called re-entrantly from forceDelete(), delegate straight to Model::delete()
+        // so SoftDeletes::performDeleteOnModel() can do the actual hard delete.
+        // Without this guard, our trashed() check triggers forceDelete() → delete() → ∞.
+        if ($this->isForceDeleting()) {
+            return parent::delete();
+        }
+
+        if ($this->trashed()) {
+            $this->forceDelete();
+
+            return false;
+        }
+
+        return parent::delete();
+    }
 
     /*
     |--------------------------------------------------------------------------

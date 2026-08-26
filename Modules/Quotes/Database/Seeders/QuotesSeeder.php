@@ -2,34 +2,29 @@
 
 namespace Modules\Quotes\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
+use Modules\Core\Enums\NumberingType;
 use Modules\Quotes\Models\Quote;
-use Modules\Quotes\Models\QuoteItem;
 
-class QuotesSeeder extends Seeder
+class QuotesSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Quotes';
+
+    protected int $defaultCount = 10;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            foreach ([
-                ['quote_status' => 'draft', 'count' => 1],
-                ['quote_status' => 'sent', 'count' => 2],
-                ['quote_status' => 'viewed', 'count' => 2],
-                ['quote_status' => 'approved', 'count' => 3],
-                ['quote_status' => 'canceled', 'count' => 2],
-            ] as $config) {
-                Quote::factory()
-                    ->state(['company_id' => $company->id])
-                    ->{$config['quote_status']}()
-                    ->count($config['count'])
-                    ->create()
-                    ->each(function (Quote $quote): void {
-                        QuoteItem::factory()
-                            ->count(random_int(2, 3))
-                            ->create(['quote_id' => $quote->id]);
-                    });
-            }
-        });
+        $prospect      = $this->findOrCreateProspect($this->companyId);
+        $documentGroup = $this->findOrCreateNumbering($this->companyId, NumberingType::QUOTE);
+        $user          = $this->findOrCreateUser($this->companyId);
+
+        Quote::factory()
+            ->state([
+                'company_id'   => $this->companyId,
+                'prospect_id'  => $prospect->id,
+                'numbering_id' => $documentGroup->id,
+                'user_id'      => $user->id,
+            ])
+            ->create();
     }
 }

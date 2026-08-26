@@ -2,13 +2,17 @@
 
 namespace Modules\Payments\Filament\Company\Resources\Payments\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Payments\Models\Payment;
+use Modules\Payments\Services\PaymentService;
 
 class PaymentsTable
 {
@@ -16,8 +20,14 @@ class PaymentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('payment_number')
+                    ->label(trans('ip.payment_number'))
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('paid_at')
                     ->date('d-m-Y')
+                    ->since()
                     ->color(
                         fn (Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
                             ? 'maroon'
@@ -40,7 +50,7 @@ class PaymentsTable
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                TextColumn::make('invoice.documentGroup.name')
+                TextColumn::make('invoice.numbering.name')
                     ->limit(10)
                     ->label(trans('ip.invoice_group'))
                     ->hiddenFrom('xl')
@@ -57,23 +67,41 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('payment_method')
                     ->label(trans('ip.payment_method'))
-                    ->formatStateUsing(fn ($state) => trans('ip.' . $state))
+                    ->formatStateUsing(fn ($state) => $state?->label() ?? '')
                     ->limit(10)
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PAYMENTS->value))
+                        ->action(function (Payment $record, array $data) {
+                            app(PaymentService::class)->updatePayment($record, $data);
+                        })
+                        ->modalWidth('full'),
+                    Action::make('email_receipt')
+                        ->visible(fn () => auth()->user()?->can(Permission::EMAIL_PAYMENTS->value))
+                        ->label(trans('ip.send_email'))
+                        ->action(function (Payment $record): void {}),
+                    Action::make('refund')
+                        ->visible(fn () => auth()->user()?->can(Permission::REFUND_PAYMENTS->value))
+                        ->label(trans('ip.refund'))
+                        ->action(function (Payment $record): void {}),
+                    DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PAYMENTS->value))
+                        ->action(function (Payment $record, array $data) {
+                            app(PaymentService::class)->deletePayment($record);
+                        }),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PAYMENTS->value)),
                 ]),
-            ]);
+            ])->defaultSort('paid_at', 'desc');
     }
 }

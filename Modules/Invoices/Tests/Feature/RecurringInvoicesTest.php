@@ -4,7 +4,6 @@ namespace Modules\Invoices\Tests\Feature;
 
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\RecurringFrequency;
@@ -12,6 +11,7 @@ use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Pages\CreateRe
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Pages\EditRecurringInvoice;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Pages\ListRecurringInvoices;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\RecurringInvoiceResource;
+use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\RecurringInvoice;
 use Modules\Products\Models\Product;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(RecurringInvoiceResource::class)]
+#[Group('slow')]
 class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
 {
     protected User $user;
@@ -30,12 +31,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -65,12 +66,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -105,12 +106,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -133,12 +134,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -164,7 +165,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
      * {
      * "company_id": "Value",
      * "invoice_id": "Value",
-     * "document_group_id": "Value",
+     * "numbering_id": "Value",
      * "frequency": "Value",
      * "end_at": "2025-04-30"
      * }
@@ -172,12 +173,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     public function it_fails_to_create_recurringinvoice_without_required_start_at(): void
     {
         $this->markTestIncomplete();
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -189,10 +190,10 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)->test(CreateRecurringInvoice::class)->fillForm($payload)->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
@@ -206,12 +207,12 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
-        $company       = $this->user->companies()->first();
-        $user          = $this->user;
-        $customer      = Relation::factory()->for($company)->customer()->create();
-        $documentGroup = DocumentGroup::factory()->for($company)->create();
-        $product       = Product::factory()->for($company)->create();
+        /* Arrange */
+        $company  = $this->user->companies()->first();
+        $user     = $this->user;
+        $customer = Relation::factory()->for($company)->customer()->create();
+        $invoice  = Invoice::factory()->for($company)->create();
+        $product  = Product::factory()->for($company)->create();
 
         /** @payload */
         $payload = [
@@ -237,7 +238,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $recurring = RecurringInvoice::factory()
             ->for($this->user->companies()->first())
@@ -271,7 +272,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
      * {
      * "company_id": "Value",
      * "invoice_id": "Value",
-     * "document_group_id": "Value",
+     * "numbering_id": "Value",
      * "frequency": "Value",
      * "start_at": "2025-04-30",
      * "end_at": "2025-04-30"
@@ -281,25 +282,25 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         //$this->actingAs(User::factory()->create());
 
         $record = RecurringInvoice::factory()->create();
 
         $payload = [
-            'company_id'        => 'Value',
-            'invoice_id'        => 'Value',
-            'document_group_id' => 'Value',
-            'frequency'         => 'Value',
-            'start_at'          => '2025-04-30',
-            'end_at'            => '2025-04-30',
+            'company_id'   => 'Value',
+            'invoice_id'   => 'Value',
+            'numbering_id' => 'Value',
+            'frequency'    => 'Value',
+            'start_at'     => '2025-04-30',
+            'end_at'       => '2025-04-30',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)->test(EditRecurringInvoice::class, ['record' => $record->getKey()])->fillForm($payload)->call('save');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors();
 
         if (app()->isLocal()) {
@@ -317,7 +318,7 @@ class RecurringInvoicesTest extends AbstractCompanyPanelTestCase
     {
         $this->markTestIncomplete();
 
-        /* arrange */
+        /* Arrange */
 
         $this->markTestIncomplete('Delete test needs confirmation logic.');
 

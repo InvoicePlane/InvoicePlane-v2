@@ -2,41 +2,31 @@
 
 namespace Modules\Projects\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
-/**
- * @extends Factory<\Modules\Projects\Models\Project>
- */
-class ProjectFactory extends Factory
+class ProjectFactory extends AbstractFactory
 {
     protected $model = Project::class;
 
+    protected $company;
+
     public function definition(): array
     {
-        $company = Company::query()
-            ->inRandomOrder()
-            ->first()
-    ?: Company::factory()->create();
-        $customer = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)
-            ->inRandomOrder()
-            ->first()
-            ?? Relation::factory()
-                ->customer() // assume you have a customer() state on RelationFactory
-                ->create();
         $status    = $this->faker->randomElement(ProjectStatus::cases());
-        $startDate = $this->faker->optional()->dateTimeBetween('-4 years', '+2 years');
+        $startDate = $this->faker->dateTimeBetween('-4 years', '+2 years');
         $endDate   = $startDate
-            ? $this->faker->optional()->dateTimeBetween($startDate, '+2 years')
+            ? $this->faker->optional(0.7)->dateTimeBetween($startDate, '+2 years')
             : null;
 
+        $companyId = $this->resolveCompanyId();
+
         return [
-            'company_id'     => $company->id,
-            'customer_id'    => $customer->id,
+            'company_id'     => $companyId,
+            'customer_id'    => $this->resolveForeignKey(Relation::class, $companyId),
+            'project_number' => $this->faker->unique()->numerify('PRJ-#####'),
             'project_status' => $status->value,
             'project_name'   => $this->faker->sentence(),
             'start_at'       => $startDate?->format('Y-m-d'),

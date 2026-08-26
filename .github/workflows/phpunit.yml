@@ -1,5 +1,8 @@
 name: Run PHPUnit Tests
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:  # Manual only — does not run automatically
 
@@ -8,45 +11,66 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8
+      mariadb:
+        image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing
+          MYSQL_DATABASE: invoiceplane_test
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
+
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: invoiceplane_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer
+        uses: ./.github/actions/setup-php-composer
         with:
-          php-version: '8.3'
-          extensions: mbstring, bcmath, pdo_mysql
-          coverage: none
+          php-version: '8.4'
+          php-extensions: 'mbstring, bcmath, pdo_mysql'
+          composer-flags: '--no-progress --prefer-dist --optimize-autoloader'
 
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
 
-      - name: Copy .env.testing
-        run: cp .env.testing.example .env.testing
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
 
-      - name: Wait for MySQL to be ready
+      - name: Build frontend assets
+        # Feature tests render real Blade views with @vite(...) directives
+        # (e.g. GuestQuoteViewTest exercises resources/css/guest.css) — without
+        # a built manifest those fail with "Unable to locate file in Vite
+        # manifest", not a PHP bug. quickstart.yml already builds assets before
+        # its own artisan test run for the same reason; mirror that here.
+        run: yarn build
+
+      - name: Prepare Laravel environment
         run: |
-          echo "Waiting for MySQL..."
-          sleep 15
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
 
-      #- name: Run Laravel migrations
-      #  run: php artisan migrate --force --env=testing
-
-      #- name: Run Laravel seeds (optional)
-      #  run: php artisan db:seed --force --env=testing
+      - name: Run Laravel migrations
+        run: php artisan migrate --force --env=testing
 
       - name: Run PHPUnit
+        # No --exclude-group flag here on purpose: passing it explicitly on the
+        # CLI was found to override (not add to) phpunit.xml's own <groups>
+        # <exclude> config, causing failing/flaky/troubleshooting-tagged tests
+        # to run anyway — confirmed by testing both ways. phpunit.xml's own
+        # config already excludes them; rely on that instead.
         run: php artisan test --env=testing

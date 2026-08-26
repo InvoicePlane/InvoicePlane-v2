@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Schemas;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -13,9 +14,17 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
+use Modules\Core\Models\Setting;
+use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
+use Modules\Invoices\Models\Invoice;
+use Modules\Invoices\Services\InvoiceService;
 use Modules\Invoices\Support\InvoiceCalculator;
+use Modules\Invoices\Support\InvoiceNumberGenerator;
 use Modules\Products\Models\Product;
 
 class InvoiceForm
@@ -43,7 +52,7 @@ class InvoiceForm
                                             ->required()
                                             ->createOptionForm([
                                                 TextInput::make('company_name')
-                                                    ->label(trans('ip.client_name'))
+                                                    ->label(trans('ip.customer_name'))
                                                     ->required(),
                                             ])
                                             ->reactive(),
@@ -62,7 +71,15 @@ class InvoiceForm
                                     ->schema([
                                         TextInput::make('invoice_number')
                                             ->label(trans('ip.invoice_number'))
-                                            ->required(),
+                                            ->required()
+                                            ->default(function (Get $get, string $operation) {
+                                                if ($operation !== 'create') {
+                                                    return;
+                                                }
+
+                                                return self::generateInvoiceNumber($get);
+                                            })
+                                            ->dehydrated(),
 
                                         Select::make('invoice_status')
                                             ->label(trans('ip.invoice_status'))
@@ -79,15 +96,61 @@ class InvoiceForm
                                             ->searchable()
                                             ->preload()
                                             ->native(false)
-                                            ->required(),
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(function (callable $set, Get $get, string $operation): void {
+                                                // Only (re)generate on create, and only when the field is still
+                                                // empty -- never clobber a number the user already typed or one
+                                                // that was already generated for this record.
+                                                if ($operation !== 'create' || filled($get('invoice_number'))) {
+                                                    return;
+                                                }
+
+                                                $set('invoice_number', self::generateInvoiceNumber($get));
+                                            }),
 
                                         DatePicker::make('invoiced_at')
                                             ->label(trans('ip.invoice_date'))
+                                            ->default(now())
                                             ->required(),
 
                                         DatePicker::make('invoice_due_at')
                                             ->label(trans('ip.invoice_due_at'))
                                             ->required(),
+
+                                        Placeholder::make('last_reminder_sent')
+                                            ->label(trans('ip.last_reminder_sent'))
+                                            ->visible(fn (string $operation): bool => $operation === 'edit')
+                                            ->content(function (?Invoice $record) {
+                                                $lastSentAt = $record ? app(InvoiceService::class)->lastReminderSentAt($record) : null;
+
+                                                return $lastSentAt
+                                                    ? DateHelpers::formatDate($lastSentAt)
+                                                    : trans('ip.reminder_never_sent');
+                                            }),
+
+                                        Select::make('numbering_id')
+                                            ->label(trans('ip.numbering'))
+                                            ->relationship('numbering', 'name', fn ($query) => $query->where('type', NumberingType::INVOICE->value))
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false)
+                                            ->exists(
+                                                table: 'numbering',
+                                                column: 'id',
+                                                modifyRuleUsing: fn ($rule) => $rule
+                                                    ->where('type', NumberingType::INVOICE->value)
+                                                    ->where('company_id', Filament::getTenant()?->id),
+                                            ),
+
+                                        TextInput::make('client_reference')
+                                            ->label(trans('ip.client_reference'))
+                                            ->maxLength(255),
+
+                                        TextInput::make('work_order')
+                                            ->label(trans('ip.work_order'))
+                                            ->maxLength(255),
 
                                         TextInput::make('invoice_password')
                                             ->label(trans('ip.invoice_password')),
@@ -103,11 +166,12 @@ class InvoiceForm
                     ->collapsed()
                     ->schema([
                         Repeater::make('invoiceItems')
+                            ->defaultItems(0)
                             ->relationship('invoiceItems')
                             ->label(trans('ip.invoice_items'))
                             ->reorderable()
-                            ->addActionLabel(trans('ip.add_row'))
-                            ->dehydrated()
+                            ->addActionLabel(trans('ip.add_new_row'))
+                            //->dehydrated()
                             ->schema([
                                 Grid::make(6) // Adjust the number of columns as needed
                                     ->schema([
@@ -147,6 +211,13 @@ class InvoiceForm
                             ])
                             ->columns(1)
                             ->reactive()
+                            /*->afterStateHydrated(function ($component, $state) {
+                                // overwrite any stray default state with what the request provided
+                                if (is_array($state) && $state !== []) {
+                                    // Normalize to numeric keys so Livewire/Filament don’t try to merge by UUID
+                                    $component->rawState(array_values($state));
+                                }
+                            })*/
                             ->afterStateUpdated(fn (callable $set, callable $get) => (new InvoiceCalculator())->updateGrandTotal($set, $get, 'invoiceItems', 'subtotal', 'invoice_item_subtotal')),
                     ])
                     ->columnSpanFull(),
@@ -207,7 +278,8 @@ class InvoiceForm
                             ->schema([
                                 MarkdownEditor::make('notes')
                                     ->label(trans('ip.notes'))
-                                    ->toolbarButtons(['bold', 'italic']),
+                                    ->toolbarButtons(['bold', 'italic'])
+                                    ->hintAction(InsertNoteTemplateAction::make('notes')),
                             ])
                             ->columnSpan(1),
 
@@ -227,9 +299,43 @@ class InvoiceForm
                     ->schema([
                         MarkdownEditor::make('invoice_terms')
                             ->toolbarButtons(['bold', 'italic'])
-                            ->label(trans('ip.invoice_terms')),
+                            ->label(trans('ip.invoice_terms'))
+                            ->hintAction(InsertNoteTemplateAction::make('invoice_terms')),
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Generate an invoice number for the create form, respecting the
+     * generate_invoice_number_for_draft setting (default true) for draft
+     * status. Returns null when generation is skipped or no numbering
+     * scheme is available.
+     */
+    private static function generateInvoiceNumber(Get $get): ?string
+    {
+        $status = $get('invoice_status') ?? InvoiceStatus::DRAFT->value;
+
+        if (
+            $status === InvoiceStatus::DRAFT->value
+            && ! Setting::getBool('generate_invoice_number_for_draft')
+        ) {
+            return null;
+        }
+
+        $companyId = auth()->user()?->getCurrentCompanyId();
+        $generator = new InvoiceNumberGenerator($companyId);
+
+        // Prefer the explicitly selected numbering scheme; otherwise fall
+        // back to any Invoice-type scheme for the company instead of the
+        // generator's conventional "Default Invoice Numbering" group name,
+        // which seeded/company-created schemes won't necessarily carry.
+        if ($numberingId = $get('numbering_id')) {
+            $generator->forNumberingId((int) $numberingId);
+        } else {
+            $generator->forNumbering('');
+        }
+
+        return $generator->generate();
     }
 }

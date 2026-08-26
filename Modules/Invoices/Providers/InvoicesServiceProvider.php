@@ -4,13 +4,10 @@ namespace Modules\Invoices\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Models\Schedule;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
 use Modules\Invoices\Observers\InvoiceItemObserver;
 use Modules\Invoices\Observers\InvoiceObserver;
-use Modules\Quotes\Providers\EventServiceProvider;
-use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

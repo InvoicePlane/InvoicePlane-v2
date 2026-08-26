@@ -3,23 +3,53 @@
 namespace Modules\Invoices\Observers;
 
 use Modules\Core\Observers\AbstractObserver;
+use Modules\Invoices\Models\Invoice;
+use RuntimeException;
 
 class InvoiceObserver extends AbstractObserver
 {
-    /*public static function boot(): void
+    /**
+     * Handle the Invoice "saving" event.
+     * Prevent duplicate invoice numbers within the same company.
+     * Allows multiple nulls (for draft invoices).
+     * Credit notes may share the same number as their parent invoice.
+     */
+    public function saving(Invoice $invoice): void
     {
-        parent::boot();
+        if ($invoice->invoice_number !== null) {
+            $query = Invoice::withoutGlobalScopes()
+                ->where('company_id', $invoice->company_id)
+                ->where('invoice_number', $invoice->invoice_number)
+                ->where('id', '!=', $invoice->id ?? 0);
 
-        static::creating(function ($invoice): void {
-            //event(new InvoiceCreating($invoice));
-        });
+            // A credit note of this invoice is allowed to share its number
+            if ($invoice->id) {
+                $query->where(function ($q) use ($invoice): void {
+                    $q->whereNull('creditinvoice_parent_id')
+                        ->orWhere('creditinvoice_parent_id', '!=', $invoice->id);
+                });
+            }
 
-        static::created(function ($invoice): void {
-            //event(new InvoiceCreated($invoice));
-        });
+            // This invoice is a credit note — its parent sharing the same number is fine
+            if ($invoice->creditinvoice_parent_id) {
+                $query->where('id', '!=', $invoice->creditinvoice_parent_id);
+            }
 
-        static::deleted(function ($invoice): void {
-            //event(new InvoiceDeleted($invoice));
-        });
-    }*/
+            if ($query->exists()) {
+                throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
+            }
+        }
+    }
+
+    /**
+     * Prevent deleting an invoice while its credit notes still refer to it.
+     */
+    public function deleting(Invoice $invoice): void
+    {
+        if (Invoice::withoutGlobalScopes()
+            ->where('creditinvoice_parent_id', $invoice->id)
+            ->exists()) {
+            throw new RuntimeException('An invoice with a credit note cannot be deleted.');
+        }
+    }
 }

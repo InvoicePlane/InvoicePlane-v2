@@ -34,9 +34,12 @@ class ProductUnit extends Model
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
     public function expense_items(): HasMany
     {
         return $this->hasMany(ExpenseItem::class, 'unit_id');
@@ -52,9 +55,11 @@ class ProductUnit extends Model
         return $this->hasMany(Product::class, 'unit_id');
     }
 
-    //
-    // Factory
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProductUnitFactory::new();

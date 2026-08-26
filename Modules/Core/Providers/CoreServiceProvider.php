@@ -4,9 +4,8 @@ namespace Modules\Core\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Models\Schedule;
-use Modules\Quotes\Providers\EventServiceProvider;
-use Modules\Quotes\Providers\RouteServiceProvider;
+use Modules\Core\Models\Company;
+use Modules\Core\Observers\CompanyObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -24,27 +23,17 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
+        $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
+
+        Company::observe(CompanyObserver::class);
     }
 
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-    }
-
-    public function registerTranslations(): void
-    {
-        $langPath = resource_path('lang/modules/' . $this->nameLower);
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'resources/lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'resources/lang'));
-        }
     }
 
     public function registerViews(): void
@@ -60,6 +49,19 @@ class CoreServiceProvider extends ServiceProvider
         Blade::componentNamespace($componentNamespace, $this->nameLower);
     }
 
+    public function registerTranslations(): void
+    {
+        $langPath = resource_path('lang/modules/' . $this->nameLower);
+
+        if (is_dir($langPath)) {
+            $this->loadTranslationsFrom($langPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($langPath);
+        } else {
+            $this->loadTranslationsFrom(module_path($this->name, 'resources/lang'), $this->nameLower);
+            $this->loadJsonTranslationsFrom(module_path($this->name, 'resources/lang'));
+        }
+    }
+
     public function provides(): array
     {
         return [];
@@ -67,7 +69,11 @@ class CoreServiceProvider extends ServiceProvider
 
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Core\Commands\MigrateV1Command::class,
+            \Modules\Core\Commands\MakeUserCommand::class,
+            \Modules\Core\Commands\GenerateObservers::class,
+        ]);
     }
 
     protected function registerCommandSchedules(): void

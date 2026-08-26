@@ -21,12 +21,12 @@ enum ProductType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::PRODUCT  => 'Product',
-            self::SERVICE  => 'Service',
-            self::HOURS    => 'Billable Hours',
-            self::PACKAGE  => 'Package',
-            self::DOWNLOAD => 'Download',
-            self::EXPENSE  => 'Expense',
+            self::PRODUCT  => trans('ip.product'),
+            self::SERVICE  => trans('ip.service'),
+            self::HOURS    => trans('ip.billable_hours'),
+            self::PACKAGE  => trans('ip.package'),
+            self::DOWNLOAD => trans('ip.download'),
+            self::EXPENSE  => trans('ip.expense'),
         };
     }
 

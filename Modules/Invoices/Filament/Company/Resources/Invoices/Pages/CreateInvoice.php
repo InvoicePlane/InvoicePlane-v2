@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Services\InvoiceService;
 
+use function request;
+
 class CreateInvoice extends CreateRecord
 {
     protected static string $resource = InvoiceResource::class;
@@ -25,8 +27,6 @@ class CreateInvoice extends CreateRecord
 
         $this->record = $this->handleRecordCreation($data);
 
-        $this->form->model($this->getRecord())->saveRelationships();
-
         $this->callHook('afterCreate');
         $this->rememberData();
 
@@ -43,8 +43,37 @@ class CreateInvoice extends CreateRecord
         $this->redirect($this->getRedirectUrl());
     }
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        if ($customerId = request()->integer('customer_id')) {
+            $this->form->fill(['customer_id' => $customerId]);
+        }
+    }
+
     protected function handleRecordCreation(array $data): Model
     {
         return app(InvoiceService::class)->createInvoice($data);
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        $number = $this->record?->invoice_number;
+
+        if (filled($number)) {
+            return trans('ip.invoice_created_with_number', ['number' => $number]);
+        }
+
+        return parent::getCreatedNotificationTitle();
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if ($customerId = request()->integer('customer_id')) {
+            $data['customer_id'] = $customerId;
+        }
+
+        return $data;
     }
 }
