@@ -63,3 +63,13 @@ export function deleteReportTemplateFixture(slug) {
 export function spacerBrick(height, width = 'full') {
   return { brick: 'spacer', width, config: { height } };
 }
+
+/** General brick entry helper */
+export function brickEntry(brick, config = {}, width = 'full') {
+  return { brick, width, config };
+}
+
+/** Get band iframe handle by band name */
+export function bandFrame(page, band) {
+  return page.frame({ name: `mason-preview-iframe-data.bands.${band}` });
+}
