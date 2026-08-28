@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\MailQueue;
+use Modules\Core\Models\MerchantClient;
 use Modules\Core\Models\Note;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Invoices\Models\Invoice;

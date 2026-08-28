@@ -2,25 +2,9 @@
 
 namespace Modules\Payments\Models;
 
-use Illuminate\Database\Eloquent\Model;
+// Alias for backward compatibility — the model was moved to Modules\Core\Models\MerchantClient
+use Modules\Core\Models\MerchantClient as BaseMerchantClient;
 
-/**
- * Class MerchantClient.
- *
- * @property int    $id
- * @property int    $customer_id
- * @property string $driver
- * @property string $merchant_key
- * @property string $merchant_value
- */
-class MerchantClient extends Model
+class MerchantClient extends BaseMerchantClient
 {
-    public $timestamps = false;
-
-    protected $table = 'merchant_clients';
-
-    protected $casts = [
-    ];
-
-    protected $guarded = [];
 }

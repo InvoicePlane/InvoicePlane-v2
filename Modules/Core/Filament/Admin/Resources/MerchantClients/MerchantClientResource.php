@@ -10,7 +10,7 @@ use Filament\Tables\Table;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Pages\ListMerchantClients;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Schemas\MerchantClientForm;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Tables\MerchantClientsTable;
-use Modules\Payments\Models\MerchantClient;
+use Modules\Core\Models\MerchantClient;
 
 class MerchantClientResource extends Resource
 {
