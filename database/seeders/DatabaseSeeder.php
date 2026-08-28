@@ -21,6 +21,7 @@ use Modules\Products\Database\Seeders\ProductsSeeder;
 use Modules\Projects\Database\Seeders\ProjectsSeeder;
 use Modules\Projects\Database\Seeders\TasksSeeder;
 use Modules\Quotes\Database\Seeders\QuotesSeeder;
+use Modules\Subscriptions\Database\Seeders\SubscriptionSeeder;
 use RuntimeException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
@@ -96,6 +97,8 @@ class DatabaseSeeder extends Seeder
             $this->callWith(InvoicesSeeder::class, $p + ['count' => $this->volumes['invoices']]);
 
             $this->callWith(PaymentsSeeder::class, $p + ['count' => $this->volumes['payments']]);
+
+            $this->callWith(SubscriptionSeeder::class, $p);
 
             (new TaxRatesSeeder())->buildOne($company->id);
 

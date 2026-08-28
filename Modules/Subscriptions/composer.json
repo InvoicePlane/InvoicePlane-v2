@@ -1,0 +1,23 @@
+{
+    "name": "invoiceplane/subscriptions",
+    "description": "Subscriptions Module for InvoicePlane v2",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Subscriptions\\": "",
+            "Modules\\Subscriptions\\Database\\Factories\\": "Database/Factories/",
+            "Modules\\Subscriptions\\Database\\Seeders\\": "Database/Seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Subscriptions\\Tests\\": "Tests/"
+        }
+    }
+}

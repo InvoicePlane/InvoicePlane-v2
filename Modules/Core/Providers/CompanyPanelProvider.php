@@ -19,6 +19,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Str;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Clients\Filament\Company\Resources\Contacts\ContactResource;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
@@ -48,6 +49,7 @@ use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
+use Modules\Subscriptions\Filament\Company\Resources\Subscriptions\SubscriptionResource;
 
 class CompanyPanelProvider extends PanelProvider
 {
@@ -81,7 +83,7 @@ class CompanyPanelProvider extends PanelProvider
                 $tenant = request('tenant');
                 //\Filament\Facades\Filament::getTenant()?->search_code
 
-                return route('filament.company.pages.dashboard', ['tenant' => $tenant]);
+                return route('filament.company.pages.dashboard', ['tenant' => Str::lower($tenant)]);
             })
 
             ->tenantMiddleware([
@@ -169,6 +171,7 @@ class CompanyPanelProvider extends PanelProvider
                 ExpenseCategoryResource::class,
                 InvoiceResource::class,
                 PaymentResource::class,
+                SubscriptionResource::class,
                 ProductResource::class,
                 ProductUnitResource::class,
                 ProductCategoryResource::class,
@@ -200,44 +203,49 @@ class CompanyPanelProvider extends PanelProvider
 
                 return $builder
                     ->items([
-                        NavigationItem::make('Dashboard')
+                        NavigationItem::make(trans('ip.dashboard'))
                             ->icon('heroicon-o-home')
-                            ->url(route('filament.company.pages.dashboard', ['tenant' => $tenant]))
+                            ->url(route('filament.company.pages.dashboard', ['tenant' => Str::lower($tenant)]))
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.dashboard')),
                     ])
                     ->groups([
-                        NavigationGroup::make('Customers')
+                        NavigationGroup::make(trans('ip.nav_group_customers'))
                             //->icon('heroicon-o-user-group')
                             ->items([
                                 ...self::withQuickCreate(RelationResource::class),
                             ]),
 
-                        NavigationGroup::make('Quotes')
+                        NavigationGroup::make(trans('ip.nav_group_quotes'))
                             //->icon('heroicon-o-document-text')
                             ->items([
                                 ...self::withQuickCreate(QuoteResource::class),
                             ]),
 
-                        NavigationGroup::make('Invoices')
+                        NavigationGroup::make(trans('ip.nav_group_invoices'))
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...self::withQuickCreate(InvoiceResource::class),
                             ]),
 
-                        NavigationGroup::make('Expenses')
+                        NavigationGroup::make(trans('ip.subscriptions'))
+                            ->items([
+                                ...self::withQuickCreate(SubscriptionResource::class),
+                            ]),
+
+                        NavigationGroup::make(trans('ip.nav_group_expenses'))
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...self::withQuickCreate(ExpenseResource::class),
                                 ...(ExpenseCategoryResource::shouldRegisterNavigation() ? ExpenseCategoryResource::getNavigationItems() : []),
                             ]),
 
-                        NavigationGroup::make('Payments')
+                        NavigationGroup::make(trans('ip.nav_group_payments'))
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...self::withQuickCreate(PaymentResource::class),
                             ]),
 
-                        NavigationGroup::make('Resources')
+                        NavigationGroup::make(trans('ip.nav_group_resources'))
                             //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...self::withQuickCreate(ProductResource::class),
@@ -248,7 +256,7 @@ class CompanyPanelProvider extends PanelProvider
                                 ...TaskResource::getNavigationItems(),
                             ]),
 
-                        NavigationGroup::make('Settings')
+                        NavigationGroup::make(trans('ip.nav_group_settings'))
                             //->icon('heroicon-o-cog-6-tooth')
                             ->items([
                                 ...NoteTemplateResource::getNavigationItems(),
