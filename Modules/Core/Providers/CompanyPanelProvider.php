@@ -28,6 +28,11 @@ use Modules\Core\Filament\Company\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Company\Pages\CompanySettings;
 use Modules\Core\Filament\Company\Pages\Dashboard;
 use Modules\Core\Filament\Company\Pages\MyCompanies;
+use Modules\Core\Filament\Company\Pages\Reports\InvoicedByClientReport;
+use Modules\Core\Filament\Company\Pages\Reports\InvoicesPerClientReport;
+use Modules\Core\Filament\Company\Pages\Reports\InvoicingHistoryReport;
+use Modules\Core\Filament\Company\Pages\Reports\PaymentHistoryReport;
+use Modules\Core\Filament\Company\Pages\Reports\SalesByDateReport;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
 use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
@@ -186,6 +191,11 @@ class CompanyPanelProvider extends PanelProvider
                 EditProfile::class,
                 MyCompanies::class,
                 CompanySettings::class,
+                PaymentHistoryReport::class,
+                InvoicingHistoryReport::class,
+                InvoicedByClientReport::class,
+                SalesByDateReport::class,
+                InvoicesPerClientReport::class,
             ])
             ->widgets([
                 RecentQuotesWidget::class,
@@ -235,6 +245,15 @@ class CompanyPanelProvider extends PanelProvider
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...self::withQuickCreate(PaymentResource::class),
+                            ]),
+
+                        NavigationGroup::make(trans('ip.reports'))
+                            ->items([
+                                ...PaymentHistoryReport::getNavigationItems(),
+                                ...InvoicingHistoryReport::getNavigationItems(),
+                                ...InvoicedByClientReport::getNavigationItems(),
+                                ...SalesByDateReport::getNavigationItems(),
+                                ...InvoicesPerClientReport::getNavigationItems(),
                             ]),
 
                         NavigationGroup::make('Resources')

@@ -1122,6 +1122,24 @@ return [
     'variable_invoicing_contact_name'  => "The client's invoicing contact name (falls back to the primary contact)",
     'variable_invoicing_contact_email' => "The client's invoicing contact email (falls back to the primary contact)",
 
+    // Tabular reports (#145)
+    'export_csv'                        => 'Export CSV',
+    'date_from'                         => 'From',
+    'date_to'                           => 'To',
+    'all_clients'                       => 'All clients',
+    'payment_number'                    => 'Payment Number',
+    'average_value'                     => 'Average Value',
+    'report_payment_history'            => 'Payment History',
+    'report_invoicing_history'          => 'Invoicing History',
+    'report_invoiced_by_client'         => 'Invoiced Amount by Client',
+    'report_sales_by_date'              => 'Sales by Date',
+    'report_invoices_per_client'        => 'Invoices per Client',
+    'report_summary_payments'           => ':count payments — total :total',
+    'report_summary_invoicing'          => ':count invoices — total :total (paid :paid, outstanding :unpaid)',
+    'report_summary_invoiced_by_client' => ':clients clients — total invoiced :total',
+    'report_summary_sales_by_date'      => ':days days with paid invoices — revenue :total',
+    'report_summary_invoices_per_client' => ':clients clients — :invoices invoices',
+
     // Mason Report Builder
     'report_layout'              => 'Report Layout',
     'report_preview'             => 'Report Preview',
