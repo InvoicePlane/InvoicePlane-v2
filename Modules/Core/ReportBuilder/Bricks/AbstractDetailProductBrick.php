@@ -6,59 +6,58 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBlockWidth;
-use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\ReportBuilder\ReportBrick;
 
-class DetailExpenseBrick extends ReportBrick
+/**
+ * Shared shape for the per-document-type product detail bricks
+ * (DetailInvoiceProductBrick, DetailQuoteProductBrick): same columns, same
+ * config schema — only the id, labels, view slug, icon, allowed document
+ * type, and the data key they read differ per document type.
+ */
+abstract class AbstractDetailProductBrick extends ReportBrick
 {
-    public static function getId(): string
-    {
-        return 'detail_expense';
-    }
+    /**
+     * The Blade view directory under report-builder.bricks.* (e.g. 'detail-invoice-product').
+     */
+    abstract protected static function viewSlug(): string;
+
+    abstract protected static function labelKey(): string;
+
+    abstract protected static function configureLabelKey(): string;
+
+    abstract protected static function modalHeadingKey(): string;
 
     public static function getLabel(): string
     {
-        return trans('ip.expense_details');
-    }
-
-    public static function getIcon(): string|Htmlable|null
-    {
-        return new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>');
+        return trans(static::labelKey());
     }
 
     public static function getPreviewLabel(array $config): string
     {
-        return trans('ip.expense_details');
+        return trans(static::labelKey());
     }
 
     public static function toPreviewHtml(array $config): ?string
     {
-        return view('core::report-builder.bricks.detail-expense.preview', [
+        return view('core::report-builder.bricks.' . static::viewSlug() . '.preview', [
             'config' => $config,
         ])->render();
     }
 
     public static function toHtml(array $config, ?array $data = null): ?string
     {
-        return view('core::report-builder.bricks.detail-expense.index', [
+        return view('core::report-builder.bricks.' . static::viewSlug() . '.index', [
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
     }
 
-    public static function allowedTypes(): array
-    {
-        return [ReportTemplateType::INVOICE];
-    }
-
     public static function configureBrickAction(Action $action): Action
     {
         return $action
-            ->label(trans('ip.configure_expense_details'))
-            ->modalHeading(trans('ip.expense_details_settings'))
+            ->label(trans(static::configureLabelKey()))
+            ->modalHeading(trans(static::modalHeadingKey()))
             ->slideOver()
             ->fillForm(fn (array $arguments): ?array => $arguments['config'] ?? null)
             ->schema([
@@ -66,26 +65,26 @@ class DetailExpenseBrick extends ReportBrick
                     ->label(trans('ip.width'))
                     ->options(collect(ReportBlockWidth::cases())->mapWithKeys(fn ($case) => [$case->value => trans("ip.{$case->value}_width")]))
                     ->default(ReportBlockWidth::FULL->value),
-                Checkbox::make('show_expense_number')
-                    ->label(trans('ip.show_expense_number'))
+                Checkbox::make('show_sku')
+                    ->label(trans('ip.show_sku'))
                     ->default(true),
-                Checkbox::make('show_expense_date')
-                    ->label(trans('ip.show_expense_date'))
-                    ->default(true),
-                Checkbox::make('show_category')
-                    ->label(trans('ip.show_category'))
-                    ->default(true),
-                Checkbox::make('show_vendor')
-                    ->label(trans('ip.show_vendor'))
-                    ->default(false),
                 Checkbox::make('show_description')
                     ->label(trans('ip.show_description'))
                     ->default(true),
-                Checkbox::make('show_amount')
-                    ->label(trans('ip.show_amount'))
+                Checkbox::make('show_quantity')
+                    ->label(trans('ip.show_quantity'))
                     ->default(true),
-                Checkbox::make('show_status')
-                    ->label(trans('ip.show_status'))
+                Checkbox::make('show_unit_price')
+                    ->label(trans('ip.show_unit_price'))
+                    ->default(true),
+                Checkbox::make('show_tax')
+                    ->label(trans('ip.show_tax'))
+                    ->default(true),
+                Checkbox::make('show_discount')
+                    ->label(trans('ip.show_discount'))
+                    ->default(false),
+                Checkbox::make('show_total')
+                    ->label(trans('ip.show_total'))
                     ->default(true),
                 Checkbox::make('alternating_rows')
                     ->label(trans('ip.alternating_rows'))

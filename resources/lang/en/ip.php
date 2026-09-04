@@ -1242,6 +1242,7 @@ return [
     'template_deleted'          => 'Template deleted',
     'template_saved'            => 'Template saved',
     'template_not_editable'     => 'This template cannot be modified from this panel',
+    'invalid_template_name'     => 'That name cannot be turned into a valid template slug. Please use at least one letter or number.',
     'move_to_band'              => 'Move to band…',
     'from_band'                 => 'From band',
     'to_band'                   => 'To band',

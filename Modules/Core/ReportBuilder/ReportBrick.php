@@ -5,6 +5,7 @@ namespace Modules\Core\ReportBuilder;
 use Awcodes\Mason\Brick;
 use Filament\Actions\Action;
 use Modules\Core\Enums\ReportBand;
+use Modules\Core\Enums\ReportTemplateType;
 use ReflectionProperty;
 
 /**
@@ -41,6 +42,18 @@ abstract class ReportBrick extends Brick
             str_starts_with($basename, 'Footer') => [ReportBand::GROUP_FOOTER, ReportBand::FOOTER],
             default                              => ReportBand::cases(),
         };
+    }
+
+    /**
+     * The document types this brick may be offered for. Defaults to every
+     * type; override for bricks whose data only exists on one document type
+     * (e.g. an invoice-only metadata brick has nothing to render on a quote).
+     *
+     * @return array<ReportTemplateType>
+     */
+    public static function allowedTypes(): array
+    {
+        return ReportTemplateType::cases();
     }
 
     /**

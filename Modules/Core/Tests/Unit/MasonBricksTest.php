@@ -3,8 +3,12 @@
 namespace Modules\Core\Tests\Unit;
 
 use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\ReportBuilder\Bricks\DetailInvoiceProductBrick;
 use Modules\Core\ReportBuilder\Bricks\DetailItemsBrick;
+use Modules\Core\ReportBuilder\Bricks\DetailQuoteProductBrick;
 use Modules\Core\ReportBuilder\Bricks\FooterNotesBrick;
+use Modules\Core\ReportBuilder\Bricks\FooterSummaryBrick;
+use Modules\Core\ReportBuilder\Bricks\FooterTermsBrick;
 use Modules\Core\ReportBuilder\Bricks\FooterTotalsBrick;
 use Modules\Core\ReportBuilder\Bricks\HeaderClientBrick;
 use Modules\Core\ReportBuilder\Bricks\HeaderCompanyBrick;
@@ -235,6 +239,124 @@ class MasonBricksTest extends AbstractTestCase
         /* Assert */
         $this->assertIsString($html);
         $this->assertStringContainsString('Custom payment terms', $html);
+    }
+
+    #[Test]
+    public function it_footer_notes_brick_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['footer_content' => '<p>Custom <strong>bold</strong> terms</p>'];
+
+        /* Act */
+        $html = FooterNotesBrick::toHtml($config, []);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>bold</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_footer_notes_preview_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['footer_content' => '<p>Custom <strong>bold</strong> terms</p>'];
+
+        /* Act */
+        $html = FooterNotesBrick::toPreviewHtml($config);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>bold</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_footer_terms_brick_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['terms_content' => '<p>Payment due in <strong>30 days</strong></p>'];
+
+        /* Act */
+        $html = FooterTermsBrick::toHtml($config, []);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>30 days</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_footer_terms_preview_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['terms_content' => '<p>Payment due in <strong>30 days</strong></p>'];
+
+        /* Act */
+        $html = FooterTermsBrick::toPreviewHtml($config);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>30 days</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_footer_summary_brick_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['summary_content' => '<p>Thank you <strong>very much</strong></p>'];
+
+        /* Act */
+        $html = FooterSummaryBrick::toHtml($config, []);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>very much</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_footer_summary_preview_renders_rich_content_unescaped(): void
+    {
+        /* Arrange */
+        $config = ['summary_content' => '<p>Thank you <strong>very much</strong></p>'];
+
+        /* Act */
+        $html = FooterSummaryBrick::toPreviewHtml($config);
+
+        /* Assert */
+        $this->assertStringContainsString('<strong>very much</strong>', $html);
+        $this->assertStringNotContainsString('&lt;strong&gt;', $html);
+    }
+
+    #[Test]
+    public function it_detail_invoice_product_brick_reads_invoice_items_only(): void
+    {
+        /* Arrange */
+        $data = [
+            'invoice_items' => [['sku' => 'INV-SKU', 'description' => 'Invoice Row', 'quantity' => 1, 'unit_price' => '1.00', 'tax' => '0.00', 'total' => '1.00']],
+            'quote_items'   => [['sku' => 'QUOTE-SKU', 'description' => 'Quote Row', 'quantity' => 1, 'unit_price' => '1.00', 'tax' => '0.00', 'total' => '1.00']],
+        ];
+
+        /* Act */
+        $html = DetailInvoiceProductBrick::toHtml([], $data);
+
+        /* Assert — the shared base class must not accidentally read the sibling brick's data key */
+        $this->assertStringContainsString('Invoice Row', $html);
+        $this->assertStringNotContainsString('Quote Row', $html);
+    }
+
+    #[Test]
+    public function it_detail_quote_product_brick_reads_quote_items_only(): void
+    {
+        /* Arrange */
+        $data = [
+            'invoice_items' => [['sku' => 'INV-SKU', 'description' => 'Invoice Row', 'quantity' => 1, 'unit_price' => '1.00', 'tax' => '0.00', 'total' => '1.00']],
+            'quote_items'   => [['sku' => 'QUOTE-SKU', 'description' => 'Quote Row', 'quantity' => 1, 'unit_price' => '1.00', 'tax' => '0.00', 'total' => '1.00']],
+        ];
+
+        /* Act */
+        $html = DetailQuoteProductBrick::toHtml([], $data);
+
+        /* Assert */
+        $this->assertStringContainsString('Quote Row', $html);
+        $this->assertStringNotContainsString('Invoice Row', $html);
     }
 
     #[Test]

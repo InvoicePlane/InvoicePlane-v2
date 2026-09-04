@@ -319,6 +319,46 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
     }
 
     #[Test]
+    public function it_shows_a_form_error_instead_of_a_server_error_when_cloning_with_an_unslugifiable_name(): void
+    {
+        /* Act & Assert — "!!!" slugifies to '', which used to bubble up as an
+         * uncaught InvalidArgumentException instead of a handled form error. */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ReportTemplates::class)
+            ->callAction('clone', data: ['name' => '!!!'], arguments: [
+                'scope' => 'system',
+                'type'  => 'invoice',
+                'slug'  => 'default',
+            ]);
+
+        /* No exception means the action was caught and handled — nothing to
+         * assert on the response itself beyond that (see withoutExceptionHandling
+         * in AbstractAdminPanelTestCase: an uncaught exception here would fail
+         * the test outright). Confirm no bogus clone was written either. */
+        $this->assertCount(1, $this->storage->listSystem(ReportTemplateType::INVOICE));
+    }
+
+    #[Test]
+    public function it_refuses_to_rename_the_system_default_template_from_the_admin_panel(): void
+    {
+        /* Act */
+        Livewire::actingAs($this->superAdmin())
+            ->test(ReportTemplates::class)
+            ->callAction('rename', data: ['name' => 'Hacked Name'], arguments: [
+                'scope' => 'system',
+                'type'  => 'invoice',
+                'slug'  => 'default',
+                'name'  => 'Default',
+            ]);
+
+        /* Assert — canModify() already blocks this at the UI layer, but the
+         * storage layer must refuse it too (see ReportTemplateStorageTest::
+         * it_refuses_to_rename_a_system_default_template for the direct case). */
+        $template = $this->storage->load('system', 'default', ReportTemplateType::INVOICE);
+        $this->assertNotSame('Hacked Name', $template['manifest']['name']);
+    }
+
+    #[Test]
     public function it_registers_report_templates_in_admin_panel_navigation(): void
     {
         /* Arrange */

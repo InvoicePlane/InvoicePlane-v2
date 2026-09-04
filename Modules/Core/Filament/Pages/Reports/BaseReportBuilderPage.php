@@ -89,7 +89,8 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
 
     public function form(Schema $schema): Schema
     {
-        $fields = [];
+        $fields       = [];
+        $templateType = ReportTemplateType::tryFrom($this->type);
 
         foreach (ReportBand::ordered() as $band) {
             $section = Section::make($band->getLabel())
@@ -102,7 +103,7 @@ abstract class BaseReportBuilderPage extends Page implements HasForms
             $fields[] = $section->schema([
                 Mason::make('bands.' . $band->value)
                     ->hiddenLabel()
-                    ->bricks(ReportBricksCollection::forBand($band))
+                    ->bricks(ReportBricksCollection::forBand($band, $templateType))
                     ->registerActions([ReportBrickAction::make()])
                     ->disabled( ! $this->canSave()),
             ]);

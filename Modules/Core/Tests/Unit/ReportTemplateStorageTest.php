@@ -98,6 +98,42 @@ class ReportTemplateStorageTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_prunes_bricks_that_do_not_apply_to_the_given_type_when_sanitizing(): void
+    {
+        /* Act */
+        $sanitized = $this->storage->sanitizeBands([
+            'header' => [
+                ['brick' => 'header_invoice_meta', 'width' => 'full', 'config' => []],
+                ['brick' => 'header_quote_meta', 'width' => 'full', 'config' => []],
+                ['brick' => 'header_company', 'width' => 'full', 'config' => []],
+            ],
+        ], ReportTemplateType::QUOTE);
+
+        /* Assert */
+        $bricks = array_column($sanitized['header'], 'brick');
+        $this->assertNotContains('header_invoice_meta', $bricks);
+        $this->assertContains('header_quote_meta', $bricks);
+        $this->assertContains('header_company', $bricks, 'Untyped bricks must survive sanitizing for every type.');
+    }
+
+    #[Test]
+    public function it_does_not_filter_by_type_when_no_type_is_given(): void
+    {
+        /* Act */
+        $sanitized = $this->storage->sanitizeBands([
+            'header' => [
+                ['brick' => 'header_invoice_meta', 'width' => 'full', 'config' => []],
+                ['brick' => 'header_quote_meta', 'width' => 'full', 'config' => []],
+            ],
+        ]);
+
+        /* Assert */
+        $bricks = array_column($sanitized['header'], 'brick');
+        $this->assertContains('header_invoice_meta', $bricks);
+        $this->assertContains('header_quote_meta', $bricks);
+    }
+
+    #[Test]
     public function it_always_returns_all_five_bands_after_sanitizing(): void
     {
         /* Act */
@@ -207,6 +243,25 @@ class ReportTemplateStorageTest extends AbstractTestCase
 
         /* Assert */
         $this->assertSame('Renamed', $loaded['manifest']['name']);
+    }
+
+    #[Test]
+    public function it_refuses_to_rename_a_system_default_template(): void
+    {
+        /* Arrange */
+        $this->storage->save(
+            ReportTemplateStorage::SCOPE_SYSTEM,
+            'default',
+            $this->manifest(['slug' => 'default']),
+            $this->bands(),
+            ReportTemplateType::INVOICE,
+        );
+
+        /* Assert */
+        $this->expectException(RuntimeException::class);
+
+        /* Act */
+        $this->storage->rename(ReportTemplateStorage::SCOPE_SYSTEM, 'default', 'Hacked Name', ReportTemplateType::INVOICE);
     }
 
     #[Test]

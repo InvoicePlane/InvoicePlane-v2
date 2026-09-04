@@ -1,7 +1,8 @@
-<div style="font-size: {{ $config['font_size'] ?? 8 }}pt;">
-    @if(!empty($config['terms_content']))
-        {{ $config['terms_content'] }}
-    @elseif(!empty($data['terms']))
-        {{ $data['terms'] }}
-    @endif
-</div>
+@include('core::report-builder.bricks._shared.footer-text-index', [
+    'config' => $config,
+    'data' => $data,
+    'contentField' => 'terms_content',
+    'dataKey' => 'terms',
+    'wrapped' => false,
+    'outerClass' => null,
+])

@@ -51,7 +51,7 @@ class CompanyReportBuilderTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $this->assertFalse($component->instance()->canSave());
 
-        $schema = $component->instance()->getForm('form');
+        $schema     = $component->instance()->getForm('form');
         $components = $schema->getComponents();
 
         $this->assertCount(5, $components);

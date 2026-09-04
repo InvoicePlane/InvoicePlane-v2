@@ -72,7 +72,7 @@
         @if(!empty($data['aging_totals']))
         <tfoot style="background-color: #e5e7eb; font-weight: bold;">
             <tr>
-                <td colspan="{{ ($config['show_invoice_number'] ?? true) + ($config['show_invoice_date'] ?? true) + ($config['show_due_date'] ?? true) }}">{{ trans('ip.total') }}</td>
+                <td colspan="{{ max(1, ($config['show_invoice_number'] ?? true) + ($config['show_invoice_date'] ?? true) + ($config['show_due_date'] ?? true)) }}">{{ trans('ip.total') }}</td>
                 @if($config['show_current'] ?? true)
                     <td align="right">{{ $data['aging_totals']['current'] ?? '0.00' }}</td>
                 @endif

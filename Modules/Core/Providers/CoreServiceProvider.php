@@ -99,6 +99,9 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
+            \Modules\Core\Commands\MigrateV1Command::class,
+            \Modules\Core\Commands\MakeUserCommand::class,
+            \Modules\Core\Commands\GenerateObservers::class,
             \Modules\Core\Console\ReportsSyncSystemCommand::class,
         ]);
     }

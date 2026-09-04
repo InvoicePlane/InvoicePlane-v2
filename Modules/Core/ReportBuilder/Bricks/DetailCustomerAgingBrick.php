@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\ReportBlockWidth;
+use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\ReportBuilder\ReportBrick;
 
 class DetailCustomerAgingBrick extends ReportBrick
@@ -46,6 +47,11 @@ class DetailCustomerAgingBrick extends ReportBrick
             'config' => $config,
             'data'   => $data ?? [],
         ])->render();
+    }
+
+    public static function allowedTypes(): array
+    {
+        return [ReportTemplateType::INVOICE];
     }
 
     public static function configureBrickAction(Action $action): Action

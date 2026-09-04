@@ -144,7 +144,7 @@ class ReportTemplateStorage
 
         return [
             'manifest' => $manifest,
-            'bands'    => $this->sanitizeBands($bands),
+            'bands'    => $this->sanitizeBands($bands, $type),
         ];
     }
 
@@ -159,7 +159,7 @@ class ReportTemplateStorage
         $disk = Storage::disk(self::DISK);
 
         $disk->put($base . '/manifest.json', $this->encodeJson($manifest));
-        $disk->put($base . '/bands.json', $this->encodeJson($this->sanitizeBands($bands)));
+        $disk->put($base . '/bands.json', $this->encodeJson($this->sanitizeBands($bands, $type)));
     }
 
     /**
@@ -204,6 +204,10 @@ class ReportTemplateStorage
      */
     public function rename(string $scope, string $slug, string $newName, ?ReportTemplateType $type = null): void
     {
+        if ($scope === self::SCOPE_SYSTEM && $slug === 'default') {
+            throw new RuntimeException('System default templates cannot be renamed.');
+        }
+
         $template = $this->load($scope, $slug, $type);
 
         if ($template === null) {
@@ -239,10 +243,13 @@ class ReportTemplateStorage
 
     /**
      * Reduce arbitrary decoded band data to the valid five-band structure.
+     * When a document type is given, bricks that don't apply to that type
+     * (e.g. a quote-only brick surviving in an invoice template) are pruned
+     * too — matches the filtering already applied to the picker itself.
      *
      * @return array<string, array<int, array{brick: string, width: string, config: array}>>
      */
-    public function sanitizeBands(array $bands): array
+    public function sanitizeBands(array $bands, ?ReportTemplateType $type = null): array
     {
         $sanitized = [];
 
@@ -263,6 +270,10 @@ class ReportTemplateStorage
                 $brickClass = ReportBricksCollection::findById((string) ($entry['brick'] ?? ''));
 
                 if ($brickClass === null || ! in_array($band, $brickClass::allowedBands(), true)) {
+                    continue;
+                }
+
+                if ($type !== null && ! in_array($type, $brickClass::allowedTypes(), true)) {
                     continue;
                 }
 

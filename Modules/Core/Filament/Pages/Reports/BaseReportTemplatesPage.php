@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use InvalidArgumentException;
 use Modules\Core\Enums\ReportTemplateType;
 use Modules\Core\Services\ReportTemplateStorage;
 
@@ -90,13 +91,28 @@ abstract class BaseReportTemplatesPage extends Page
                     ->maxLength(100),
             ])
             ->action(function (array $arguments, array $data): void {
-                $clone = $this->storage()->clone(
-                    (string) $arguments['scope'],
-                    (string) $arguments['slug'],
-                    (string) $data['name'],
-                    ReportTemplateType::tryFrom((string) $arguments['type']),
-                    $this->managesSystemScope() ? ReportTemplateStorage::SCOPE_SYSTEM : ReportTemplateStorage::SCOPE_COMPANY,
-                );
+                try {
+                    $clone = $this->storage()->clone(
+                        (string) $arguments['scope'],
+                        (string) $arguments['slug'],
+                        (string) $data['name'],
+                        ReportTemplateType::tryFrom((string) $arguments['type']),
+                        $this->managesSystemScope() ? ReportTemplateStorage::SCOPE_SYSTEM : ReportTemplateStorage::SCOPE_COMPANY,
+                    );
+                } catch (InvalidArgumentException) {
+                    /*
+                     * A name that slugifies to '' (e.g. "!!!", emoji-only) —
+                     * required()+maxLength() on the field above don't catch
+                     * this shape, so surface it as a form error instead of a
+                     * 500.
+                     */
+                    Notification::make()
+                        ->title(trans('ip.invalid_template_name'))
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
 
                 Notification::make()
                     ->title(trans('ip.template_cloned'))
