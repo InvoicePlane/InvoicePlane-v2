@@ -25,15 +25,19 @@ class MyCompanies extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        $query = $user->hasRole(UserRole::elevated())
-            ? Company::query()
-            : $user->companies()->getQuery();
-
         return $table
-            ->query(fn () => $query)
+            ->query(function () {
+                /** @var User|null $user */
+                $user = auth()->user();
+
+                if ( ! $user) {
+                    return Company::query()->whereRaw('1 = 0');
+                }
+
+                return $user->hasRole(UserRole::elevated())
+                    ? Company::query()
+                    : $user->companies()->getQuery();
+            })
             ->columns([
                 TextColumn::make('name')
                     ->label(trans('ip.name'))
@@ -44,7 +48,7 @@ class MyCompanies extends Page implements HasTable
 
                 TextColumn::make('role')
                     ->label(trans('ip.role'))
-                    ->state(fn (): string => $user->getRoleNames()
+                    ->state(fn (): string => auth()->user()?->getRoleNames()
                         ->map(fn (string $role): string => UserRole::tryFrom($role)?->label() ?? $role)
                         ->implode(', ')),
             ])
@@ -52,7 +56,10 @@ class MyCompanies extends Page implements HasTable
                 Action::make('switch')
                     ->label(trans('ip.switch'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle')
-                    ->action(function (Company $record) use ($user): void {
+                    ->action(function (Company $record): void {
+                        /** @var User $user */
+                        $user = auth()->user();
+
                         try {
                             // Defense in depth: $record comes from Filament's table-action
                             // record resolution, not a value we control directly. Refuse

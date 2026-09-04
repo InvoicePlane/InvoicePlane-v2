@@ -317,3 +317,19 @@ No DTO layer — services accept arrays and return Eloquent models.
 - `Str::lower($company->search_code)` is always the URL tenant parameter
 - The three tenant middleware classes live at `Modules/Core/Http/Middleware/`
 - Panel providers live at `Modules/Core/Providers/`, not `app/Providers/`
+
+# LESSONS
+
+- Never write `*/` inside a PHP docblock (e.g. glob patterns like `Header*/Detail*`) — it terminates the comment and causes a parse error.
+- When running a test suite in the background, redirect FULL output to a file — never pipe through `tail`/`head`, it destroys the failure details and forces a rerun.
+
+---
+
+## Report Builder Guardrails
+
+- **Blade directive gotcha**: Blade directives (`@if`/`@endif`/etc.) inside report-builder brick preview/render templates (`Modules/Core/resources/views/report-builder/bricks/*/preview.blade.php`) must not be immediately preceded by a word character — Blade's directive-matching regex requires a non-word boundary before `@`. Always wrap literal values in `{{ }}` rather than concatenating raw text directly next to a directive, or the directive silently fails to compile and leaves e.g. an `@if` unclosed, causing a parse error.
+- **`toPreviewHtml()` vs `toHtml()` convention**: In `Modules/Core/ReportBuilder/ReportBrickAction.php` and `Modules/Core/ReportBuilder/ReportIframeRenderer.php`, preview-context rendering must always call `toPreviewHtml()`, never `toHtml()` — `toHtml()` needs real entity data and is for print/export output only; using it in a preview context renders fine on load but turns into a near-empty box the moment the brick is inserted or reconfigured.
+- **Mandatory regression tests for report-builder changes**: Any change touching `Modules/Core/ReportBuilder/`, `Modules/Core/Filament/Pages/Reports/`, `Modules/Core/Filament/Admin/Pages/ReportTemplates.php`, or `Modules/Core/resources/views/report-builder/bricks/**` must be run against, at minimum:
+  `php artisan test --filter='AdminReportBuilderTest|CompanyReportBuilderTest|MasonDocumentConverterTest|MasonBricksTest'`
+  run against a real MySQL/MariaDB connection. Note the single `--filter` with a `|`-joined regex, not repeated `--filter` flags — `php artisan test` silently drops all but the last `--filter` flag when it's passed more than once (verified 2026-09-04: `--filter=A --filter=B --filter=C --filter=D` only ran `D`'s tests).
+- **Known non-report-builder issues, do not chase them here**: `UserProfileTest`'s tenant test fails only at full-suite scale (passes in isolation) — a pre-existing order-dependent flake, unrelated to the report builder. Ctrl+Z triggering undo on all 5 Mason iframe editors simultaneously when focus is outside the iframes is an `awcodes/mason` vendor limitation, not something patchable from application code.

@@ -10,6 +10,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Width;
@@ -23,6 +24,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\Core\Filament\Admin\Pages\Dashboard;
 use Modules\Core\Filament\Admin\Pages\ImportV1Page;
+use Modules\Core\Filament\Admin\Pages\ReportTemplates;
 use Modules\Core\Filament\Admin\Pages\RolePermissionsPage;
 use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\EmailTemplateResource;
@@ -133,6 +135,13 @@ class AdminPanelProvider extends PanelProvider
                             //->icon('heroicon-o-receipt-percent')
                             ->items([
                                 ...TaxRateResource::getNavigationItems(),
+                            ]),
+                        NavigationGroup::make(trans('ip.report_templates'))
+                            ->items([
+                                NavigationItem::make(trans('ip.report_templates'))
+                                    ->icon('heroicon-o-document-duplicate')
+                                    ->url(fn (): string => ReportTemplates::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.report-templates')),
                             ]),
 
                         /*NavigationGroup::make('System Settings')

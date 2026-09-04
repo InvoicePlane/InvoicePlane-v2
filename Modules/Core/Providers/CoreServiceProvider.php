@@ -2,10 +2,13 @@
 
 namespace Modules\Core\Providers;
 
+use Awcodes\Mason\Support\IframeRenderer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Models\Company;
 use Modules\Core\Observers\CompanyObserver;
+use Modules\Core\ReportBuilder\ReportIframeRenderer;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -34,6 +37,19 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        /*
+         * Mason's preview iframe must paint report bricks with their
+         * builder previews, not with the print rendering. MasonController
+         * resolves the renderer out of the container, so swapping the
+         * binding is enough.
+         */
+        $this->app->bind(
+            IframeRenderer::class,
+            fn ($app, array $parameters): ReportIframeRenderer => new ReportIframeRenderer(
+                is_array($parameters['blocks'] ?? null) ? $parameters['blocks'] : [],
+            ),
+        );
     }
 
     public function registerViews(): void
@@ -47,6 +63,19 @@ class CoreServiceProvider extends ServiceProvider
 
         $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
         Blade::componentNamespace($componentNamespace, $this->nameLower);
+
+        /*
+         * awcodes/mason still registers its views under the 'mason' namespace
+         * (vendor code, not ours to rename) — Laravel would normally pick up
+         * an override for that automatically from resources/views/vendor/mason,
+         * but our override now lives at Modules/Core/resources/views/vendor/
+         * report-builder, a path/name Laravel's automatic vendor-override
+         * convention has no way to find. Register it explicitly instead.
+         * prependNamespace (not addNamespace) is required so this override is
+         * checked before the package's own views regardless of provider boot
+         * order.
+         */
+        View::prependNamespace('mason', module_path($this->name, 'resources/views/vendor/report-builder'));
     }
 
     public function registerTranslations(): void
@@ -73,6 +102,7 @@ class CoreServiceProvider extends ServiceProvider
             \Modules\Core\Commands\MigrateV1Command::class,
             \Modules\Core\Commands\MakeUserCommand::class,
             \Modules\Core\Commands\GenerateObservers::class,
+            \Modules\Core\Console\ReportsSyncSystemCommand::class,
         ]);
     }
 

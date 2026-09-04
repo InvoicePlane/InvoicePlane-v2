@@ -130,7 +130,7 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
 
     public function communications(): MorphMany
     {
-        return $this->morphMany(Communication::class, 'communicable');
+        return $this->morphMany(Communication::class, 'communicationable');
     }
 
     public function companyUsers(): BelongsToMany

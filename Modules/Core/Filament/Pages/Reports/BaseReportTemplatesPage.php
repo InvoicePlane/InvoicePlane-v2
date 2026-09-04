@@ -1,0 +1,222 @@
+<?php
+
+namespace Modules\Core\Filament\Pages\Reports;
+
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use InvalidArgumentException;
+use Modules\Core\Enums\ReportTemplateType;
+use Modules\Core\Services\ReportTemplateStorage;
+
+/**
+ * Shared template list page: shows system templates and (in the company
+ * panel) the current company's clones. Panel subclasses decide which scope
+ * is editable and where the builder lives.
+ */
+abstract class BaseReportTemplatesPage extends Page
+{
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-duplicate';
+
+    protected string $view = 'core::filament.pages.reports.report-templates';
+
+    /**
+     * Whether this panel manages the system scope (admin) or the company
+     * scope (company panel).
+     */
+    abstract public function managesSystemScope(): bool;
+
+    /**
+     * The fully-qualified class of this panel's builder page.
+     */
+    abstract public function builderPage(): string;
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.report_templates');
+    }
+
+    public function getTitle(): string
+    {
+        return trans('ip.report_templates');
+    }
+
+    /**
+     * @return array<int, array{scope: string, type: string, slug: string, manifest: array, editable: bool}>
+     */
+    public function getTemplates(): array
+    {
+        $storage   = $this->storage();
+        $templates = [];
+
+        foreach ($storage->listSystem() as $template) {
+            $template['editable'] = $this->managesSystemScope();
+            $templates[]          = $template;
+        }
+
+        if ( ! $this->managesSystemScope()) {
+            foreach ($storage->listCompany() as $template) {
+                $template['editable'] = true;
+                $templates[]          = $template;
+            }
+        }
+
+        return $templates;
+    }
+
+    public function builderUrl(array $template): ?string
+    {
+        if ( ! $template['editable']) {
+            return null;
+        }
+
+        return $this->builderPage()::getUrl([
+            'scope' => $template['scope'],
+            'type'  => $template['type'],
+            'slug'  => $template['slug'],
+        ]);
+    }
+
+    public function cloneAction(): Action
+    {
+        return Action::make('clone')
+            ->label(trans('ip.clone'))
+            ->icon('heroicon-o-document-duplicate')
+            ->schema([
+                TextInput::make('name')
+                    ->label(trans('ip.name'))
+                    ->required()
+                    ->maxLength(100),
+            ])
+            ->action(function (array $arguments, array $data): void {
+                try {
+                    $clone = $this->storage()->clone(
+                        (string) $arguments['scope'],
+                        (string) $arguments['slug'],
+                        (string) $data['name'],
+                        ReportTemplateType::tryFrom((string) $arguments['type']),
+                        $this->managesSystemScope() ? ReportTemplateStorage::SCOPE_SYSTEM : ReportTemplateStorage::SCOPE_COMPANY,
+                    );
+                } catch (InvalidArgumentException) {
+                    /*
+                     * A name that slugifies to '' (e.g. "!!!", emoji-only) —
+                     * required()+maxLength() on the field above don't catch
+                     * this shape, so surface it as a form error instead of a
+                     * 500.
+                     */
+                    Notification::make()
+                        ->title(trans('ip.invalid_template_name'))
+                        ->danger()
+                        ->send();
+
+                    return;
+                }
+
+                Notification::make()
+                    ->title(trans('ip.template_cloned'))
+                    ->body($clone['manifest']['name'])
+                    ->success()
+                    ->send();
+            });
+    }
+
+    public function renameAction(): Action
+    {
+        return Action::make('rename')
+            ->label(trans('ip.rename'))
+            ->icon('heroicon-o-pencil-square')
+            ->fillForm(fn (array $arguments): array => ['name' => $arguments['name'] ?? ''])
+            ->schema([
+                TextInput::make('name')
+                    ->label(trans('ip.name'))
+                    ->required()
+                    ->maxLength(100),
+            ])
+            ->action(function (array $arguments, array $data): void {
+                $template = [
+                    'scope' => (string) $arguments['scope'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
+                ];
+
+                if ( ! $this->canModify($template)) {
+                    $this->denyModification();
+
+                    return;
+                }
+
+                $this->storage()->rename(
+                    $template['scope'],
+                    $template['slug'],
+                    (string) $data['name'],
+                    ReportTemplateType::tryFrom($template['type']),
+                );
+
+                Notification::make()->title(trans('ip.template_renamed'))->success()->send();
+            });
+    }
+
+    public function deleteAction(): Action
+    {
+        return Action::make('delete')
+            ->label(trans('ip.delete'))
+            ->icon('heroicon-o-trash')
+            ->color('danger')
+            ->requiresConfirmation()
+            ->action(function (array $arguments): void {
+                $template = [
+                    'scope' => (string) $arguments['scope'],
+                    'slug'  => (string) $arguments['slug'],
+                    'type'  => (string) $arguments['type'],
+                ];
+
+                if ( ! $this->canModify($template)) {
+                    $this->denyModification();
+
+                    return;
+                }
+
+                $this->storage()->delete(
+                    $template['scope'],
+                    $template['slug'],
+                    ReportTemplateType::tryFrom($template['type']),
+                );
+
+                Notification::make()->title(trans('ip.template_deleted'))->success()->send();
+            });
+    }
+
+    /**
+     * Whether this panel may rename or delete the given template.
+     *
+     * Editability is always derived from the panel's own scope, never from
+     * the caller-supplied payload — action arguments come from the browser,
+     * so an "editable" flag in them would be trivially forgeable.
+     */
+    public function canModify(array $template): bool
+    {
+        $scope = (string) ($template['scope'] ?? '');
+
+        $editable = $this->managesSystemScope()
+            ? $scope === ReportTemplateStorage::SCOPE_SYSTEM
+            : $scope === ReportTemplateStorage::SCOPE_COMPANY;
+
+        if ( ! $editable) {
+            return false;
+        }
+
+        return ! ($scope === ReportTemplateStorage::SCOPE_SYSTEM && ($template['slug'] ?? '') === 'default');
+    }
+
+    protected function denyModification(): void
+    {
+        Notification::make()->title(trans('ip.template_not_editable'))->danger()->send();
+    }
+
+    protected function storage(): ReportTemplateStorage
+    {
+        return app(ReportTemplateStorage::class);
+    }
+}
