@@ -221,7 +221,10 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'total'       => 121.0000,
         ]);
 
-        return $invoice->fresh();
+        /** @var Invoice $fresh */
+        $fresh = $invoice->fresh();
+
+        return $fresh;
     }
 
     protected function goldenQuote(): \Modules\Quotes\Models\Quote
@@ -275,6 +278,9 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
             'total'       => 121.0000,
         ]);
 
-        return $quote->fresh();
+        /** @var \Modules\Quotes\Models\Quote $fresh */
+        $fresh = $quote->fresh();
+
+        return $fresh;
     }
 }

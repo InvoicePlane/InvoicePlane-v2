@@ -108,11 +108,14 @@ class InvoiceTemplateSelectionTest extends AbstractCompanyPanelTestCase
             'type' => \Modules\Core\Enums\NumberingType::INVOICE->value,
         ]);
 
-        return Invoice::factory()->for($this->company)->create([
+        /** @var Invoice $invoice */
+        $invoice = Invoice::factory()->for($this->company)->create([
             'customer_id'  => $relation->id,
             'user_id'      => $this->user->id,
             'numbering_id' => $numbering->id,
             'template'     => null,
         ]);
+
+        return $invoice;
     }
 }
