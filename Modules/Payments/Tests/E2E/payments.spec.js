@@ -80,10 +80,16 @@ test.describe('Payments', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Payments resource (Payments), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * Left off: company_id (tenant-injected); customer_id (copied from the chosen
+ * invoice); payment_method / payment_status / payment_amount — the omission
+ * driver can't fill the Invoice select (custom text-search results) as a
+ * valid sibling, and the "creating a payment" test above already exercises
+ * all three.
  */
-registerRequiredFieldOmissionTests('Payments');
+registerRequiredFieldOmissionTests('Payments', {
+  'company/payments': ['invoice_id'],
+});

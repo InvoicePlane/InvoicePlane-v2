@@ -88,10 +88,14 @@ test.describe('Quotes', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Quotes resource (Quotes), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * Left off: company_id (tenant-injected), user_id (acting user), and
+ * quote_item_subtotal / quote_tax_total / quote_total (computed from the
+ * line-item repeater).
  */
-registerRequiredFieldOmissionTests('Quotes');
+registerRequiredFieldOmissionTests('Quotes', {
+  'company/quotes': ['prospect_id', 'quote_status'],
+});

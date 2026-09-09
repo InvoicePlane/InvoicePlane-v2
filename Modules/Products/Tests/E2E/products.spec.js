@@ -134,10 +134,14 @@ test.describe('Products', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Products resource (Products, Product Units, Product Categories), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * Product Units has no required column besides the tenant-injected
+ * company_id, so it isn't listed.
  */
-registerRequiredFieldOmissionTests('Products');
+registerRequiredFieldOmissionTests('Products', {
+  'company/products': ['category_id', 'type'],
+  'company/product-categories': ['category_name'],
+});

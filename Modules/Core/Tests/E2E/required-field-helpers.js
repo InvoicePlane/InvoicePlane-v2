@@ -6,13 +6,20 @@
  * the backend knows a column is required — and that exact fact (NOT NULL,
  * no default) is already the ground truth
  * Modules/Core/Commands/ExportFormDbSchemaCommand.php exports (the same
- * source `FormDbConstraintAuditTest.php` uses). Instead of matching PHPUnit
- * test names to E2E test titles (fuzzy, and "a title that matches still
- * isn't a test that works"), each generated test here fills in a fully
- * valid form except one required field, submits for real, and asserts the
- * browser genuinely rejects it — mirroring exactly what the PHPUnit test
- * proves, through the real UI, driven by the same schema fact on both
- * sides.
+ * source `FormDbConstraintAuditTest.php` uses). Each generated test fills in
+ * a fully valid create form except one required field, submits for real, and
+ * asserts the browser genuinely rejects it — mirroring what the PHPUnit test
+ * proves, through the real UI.
+ *
+ * Which fields get a test is an EXPLICIT choice per spec, not schema
+ * iteration: `registerRequiredFieldOmissionTests(module, { 'panel/slug':
+ * ['field', ...] })`. A required column that a user never types —
+ * tenant-injected (company_id), auth-derived (user_id), service-computed
+ * (invoice_total), relation-derived (customer_id), or a repeater/rich-text/
+ * file-upload — is left off the list with a one-line comment in the spec.
+ * The schema export is still loaded, purely as a stale-entry guard (a listed
+ * field that's no longer NOT-NULL, or a resource key that no longer resolves,
+ * fails loudly).
  *
  * Two distinct rejection mechanisms exist in this app, confirmed by
  * inspecting real live DOM/network traffic (not assumed):
@@ -437,46 +444,37 @@ export async function testRequiredFieldOmission(page, resource, targetFieldName)
 }
 
 /**
- * Registers one `mind-the-gap-again` test per required column of every
- * resource in `moduleName`, via `testRequiredFieldOmission` above.
+ * Registers `mind-the-gap-again` tests from an EXPLICIT per-resource field
+ * list — one `test()` per field named, nothing auto-discovered:
  *
- * Skip handling, by `result.reason`:
+ *   registerRequiredFieldOmissionTests('Payments', {
+ *     'company/payments': ['invoice_id'],
+ *   });
  *
- * - `field-not-rendered` / `unfillable-sibling` / `harness-cannot-drive`
- *   → `test.skip()` (annotated).
- *   This generator is DB-column-driven: it walks every NOT-NULL / no-default
- *   column and looks for a matching fillable required form field. Many such
- *   columns are never user input — company_id (tenant-injected), user_id,
- *   invoice/quote totals (service-computed), customer_id (relation-derived),
- *   rich-text bodies, looked-up-user name/password. Whether one of those
- *   *should* have a `->required()` form rule is exactly what the backend
- *   `FormDbConstraintAuditTest` decides — and it can, because it's
- *   form-field-driven (it walks the form's fields, not the table's columns).
- *   Re-litigating that here would just produce false failures for every
- *   framework-filled column. This browser-level check earns its keep only on
- *   fields a user actually fills; for the rest it defers, loudly (annotation),
- *   to the backend audit.
+ * `fieldsByResource` maps `'<panel>/<slug>'` → the user-facing required
+ * fields whose omission the browser must reject. Whoever writes the spec
+ * decides what belongs — a column that's framework-filled (company_id,
+ * user_id), service-computed (invoice_total), relation-derived (customer_id),
+ * or otherwise not a thing a user types is simply left off the list, with a
+ * one-line comment in the spec saying why. No skips, no KNOWN_GAPS lookup:
+ * every entry is a real assertion, and every omission is deliberate and
+ * visible in the spec file rather than inferred here.
  *
- * - a KNOWN_GAPS-declared skip → `test.skip()`.
- *
- * - anything else (e.g. a resource that has a required column but no create
- *   form at all) → throw. That's a genuine hole in this suite's coverage,
- *   not a framework-filled column, so it must be recorded in
- *   FormDbGapKnownExceptions::KNOWN_GAPS rather than left silent — the same
- *   "record it or it's a bug" discipline FormDbConstraintAuditTest applies.
+ * The schema export is still loaded — as a stale-entry guard: a listed field
+ * that is no longer a NOT-NULL / no-default column (or a resource key that no
+ * longer resolves) fails loudly so the list can't rot.
  */
-export function registerRequiredFieldOmissionTests(moduleName) {
+export function registerRequiredFieldOmissionTests(moduleName, fieldsByResource) {
   let schema;
   try {
     schema = loadSchemaForModule(moduleName);
   } catch (error) {
     // loadSchemaForModule runs at collection time (execSync + JSON.parse).
     // A failure here — DB down, dev container missing, malformed output —
-    // must not throw out of this call: these tests now share a spec file
-    // with the rest of the module's E2E tests, and a collection-time throw
-    // takes the whole file's discovery down with it. Register the failure
-    // as one explicit failing test instead, so the schema problem is loud
-    // but contained.
+    // must not throw out of this call: these tests share a spec file with
+    // the rest of the module's E2E tests, and a collection-time throw takes
+    // the whole file's discovery down with it. Register one explicit failing
+    // test instead, so the schema problem is loud but contained.
     test(`mind-the-gap-again: ${moduleName} — schema export unavailable`, () => {
       throw new Error(
         `Could not load the form/DB schema for ${moduleName} via `
@@ -488,42 +486,38 @@ export function registerRequiredFieldOmissionTests(moduleName) {
     return;
   }
 
-  for (const resource of schema.resources) {
-    const fields = requiredColumns(resource);
-    if (fields.length === 0) continue;
+  for (const [resourceKey, fieldNames] of Object.entries(fieldsByResource)) {
+    const resource = schema.resources.find((r) => `${r.panel}/${r.slug}` === resourceKey);
 
-    test.describe(`mind-the-gap-again: ${resource.panel}/${resource.slug}`, () => {
-      for (const column of fields) {
-        test(`omitting required '${column.name}' is rejected by the browser`, async ({ page }) => {
-          const result = await testRequiredFieldOmission(page, resource, column.name);
+    test.describe(`mind-the-gap-again: ${resourceKey}`, () => {
+      if (!resource) {
+        test(`resource '${resourceKey}' is still registered`, () => {
+          throw new Error(
+            `No Filament resource in module ${moduleName} matches '${resourceKey}' — `
+            + 'it was renamed, unregistered, or moved panels. Update this spec\'s field map.'
+          );
+        });
+
+        return;
+      }
+
+      const requiredCols = new Set(requiredColumns(resource).map((c) => c.name));
+
+      for (const fieldName of fieldNames) {
+        test(`omitting required '${fieldName}' is rejected by the browser`, async ({ page }) => {
+          expect(
+            requiredCols.has(fieldName),
+            `'${fieldName}' is listed for ${resourceKey} but is not a NOT-NULL/no-default column on `
+              + `'${resource.table}' — stale list entry: drop it, or fix the form/DB.`
+          ).toBe(true);
+
+          const result = await testRequiredFieldOmission(page, resource, fieldName);
 
           if (result.skipped) {
-            test.info().annotations.push({ type: 'skipped-reason', description: result.skipped });
-
-            // A column that isn't a user-fillable form field, whose sibling
-            // required fields this generic filler can't drive, or whose form
-            // submit control this driver can't find, is not something a
-            // browser-level omission test can speak to — the backend
-            // FormDbConstraintAuditTest owns the "is it ->required()" question.
-            if (
-              result.reason === 'field-not-rendered'
-              || result.reason === 'unfillable-sibling'
-              || result.reason === 'harness-cannot-drive'
-            ) {
-              test.skip(true, result.skipped);
-              return;
-            }
-
-            const gapKey = `${resource.resourceClass}:${column.name}`;
-            if (Object.prototype.hasOwnProperty.call(schema.knownGaps, gapKey)) {
-              test.skip(true, result.skipped);
-              return;
-            }
-
             throw new Error(
-              `Undeclared skip for ${gapKey}: ${result.skipped}\n`
-              + 'If this is a deliberate, reviewed gap, register it in '
-              + "FormDbGapKnownExceptions::KNOWN_GAPS — don't leave it silently skipped."
+              `Couldn't run the omission test for '${fieldName}' on ${resourceKey}: ${result.skipped}\n`
+              + `It's in ${moduleName}'s explicit list — either teach the driver to handle this `
+              + 'field, or drop it from the list with a comment on why.'
             );
           }
 

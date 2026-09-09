@@ -126,10 +126,14 @@ test.describe('Invoice: inline customer creation', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Invoices resource (Invoices), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * Left off deliberately: company_id (tenant-injected), user_id (the acting
+ * user), and item_tax_total / invoice_item_subtotal / invoice_tax_total /
+ * invoice_total (computed by InvoiceService from the line-item repeater).
  */
-registerRequiredFieldOmissionTests('Invoices');
+registerRequiredFieldOmissionTests('Invoices', {
+  'company/invoices': ['customer_id', 'invoice_status'],
+});

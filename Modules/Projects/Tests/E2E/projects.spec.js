@@ -129,10 +129,15 @@ test.describe('Projects', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Projects resource (Projects, Tasks), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * Tasks isn't listed: customer_id is copied from the chosen project, and the
+ * omission driver can't fill Task's Project / Tax-rate selects (custom
+ * text-search) as valid siblings to isolate task_status. The "creating a
+ * task" test above covers that flow.
  */
-registerRequiredFieldOmissionTests('Projects');
+registerRequiredFieldOmissionTests('Projects', {
+  'company/projects': ['customer_id', 'project_status'],
+});

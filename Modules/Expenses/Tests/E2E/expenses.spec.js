@@ -47,10 +47,13 @@ test.describe('Expenses', () => {
 
 /**
  * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
- * "it_fails_to_create_X_without_required_Y" tests. For every required DB
- * column of every Expenses resource (Expenses, Expense Categories), fills a fully valid
- * create form except that one field and asserts the browser genuinely
- * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
- * the full mechanism and the two real rejection paths it asserts.
+ * "it_fails_to_create_X_without_required_Y" tests — for each field listed,
+ * fills a valid create form except that one field and asserts the browser
+ * rejects it. See Core/Tests/E2E/required-field-helpers.js.
+ *
+ * company_id (both resources) is left off — tenant-injected, not a form field.
  */
-registerRequiredFieldOmissionTests('Expenses');
+registerRequiredFieldOmissionTests('Expenses', {
+  'company/expenses': ['expense_number', 'expense_status', 'expense_type', 'expensed_at', 'expense_amount'],
+  'company/expense-categories': ['category_name'],
+});
