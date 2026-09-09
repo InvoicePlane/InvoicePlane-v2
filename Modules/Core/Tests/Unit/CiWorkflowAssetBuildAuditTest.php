@@ -101,6 +101,47 @@ class CiWorkflowAssetBuildAuditTest extends AbstractTestCase
     }
 
     #[Test]
+    public function every_artisan_serve_step_disables_the_reloader_so_worker_processes_take_effect(): void
+    {
+        // .env.example (copied to .env in CI) ships PHP_CLI_SERVER_WORKERS=4.
+        // `php artisan serve` silently ignores it unless --no-reload is passed
+        // ("Unable to respect the PHP_CLI_SERVER_WORKERS environment variable
+        // without the --no-reload flag. Only creating a single server.") and
+        // runs the PHP built-in server single-threaded. A single-threaded
+        // server deadlocks every Filament modal in the E2E suite: "New X"
+        // fires a Livewire mountAction round-trip while the list page still
+        // has connections in flight, the second request queues behind the
+        // first, and the modal never opens. Real incident: run 34348125213 —
+        // ~40 modal/repeater/"Add Team Member" specs all timed out at 30s
+        // while every dedicated /create page (one request) passed.
+        $violations = [];
+
+        foreach (glob(base_path('.github/workflows/*.yml')) as $file) {
+            $workflow = Yaml::parseFile($file);
+            $filename = basename($file);
+
+            foreach ($workflow['jobs'] ?? [] as $jobKey => $job) {
+                foreach ($job['steps'] ?? [] as $step) {
+                    $run = $step['run'] ?? '';
+
+                    if (str_contains($run, 'artisan serve') && ! str_contains($run, '--no-reload')) {
+                        $violations[] = "{$filename}:{$jobKey}";
+                    }
+                }
+            }
+        }
+
+        self::assertSame(
+            [],
+            $violations,
+            'These CI jobs start `php artisan serve` without `--no-reload`, so PHP_CLI_SERVER_WORKERS '
+                . '(shipped as 4 in .env.example) is ignored and the server runs single-threaded — which '
+                . 'deadlocks concurrent Livewire round-trips and hangs every Filament modal in the E2E suite. '
+                . 'Add --no-reload to the serve command: ' . implode(', ', $violations),
+        );
+    }
+
+    #[Test]
     public function every_known_exempt_job_still_exists(): void
     {
         $stale = [];

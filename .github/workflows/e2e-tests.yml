@@ -85,8 +85,21 @@ jobs:
           DB_PASSWORD: ''
 
       - name: Start application server
+        # --no-reload is mandatory here, not cosmetic: without it `artisan serve`
+        # prints "Unable to respect the PHP_CLI_SERVER_WORKERS environment
+        # variable without the --no-reload flag. Only creating a single server."
+        # and runs the PHP built-in server single-threaded. A single-threaded
+        # server deadlocks every Filament modal in the suite — clicking "New X"
+        # fires a Livewire mountAction round-trip while the list page still has
+        # connections in flight, the second request queues behind the first, and
+        # the modal never opens (30s Playwright timeout). Dedicated /create pages
+        # (one request) pass, modals (relations, contacts, admin/*, note/expense
+        # categories, "Add Team Member", repeater "Add row") all time out. With
+        # --no-reload the server honours PHP_CLI_SERVER_WORKERS=4 from .env and
+        # forks real workers, matching how php-fpm serves the app in every other
+        # environment.
         run: |
-          php artisan serve --host=127.0.0.1 --port=8000 &
+          php artisan serve --host=127.0.0.1 --port=8000 --no-reload &
           sleep 5
         env:
           DB_HOST: 127.0.0.1
