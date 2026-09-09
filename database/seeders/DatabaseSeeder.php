@@ -72,11 +72,14 @@ class DatabaseSeeder extends Seeder
         // but belongs to no company, so E2E tests can exercise the "Add
         // Team Member" success path (look up a known real user, add them
         // to the current tenant) without depending on the random emails
-        // UsersSeeder generates per company below.
-        User::factory()->create([
-            'email' => 'e2e-unattached-user@invoiceplane.test',
-            'name'  => 'E2E Unattached User',
-        ]);
+        // UsersSeeder generates per company below. Never seeded in
+        // production — it's a fixed-credential account for the test suite.
+        if ( ! app()->isProduction()) {
+            User::factory()->create([
+                'email' => 'e2e-unattached-user@invoiceplane.test',
+                'name'  => 'E2E Unattached User',
+            ]);
+        }
 
         $totalCompanies = Company::query()->count();
         $companyBar     = $this->command->getOutput()->createProgressBar($totalCompanies);

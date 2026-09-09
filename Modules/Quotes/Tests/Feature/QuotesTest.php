@@ -127,6 +127,14 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             $dbPayload['quote_expires_at'] = $dbPayload['quote_expires_at'] . ' 00:00:00';
         }
         $this->assertDatabaseHas('quotes', $dbPayload);
+
+        // Regression guard for the add_default_to_quote_discount_percent
+        // migration: quote_discount_percent is ->dehydrated(false) on the
+        // form, so the user's 0.0000 in $payload never reaches the DB — the
+        // NOT NULL column is filled purely by the schema default this
+        // migration added. FormDbConstraintAuditTest can't catch a revert
+        // here (it early-returns on a non-dehydrated field), so assert it.
+        $this->assertSame(0.0, (float) Quote::query()->latest('id')->value('quote_discount_percent'));
     }
 
     #[Test]
@@ -440,6 +448,14 @@ class QuotesTest extends AbstractCompanyPanelTestCase
             $dbPayload['quote_expires_at'] = $dbPayload['quote_expires_at'] . ' 00:00:00';
         }
         $this->assertDatabaseHas('quotes', $dbPayload);
+
+        // Regression guard for the add_default_to_quote_discount_percent
+        // migration: quote_discount_percent is ->dehydrated(false) on the
+        // form, so the user's 0.0000 in $payload never reaches the DB — the
+        // NOT NULL column is filled purely by the schema default this
+        // migration added. FormDbConstraintAuditTest can't catch a revert
+        // here (it early-returns on a non-dehydrated field), so assert it.
+        $this->assertSame(0.0, (float) Quote::query()->latest('id')->value('quote_discount_percent'));
     }
 
     #[Test]

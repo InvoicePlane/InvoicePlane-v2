@@ -5,18 +5,14 @@ namespace Modules\Core\Tests\Feature;
 use Filament\Facades\Filament;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Schema as DbSchema;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Core\Database\Seeders\PermissionsSeeder;
-use Modules\Core\Database\Seeders\RolesSeeder;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 use Modules\Core\Support\FormDbGapKnownExceptions;
-use Modules\Core\Tests\CreatesApplication;
+use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Throwable;
 
@@ -32,43 +28,25 @@ use Throwable;
  * recorded in KNOWN_GAPS below rather than silently skipped, so drift there
  * is a one-line diff, not a silent hole.
  */
-class FormDbConstraintAuditTest extends BaseTestCase
+class FormDbConstraintAuditTest extends AbstractAdminPanelTestCase
 {
-    use CreatesApplication;
-    use RefreshDatabase;
-
-    private User $superAdmin;
-
     private User $companyUser;
-
-    private Company $company;
 
     /** @var list<string> */
     private array $violations = [];
 
     protected function setUp(): void
     {
+        // Gives us $this->company + $this->superAdmin (SUPER_ADMIN, roles
+        // seeded) + withoutExceptionHandling(). This audit adds a
+        // company-panel admin so it can resolve company-panel resources too.
         parent::setUp();
-
-        (new PermissionsSeeder())->run();
-        (new RolesSeeder())->run();
-
-        /** @var Company $company */
-        $company       = Company::factory()->create();
-        $this->company = $company;
-
-        /** @var User $superAdmin */
-        $superAdmin       = User::factory()->create();
-        $this->superAdmin = $superAdmin;
-        $this->superAdmin->assignRole(UserRole::SUPER_ADMIN->value);
 
         $this->companyUser = User::factory()->withCompany([
             'search_code' => 'AUDIT1',
             'name'        => 'Audit Co',
         ])->create();
         $this->companyUser->assignRole(UserRole::CUSTOMER_ADMIN->value);
-
-        $this->withoutExceptionHandling();
     }
 
     #[Test]
