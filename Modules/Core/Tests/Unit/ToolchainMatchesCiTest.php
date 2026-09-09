@@ -15,21 +15,20 @@ use PHPUnit\Framework\Attributes\Test;
  *  - `yarn install` with no flags SILENTLY rewrites yarn.lock to match
  *    package.json, so a stale lockfile passes locally forever — until a CI
  *    job runs `yarn install --frozen-lockfile`, refuses to touch it, and
- *    dies in setup before a single test runs. Real incident: @playwright/test
- *    and the tailwind/rolldown platform binaries were missing from yarn.lock,
- *    so phpunit.yml and quickstart.yml both failed at "Install JS dependencies".
+ *    dies in setup before a single test runs. Real incident: the
+ *    playwright/test dependency and the tailwind/rolldown platform binaries
+ *    were missing from yarn.lock, so phpunit.yml and quickstart.yml both
+ *    failed at "Install JS dependencies".
  *  - composer.lock drifting from composer.json is the same story vs. CI's
  *    `composer install`.
- *  - a never-built Vite manifest: feature tests that render a Blade view with
- *
- *    @vite(...) (e.g. GuestQuoteViewTest) — and the whole Playwright E2E
- *    suite — 500 the moment it's missing; every CI job that renders the app
- *    runs `yarn build` first (see CiWorkflowAssetBuildAuditTest).
+ *  - a never-built Vite manifest: feature tests that render a Blade view
+ *    through a Vite directive (e.g. GuestQuoteViewTest) — and the whole
+ *    Playwright E2E suite — 500 the moment it's missing; every CI job that
+ *    renders the app runs `yarn build` first (see CiWorkflowAssetBuildAuditTest).
  *
  * Each check shells out to the same tool CI uses and reads its output, so the
- * drift surfaces where you already look. Skips cleanly when the tool isn't on
- * PATH (a bare PHP-only box) — the same "no environment, no assertion" stance
- * the mind-the-gap-again E2E helper takes when Docker isn't reachable.
+ * drift surfaces where you already look. In CI a missing tool or a disabled
+ * exec() fails loudly (requireToolOrSkip); locally it skips.
  */
 final class ToolchainMatchesCiTest extends AbstractTestCase
 {
