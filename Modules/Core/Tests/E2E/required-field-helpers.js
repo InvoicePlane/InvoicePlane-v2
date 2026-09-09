@@ -80,7 +80,16 @@ const NON_FORM_COLUMNS = new Set(['id', 'created_at', 'updated_at', 'deleted_at'
  * ivpldock-workspace-1 container to exec into, so `php artisan` is invoked
  * directly there instead.
  */
-export function loadSchemaForModule(moduleName) {
+// The export command takes no module argument — it always dumps every
+// panel's every resource, and callers filter afterwards. Eight spec files
+// call this at collection time; without memoisation that's eight Laravel
+// boots (or `docker exec`s) producing byte-identical JSON before the first
+// assertion, multiplied again per Playwright worker. Parse once per process.
+let _schemaCache;
+
+function loadFullSchema() {
+  if (_schemaCache) return _schemaCache;
+
   const raw = process.env.CI
     ? execSync('php artisan mind-the-gap:export-schema', { encoding: 'utf8' })
     : (() => {
@@ -93,7 +102,13 @@ export function loadSchemaForModule(moduleName) {
         );
       })();
 
-  const schema = JSON.parse(raw);
+  _schemaCache = JSON.parse(raw);
+
+  return _schemaCache;
+}
+
+export function loadSchemaForModule(moduleName) {
+  const schema = loadFullSchema();
   const prefix = `Modules\\${moduleName}\\`;
 
   return {
@@ -371,6 +386,23 @@ async function assertOmissionRejected(scope, page, field) {
   // for this exact class of field (commit fc25764).
   await clickSubmit(scope);
   await page.waitForTimeout(500);
+
+  // Negative signal first: checkValidity() === false is near-tautological for
+  // an empty `required` input — true whether or not a submit was attempted or
+  // blocked. If a Filament success notification appeared, the create went
+  // through regardless of the constraint DOM, so the omission was NOT
+  // rejected. (Covers a resource whose submit control isn't a real
+  // type=submit, so the browser never blocks — see clickSubmit's comment.)
+  const succeeded = await page
+    .locator('.fi-no-notification')
+    .filter({ has: page.locator('.fi-color-success, [class*="success"]') })
+    .first()
+    .isVisible({ timeout: 1000 })
+    .catch(() => false);
+  if (succeeded) {
+    return { rejected: false, mechanism: 'native-constraint-validation', detail: 'create succeeded despite the omitted field' };
+  }
+
   const ctl = nativeControlLocator(scope, field.name);
   // If the control can't be resolved after submit (form re-rendered under a
   // different id, replaced by a modal, etc.) a bare .evaluate() would hang

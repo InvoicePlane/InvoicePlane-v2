@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
  *  - composer.lock drifting from composer.json is the same story vs. CI's
  *    `composer install`.
  *  - a never-built Vite manifest: feature tests that render a Blade view with
+ *
  *    @vite(...) (e.g. GuestQuoteViewTest) — and the whole Playwright E2E
  *    suite — 500 the moment it's missing; every CI job that renders the app
  *    runs `yarn build` first (see CiWorkflowAssetBuildAuditTest).
@@ -35,40 +36,40 @@ final class ToolchainMatchesCiTest extends AbstractTestCase
     #[Test]
     public function yarn_lock_is_in_sync_with_package_json(): void
     {
-        if ( ! $this->canShellOut() || ! $this->onPath('yarn')) {
-            self::markTestSkipped('`yarn` not runnable here — skipping the CI-parity lockfile check.');
-        }
+        $this->requireToolOrSkip('yarn');
 
-        // --dry-run writes nothing; the "needs updating" line still prints.
-        [$out] = $this->shell('yarn install --frozen-lockfile --dry-run --non-interactive');
+        // No --dry-run: it swallows the non-zero exit, leaving only a string
+        // to match. `yarn install --frozen-lockfile` is a fast no-op on a
+        // clean lock (exit 0, writes nothing) and exits 1 without touching
+        // yarn.lock on a stale one — so the exit code IS the signal. Also
+        // guard the string in case a different yarn major changes the code.
+        [$out, $exit] = $this->shell('yarn install --frozen-lockfile --non-interactive');
 
-        self::assertStringNotContainsString(
-            'lockfile needs to be updated',
-            $out,
-            "yarn.lock is stale — `yarn install --frozen-lockfile` (what every CI JS job runs) would fail here.\n"
-            . "Fix: run `yarn install`, then commit the updated yarn.lock.\n\n--- yarn output ---\n" . $out,
+        self::assertTrue(
+            $exit === 0 && ! str_contains($out, 'lockfile needs to be updated'),
+            "yarn.lock is stale (or `yarn install --frozen-lockfile` failed) — this is what every CI JS job runs.\n"
+            . "Fix: run `yarn install`, then commit the updated yarn.lock.\n\n--- yarn (exit {$exit}) ---\n" . $out,
         );
     }
 
     #[Test]
     public function composer_lock_is_in_sync_with_composer_json(): void
     {
-        if ( ! $this->canShellOut() || ! $this->onPath('composer')) {
-            self::markTestSkipped('`composer` not runnable here — skipping the CI-parity lockfile check.');
-        }
+        $this->requireToolOrSkip('composer');
 
         // Not --strict: that also errors on unbound-version-constraint warnings,
-        // which have nothing to do with lock sync. Read the message instead —
-        // `composer validate` reports lock drift but (with --no-check-all)
-        // exits 0 on it, so the exit code can't be trusted here.
-        [$out] = $this->shell('composer validate --no-check-all --no-check-publish --no-interaction');
+        // which have nothing to do with lock sync. `composer validate` with
+        // --no-check-all reports lock drift in its output but still exits 0 on
+        // it, so match the message; a non-zero exit here means validate itself
+        // failed and is also worth failing on.
+        [$out, $exit] = $this->shell('composer validate --no-check-all --no-check-publish --no-interaction');
 
-        self::assertStringNotContainsString(
-            'lock file is not up to date',
-            $out,
-            "composer.lock is out of sync with composer.json — CI's `composer install` would resolve stale deps.\n"
+        self::assertTrue(
+            $exit === 0 && ! str_contains($out, 'lock file is not up to date'),
+            "composer.lock is out of sync with composer.json (or `composer validate` failed) — CI's "
+            . "`composer install` would resolve stale deps.\n"
             . "Fix: run `composer update --lock` (or `composer require` / `composer update <pkg>`), then commit.\n\n"
-            . "--- composer output ---\n" . $out,
+            . "--- composer (exit {$exit}) ---\n" . $out,
         );
     }
 
@@ -81,6 +82,26 @@ final class ToolchainMatchesCiTest extends AbstractTestCase
             . '@vite(...) Blade view (e.g. GuestQuoteViewTest) and the whole Playwright E2E suite 500 without it; '
             . 'every CI job that renders the app builds it first (see CiWorkflowAssetBuildAuditTest).',
         );
+    }
+
+    /**
+     * Skip locally when the tool genuinely isn't runnable, but in CI —
+     * where this guard is the whole point — a missing tool or a disabled
+     * exec() must FAIL loudly, not pass by silent skip.
+     */
+    private function requireToolOrSkip(string $bin): void
+    {
+        if ($this->canShellOut() && $this->onPath($bin)) {
+            return;
+        }
+
+        $reason = "`{$bin}` is not runnable here (missing binary or exec() disabled).";
+
+        if (getenv('CI')) {
+            self::fail($reason . ' In CI this parity guard must run — fix the runner, do not skip.');
+        }
+
+        self::markTestSkipped($reason . ' Skipping the CI-parity lockfile check locally.');
     }
 
     private function canShellOut(): bool
