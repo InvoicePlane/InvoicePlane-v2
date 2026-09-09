@@ -216,7 +216,7 @@ class CiWorkflowAssetBuildAuditTest extends AbstractTestCase
 
             if (preg_match_all('/DB_CONNECTION:\s*(\S+)/', $contents, $matches)) {
                 foreach ($matches[1] as $value) {
-                    if (trim($value, "'\"") !== $expected) {
+                    if (mb_trim($value, "'\"") !== $expected) {
                         $violations[] = basename($file) . " (DB_CONNECTION: {$value})";
                     }
                 }
