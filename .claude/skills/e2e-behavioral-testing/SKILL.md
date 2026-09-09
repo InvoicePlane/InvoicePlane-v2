@@ -94,9 +94,10 @@ is now visible/reachable through the UI, not just that the click didn't throw.
 Reading the Blade template or the Filament schema definition is not sufficient to know a locator
 is correct — two real, confirmed-live bugs this session were invisible from reading code alone:
 
-- `inline-customer-creation.spec.js` used `page.getByLabel(/client/i)`, intending to match the
-  "Customer" select. It actually matched an unrelated "Client Reference" text field — a live
-  DOM check was the only way to catch this; the code read as reasonable.
+- the inline-customer-creation test (its own `inline-customer-creation.spec.js` at the time,
+  since consolidated into `invoices.spec.js`) used `page.getByLabel(/client/i)`, intending to
+  match the "Customer" select. It actually matched an unrelated "Client Reference" text field —
+  a live DOM check was the only way to catch this; the code read as reasonable.
 - `quotes.spec.js`, `expenses.spec.js`, `invoices.spec.js` used bare `page.locator('form')` on
   create pages. Every one of those pages has **two** `<form>` elements (a hidden topbar logout
   form plus the real one) — Playwright's strict mode throws on `.toBeVisible()` resolving to more

@@ -29,10 +29,19 @@ test.describe('Admin: Email Templates', () => {
 
     await modal.getByLabel('Subject').fill('E2E subject line');
 
+    // email_templates.body is a NOT NULL longText column with no default and
+    // the form marks it ->required() (EmailTemplateForm.php) — without this
+    // the create silently fails client-side validation and no row is written.
+    await modal.getByLabel('Body*').fill('E2E body content');
+
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden({ timeout: 10000 });
+    // Not expect(modal).toBeHidden(): this app's modal wrapper (role="dialog")
+    // is `position: static; height: 0` by Filament's own CSS regardless of
+    // open/closed state, so that assertion is trivially true even while the
+    // modal is still open. Assert on a submitted field instead.
+    await expect(modal.getByLabel('Title*')).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
     await page.goto('/admin/email-templates');

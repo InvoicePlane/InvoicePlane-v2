@@ -34,7 +34,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP
-        uses: shivammathur/setup-php-action@v2
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring,pdo,pdo_mysql

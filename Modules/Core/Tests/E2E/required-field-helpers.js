@@ -42,7 +42,16 @@ import { execSync } from 'child_process';
 import { test, expect } from './test.js';
 import { tenantPath } from './tenant-path.js';
 
-const NON_FORM_COLUMNS = new Set(['id', 'created_at', 'updated_at', 'deleted_at']);
+// Columns the framework fills, never a user-typed form input:
+// - id / timestamps: Eloquent/DB managed.
+// - company_id: injected by the BelongsToCompany trait from the Filament
+//   tenant on create (see CLAUDE.md) — no resource renders it as a field.
+//   FormDbConstraintAuditTest (the backend half) never flags it either
+//   because that audit is form-field-driven and there's no field to check;
+//   this generator is DB-column-driven, so it has to exclude it explicitly
+//   or every company-panel resource produces an undeclared-skip failure for
+//   a column no form was ever meant to expose.
+const NON_FORM_COLUMNS = new Set(['id', 'created_at', 'updated_at', 'deleted_at', 'company_id']);
 
 /**
  * Runs `php artisan mind-the-gap:export-schema` and returns only the
@@ -387,7 +396,27 @@ export async function testRequiredFieldOmission(page, resource, targetFieldName)
  * FormDbConstraintAuditTest.php already applies on the backend.
  */
 export function registerRequiredFieldOmissionTests(moduleName) {
-  const schema = loadSchemaForModule(moduleName);
+  let schema;
+  try {
+    schema = loadSchemaForModule(moduleName);
+  } catch (error) {
+    // loadSchemaForModule runs at collection time (execSync + JSON.parse).
+    // A failure here — DB down, dev container missing, malformed output —
+    // must not throw out of this call: these tests now share a spec file
+    // with the rest of the module's E2E tests, and a collection-time throw
+    // takes the whole file's discovery down with it. Register the failure
+    // as one explicit failing test instead, so the schema problem is loud
+    // but contained.
+    test(`mind-the-gap-again: ${moduleName} — schema export unavailable`, () => {
+      throw new Error(
+        `Could not load the form/DB schema for ${moduleName} via `
+        + `'php artisan mind-the-gap:export-schema' (see loadSchemaForModule): `
+        + error.message
+      );
+    });
+
+    return;
+  }
 
   for (const resource of schema.resources) {
     const fields = requiredColumns(resource);

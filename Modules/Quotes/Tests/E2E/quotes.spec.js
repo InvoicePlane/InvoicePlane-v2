@@ -2,6 +2,7 @@ import { test, expect } from '../../../Core/Tests/E2E/test.js';
 import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
 import { assertAddRowIncrementsRepeater } from '../../../Core/Tests/E2E/error-capture.js';
+import { registerRequiredFieldOmissionTests } from '../../../Core/Tests/E2E/required-field-helpers.js';
 
 /**
  * Per the e2e-behavioral-testing skill: these tests prove the feature works,
@@ -84,3 +85,13 @@ test.describe('Quotes', () => {
     });
   });
 });
+
+/**
+ * mind-the-gap-again: real frontend counterpart to this module's PHPUnit
+ * "it_fails_to_create_X_without_required_Y" tests. For every required DB
+ * column of every Quotes resource (Quotes), fills a fully valid
+ * create form except that one field and asserts the browser genuinely
+ * rejects the omission. See Core/Tests/E2E/required-field-helpers.js for
+ * the full mechanism and the two real rejection paths it asserts.
+ */
+registerRequiredFieldOmissionTests('Quotes');
