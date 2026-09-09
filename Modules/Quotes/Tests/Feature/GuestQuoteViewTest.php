@@ -26,7 +26,9 @@ class GuestQuoteViewTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->company = Company::factory()->create();
+        /** @var Company $company */
+        $company       = Company::factory()->create();
+        $this->company = $company;
         Storage::fake(config('filament.default_filesystem_disk'));
     }
 
