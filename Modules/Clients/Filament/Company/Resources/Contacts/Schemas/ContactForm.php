@@ -12,7 +12,9 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Clients\Enums\Gender;
+use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
+use Modules\Clients\Services\RelationService;
 
 class ContactForm
 {
@@ -45,6 +47,17 @@ class ContactForm
                                             // RelationForm's company_name field.
                                             ->maxLength(150),
                                     ])
+                                    ->createOptionUsing(function (array $data): int {
+                                        // Filament's default createOptionUsing() does a raw
+                                        // Relation::create($data), which omits relation_type /
+                                        // relation_number / registered_at — all NOT NULL with no
+                                        // DB default — and 500s. RelationService::createRelation()
+                                        // fills those. Mirrors InvoiceForm's customer_id select.
+                                        return app(RelationService::class)->createRelation([
+                                            'relation_type' => RelationType::CUSTOMER->value,
+                                            'company_name'  => $data['company_name'],
+                                        ])->getKey();
+                                    })
                                     ->reactive(),
 
                                 Fieldset::make(trans('ip.client_information'))

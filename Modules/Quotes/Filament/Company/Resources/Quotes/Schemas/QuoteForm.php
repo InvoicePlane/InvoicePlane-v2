@@ -15,6 +15,8 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Filament\Company\Actions\InsertNoteTemplateAction;
 use Modules\Core\Models\Setting;
@@ -47,8 +49,21 @@ class QuoteForm
                                     ->createOptionForm([
                                         TextInput::make('company_name')
                                             ->label(trans('ip.customer_name'))
-                                            ->required(),
+                                            ->required()
+                                            // relations.company_name is varchar(150).
+                                            ->maxLength(150),
                                     ])
+                                    ->createOptionUsing(function (array $data): int {
+                                        // Filament's default createOptionUsing() does a raw
+                                        // Relation::create($data), which omits relation_type /
+                                        // relation_number / registered_at — all NOT NULL with no
+                                        // DB default — and 500s. RelationService::createRelation()
+                                        // fills those. Mirrors InvoiceForm's customer_id select.
+                                        return app(RelationService::class)->createRelation([
+                                            'relation_type' => RelationType::PROSPECT->value,
+                                            'company_name'  => $data['company_name'],
+                                        ])->getKey();
+                                    })
                                     ->reactive(),
 
                                 Fieldset::make(trans('ip.client_information'))

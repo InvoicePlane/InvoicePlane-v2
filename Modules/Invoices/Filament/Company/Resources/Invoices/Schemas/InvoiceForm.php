@@ -55,7 +55,10 @@ class InvoiceForm
                                             ->createOptionForm([
                                                 TextInput::make('company_name')
                                                     ->label(trans('ip.customer_name'))
-                                                    ->required(),
+                                                    ->required()
+                                                    // relations.company_name is varchar(150) —
+                                                    // match RelationForm / ContactForm.
+                                                    ->maxLength(150),
                                             ])
                                             ->createOptionUsing(function (array $data): int {
                                                 // Filament's default createOptionUsing() does a
