@@ -3,7 +3,7 @@
 namespace Modules\Core\Tests\Feature;
 
 use Filament\Actions\Testing\TestAction;
-use Livewire\Livewire;
+use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\Pages\ListCompanyUsers;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
@@ -114,6 +114,31 @@ class CompanyUsersTest extends AbstractCompanyPanelTestCase
         /* Assert */
         $component->assertNotified(trans('ip.user_not_found'));
         $this->assertSame($rowsBefore, \Illuminate\Support\Facades\DB::table('company_user')->count());
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_refuses_to_add_an_elevated_user_and_gives_the_same_answer_as_for_an_unknown_email(): void
+    {
+        /* Arrange — an elevated (system) account must not be pull-able into a
+         * tenant by a company admin: company_user has no role column and
+         * Spatie roles are global, so it would grant company-admin rights. */
+        $admin = User::factory()->create(['email' => 'sysadmin@example.test']);
+        $admin->assignRole(UserRole::ADMIN->value);
+
+        /* Act */
+        $component = $this->testLivewire(ListCompanyUsers::class)
+            ->mountAction('add_user')
+            ->fillForm(['email' => 'sysadmin@example.test'])
+            ->callMountedAction();
+
+        /* Assert — indistinguishable from the "no such user" response, and
+         * no pivot row was written. */
+        $component->assertNotified(trans('ip.user_not_found'));
+        $this->assertDatabaseMissing('company_user', [
+            'company_id' => $this->company->id,
+            'user_id'    => $admin->id,
+        ]);
     }
 
     #[Test]
