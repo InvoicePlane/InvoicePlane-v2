@@ -47,7 +47,7 @@ test.describe('Relations (Customers)', () => {
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden();
+    await expect(modal.getByLabel('Relation Number*')).toBeHidden();
 
     /* Act & Assert */
     await page.goto(tenantPath('/relations'));

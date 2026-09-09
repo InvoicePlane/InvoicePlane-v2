@@ -281,7 +281,10 @@ function nativeControlLocator(scope, name) {
  * whole test rather than fill it wrong and produce a false result.
  */
 async function fillValidValue(scope, page, field) {
-  const ctl = nativeControlLocator(scope, field.name);
+  // .first(): nativeControlLocator returns an id/name-suffix match that can
+  // resolve to >1 node — .evaluate() and the .fill()/.check() actions below
+  // are strict and would throw on a multi-match.
+  const ctl = nativeControlLocator(scope, field.name).first();
 
   // A required, readOnly field (e.g. RelationForm's unique_name) is driven
   // by another field's ->afterStateUpdated()/->afterStateHydrated() hook,
@@ -325,7 +328,13 @@ async function fillValidValue(scope, page, field) {
       const btn = scope.locator(`[id="${field.id}"]`);
       await btn.click();
       const controlsId = await btn.getAttribute('aria-controls');
-      const listbox = page.locator(`#${controlsId}`);
+      if (!controlsId) {
+        throw new Error(`fi-select '${field.name}' opened no listbox (no aria-controls on the combobox)`);
+      }
+      // [id="..."], not `#${controlsId}` — Filament's generated ids carry
+      // dots/colons that a bare CSS id selector misparses (same reason the
+      // button above is matched with [id=...]).
+      const listbox = page.locator(`[id="${controlsId}"]`);
       const firstOption = listbox.getByRole('option').first();
       await firstOption.waitFor({ state: 'visible', timeout: 5000 });
       await firstOption.click();
@@ -403,16 +412,16 @@ async function assertOmissionRejected(scope, page, field) {
     return { rejected: false, mechanism: 'native-constraint-validation', detail: 'create succeeded despite the omitted field' };
   }
 
-  const ctl = nativeControlLocator(scope, field.name);
+  const ctl = nativeControlLocator(scope, field.name).first();
   // If the control can't be resolved after submit (form re-rendered under a
   // different id, replaced by a modal, etc.) a bare .evaluate() would hang
   // the whole 30s test timeout — bound it and let the caller record a
   // harness gap instead.
-  if (!(await ctl.first().isVisible({ timeout: 3000 }).catch(() => false))) {
+  if (!(await ctl.isVisible({ timeout: 3000 }).catch(() => false))) {
     throw new Error(`HARNESS_CANNOT_ASSERT: native control for '${field.name}' not resolvable after submit`);
   }
-  const isValid = await ctl.first().evaluate((el) => el.checkValidity());
-  const validationMessage = await ctl.first().evaluate((el) => el.validationMessage);
+  const isValid = await ctl.evaluate((el) => el.checkValidity());
+  const validationMessage = await ctl.evaluate((el) => el.validationMessage);
   return { rejected: isValid === false && validationMessage !== '', mechanism: 'native-constraint-validation', detail: validationMessage };
 }
 

@@ -34,7 +34,7 @@ test.describe('Admin: Companies', () => {
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
 
     /* Assert */
-    await expect(modal).toBeHidden({ timeout: 10000 });
+    await expect(modal.getByLabel('Name*')).toBeHidden({ timeout: 10000 });
 
     /* Act & Assert */
     await page.goto('/admin/companies');

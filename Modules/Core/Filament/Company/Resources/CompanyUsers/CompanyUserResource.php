@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\Pages\ListCompanyUsers;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\User;
 
 class CompanyUserResource extends Resource
@@ -33,8 +34,23 @@ class CompanyUserResource extends Resource
 
     // Users relate to companies via a many-to-many pivot (User::companies()),
     // not a direct ownership relation Filament can auto-scope by. The table
-    // query above already scopes manually to the current tenant.
+    // query below scopes manually to the current tenant.
     protected static bool $isScopedToTenant = false;
+
+    /** The company this list and its actions are scoped to; null → fail closed. */
+    private static function currentCompany(): ?Company
+    {
+        return Filament::getTenant();
+    }
+
+    /** Single source of truth for who may see and manage the team roster. */
+    private static function userMayManageTeam(): bool
+    {
+        return auth()->user()?->hasRole([
+            ...UserRole::elevated(),
+            UserRole::CUSTOMER_ADMIN->value,
+        ]) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -50,12 +66,10 @@ class CompanyUserResource extends Resource
     {
         return $table
             ->query(function (): Builder|BelongsToMany {
-                $tenant = Filament::getTenant();
-
-                // Fail closed: without a tenant there is no company to scope
+                // Fail closed: without a company there is nothing to scope
                 // this list to, so it must show nothing — falling back to
                 // User::query() would leak every user across every company.
-                return $tenant?->users() ?? User::query()->whereRaw('1 = 0');
+                return static::currentCompany()?->users() ?? User::query()->whereRaw('1 = 0');
             })
             ->columns([
                 TextColumn::make('name')
@@ -73,16 +87,15 @@ class CompanyUserResource extends Resource
                     ->label(trans('ip.remove'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
-                    ->action(function (User $record): void {
-                        Filament::getTenant()?->users()->detach($record->id);
-                    })
+                    ->action(fn (User $record) => static::currentCompany()?->users()->detach($record->id))
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->label(trans('ip.remove'))
                         ->action(function (EloquentCollection|Collection|LazyCollection $records): void {
-                            $company = Filament::getTenant();
+                            $company = static::currentCompany();
                             foreach ($records as $record) {
                                 $company?->users()->detach($record->id);
                             }
