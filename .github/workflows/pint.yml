@@ -28,7 +28,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          # For a PR from a fork, github.head_ref is a branch that only
+          # exists on the fork — checking it out from the base repo (the
+          # default) fails the fetch and reds the whole job. Point the
+          # checkout at the PR head's own repo/ref; fall back to the current
+          # ref for workflow_dispatch runs.
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup PHP with Composer
@@ -91,7 +97,9 @@ jobs:
           fi
 
       - name: Commit and Push Changes
-        if: steps.verify_diff.outputs.has_changes == 'true'
+        # Only for same-repo PRs / dispatch: a fork-PR pull_request run has a
+        # read-only GITHUB_TOKEN, so pushing back to the fork can't work.
+        if: steps.verify_diff.outputs.has_changes == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"

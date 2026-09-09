@@ -43,7 +43,11 @@ test.describe('Payments', () => {
     await modal.getByLabel('Payment Status*').click();
     await page.getByRole('option', { name: 'Completed', exact: true }).click();
 
-    const uniqueAmount = '4217.93';
+    // Must be unique per run: seeded payments exist and the search below is
+    // by invoice number, which can match several payments against the same
+    // invoice — a hardcoded amount collides across runs and the "first row"
+    // is then not necessarily this one.
+    const uniqueAmount = `${4000 + (Date.now() % 1000)}.${String(Date.now()).slice(-2)}`;
     await modal.getByLabel('Payment Amount*').fill(uniqueAmount);
 
     await modal.getByRole('button', { name: 'Create', exact: true }).last().click();
@@ -62,9 +66,12 @@ test.describe('Payments', () => {
     await search.click();
     await search.pressSequentially(invoiceNumber, { delay: 30 });
 
-    const resultRow = page.locator('table tbody tr').first();
-    await expect(resultRow).toContainText(invoiceNumber, { timeout: 10000 });
-    await expect(resultRow).toContainText(uniqueAmount);
+    // Search by invoice number can return several payment rows for that
+    // invoice (seed data + this one), so match the row by this run's unique
+    // amount rather than assuming .first() is the new record.
+    const resultRow = page.locator('table tbody tr').filter({ hasText: uniqueAmount });
+    await expect(resultRow).toHaveCount(1, { timeout: 10000 });
+    await expect(resultRow).toContainText(invoiceNumber);
     // The payment_status column renders the raw enum value (lowercase),
     // not its Title Case ->label() — matches the list test's own regex.
     await expect(resultRow).toContainText('completed');
