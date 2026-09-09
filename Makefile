@@ -41,6 +41,9 @@
 ##
 ## CI / UTILITIES
 ##   make ci            Full suite in a single command (same as CI pipeline)
+##   make ci-local      Run CI's whole setup+test sequence in the ivpldock
+##                      container (yarn --frozen-lockfile → build → migrate
+##                      --seed → test) — catches "green locally, red in CI"
 ##   make clean         Remove PHPUnit cache, coverage, and temp artefacts
 ##   make help          Print this help text
 ##
@@ -82,7 +85,7 @@ _artisan  = APP_ENV=testing $(PHP) artisan test --exclude-group failing,flaky,tr
 
 .DEFAULT_GOAL := help
 
-.PHONY: help test unit feature smoke ci \
+.PHONY: help test unit feature smoke ci ci-local \
         filter group suite \
         test-core test-invoices test-quotes test-products \
         test-payments test-projects test-clients test-expenses \
@@ -102,6 +105,29 @@ docker-test:
 
 docker-test-fast:
 	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && $(PHPUNIT) --configuration $(CONFIG) --exclude-group failing,flaky,troubleshooting,slow"
+
+# ── CI parity ────────────────────────────────────────────────────────────────
+# Reproduce, locally, everything a .github/workflows job does BEFORE it runs a
+# single test — the steps a bare `make test` never exercises and where
+# "works on my machine" actually breaks (a stale yarn.lock: `yarn install`
+# rewrites it silently, `yarn install --frozen-lockfile` in CI refuses to).
+# Override WORKSPACE / APP_PATH if your ivpldock layout differs.
+WORKSPACE ?= ivpldock-workspace-1
+APP_PATH  ?= /var/www/projects/invoiceplane-2/ivplv2
+_ciexec    = docker exec -e XDEBUG_MODE=off -e APP_ENV=testing -e DB_CONNECTION=mariadb \
+             -e DB_HOST=mariadb -e DB_DATABASE=invoiceplane_test $(WORKSPACE) \
+             bash -c 'cd $(APP_PATH) &&
+
+## Run CI's setup + test sequence in the ivpldock container (see header)
+ci-local:
+	@printf '\n\033[1m━━ 1/4  yarn install --frozen-lockfile\033[0m  (CI: every JS job)\n'
+	$(_ciexec) yarn install --frozen-lockfile'
+	@printf '\n\033[1m━━ 2/4  yarn build\033[0m  (CI: before anything renders the app)\n'
+	$(_ciexec) yarn build'
+	@printf '\n\033[1m━━ 3/4  php artisan migrate:fresh --seed\033[0m  (CI: fresh DB)\n'
+	$(_ciexec) php artisan migrate:fresh --seed --force'
+	@printf '\n\033[1m━━ 4/4  php artisan test\033[0m  (incl. ToolchainMatchesCiTest — composer.lock / manifest parity)\n'
+	$(_ciexec) php artisan test --exclude-group failing,flaky,troubleshooting'
 
 ## ─── Full suite ───────────────────────────────────────────────────────────────
 test:
