@@ -105,7 +105,7 @@ class CompanyRenameInvoicePreviewTest extends AbstractCompanyPanelTestCase
 
         Filament::setCurrentPanel(Filament::getPanel('admin'));
 
-        $formData = $company->only(['search_code', 'name', 'slug', 'vat_number', 'id_number', 'coc_number']);
+        $formData         = $company->only(['search_code', 'name', 'slug', 'vat_number', 'id_number', 'coc_number']);
         $formData['name'] = $newName;
 
         Livewire::actingAs($superAdmin)

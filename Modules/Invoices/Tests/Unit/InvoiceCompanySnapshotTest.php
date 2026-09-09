@@ -26,10 +26,10 @@ class InvoiceCompanySnapshotTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         $this->company->update([
-            'name'        => 'ACME Corp',
-            'vat_number'  => 'BE0123456789',
-            'id_number'   => 'ID-1',
-            'coc_number'  => 'COC-1',
+            'name'       => 'ACME Corp',
+            'vat_number' => 'BE0123456789',
+            'id_number'  => 'ID-1',
+            'coc_number' => 'COC-1',
         ]);
         $customer = Relation::factory()->for($this->company)->customer()->create();
 
@@ -190,12 +190,12 @@ class InvoiceCompanySnapshotTest extends AbstractCompanyPanelTestCase
         // invoices.company_id with onDelete('cascade'), so a persisted invoice
         // can never actually outlive its company row.)
         $invoice = Invoice::factory()->for($this->company)->make([
-            'company_id'          => 999999999,
-            'customer_id'         => 999999999,
-            'company_name'        => null,
-            'company_vat_number'  => null,
-            'company_id_number'   => null,
-            'company_coc_number'  => null,
+            'company_id'         => 999999999,
+            'customer_id'        => 999999999,
+            'company_name'       => null,
+            'company_vat_number' => null,
+            'company_id_number'  => null,
+            'company_coc_number' => null,
         ]);
 
         /* Act */
@@ -203,18 +203,18 @@ class InvoiceCompanySnapshotTest extends AbstractCompanyPanelTestCase
 
         /* Assert */
         $this->assertIsString($html);
-        $this->assertNotSame('', trim($html));
+        $this->assertNotSame('', mb_trim($html));
     }
 
     private function invoicePayload(Relation $customer): array
     {
         return [
-            'customer_id'              => $customer->getKey(),
-            'invoice_number'           => null,
-            'invoice_status'           => InvoiceStatus::DRAFT->value,
-            'invoiced_at'              => '2026-01-01',
-            'invoice_due_at'           => '2026-01-31',
-            'invoice_item_subtotal'    => 100,
+            'customer_id'           => $customer->getKey(),
+            'invoice_number'        => null,
+            'invoice_status'        => InvoiceStatus::DRAFT->value,
+            'invoiced_at'           => '2026-01-01',
+            'invoice_due_at'        => '2026-01-31',
+            'invoice_item_subtotal' => 100,
         ];
     }
 }

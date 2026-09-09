@@ -53,11 +53,10 @@ jobs:
 
       - name: Build frontend assets
         # Feature tests render real Blade views with @vite(...) directives
-        # (e.g. GuestQuoteViewTest exercises resources/css/guest.css) —
-        # without a built manifest those fail with "Unable to locate file in
-        # Vite manifest", not a PHP bug. quickstart.yml already builds assets
-        # before its own artisan test run for the same reason; mirror that
-        # here.
+        # (e.g. GuestQuoteViewTest exercises resources/css/guest.css) — without
+        # a built manifest those fail with "Unable to locate file in Vite
+        # manifest", not a PHP bug. quickstart.yml already builds assets before
+        # its own artisan test run for the same reason; mirror that here.
         run: yarn build
 
       - name: Prepare Laravel environment

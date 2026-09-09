@@ -238,11 +238,11 @@ class EmailQuoteActionTest extends AbstractCompanyPanelTestCase
 
         /** @var Quote $quote */
         $quote = Quote::factory()->for($this->company)->create(array_merge([
-            'quote_number' => 'QUO-987654',
-            'prospect_id'  => $prospect->id,
-            'user_id'      => $this->user->id,
-            'quote_status' => QuoteStatus::SENT,
-            'quoted_at'    => '2025-05-10',
+            'quote_number'     => 'QUO-987654',
+            'prospect_id'      => $prospect->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::SENT,
+            'quoted_at'        => '2025-05-10',
             'quote_expires_at' => '2025-06-09',
         ], $attributes));
 

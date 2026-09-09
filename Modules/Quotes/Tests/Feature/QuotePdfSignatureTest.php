@@ -73,8 +73,8 @@ class QuotePdfSignatureTest extends AbstractCompanyPanelTestCase
     {
         /* Arrange */
         Storage::fake(config('filament.default_filesystem_disk'));
-        $quote   = Quote::factory()->for($this->company)->create();
-        $service = app(QuoteService::class);
+        $quote     = Quote::factory()->for($this->company)->create();
+        $service   = app(QuoteService::class);
         $signature = $service->captureSignature($quote, self::VALID_PNG_DATA_URL, 'Jane Client');
         Storage::disk($signature->signature_disk)->delete($signature->signature_path);
 
