@@ -198,6 +198,46 @@ class CiWorkflowAssetBuildAuditTest extends AbstractTestCase
     }
 
     #[Test]
+    public function every_workflow_runs_the_same_db_driver_as_local_dev(): void
+    {
+        // Laravel 11+ has a dedicated `mariadb` driver that is NOT a synonym
+        // for `mysql` — different grammar, JSON handling, no RETURNING, etc.
+        // CLAUDE.md's canonical local test command runs `DB_CONNECTION=mariadb`
+        // and .env.example ships `mariadb`, but the CI workflows historically
+        // set `DB_CONNECTION: mysql` in their job env and .env.testing.example.
+        // That split is exactly the "green on my machine, red in CI" trap: a
+        // bug that only bites one driver hides on the other. Pin every
+        // workflow to the same driver local dev uses.
+        $expected   = 'mariadb';
+        $violations = [];
+
+        foreach (glob(base_path('.github/workflows/*.yml')) as $file) {
+            $contents = file_get_contents($file);
+
+            if (preg_match_all('/DB_CONNECTION:\s*(\S+)/', $contents, $matches)) {
+                foreach ($matches[1] as $value) {
+                    if (trim($value, "'\"") !== $expected) {
+                        $violations[] = basename($file) . " (DB_CONNECTION: {$value})";
+                    }
+                }
+            }
+        }
+
+        $envTemplate = file_get_contents(base_path('.env.testing.example'));
+        if ( ! preg_match('/^DB_CONNECTION=' . preg_quote($expected, '/') . '$/m', $envTemplate)) {
+            $violations[] = '.env.testing.example (DB_CONNECTION is not ' . $expected . ')';
+        }
+
+        self::assertSame(
+            [],
+            $violations,
+            "These CI configs run a different DB driver than local dev (CLAUDE.md uses `{$expected}`), so a "
+                . "driver-specific bug would pass locally and fail in CI (or vice versa). Set them to `{$expected}`: "
+                . implode(', ', $violations),
+        );
+    }
+
+    #[Test]
     public function every_known_exempt_job_still_exists(): void
     {
         $stale = [];

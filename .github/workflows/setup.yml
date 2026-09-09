@@ -76,7 +76,7 @@ jobs:
           --health-retries=5
 
     env:
-      DB_CONNECTION: mysql
+      DB_CONNECTION: mariadb
       DB_DATABASE: ivplv2
       DB_USERNAME: root
       DB_PASSWORD: root
