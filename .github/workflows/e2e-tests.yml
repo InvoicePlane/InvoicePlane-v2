@@ -75,6 +75,21 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      - name: Publish Filament frontend assets
+        # `composer install` above runs with --no-scripts, so the
+        # post-autoload-dump hook that normally runs `filament:upgrade`
+        # (which runs `filament:assets`) is skipped and public/js/filament/**
+        # is never written. yarn build only produces the per-panel CSS
+        # themes — Filament ships its own precompiled JS (Alpine plugins that
+        # drive every modal, combobox, and repeater) separately, via this
+        # command. Without it the app still renders and navigates, so list
+        # pages and the navigation smoke tests pass, but nothing interactive
+        # works: clicking "New X" never opens a modal, `<button
+        # role="combobox">` selects can't be driven, repeater "Add row" and
+        # "Add Team Member" do nothing. Run 34348125213: ~40 specs failed
+        # exactly this way while every read-only/server-rendered spec passed.
+        run: php artisan filament:assets
+
       - name: Run migrations and seeders
         run: php artisan migrate --seed
         env:

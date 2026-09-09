@@ -101,6 +101,62 @@ class CiWorkflowAssetBuildAuditTest extends AbstractTestCase
     }
 
     #[Test]
+    public function every_browser_facing_job_publishes_filament_assets_when_composer_scripts_are_skipped(): void
+    {
+        // Filament ships its interactive JS (Alpine plugins for every modal,
+        // combobox and repeater) as precompiled assets published by
+        // `filament:assets` — NOT through Vite (yarn build here only emits the
+        // per-panel CSS themes). That publish normally rides composer's
+        // post-autoload-dump hook (`@php artisan filament:upgrade`). A job
+        // that installs with `--no-scripts` skips it, so unless it also runs
+        // `filament:assets`/`filament:upgrade` explicitly, public/js/filament/**
+        // is absent: the app renders and navigates (list pages, nav smoke
+        // pass) but nothing interactive works. Real incident: run 34348125213,
+        // ~40 modal/combobox/repeater specs hung for exactly this reason.
+        $violations = [];
+
+        foreach (glob(base_path('.github/workflows/*.yml')) as $file) {
+            $workflow = Yaml::parseFile($file);
+            $filename = basename($file);
+
+            foreach ($workflow['jobs'] ?? [] as $jobKey => $job) {
+                $runsBrowser   = false;
+                $skipsScripts  = false;
+                $publishesFila = false;
+
+                foreach ($job['steps'] ?? [] as $step) {
+                    $run = $step['run'] ?? '';
+
+                    if ($this->containsAny($run, ['npm run e2e', 'playwright test', 'artisan serve'])) {
+                        $runsBrowser = true;
+                    }
+
+                    if (str_contains($run, 'composer install') && str_contains($run, '--no-scripts')) {
+                        $skipsScripts = true;
+                    }
+
+                    if (str_contains($run, 'filament:assets') || str_contains($run, 'filament:upgrade')) {
+                        $publishesFila = true;
+                    }
+                }
+
+                if ($runsBrowser && $skipsScripts && ! $publishesFila) {
+                    $violations[] = "{$filename}:{$jobKey}";
+                }
+            }
+        }
+
+        self::assertSame(
+            [],
+            $violations,
+            'These CI jobs point a browser at the app and install composer deps with --no-scripts, but never '
+                . 'run `php artisan filament:assets` — so public/js/filament/** is missing and every Filament '
+                . 'modal, combobox and repeater is dead in the browser. Add a `filament:assets` step after env '
+                . 'setup, or drop --no-scripts: ' . implode(', ', $violations),
+        );
+    }
+
+    #[Test]
     public function every_artisan_serve_step_disables_the_reloader_so_worker_processes_take_effect(): void
     {
         // .env.example (copied to .env in CI) ships PHP_CLI_SERVER_WORKERS=4.
