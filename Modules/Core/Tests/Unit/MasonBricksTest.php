@@ -145,6 +145,68 @@ class MasonBricksTest extends AbstractTestCase
     }
 
     #[Test]
+    public function it_header_invoice_meta_brick_renders_po_number_when_enabled_and_present(): void
+    {
+        /* Arrange */
+        $config = [
+            'show_po_number' => true,
+        ];
+        $data = [
+            'invoice' => [
+                'number'    => 'INV-001',
+                'po_number' => 'PO-998877',
+            ],
+        ];
+
+        /* Act */
+        $html = HeaderInvoiceMetaBrick::toHtml($config, $data);
+
+        /* Assert */
+        $this->assertIsString($html);
+        $this->assertStringContainsString('PO-998877', $html);
+        $this->assertStringContainsString('PO Number:', $html);
+        $this->assertStringContainsString(trans('ip.po_number'), $html);
+    }
+
+    #[Test]
+    public function it_header_invoice_meta_brick_omits_po_number_when_disabled_or_empty(): void
+    {
+        /* Arrange - disabled */
+        $configDisabled = [
+            'show_po_number' => false,
+        ];
+        $data = [
+            'invoice' => [
+                'number'    => 'INV-001',
+                'po_number' => 'PO-998877',
+            ],
+        ];
+
+        /* Act */
+        $htmlDisabled = HeaderInvoiceMetaBrick::toHtml($configDisabled, $data);
+
+        /* Assert */
+        $this->assertStringNotContainsString('PO-998877', $htmlDisabled);
+
+        /* Arrange - enabled but empty */
+        $configEnabled = [
+            'show_po_number' => true,
+        ];
+        $dataEmpty = [
+            'invoice' => [
+                'number'    => 'INV-001',
+                'po_number' => '',
+            ],
+        ];
+
+        /* Act */
+        $htmlEmpty = HeaderInvoiceMetaBrick::toHtml($configEnabled, $dataEmpty);
+
+        /* Assert */
+        $this->assertStringNotContainsString(trans('ip.po_number'), $htmlEmpty);
+    }
+
+    #[Test]
     public function it_detail_column_labels_brick_has_correct_id(): void
     {
         /* Act */

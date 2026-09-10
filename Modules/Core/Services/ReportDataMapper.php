@@ -84,7 +84,7 @@ class ReportDataMapper
                 'number'    => (string) $invoice->invoice_number,
                 'date'      => $invoice->invoiced_at?->format('Y-m-d') ?? '',
                 'due_date'  => $invoice->invoice_due_at?->format('Y-m-d') ?? '',
-                'po_number' => '',
+                'po_number' => (string) ($invoice->client_reference ?? ''),
                 'status'    => $invoice->invoice_status?->value ?? '',
             ],
             'items'         => $this->cap($invoice->invoiceItems->map(fn ($item): array => $this->itemData($item))->all()),

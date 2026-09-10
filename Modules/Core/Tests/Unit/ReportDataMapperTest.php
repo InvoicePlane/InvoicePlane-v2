@@ -526,6 +526,38 @@ class ReportDataMapperTest extends AbstractCompanyPanelTestCase
         $this->assertTrue($quote->company->relationLoaded('communications'));
     }
 
+    #[Test]
+    public function it_maps_client_reference_to_po_number_on_invoice(): void
+    {
+        /* Arrange */
+        $relation = Relation::factory()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id'      => $relation->id,
+            'invoice_number'   => 'INV-REF-001',
+            'client_reference' => 'PO-2026-999',
+        ]);
+
+        /* Act */
+        $data = $this->mapper->forInvoice($invoice->fresh());
+
+        /* Assert */
+        $this->assertArrayHasKey('invoice', $data);
+        $this->assertSame('PO-2026-999', $data['invoice']['po_number']);
+
+        /* Arrange null client_reference */
+        $invoiceWithoutRef = Invoice::factory()->for($this->company)->create([
+            'customer_id'      => $relation->id,
+            'invoice_number'   => 'INV-REF-002',
+            'client_reference' => null,
+        ]);
+
+        /* Act */
+        $dataWithoutRef = $this->mapper->forInvoice($invoiceWithoutRef->fresh());
+
+        /* Assert */
+        $this->assertSame('', $dataWithoutRef['invoice']['po_number']);
+    }
+
     protected function invoiceWithProductItem(): Invoice
     {
         $taxRate = TaxRate::factory()->for($this->company)->create(['rate' => 21.00, 'is_active' => true]);

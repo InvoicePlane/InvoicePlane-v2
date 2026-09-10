@@ -1162,6 +1162,7 @@ return [
     'show_invoice_date'          => 'Show Invoice Date',
     'show_due_date'              => 'Show Due Date',
     'show_po_number'             => 'Show PO Number',
+    'po_number'                  => 'PO Number',
     'show_description'           => 'Show Description',
     'description_placement'      => 'Description Placement',
     'placement_hidden'           => 'Hidden',
