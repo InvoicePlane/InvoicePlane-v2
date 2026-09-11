@@ -9,6 +9,7 @@ use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\NumberFormatter;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Models\Invoice;
 
@@ -34,11 +35,8 @@ class RecentInvoicesWidget extends TableWidget
 
     public function table(Table $table): Table
     {
-        // InvoiceResource only registers an 'index' page — editing happens
-        // via a modal action on that page's table, not a dedicated edit/view
-        // page — so this is the most specific URL a row can link to.
         return parent::table($table)
-            ->recordUrl(fn (Invoice $record): string => InvoiceResource::getUrl('index'));
+            ->recordUrl(fn (Invoice $record): string => InvoiceResource::getUrl('edit', ['record' => $record]));
     }
 
     protected function getTableQuery(): Builder|Relation|null
@@ -58,7 +56,7 @@ class RecentInvoicesWidget extends TableWidget
                 ->formatStateUsing(fn ($state) => $state?->label() ?? '-')
                 ->color(fn ($state) => $state?->color() ?? 'secondary'),
             TextColumn::make('invoice_number')->label(trans('ip.invoice_number')),
-            TextColumn::make('customer.company_name')->limit(10)->label(trans('ip.customer_name')),
+            TextColumn::make('customer.company_name')->limit(15)->label(trans('ip.customer_name')),
             TextColumn::make('invoice_due_at')
                 ->label(trans('ip.invoice_due_at'))
                 ->color(fn ($state, $record) => $record?->due_intensity ?? 'secondary')
@@ -73,6 +71,10 @@ class RecentInvoicesWidget extends TableWidget
 
                     return DateHelpers::formatDate($state);
                 }),
+            TextColumn::make('invoice_total')
+                ->label(trans('ip.total'))
+                ->formatStateUsing(fn ($state) => NumberFormatter::formatCurrency($state))
+                ->alignEnd(),
         ];
     }
 }

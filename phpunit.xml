@@ -47,7 +47,8 @@
         <env name="DB_PORT" value="3306"/>
         <env name="DB_DATABASE" value="invoiceplane_test"/>
         <env name="DB_USERNAME" value="root"/>
-        <env name="DB_PASSWORD" value="root"/>
+        <env name="DB_PASSWORD" value=""/>
+        <env name="DB_SOCKET" value="/var/lib/mysql/mysql.sock"/>
         <env name="IMPORT_DB_DATABASE" value="invoiceplane_test"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>

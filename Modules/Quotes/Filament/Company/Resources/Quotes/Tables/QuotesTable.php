@@ -14,8 +14,10 @@ use InvalidArgumentException;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\NumberFormatter;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Actions\EmailQuoteAction;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Services\QuoteService;
 
@@ -24,6 +26,9 @@ class QuotesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->recordUrl(fn (Quote $record): ?string => auth()->user()?->can(Permission::EDIT_QUOTES->value)
+                ? QuoteResource::getUrl('edit', ['record' => $record])
+                : null)
             ->columns([
                 TextColumn::make('quote_status')
                     ->label(trans('ip.quote_status'))
@@ -61,13 +66,20 @@ class QuotesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('quote_total')->searchable()->sortable()->toggleable(),
+                TextColumn::make('quote_total')
+                    ->label(trans('ip.total'))
+                    ->formatStateUsing(fn ($state) => NumberFormatter::formatCurrency($state))
+                    ->alignEnd()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_QUOTES->value))
+                        ->url(fn (Quote $record): string => QuoteResource::getUrl('edit', ['record' => $record]))
                         ->action(function (Quote $record, array $data) {
                             app(QuoteService::class)->updateQuote($record, $data);
                         })

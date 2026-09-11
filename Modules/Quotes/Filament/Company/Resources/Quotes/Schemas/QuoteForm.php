@@ -216,7 +216,7 @@ class QuoteForm
                             ->defaultItems(0)
                             ->afterStateUpdated(function (callable $set, $get, $state) {}),
                     ])
-                    ->collapsed()
+                    ->collapsible()
                     ->columnSpanFull(),
 
                 Section::make(trans('ip.quote_totals'))
@@ -256,7 +256,7 @@ class QuoteForm
                                     ]),
                             ]),
                     ])
-                    ->collapsed()
+                    ->collapsible()
                     ->columns(2),
 
                 Section::make(trans('ip.quote_notes'))

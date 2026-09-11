@@ -7,9 +7,25 @@ class NumberFormatter
     public static function format($number, $currency = null, $decimalPlaces = null): float|string
     {
         $currency = $currency ?: config('ip.currency');
-        $decimalPlaces ??= config('ip.amountDecimals');
+        $decimalPlaces ??= config('ip.amountDecimals') ?? 2;
+        $decimal   = is_object($currency) ? ($currency->decimal ?? '.') : '.';
+        $thousands = is_object($currency) ? ($currency->thousands ?? ',') : ',';
 
-        return number_format($number, $decimalPlaces, $currency->decimal, $currency->thousands);
+        return number_format((float) $number, (int) $decimalPlaces, $decimal, $thousands);
+    }
+
+    public static function formatCurrency($number, ?string $currencyCode = null): string
+    {
+        $formatted = self::format($number);
+        $code      = $currencyCode ?: (string) (config('ip.currency_code') ?: 'USD');
+
+        return match ($code) {
+            'USD'   => '$' . $formatted,
+            'EUR'   => '€' . $formatted,
+            'GBP'   => '£' . $formatted,
+            'JPY'   => '¥' . $formatted,
+            default => $code . ' ' . $formatted,
+        };
     }
 
     public static function formatTrimmed(float $number, int $decimalPlaces = 4): string
@@ -21,9 +37,11 @@ class NumberFormatter
 
     public static function unformat($number, $currency = null): float|string
     {
-        $currency = $currency ?: config('ip.currency');
+        $currency  = $currency ?: config('ip.currency');
+        $decimal   = is_object($currency) ? ($currency->decimal ?? '.') : '.';
+        $thousands = is_object($currency) ? ($currency->thousands ?? ',') : ',';
 
-        $number = str_replace([$currency->decimal, $currency->thousands, 'D'], ['D', '', '.'], $number);
+        $number = str_replace([$decimal, $thousands, 'D'], ['D', '', '.'], (string) $number);
 
         return $number;
     }

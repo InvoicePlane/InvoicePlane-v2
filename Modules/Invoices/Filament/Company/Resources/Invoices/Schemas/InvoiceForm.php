@@ -179,7 +179,7 @@ class InvoiceForm
                 //
                 // Invoice Items
                 Section::make(trans('ip.invoice_items'))
-                    ->collapsed()
+                    ->collapsible()
                     ->schema([
                         Repeater::make('invoiceItems')
                             ->defaultItems(0)
@@ -200,25 +200,30 @@ class InvoiceForm
                                             ->dehydrated(),
 
                                         TextEntry::make('product_name')
+                                            ->label(trans('ip.product_name'))
                                             ->state(fn ($get) => Product::query()->find($get('product_id'))?->product_name)
                                             ->disabled(),
 
                                         TextInput::make('quantity')
+                                            ->label(trans('ip.quantity'))
                                             ->numeric()
                                             ->required()
                                             ->dehydrated(),
 
                                         TextInput::make('price')
+                                            ->label(trans('ip.price'))
                                             ->numeric()
                                             ->required()
                                             ->dehydrated(),
 
                                         TextInput::make('discount')
+                                            ->label(trans('ip.discount'))
                                             ->numeric()
                                             ->default(0)
                                             ->dehydrated(),
 
                                         TextInput::make('subtotal')
+                                            ->label(trans('ip.subtotal'))
                                             ->numeric()
                                             ->default(0)
                                             ->dehydrated()
@@ -282,7 +287,7 @@ class InvoiceForm
                                     ]),
                             ]),
                     ])
-                    ->collapsed()
+                    ->collapsible()
                     ->columnSpanFull(),
 
                 // Notes & Attachments

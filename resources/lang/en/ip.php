@@ -47,6 +47,12 @@ return [
     #endregion
 
     #region CORE
+    'awaiting_payment'                             => 'Awaiting Payment',
+    'paid_invoices_count'                          => ':count paid invoices',
+    'pending_invoices_count'                       => ':count awaiting payment',
+    'overdue_invoices_count'                       => ':count overdue',
+    'quotes_pipeline'                              => 'Quotes Pipeline',
+    'active_quotes_count'                          => ':count active in pipeline',
     'user_not_in_company'                          => 'You do not have access to this company.',
     'Q1'                                           => 'Q1',
     'Q2'                                           => 'Q2',
@@ -1362,5 +1368,14 @@ return [
     'draw_signature'                          => 'Draw',
     'type_signature'                          => 'Type',
     'typed_signature_label'                   => 'Type your signature',
+    'panel_appearance'                        => 'Panel Appearance',
+    'panel_theme'                             => 'Theme',
+    'panel_theme_help'                        => 'Applies to everyone in this company. Saving reloads the page so the new stylesheet takes effect.',
+    'panel_theme_base_description'            => 'Balanced slate neutrals with InvoicePlane blue accents. The default.',
+    'panel_theme_invoiceplane_description'    => 'Solid coloured sidebar and topbar in the InvoicePlane palette.',
+    'panel_theme_invoiceplane_blue_description' => 'Stock Filament chrome, rebranded with InvoicePlane blue accents.',
+    'panel_theme_nord_description'            => 'Cool Nord palette with a dark sidebar and topbar.',
+    'panel_theme_orange_description'          => 'Warm orange accent theme.',
+    'panel_theme_reddit_description'          => 'Vibrant Reddit orange-red palette.',
     #endregion
 ];

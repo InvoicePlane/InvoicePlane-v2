@@ -50,6 +50,8 @@ class Setting extends Model
 
     public const KEY_FONT_SIZE = 'font_size';
 
+    public const KEY_PANEL_THEME = 'panel_theme';
+
     public const KEY_CURRENCY_CODE = 'currency_code';
 
     public const KEY_DASHBOARD_SHOW_REVENUE_CHART = 'dashboard_show_revenue_chart';
