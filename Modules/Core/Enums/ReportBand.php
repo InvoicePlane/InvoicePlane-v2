@@ -11,6 +11,20 @@ enum ReportBand: string
     case HEADER       = 'header';
 
     /**
+     * Get all bands in document order (header first, footer last).
+     *
+     * @return array<self>
+     */
+    public static function ordered(): array
+    {
+        $bands = self::cases();
+
+        usort($bands, fn (self $a, self $b): int => $a->getOrder() <=> $b->getOrder());
+
+        return $bands;
+    }
+
+    /**
      * Get the display label for the band.
      */
     public function getLabel(): string

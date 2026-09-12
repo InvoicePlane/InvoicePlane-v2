@@ -1,0 +1,7 @@
+{
+    "name": "Default Invoice",
+    "slug": "default",
+    "type": "invoice",
+    "version": 1,
+    "cloned_from": null
+}

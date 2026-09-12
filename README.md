@@ -402,7 +402,7 @@ If you're looking to contribute Peppol support, start with that issue and branch
 - [ ] Set up Redis for cache and queue
 - [ ] Configure queue workers with Supervisor
 - [ ] Set up proper mail configuration
-- [ ] Configure backups
+- [ ] Configure backups (include `storage/app/report_templates` — user-authored report layouts are stored on disk, not in the database)
 - [ ] Set up SSL/TLS certificates
 - [ ] Configure firewall rules
 - [ ] Set up monitoring and logging

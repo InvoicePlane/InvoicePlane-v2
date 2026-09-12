@@ -191,11 +191,17 @@ class InvoicesTable
                     Action::make('download pdf')
                         ->visible(fn () => auth()->user()?->can(Permission::DOWNLOAD_INVOICES->value))
                         ->label(trans('ip.download_pdf'))
-                        ->modalDescription(
-                            'todo: make sure we can download the PDF of the Invoice through an action,
-                            so need for modal anymore'
-                        )
-                        ->action(function (Invoice $record): void {}),
+                        ->action(function (Invoice $record) {
+                            $response = app(\Modules\Core\Services\PdfGenerationService::class)->handleInvoiceDownload($record);
+
+                            if ($response === null) {
+                                Notification::make()->title(trans('ip.report_pdf_queued'))->success()->send();
+
+                                return;
+                            }
+
+                            return $response;
+                        }),
                     EmailInvoiceAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_INVOICES->value))
                         ->disabled(fn (Invoice $record): bool => blank(app(InvoiceService::class)->resolveEmailDefaults($record)['recipient']))

@@ -3,6 +3,7 @@
 namespace Modules\Core\Observers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Modules\Core\Models\Company;
 use Modules\Core\Services\CompanyDefaultsBootstrapService;
 
@@ -20,7 +21,13 @@ class CompanyObserver
 
     public function updated(Company $company): void {}
 
-    public function deleted(Company $company): void {}
+    public function deleted(Company $company): void
+    {
+        // Per-company report storage lives outside the database; nothing else
+        // reaps it when the company row goes.
+        Storage::disk('report_templates')->deleteDirectory((string) $company->id);
+        Storage::disk('report_pdfs')->deleteDirectory((string) $company->id);
+    }
 
     public function restored(Company $company): void {}
 

@@ -27,3 +27,13 @@ export async function logout(page) {
   await page.getByRole('button', { name: /log ?out/i }).click();
   await page.waitForURL(/\/login/);
 }
+
+export async function isAuthenticated(page) {
+  try {
+    await page.goto(tenantPath('/dashboard'));
+
+    return !page.url().includes('/login');
+  } catch {
+    return false;
+  }
+}

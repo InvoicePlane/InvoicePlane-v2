@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Modules\Core\Models\TaxRate;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
+use Modules\Projects\Models\Task;
 use Modules\Quotes\Database\Factories\QuoteItemFactory;
 
 /**
@@ -68,6 +69,11 @@ class QuoteItem extends Model
     public function productUnit(): BelongsTo
     {
         return $this->belongsTo(ProductUnit::class, 'product_unit_id');
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class, 'task_id');
     }
 
     public function quote(): BelongsTo
