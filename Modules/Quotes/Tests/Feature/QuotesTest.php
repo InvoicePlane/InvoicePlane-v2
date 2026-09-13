@@ -421,6 +421,43 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_allows_clearing_the_notes_field_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        (new \Modules\Core\Database\Seeders\PermissionsSeeder())->run();
+        (new \Modules\Core\Database\Seeders\RolesSeeder())->run();
+        $this->user->assignRole(\Modules\Core\Enums\UserRole::CUSTOMER_ADMIN->value);
+
+        $prospect  = Relation::factory()->for($this->company)->prospect()->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $quote = Quote::factory()->for($this->company)->create([
+            'quote_number'     => 'Q-987654',
+            'prospect_id'      => $prospect->id,
+            'numbering_id'     => $numbering->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::DRAFT->value,
+            'quoted_at'        => '2025-05-10',
+            'quote_expires_at' => '2025-06-09',
+            'summary'          => 'Old note.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm(['notes' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id, 'summary' => null]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     #[Group('slow')]
     public function it_inserts_a_note_template_into_the_quote_notes_field(): void
     {

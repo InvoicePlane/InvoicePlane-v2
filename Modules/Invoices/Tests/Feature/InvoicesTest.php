@@ -725,6 +725,35 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_allows_clearing_the_notes_and_invoice_terms_fields_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'summary'      => 'Old note.',
+            'terms'        => 'Old terms.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['notes' => null, 'invoice_terms' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'summary' => null, 'terms' => null]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     #[Group('slow')]
     public function it_inserts_a_note_template_into_the_notes_field(): void
     {

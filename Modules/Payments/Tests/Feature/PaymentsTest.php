@@ -768,6 +768,79 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_fails_to_update_payment_with_an_overlong_payment_number(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'payment_number' => 'PAY-OLD',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_number' => str_repeat('A', 256)])
+            ->call('save');
+
+        /* Assert */
+        $component->assertHasFormErrors(['payment_number' => 'max']);
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_number' => 'PAY-OLD']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_allows_clearing_the_note_and_payment_number_fields_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'payment_number' => 'PAY-OLD',
+                'notes'          => 'Old note.',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['note' => null, 'payment_number' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'notes' => null, 'payment_number' => null]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
         /* Arrange */

@@ -494,6 +494,33 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_fails_to_create_project_with_an_overlong_project_number(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
+
+        $payload = [
+            'customer_id'    => $customer->id,
+            'project_status' => ProjectStatus::ACTIVE->value,
+            'project_name'   => 'Website Redesign',
+            'project_number' => str_repeat('A', 256),
+            'start_at'       => '2025-05-01',
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateProject::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* Assert */
+        $component->assertHasFormErrors(['project_number' => 'max']);
+
+        $this->assertDatabaseMissing('projects', ['project_number' => $payload['project_number']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     /**
      * @payload
      * {
@@ -555,6 +582,33 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('projects', ['id' => $project->id, 'project_number' => 'PRJ-NEW']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_allows_clearing_the_project_number_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
+
+        $project = Project::factory()->create([
+            'customer_id'    => $customer->id,
+            'project_name'   => '::project_name::',
+            'project_number' => 'PRJ-OLD',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProject::class, ['record' => $project->id])
+            ->fillForm(['project_number' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('projects', ['id' => $project->id, 'project_number' => null]);
     }
 
     #[Test]
