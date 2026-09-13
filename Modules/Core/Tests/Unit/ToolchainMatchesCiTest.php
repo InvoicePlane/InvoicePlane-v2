@@ -42,7 +42,11 @@ final class ToolchainMatchesCiTest extends AbstractTestCase
         // clean lock (exit 0, writes nothing) and exits 1 without touching
         // yarn.lock on a stale one — so the exit code IS the signal. Also
         // guard the string in case a different yarn major changes the code.
-        [$out, $exit] = $this->shell('yarn install --frozen-lockfile --non-interactive');
+        // Match every CI workflow's exact command (see .github/workflows/*.yml)
+        // — do not add --non-interactive: Yarn 4 (Berry) rejects that flag
+        // outright with exit 1 regardless of lockfile state, which would make
+        // this check fail even on a perfectly in-sync lockfile.
+        [$out, $exit] = $this->shell('yarn install --frozen-lockfile');
 
         self::assertTrue(
             $exit === 0 && ! str_contains($out, 'lockfile needs to be updated'),

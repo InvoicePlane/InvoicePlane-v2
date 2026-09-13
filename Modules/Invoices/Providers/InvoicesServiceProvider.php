@@ -4,10 +4,17 @@ namespace Modules\Invoices\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Invoices\Http\Clients\ApiClient;
+use Modules\Invoices\Http\Contracts\HttpClientInterface;
+use Modules\Invoices\Http\Decorators\HttpClientExceptionHandler;
+use Modules\Invoices\Http\Decorators\RateLimiter;
+use Modules\Invoices\Http\Decorators\RequestLogger;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
+use Modules\Invoices\Models\PeppolIntegration;
 use Modules\Invoices\Observers\InvoiceItemObserver;
 use Modules\Invoices\Observers\InvoiceObserver;
+use Modules\Invoices\Observers\PeppolIntegrationObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -30,12 +37,31 @@ class InvoicesServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
         Invoice::observe(InvoiceObserver::class);
         InvoiceItem::observe(InvoiceItemObserver::class);
+        PeppolIntegration::observe(PeppolIntegrationObserver::class);
     }
 
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(HttpClientInterface::class, function ($app) {
+            /* Layer 1: Base client */
+            $client = new ApiClient();
+
+            /* Layer 2: Rate limiting */
+            $client = new RateLimiter($client);
+
+            /* Layer 3: Exception handling */
+            $client = new HttpClientExceptionHandler($client);
+
+            /* Layer 4: Logging (conditional) */
+            if (config('logging.requests')) {
+                $client = new RequestLogger($client);
+            }
+
+            return $client;
+        });
     }
 
     public function registerTranslations(): void

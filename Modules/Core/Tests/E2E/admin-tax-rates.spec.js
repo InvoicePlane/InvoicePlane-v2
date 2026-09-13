@@ -1,5 +1,6 @@
 import { test, expect } from './test.js';
 import { assertRealListContent } from './list-assertions.js';
+import { registerRequiredFieldOmissionTests } from './required-field-helpers.js';
 
 test.describe('Admin: Tax Rates', () => {
   test('list page shows real tax rates', async ({ page }) => {
@@ -84,4 +85,14 @@ test.describe('Admin: Tax Rates', () => {
     await expect(modal.getByLabel('Name*')).toHaveValue(/E2E No Code Rate/);
     expect(errors, `unexpected error(s) submitting without a code:\n${errors.join('\n')}`).toHaveLength(0);
   });
+});
+
+// mind-the-gap-again: real frontend counterpart to TaxRateResource's
+// PHPUnit "it_fails_to_create_X_without_required_Y" tests. See
+// required-field-helpers.js. ('code' is also covered above by a named
+// regression test for the specific historical bug — both are kept:
+// this one is the systematic per-field check, that one documents the
+// incident.)
+registerRequiredFieldOmissionTests('Core', {
+  'admin/tax-rates': ['tax_rate_type', 'code', 'name'],
 });

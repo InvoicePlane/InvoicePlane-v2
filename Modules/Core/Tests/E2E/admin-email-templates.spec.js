@@ -1,5 +1,6 @@
 import { test, expect } from './test.js';
 import { assertRealListContent } from './list-assertions.js';
+import { registerRequiredFieldOmissionTests } from './required-field-helpers.js';
 
 test.describe('Admin: Email Templates', () => {
   test('list page shows real email templates', async ({ page }) => {
@@ -50,4 +51,11 @@ test.describe('Admin: Email Templates', () => {
     await search.pressSequentially(title, { delay: 30 });
     await expect(page.locator('table tbody tr').first()).toContainText(title.slice(0, 10), { timeout: 10000 });
   });
+});
+
+// mind-the-gap-again: real frontend counterpart to EmailTemplateResource's
+// PHPUnit "it_fails_to_create_X_without_required_Y" tests. See
+// required-field-helpers.js.
+registerRequiredFieldOmissionTests('Core', {
+  'admin/email-templates': ['body'],
 });

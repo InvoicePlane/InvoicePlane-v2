@@ -7,10 +7,12 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Pages\ListMerchantClients;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Schemas\MerchantClientForm;
 use Modules\Core\Filament\Admin\Resources\MerchantClients\Tables\MerchantClientsTable;
-use Modules\Payments\Models\MerchantClient;
+use Modules\Core\Models\MerchantClient;
 
 class MerchantClientResource extends Resource
 {
@@ -39,5 +41,30 @@ class MerchantClientResource extends Resource
         return [
             'index' => ListMerchantClients::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_MERCHANT_CLIENTS->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_MERCHANT_CLIENTS->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_MERCHANT_CLIENTS->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_MERCHANT_CLIENTS->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_MERCHANT_CLIENTS->value) ?? false;
     }
 }

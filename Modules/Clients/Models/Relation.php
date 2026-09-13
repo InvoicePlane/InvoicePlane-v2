@@ -20,6 +20,7 @@ use Modules\Core\Models\Note;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
 use Modules\Expenses\Models\Expense;
+use Modules\Invoices\Enums\PeppolValidationStatus;
 use Modules\Invoices\Models\Invoice;
 use Modules\Payments\Models\Payment;
 use Modules\Projects\Models\Project;
@@ -69,9 +70,11 @@ class Relation extends Model
     protected $table = 'relations';
 
     protected $casts = [
-        'relation_type'      => RelationType::class,
-        'relation_status'    => RelationStatus::class,
-        'enable_e_invoicing' => 'boolean',
+        'relation_type'            => RelationType::class,
+        'relation_status'          => RelationStatus::class,
+        'enable_e_invoicing'       => 'boolean',
+        'peppol_validation_status' => PeppolValidationStatus::class,
+        'peppol_validated_at'      => 'datetime',
     ];
 
     protected $guarded = [];
@@ -121,7 +124,7 @@ class Relation extends Model
     /** @return MorphMany<Communication, $this> */
     public function ccEmailCommunications(): MorphMany
     {
-        // @phpstan-ignore return.type (larastan narrows MorphMany::whereIn() to a bare Query\Builder; the runtime object is still the relation)
+        // @phpstan-ignore return.type (whereIn() on a typed relation resolves to a bare Query\Builder under PHPStan; the runtime object is still the relation)
         return $this->communications()->whereIn('communication_type', CommunicationType::ccTypes());
     }
 
@@ -187,6 +190,16 @@ class Relation extends Model
             || $this->expenses()->withoutGlobalScopes()->exists()
             || $this->tasks()->withoutGlobalScopes()->exists()
             || $this->projects()->withoutGlobalScopes()->exists();
+    }
+
+    /**
+     * Whether this customer's Peppol participant ID has been validated against the network.
+     * Set by PeppolManagementService::validatePeppolId() — see peppol_validation_status's
+     * PeppolValidationStatus cast for the other possible states (INVALID/NOT_FOUND/ERROR).
+     */
+    public function hasPeppolIdValidated(): bool
+    {
+        return $this->peppol_validation_status === PeppolValidationStatus::VALID;
     }
 
     /**

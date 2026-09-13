@@ -1,5 +1,6 @@
 import { test, expect } from './test.js';
 import { assertRealListContent } from './list-assertions.js';
+import { registerRequiredFieldOmissionTests } from './required-field-helpers.js';
 
 test.describe('Admin: Users', () => {
   test('list page shows real users', async ({ page }) => {
@@ -39,4 +40,11 @@ test.describe('Admin: Users', () => {
     await expect(resultRow).toContainText(email, { timeout: 10000 });
     await expect(resultRow).toContainText(userName.slice(0, 10));
   });
+});
+
+// mind-the-gap-again: real frontend counterpart to UserResource's PHPUnit
+// "it_fails_to_create_X_without_required_Y" tests. See
+// required-field-helpers.js.
+registerRequiredFieldOmissionTests('Core', {
+  'admin/users': ['name', 'email', 'password'],
 });
