@@ -347,6 +347,80 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_persists_a_changed_numbering_id_on_update(): void
+    {
+        /* Arrange */
+        (new \Modules\Core\Database\Seeders\PermissionsSeeder())->run();
+        (new \Modules\Core\Database\Seeders\RolesSeeder())->run();
+        $this->user->assignRole(\Modules\Core\Enums\UserRole::CUSTOMER_ADMIN->value);
+
+        $prospect     = Relation::factory()->for($this->company)->prospect()->create();
+        $oldNumbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+        $newNumbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $quote = Quote::factory()->for($this->company)->create([
+            'quote_number'     => 'Q-987654',
+            'prospect_id'      => $prospect->id,
+            'numbering_id'     => $oldNumbering->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::DRAFT->value,
+            'quoted_at'        => '2025-05-10',
+            'quote_expires_at' => '2025-06-09',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm(['numbering_id' => $newNumbering->id])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id, 'numbering_id' => $newNumbering->id]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_the_notes_field_on_update(): void
+    {
+        /* Arrange */
+        (new \Modules\Core\Database\Seeders\PermissionsSeeder())->run();
+        (new \Modules\Core\Database\Seeders\RolesSeeder())->run();
+        $this->user->assignRole(\Modules\Core\Enums\UserRole::CUSTOMER_ADMIN->value);
+
+        $prospect  = Relation::factory()->for($this->company)->prospect()->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $quote = Quote::factory()->for($this->company)->create([
+            'quote_number'     => 'Q-987654',
+            'prospect_id'      => $prospect->id,
+            'numbering_id'     => $numbering->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::DRAFT->value,
+            'quoted_at'        => '2025-05-10',
+            'quote_expires_at' => '2025-06-09',
+            'summary'          => null,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm(['notes' => 'Payment due Net 30.'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id, 'summary' => 'Payment due Net 30.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     #[Group('slow')]
     public function it_inserts_a_note_template_into_the_quote_notes_field(): void
     {
@@ -456,6 +530,45 @@ class QuotesTest extends AbstractCompanyPanelTestCase
         // migration added. FormDbConstraintAuditTest can't catch a revert
         // here (it early-returns on a non-dehydrated field), so assert it.
         $this->assertSame(0.0, (float) Quote::query()->latest('id')->value('quote_discount_percent'));
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_the_notes_field_on_create(): void
+    {
+        /* Arrange */
+        $prospect      = Relation::factory()->for($this->company)->prospect()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $payload = [
+            'quote_number'           => 'Q-0002',
+            'prospect_id'            => $prospect->id,
+            'numbering_id'           => $documentGroup->id,
+            'quote_status'           => QuoteStatus::DRAFT->value,
+            'quoted_at'              => now()->format('Y-m-d'),
+            'quote_expires_at'       => now()->addDays(30)->format('Y-m-d'),
+            'quote_discount_amount'  => 0.0000,
+            'quote_discount_percent' => 0.0000,
+            'quote_tax_total'        => 0,
+            'quote_item_subtotal'    => 0,
+            'quote_total'            => 0,
+            'notes'                  => 'Created via test',
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateQuote::class)
+            ->fillForm($payload)
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        /* Assert */
+        $component->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', [
+            'quote_number' => 'Q-0002',
+            'summary'      => 'Created via test',
+        ]);
     }
 
     #[Test]

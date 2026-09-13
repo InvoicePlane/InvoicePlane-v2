@@ -68,7 +68,7 @@ class QuoteService extends BaseService
                 'quote_password'         => $data['quote_password'] ?? null,
                 'url_key'                => $data['url_key'] ?? Str::random(32),
                 'template'               => $data['template'] ?? null,
-                'summary'                => $data['summary'] ?? null,
+                'summary'                => $data['notes'] ?? null,
                 'terms'                  => $data['terms'] ?? null,
                 'footer'                 => $data['footer'] ?? null,
             ]);
@@ -127,7 +127,7 @@ class QuoteService extends BaseService
                 'quote_item_subtotal'    => $data['quote_item_subtotal'] ?? 0,
                 'quote_tax_total'        => $quoteTaxTotal,
                 'quote_total'            => $quoteTotal,
-                'summary'                => $data['summary'] ?? null,
+                'summary'                => $data['notes'] ?? null,
             ]);
 
             DB::commit();
