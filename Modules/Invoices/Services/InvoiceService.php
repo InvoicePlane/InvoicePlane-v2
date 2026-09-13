@@ -89,8 +89,8 @@ class InvoiceService extends BaseService
                 'url_key'                  => $data['url_key'] ?? Str::random(32),
                 'is_read_only'             => $data['is_read_only'] ?? false,
                 'template'                 => $data['template'] ?? null,
-                'summary'                  => $data['summary'] ?? null,
-                'terms'                    => $data['terms'] ?? null,
+                'summary'                  => $data['notes'] ?? null,
+                'terms'                    => $data['invoice_terms'] ?? null,
                 'footer'                   => $data['footer'] ?? null,
             ]);
 
@@ -154,8 +154,8 @@ class InvoiceService extends BaseService
                 'url_key'                  => $data['url_key'] ?? Str::random(32),
                 'is_read_only'             => $data['is_read_only'] ?? false,
                 'template'                 => $data['template'] ?? null,
-                'summary'                  => $data['summary'] ?? null,
-                'terms'                    => $data['terms'] ?? null,
+                'summary'                  => $data['notes'] ?? null,
+                'terms'                    => $data['invoice_terms'] ?? null,
                 'footer'                   => $data['footer'] ?? null,
             ]);
 
