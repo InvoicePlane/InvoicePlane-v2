@@ -34,6 +34,7 @@ class EmailTemplateService extends BaseService
         $emailTemplateToUpdate->update([
             'company_id' => $this->getCompanyId() ?? 1,
             'type'       => $data['type'],
+            'title'      => $data['title'],
             'subject'    => $data['subject'],
             'body'       => $data['body'] ?? '',
             'from_name'  => $data['from_name'],

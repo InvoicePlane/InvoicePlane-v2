@@ -287,6 +287,31 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_persists_an_updated_title_on_an_email_template(): void
+    {
+        /* Arrange */
+        $template = EmailTemplate::factory()->for($this->company)->create([
+            'title'   => 'Old Title',
+            'subject' => 'Old Subject',
+            'type'    => EmailTemplateType::TEXT->value,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditEmailTemplate::class, ['record' => $template->id])
+            ->fillForm(['title' => 'New Title'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('email_templates', ['id' => $template->id, 'title' => 'New Title']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_an_email_template(): void
     {
         /* Arrange */
