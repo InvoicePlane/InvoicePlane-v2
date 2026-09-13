@@ -44,7 +44,7 @@ class PaymentService extends BaseService
                 'payment_status' => $data['payment_status'] ?? PaymentStatus::COMPLETED->value,
                 'payment_amount' => $data['payment_amount'],
                 'paid_at'        => $data['paid_at'],
-                'notes'          => $data['notes'] ?? null,
+                'note'           => $data['note'] ?? null,
             ]);
 
             $this->syncInvoiceStatus($invoice);
@@ -115,11 +115,12 @@ class PaymentService extends BaseService
             'customer_id'        => $customerId,
             'invoice_id'         => $data['invoice_id'] ?? null,
             'merchant_client_id' => $data['merchant_client_id'] ?? null,
+            'payment_number'     => $data['payment_number'] ?? null,
             'payment_method'     => $data['payment_method'],
             'payment_status'     => $data['payment_status'] ?? PaymentStatus::PENDING->value,
             'payment_amount'     => NumberFormatter::formatTrimmed($data['payment_amount']),
             'paid_at'            => $data['paid_at'],
-            'notes'              => $data['notes'] ?? null,
+            'notes'              => $data['note'] ?? null,
         ];
     }
 
