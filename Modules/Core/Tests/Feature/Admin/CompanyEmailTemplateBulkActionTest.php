@@ -5,6 +5,7 @@ namespace Modules\Core\Tests\Feature\Admin;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
+use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignEmailTemplateBulkAction;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
@@ -53,6 +54,41 @@ class CompanyEmailTemplateBulkActionTest extends AbstractAdminPanelTestCase
 
         /* Assert */
         $this->assertDatabaseCount('company_email_template', 1);
+    }
+
+    #[Test]
+    public function it_loads_a_template_owned_by_another_company_through_the_pivot(): void
+    {
+        /* Arrange */
+        $ownerCompany  = Company::factory()->create();
+        $targetCompany = Company::factory()->create();
+        $template      = EmailTemplate::factory()->for($ownerCompany)->create();
+        $targetCompany->emailTemplates()->attach($template->id);
+
+        /* Act */
+        $loaded = $targetCompany->emailTemplates()->find($template->id);
+
+        /* Assert */
+        $this->assertNotNull($loaded);
+        $this->assertSame($template->id, $loaded->id);
+    }
+
+    #[Test]
+    public function it_shows_humanized_titles_disambiguated_by_owning_company(): void
+    {
+        /* Arrange */
+        $companyOne = Company::factory()->create(['name' => 'Acme Corp']);
+        $companyTwo = Company::factory()->create(['name' => 'Other Corp']);
+        $templateOne = EmailTemplate::factory()->for($companyOne)->create(['title' => 'invoice_sent']);
+        $templateTwo = EmailTemplate::factory()->for($companyTwo)->create(['title' => 'invoice_sent']);
+
+        /* Act */
+        $options = AssignEmailTemplateBulkAction::getEmailTemplateOptions();
+
+        /* Assert */
+        $this->assertSame('Invoice Sent (Acme Corp)', $options[$templateOne->id]);
+        $this->assertSame('Invoice Sent (Other Corp)', $options[$templateTwo->id]);
+        $this->assertNotSame($options[$templateOne->id], $options[$templateTwo->id]);
     }
 
     #[Test]

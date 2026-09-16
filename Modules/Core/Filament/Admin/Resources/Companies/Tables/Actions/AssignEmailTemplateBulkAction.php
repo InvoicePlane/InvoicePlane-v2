@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 
@@ -29,19 +30,22 @@ class AssignEmailTemplateBulkAction extends BulkAction
                  * templates across companies needs to pick from all of
                  * them regardless of the current session/tenant company.
                 */
-                ->options(fn () => EmailTemplate::withoutGlobalScopes()->pluck('title', 'id'))
+                ->options(fn () => static::getEmailTemplateOptions())
                 ->searchable()
                 ->required(),
         ]);
 
         $this->action(function (Collection $records, array $data): void {
+            $attachedCount = 0;
+
             /** @var Company $company */
             foreach ($records as $company) {
-                $company->emailTemplates()->syncWithoutDetaching([$data['email_template_id']]);
+                $result = $company->emailTemplates()->syncWithoutDetaching([$data['email_template_id']]);
+                $attachedCount += count($result['attached']);
             }
 
             Notification::make()
-                ->title(trans_choice('ip.email_template_assigned', $records->count(), ['count' => $records->count()]))
+                ->title(trans_choice('ip.email_template_assigned', $attachedCount, ['count' => $attachedCount]))
                 ->success()
                 ->send();
         });
@@ -52,5 +56,23 @@ class AssignEmailTemplateBulkAction extends BulkAction
     public static function getDefaultName(): ?string
     {
         return 'assignEmailTemplate';
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function getEmailTemplateOptions(): array
+    {
+        return EmailTemplate::withoutGlobalScopes()
+            ->with('company:id,name')
+            ->get()
+            ->mapWithKeys(fn (EmailTemplate $template) => [
+                $template->id => sprintf(
+                    '%s (%s)',
+                    Str::headline($template->title ?? ''),
+                    $template->company?->name ?? trans('ip.company')
+                ),
+            ])
+            ->all();
     }
 }
