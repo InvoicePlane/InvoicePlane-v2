@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignEmailTemplateBulkAction;
 use Modules\Core\Models\Company;
 use Modules\Core\Services\CompanyService;
 
@@ -43,6 +44,7 @@ class CompaniesTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    AssignEmailTemplateBulkAction::make(),
                 ]),
             ]);
     }

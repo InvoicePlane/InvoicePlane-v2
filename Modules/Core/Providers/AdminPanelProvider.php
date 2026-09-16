@@ -112,7 +112,7 @@ class AdminPanelProvider extends PanelProvider
                         NavigationGroup::make(trans('ip.companies'))
                             //->icon('heroicon-o-building-office')
                             ->items([
-                                //...CompanyResource::getNavigationItems(),
+                                ...CompanyResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make(trans('ip.email_templates'))
                             //->icon('heroicon-o-archive-box')
