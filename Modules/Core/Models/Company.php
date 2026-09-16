@@ -164,6 +164,11 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(EmailTemplate::class);
     }
 
+    public function emailTemplates(): BelongsToMany
+    {
+        return $this->belongsToMany(EmailTemplate::class, 'company_email_template');
+    }
+
     public function expense_categories(): HasMany
     {
         return $this->hasMany(ExpenseCategory::class);

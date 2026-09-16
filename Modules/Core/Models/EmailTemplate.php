@@ -5,6 +5,7 @@ namespace Modules\Core\Models;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Core\Database\Factories\EmailTemplateFactory;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Traits\BelongsToCompany;
@@ -35,6 +36,15 @@ class EmailTemplate extends Model
     ];
 
     protected $guarded = [];
+
+    /**
+     * Companies this template has been assigned to via the admin bulk
+     * action, distinct from the owning company() relation.
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_email_template');
+    }
 
     protected static function newFactory(): Factory
     {
