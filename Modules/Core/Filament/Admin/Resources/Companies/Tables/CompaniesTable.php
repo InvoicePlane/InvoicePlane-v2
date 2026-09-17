@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignEmailTemplateBulkAction;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignInvoiceGroupBulkAction;
+use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignPaymentMethodBulkAction;
 use Modules\Core\Models\Company;
 use Modules\Core\Services\CompanyService;
 
@@ -47,6 +48,7 @@ class CompaniesTable
                     DeleteBulkAction::make(),
                     AssignEmailTemplateBulkAction::make(),
                     AssignInvoiceGroupBulkAction::make(),
+                    AssignPaymentMethodBulkAction::make(),
                 ]),
             ]);
     }
