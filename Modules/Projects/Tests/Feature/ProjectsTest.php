@@ -564,7 +564,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
         /* Arrange */
         $customer = Relation::factory()->for($this->company)->create(['company_name' => '::company_name::']);
 
-        $project = Project::factory()->create([
+        $project = Project::factory()->for($this->company)->create([
             'customer_id'    => $customer->id,
             'project_name'   => '::project_name::',
             'project_number' => 'PRJ-OLD',
