@@ -21,6 +21,7 @@ use Modules\Expenses\Models\ExpenseCategory;
 use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Models\InvoiceItem;
+use Modules\Payments\Models\CompanyPaymentMethod;
 use Modules\Payments\Models\Payment;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -174,6 +175,16 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
     {
         return $this->belongsToMany(Numbering::class, 'company_numbering')
             ->withoutGlobalScope('company_id');
+    }
+
+    /**
+     * Payment methods (enum values) assigned to this company via the admin
+     * bulk action. PaymentMethod has no model of its own, so this is a
+     * HasMany over the pivot rows rather than a BelongsToMany.
+     */
+    public function paymentMethods(): HasMany
+    {
+        return $this->hasMany(CompanyPaymentMethod::class);
     }
 
     public function expense_categories(): HasMany
