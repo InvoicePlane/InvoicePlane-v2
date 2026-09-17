@@ -267,6 +267,12 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
         return $this->hasMany(TaxRate::class);
     }
 
+    public function assignedTaxRates(): BelongsToMany
+    {
+        return $this->belongsToMany(TaxRate::class, 'company_tax_rate')
+            ->withoutGlobalScope('company_id');
+    }
+
     public function upload_details(): HasMany
     {
         return $this->hasMany(UploadDetail::class);

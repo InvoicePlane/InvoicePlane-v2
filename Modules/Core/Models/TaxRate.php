@@ -97,6 +97,15 @@ class TaxRate extends Model
         return $this->hasMany(Task::class, 'task_id');
     }
 
+    /**
+     * Companies this tax rate has been assigned to via the admin bulk
+     * action, distinct from the owning company() relation.
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_tax_rate');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Factory
