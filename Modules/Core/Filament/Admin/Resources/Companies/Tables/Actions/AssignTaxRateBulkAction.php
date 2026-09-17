@@ -23,12 +23,12 @@ class AssignTaxRateBulkAction extends BulkAction
         $this->schema([
             Select::make('tax_rate_id')
                 ->label(trans('ip.tax_rate'))
-                /**
+                /*
                  * Tax rates are scoped to their owning company by the
                  * BelongsToCompany global scope, but an admin assigning
                  * tax rates across companies needs to pick from all of
                  * them regardless of the current session/tenant company.
-                */
+                 */
                 ->options(fn () => static::getTaxRateOptions())
                 ->searchable()
                 ->required(),
