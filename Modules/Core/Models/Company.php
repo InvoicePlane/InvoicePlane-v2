@@ -170,6 +170,12 @@ class Company extends Model implements HasName, HasCurrentTenantLabel
             ->withoutGlobalScope('company_id');
     }
 
+    public function invoiceGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(Numbering::class, 'company_numbering')
+            ->withoutGlobalScope('company_id');
+    }
+
     public function expense_categories(): HasMany
     {
         return $this->hasMany(ExpenseCategory::class);

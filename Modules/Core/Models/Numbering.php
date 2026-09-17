@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Database\Factories\NumberingFactory;
 use Modules\Core\Enums\NumberingType;
@@ -195,6 +196,15 @@ class Numbering extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class, 'numbering_id');
+    }
+
+    /**
+     * Companies this invoice group has been assigned to via the admin bulk
+     * action, distinct from the owning company() relation.
+     */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_numbering');
     }
 
     /*

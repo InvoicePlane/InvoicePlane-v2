@@ -3,6 +3,7 @@
 namespace Modules\Core\Database\Factories;
 
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
 
 class NumberingFactory extends AbstractFactory
@@ -21,7 +22,7 @@ class NumberingFactory extends AbstractFactory
         }
 
         return [
-            'company_id' => $companyId,
+            'company_id' => $companyId ?? Company::factory(),
             'type'       => $numberingType->value,
             'name'       => $name,
             'next_id'    => 1,
