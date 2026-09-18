@@ -13,6 +13,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Modules\Core\Enums\Permission;
 use Modules\Products\Enums\ProductType;
+use Modules\Products\Filament\Company\Resources\Products\ProductResource;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
@@ -80,10 +81,9 @@ class ProductsTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_PRODUCTS->value))
-                        ->action(function (Product $record, array $data) {
-                            app(ProductService::class)->updateProduct($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Product $record): string => ProductResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value))
 

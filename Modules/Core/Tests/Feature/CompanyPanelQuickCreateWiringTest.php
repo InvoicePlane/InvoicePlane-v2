@@ -19,23 +19,11 @@ use ReflectionMethod;
  * added for Expenses only, GH #617) to Relations, Products, Invoices,
  * Quotes and Payments, via CompanyPanelProvider::withQuickCreate().
  *
- * Resources without a dedicated `create` page (modal-only, creating records
- * through a CreateAction on their list page) get a quick-create URL pointing
- * at the index page with `?action=create`, which Filament's own
- * `#[Url(as: 'action')]`-bound `$defaultAction` property auto-mounts on load
- * (see vendor/filament/filament resources/views components/page/index.blade.php
- * `wire:init="mountAction(...)"`). Resources with a dedicated create page
- * (Invoices, Quotes, Expenses, Relations, Payments) link straight to it instead.
+ * All resources covered here now link straight to a dedicated `create` page
+ * instead of mounting a modal action on the index page.
  */
 class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
 {
-    public static function modalOnlyResources(): array
-    {
-        return [
-            'Products' => [ProductResource::class],
-        ];
-    }
-
     public static function dedicatedCreatePageResources(): array
     {
         return [
@@ -44,24 +32,8 @@ class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
             'Expenses'  => [ExpenseResource::class],
             'Relations' => [RelationResource::class],
             'Payments'  => [PaymentResource::class],
+            'Products'  => [ProductResource::class],
         ];
-    }
-
-    #[Test]
-    #[DataProvider('modalOnlyResources')]
-    public function it_points_modal_only_resources_at_the_index_page_with_an_auto_mount_query_string(string $resourceClass): void
-    {
-        /* Arrange */
-        $this->actingAs($this->user);
-
-        /* Act */
-        $items = $this->withQuickCreate($resourceClass);
-
-        /* Assert */
-        $this->assertNotEmpty($items);
-        $url = $items[0]->getExtraAttributeBag()->get('data-quick-create-url');
-        $this->assertSame($resourceClass::getUrl('index', ['action' => 'create']), $url);
-        $this->assertStringContainsString('?action=create', $url);
     }
 
     #[Test]
