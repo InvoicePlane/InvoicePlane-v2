@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\CreateExpense;
+use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\EditExpense;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Pages\ListExpenses;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Schemas\ExpenseForm;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Tables\ExpensesTable;
@@ -67,6 +68,7 @@ class ExpenseResource extends BaseResource
         return [
             'index'  => ListExpenses::route('/'),
             'create' => CreateExpense::route('/create'),
+            'edit'   => EditExpense::route('/{record}/edit'),
         ];
     }
 
