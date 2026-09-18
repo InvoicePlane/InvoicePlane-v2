@@ -13,6 +13,7 @@ use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignEmailTe
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignInvoiceGroupBulkAction;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignPaymentMethodBulkAction;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignTaxRateBulkAction;
+use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignUserBulkAction;
 use Modules\Core\Models\Company;
 use Modules\Core\Services\CompanyService;
 
@@ -51,6 +52,7 @@ class CompaniesTable
                     AssignInvoiceGroupBulkAction::make(),
                     AssignPaymentMethodBulkAction::make(),
                     AssignTaxRateBulkAction::make(),
+                    AssignUserBulkAction::make(),
                 ]),
             ]);
     }
