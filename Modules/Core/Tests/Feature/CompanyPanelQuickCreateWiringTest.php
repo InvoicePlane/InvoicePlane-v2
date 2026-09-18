@@ -25,7 +25,7 @@ use ReflectionMethod;
  * `#[Url(as: 'action')]`-bound `$defaultAction` property auto-mounts on load
  * (see vendor/filament/filament resources/views components/page/index.blade.php
  * `wire:init="mountAction(...)"`). Resources with a dedicated create page
- * (Invoices, Quotes, Expenses, Relations) link straight to it instead.
+ * (Invoices, Quotes, Expenses, Relations, Payments) link straight to it instead.
  */
 class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
 {
@@ -33,7 +33,6 @@ class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
     {
         return [
             'Products' => [ProductResource::class],
-            'Payments' => [PaymentResource::class],
         ];
     }
 
@@ -44,6 +43,7 @@ class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
             'Quotes'    => [QuoteResource::class],
             'Expenses'  => [ExpenseResource::class],
             'Relations' => [RelationResource::class],
+            'Payments'  => [PaymentResource::class],
         ];
     }
 

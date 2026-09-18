@@ -11,6 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\Permission;
+use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Services\PaymentService;
 
@@ -78,10 +79,9 @@ class PaymentsTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_PAYMENTS->value))
-                        ->action(function (Payment $record, array $data) {
-                            app(PaymentService::class)->updatePayment($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Payment $record): string => PaymentResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     Action::make('email_receipt')
                         ->visible(fn () => auth()->user()?->can(Permission::EMAIL_PAYMENTS->value))
                         ->label(trans('ip.send_email'))
