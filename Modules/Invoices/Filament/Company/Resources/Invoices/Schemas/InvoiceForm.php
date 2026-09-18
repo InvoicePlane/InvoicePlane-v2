@@ -316,6 +316,17 @@ class InvoiceForm
                         MarkdownEditor::make('invoice_terms')
                             ->toolbarButtons(['bold', 'italic'])
                             ->label(trans('ip.invoice_terms'))
+                            ->default(function (string $operation) {
+                                if ($operation !== 'create') {
+                                    return;
+                                }
+
+                                $companyId = Filament::getTenant()?->id;
+
+                                return $companyId
+                                    ? Setting::getForCompany($companyId, Setting::KEY_INVOICE_DEFAULT_TERMS)
+                                    : null;
+                            })
                             ->hintAction(InsertNoteTemplateAction::make('invoice_terms')),
                     ])
                     ->columnSpanFull(),
