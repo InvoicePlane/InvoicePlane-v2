@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Admin\Resources\Companies\CompanyResource;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignEmailTemplateBulkAction;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignInvoiceGroupBulkAction;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\Actions\AssignPaymentMethodBulkAction;
@@ -35,10 +36,9 @@ class CompaniesTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make('edit')
-                        ->action(function (Company $record, array $data) {
-                            app(CompanyService::class)->updateCompany($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Company $record): string => CompanyResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->action(function (Company $record) {
                             app(CompanyService::class)->deleteCompany($record);
