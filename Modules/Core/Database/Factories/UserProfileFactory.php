@@ -3,11 +3,9 @@
 namespace Modules\Core\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Core\Models\User;
 use Modules\Core\Models\UserProfile;
 
-/**
- * @extends Factory<UserProfile>
- */
 class UserProfileFactory extends Factory
 {
     protected $model = UserProfile::class;
@@ -15,7 +13,7 @@ class UserProfileFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'       => \Modules\Core\Models\User::query()->inRandomOrder()->first()->id,
+            'user_id'       => User::query()->inRandomOrder()->first()->id,
             'user_phone'    => fake()->optional()->word,
             'user_mobile'   => fake()->optional()->word,
             'user_language' => fake()->word,

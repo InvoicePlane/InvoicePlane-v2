@@ -22,7 +22,8 @@ use Modules\Projects\Enums\TaskStatus;
  * @property int|null     $project_id
  * @property int|null     $tax_rate_id
  * @property int|null     $assigned_to
- * @property string       $task_status
+ * @property string|null  $task_number
+ * @property TaskStatus   $task_status
  * @property string|null  $task_name
  * @property float|null   $task_price
  * @property Carbon|null  $due_at
@@ -47,7 +48,7 @@ class Task extends Model
 
     protected $guarded = [];
 
-    public function user(): BelongsTo
+    public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -66,6 +67,11 @@ class Task extends Model
     public function taxRate(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class, 'tax_rate_id');
+    }
+
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
     }
 
     protected static function newFactory(): Factory

@@ -2,16 +2,12 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\HasCompanyFactoryState;
 
-/**
- * @extends Factory<User>
- */
-class UserFactory extends Factory
+class UserFactory extends AbstractFactory
 {
     use HasCompanyFactoryState;
 

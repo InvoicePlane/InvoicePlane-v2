@@ -2,18 +2,19 @@
 
 namespace Modules\Expenses\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Expenses\Models\ExpenseCategory;
 
-class ExpenseCategoriesSeeder extends Seeder
+class ExpenseCategoriesSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'ExpenseCats';
+
+    protected int    $defaultCount = 3;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            ExpenseCategory::factory()->count(random_int(1, 2))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        ExpenseCategory::factory()
+            ->state(['company_id' => $this->companyId])
+            ->create();
     }
 }

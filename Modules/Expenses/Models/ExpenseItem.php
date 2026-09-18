@@ -79,6 +79,11 @@ class ExpenseItem extends AbstractLineItem
 
     public function tax_rate(): BelongsTo
     {
+        return $this->belongsTo(TaxRate::class, 'tax_rate_id');
+    }
+
+    public function tax_rate_2(): BelongsTo
+    {
         return $this->belongsTo(TaxRate::class, 'tax_rate_2_id');
     }
 

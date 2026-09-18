@@ -17,16 +17,4 @@ class RelationObserver
             }
         }
     }
-
-    /*static::created(function ($client): void {
-        //event(new CustomerCreated($client));
-    });
-
-    static::saving(function ($client): void {
-        //event(new CustomerSaving($client));
-    });
-
-    static::deleted(function ($client): void {
-        //event(new CustomerDeleted($client));
-    });*/
 }

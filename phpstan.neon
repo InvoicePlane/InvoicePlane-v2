@@ -17,8 +17,12 @@ parameters:
         - '#Call to an undefined method#'
         - '#Call to an undefined static method#'
         - '#Call to method .* on an unknown class .*#'
+        - '#Call to static method .* on an unknown class Filament#'
         - '#Constructor of class .* has an unused parameter#'
         - '#Instantiated class .* not found#'
+        - '#Attribute class .* does not exist#'
+        # Filament v5 schema/component classes not resolvable by phpstan
+        - '#Call to static method make\(\) on an unknown class Filament.*#'
         # Optional: Add other common ignores here if needed
 
     treatPhpDocTypesAsCertain: false

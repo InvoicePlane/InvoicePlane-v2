@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Services\QuoteService;
 
+use function request;
+
 class CreateQuote extends CreateRecord
 {
     protected static string $resource = QuoteResource::class;
@@ -24,8 +26,6 @@ class CreateQuote extends CreateRecord
 
         $this->record = $this->handleRecordCreation($data);
 
-        $this->form->model($this->getRecord())->saveRelationships();
-
         $this->callHook('afterCreate');
         $this->rememberData();
 
@@ -42,8 +42,37 @@ class CreateQuote extends CreateRecord
         $this->redirect($this->getRedirectUrl());
     }
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        if ($customerId = request()->integer('customer_id')) {
+            $this->form->fill(['prospect_id' => $customerId]);
+        }
+    }
+
     protected function handleRecordCreation(array $data): Model
     {
         return app(QuoteService::class)->createQuote($data);
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        $number = $this->record?->quote_number;
+
+        if (filled($number)) {
+            return trans('ip.quote_created_with_number', ['number' => $number]);
+        }
+
+        return parent::getCreatedNotificationTitle();
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if ($customerId = request()->integer('customer_id')) {
+            $data['prospect_id'] = $customerId;
+        }
+
+        return $data;
     }
 }

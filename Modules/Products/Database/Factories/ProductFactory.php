@@ -2,49 +2,45 @@
 
 namespace Modules\Products\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Core\Models\TaxRate;
+use Modules\Core\Database\Factories\AbstractFactory;
 use Modules\Products\Enums\ProductType;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
-use Modules\Products\Models\ProductUnit;
 
-/**
- * @extends Factory<Product>
- */
-class ProductFactory extends Factory
+class ProductFactory extends AbstractFactory
 {
     protected $model = Product::class;
 
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Product $product) {
+            if (empty($product->category_id) && ! empty($product->company_id)) {
+                $product->category_id = ProductCategory::withoutGlobalScopes()
+                    ->where('company_id', $product->company_id)
+                    ->first()?->id
+                    ?? ProductCategory::factory()->create(['company_id' => $product->company_id])->id;
+            }
+        });
+    }
+
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $category = ProductCategory::query()->inRandomOrder()->first() ?? ProductCategory::factory()->create();
-        $unit     = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate  = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create();
-
-        $taxRate2 = $this->faker->boolean(75) ? TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->for($company)->create() : null;
-
         $itemType = $this->faker->randomElement(ProductType::cases());
 
-        $price  = $this->faker->randomFloat(4, 10, 1000);
-        $cost   = $this->faker->optional(0.7)->randomFloat(4, 5, $price);
+        $cost   = $this->faker->optional(0.7)->randomFloat(4, 5, 1000);
         $tariff = $this->faker->optional()->numberBetween(1, 200);
 
         return [
-            'company_id'     => $company->id,
-            'category_id'    => $category->id,
-            'unit_id'        => $unit->id,
             'type'           => $itemType->value,
             'code'           => mb_strtoupper($this->faker->bothify('??###')),
-            'product_name'   => $this->faker->word(),
-            'price'          => $price,
+            'product_name'   => $this->faker->word,
+            'price'          => $this->faker->randomFloat(2, 10, 1000),
             'cost_price'     => $cost,
             'product_tariff' => $tariff,
-            'tax_rate_id'    => $taxRate->id,
-            'tax_rate_2_id'  => $taxRate2?->id,
             'description'    => null,
+            'category_id'    => null,
+            'tax_rate_id'    => null,
+            'tax_rate_2_id'  => null,
         ];
     }
 }

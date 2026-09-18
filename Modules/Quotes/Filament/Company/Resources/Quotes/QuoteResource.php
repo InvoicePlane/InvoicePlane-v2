@@ -3,16 +3,20 @@
 namespace Modules\Quotes\Filament\Company\Resources\Quotes;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\EditQuote;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Schemas\QuoteForm;
 use Modules\Quotes\Filament\Company\Resources\Quotes\Tables\QuotesTable;
 use Modules\Quotes\Models\Quote;
 
-class QuoteResource extends Resource
+class QuoteResource extends BaseResource
 {
     protected static ?string $model = Quote::class;
 
@@ -26,17 +30,22 @@ class QuoteResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return trans('crud.quotes.itemTitle');
+        return trans('ip.quote');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('crud.quotes.collectionTitle');
+        return trans('ip.quotes');
     }
 
     public static function getNavigationLabel(): string
     {
-        return trans('crud.quotes.collectionTitle');
+        return trans('ip.quotes');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
     }
 
     public static function form(Schema $schema): Schema
@@ -51,14 +60,40 @@ class QuoteResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListQuotes::route('/'),
+            'index'  => ListQuotes::route('/'),
+            'create' => CreateQuote::route('/create'),
+            'edit'   => EditQuote::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_QUOTES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_QUOTES->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_QUOTES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_QUOTES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_QUOTES->value) ?? false;
     }
 }

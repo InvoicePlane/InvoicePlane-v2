@@ -40,6 +40,8 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    'extreme_logging' => env('APP_EXTREME_LOGGING', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

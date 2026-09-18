@@ -2,10 +2,10 @@
 
 namespace Modules\Expenses\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
-use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Pages\CreateExpenseCategory;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Pages\EditExpenseCategory;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Pages\ListExpenseCategories;
@@ -14,11 +14,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ExpenseCategoryResource::class)]
+#[CoversClass(ListExpenseCategories::class)]
 class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
 {
-    protected User $user;
-
     # region smoke
     #[Test]
     #[Group('smoke')]
@@ -28,23 +26,103 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_lists_expense_categories(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Travel',
         ];
 
         $record = ExpenseCategory::factory()
-            ->for($this->user->companies()->first())
+            ->for($this->company)
             ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListExpenseCategories::class);
+            ->test(ListExpenseCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
+        /* Assert */
         $component->assertSuccessful();
 
         $this->assertDatabaseHas($record);
+    }
+    # endregion
+
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload
+     * {
+     *   "category_name": "Travel"
+     * }
+     */
+    public function it_creates_an_expense_category_through_a_modal(): void
+    {
+        /* Arrange */
+        $payload = [
+            'category_name' => 'Meals',
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenseCategories::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertDatabaseHas('expense_categories', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: category_name
+     * {}
+     */
+    public function it_fails_to_create_category_through_a_modal_without_required_category_name(): void
+    {
+        /* Arrange */
+        $payload = ['category_name' => null];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenseCategories::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* Assert */
+        $component->assertHasFormErrors(['category_name']);
+        $this->assertDatabaseMissing('expense_categories', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_updates_an_expense_category_through_a_modal(): void
+    {
+        /* Arrange */
+        $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
+        $payload = ['category_name' => 'Updated Name'];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenseCategories::class)
+            ->mountAction(TestAction::make('edit')->table($record), $payload)
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        /* Assert */
+        $this->assertDatabaseHas('expense_categories', $payload);
     }
     # endregion
 
@@ -59,44 +137,44 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_an_expense_category(): void
     {
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Meals',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateExpenseCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     /**
-     * @payload missing: name
+     * @payload missing: category_name
      * {}
      */
-    public function it_fails_to_create_category_without_required_name(): void
+    public function it_fails_to_create_category_without_required_category_name(): void
     {
-        /* arrange */
-        $payload = [];
+        /* Arrange */
+        $payload = ['category_name' => null];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateExpenseCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['category_name']);
         $this->assertDatabaseMissing('expense_categories', $payload);
     }
@@ -105,74 +183,63 @@ class ExpenseCategoriesTest extends AbstractCompanyPanelTestCase
     #[Group('crud')]
     public function it_updates_an_expense_category(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Original']);
+        /* Arrange */
+        $record  = ExpenseCategory::factory()->for($this->company)->create(['category_name' => 'Original']);
         $payload = ['category_name' => 'Updated Name'];
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditExpenseCategory::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('expense_categories', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_update_category_with_empty_name(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record  = ExpenseCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'X']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(EditExpenseCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_deletes_an_expense_category(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
+        $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
 
-        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListExpenseCategories::class)
+            ->mountAction(TestAction::make('delete')->table($expenseCategory))
+            ->callMountedAction();
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
-
-        /* assert */
-        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
+        /* Assert */
+        $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_already_deleted_category(): void
+    #[Group('slow')]
+    public function it_confirms_deleted_expense_category_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
+        $expenseCategory = ExpenseCategory::factory()->for($this->company)->create();
+        $id              = $expenseCategory->id;
 
-        $record = ExpenseCategory::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        /* Act */
+        $expenseCategory->delete();
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(ListExpenseCategories::class)->callTableAction('delete', $record);
-
-        /* assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('expense_categories', ['id' => $record->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('expense_categories', ['id' => $id]);
+        $this->assertNull(ExpenseCategory::find($id));
     }
+    # endregion
+
+    # region multi-tenancy
+    # endregion
+
+    #region spicy
     # endregion
 }

@@ -14,13 +14,10 @@ class RecurringInvoiceForm
     {
         return $schema
             ->components([
-                Select::make('customer_id')
-                    ->relationship('customer', 'id')
-                    ->required(),
                 TextInput::make('invoice_id')
                     ->required()
                     ->numeric(),
-                TextInput::make('document_group_id')
+                TextInput::make('numbering_id')
                     ->numeric()
                     ->default(null),
                 Select::make('frequency')

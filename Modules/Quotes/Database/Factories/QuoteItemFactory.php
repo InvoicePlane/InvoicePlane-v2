@@ -2,51 +2,55 @@
 
 namespace Modules\Quotes\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Core\Models\Company;
-use Modules\Products\Models\Product;
-use Modules\Products\Models\ProductUnit;
+use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Models\TaxRate;
 use Modules\Quotes\Models\QuoteItem;
 
-/**
- * @extends Factory<\Modules\Quotes\Models\QuoteItem>
- */
-class QuoteItemFactory extends Factory
+class QuoteItemFactory extends AbstractFactory
 {
     protected $model = QuoteItem::class;
 
+    public function configure(): static
+    {
+        return $this->afterMaking(function (QuoteItem $item) {
+            if (empty($item->company_id) && ! empty($item->quote_id)) {
+                $item->company_id = \Modules\Quotes\Models\Quote::find($item->quote_id)?->company_id;
+            }
+
+            $taxRate    = $item->tax_rate_id ? TaxRate::query()->find($item->tax_rate_id) : null;
+            $taxPercent = $taxRate?->rate ?? 0;
+
+            $subtotal = round(($item->quantity * $item->price) - $item->discount, 2);
+            $taxTotal = round($subtotal * ($taxPercent / 100), 2);
+
+            $item->subtotal  = $subtotal;
+            $item->tax_1     = $taxTotal;
+            $item->tax_total = $taxTotal;
+            $item->total     = round($subtotal + $taxTotal, 2);
+        });
+    }
+
     public function definition(): array
     {
-        $company  = Company::factory()->create();
-        $product  = Product::factory()->create();
-        $unit     = ProductUnit::factory()->create();
-        $quantity = 2;
-        $price    = 150;
-        $discount = 0;
-        $subtotal = $quantity * $price - $discount;
+        $quantity = $this->faker->randomFloat(4, 1, 20);
+        $price    = $this->faker->randomFloat(4, 10, 500);
+        $discount = $this->faker->randomFloat(4, 0, 50);
+
+        $subtotal = round(($quantity * $price) - $discount, 2);
 
         return [
-            'company_id'      => $company->id,
-            'quote_id'        => \Modules\Quotes\Models\Quote::query()->inRandomOrder()->first()->id,
-            'product_id'      => $product->id,
-            'task_id'         => \Modules\Projects\Models\Task::query()->inRandomOrder()->first()->id,
-            'product_unit_id' => $unit->id,
-            'added_at'        => fake()->optional()->date(),
-            'item_name'       => 'Design',
-            'product_unit'    => fake()->optional()->word,
-            'is_recurring'    => fake()->boolean(75),
-            'quantity'        => $quantity,
-            'price'           => $price,
-            'discount'        => $discount,
-            'subtotal'        => $subtotal,
-            'tax_1'           => 0,
-            'tax_2'           => 0,
-            'tax_total'       => 0,
-            'total'           => $subtotal,
-            'tax_rate_id'     => \Modules\Core\Models\TaxRate::query()->inRandomOrder()->first()->id,
-            'tax_rate_2_id'   => \Modules\Core\Models\TaxRate::query()->inRandomOrder()->first()->id,
-            'display_order'   => fake()->randomNumber(),
-            'description'     => null,
+            'added_at'      => $this->faker->dateTimeBetween('-3 years', '-2 days')->format('Y-m-d'),
+            'is_recurring'  => fake()->boolean(75),
+            'quantity'      => $quantity,
+            'price'         => $price,
+            'discount'      => $discount,
+            'subtotal'      => $subtotal,
+            'tax_1'         => 0,
+            'tax_2'         => null,
+            'tax_total'     => 0,
+            'total'         => $subtotal,
+            'display_order' => $this->faker->numberBetween(1, 9999),
+            'description'   => null,
         ];
     }
 

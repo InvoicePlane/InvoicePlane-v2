@@ -28,8 +28,8 @@ use Modules\Invoices\Models\Invoice;
  * @property int|null                 $category_id
  * @property int|null                 $user_id
  * @property string                   $expense_number
- * @property string                   $expense_status
- * @property string                   $expense_type
+ * @property ExpenseStatus            $expense_status
+ * @property ExpenseType              $expense_type
  * @property Carbon                   $expensed_at
  * @property float                    $expense_amount
  * @property string|null              $description

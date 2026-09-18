@@ -10,7 +10,6 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
             "php-http/discovery": true,
             "wikimedia/composer-merge-plugin": true
         }
@@ -18,43 +17,47 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^8.2",
-        "doctrine/dbal": ">=4.2.3",
-        "filament/actions": "^4.0@alpha",
-        "filament/filament": "^4.0",
-        "filament/forms": "^4.0@alpha",
-        "filament/infolists": "^4.0@alpha",
-        "filament/notifications": "^4.0@alpha",
-        "filament/schemas": "^4.0@alpha",
-        "filament/tables": "^4.0@alpha",
-        "filament/widgets": "^4.0@alpha",
-        "laravel/framework": "^12.16",
-        "nwidart/laravel-modules": "^12.0.3"
+        "php": "^8.4",
+        "awcodes/mason": "^3.1",
+        "doctrine/dbal": ">=4.4",
+        "dompdf/dompdf": "^3.1",
+        "filament/actions": ">=5.6",
+        "filament/filament": ">=5.6",
+        "laravel/framework": "^13.0",
+        "maatwebsite/excel": ">=3.1",
+        "maennchen/zipstream-php": ">=3.2",
+        "nwidart/laravel-modules": ">=12.0",
+        "spatie/laravel-permission": ">=8.0"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "driftingly/rector-laravel": "^2.0.5",
-        "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.4",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.22.1",
-        "laravel/tinker": "^2.10.1",
-        "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.8",
-        "phpunit/phpunit": "^11.5.21",
-        "rector/rector": "^2.0.17"
+        "barryvdh/laravel-debugbar": ">=4.3",
+        "brianium/paratest": ">=7.20",
+        "driftingly/rector-laravel": ">=2.5",
+        "fakerphp/faker": ">=1.24",
+        "larastan/larastan": ">=3.10",
+        "laravel/boost": ">=2.4",
+        "laravel/pail": ">=1.2",
+        "laravel/pint": "^1.13",
+        "laravel/sail": ">=1.62",
+        "laravel/tinker": ">=3.0",
+        "mockery/mockery": ">=1.6",
+        "nunomaduro/collision": ">=8.9",
+        "phpunit/phpunit": ">=12.5",
+        "rector/rector": ">=2.4",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
             "Modules\\": "Modules/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Fable5\\": "automation/fable5/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Fable5\\Tests\\": "automation/fable5/tests/"
         }
     },
     "scripts": {
@@ -77,7 +80,8 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "aargh": "php artisan view:clear && php artisan config:clear && php artisan route:clear"
     },
     "extra": {
         "laravel": {

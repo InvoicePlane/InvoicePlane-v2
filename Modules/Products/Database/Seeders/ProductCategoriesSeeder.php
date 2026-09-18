@@ -2,18 +2,19 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Products\Models\ProductCategory;
 
-class ProductCategoriesSeeder extends Seeder
+class ProductCategoriesSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'ProdCategories';
+
+    protected int    $defaultCount = 5;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            ProductCategory::factory()->count(random_int(1, 2))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        ProductCategory::factory()
+            ->state(['company_id' => $this->companyId])
+            ->create();
     }
 }

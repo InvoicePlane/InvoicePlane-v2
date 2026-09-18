@@ -27,7 +27,6 @@ class EditExpense extends EditRecord
 
         $this->record = $this->handleRecordUpdate($this->getRecord(), $data);
 
-        $this->form->model($this->record)->saveRelationships();
         $this->callHook('afterSave');
 
         if ($shouldSendSavedNotification) {

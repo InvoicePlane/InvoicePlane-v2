@@ -4,14 +4,19 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "e2e": "playwright test"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.1",
-        "axios": "^1.8",
-        "concurrently": "^9.1",
-        "laravel-vite-plugin": "^1.2",
-        "tailwindcss": "^4.1",
-        "vite": "^6.3"
+        "@playwright/test": "^1.62.1",
+        "@tailwindcss/vite": "^4.3",
+        "axios": "^1.17",
+        "concurrently": "^10.0",
+        "laravel-vite-plugin": "^3.1",
+        "tailwindcss": "^4.3",
+        "vite": "^8.0"
+    },
+    "dependencies": {
+        "signature_pad": "^5.1.4"
     }
 }

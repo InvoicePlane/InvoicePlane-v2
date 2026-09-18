@@ -2,18 +2,30 @@
 
 namespace Modules\Products\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
 use Modules\Products\Models\Product;
 
-class ProductsSeeder extends Seeder
+class ProductsSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Products';
+
+    protected int $defaultCount = 25;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            Product::factory()->count(50)->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        $category = $this->findOrCreateProductCategory($this->companyId);
+        $unit     = $this->findOrCreateProductUnit($this->companyId);
+        $taxRate1 = $this->findOrCreateTaxRate($this->companyId);
+        $taxRate2 = $this->findOrCreateTaxRate($this->companyId);
+
+        Product::factory()
+            ->state([
+                'company_id'    => $this->companyId,
+                'category_id'   => $category->id,
+                'unit_id'       => $unit->id,
+                'tax_rate_id'   => $taxRate1->id,
+                'tax_rate_2_id' => $taxRate2->id,
+            ])
+            ->create();
     }
 }
