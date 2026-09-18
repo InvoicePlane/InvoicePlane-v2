@@ -63,149 +63,6 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
     }
     # endregion
 
-    # region modals
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "tax_rate_type": "Value",
-     * "is_active": "true",
-     * "name": "Example",
-     * "code": "Example",
-     * "rate": "Example"
-     * }
-     */
-    public function it_creates_a_taxrate_through_a_modal(): void
-    {
-        /* Arrange */
-        $payload = [
-            'tax_rate_type' => TaxRateType::EXCLUSIVE,
-            'is_active'     => true,
-            'code'          => 'EXCL21',
-            'name'          => '::taxrate_name::',
-            'rate'          => 21.0000,
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListTaxRates::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* Assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('tax_rates', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_a_taxrate_through_a_modal_with_a_duplicate_code(): void
-    {
-        /* Arrange — regression guard: tax_rates has a unique DB constraint
-         * on (company_id, code); without ->unique() on the form field, a
-         * duplicate code hit an unhandled SQL 500 instead of a validation
-         * message, the same failure mode as the missing ->required() below. */
-        TaxRate::factory()->for($this->company)->create(['code' => 'DUPTAX']);
-
-        $payload = [
-            'tax_rate_type' => TaxRateType::EXCLUSIVE,
-            'is_active'     => true,
-            'name'          => 'Duplicate Code Rate',
-            'code'          => 'DUPTAX',
-            'rate'          => 8.0,
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListTaxRates::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* Assert */
-        $component->assertHasFormErrors(['code']);
-        $this->assertDatabaseMissing('tax_rates', ['name' => $payload['name']]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_a_taxrate_through_a_modal_without_required_code(): void
-    {
-        /* Arrange — regression guard: tax_rates.code is NOT NULL with no DB
-         * default; without ->required() on the form field (it had no
-         * asterisk either), a blank code passed client validation and blew
-         * up as an unhandled SQLSTATE 500 on every submission. */
-        $payload = [
-            'tax_rate_type' => TaxRateType::EXCLUSIVE,
-            'is_active'     => true,
-            'name'          => 'No Code Rate',
-            'rate'          => 5.0,
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListTaxRates::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* Assert */
-        $component->assertHasFormErrors(['code' => 'required']);
-        $this->assertDatabaseMissing('tax_rates', ['name' => $payload['name']]);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload
-     * {
-     * "company_id": "Value",
-     * "tax_rate_type": "Value",
-     * "is_active": "true",
-     * "name": "Example",
-     * "code": "Example",
-     * "rate": "Example"
-     * }
-     */
-    public function it_updates_a_taxrate_through_a_modal(): void
-    {
-        $record = TaxRate::factory()->create([
-            'tax_rate_type' => TaxRateType::EXCLUSIVE,
-            'is_active'     => true,
-            'code'          => 'EXCL21',
-            'name'          => '::taxrate_name::',
-            'rate'          => 21.0000,
-        ]);
-
-        $updatedData = [
-            'name' => 'Updated VAT Rate',
-            'rate' => 22.0,
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListTaxRates::class)
-            ->mountAction(TestAction::make('edit')->table($record), $updatedData)
-            ->fillForm($updatedData)
-            ->callMountedAction()
-            ->assertHasNoFormErrors();
-
-        /* Assert */
-        $component->assertSuccessful();
-
-        $this->assertDatabaseHas('tax_rates', array_merge(
-            ['id' => $record->id],
-            $updatedData
-        ));
-    }
-    # endregion
-
     # region crud
     #[Test]
     #[Group('crud')]
@@ -246,6 +103,61 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('tax_rates', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_a_taxrate_with_a_duplicate_code(): void
+    {
+        /* Arrange — regression guard: tax_rates has a unique DB constraint
+         * on (company_id, code); without ->unique() on the form field, a
+         * duplicate code hit an unhandled SQL 500 instead of a validation
+         * message, the same failure mode as the missing ->required() below. */
+        TaxRate::factory()->for($this->company)->create(['code' => 'DUPTAX']);
+
+        $payload = [
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
+            'is_active'     => true,
+            'name'          => 'Duplicate Code Rate',
+            'code'          => 'DUPTAX',
+            'rate'          => 8.0,
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateTaxRate::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* Assert */
+        $component->assertHasFormErrors(['code']);
+        $this->assertDatabaseMissing('tax_rates', ['name' => $payload['name']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_create_a_taxrate_without_required_code(): void
+    {
+        /* Arrange — regression guard: tax_rates.code is NOT NULL with no DB
+         * default; without ->required() on the form field (it had no
+         * asterisk either), a blank code passed client validation and blew
+         * up as an unhandled SQLSTATE 500 on every submission. */
+        $payload = [
+            'tax_rate_type' => TaxRateType::EXCLUSIVE,
+            'is_active'     => true,
+            'name'          => 'No Code Rate',
+            'rate'          => 5.0,
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(CreateTaxRate::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* Assert */
+        $component->assertHasFormErrors(['code' => 'required']);
+        $this->assertDatabaseMissing('tax_rates', ['name' => $payload['name']]);
     }
 
     #[Test]

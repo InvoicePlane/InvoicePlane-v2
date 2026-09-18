@@ -8,6 +8,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Modules\Core\Enums\TaxRateType;
 
 class TaxRateForm
@@ -16,79 +17,67 @@ class TaxRateForm
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Grid::make(3)
                     ->columnSpanFull()
                     ->schema([
-                        //
-                        // LEFT COLUMN: Code, Name, Active
-                        //
                         Section::make(trans('ip.basic_information'))
+                            ->icon(Heroicon::OutlinedIdentification)
+                            ->columnSpan(2)
                             ->schema([
-                                // 2-column grid for Code + Active
-                                Grid::make(2)
-                                    ->columns(2)
-                                    // <-- Center *every* grid cell vertically
-                                    ->extraAttributes([
-                                        'class' => '!items-center',
-                                    ])
+                                Grid::make(4)
                                     ->schema([
+                                        TextInput::make('name')
+                                            ->label(trans('ip.name'))
+                                            ->prefixIcon(Heroicon::OutlinedTag)
+                                            ->required()
+                                            ->autofocus()
+                                            ->columnSpan(4),
+
                                         TextInput::make('code')
                                             ->label(trans('ip.tax_rate_code'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
                                             // tax_rates.code is NOT NULL with
                                             // no DB default — leaving this
                                             // blank passes client validation
                                             // and blows up as an unhandled
                                             // SQLSTATE 500 on submission.
                                             ->required()
-                                            ->unique(ignoreRecord: true),
+                                            ->unique(ignoreRecord: true)
+                                            ->columnSpan(2),
 
                                         Toggle::make('is_active')
                                             ->label(trans('ip.is_active'))
                                             ->default(true)
-                                            ->columnSpan(1)
-                                            ->extraAttributes([
-                                                'class' => '!flex items-center',
-                                            ]),
+                                            ->columnSpan(2),
                                     ]),
+                            ]),
 
-                                // Name below, full width of the section
-                                TextInput::make('name')
-                                    ->label(trans('ip.name'))
-                                    ->required()
-                                    ->autofocus(),
-                            ])
-                            ->columnSpan(1),
-
-                        //
-                        // RIGHT COLUMN: Type & Percentage
-                        //
                         Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedReceiptPercent)
+                            ->columnSpan(1)
                             ->schema([
-                                Grid::make(2)
-                                    ->columns(2)
-                                    ->schema([
-                                        Select::make('tax_rate_type')
-                                            ->label(trans('ip.tax_rate_type'))
-                                            ->options(
-                                                collect(TaxRateType::cases())
-                                                    ->mapWithKeys(fn (TaxRateType $type) => [
-                                                        $type->value => trans($type->label()),
-                                                    ])
-                                                    ->toArray()
-                                            )
-                                            ->required()
-                                            ->searchable()
-                                            ->preload()
-                                            ->native(false),
+                                Select::make('tax_rate_type')
+                                    ->label(trans('ip.tax_rate_type'))
+                                    ->prefixIcon(Heroicon::OutlinedListBullet)
+                                    ->options(
+                                        collect(TaxRateType::cases())
+                                            ->mapWithKeys(fn (TaxRateType $type) => [
+                                                $type->value => trans($type->label()),
+                                            ])
+                                            ->toArray()
+                                    )
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false),
 
-                                        TextInput::make('rate')
-                                            ->label(trans('ip.percentage'))
-                                            ->required()
-                                            ->numeric()
-                                            ->step(0.01),
-                                    ]),
-                            ])
-                            ->columnSpan(1),
+                                TextInput::make('rate')
+                                    ->label(trans('ip.percentage'))
+                                    ->prefixIcon(Heroicon::OutlinedReceiptPercent)
+                                    ->required()
+                                    ->numeric()
+                                    ->step(0.01),
+                            ]),
                     ]),
             ]);
     }
