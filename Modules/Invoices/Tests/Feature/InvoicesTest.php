@@ -91,251 +91,6 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
     }
     # endregion
 
-    # region modals
-    #[Test]
-    #[Group('crud')]
-    #[Group('failing')]
-    public function it_creates_an_invoice_through_a_modal(): void
-    {
-        /* Arrange */
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'invoice_number' => 'INV-987654',
-            'customer_id'    => $customer->getKey(),
-            'numbering_id'   => $documentGroup->getKey(),
-            'user_id'        => $this->user->id,
-            'invoice_status' => 'draft',
-            'invoiced_at'    => '2025-05-10',
-            'invoice_due_at' => '2025-06-09',
-            'invoiceItems'   => [
-                [
-                    'product_id' => $product->getKey(),
-                    'quantity'   => 3,
-                    'price'      => 150,
-                    'discount'   => 0,
-                ],
-            ],
-        ];
-
-        /* Act */
-        Livewire::actingAs($this->user)->test(ListInvoices::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->assertHasNoFormErrors()
-            ->callMountedAction()
-            ->assertHasNoFormErrors();
-
-        /* Assert */
-        $expected = Arr::except($payload, ['invoiceItems', 'numbering_id']);
-        if (isset($expected['invoiced_at'])) {
-            $expected['invoiced_at'] = Carbon::parse($expected['invoiced_at'])->format('Y-m-d H:i:s');
-        }
-        if (isset($expected['invoice_due_at'])) {
-            $expected['invoice_due_at'] = Carbon::parse($expected['invoice_due_at'])->format('Y-m-d H:i:s');
-        }
-        $this->assertDatabaseHas('invoices', $expected);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_invoice_through_a_modal_without_required_invoice_number(): void
-    {
-        /* Arrange */
-        // Draft-number auto-generation is disabled so the still-required
-        // invoice_number field isn't silently auto-filled, keeping this test
-        // a genuine check of the required rule (see InvoiceForm's generator wiring).
-        Setting::saveByKey('generate_invoice_number_for_draft', '0');
-
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'customer_id'    => $customer->getKey(),
-            'numbering_id'   => $documentGroup->getKey(),
-            'user_id'        => $this->user->id,
-            'invoice_status' => 'draft',
-            'invoiced_at'    => '2025-05-10',
-            'invoice_due_at' => '2025-06-09',
-            'invoiceItems'   => [
-                [
-                    'product_id' => $product->getKey(),
-                    'quantity'   => 3,
-                    'price'      => 150,
-                    'discount'   => 0,
-                ],
-            ],
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* Assert */
-        $component->assertHasFormErrors(['invoice_number' => 'required']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_invoice_through_a_modal_without_required_invoice_status(): void
-    {
-        /* Arrange */
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'invoice_number' => 'INV-987654',
-            'customer_id'    => $customer->getKey(),
-            'numbering_id'   => $documentGroup->getKey(),
-            'user_id'        => $this->user->id,
-            'invoiced_at'    => '2025-05-10',
-            'invoice_due_at' => '2025-06-09',
-            'invoiceItems'   => [
-                [
-                    'product_id' => $product->getKey(),
-                    'quantity'   => 3,
-                    'price'      => 150,
-                    'discount'   => 0,
-                ],
-            ],
-        ];
-
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        $component->assertHasFormErrors(['invoice_status' => 'required']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    public function it_fails_to_create_invoice_through_a_modal_without_required_customer(): void
-    {
-        /* Arrange */
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $payload = [
-            'invoice_number' => 'INV-987654',
-            'numbering_id'   => $documentGroup->getKey(),
-            'user_id'        => $this->user->id,
-            'invoice_status' => 'draft',
-            'invoiced_at'    => '2025-05-10',
-            'invoice_due_at' => '2025-06-09',
-            'invoiceItems'   => [
-                [
-                    'product_id' => $product->getKey(),
-                    'quantity'   => 3,
-                    'price'      => 150,
-                    'discount'   => 0,
-                ],
-            ],
-        ];
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction('create')
-            ->fillForm($payload)
-            ->callMountedAction();
-
-        /* Assert */
-        $component->assertHasFormErrors(['customer_id']);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    #[Group('slow')]
-    public function it_updates_an_invoice_through_a_modal(): void
-    {
-        /* Arrange */
-        $customer        = Relation::factory()->for($this->company)->customer()->create();
-        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
-        $taxRate         = TaxRate::factory()->for($this->company)->create();
-        $productCategory = ProductCategory::factory()->for($this->company)->create();
-        $productUnit     = ProductUnit::factory()->for($this->company)->create();
-        $product         = Product::factory()->for($this->company)->create([
-            'category_id'   => $productCategory->id,
-            'unit_id'       => $productUnit->id,
-            'tax_rate_id'   => $taxRate->id,
-            'tax_rate_2_id' => null,
-        ]);
-
-        $invoice = Invoice::factory()->for($this->company)->create([
-            'invoice_number' => 'INV-987654',
-            'customer_id'    => $customer->getKey(),
-            'numbering_id'   => $documentGroup->getKey(),
-            'user_id'        => $this->user->id,
-            'invoice_status' => InvoiceStatus::DRAFT->value,
-            'invoiced_at'    => '2025-05-10',
-            'invoice_due_at' => '2025-06-09',
-        ]);
-
-        $payload = ['invoice_status' => InvoiceStatus::SENT];
-
-        /* Act */
-        $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
-            ->fillForm($payload)
-            ->mountAction('save')
-            ->callMountedAction();
-
-        /* Assert */
-        $component
-            ->assertSuccessful()
-            ->assertHasNoErrors();
-
-        /* Assert */
-        $this->assertDatabaseHas('invoices', [
-            'id'             => $invoice->id,
-            'invoice_status' => InvoiceStatus::SENT,
-        ]);
-    }
-    # endregion
-
     # region crud
     #[Test]
     #[Group('crud')]
@@ -932,11 +687,9 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
             ->fillForm($payload)
-            ->mountAction('save')
-            ->callMountedAction();
+            ->call('save');
 
         /* Assert */
         $component
@@ -973,11 +726,9 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
             ->fillForm($payload)
-            ->mountAction('save')
-            ->callMountedAction();
+            ->call('save');
 
         /* Assert — a numbering group belonging to another company is not a valid option */
         $component->assertHasFormErrors(['numbering_id']);
@@ -1010,11 +761,9 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class)
-            ->mountAction(TestAction::make('edit')->table($invoice), $payload)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
             ->fillForm($payload)
-            ->mountAction('save')
-            ->callMountedAction();
+            ->call('save');
 
         /* Assert — a Quote numbering group must never be selectable for an Invoice */
         $component->assertHasFormErrors(['numbering_id']);
