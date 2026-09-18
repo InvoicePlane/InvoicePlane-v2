@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Projects\Filament\Company\Resources\Tasks\Pages\CreateTask;
+use Modules\Projects\Filament\Company\Resources\Tasks\Pages\EditTask;
 use Modules\Projects\Filament\Company\Resources\Tasks\Pages\ListTasks;
 use Modules\Projects\Filament\Company\Resources\Tasks\Schemas\TaskForm;
 use Modules\Projects\Filament\Company\Resources\Tasks\Tables\TasksTable;
@@ -59,7 +61,9 @@ class TaskResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListTasks::route('/'),
+            'index'  => ListTasks::route('/'),
+            'create' => CreateTask::route('/create'),
+            'edit'   => EditTask::route('/{record}/edit'),
         ];
     }
 
