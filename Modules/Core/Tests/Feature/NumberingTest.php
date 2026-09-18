@@ -5,6 +5,8 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Admin\Resources\Numberings\Pages\CreateNumbering;
+use Modules\Core\Filament\Admin\Resources\Numberings\Pages\EditNumbering;
 use Modules\Core\Filament\Admin\Resources\Numberings\Pages\ListNumberings;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Numbering;
@@ -95,8 +97,9 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->callAction('create', data: $payload);
+            ->test(CreateNumbering::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -110,7 +113,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_updates_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -127,11 +129,12 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->callTableAction('edit', $numbering, data: $payload);
+            ->test(EditNumbering::class, ['record' => $numbering->id])
+            ->fillForm($payload)
+            ->call('save');
 
         /* Assert */
-        $component->assertHasNoTableActionErrors();
+        $component->assertHasNoFormErrors();
         $this->assertDatabaseHas('numbering', [
             'id'                      => $numbering->id,
             'name'                    => 'Updated Quote Numbering',
@@ -141,7 +144,6 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    #[Group('failing')]
     public function it_deletes_a_numbering_scheme(): void
     {
         /* Arrange */
@@ -172,11 +174,12 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->callAction('create', data: $payload);
+            ->test(CreateNumbering::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* Assert */
-        $component->assertHasTableActionErrors(['name']);
+        $component->assertHasFormErrors(['name']);
     }
 
     #[Test]
@@ -191,10 +194,11 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->callAction('create', data: $payload);
+            ->test(CreateNumbering::class)
+            ->fillForm($payload)
+            ->call('create');
 
         /* Assert */
-        $component->assertHasTableActionErrors(['type']);
+        $component->assertHasFormErrors(['type']);
     }
 }

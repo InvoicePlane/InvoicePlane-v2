@@ -5,7 +5,6 @@ namespace Modules\Core\Filament\Admin\Resources\Numberings\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
-use Modules\Core\Services\NumberingService;
 
 class ListNumberings extends ListRecords
 {
@@ -15,13 +14,7 @@ class ListNumberings extends ListRecords
     {
         return [
             CreateAction::make()
-                ->mutateDataUsing(function (array $data) {
-                    return $data;
-                })
-                ->action(function (array $data) {
-                    app(NumberingService::class)->createNumbering($data);
-                })
-                ->modalWidth('full'),
+                ->url(fn (): string => NumberingResource::getUrl('create')),
         ];
     }
 }
