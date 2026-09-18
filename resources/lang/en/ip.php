@@ -853,6 +853,7 @@ return [
     'quote_default_email_template'              => 'Quote default email template',
     'quote_default_pdf_template'                => 'Quote default pdf template',
     'quote_default_public_pdf_template'         => 'Quote default public pdf template',
+    'quote_details'                             => 'Quote Details',
     'quote_footer'                              => 'Quote footer',
     'quote_items'                               => 'Quote items',
     'quote_notes'                               => 'Quote notes',
