@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Projects\Enums\ProjectStatus;
+use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Services\ProjectBillingService;
 use Modules\Projects\Services\ProjectService;
@@ -34,10 +35,6 @@ class ProjectsTable
                 TextColumn::make('project_name')
                     ->limit(10)
                     ->label(trans('ip.project_name'))
-                    ->formatStateUsing(fn ($state) => $state)
-                    ->extraAttributes([
-                        'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
-                    ])
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -60,10 +57,9 @@ class ProjectsTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_PROJECTS->value))
-                        ->action(function (Project $record, array $data) {
-                            app(ProjectService::class)->updateProject($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Project $record): string => ProjectResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     Action::make('bill_tasks')
                         ->label(trans('ip.bill_tasks'))
                         ->icon('heroicon-o-banknotes')
