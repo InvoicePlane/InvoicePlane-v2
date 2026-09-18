@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Models\User;
 use Modules\Core\Services\UserService;
 
@@ -43,9 +44,10 @@ class UsersTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->action(function (User $record, array $data) {
-                        app(UserService::class)->updateUser($record, $data);
-                    })->modalWidth('full'),
+                    EditAction::make()
+                        ->url(fn (User $record): string => UserResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->hidden(fn (User $record): bool => $record->isSuperAdmin())
                         ->action(function (User $record, array $data) {

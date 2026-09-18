@@ -6,6 +6,8 @@ use Filament\Actions\Testing\TestAction;
 use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Modules\Core\Enums\UserRole;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\CreateUser;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\EditUser;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Models\User;
@@ -53,7 +55,7 @@ class UsersTest extends AbstractAdminPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
-    public function it_creates_a_user_through_a_modal(): void
+    public function it_creates_a_user(): void
     {
         /* Arrange */
         $payload = [
@@ -63,10 +65,9 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListUsers::class)
-            ->mountAction('create')
+            ->test(CreateUser::class)
             ->fillForm(array_merge($payload, ['password' => 'password']))
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertSuccessful()
@@ -76,7 +77,7 @@ class UsersTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_create_a_user_through_a_modal_with_a_duplicate_email(): void
+    public function it_fails_to_create_a_user_with_a_duplicate_email(): void
     {
         /* Arrange — regression guard: users.email has a unique DB
          * constraint; without ->unique() on the form field, a duplicate hit
@@ -93,14 +94,34 @@ class UsersTest extends AbstractAdminPanelTestCase
 
         /* Act */
         Livewire::actingAs($this->superAdmin())
-            ->test(ListUsers::class)
-            ->mountAction('create')
+            ->test(CreateUser::class)
             ->fillForm($payload)
-            ->callMountedAction()
+            ->call('create')
             ->assertHasFormErrors(['email']);
 
         /* Assert */
         $this->assertDatabaseMissing('users', ['name' => $payload['name']]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_updates_a_user(): void
+    {
+        /* Arrange */
+        $user = User::factory()->create(['name' => 'Old Name']);
+
+        $payload = ['name' => 'Updated Name'];
+
+        /* Act */
+        $component = Livewire::actingAs($this->superAdmin())
+            ->test(EditUser::class, ['record' => $user->id])
+            ->fillForm($payload)
+            ->call('save');
+
+        /* Assert */
+        $component->assertSuccessful()
+            ->assertHasNoErrors();
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => $payload['name']]);
     }
 
     #[Test]
