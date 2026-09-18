@@ -29,6 +29,7 @@ class AssignTaxRateBulkAction extends BulkAction
                  * tax rates across companies needs to pick from all of
                  * them regardless of the current session/tenant company.
                 */
+
                 ->options(fn () => static::getTaxRateOptions())
                 ->searchable()
                 ->required(),
