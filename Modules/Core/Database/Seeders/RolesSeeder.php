@@ -62,7 +62,7 @@ class RolesSeeder extends Seeder
     {
         $allPermissions = array_column(PermissionEnum::cases(), 'value');
 
-        $customerResources = ['relations', 'contacts', 'invoices', 'quotes', 'payments', 'projects', 'tasks', 'products', 'expenses'];
+        $customerResources = ['relations', 'contacts', 'invoices', 'quotes', 'payments', 'projects', 'tasks', 'products', 'expenses', 'tax-rates'];
 
         $customerSpecialPermissions = [
             PermissionEnum::DOWNLOAD_INVOICES->value,
