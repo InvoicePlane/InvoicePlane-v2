@@ -25,25 +25,25 @@ use ReflectionMethod;
  * `#[Url(as: 'action')]`-bound `$defaultAction` property auto-mounts on load
  * (see vendor/filament/filament resources/views components/page/index.blade.php
  * `wire:init="mountAction(...)"`). Resources with a dedicated create page
- * (Invoices, Quotes, Expenses) link straight to it instead.
+ * (Invoices, Quotes, Expenses, Relations) link straight to it instead.
  */
 class CompanyPanelQuickCreateWiringTest extends AbstractCompanyPanelTestCase
 {
     public static function modalOnlyResources(): array
     {
         return [
-            'Relations' => [RelationResource::class],
-            'Products'  => [ProductResource::class],
-            'Payments'  => [PaymentResource::class],
+            'Products' => [ProductResource::class],
+            'Payments' => [PaymentResource::class],
         ];
     }
 
     public static function dedicatedCreatePageResources(): array
     {
         return [
-            'Invoices' => [InvoiceResource::class],
-            'Quotes'   => [QuoteResource::class],
-            'Expenses' => [ExpenseResource::class],
+            'Invoices'  => [InvoiceResource::class],
+            'Quotes'    => [QuoteResource::class],
+            'Expenses'  => [ExpenseResource::class],
+            'Relations' => [RelationResource::class],
         ];
     }
 

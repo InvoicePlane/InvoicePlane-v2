@@ -37,6 +37,7 @@ return [
     'primary_contact'                   => 'Primary Contact',
     'recent_clients'                    => 'Recent Clients',
     'registered_at'                     => 'Registration Date',
+    'registration_tax_details'          => 'Registration & Tax Details',
     'relation_number'                   => 'Relation Number',
     'relation_required'                 => 'The customer relation is required.',
     'save_client_before_adding_contact' => 'Please save the client before adding a new contact.',

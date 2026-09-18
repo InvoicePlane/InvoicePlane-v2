@@ -12,6 +12,7 @@ use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -39,7 +40,6 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->viteTheme('resources/css/filament/company/nord.css')
             ->login(Login::class)
             ->profile(EditProfile::class, isSimple: false)
             ->passwordReset()
@@ -50,58 +50,14 @@ class AdminPanelProvider extends PanelProvider
                 provider: GoogleFontProvider::class,
             )
             ->colors([
-                'primary' => [
-                    50  => '#F2F7FD',
-                    100 => '#E3EFFB',
-                    200 => '#C1DFF6',
-                    300 => '#8FC0EE',
-                    400 => '#429AE1',
-                    500 => '#2684D1',
-                    600 => '#1868B1',
-                    700 => '#145390',
-                    800 => '#154777',
-                    900 => '#173C63',
-                    950 => '#0F2742',
-                ],
-                'curious' => [
-                    50  => '#F2F7FD',
-                    100 => '#E3EFFB',
-                    200 => '#C1DFF6',
-                    300 => '#8FC0EE',
-                    400 => '#429AE1',
-                    500 => '#2684D1',
-                    600 => '#1868B1',
-                    700 => '#145390',
-                    800 => '#154777',
-                    900 => '#113153',
-                    950 => '#0F2742',
-                ],
-                'darkious' => [
-                    50  => '#CCE0FF',
-                    100 => '#99B3EB',
-                    200 => '#6696D6',
-                    300 => '#2D6BB8',
-                    400 => '#004DB8',
-                    500 => '#003F99',
-                    600 => '#002F7A',
-                    700 => '#00265F',
-                    800 => '#00204F',
-                    900 => '#001B3E',
-                    950 => '#00102B',
-                ],
-                'emerald' => [
-                    50  => '#ECFDF5',
-                    100 => '#D1F8E4',
-                    200 => '#A8ECCD',
-                    300 => '#6FD9AE',
-                    400 => '#3CBF8A',
-                    500 => '#30A46B',
-                    600 => '#258651',
-                    700 => '#1D6840',
-                    800 => '#165231',
-                    900 => '#0F3E25',
-                    950 => '#0A2917',
-                ],
+                'primary' => Color::hex('#5E81AC'), // Nord Frost (nord10)
+                'info'    => Color::hex('#81A1C1'), // Nord Frost (nord9)
+                'danger'  => Color::hex('#BF616A'), // Nord Aurora red (nord11)
+                'warning' => Color::hex('#EBCB8B'), // Nord Aurora yellow (nord13)
+                'success' => Color::hex('#A3BE8C'), // Nord Aurora green (nord14)
+                'emerald' => Color::hex('#8FBCBB'), // Nord Frost teal (nord7) — used by status badges
+                'maroon'  => Color::hex('#8F3D42'), // Darkened Nord Aurora red — used by status badges
+                'green'   => Color::hex('#A3BE8C'), // Nord Aurora green (nord14) — used by status badges
             ])
             ->pages([
                 Dashboard::class,

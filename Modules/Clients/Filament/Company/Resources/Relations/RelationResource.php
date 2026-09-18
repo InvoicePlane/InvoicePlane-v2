@@ -12,6 +12,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\CreateRelation;
+use Modules\Clients\Filament\Company\Resources\Relations\Pages\EditRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ListRelations;
 use Modules\Clients\Filament\Company\Resources\Relations\Pages\ViewRelation;
 use Modules\Clients\Filament\Company\Resources\Relations\RelationManagers\ExpensesRelationManager;
@@ -84,8 +86,10 @@ class RelationResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListRelations::route('/'),
-            'view'  => ViewRelation::route('/{record}'),
+            'index'  => ListRelations::route('/'),
+            'create' => CreateRelation::route('/create'),
+            'view'   => ViewRelation::route('/{record}'),
+            'edit'   => EditRelation::route('/{record}/edit'),
         ];
     }
 
