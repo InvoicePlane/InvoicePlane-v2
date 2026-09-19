@@ -14,6 +14,8 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsIconAlias;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -37,6 +39,34 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $brand = [
+            50  => '#f0f8fd',
+            100 => '#deecf9',
+            200 => '#bfdcf3',
+            300 => '#8ec4ea',
+            400 => '#57a4dd',
+            500 => '#2589d0',
+            600 => '#0078d7',
+            700 => '#005a9e',
+            800 => '#00477d',
+            900 => '#093a63',
+            950 => '#062544',
+        ];
+
+        $gray = [
+            50  => '#f8f9f9',
+            100 => '#f3f4f5',
+            200 => '#e8eaec',
+            300 => '#d7dade',
+            400 => '#b6bbc2',
+            500 => '#8b919b',
+            600 => '#6b717a',
+            700 => '#52575f',
+            800 => '#383b41',
+            900 => '#202226',
+            950 => '#131417',
+        ];
+
         return $panel
             ->id('admin')
             ->path('admin')
@@ -45,16 +75,25 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->maxContentWidth(Width::Full)
+            ->viteTheme('resources/css/filament/theme.css')
+            ->topbar(false)
+            ->icons([
+                PanelsIconAlias::SIDEBAR_EXPAND_BUTTON => Heroicon::OutlinedBars3,
+                PanelsIconAlias::SIDEBAR_EXPAND_BUTTON_RTL => Heroicon::OutlinedBars3,
+                PanelsIconAlias::SIDEBAR_COLLAPSE_BUTTON => Heroicon::OutlinedChevronLeft,
+                PanelsIconAlias::SIDEBAR_COLLAPSE_BUTTON_RTL => Heroicon::OutlinedChevronRight,
+            ])
             ->font(
                 'Poppins',
                 provider: GoogleFontProvider::class,
             )
             ->colors([
-                'primary' => Color::hex('#5E81AC'), // Nord Frost (nord10)
-                'info'    => Color::hex('#81A1C1'), // Nord Frost (nord9)
-                'danger'  => Color::hex('#BF616A'), // Nord Aurora red (nord11)
-                'warning' => Color::hex('#EBCB8B'), // Nord Aurora yellow (nord13)
-                'success' => Color::hex('#A3BE8C'), // Nord Aurora green (nord14)
+                'primary' => $brand,
+                'info'    => $brand,
+                'gray'    => $gray,
+                'danger'  => Color::hex('#D13438'), // Fluent red
+                'warning' => Color::hex('#FFB900'), // Fluent gold
+                'success' => Color::hex('#107C10'), // Fluent green
                 'emerald' => Color::hex('#8FBCBB'), // Nord Frost teal (nord7) — used by status badges
                 'maroon'  => Color::hex('#8F3D42'), // Darkened Nord Aurora red — used by status badges
                 'green'   => Color::hex('#A3BE8C'), // Nord Aurora green (nord14) — used by status badges

@@ -8,6 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/guest.css',
+                'resources/css/filament/theme.css',
                 'resources/js/app.js',
                 'resources/js/signature-pad.js',
             ],
