@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Products\Filament\Company\Resources\Products\Pages\CreateProduct;
+use Modules\Products\Filament\Company\Resources\Products\Pages\EditProduct;
 use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
 use Modules\Products\Filament\Company\Resources\Products\Schemas\ProductForm;
 use Modules\Products\Filament\Company\Resources\Products\Tables\ProductsTable;
@@ -58,7 +60,9 @@ class ProductResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListProducts::route('/'),
+            'index'  => ListProducts::route('/'),
+            'create' => CreateProduct::route('/create'),
+            'edit'   => EditProduct::route('/{record}/edit'),
         ];
     }
 

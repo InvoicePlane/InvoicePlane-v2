@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Projects\Models\Task;
-use Modules\Projects\Services\TaskService;
 
 class ListTasks extends ListRecords
 {
@@ -18,9 +17,7 @@ class ListTasks extends ListRecords
     {
         return [
             CreateAction::make()
-                ->action(function (array $data) {
-                    app(TaskService::class)->createTask($data);
-                })->modalWidth('full'),
+                ->url(fn (): string => TaskResource::getUrl('create')),
         ];
     }
 

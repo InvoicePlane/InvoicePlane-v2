@@ -16,6 +16,7 @@ use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Support\DateHelpers;
 use Modules\Quotes\Enums\QuoteStatus;
 use Modules\Quotes\Filament\Company\Actions\EmailQuoteAction;
+use Modules\Quotes\Filament\Company\Resources\Quotes\QuoteResource;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Services\QuoteService;
 
@@ -68,10 +69,9 @@ class QuotesTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_QUOTES->value))
-                        ->action(function (Quote $record, array $data) {
-                            app(QuoteService::class)->updateQuote($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Quote $record): string => QuoteResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     Action::make('duplicate')
                         ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_QUOTES->value))
 

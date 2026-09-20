@@ -13,9 +13,8 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Authorization tests for the company panel's Tax Rates resource (#238).
  *
- * TaxRateResource::getPages() only registers 'index' -- CRUD happens via
- * modal actions on the list, so these tests exercise the resource's
- * can*() gates directly, matching RelationResourceAuthorizationTest (#503).
+ * These tests exercise the resource's can*() gates directly, matching
+ * RelationResourceAuthorizationTest (#503).
  */
 #[CoversClass(TaxRateResource::class)]
 class TaxRateResourceAuthorizationTest extends AbstractCompanyPanelTestCase

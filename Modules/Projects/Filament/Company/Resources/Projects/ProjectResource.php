@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Projects\Filament\Company\Resources\Projects\Pages\CreateProject;
+use Modules\Projects\Filament\Company\Resources\Projects\Pages\EditProject;
 use Modules\Projects\Filament\Company\Resources\Projects\Pages\ListProjects;
 use Modules\Projects\Filament\Company\Resources\Projects\Schemas\ProjectForm;
 use Modules\Projects\Filament\Company\Resources\Projects\Tables\ProjectsTable;
@@ -60,7 +62,9 @@ class ProjectResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListProjects::route('/'),
+            'index'  => ListProjects::route('/'),
+            'create' => CreateProject::route('/create'),
+            'edit'   => EditProject::route('/{record}/edit'),
         ];
     }
 

@@ -4,17 +4,14 @@ namespace Modules\Quotes\Filament\Company\Resources\Quotes\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Services\RelationService;
 use Modules\Core\Enums\NumberingType;
@@ -35,57 +32,48 @@ class QuoteForm
 
         return $schema
             ->components([
-                Grid::make(5)
+                Grid::make(3)
                     ->columnSpanFull()
                     ->schema([
-                        Group::make()
-                            ->schema([
-                                Select::make('prospect_id')
-                                    ->label(trans('ip.customer_name'))
-                                    ->relationship('prospect', 'company_name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->createOptionForm([
-                                        TextInput::make('company_name')
-                                            ->label(trans('ip.customer_name'))
-                                            ->required()
-                                            // relations.company_name is varchar(150).
-                                            ->maxLength(150),
-                                    ])
-                                    ->createOptionUsing(function (array $data): int {
-                                        // Filament's default createOptionUsing() does a raw
-                                        // Relation::create($data), which omits relation_type /
-                                        // relation_number / registered_at — all NOT NULL with no
-                                        // DB default — and 500s. RelationService::createRelation()
-                                        // fills those. Mirrors InvoiceForm's customer_id select.
-                                        return app(RelationService::class)->createRelation([
-                                            'relation_type' => RelationType::PROSPECT->value,
-                                            'company_name'  => $data['company_name'],
-                                        ])->getKey();
-                                    })
-                                    ->reactive(),
-
-                                Fieldset::make(trans('ip.client_information'))
-                                    ->extraAttributes([
-                                        'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
-                                    ])
-                                    ->schema([
-                                        Placeholder::make('customer_info')
-                                            ->label(trans('ip.client'))
-                                            ->content(fn (Get $get) => optional($get('prospect'))->company_name ?? '-'),
-                                    ])
-                                    ->columns(1)
-                                    ->visible(fn (Get $get) => filled($get('prospect_id'))),
-                            ])
-                            ->columnSpan(3),
-
-                        Group::make()
+                        Section::make(trans('ip.quote_details'))
+                            ->icon(Heroicon::OutlinedDocumentText)
+                            ->columnSpan(2)
                             ->schema([
                                 Grid::make(2)
                                     ->schema([
+                                        Select::make('prospect_id')
+                                            ->label(trans('ip.customer_name'))
+                                            ->prefixIcon(Heroicon::OutlinedUserGroup)
+                                            ->relationship('prospect', 'company_name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
+                                            ->createOptionForm([
+                                                TextInput::make('company_name')
+                                                    ->label(trans('ip.customer_name'))
+                                                    ->required()
+                                                    ->maxLength(150),
+                                            ])
+                                            ->createOptionUsing(function (array $data): int {
+                                                return app(RelationService::class)->createRelation([
+                                                    'relation_type' => RelationType::PROSPECT->value,
+                                                    'company_name'  => $data['company_name'],
+                                                ])->getKey();
+                                            })
+                                            ->reactive(),
+
+                                        Select::make('numbering_id')
+                                            ->label(trans('ip.numbering'))
+                                            ->prefixIcon(Heroicon::OutlinedQueueList)
+                                            ->relationship('numbering', 'name', fn ($query) => $query->where('type', NumberingType::QUOTE->value))
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false),
+
                                         TextInput::make('quote_number')
                                             ->label(trans('ip.quote_number'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
                                             ->required()
                                             ->default(function (Get $get, string $operation) {
                                                 if ($operation !== 'create') {
@@ -98,6 +86,7 @@ class QuoteForm
 
                                         Select::make('quote_status')
                                             ->label(trans('ip.quote_status'))
+                                            ->prefixIcon(Heroicon::OutlinedCheckBadge)
                                             ->required()
                                             ->options(
                                                 collect(QuoteStatus::cases())
@@ -116,9 +105,6 @@ class QuoteForm
                                             ->native(false)
                                             ->reactive()
                                             ->afterStateUpdated(function (callable $set, Get $get, string $operation): void {
-                                                // Only (re)generate on create, and only when the field is still
-                                                // empty -- never clobber a number the user already typed or one
-                                                // that was already generated for this record.
                                                 if ($operation !== 'create' || filled($get('quote_number'))) {
                                                     return;
                                                 }
@@ -128,35 +114,69 @@ class QuoteForm
 
                                         DatePicker::make('quoted_at')
                                             ->label(trans('ip.quote_date'))
+                                            ->prefixIcon(Heroicon::OutlinedCalendar)
                                             ->default(now())
                                             ->native(false),
 
                                         DatePicker::make('quote_expires_at')
                                             ->label(trans('ip.quote_expires_at'))
-                                            ->native(false),
-
-                                        Select::make('numbering_id')
-                                            ->label(trans('ip.numbering'))
-                                            ->relationship('numbering', 'name', fn ($query) => $query->where('type', NumberingType::QUOTE->value))
-                                            ->required()
-                                            ->searchable()
-                                            ->preload()
+                                            ->prefixIcon(Heroicon::OutlinedCalendarDays)
                                             ->native(false),
 
                                         TextInput::make('client_reference')
                                             ->label(trans('ip.client_reference'))
+                                            ->prefixIcon(Heroicon::OutlinedBookmark)
                                             ->maxLength(255),
 
                                         TextInput::make('work_order')
                                             ->label(trans('ip.work_order'))
+                                            ->prefixIcon(Heroicon::OutlinedClipboardDocumentList)
                                             ->maxLength(255),
-                                    ])
-                                    ->columns(2),
-                            ])
-                            ->columnSpan(2),
+                                    ]),
+                            ]),
+
+                        Section::make(trans('ip.quote_totals'))
+                            ->icon(Heroicon::OutlinedCalculator)
+                            ->columnSpan(1)
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('quote_subtotal')
+                                    ->label(trans('ip.subtotal'))
+                                    ->prefixIcon(Heroicon::OutlinedBanknotes)
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, callable $get) {
+                                        (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal');
+                                    }),
+
+                                TextInput::make('quote_discount_amount')
+                                    ->label(trans('ip.discount_amount'))
+                                    ->prefixIcon(Heroicon::OutlinedMinusCircle)
+                                    ->nullable(),
+
+                                TextInput::make('quote_discount_percent')
+                                    ->label(trans('ip.discount_percent'))
+                                    ->prefixIcon(Heroicon::OutlinedReceiptPercent)
+                                    ->nullable()
+                                    ->dehydrated(false),
+
+                                TextInput::make('quote_tax_total')
+                                    ->label(trans('ip.tax_total'))
+                                    ->prefixIcon(Heroicon::OutlinedBuildingLibrary)
+                                    ->disabled(),
+
+                                TextInput::make('quote_total')
+                                    ->label(trans('ip.total'))
+                                    ->prefixIcon(Heroicon::OutlinedCurrencyDollar)
+                                    ->disabled()
+                                    ->columnSpanFull(),
+                            ]),
                     ]),
 
                 Section::make(trans('ip.quote_items'))
+                    ->icon(Heroicon::OutlinedListBullet)
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('quoteItems')
                             ->relationship('quoteItems')
@@ -164,102 +184,62 @@ class QuoteForm
                             ->reorderable()
                             ->addActionLabel(trans('ip.add_new_row'))
                             ->schema([
-                                Grid::make(6)
+                                Grid::make(12)
                                     ->schema([
                                         Select::make('product_id')
                                             ->label(trans('ip.product'))
+                                            ->prefixIcon(Heroicon::OutlinedCube)
                                             ->options(Product::query()->pluck('product_name', 'id')->toArray())
                                             ->searchable()
                                             ->preload()
                                             ->required()
                                             ->placeholder(trans('ip.select_product'))
-                                            ->reactive()
-                                            ->afterStateUpdated(function (callable $set, $state) {
-                                                $product = Product::query()->find($state);
-                                                $set('product_name', $product?->product_name ?? '');
-                                            }),
-
-                                        TextEntry::make('product_name')
-                                            ->disabled(),
+                                            ->columnSpan(4),
 
                                         TextInput::make('quantity')
                                             ->label(trans('ip.quantity'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
                                             ->numeric()
                                             ->required()
                                             ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get)),
+                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get))
+                                            ->columnSpan(2),
 
                                         TextInput::make('price')
                                             ->label(trans('ip.price'))
+                                            ->prefixIcon(Heroicon::OutlinedCurrencyDollar)
                                             ->numeric()
                                             ->required()
                                             ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get)),
+                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get))
+                                            ->columnSpan(2),
 
                                         TextInput::make('discount')
                                             ->label(trans('ip.discount'))
+                                            ->prefixIcon(Heroicon::OutlinedMinusCircle)
                                             ->numeric()
                                             ->default(0)
                                             ->reactive()
-                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get)),
+                                            ->afterStateUpdated(fn (callable $set, callable $get) => (new QuoteCalculator())->updateItemTotals($set, $get))
+                                            ->columnSpan(2),
 
                                         TextInput::make('subtotal')
                                             ->label(trans('ip.subtotal'))
+                                            ->prefixIcon(Heroicon::OutlinedBanknotes)
                                             ->dehydrated()
-                                            ->disabled(),
-                                    ])
-                                    ->columns(5),
+                                            ->disabled()
+                                            ->columnSpan(2),
+                                    ]),
                             ])
                             ->columns(1)
                             ->reactive()
                             ->dehydrated()
                             ->defaultItems(0)
                             ->afterStateUpdated(function (callable $set, $get, $state) {}),
-                    ])
-                    ->collapsed()
-                    ->columnSpanFull(),
-
-                Section::make(trans('ip.quote_totals'))
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Group::make()
-                                    ->schema([]),
-
-                                Group::make()
-                                    ->schema([
-                                        TextInput::make('quote_subtotal')
-                                            ->label(trans('ip.subtotal'))
-                                            ->disabled()
-                                            ->dehydrated()
-                                            ->reactive()
-                                            ->afterStateUpdated(function (callable $set, callable $get) {
-                                                (new QuoteCalculator())->updateGrandTotal($set, $get, 'quoteItems', 'subtotal', 'quote_item_subtotal');
-                                            }),
-
-                                        TextInput::make('quote_discount_amount')
-                                            ->label(trans('ip.discount_amount'))
-                                            ->nullable(),
-
-                                        TextInput::make('quote_discount_percent')
-                                            ->label(trans('ip.discount_percent'))
-                                            ->nullable()
-                                            ->dehydrated(false),
-
-                                        TextInput::make('quote_tax_total')
-                                            ->label(trans('ip.tax_total'))
-                                            ->disabled(),
-
-                                        TextInput::make('quote_total')
-                                            ->label(trans('ip.total'))
-                                            ->disabled(),
-                                    ]),
-                            ]),
-                    ])
-                    ->collapsed()
-                    ->columns(2),
+                    ]),
 
                 Section::make(trans('ip.quote_notes'))
+                    ->icon(Heroicon::OutlinedPencilSquare)
                     ->schema([
                         MarkdownEditor::make('notes')
                             ->label(trans('ip.notes'))

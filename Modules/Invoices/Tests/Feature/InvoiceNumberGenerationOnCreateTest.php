@@ -2,7 +2,6 @@
 
 namespace Modules\Invoices\Tests\Feature;
 
-use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
@@ -10,12 +9,12 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Invoices\Enums\InvoiceStatus;
-use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Models\Invoice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ListInvoices::class)]
+#[CoversClass(CreateInvoice::class)]
 class InvoiceNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 {
     #[Test]
@@ -35,10 +34,9 @@ class InvoiceNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
+            ->test(CreateInvoice::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -73,10 +71,9 @@ class InvoiceNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
+            ->test(CreateInvoice::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasFormErrors(['invoice_number' => 'required']);
@@ -101,17 +98,16 @@ class InvoiceNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
         // invoice_status is set via a real Livewire property update (not
         // fillForm, which bypasses afterStateUpdated hooks) so the form's
         // reactive regeneration of invoice_number on status change actually
-        // fires -- mirroring a user picking "Sent" interactively in the modal.
+        // fires -- mirroring a user picking "Sent" interactively on the create page.
         $payload = $this->basePayload($customer->id, $numbering->id, InvoiceStatus::SENT->value);
         unset($payload['invoice_status']);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListInvoices::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
-            ->set('mountedActions.0.data.invoice_status', InvoiceStatus::SENT->value)
+            ->test(CreateInvoice::class)
+            ->set('data.invoice_status', InvoiceStatus::SENT->value)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();

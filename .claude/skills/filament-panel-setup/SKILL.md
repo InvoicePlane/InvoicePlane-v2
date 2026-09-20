@@ -32,20 +32,6 @@ Add a `->discoverResources()` call per module in `CompanyPanelProvider`:
 The `in` path is a filesystem path, `for` is the PHP namespace prefix. Both must
 match the module's actual directory and namespace exactly.
 
-## viteTheme Guard
-
-`->viteTheme()` calls `app(Vite::class)($theme)` which reads `public/build/manifest.json`.
-In test environments there is no built manifest, so wrap it:
-
-```php
-->when(
-    ! app()->runningUnitTests(),
-    fn (Panel $panel) => $panel->viteTheme('resources/css/filament/company/nord.css')
-)
-```
-
-`app()->runningUnitTests()` returns `true` when `APP_ENV=testing` (set in `phpunit.xml`).
-
 ## Tenant Panel Required Config
 
 ```php
@@ -65,13 +51,8 @@ In test environments there is no built manifest, so wrap it:
 
 ## Colors and Font
 
-Both panels use:
-```php
-->colors(['primary' => Color::hex('#88c0d0')])
-```
-
-Company panel: `Poppins` via `GoogleFontProvider`
-Admin panel: `Albert Sans` via `GoogleFontProvider`
+All three panels use Filament's stock default color palette (no custom `->colors()` override,
+no custom `->viteTheme()`) and `Poppins` via `GoogleFontProvider`.
 
 ## SPA Mode
 

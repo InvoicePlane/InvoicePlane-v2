@@ -5,9 +5,11 @@ namespace Modules\Core\Filament\Admin\Resources\EmailTemplates\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\HtmlString;
 use Modules\Core\Enums\EmailTemplateType;
 use Modules\Core\Services\EmailTemplateVariableResolver;
@@ -18,57 +20,87 @@ class EmailTemplateForm
     {
         return $schema
             ->components([
-                Schemas\Components\Group::make()
+                Grid::make(3)
+                    ->columnSpanFull()
                     ->schema([
-                        Section::make(heading:null)
+                        Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedEnvelopeOpen)
+                            ->columnSpan(2)
                             ->schema([
-                                TextInput::make('title')
-                                    ->label(trans('ip.title'))
-                                    ->required()
-                                    ->autofocus(),
-                                TextInput::make('from_name')
-                                    ->label(trans('ip.from_name')),
-                                TextInput::make('from_email')
-                                    ->label(trans('ip.from_email')),
-                            ])->columns(1),
-                        Section::make(heading:trans('ip.cc_and_bcc'))
+                                Grid::make(4)
+                                    ->schema([
+                                        TextInput::make('title')
+                                            ->label(trans('ip.title'))
+                                            ->prefixIcon(Heroicon::OutlinedTag)
+                                            ->required()
+                                            ->autofocus()
+                                            ->columnSpan(4),
+
+                                        Select::make('type')
+                                            ->label(trans('ip.type'))
+                                            ->prefixIcon(Heroicon::OutlinedListBullet)
+                                            ->required()
+                                            ->options(EmailTemplateType::class)
+                                            ->default(null)
+                                            ->columnSpan(2),
+
+                                        TextInput::make('subject')
+                                            ->label(trans('ip.subject'))
+                                            ->prefixIcon(Heroicon::OutlinedChatBubbleLeftRight)
+                                            ->columnSpan(2),
+
+                                        TextInput::make('from_name')
+                                            ->label(trans('ip.from_name'))
+                                            ->prefixIcon(Heroicon::OutlinedUser)
+                                            ->columnSpan(2),
+
+                                        TextInput::make('from_email')
+                                            ->label(trans('ip.from_email'))
+                                            ->prefixIcon(Heroicon::OutlinedEnvelope)
+                                            ->columnSpan(2),
+                                    ]),
+                            ]),
+
+                        Section::make(trans('ip.cc_and_bcc'))
+                            ->icon(Heroicon::OutlinedAtSymbol)
+                            ->columnSpan(1)
                             ->collapsed()
                             ->schema([
-                                TextInput::make('cc')->label(trans('ip.cc')),
-                                TextInput::make('bcc')->label(trans('ip.bcc')),
-                            ])->columns(1),
+                                TextInput::make('cc')
+                                    ->label(trans('ip.cc'))
+                                    ->prefixIcon(Heroicon::OutlinedAtSymbol),
+                                TextInput::make('bcc')
+                                    ->label(trans('ip.bcc'))
+                                    ->prefixIcon(Heroicon::OutlinedAtSymbol),
+                            ]),
                     ]),
-                Schemas\Components\Group::make()
+
+                Section::make(trans('ip.body'))
+                    ->icon(Heroicon::OutlinedDocumentText)
+                    ->columnSpanFull()
                     ->schema([
-                        Section::make(heading:null)
-                            ->schema(components: [
-                                Select::make('type')
-                                    ->label(trans('ip.type'))
-                                    ->required()
-                                    ->options(EmailTemplateType::class)
-                                    ->default(null),
-                                TextInput::make('subject')
-                                    ->label(trans('ip.subject')),
-                                Textarea::make('body')
-                                    ->label(trans('ip.body'))
-                                    ->rows(10)
-                                    // email_templates.body is a NOT NULL
-                                    // longText column with no default —
-                                    // without this, a blank body passes
-                                    // client validation and blows up as an
-                                    // unhandled SQL 500. Shared by both the
-                                    // admin and company panel resources.
-                                    ->required(),
-                            ])->columns(1),
-                        Section::make(heading:trans('ip.available_variables'))
-                            ->collapsed()
-                            ->schema([
-                                Schemas\Components\Text::make(fn (): HtmlString => new HtmlString(
-                                    collect(app(EmailTemplateVariableResolver::class)->variables())
-                                        ->map(fn (string $description, string $tag): string => '<div><code>' . e($tag) . '</code> — ' . e($description) . '</div>')
-                                        ->implode('')
-                                )),
-                            ])->columns(1),
+                        Textarea::make('body')
+                            ->label(trans('ip.body'))
+                            ->rows(10)
+                            // email_templates.body is a NOT NULL
+                            // longText column with no default —
+                            // without this, a blank body passes
+                            // client validation and blows up as an
+                            // unhandled SQL 500. Shared by both the
+                            // admin and company panel resources.
+                            ->required(),
+                    ]),
+
+                Section::make(trans('ip.available_variables'))
+                    ->icon(Heroicon::OutlinedInformationCircle)
+                    ->collapsed()
+                    ->columnSpanFull()
+                    ->schema([
+                        Text::make(fn (): HtmlString => new HtmlString(
+                            collect(app(EmailTemplateVariableResolver::class)->variables())
+                                ->map(fn (string $description, string $tag): string => '<div><code>' . e($tag) . '</code> — ' . e($description) . '</div>')
+                                ->implode('')
+                        )),
                     ]),
             ]);
     }

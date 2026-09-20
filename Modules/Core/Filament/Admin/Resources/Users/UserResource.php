@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\CreateUser;
+use Modules\Core\Filament\Admin\Resources\Users\Pages\EditUser;
 use Modules\Core\Filament\Admin\Resources\Users\Pages\ListUsers;
 use Modules\Core\Filament\Admin\Resources\Users\Schemas\UserForm;
 use Modules\Core\Filament\Admin\Resources\Users\Tables\UsersTable;
@@ -54,7 +56,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListUsers::route('/'),
+            'index'  => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit'   => EditUser::route('/{record}/edit'),
         ];
     }
 

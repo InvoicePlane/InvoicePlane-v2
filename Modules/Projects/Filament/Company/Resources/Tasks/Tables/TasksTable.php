@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\Permission;
 use Modules\Projects\Enums\TaskStatus;
+use Modules\Projects\Filament\Company\Resources\Tasks\TaskResource;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Services\TaskService;
 
@@ -89,11 +90,9 @@ class TasksTable
                 ActionGroup::make([
                     EditAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_TASKS->value))
-                        ->action(
-                            fn (Task $record, array $data) => app(TaskService::class)
-                                ->updateTask($record, $data)
-                        )
-                        ->modalWidth('full')
+                        ->url(fn (Task $record): string => TaskResource::getUrl('edit', [
+                            'record' => $record,
+                        ]))
                         ->tooltip(trans('filament-actions::edit.single.label')),
                     DeleteAction::make('delete')
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_TASKS->value))

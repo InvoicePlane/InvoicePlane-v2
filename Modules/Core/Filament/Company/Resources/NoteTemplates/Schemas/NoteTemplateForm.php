@@ -6,6 +6,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class NoteTemplateForm
 {
@@ -13,10 +14,13 @@ class NoteTemplateForm
     {
         return $schema
             ->components([
-                Section::make('Template')
+                Section::make(trans('ip.template'))
+                    ->icon(Heroicon::OutlinedDocumentText)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('template_title')
                             ->label(trans('ip.title'))
+                            ->prefixIcon(Heroicon::OutlinedTag)
                             ->required()
                             ->maxLength(255),
 

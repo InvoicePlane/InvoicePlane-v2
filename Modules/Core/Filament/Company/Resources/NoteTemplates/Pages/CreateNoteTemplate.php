@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Core\Filament\Admin\Resources\Users\Pages;
+namespace Modules\Core\Filament\Company\Resources\NoteTemplates\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Filament\Admin\Resources\Users\UserResource;
-use Modules\Core\Services\UserService;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
+use Modules\Core\Services\NoteTemplateService;
 
-class CreateUser extends CreateRecord
+class CreateNoteTemplate extends CreateRecord
 {
-    protected static string $resource = UserResource::class;
+    protected static string $resource = NoteTemplateResource::class;
 
     public function create(bool $another = false): void
     {
@@ -42,6 +42,6 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        return app(UserService::class)->createUser($data);
+        return app(NoteTemplateService::class)->createNoteTemplate($data);
     }
 }

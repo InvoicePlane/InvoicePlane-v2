@@ -5,10 +5,10 @@ namespace Modules\Products\Filament\Company\Resources\Products\Schemas;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Modules\Products\Enums\ProductType;
 
 class ProductForm
@@ -17,80 +17,80 @@ class ProductForm
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Grid::make(3)
                     ->columnSpanFull()
                     ->schema([
-                        //
-                        // LEFT COLUMN: basic details
-                        //
-                        Schemas\Components\Group::make()
-                            ->columnSpan(1)
+                        Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedArchiveBox)
+                            ->columnSpan(2)
                             ->schema([
-                                Section::make(trans('ip.details'))
+                                Grid::make(4)
                                     ->schema([
                                         TextInput::make('code')
                                             ->label(trans('ip.product_sku'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->columnSpan(2),
 
                                         TextInput::make('product_name')
                                             ->label(trans('ip.product_name'))
+                                            ->prefixIcon(Heroicon::OutlinedTag)
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->columnSpan(2),
 
                                         Select::make('type')
                                             ->label(trans('ip.product_type'))
+                                            ->prefixIcon(Heroicon::OutlinedCube)
                                             ->options(
                                                 collect(ProductType::cases())
                                                     ->mapWithKeys(fn (ProductType $type) => [$type->value => $type->label()])
                                                     ->toArray()
                                             )
                                             ->native(false)
-                                            ->required(),
+                                            ->required()
+                                            ->columnSpan(2),
+
+                                        TextInput::make('price')
+                                            ->label(trans('ip.price'))
+                                            ->prefixIcon(Heroicon::OutlinedCurrencyDollar)
+                                            ->numeric()
+                                            ->required()
+                                            ->columnSpan(2),
                                     ]),
                             ]),
 
-                        //
-                        // RIGHT COLUMN: classification
-                        //
-                        Schemas\Components\Group::make()
+                        Section::make(trans('ip.classification'))
+                            ->icon(Heroicon::OutlinedRectangleStack)
                             ->columnSpan(1)
                             ->schema([
-                                Section::make(trans('ip.classification'))
-                                    ->schema([
-                                        Grid::make(2)->schema([
-                                            Select::make('category_id')
-                                                ->label(trans('ip.family'))
-                                                ->relationship('productCategory', 'category_name')
-                                                ->searchable()
-                                                ->preload()
-                                                ->required(),
+                                Select::make('category_id')
+                                    ->label(trans('ip.family'))
+                                    ->prefixIcon(Heroicon::OutlinedRectangleStack)
+                                    ->relationship('productCategory', 'category_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
 
-                                            Select::make('unit_id')
-                                                ->label(trans('ip.product_unit'))
-                                                ->relationship('productUnit', 'unit_name')
-                                                ->searchable()
-                                                ->preload(),
+                                Select::make('unit_id')
+                                    ->label(trans('ip.product_unit'))
+                                    ->prefixIcon(Heroicon::OutlinedScale)
+                                    ->relationship('productUnit', 'unit_name')
+                                    ->searchable()
+                                    ->preload(),
 
-                                            TextInput::make('price')
-                                                ->label(trans('ip.price'))
-                                                ->numeric()
-                                                ->required(),
-
-                                            Select::make('tax_rate_id')
-                                                ->label(trans('ip.tax_rate'))
-                                                ->relationship('taxRate', 'name')
-                                                ->searchable()
-                                                ->preload(),
-                                        ]),
-                                    ]),
+                                Select::make('tax_rate_id')
+                                    ->label(trans('ip.tax_rate'))
+                                    ->prefixIcon(Heroicon::OutlinedReceiptPercent)
+                                    ->relationship('taxRate', 'name')
+                                    ->searchable()
+                                    ->preload(),
                             ]),
                     ]),
 
-                //
-                // DESCRIPTION / NOTES (collapsed)
-                //
                 Section::make(trans('ip.description'))
+                    ->icon(Heroicon::OutlinedPencilSquare)
                     ->collapsed()
                     ->schema([
                         MarkdownEditor::make('description')

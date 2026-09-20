@@ -14,6 +14,7 @@ use Modules\Core\Enums\Permission;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Expenses\Enums\ExpenseStatus;
 use Modules\Expenses\Enums\ExpenseType;
+use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Models\Expense;
 use Modules\Expenses\Services\ExpenseService;
 
@@ -79,10 +80,9 @@ class ExpensesTable
                 ActionGroup::make([
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_EXPENSES->value))
-                        ->action(function (Expense $record, array $data) {
-                            app(ExpenseService::class)->updateExpense($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Expense $record): string => ExpenseResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value))
                         ->action(function (Expense $record, array $data) {
