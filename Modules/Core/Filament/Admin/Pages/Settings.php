@@ -414,9 +414,15 @@ class Settings extends Page implements HasTable, HasForms
                                     RichEditor::make('settings.pdf_invoice_footer')
                                         ->label(trans('ip.pdf_invoice_footer'))
                                         ->toolbarButtons([
-                                            'bold',
-                                            'italic',
-                                        ]),
+                                            ['undo', 'redo'],
+                                            ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                            ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                            ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                            ['table', 'grid'],
+                                            ['clearFormatting'],
+                                        ])
+                                        ->columnSpanFull(),
                                 ]),
 
                             Section::make(trans('ip.qr_code_settings'))

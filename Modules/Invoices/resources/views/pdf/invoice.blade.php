@@ -108,6 +108,6 @@
     @endif
 
     @if ($invoice->footer)
-        <div style="color: {{ $accentColor }}; margin-top: 24px;">{{ $invoice->footer }}</div>
+        <div style="color: {{ $accentColor }}; margin-top: 24px;">{!! $invoice->footer !!}</div>
     @endif
 </div>
