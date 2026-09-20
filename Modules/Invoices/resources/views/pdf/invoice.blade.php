@@ -103,11 +103,11 @@
     @if ($invoice->terms)
         <div style="margin-bottom: 12px;">
             <div style="font-weight: bold;">{{ trans('ip.terms') }}</div>
-            <div>{{ $invoice->terms }}</div>
+            <div>{!! $invoice->terms !!}</div>
         </div>
     @endif
 
     @if ($invoice->footer)
-        <div style="color: {{ $accentColor }}; margin-top: 24px;">{{ $invoice->footer }}</div>
+        <div style="color: {{ $accentColor }}; margin-top: 24px;">{!! $invoice->footer !!}</div>
     @endif
 </div>

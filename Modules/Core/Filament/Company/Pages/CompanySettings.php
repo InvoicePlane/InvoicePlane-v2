@@ -6,6 +6,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -290,9 +291,17 @@ class CompanySettings extends Page implements HasForms
                                     ->options([])
                                     ->placeholder(trans('ip.none')),
 
-                                Textarea::make(Setting::KEY_INVOICE_PDF_FOOTER)
+                                RichEditor::make(Setting::KEY_INVOICE_PDF_FOOTER)
                                     ->label(trans('ip.pdf_invoice_footer'))
-                                    ->rows(3)
+                                    ->toolbarButtons([
+                                        ['undo', 'redo'],
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                        ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                        ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                        ['table', 'grid'],
+                                        ['clearFormatting'],
+                                    ])
                                     ->columnSpanFull(),
                             ]),
 
@@ -309,13 +318,31 @@ class CompanySettings extends Page implements HasForms
                             ]),
 
                             Section::make(trans('ip.other_settings'))->columns(2)->schema([
-                                Textarea::make(Setting::KEY_INVOICE_DEFAULT_TERMS)
+                                RichEditor::make(Setting::KEY_INVOICE_DEFAULT_TERMS)
                                     ->label(trans('ip.default_terms'))
-                                    ->rows(3),
+                                    ->toolbarButtons([
+                                        ['undo', 'redo'],
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                        ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                        ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                        ['table', 'grid'],
+                                        ['clearFormatting'],
+                                    ])
+                                    ->columnSpanFull(),
 
-                                Textarea::make(Setting::KEY_INVOICE_DEFAULT_FOOTER)
+                                RichEditor::make(Setting::KEY_INVOICE_DEFAULT_FOOTER)
                                     ->label(trans('ip.default_invoice_footer'))
-                                    ->rows(3),
+                                    ->toolbarButtons([
+                                        ['undo', 'redo'],
+                                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                        ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                        ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                        ['table', 'grid'],
+                                        ['clearFormatting'],
+                                    ])
+                                    ->columnSpanFull(),
                             ]),
                         ]),
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Observers;
 
+use Illuminate\Support\Str;
 use Modules\Core\Observers\AbstractObserver;
 use Modules\Invoices\Models\Invoice;
 use RuntimeException;
@@ -16,6 +17,13 @@ class InvoiceObserver extends AbstractObserver
      */
     public function saving(Invoice $invoice): void
     {
+        // The Terms and Footer fields are edited with a RichEditor, which
+        // outputs raw HTML the client controls. Sanitize before it ever
+        // reaches the database, since both are later rendered unescaped in
+        // the PDF/guest views.
+        $invoice->terms  = $this->sanitizeRichText($invoice->terms);
+        $invoice->footer = $this->sanitizeRichText($invoice->footer);
+
         if ($invoice->invoice_number !== null) {
             $query = Invoice::withoutGlobalScopes()
                 ->where('company_id', $invoice->company_id)
@@ -39,6 +47,21 @@ class InvoiceObserver extends AbstractObserver
                 throw new RuntimeException("Duplicate invoice number '{$invoice->invoice_number}'");
             }
         }
+    }
+
+    /**
+     * Sanitize RichEditor HTML, normalizing a content-free value (e.g. an
+     * emptied editor's "<p></p>") back to null.
+     */
+    private function sanitizeRichText(?string $html): ?string
+    {
+        if ($html === null) {
+            return null;
+        }
+
+        $sanitized = Str::sanitizeHtml($html);
+
+        return filled(trim(strip_tags($sanitized))) ? $sanitized : null;
     }
 
     /**

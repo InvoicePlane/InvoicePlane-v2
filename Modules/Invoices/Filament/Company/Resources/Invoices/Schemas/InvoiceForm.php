@@ -8,6 +8,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -313,8 +314,16 @@ class InvoiceForm
                 Section::make(trans('ip.invoice_terms'))
                     ->collapsed()
                     ->schema([
-                        MarkdownEditor::make('invoice_terms')
-                            ->toolbarButtons(['bold', 'italic'])
+                        RichEditor::make('invoice_terms')
+                            ->toolbarButtons([
+                                ['undo', 'redo'],
+                                ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                ['table', 'grid'],
+                                ['clearFormatting'],
+                            ])
                             ->label(trans('ip.invoice_terms'))
                             ->default(function (string $operation) {
                                 if ($operation !== 'create') {
