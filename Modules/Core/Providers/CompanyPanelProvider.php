@@ -31,6 +31,7 @@ use Modules\Core\Filament\Company\Pages\MyCompanies;
 use Modules\Core\Filament\Company\Resources\CompanyUsers\CompanyUserResource;
 use Modules\Core\Filament\Company\Resources\EmailTemplates\EmailTemplateResource;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
+use Modules\Core\Filament\Company\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
@@ -178,6 +179,7 @@ class CompanyPanelProvider extends PanelProvider
                 NoteTemplateResource::class,
                 EmailTemplateResource::class,
                 CompanyUserResource::class,
+                TaxRateResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Company/Pages'), for: 'App\Filament\Company\Pages')
             ->discoverWidgets(in: app_path('Filament/Company/Widgets'), for: 'App\Filament\Company\Widgets')
@@ -254,6 +256,7 @@ class CompanyPanelProvider extends PanelProvider
                                 ...NoteTemplateResource::getNavigationItems(),
                                 ...EmailTemplateResource::getNavigationItems(),
                                 ...CompanyUserResource::getNavigationItems(),
+                                ...(TaxRateResource::shouldRegisterNavigation() ? TaxRateResource::getNavigationItems() : []),
                             ]),
                     ]);
             })

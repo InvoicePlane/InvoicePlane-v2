@@ -131,6 +131,44 @@ class RolesSeederTest extends AbstractTestCase
     }
 
     #[Test]
+    public function client_admin_has_tax_rate_permissions(): void
+    {
+        /* Arrange */
+        (new RolesSeeder())->run();
+
+        /* Act */
+        $permissionNames = Role::query()->where('name', UserRole::CUSTOMER_ADMIN->value)
+            ->firstOrFail()
+            ->permissions
+            ->pluck('name');
+
+        /* Assert */
+        $this->assertContains(PermissionEnum::VIEW_TAX_RATES->value, $permissionNames);
+        $this->assertContains(PermissionEnum::CREATE_TAX_RATES->value, $permissionNames);
+        $this->assertContains(PermissionEnum::EDIT_TAX_RATES->value, $permissionNames);
+        $this->assertContains(PermissionEnum::DELETE_TAX_RATES->value, $permissionNames);
+    }
+
+    #[Test]
+    public function client_has_no_tax_rate_permissions(): void
+    {
+        /* Arrange */
+        (new RolesSeeder())->run();
+
+        /* Act */
+        $permissionNames = Role::query()->where('name', UserRole::CUSTOMER->value)
+            ->firstOrFail()
+            ->permissions
+            ->pluck('name');
+
+        /* Assert */
+        $this->assertNotContains(PermissionEnum::VIEW_TAX_RATES->value, $permissionNames);
+        $this->assertNotContains(PermissionEnum::CREATE_TAX_RATES->value, $permissionNames);
+        $this->assertNotContains(PermissionEnum::EDIT_TAX_RATES->value, $permissionNames);
+        $this->assertNotContains(PermissionEnum::DELETE_TAX_RATES->value, $permissionNames);
+    }
+
+    #[Test]
     public function client_has_only_a_minimal_view_and_document_action_allowlist(): void
     {
         /* Arrange */
