@@ -81,7 +81,10 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
             ->assertHasNoErrors();
 
         /* Assert */
-        $this->assertSame($text, Setting::getForCompany($this->company->id, Setting::KEY_INVOICE_DEFAULT_TERMS));
+        $this->assertSame(
+            '<p>' . $text . '</p>',
+            Setting::getForCompany($this->company->id, Setting::KEY_INVOICE_DEFAULT_TERMS)
+        );
     }
 
     #[Test]

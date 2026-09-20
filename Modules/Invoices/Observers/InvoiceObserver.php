@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Observers;
 
+use Illuminate\Support\Str;
 use Modules\Core\Observers\AbstractObserver;
 use Modules\Invoices\Models\Invoice;
 use RuntimeException;
@@ -16,6 +17,17 @@ class InvoiceObserver extends AbstractObserver
      */
     public function saving(Invoice $invoice): void
     {
+        // The Terms field is edited with a RichEditor, which outputs raw
+        // HTML the client controls. Sanitize before it ever reaches the
+        // database, since it's later rendered unescaped in the PDF/guest
+        // views. An emptied editor submits an empty tag (e.g. "<p></p>")
+        // rather than null, so normalize content-free HTML back to null.
+        if ($invoice->terms !== null) {
+            $sanitized = Str::sanitizeHtml($invoice->terms);
+
+            $invoice->terms = filled(trim(strip_tags($sanitized))) ? $sanitized : null;
+        }
+
         if ($invoice->invoice_number !== null) {
             $query = Invoice::withoutGlobalScopes()
                 ->where('company_id', $invoice->company_id)

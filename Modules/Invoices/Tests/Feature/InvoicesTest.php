@@ -440,7 +440,7 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
         $this->assertDatabaseHas('invoices', [
             'invoice_number' => 'INV-000042',
             'summary'        => 'Created via test',
-            'terms'          => 'Net 30, late fees apply.',
+            'terms'          => '<p>Net 30, late fees apply.</p>',
         ]);
     }
 
@@ -720,7 +720,64 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'terms' => 'Net 30, late fees apply.']);
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'terms' => '<p>Net 30, late fees apply.</p>']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_rich_text_formatting_in_the_invoice_terms_field(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'terms'        => null,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['invoice_terms' => '<p><strong>Net 30</strong>. See <a href="https://example.com/policy">our policy</a>.</p>'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertStringContainsString('<strong>Net 30</strong>', $invoice->fresh()->terms);
+        $this->assertStringContainsString('<a href="https://example.com/policy">our policy</a>', $invoice->fresh()->terms);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_strips_script_tags_from_the_invoice_terms_field_on_save(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'terms'        => null,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['invoice_terms' => '<p>Terms</p><script>alert(1)</script>'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertStringNotContainsString('<script>', $invoice->fresh()->terms);
     }
 
     #[Test]

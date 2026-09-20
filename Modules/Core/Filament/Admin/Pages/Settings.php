@@ -309,9 +309,15 @@ class Settings extends Page implements HasTable, HasForms
                                     RichEditor::make('settings.default_invoice_terms')
                                         ->label(trans('ip.default_terms'))
                                         ->toolbarButtons([
-                                            'bold',
-                                            'italic',
-                                        ]),
+                                            ['undo', 'redo'],
+                                            ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link', 'textColor', 'highlight'],
+                                            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph', 'small', 'lead'],
+                                            ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                            ['blockquote', 'code', 'codeBlock', 'bulletList', 'orderedList', 'horizontalRule', 'details'],
+                                            ['table', 'grid'],
+                                            ['clearFormatting'],
+                                        ])
+                                        ->columnSpanFull(),
 
                                     Select::make('settings.invoice_default_payment_method')
                                         ->label(trans('ip.default_payment_method'))
