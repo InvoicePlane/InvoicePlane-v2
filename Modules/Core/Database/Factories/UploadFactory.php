@@ -2,32 +2,31 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\Upload;
+use Modules\Core\Models\User;
 
-/**
- * @extends Factory<Upload>
- */
-class UploadFactory extends Factory
+class UploadFactory extends AbstractFactory
 {
     protected $model = Upload::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $company    = $this->resolveCompany() ?? Company::factory()->create();
+        $uploadable = Relation::factory()->for($company)->create();
 
         return [
             'company_id'           => $company->id,
-            'user_id'              => \Modules\Core\Models\User::query()->inRandomOrder()->first()->id,
-            'uploadable_type'      => null,
-            'uploadable_id'        => null,
+            'user_id'              => User::query()->inRandomOrder()->first()->id,
+            'uploadable_type'      => $uploadable->getMorphClass(),
+            'uploadable_id'        => $uploadable->id,
             'upload_original_name' => fake()->word,
             'upload_stored_name'   => fake()->word,
             'upload_mime_type'     => fake()->word,
-            'upload_url_key'       => fake()->word,
+            'upload_url_key'       => fake()->unique()->word,
             'upload_disk'          => fake()->word,
-            'file_description'     => null,
+            'file_description'     => fake()->sentence(),
         ];
     }
 }

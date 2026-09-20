@@ -12,8 +12,8 @@ return new class () extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->morphs('communicationable');
             $table->boolean('is_primary')->default(false);
-            $table->string('contactable_type');
-            $table->string('contactable_value');
+            $table->string('communication_type');
+            $table->string('communication_value');
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });

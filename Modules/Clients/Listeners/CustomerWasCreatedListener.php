@@ -2,11 +2,11 @@
 
 namespace Modules\Clients\Listeners;
 
-use Modules\Clients\Models\Relation;
+use Modules\Clients\Events\CustomerWasCreated;
 
 class CustomerWasCreatedListener
 {
     public function __construct() {}
 
-    public function handle(Relation $event): void {}
+    public function handle(CustomerWasCreated $event): void {}
 }

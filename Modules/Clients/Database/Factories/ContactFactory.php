@@ -2,31 +2,33 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Provider\en_US\Address;
+use Faker\Provider\en_US\Company;
+use Faker\Provider\en_US\Person;
+use Faker\Provider\en_US\PhoneNumber;
+use Faker\Provider\Internet;
+use Faker\Provider\Lorem;
 use Modules\Clients\Enums\Gender;
-use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
-use Modules\Clients\Models\Relation;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
 
-/**
- * @extends Factory<\Modules\Clients\Models\Contact>
- */
-class ContactFactory extends Factory
+class ContactFactory extends AbstractFactory
 {
     protected $model = Contact::class;
 
     public function definition(): array
     {
-        $company  = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $relation = Relation::query()->where('relation_type', RelationType::CUSTOMER->value)->inRandomOrder()->first() ?? Relation::factory()->create();
+        $this->faker->addProvider(new Person($this->faker));
+        $this->faker->addProvider(new Address($this->faker));
+        $this->faker->addProvider(new PhoneNumber($this->faker));
+        $this->faker->addProvider(new Company($this->faker));
+        $this->faker->addProvider(new Lorem($this->faker));
+        $this->faker->addProvider(new Internet($this->faker));
 
         return [
-            'company_id'  => $company->id,
-            'relation_id' => $relation->id,
-            'first_name'  => fake()->firstName,
-            'last_name'   => fake()->lastName,
-            'gender'      => $this->faker->randomElement(Gender::cases())->value,
+            'first_name' => fake()->firstName,
+            'last_name'  => fake()->lastName,
+            'gender'     => $this->faker->randomElement(Gender::cases())->value,
         ];
     }
 }

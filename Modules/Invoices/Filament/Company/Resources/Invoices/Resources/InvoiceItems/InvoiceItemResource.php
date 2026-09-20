@@ -3,10 +3,10 @@
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Resources\InvoiceItems;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Resources\InvoiceItems\Pages\CreateInvoiceItem;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Resources\InvoiceItems\Pages\EditInvoiceItem;
@@ -14,7 +14,7 @@ use Modules\Invoices\Filament\Company\Resources\Invoices\Resources\InvoiceItems\
 use Modules\Invoices\Filament\Company\Resources\Invoices\Resources\InvoiceItems\Tables\InvoiceItemsTable;
 use Modules\Invoices\Models\InvoiceItem;
 
-class InvoiceItemResource extends Resource
+class InvoiceItemResource extends BaseResource
 {
     protected static ?string $model = InvoiceItem::class;
 

@@ -2,8 +2,11 @@
 
 namespace Modules\Clients\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Clients\Database\Factories\CommunicationFactory;
 use Modules\Clients\Enums\CommunicationType;
 use Modules\Core\Models\Company;
 use Modules\Core\Traits\BelongsToCompany;
@@ -21,6 +24,7 @@ use Modules\Core\Traits\BelongsToCompany;
 class Communication extends Model
 {
     use BelongsToCompany;
+    use HasFactory;
 
     public $timestamps = false;
 
@@ -34,5 +38,15 @@ class Communication extends Model
     public function communicationable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
+    protected static function newFactory(): Factory
+    {
+        return CommunicationFactory::new();
     }
 }

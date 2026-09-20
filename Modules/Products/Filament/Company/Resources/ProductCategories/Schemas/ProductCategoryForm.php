@@ -2,7 +2,6 @@
 
 namespace Modules\Products\Filament\Company\Resources\ProductCategories\Schemas;
 
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
@@ -15,19 +14,25 @@ class ProductCategoryForm
         return $schema
             ->components([
                 Grid::make(2)
+                    ->columnSpanFull()
                     ->schema([
+                        // Left column
                         Schemas\Components\Group::make()
+                            ->columnSpan(1)
                             ->schema([
                                 TextInput::make('category_name')
                                     ->label(trans('ip.family'))
-                                    ->inlineLabel()
-                                    ->autofocus()
-                                    ->required(),
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->autofocus(),
                             ]),
-                        Schemas\Components\Group::make()->schema([
-                            Placeholder::make('explanation Product Family')
-                                ->label('just some text'),
-                        ]),
+
+                        // Right column
+                        Schemas\Components\Group::make()
+                            ->columnSpan(1)
+                            ->schema([
+                                // Add any additional fields if needed
+                            ]),
                     ]),
             ]);
     }

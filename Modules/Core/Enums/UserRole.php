@@ -17,6 +17,23 @@ enum UserRole: string implements LabeledEnum
         return array_column(self::cases(), 'value');
     }
 
+    public static function elevated(): array
+    {
+        return [
+            self::SUPER_ADMIN->value,
+            self::ADMIN->value,
+            self::ASSIST->value,
+        ];
+    }
+
+    public static function nonAdmin(): array
+    {
+        return [
+            self::CUSTOMER_ADMIN->value,
+            self::CUSTOMER->value,
+        ];
+    }
+
     public function label(): string
     {
         return match ($this) {

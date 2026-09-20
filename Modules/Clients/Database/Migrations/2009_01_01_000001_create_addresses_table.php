@@ -10,7 +10,10 @@ return new class () extends Migration {
         Schema::create('addresses', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('type'); // PHP Enum (billing, shipping, office)
+            $table->string('address_type');
+            $table->boolean('is_primary')->default(false);
+            $table->string('addressable_type');
+            $table->unsignedBigInteger('addressable_id');
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('number')->nullable();
@@ -19,6 +22,7 @@ return new class () extends Migration {
             $table->string('state_or_province')->nullable();
             $table->string('country');
 
+            $table->index(['addressable_type', 'addressable_id']);
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }

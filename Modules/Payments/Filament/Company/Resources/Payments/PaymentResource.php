@@ -3,16 +3,20 @@
 namespace Modules\Payments\Filament\Company\Resources\Payments;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
+use Modules\Core\Enums\UserRole;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Payments\Filament\Company\Resources\Payments\Pages\ListPayments;
 use Modules\Payments\Filament\Company\Resources\Payments\Schemas\PaymentForm;
 use Modules\Payments\Filament\Company\Resources\Payments\Tables\PaymentsTable;
 use Modules\Payments\Models\Payment;
 
-class PaymentResource extends Resource
+class PaymentResource extends BaseResource
 {
     protected static ?string $model = Payment::class;
 
@@ -39,6 +43,11 @@ class PaymentResource extends Resource
         return trans('ip.payments');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PaymentForm::configure($schema);
@@ -51,8 +60,7 @@ class PaymentResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -60,5 +68,41 @@ class PaymentResource extends Resource
         return [
             'index' => ListPayments::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_PAYMENTS->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_PAYMENTS->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_PAYMENTS->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_PAYMENTS->value) ?? false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user  = auth()->user();
+
+        if ($user?->hasRole(UserRole::CUSTOMER->value)) {
+            if ($user->relation_id) {
+                $query->where('customer_id', $user->relation_id);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        return $query;
     }
 }

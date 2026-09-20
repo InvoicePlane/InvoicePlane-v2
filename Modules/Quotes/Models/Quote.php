@@ -12,46 +12,49 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Models\Company;
-use Modules\Core\Models\DocumentGroup;
 use Modules\Core\Models\Note;
+use Modules\Core\Models\Numbering;
 use Modules\Core\Models\User;
 use Modules\Core\Traits\BelongsToCompany;
+use Modules\Core\Traits\HasNotesAttribute;
 use Modules\Invoices\Models\Invoice;
 use Modules\Quotes\Database\Factories\QuoteFactory;
 use Modules\Quotes\Enums\QuoteStatus;
 
 /**
- * @property int                    $id
- * @property int                    $company_id
- * @property int                    $prospect_id
- * @property int|null               $document_group_id
- * @property int                    $user_id
- * @property string                 $quote_number
- * @property string                 $quote_status
- * @property Carbon|null            $quoted_at
- * @property Carbon|null            $quote_expires_at
- * @property float                  $quote_discount_amount
- * @property float                  $quote_discount_percent
- * @property float|null             $item_tax_total
- * @property float                  $quote_item_subtotal
- * @property float                  $quote_tax_total
- * @property float                  $quote_total
- * @property string|null            $quote_password
- * @property string|null            $url_key
- * @property string|null            $template
- * @property string|null            $summary
- * @property string|null            $terms
- * @property string|null            $footer
- * @property Company                $company
- * @property DocumentGroup|null     $document_group
- * @property Relation               $relation
- * @property User                   $user
- * @property Collection|QuoteItem[] $quote_items
+ * @property int                         $id
+ * @property int                         $company_id
+ * @property int                         $prospect_id
+ * @property int|null                    $numbering_id
+ * @property int                         $user_id
+ * @property string                      $quote_number
+ * @property QuoteStatus                 $quote_status
+ * @property Carbon|null                 $quoted_at
+ * @property Carbon|null                 $quote_expires_at
+ * @property float                       $quote_discount_amount
+ * @property float                       $quote_discount_percent
+ * @property float|null                  $item_tax_total
+ * @property float                       $quote_item_subtotal
+ * @property float                       $quote_tax_total
+ * @property float                       $quote_total
+ * @property string|null                 $quote_password
+ * @property string|null                 $url_key
+ * @property string|null                 $template
+ * @property string|null                 $summary
+ * @property string|null                 $terms
+ * @property string|null                 $footer
+ * @property Company                     $company
+ * @property Numbering|null              $numbering
+ * @property Relation                    $relation
+ * @property User                        $user
+ * @property Collection|QuoteItem[]      $quote_items
+ * @property Collection|QuoteSignature[] $signatures
  */
 class Quote extends Model
 {
     use BelongsToCompany;
     use HasFactory;
+    use HasNotesAttribute;
 
     public $timestamps = false;
 
@@ -78,37 +81,15 @@ class Quote extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-    public function activities(): ?MorphMany
-    {
-        //return $this->morphMany(Activity::class, 'audit');
-        return null;
-    }
-
-    public function attachments(): ?MorphMany
-    {
-        // return $this->morphMany(Attachment::class, 'attachable');
-        return null;
-    }
-
-    public function clientAttachments(): ?MorphMany
-    {
-        /*$relationship = $this->morphMany(Attachment::class, 'attachable');
-
-        $relationship->where('client_visibility', 1);
-
-        return $relationship;*/
-        return null;
-    }
-
     public function customer(): BelongsTo
     {
         return $this
             ->belongsTo(Relation::class, 'customer_id');
     }
 
-    public function documentGroup(): BelongsTo
+    public function numbering(): BelongsTo
     {
-        return $this->belongsTo(DocumentGroup::class, 'document_group_id');
+        return $this->belongsTo(Numbering::class, 'numbering_id');
     }
 
     public function invoice(): BelongsTo
@@ -136,10 +117,10 @@ class Quote extends Model
         return $this->hasMany(QuoteItem::class, 'quote_id');
     }
 
-    public function taxRate(): void
+    /** @return HasMany<QuoteSignature, $this> */
+    public function signatures(): HasMany
     {
-        /*return $this->belongsToMany(TaxRate::class, 'quote_tax_rates')
-            ->withPivot('id', 'include_item_tax', 'tax_total');*/
+        return $this->hasMany(QuoteSignature::class, 'quote_id');
     }
 
     public function user(): BelongsTo
@@ -152,10 +133,60 @@ class Quote extends Model
     | Accessors
     |--------------------------------------------------------------------------
     */
+    /**
+     * Get the color intensity for quote_expires_at.
+     *
+     * @return string
+     */
+    public function getExpiresIntensityAttribute(): string
+    {
+        if ( ! $this->quote_expires_at) {
+            return 'secondary';
+        }
+        $days = now()->diffInDays($this->quote_expires_at, false);
+        if ($days < -30) {
+            return 'danger';
+        }
+        if ($days < -7) {
+            return 'warning';
+        }
+        if ($days < 0) {
+            return 'orange';
+        }
+        if ($days === 0) {
+            return 'yellow';
+        }
+        if ($days <= 3) {
+            return 'success';
+        }
+
+        return 'secondary';
+    }
+
+    public function isSigned(): bool
+    {
+        return $this->signatures()->exists();
+    }
 
     /*
     |--------------------------------------------------------------------------
-    | Relationships
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeRecent($query, $limit = 25)
+    {
+        $quoteLimit = config('ip.default_list_limit', 15) ?? $limit;
+
+        return $query
+            ->whereNotIn('quote_status', [QuoteStatus::DRAFT, QuoteStatus::REJECTED, QuoteStatus::APPROVED])
+            ->orderBy('quote_expires_at', 'desc')
+            ->orderBy('quote_status', 'asc')
+            ->limit($quoteLimit);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
     |--------------------------------------------------------------------------
     */
     protected static function newFactory(): Factory

@@ -1,0 +1,217 @@
+@import 'tailwindcss';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../Modules/**/resources/views/**/*';
+@source '../../../../Modules/**/*.php';
+@source '../../../../resources/views/filament/tenant/**/*';
+
+/*
+.dark .fi-body {
+    @apply bg-slate-950;
+}
+*/
+
+.fi-bg-color-600 {
+    @apply bg-blue-700;
+    @apply hover:bg-blue-500;
+}
+
+.fi-topbar {
+    /* Background color */
+    @apply bg-blue-500;
+
+    /* Collapse icon */
+
+    .fi-topbar-close-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-blue-600;
+    }
+
+    .fi-topbar-open-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-blue-600;
+    }
+
+    .fi-logo {
+        @apply text-white;
+    }
+}
+
+.fi-sidebar {
+    /* Background color */
+    @apply bg-blue-500;
+    /* Text color */
+    @apply text-white;
+
+    .fi-icon {
+        @apply text-white;
+    }
+
+    .fi-icon-btn {
+        @apply text-white;
+    }
+
+    /* Sidebar items */
+
+    .fi-sidebar-group-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item.fi-active {
+        @apply text-white;
+        @apply !bg-blue-700;
+        @apply rounded-lg;
+    }
+
+    .fi-sidebar-header {
+        @apply bg-blue-500;
+    }
+}
+
+/*
+ * Checkbox
+ */
+.fi-checkbox-input {
+    @apply ring-blue-700;
+    @apply focus:ring-blue-500;
+    @apply hover:ring-blue-500
+}
+
+.fi-header-heading {
+    @apply text-blue-700;
+}
+
+.fi-checkbox-input:checked {
+    @apply bg-blue-700;
+    @apply hover:bg-blue-500;
+}
+
+/*
+ * Open/collapse
+ */
+.fi-section-collapse-btn {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+/*
+ * Modals
+ */
+.fi-modal-heading {
+    @apply text-blue-700;
+}
+
+.fi-section-header-heading {
+    @apply text-blue-700;
+}
+
+.fi-modal-close-btn {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+.fi-fo-field-label-content {
+    @apply text-blue-700;
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply text-blue-700;
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply border border-blue-700 rounded-lg;
+}
+
+.fi-modal-content .fi-in-entry-label {
+    @apply text-blue-700;
+}
+
+/*
+ * Pagination
+ */
+.fi-pagination-records-per-page-select-ctn {
+    @apply border border-blue-700 rounded-lg;
+}
+
+.fi-pagination-previous-btn {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+.fi-pagination-next-btn {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+/*
+ * Input
+ */
+.fi-input-wrp-label {
+    @apply text-blue-700;
+}
+
+/*
+ * Breadcrums
+ */
+.fi-breadcrumbs {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+
+}
+
+.fi-breadcrumbs-item-label {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+.fi-breadcrumbs-item-separator {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+/*
+ * Tables
+ */
+.fi-ta-header-cell-sort-btn {
+    @apply text-blue-700;
+}
+
+.fi-ta-header-cell-sort-btn .fi-icon {
+    @apply text-blue-700;
+}
+
+.fi-ta-row {
+    @apply border-b border-blue-700 rounded-lg;
+}
+
+.fi-dropdown-trigger {
+    @apply text-blue-700;
+}
+
+.fi-ta-header-toolbar .fi-icon {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+/*
+ * Buttons
+ */
+.fi-ac-icon-btn-action {
+    @apply text-blue-700;
+    @apply hover:text-blue-500;
+}
+
+.fi-ta-search-field .fi-icon {
+    @apply text-blue-700;
+}
+
+/*
+ * User menu
+ */
+.fi-user-menu .fi-icon {
+    @apply text-blue-700;
+}

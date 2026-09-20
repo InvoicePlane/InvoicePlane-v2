@@ -3,21 +3,21 @@
 namespace Modules\Products\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
 use Modules\Products\Models\Product;
+use Throwable;
 
 class ProductService extends BaseService
 {
     public function model(): string
     {
         return Product::class;
-        //event(new ProductWasCreated($product));
-        //event(new ProductWasUpdated($productToUpdate));
     }
 
     public function createProduct(array $data): Model
     {
-        return $this->create([
+        return Product::query()->create([
             'company_id'     => $this->getCompanyId(),
             'category_id'    => $data['category_id'],
             'unit_id'        => $data['unit_id'] ?? null,
@@ -51,5 +51,19 @@ class ProductService extends BaseService
         ]);
 
         return $model;
+    }
+
+    public function deleteProduct(Product $product, array $data = []): Product
+    {
+        DB::beginTransaction();
+        try {
+            $product->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $product;
     }
 }

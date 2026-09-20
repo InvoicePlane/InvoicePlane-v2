@@ -4,10 +4,14 @@ namespace Modules\Expenses\Filament\Company\Resources\ExpenseCategories\Tables;
 
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
+use Modules\Expenses\Models\ExpenseCategory;
+use Modules\Expenses\Services\ExpenseCategoryService;
 
 class ExpenseCategoriesTable
 {
@@ -19,14 +23,25 @@ class ExpenseCategoriesTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make(),
+                    EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_EXPENSES->value))
+                        ->action(function (ExpenseCategory $record, array $data) {
+                            app(ExpenseCategoryService::class)->updateExpenseCategory($record, $data);
+                        })
+                        ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value))
+                        ->action(function (ExpenseCategory $record, array $data) {
+                            app(ExpenseCategoryService::class)->deleteExpenseCategory($record);
+                        }),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_EXPENSES->value)),
                 ]),
             ]);
     }

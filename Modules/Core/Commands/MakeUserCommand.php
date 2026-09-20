@@ -61,9 +61,9 @@ class MakeUserCommand extends Command
                 label: 'Email address',
                 required: true,
                 validate: fn (string $email): ?string => match (true) {
-                    ! filter_var($email, FILTER_VALIDATE_EMAIL)              => 'The email address must be valid.',
-                    static::getUserModel()::where('email', $email)->exists() => 'A user with this email address already exists',
-                    default                                                  => null,
+                    ! filter_var($email, FILTER_VALIDATE_EMAIL)                       => 'The email address must be valid.',
+                    static::getUserModel()::query()->where('email', $email)->exists() => 'A user with this email address already exists',
+                    default                                                           => null,
                 },
             ),
 

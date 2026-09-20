@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Pages\ListRecurringInvoices;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Schemas\RecurringInvoiceForm;
 use Modules\Invoices\Filament\Company\Resources\RecurringInvoices\Tables\RecurringInvoicesTable;
@@ -60,5 +62,25 @@ class RecurringInvoiceResource extends Resource
         return [
             'index' => ListRecurringInvoices::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_INVOICES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_INVOICES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_INVOICES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_INVOICES->value) ?? false;
     }
 }

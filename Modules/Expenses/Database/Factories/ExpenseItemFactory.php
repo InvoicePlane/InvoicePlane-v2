@@ -9,6 +9,7 @@ use Modules\Expenses\Models\ExpenseItem;
 use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductUnit;
+use RuntimeException;
 
 /**
  * @extends Factory<\Modules\Expenses\Models\ExpenseItem>
@@ -19,14 +20,76 @@ class ExpenseItemFactory extends Factory
 
     public function definition(): array
     {
-        $company   = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
-        $invoiceId = $this->faker->boolean(25) ? Invoice::query()->inRandomOrder()->first()?->id ?? Invoice::factory()->create()->id : null;
-        $item      = Product::query()->inRandomOrder()->first() ?? Product::factory()->create();
-        $unit      = ProductUnit::query()->inRandomOrder()->first() ?? ProductUnit::factory()->create();
-        $taxRate   = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
+        $company = $this->company ?? Company::query()->inRandomOrder()->first();
 
-        $calcTaxRate = TaxRate::query()->inRandomOrder()->first() ?? TaxRate::factory()->create();
-        $taxRate2    = $this->faker->boolean(75) ? $calcTaxRate : null;
+        if ( ! $company) {
+            throw new RuntimeException('No company available for ExpenseItem factory');
+        }
+
+        // Get an invoice that belongs to this company if needed
+        $invoiceId = null;
+        if ($this->faker->boolean(25)) {
+            $invoice = Invoice::query()
+                ->where('company_id', $company->id)
+                ->inRandomOrder()
+                ->first();
+
+            if ($invoice) {
+                $invoiceId = $invoice->id;
+            }
+        }
+
+        // Get a product that belongs to this company
+        $item = Product::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $item) {
+            $item = Product::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a unit that belongs to this company
+        $unit = ProductUnit::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $unit) {
+            $unit = ProductUnit::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a tax rate that belongs to this company
+        $taxRate = TaxRate::query()
+            ->where('company_id', $company->id)
+            ->inRandomOrder()
+            ->first();
+
+        if ( ! $taxRate) {
+            $taxRate = TaxRate::factory()
+                ->state(['company_id' => $company->id])
+                ->create();
+        }
+
+        // Get a second tax rate 75% of the time that belongs to this company
+        $taxRate2 = null;
+        if ($this->faker->boolean(75)) {
+            $taxRate2 = TaxRate::query()
+                ->where('company_id', $company->id)
+                ->where('id', '!=', $taxRate->id)
+                ->inRandomOrder()
+                ->first();
+
+            if ( ! $taxRate2) {
+                $taxRate2 = TaxRate::factory()
+                    ->state(['company_id' => $company->id])
+                    ->create();
+            }
+        }
 
         $quantity = $this->faker->randomFloat(4, 1, 20);
         $price    = $this->faker->randomFloat(4, 10, 500);
@@ -46,7 +109,7 @@ class ExpenseItemFactory extends Factory
             'item_id'       => $item->id,
             'unit_id'       => $unit->id,
             'added_at'      => $this->faker->dateTimeBetween('-3 years', 'yesterday')->format('Y-m-d'),
-            'item_name'     => $item->item_name,
+            'item_name'     => $item->product_name,
             'is_recurring'  => false,
             'quantity'      => $quantity,
             'price'         => $price,

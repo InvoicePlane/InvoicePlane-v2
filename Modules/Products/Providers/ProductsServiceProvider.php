@@ -4,15 +4,12 @@ namespace Modules\Products\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Models\Schedule;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
 use Modules\Products\Models\ProductUnit;
 use Modules\Products\Observers\ProductCategoryObserver;
 use Modules\Products\Observers\ProductObserver;
 use Modules\Products\Observers\ProductUnitObserver;
-use Modules\Quotes\Providers\EventServiceProvider;
-use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

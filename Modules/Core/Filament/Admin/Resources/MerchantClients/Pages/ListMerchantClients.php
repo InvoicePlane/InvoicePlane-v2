@@ -13,7 +13,14 @@ class ListMerchantClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    //app(MerchantClientService::class)->createMerchantClient($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }
