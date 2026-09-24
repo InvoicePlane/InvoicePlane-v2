@@ -27,7 +27,9 @@
         "maatwebsite/excel": ">=3.1",
         "maennchen/zipstream-php": ">=3.2",
         "nwidart/laravel-modules": ">=12.0",
-        "spatie/laravel-permission": ">=8.0"
+        "spatie/browsershot": "^5.4",
+        "spatie/laravel-permission": ">=8.0",
+        "stevebauman/purify": "^6.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": ">=4.3",
@@ -64,7 +66,8 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade"
+            "@php artisan filament:upgrade",
+            "@php artisan reports:sync-system --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

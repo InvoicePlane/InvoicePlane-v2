@@ -1,7 +1,15 @@
 name: PHPStan Analysis
 
 on:
-  workflow_dispatch:  # Manual only — does not run automatically
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+  workflow_dispatch:
 
 permissions:
   contents: read

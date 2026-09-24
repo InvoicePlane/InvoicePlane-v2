@@ -118,8 +118,7 @@ class Relation extends Model
         return $this->morphMany(Communication::class, 'communicationable');
     }
 
-    /** @return MorphMany<Communication, $this> */
-    public function ccEmailCommunications(): MorphMany
+    public function ccEmailCommunications()
     {
         // @phpstan-ignore return.type (larastan narrows MorphMany::whereIn() to a bare Query\Builder; the runtime object is still the relation)
         return $this->communications()->whereIn('communication_type', CommunicationType::ccTypes());
