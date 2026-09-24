@@ -37,21 +37,6 @@ class CompanyUserResource extends Resource
     // query below scopes manually to the current tenant.
     protected static bool $isScopedToTenant = false;
 
-    /** The company this list and its actions are scoped to; null → fail closed. */
-    private static function currentCompany(): ?Company
-    {
-        return Filament::getTenant();
-    }
-
-    /** Single source of truth for who may see and manage the team roster. */
-    private static function userMayManageTeam(): bool
-    {
-        return auth()->user()?->hasRole([
-            ...UserRole::elevated(),
-            UserRole::CUSTOMER_ADMIN->value,
-        ]) ?? false;
-    }
-
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
@@ -69,7 +54,7 @@ class CompanyUserResource extends Resource
                 // Fail closed: without a company there is nothing to scope
                 // this list to, so it must show nothing — falling back to
                 // User::query() would leak every user across every company.
-                return static::currentCompany()?->users() ?? User::query()->whereRaw('1 = 0');
+                return self::currentCompany()?->users() ?? User::query()->whereRaw('1 = 0');
             })
             ->columns([
                 TextColumn::make('name')
@@ -87,7 +72,7 @@ class CompanyUserResource extends Resource
                     ->label(trans('ip.remove'))
                     ->icon('heroicon-m-trash')
                     ->color('danger')
-                    ->action(fn (User $record) => static::currentCompany()?->users()->detach($record->id))
+                    ->action(fn (User $record) => self::currentCompany()?->users()->detach($record->id))
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
@@ -95,7 +80,7 @@ class CompanyUserResource extends Resource
                     DeleteBulkAction::make()
                         ->label(trans('ip.remove'))
                         ->action(function (EloquentCollection|Collection|LazyCollection $records): void {
-                            $company = static::currentCompany();
+                            $company = self::currentCompany();
                             foreach ($records as $record) {
                                 $company?->users()->detach($record->id);
                             }
@@ -149,5 +134,22 @@ class CompanyUserResource extends Resource
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
 
         return auth()->user()?->hasRole($roles) ?? false;
+    }
+
+    /** The company this list and its actions are scoped to; null → fail closed. */
+    private static function currentCompany(): ?Company
+    {
+        $tenant = Filament::getTenant();
+
+        return $tenant instanceof Company ? $tenant : null;
+    }
+
+    /** Single source of truth for who may see and manage the team roster. */
+    private static function userMayManageTeam(): bool
+    {
+        return auth()->user()?->hasRole([
+            ...UserRole::elevated(),
+            UserRole::CUSTOMER_ADMIN->value,
+        ]) ?? false;
     }
 }

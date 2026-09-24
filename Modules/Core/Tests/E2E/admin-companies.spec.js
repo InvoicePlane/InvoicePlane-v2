@@ -1,5 +1,6 @@
 import { test, expect } from './test.js';
 import { assertRealListContent } from './list-assertions.js';
+import { registerRequiredFieldOmissionTests } from './required-field-helpers.js';
 
 test.describe('Admin: Companies', () => {
   test('list page shows real companies', async ({ page }) => {
@@ -80,4 +81,13 @@ test.describe('Admin: Companies', () => {
     await expect(modal.getByLabel('Name*')).toBeVisible();
     expect(errors, `unexpected error(s) submitting a duplicate search code:\n${errors.join('\n')}`).toHaveLength(0);
   });
+});
+
+// mind-the-gap-again: real frontend counterpart to CompanyResource's
+// PHPUnit "it_fails_to_create_X_without_required_Y" tests. See
+// required-field-helpers.js.
+//
+// Left off deliberately: 'slug' — read-only, auto-derived from name.
+registerRequiredFieldOmissionTests('Core', {
+  'admin/companies': ['search_code', 'name'],
 });

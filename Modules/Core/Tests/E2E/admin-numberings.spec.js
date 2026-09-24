@@ -1,5 +1,6 @@
 import { test, expect } from './test.js';
 import { assertRealListContent } from './list-assertions.js';
+import { registerRequiredFieldOmissionTests } from './required-field-helpers.js';
 
 test.describe('Admin: Numberings', () => {
   test('list page shows real numbering schemes', async ({ page }) => {
@@ -59,4 +60,15 @@ test.describe('Admin: Numberings', () => {
     await search.pressSequentially(name, { delay: 30 });
     await expect(page.locator('table tbody tr').first()).toContainText(name.slice(0, 10), { timeout: 15000 });
   });
+});
+
+// mind-the-gap-again: real frontend counterpart to NumberingResource's
+// PHPUnit "it_fails_to_create_X_without_required_Y" tests. See
+// required-field-helpers.js.
+//
+// Left off deliberately: 'next_id' — real user field, but after a
+// missing-field submit the driver can't re-resolve its control; not worth
+// a bespoke path.
+registerRequiredFieldOmissionTests('Core', {
+  'admin/numberings': ['type', 'name'],
 });

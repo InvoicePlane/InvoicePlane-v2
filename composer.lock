@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83bc52fdadd78321504641d838ad1eae",
+    "content-hash": "1bb314f18cd067f2c73cab59088ce10c",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -923,6 +923,92 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
             },
             "time": "2024-07-08T12:26:09+00:00"
+        },
+        {
+            "name": "doctrine/collections",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/collections.git",
+                "reference": "7713da39d8e237f28411d6a616a3dce5e20d5de2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/7713da39d8e237f28411d6a616a3dce5e20d5de2",
+                "reference": "7713da39d8e237f28411d6a616a3dce5e20d5de2",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/deprecations": "^1",
+                "php": "^8.1",
+                "symfony/polyfill-php84": "^1.30"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^14",
+                "ext-json": "*",
+                "phpstan/phpstan": "^2.1.30",
+                "phpstan/phpstan-phpunit": "^2.0.7",
+                "phpunit/phpunit": "^10.5.58 || ^11.5.42 || ^12.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Common\\Collections\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "PHP Doctrine Collections library that adds additional functionality on top of PHP arrays.",
+            "homepage": "https://www.doctrine-project.org/projects/collections.html",
+            "keywords": [
+                "array",
+                "collections",
+                "iterators",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/doctrine/collections/issues",
+                "source": "https://github.com/doctrine/collections/tree/2.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fcollections",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-01-15T10:01:58+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -4570,6 +4656,81 @@
             "time": "2026-07-17T23:02:45+00:00"
         },
         {
+            "name": "num-num/ubl-invoice",
+            "version": "v2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/num-num/ubl-invoice.git",
+                "reference": "30fc1d9a1a8bd347630052addd6405942a1f0103"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/num-num/ubl-invoice/zipball/30fc1d9a1a8bd347630052addd6405942a1f0103",
+                "reference": "30fc1d9a1a8bd347630052addd6405942a1f0103",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "^1.8 || ^2.0",
+                "nesbot/carbon": "^2.72 || ^3.11",
+                "php": "^7.4 || ^8.0",
+                "sabre/xml": "^4.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^6.11",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NumNum\\UBL\\": [
+                        "src"
+                    ],
+                    "NumNum\\UBL\\Tests\\": [
+                        "tests"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bert Devriese",
+                    "email": "bert@numnum.be",
+                    "homepage": "https://www.numnum.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A modern object-oriented PHP library to create valid UBL and Peppol BIS 3.0 files",
+            "homepage": "https://github.com/num-num/ubl-invoice",
+            "keywords": [
+                "E-Invoice",
+                "digital invoice",
+                "efff",
+                "einvoice",
+                "electronic invoice",
+                "euinvoice",
+                "invoice",
+                "peppol",
+                "peppol bis",
+                "peppol invoice",
+                "peppolbis",
+                "ubl",
+                "ubl invoice",
+                "ublinvoice",
+                "xml",
+                "xml invoice"
+            ],
+            "support": {
+                "issues": "https://github.com/num-num/ubl-invoice/issues",
+                "source": "https://github.com/num-num/ubl-invoice/tree/v2.4.1"
+            },
+            "time": "2026-02-09T10:22:18+00:00"
+        },
+        {
             "name": "nunomaduro/termwind",
             "version": "v2.4.0",
             "source": {
@@ -6039,6 +6200,140 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.4.0"
             },
             "time": "2026-06-18T15:10:53+00:00"
+        },
+        {
+            "name": "sabre/uri",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/uri.git",
+                "reference": "a926c749dddfb289b8a9b5218d16ac06affdc631"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/uri/zipball/a926c749dddfb289b8a9b5218d16ac06affdc631",
+                "reference": "a926c749dddfb289b8a9b5218d16ac06affdc631",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.95",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^10.5",
+                "rector/rector": "^2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/functions.php"
+                ],
+                "psr-4": {
+                    "Sabre\\Uri\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Functions for making sense out of URIs.",
+            "homepage": "http://sabre.io/uri/",
+            "keywords": [
+                "rfc3986",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/uri/issues",
+                "source": "https://github.com/fruux/sabre-uri"
+            },
+            "time": "2026-04-26T04:19:03+00:00"
+        },
+        {
+            "name": "sabre/xml",
+            "version": "4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/xml.git",
+                "reference": "bec83cbe2f4e1e1ca4254ed8d7caa7e32cc74b05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/xml/zipball/bec83cbe2f4e1e1ca4254ed8d7caa7e32cc74b05",
+                "reference": "bec83cbe2f4e1e1ca4254ed8d7caa7e32cc74b05",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-xmlreader": "*",
+                "ext-xmlwriter": "*",
+                "lib-libxml": ">=2.6.20",
+                "php": "^8.2",
+                "sabre/uri": ">=2.0,<4.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.95",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^10.5",
+                "rector/rector": "^2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Deserializer/functions.php",
+                    "lib/Serializer/functions.php"
+                ],
+                "psr-4": {
+                    "Sabre\\Xml\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Markus Staab",
+                    "email": "markus.staab@redaxo.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "sabre/xml is an XML library that you may not hate.",
+            "homepage": "https://sabre.io/xml/",
+            "keywords": [
+                "XMLReader",
+                "XMLWriter",
+                "dom",
+                "xml"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/xml/issues",
+                "source": "https://github.com/fruux/sabre-xml"
+            },
+            "time": "2026-04-27T10:56:01+00:00"
         },
         {
             "name": "scrivo/highlight.php",

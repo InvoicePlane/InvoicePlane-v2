@@ -98,6 +98,16 @@ enum Permission: string implements LabeledEnum
     case EDIT_EMAIL_TEMPLATES   = 'edit-email-templates';
     case DELETE_EMAIL_TEMPLATES = 'delete-email-templates';
 
+    case VIEW_MERCHANT_CLIENTS   = 'view-merchant-clients';
+    case CREATE_MERCHANT_CLIENTS = 'create-merchant-clients';
+    case EDIT_MERCHANT_CLIENTS   = 'edit-merchant-clients';
+    case DELETE_MERCHANT_CLIENTS = 'delete-merchant-clients';
+
+    case VIEW_PEPPOL_INTEGRATIONS   = 'view-peppol-integrations';
+    case CREATE_PEPPOL_INTEGRATIONS = 'create-peppol-integrations';
+    case EDIT_PEPPOL_INTEGRATIONS   = 'edit-peppol-integrations';
+    case DELETE_PEPPOL_INTEGRATIONS = 'delete-peppol-integrations';
+
     // Special Permissions
     case MANAGE_CUSTOMERS = 'manage-customers';
 

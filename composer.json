@@ -26,6 +26,7 @@
         "laravel/framework": "^13.0",
         "maatwebsite/excel": ">=3.1",
         "maennchen/zipstream-php": ">=3.2",
+        "num-num/ubl-invoice": "^2.4",
         "nwidart/laravel-modules": ">=12.0",
         "spatie/laravel-permission": ">=8.0"
     },
