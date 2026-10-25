@@ -17,8 +17,8 @@ enum MailType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::REMINDER => 'Reminder',
-            self::SENT     => 'Sent',
+            self::REMINDER => trans('enums.mail_type.reminder'),
+            self::SENT     => trans('enums.mail_type.sent'),
         };
     }
 

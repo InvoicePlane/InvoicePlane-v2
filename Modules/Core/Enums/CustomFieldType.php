@@ -19,10 +19,10 @@ enum CustomFieldType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::TEXT    => 'Single Line Text',
-            self::NUMBER  => 'Multi Line Text',
-            self::DATE    => 'Date Picker',
-            self::BOOLEAN => 'Boolean',
+            self::TEXT    => trans('enums.custom_field_type.text'),
+            self::NUMBER  => trans('enums.custom_field_type.number'),
+            self::DATE    => trans('enums.custom_field_type.date'),
+            self::BOOLEAN => trans('enums.custom_field_type.boolean'),
         };
     }
 

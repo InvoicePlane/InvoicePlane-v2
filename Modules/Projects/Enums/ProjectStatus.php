@@ -22,11 +22,11 @@ enum ProjectStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::ON_HOLD   => 'On Hold',
-            self::COMPLETED => 'Completed',
-            self::PLANNED   => 'Planned',
-            self::ACTIVE    => 'Active',
-            self::CANCELLED => 'Cancelled',
+            self::ON_HOLD   => trans('enums.project_status.on_hold'),
+            self::COMPLETED => trans('enums.project_status.completed'),
+            self::PLANNED   => trans('enums.project_status.planned'),
+            self::ACTIVE    => trans('enums.project_status.active'),
+            self::CANCELLED => trans('enums.project_status.cancelled'),
         };
     }
 

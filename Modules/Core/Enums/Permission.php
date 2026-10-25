@@ -169,7 +169,7 @@ enum Permission: string implements LabeledEnum
 
     public function label(): string
     {
-        return str($this->value)->replace('-', ' ')->title()->toString();
+        return trans('permissions.' . $this->value);
     }
 
     public function color(): string

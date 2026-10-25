@@ -18,9 +18,9 @@ enum AddressType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::BILLING  => 'Billing',
-            self::SHIPPING => 'Shipping',
-            self::OFFICE   => 'Office',
+            self::BILLING  => trans('enums.address_type.billing'),
+            self::SHIPPING => trans('enums.address_type.shipping'),
+            self::OFFICE   => trans('enums.address_type.office'),
         };
     }
 

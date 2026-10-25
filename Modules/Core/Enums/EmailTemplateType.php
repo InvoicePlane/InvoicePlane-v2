@@ -21,10 +21,10 @@ enum EmailTemplateType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::TEXT    => 'Single Line Text',
-            self::NUMBER  => 'Multi Line Text',
-            self::DATE    => 'Date Picker',
-            self::BOOLEAN => 'Boolean',
+            self::TEXT    => trans('enums.email_template_type.text'),
+            self::NUMBER  => trans('enums.email_template_type.number'),
+            self::DATE    => trans('enums.email_template_type.date'),
+            self::BOOLEAN => trans('enums.email_template_type.boolean'),
         };
     }
 

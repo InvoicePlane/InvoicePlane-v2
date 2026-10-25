@@ -20,11 +20,11 @@ enum RecurringFrequency: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DAILY     => 'Daily',
-            self::WEEKLY    => 'Weekly',
-            self::MONTHLY   => 'Monthly',
-            self::YEARLY    => 'Yearly',
-            self::QUARTERLY => 'Quarterly',
+            self::DAILY     => trans('enums.recurring_frequency.daily'),
+            self::WEEKLY    => trans('enums.recurring_frequency.weekly'),
+            self::MONTHLY   => trans('enums.recurring_frequency.monthly'),
+            self::YEARLY    => trans('enums.recurring_frequency.yearly'),
+            self::QUARTERLY => trans('enums.recurring_frequency.quarterly'),
         };
     }
 
