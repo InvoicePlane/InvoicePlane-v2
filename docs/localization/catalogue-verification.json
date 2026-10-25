@@ -1,0 +1,140 @@
+{
+  "verified_utc": "2026-10-25T14:24:41+00:00",
+  "catalogues": {
+    "auth": {
+      "en": 5,
+      "de": 5
+    },
+    "crud": {
+      "en": 306,
+      "de": 306
+    },
+    "designer": {
+      "en": 14,
+      "de": 14
+    },
+    "enums": {
+      "en": 64,
+      "de": 64
+    },
+    "expenses": {
+      "en": 16,
+      "de": 16
+    },
+    "fields": {
+      "en": 38,
+      "de": 38
+    },
+    "filament-panels": {
+      "en": 1,
+      "de": 1
+    },
+    "import": {
+      "en": 59,
+      "de": 59
+    },
+    "ip": {
+      "en": 1276,
+      "de": 1276
+    },
+    "ip_validation": {
+      "en": 1,
+      "de": 1
+    },
+    "mail_defaults": {
+      "en": 4,
+      "de": 4
+    },
+    "navigation": {
+      "en": 14,
+      "de": 14
+    },
+    "pagination": {
+      "en": 2,
+      "de": 2
+    },
+    "passwords": {
+      "en": 5,
+      "de": 5
+    },
+    "permissions": {
+      "en": 122,
+      "de": 122
+    },
+    "ui": {
+      "en": 22,
+      "de": 22
+    },
+    "validation": {
+      "en": 101,
+      "de": 101
+    }
+  },
+  "missing_files": [],
+  "extra_files": [],
+  "missing_keys": [],
+  "extra_keys": [],
+  "nonstring_values": [],
+  "empty_values": [],
+  "placeholder_mismatches": [],
+  "html_mismatches": [],
+  "plural_range_mismatches": [],
+  "source_hashes": {
+    "en/auth.php": "52ecf530b95984e439e0a2ec3544029b0a89888071620e5458f363aa40d468f0",
+    "en/crud.php": "6bebcc80c19b4253f4d1014cfb6d3ca27710e354e880b41c32eec103c84f29dd",
+    "en/designer.php": "6d74d41f2e9584bc381d8bc91e90a2ba1f5720f50fbd64517f4b406fed7dbbce",
+    "en/enums.php": "547b2519275704ee71938807e4209e5b38eba6777d42bb77de2bbcba207db61a",
+    "en/expenses.php": "970cd8da9cc98ff2e0ec4124c1bb94c7c70ac55ac017b1046464823f6b7d0ed9",
+    "en/fields.php": "19b15754154d4e5f6050d7fe87e5edd5357e76380518efbf36653729e88c00e5",
+    "en/filament-panels.php": "1c632bb7693621019885d582864f150ce5567ba7456f47b6270613cc25cb4cfc",
+    "en/import.php": "8c85a616f17297e6a6516fb989a03ae2851e6cf287b43ba8a835232fddf339da",
+    "en/ip.php": "c175bba23a96a7a9f1dd6d7e7a6cd9a349ba6ac717cf4a082ecfb07e97be1386",
+    "en/ip_validation.php": "4b05ae4abd96224756ca42fb5206133f1516ad96fd9a985a451113a6a1ad299e",
+    "en/mail_defaults.php": "cdd1f7a9364c913b1770cb518e5311ecd939551fd80ee8ecaf728fac2829158b",
+    "en/navigation.php": "9cbdf167be41b81a1714c5a7710a8fabd8ac31ab39ee21119fd35648bce3cdc2",
+    "en/pagination.php": "7e4d8e192e5d2bc7da9506a10e1425dccb75040d98afc306fba2e37bf3c4db0e",
+    "en/passwords.php": "d91b14c90224a4bc75ad377144da2927914f983c202b36514c4c57e22293aade",
+    "en/permissions.php": "1058fe8bd4d44ef2838626ebe34e6ddf58b30667ea5f273086f41c59893b8b9f",
+    "en/ui.php": "674fdc830cca4e3e6ac04c8b6d3fe166c73f68549606cab6be6fbe7af27ce039",
+    "en/validation.php": "d65a7d71fab62fb8a9a40862b0de1805e6fd2b94e9d260663a33388049a4f193",
+    "de/auth.php": "7599548eee29dc474416c9d5a26d5ff0beb8fcb7e9c74db6fcb2d2e7e8b1264f",
+    "de/crud.php": "01757b7c92e89d3160d08b02bd06f610324c31d40184e65b928791cfe4a38aaa",
+    "de/designer.php": "b23dbadcffb50e28a06169f266afd5ad7a4e3d6c3459eb1742d94c71656ae06e",
+    "de/enums.php": "d4d2d652b129c809859b6c9499a96d58a92961140d7eafd2a8b323c0f3e9e699",
+    "de/expenses.php": "a882d3aa185231472cb9779d2e527b5a9c8104bd32e7ec4abe6196e6a0a59f8f",
+    "de/fields.php": "a9a8773f551db91d241e78c04df6d14b0e1869b164f31915452a3a1c854cd9da",
+    "de/filament-panels.php": "0f34620c9d3a380e1efcd92a7e9763d169e48762dfee3b507bd7834c09926567",
+    "de/import.php": "9f2415d09613b6e27c574765ebedbf17b358e99e31a6186d808ffa79077d8f06",
+    "de/ip.php": "8bcbc9e11a77401c0b8c3f3a88ce8246e9ee7a14418ab87f4bd0f962b4273bd9",
+    "de/ip_validation.php": "83b0b5d3451badaa248bfe16f2860d3e98a7160d8b42c5733d8f4f0baf11f640",
+    "de/mail_defaults.php": "1fa471ab85026f6b437f63f70bf4ed3c680ce8f4e54cdea01de5051f408335be",
+    "de/navigation.php": "619a9c6e558e684a8f278198805f4048bad2c67d64cb8a8541440524f86e439d",
+    "de/pagination.php": "7a7557078ced10c2efdf8061322f631c75e0a6f8cd4dadfc00fd05ce1107ce65",
+    "de/passwords.php": "707ceea1766bb7d708f6bad72b6f5c04c7ab25b8320eac6d7be1baa916254a0e",
+    "de/permissions.php": "f36b2ab27149a6e6a970996b3b2197fe88e7514d1ccd2983bb7be10953f527c3",
+    "de/ui.php": "ac431288927b4456b6a9e995680b4c7c4705a100cf63873716638824cf61cf8d",
+    "de/validation.php": "621f2f48c15f625c8a7026ef08639e0fc1ef2e9000d549261ed0b06a2f375919",
+    "de.json": "b1d1de859a9216572aa32a895c1ac357c1b95523eda5460e41eda81e02a6ba17"
+  },
+  "json_catalogue": {
+    "file": "de.json",
+    "english_source_strings": 22,
+    "german_strings": 22,
+    "english_source_is_json_key": true
+  },
+  "totals": {
+    "en": {
+      "php_catalogues": 17,
+      "php_strings": 2050,
+      "json_strings": 22,
+      "total_strings": 2072
+    },
+    "de": {
+      "php_catalogues": 17,
+      "php_strings": 2050,
+      "json_strings": 22,
+      "total_strings": 2072
+    }
+  },
+  "verified": true
+}

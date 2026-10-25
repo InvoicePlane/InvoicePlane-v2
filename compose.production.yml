@@ -1,0 +1,70 @@
+name: invoiceplane-v2
+
+services:
+  app:
+    image: ${INVOICEPLANE_IMAGE:-local/invoiceplane-v2:de}
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+      args:
+        SOURCE_REVISION: ${SOURCE_REVISION:-unknown}
+    container_name: invoiceplane-v2-app
+    restart: unless-stopped
+    env_file: runtime.env
+    # This two-service example sends queued mail synchronously; use a worker
+    # service before switching this to database or redis.
+    environment:
+      QUEUE_CONNECTION: sync
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${APP_PORT:-8095}:80"
+    volumes:
+      - ./storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [frontend, backend]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    mem_limit: 1g
+    cpus: 2
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  db:
+    image: mariadb:10.11
+    container_name: invoiceplane-v2-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: invoiceplane_v2
+      MARIADB_USER: ${DB_USER:?DB_USER must be set}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD must be set}
+      TZ: Europe/Berlin
+    volumes:
+      - ./db:/var/lib/mysql
+    networks: [backend]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    mem_limit: 512m
+    cpus: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+networks:
+  frontend:
+  backend:
+    internal: true
