@@ -33,9 +33,19 @@ class Settings extends Page implements HasTable, HasForms
 
     protected string $view = 'core::filament.admin.pages.settings';
 
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.settings');
+    }
+
     public static function canAccess(): bool
     {
         return auth()->user()?->can(Permission::MANAGE_SETTINGS->value) ?? false;
+    }
+
+    public function getTitle(): string
+    {
+        return trans('ip.settings');
     }
 
     public function boot(): void {}
@@ -114,7 +124,7 @@ class Settings extends Page implements HasTable, HasForms
         return [
             Tabs::make('Cache Status Tabs')
                 ->tabs([
-                    Tab::make('General')
+                    Tab::make('General')->label(fn () => trans('ip.general'))
                         ->schema([
                             Section::make(trans('ip.general'))
                                 ->columns(2)
@@ -122,14 +132,14 @@ class Settings extends Page implements HasTable, HasForms
                                     Select::make('settings.language')
                                         // TODO: Make it automatically grab languages from then lang dir.
                                         ->label(trans('ip.language'))
-                                        ->options(config('languages'))
+                                        ->options(fn () => \Modules\Core\Support\LocalizedOptions::languages())
                                         ->searchable()
                                         ->required(),
 
                                     Select::make('settings.theme')
                                         // TODO: Make it automatically grab themes from themes dir.
                                         ->options([
-                                            'default' => 'Default',
+                                            'default' => trans('ui.default'),
                                         ])
                                         ->label(trans('ip.theme'))
                                         ->required(),
@@ -149,7 +159,7 @@ class Settings extends Page implements HasTable, HasForms
 
                                     Select::make('settings.default_country')
                                         ->label(trans('ip.default_country'))
-                                        ->options(config('countries'))
+                                        ->options(fn () => \Modules\Core\Support\LocalizedOptions::countries())
                                         ->required()
                                         ->searchable(),
 
@@ -158,7 +168,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->options(config('ip.number_of_items_in_list')),
                                 ]),
 
-                            Section::make('Amount')
+                            Section::make(fn () => trans('ip.amount'))
                                 ->columns(2)
                                 ->schema([
                                     TextInput::make('settings.currency_symbol')
@@ -203,7 +213,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
                                 ]),
 
-                            Section::make('Dashboard')
+                            Section::make(fn () => trans('ip.dashboard'))
                                 ->columns(2)
                                 ->schema([
                                     Select::make('settings.quote_overview_period')
@@ -235,7 +245,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
                                 ]),
 
-                            Section::make('Interface')
+                            Section::make(fn () => trans('ip.interface'))
                                 ->columns(2)
                                 ->schema([
                                     Toggle::make('settings.disable_sidebar')
@@ -267,7 +277,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->required(),
                                 ]),
 
-                            Section::make('System')
+                            Section::make(fn () => trans('ip.system'))
                                 ->columns(2)
                                 ->schema([
                                     Toggle::make('settings.send_all_emails_bcc')
@@ -434,7 +444,7 @@ class Settings extends Page implements HasTable, HasForms
                                     TextInput::make('settings.qr_code_remittance_text')
                                         ->label(trans('ip.qr_code_settings_remittance_text'))
                                         ->placeholder('{{{invoice_number}}}')
-                                        ->helperText('Available tags: ...'),
+                                        ->helperText(trans('ui.available_tags')),
                                 ]),
 
                             Section::make(trans('ip.email_settings'))
@@ -723,7 +733,7 @@ class Settings extends Page implements HasTable, HasForms
                                     Select::make('settings.update_channel')
                                         ->label(trans('ip.update_channel'))
                                         ->options([
-                                            'stable' => 'Stable',
+                                            'stable' => trans('ui.stable'),
                                             'beta'   => 'Beta',
                                             'alpha'  => 'Alpha',
                                         ])
@@ -744,6 +754,7 @@ class Settings extends Page implements HasTable, HasForms
                                         ->nullable(),
 
                                     TextInput::make('settings.current_version')
+                                        ->label(trans('ip.current_version'))
                                         ->string()
                                         ->placeholder('1.6.3')
                                         ->copyable()
@@ -761,13 +772,13 @@ class Settings extends Page implements HasTable, HasForms
                                 ->columns(1)
                                 ->schema([
                                     // The individual news notifications
-                                    Section::make('RELEASE NOTICE - v1.6.3')
-                                        ->description('InvoicePlane v1.6.3 was released, update your version in order to protect your self and benefit from the last features and bugfixes. Visit: https://invoiceplane.com to download')
+                                    Section::make(trans('ui.legacy_release_notice'))
+                                        ->description(trans('ui.legacy_release_description'))
                                         ->icon('heroicon-o-information-circle')
                                         ->iconColor('success'),
 
-                                    Section::make('InvoicePlane v1.6.2-beta-1 is out for testing')
-                                        ->description("The next version of InvoicePlane (v1.6.2) is out for it's test phase. This version brings PayPal back as a default payment provider and many other fixes and features. Try to download it and test it locally to help us out finding any bugs before it gets released. Download it at https://invoiceplane.com/downloads")
+                                    Section::make(trans('ui.legacy_beta_notice'))
+                                        ->description(trans('ui.legacy_beta_description'))
                                         ->icon('heroicon-o-information-circle')
                                         ->iconColor('alert'),
                                 ]),

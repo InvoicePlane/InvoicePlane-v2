@@ -14,8 +14,6 @@ use Modules\Expenses\Models\Expense;
 
 class RecentExpensesWidget extends TableWidget
 {
-    protected static ?string $heading = 'Recent Expenses';
-
     protected static ?int $sort = 5;
 
     public function table(Table $table): Table
@@ -25,6 +23,11 @@ class RecentExpensesWidget extends TableWidget
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
             ->recordUrl(fn (Expense $record): string => ExpenseResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ui.recent_expenses');
     }
 
     protected function getTableQuery(): Builder|Relation|null
@@ -44,7 +47,7 @@ class RecentExpensesWidget extends TableWidget
                 ->formatStateUsing(fn ($state) => (EnumHelper::safeEnum(ExpenseStatus::class, $state) && method_exists(EnumHelper::safeEnum(ExpenseStatus::class, $state), 'label')) ? EnumHelper::safeEnum(ExpenseStatus::class, $state)->label() : '-')
                 ->color(fn ($state) => (EnumHelper::safeEnum(ExpenseStatus::class, $state) && method_exists(EnumHelper::safeEnum(ExpenseStatus::class, $state), 'color')) ? EnumHelper::safeEnum(ExpenseStatus::class, $state)->color() : 'secondary'),
             TextColumn::make('expenseCategory.category_name')->label(trans('ip.expense_category')),
-            TextColumn::make('amount')->label(trans('ip.amount')),
+            TextColumn::make('amount')->numeric(decimalPlaces: 2)->label(trans('ip.amount')),
         ];
     }
 }

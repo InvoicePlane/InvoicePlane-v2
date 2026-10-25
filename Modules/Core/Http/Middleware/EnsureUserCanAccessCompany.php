@@ -38,7 +38,7 @@ class EnsureUserCanAccessCompany
 
             // Regular users must be associated with the company
             if ( ! $user->companies->contains('id', $company->id)) {
-                abort(403, 'You do not have access to this company.');
+                abort(403, trans('ip.user_not_in_company'));
             }
 
             return $this->setCurrentCompany($company, $request, $next);
@@ -46,7 +46,7 @@ class EnsureUserCanAccessCompany
 
         // If no company specified, check if user has access to any company
         if ($user->companies->isEmpty() && ! $user->hasAnyRole(UserRole::elevated())) {
-            abort(403, 'You do not have access to any companies.');
+            abort(403, trans('ui.user_not_in_any_company'));
         }
 
         // Use the company from session or user's first company

@@ -143,6 +143,7 @@ class AdminPanelProvider extends PanelProvider
                             ]),*/
 
                         NavigationGroup::make('Import')
+                            ->label(fn () => trans('ip.import'))
                             ->items([
                                 ...ImportV1Page::getNavigationItems(),
                             ]),

@@ -14,8 +14,6 @@ use Modules\Projects\Models\Task;
 
 class RecentTasksWidget extends TableWidget
 {
-    protected static ?string $heading = 'Recent Tasks';
-
     protected static ?int $sort = 4;
 
     public function table(Table $table): Table
@@ -25,6 +23,11 @@ class RecentTasksWidget extends TableWidget
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
             ->recordUrl(fn (Task $record): string => TaskResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ui.recent_tasks');
     }
 
     protected function getTableQuery(): Builder|Relation|null

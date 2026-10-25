@@ -71,6 +71,11 @@ class CompanySettings extends Page implements HasForms
         return auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false;
     }
 
+    public function getTitle(): string
+    {
+        return trans('ui.company_settings');
+    }
+
     public function mount(): void
     {
         $companyId = $this->getCompanyId();
@@ -141,7 +146,7 @@ class CompanySettings extends Page implements HasForms
         return [
             Tabs::make('CompanySettingsTabs')
                 ->tabs([
-                    Tab::make('General')
+                    Tab::make('General')->label(fn () => trans('ip.general'))
                         ->schema([
                             Section::make()->columns(2)->schema([
                                 TextInput::make(Setting::KEY_COMPANY_NAME)
@@ -181,7 +186,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Amounts')
+                    Tab::make('Amounts')->label(fn () => trans('ui.amounts'))
                         ->schema([
                             Section::make()->columns(2)->schema([
                                 Select::make(Setting::KEY_CURRENCY_CODE)
@@ -192,7 +197,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Dashboard')
+                    Tab::make('Dashboard')->label(fn () => trans('ip.dashboard'))
                         ->schema([
                             Section::make()->columns(2)->schema([
                                 Toggle::make(Setting::KEY_DASHBOARD_SHOW_REVENUE_CHART)
@@ -200,7 +205,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('System')
+                    Tab::make('System')->label(fn () => trans('ip.system'))
                         ->schema([
                             Section::make()->columns(2)->schema([
                                 Select::make(Setting::KEY_CRON_FREQUENCY)
@@ -224,7 +229,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Invoices')
+                    Tab::make('Invoices')->label(fn () => trans('ip.invoices'))
                         ->schema([
                             Section::make(trans('ip.invoice_numbering'))->columns(2)->schema([
                                 Select::make(Setting::KEY_INVOICE_NUMBERING_ID)
@@ -319,7 +324,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Quotes')
+                    Tab::make('Quotes')->label(fn () => trans('ip.quotes'))
                         ->schema([
                             Section::make(trans('ip.quote'))->columns(2)->schema([
                                 TextInput::make(Setting::KEY_QUOTE_VALIDITY_DAYS)
@@ -362,7 +367,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Taxes')
+                    Tab::make('Taxes')->label(fn () => trans('ip.taxes'))
                         ->schema([
                             Section::make(trans('ip.taxes'))->columns(2)->schema([
                                 Select::make(Setting::KEY_DEFAULT_INVOICE_TAX_RATE_ID)
@@ -381,7 +386,7 @@ class CompanySettings extends Page implements HasForms
                             ]),
                         ]),
 
-                    Tab::make('Email')
+                    Tab::make('Email')->label(fn () => trans('ip.email'))
                         ->schema([
                             Section::make(trans('ip.email'))->columns(2)->schema([
                                 TextInput::make(Setting::KEY_EMAIL_FROM_ADDRESS)

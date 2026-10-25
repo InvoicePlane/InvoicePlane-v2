@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'customers'                  => 'Customers',
+    'resources'                  => 'Resources',
+    'amounts'                    => 'Amounts',
+    'available_tags'             => 'Available tags: ...',
+    'legacy_release_notice'      => 'RELEASE NOTICE - v1.6.3',
+    'legacy_release_description' => 'InvoicePlane v1.6.3 was released, update your version in order to protect your self and benefit from the last features and bugfixes. Visit: https://invoiceplane.com to download',
+    'legacy_beta_notice'         => 'InvoicePlane v1.6.2-beta-1 is out for testing',
+    'legacy_beta_description'    => 'The next version of InvoicePlane (v1.6.2) is out for it\'s test phase. This version brings PayPal back as a default payment provider and many other fixes and features. Try to download it and test it locally to help us out finding any bugs before it gets released. Download it at https://invoiceplane.com/downloads',
+    'insert_note_template'       => 'Insert Note Template',
+    'insert'                     => 'Insert',
+    'recent_expenses'            => 'Recent Expenses',
+    'recent_projects'            => 'Recent Projects',
+    'recent_tasks'               => 'Recent Tasks',
+    'user_not_in_any_company'    => 'You do not have access to any companies.',
+    'company_settings'           => 'Company Settings',
+    'todo_approve_expense'       => 'TODO: Approve Expense',
+    'todo_reject_expense'        => 'TODO: Reject Expense',
+    'todo_duplicate_expense'     => 'TODO: Duplicate Expense',
+    'action_not_implemented'     => 'This action is not yet implemented.',
+    'ok'                         => 'OK',
+    'default'                    => 'Default',
+    'stable'                     => 'Stable',
+];

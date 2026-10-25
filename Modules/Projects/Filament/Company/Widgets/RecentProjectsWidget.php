@@ -14,8 +14,6 @@ use Modules\Projects\Models\Project;
 
 class RecentProjectsWidget extends TableWidget
 {
-    protected static ?string $heading = 'Recent Projects';
-
     protected static ?int $sort = 3;
 
     public function table(Table $table): Table
@@ -25,6 +23,11 @@ class RecentProjectsWidget extends TableWidget
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
             ->recordUrl(fn (Project $record): string => ProjectResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ui.recent_projects');
     }
 
     protected function getTableQuery(): Builder|Relation|null

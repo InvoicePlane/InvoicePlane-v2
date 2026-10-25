@@ -27,8 +27,8 @@ class InsertNoteTemplateAction
                     ->label(trans('ip.replace_existing_content'))
                     ->default(false),
             ])
-            ->modalHeading('Insert Note Template')
-            ->modalSubmitActionLabel('Insert')
+            ->modalHeading(trans('ui.insert_note_template'))
+            ->modalSubmitActionLabel(trans('ui.insert'))
             ->action(function (array $data, Set $set, Get $get) use ($field): void {
                 $template = NoteTemplate::query()->find($data['note_template_id']);
 

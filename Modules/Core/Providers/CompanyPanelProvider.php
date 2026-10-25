@@ -205,30 +205,35 @@ class CompanyPanelProvider extends PanelProvider
                 return $builder
                     ->items([
                         NavigationItem::make('Dashboard')
+                            ->label(fn () => trans('ip.dashboard'))
                             ->icon('heroicon-o-home')
                             ->url(route('filament.company.pages.dashboard', ['tenant' => $tenant]))
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.company.pages.dashboard')),
                     ])
                     ->groups([
                         NavigationGroup::make('Customers')
+                            ->label(fn () => trans('ui.customers'))
                             //->icon('heroicon-o-user-group')
                             ->items([
                                 ...self::withQuickCreate(RelationResource::class),
                             ]),
 
                         NavigationGroup::make('Quotes')
+                            ->label(fn () => trans('ip.quotes'))
                             //->icon('heroicon-o-document-text')
                             ->items([
                                 ...self::withQuickCreate(QuoteResource::class),
                             ]),
 
                         NavigationGroup::make('Invoices')
+                            ->label(fn () => trans('ip.invoices'))
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...self::withQuickCreate(InvoiceResource::class),
                             ]),
 
                         NavigationGroup::make('Expenses')
+                            ->label(fn () => trans('ip.expenses'))
                             //->icon('heroicon-o-banknotes')
                             ->items([
                                 ...self::withQuickCreate(ExpenseResource::class),
@@ -236,12 +241,14 @@ class CompanyPanelProvider extends PanelProvider
                             ]),
 
                         NavigationGroup::make('Payments')
+                            ->label(fn () => trans('ip.payments'))
                             //->icon('heroicon-o-currency-dollar')
                             ->items([
                                 ...self::withQuickCreate(PaymentResource::class),
                             ]),
 
                         NavigationGroup::make('Resources')
+                            ->label(fn () => trans('ui.resources'))
                             //->icon('heroicon-o-archive-box')
                             ->items([
                                 ...self::withQuickCreate(ProductResource::class),
@@ -253,6 +260,7 @@ class CompanyPanelProvider extends PanelProvider
                             ]),
 
                         NavigationGroup::make('Settings')
+                            ->label(fn () => trans('ip.settings'))
                             //->icon('heroicon-o-cog-6-tooth')
                             ->items([
                                 ...NoteTemplateResource::getNavigationItems(),

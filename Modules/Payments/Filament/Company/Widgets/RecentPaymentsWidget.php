@@ -12,8 +12,6 @@ use Modules\Payments\Models\Payment;
 
 class RecentPaymentsWidget extends TableWidget
 {
-    protected static ?string $heading = 'Recent Payments';
-
     protected static ?int $sort = 6;
 
     public function table(Table $table): Table
@@ -23,6 +21,11 @@ class RecentPaymentsWidget extends TableWidget
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
             ->recordUrl(fn (Payment $record): string => PaymentResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ip.recent_payments');
     }
 
     protected function getTableQuery(): Builder|Relation|null
@@ -38,7 +41,7 @@ class RecentPaymentsWidget extends TableWidget
         return [
             TextColumn::make('paid_at')->label(trans('ip.paid_at'))->date(),
             TextColumn::make('invoice.invoice_number')->label(trans('ip.payment_reference')),
-            TextColumn::make('amount')->label(trans('ip.amount')),
+            TextColumn::make('amount')->numeric(decimalPlaces: 2)->label(trans('ip.amount')),
         ];
     }
 }

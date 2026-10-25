@@ -56,7 +56,7 @@ class EditProfile extends BaseEditProfile
                 $this->getEmailFormComponent(),
                 Select::make('language')
                     ->label(trans('ip.language'))
-                    ->options(config('languages'))
+                    ->options(fn () => \Modules\Core\Support\LocalizedOptions::languages())
                     ->default('en')
                     ->required(),
                 FileUpload::make('avatar')

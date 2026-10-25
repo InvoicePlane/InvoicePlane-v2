@@ -20,7 +20,7 @@ class UserMenuLocalizationTest extends AbstractTestCase
         Filament::setTenant(new Company(['id' => 1, 'search_code' => 'test']), isQuiet: true);
         foreach ($panels as $panel) {
             Filament::setCurrentPanel($panel);
-            $items = collect($panel->getUserMenuItemGroups())->flatten(1);
+            $items  = collect($panel->getUserMenuItemGroups())->flatten(1);
             $labels = $items->map(fn ($item) => $item->getLabel())->all();
             $this->assertContains('Profil Test', $labels, $panel->getId());
             $this->assertContains('Einstellungen Test', $labels, $panel->getId());
