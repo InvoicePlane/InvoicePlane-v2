@@ -264,25 +264,25 @@ class CompanyPanelProvider extends PanelProvider
             })
             ->userMenuItems([
                 Action::make('switch-company')
-                    ->label(trans('ip.my_companies'))
+                    ->label(fn () => trans('ip.my_companies'))
                     ->icon('heroicon-o-building-office-2')
                     ->url(fn () => MyCompanies::getUrl()),
                 'profile' => fn (Action $action) => $action
-                    ->label(trans('ip.edit_profile'))
+                    ->label(fn () => trans('ip.edit_profile'))
                     ->icon('heroicon-o-user')
                     ->url(EditProfile::getUrl()),
                 Action::make('settings')
-                    ->label(trans('ip.settings'))
+                    ->label(fn () => trans('ip.settings'))
                     ->url(fn () => CompanySettings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth')
                     ->visible(fn (): bool => auth()->user()?->can(Permission::MANAGE_COMPANY_SETTINGS->value) ?? false),
                 Action::make('admin-panel')
-                    ->label(trans('ip.admin_panel'))
+                    ->label(fn () => trans('ip.admin_panel'))
                     ->url('/admin')
                     ->icon('heroicon-o-shield-check')
                     ->visible(fn (): bool => auth()->user()?->hasAnyRole(UserRole::elevated()) ?? false),
                 'logout' => fn (Action $action) => $action
-                    ->label(trans('ip.logout'))
+                    ->label(fn () => trans('ip.logout'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle'),
             ]);
 
