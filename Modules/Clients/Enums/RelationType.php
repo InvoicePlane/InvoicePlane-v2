@@ -23,8 +23,8 @@ enum RelationType: string implements LabeledEnum
             self::CUSTOMER => trans('ip.customer'),
             self::VENDOR   => trans('ip.vendor'),
             self::PROSPECT => trans('ip.prospect'),
-            self::PARTNER  => 'Partner',
-            self::LEAD     => 'Lead',
+            self::PARTNER  => trans('enums.relation_type.partner'),
+            self::LEAD     => trans('enums.relation_type.lead'),
         };
     }
 

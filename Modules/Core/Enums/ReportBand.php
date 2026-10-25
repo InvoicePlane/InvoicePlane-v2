@@ -16,11 +16,11 @@ enum ReportBand: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::HEADER       => 'Header',
-            self::GROUP_HEADER => 'Group Header',
-            self::DETAILS      => 'Details',
-            self::GROUP_FOOTER => 'Group Footer',
-            self::FOOTER       => 'Footer',
+            self::HEADER       => trans('enums.report_band.header'),
+            self::GROUP_HEADER => trans('enums.report_band.group_header'),
+            self::DETAILS      => trans('enums.report_band.details'),
+            self::GROUP_FOOTER => trans('enums.report_band.group_footer'),
+            self::FOOTER       => trans('enums.report_band.footer'),
         };
     }
 

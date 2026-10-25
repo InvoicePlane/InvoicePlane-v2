@@ -18,12 +18,12 @@ enum ExpenseStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT      => 'Draft',
-            self::SUBMITTED  => 'Submitted',
-            self::APPROVED   => 'Approved',
-            self::REIMBURSED => 'Reimbursed',
-            self::BILLED     => 'Billed',
-            self::PAID       => 'Paid',
+            self::DRAFT      => trans('enums.expense_status.draft'),
+            self::SUBMITTED  => trans('enums.expense_status.submitted'),
+            self::APPROVED   => trans('enums.expense_status.approved'),
+            self::REIMBURSED => trans('enums.expense_status.reimbursed'),
+            self::BILLED     => trans('enums.expense_status.billed'),
+            self::PAID       => trans('enums.expense_status.paid'),
         };
     }
 

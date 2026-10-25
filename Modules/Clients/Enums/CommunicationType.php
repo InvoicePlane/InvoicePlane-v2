@@ -26,12 +26,12 @@ enum CommunicationType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::EMAIL      => 'Email',
-            self::PHONE      => 'Phone',
-            self::FAX        => 'Fax',
-            self::MOBILE     => 'Mobile',
-            self::WHATSAPP   => 'Whatsapp',
-            self::INVOICE_CC => 'Invoice CC Email',
+            self::EMAIL      => trans('enums.communication_type.email'),
+            self::PHONE      => trans('enums.communication_type.phone'),
+            self::FAX        => trans('enums.communication_type.fax'),
+            self::MOBILE     => trans('enums.communication_type.mobile'),
+            self::WHATSAPP   => trans('enums.communication_type.whatsapp'),
+            self::INVOICE_CC => trans('enums.communication_type.invoice_cc'),
         };
     }
 
