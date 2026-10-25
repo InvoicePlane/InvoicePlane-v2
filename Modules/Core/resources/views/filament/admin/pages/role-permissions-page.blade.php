@@ -9,7 +9,7 @@
                                 <th class="text-left p-2 w-64">{{ trans('ip.permission') }}</th>
                                 @foreach ($roles as $role)
                                     <th class="text-center p-2 capitalize">
-                                        {{ str($role->name)->replace('_', ' ')->title() }}
+                                        {{ \Modules\Core\Enums\UserRole::tryFrom($role->name)?->label() ?? str($role->name)->replace('_', ' ')->title() }}
                                     </th>
                                 @endforeach
                             </tr>

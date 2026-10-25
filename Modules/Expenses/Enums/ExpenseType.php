@@ -24,12 +24,12 @@ enum ExpenseType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::ONE_TIME    => 'One Time',
-            self::RECURRING   => 'Recurring',
-            self::TRAVEL      => 'Travel',
-            self::UTILITY     => 'Utility',
-            self::MAINTENANCE => 'Maintenance',
-            self::FIXED       => 'Fixed',
+            self::ONE_TIME    => trans('enums.expense_type.one_time'),
+            self::RECURRING   => trans('enums.expense_type.recurring'),
+            self::TRAVEL      => trans('enums.expense_type.travel'),
+            self::UTILITY     => trans('enums.expense_type.utility'),
+            self::MAINTENANCE => trans('enums.expense_type.maintenance'),
+            self::FIXED       => trans('enums.expense_type.fixed'),
         };
     }
 

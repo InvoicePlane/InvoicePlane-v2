@@ -37,11 +37,11 @@ enum UserRole: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::SUPER_ADMIN    => 'Super Admin',
-            self::ADMIN          => 'admin',
-            self::ASSIST         => 'assist',
-            self::CUSTOMER_ADMIN => 'Client Admin',
-            self::CUSTOMER       => 'client',
+            self::SUPER_ADMIN    => trans('enums.user_role.super_admin'),
+            self::ADMIN          => trans('enums.user_role.admin'),
+            self::ASSIST         => trans('enums.user_role.assist'),
+            self::CUSTOMER_ADMIN => trans('enums.user_role.customer_admin'),
+            self::CUSTOMER       => trans('enums.user_role.customer'),
         };
     }
 

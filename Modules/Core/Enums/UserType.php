@@ -19,8 +19,8 @@ enum UserType: int
     public function getLabel(): string
     {
         return match($this) {
-            self::ADMIN  => 'ip.administrator',
-            self::CLIENT => 'ip.client',
+            self::ADMIN  => trans('enums.user_type.admin'),
+            self::CLIENT => trans('enums.user_type.client'),
         };
     }
 
