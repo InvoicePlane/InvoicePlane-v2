@@ -21,3 +21,5 @@ The German catalogue contains complete application keys and Laravel account/erro
 ## Existing limitations retained
 
 The report-designer Blade view refers to absent upstream service/page classes; translating it does not make the unfinished feature runnable. Existing PDF layout/logo filesystem restrictions are separate from localization. Existing team-removal/company-switch tests fail on the unchanged baseline as well; test evidence is recorded in progress.md. No baseline failures are silently marked as passing.
+
+Authenticated UI follow-up: commit ff5d56b (recent-widget heading hooks, translated empty states and invoice singular label) belongs to the queued UI package. Verified with 16 tests / 68 assertions and the deployed German browser session. Keep it out of the independent profile-locale and enum-label PRs; no extra concurrent PR opened.
