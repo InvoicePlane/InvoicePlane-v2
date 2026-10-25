@@ -9,6 +9,7 @@ use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +46,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection|Expense[]    $expenses
  * @property Collection|Quote[]      $quotes*           @property Upload[]                $uploads
  */
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, HasTenants, HasDefaultTenant, HasLocalePreference
 {
     use CanResetPassword;
     use HasFactory;
@@ -83,6 +84,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     | Relationships
     |--------------------------------------------------------------------------
     */
+    public function preferredLocale(): string
+    {
+        return is_string($this->language) && array_key_exists($this->language, config('languages', []))
+            ? $this->language
+            : app()->getLocale();
+    }
+
     public function attachments(): ?HasMany
     {
         // return $this->hasMany(Attachment::class);
