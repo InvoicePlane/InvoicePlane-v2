@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\Core\Http\Middleware\SetUserLocale;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -118,6 +119,7 @@ class UserPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->middleware([SetUserLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ]);
