@@ -112,7 +112,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
     public function it_hides_the_send_reminder_action_for_an_invoice_that_is_not_yet_due(): void
     {
         /* Arrange */
-        $customer  = Relation::factory()->for($this->company)->customer()->create();
+        $customer  = Relation::factory()->for($this->company)->customer()->create(['language' => 'en']);
         $numbering = Numbering::factory()->for($this->company)->create();
         $notYetDue = $this->makeInvoice($customer, $numbering, [
             'invoice_number' => 'INV-NOT-DUE',
@@ -140,13 +140,13 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
     public function it_disables_the_send_reminder_action_when_the_customer_has_no_email(): void
     {
         /* Arrange */
-        $withoutEmail = Relation::factory()->for($this->company)->customer()->create();
+        $withoutEmail = Relation::factory()->for($this->company)->customer()->create(['language' => 'en']);
         Communication::query()
             ->where('communicationable_type', Contact::class)
             ->whereIn('communicationable_id', $withoutEmail->contacts()->pluck('id'))
             ->delete();
 
-        $withEmail = Relation::factory()->for($this->company)->customer()->create();
+        $withEmail = Relation::factory()->for($this->company)->customer()->create(['language' => 'en']);
         $withEmail->primaryContact->communications()->create([
             'company_id'          => $this->company->id,
             'is_primary'          => true,
@@ -281,7 +281,7 @@ class SendReminderActionTest extends AbstractCompanyPanelTestCase
 
     private function createOverdueInvoice(array $attributes = []): Invoice
     {
-        $customer = Relation::factory()->for($this->company)->customer()->create();
+        $customer = Relation::factory()->for($this->company)->customer()->create(['language' => 'en']);
         $contact  = $customer->contacts()->create([
             'company_id' => $this->company->id,
             'first_name' => 'Jane',

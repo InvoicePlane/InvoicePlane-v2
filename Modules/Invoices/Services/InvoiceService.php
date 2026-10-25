@@ -14,7 +14,7 @@ use Modules\Core\Models\Company;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Setting;
 use Modules\Core\Services\BaseService;
-use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\DocumentFormatter;
 use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -336,10 +336,13 @@ class InvoiceService extends BaseService
     {
         $invoice->loadMissing(['company', 'customer', 'invoiceItems']);
 
-        return view('invoices::pdf.invoice', [
-            'invoice'  => $invoice,
-            'branding' => $this->resolveBranding($invoice),
-        ])->render();
+        $formatter = DocumentFormatter::forCompany($invoice->company_id, $invoice->customer?->language);
+
+        return $formatter->withLocale($formatter->locale, fn () => view('invoices::pdf.invoice', [
+            'formatter' => $formatter,
+            'invoice'   => $invoice,
+            'branding'  => $this->resolveBranding($invoice),
+        ])->render());
     }
 
     /**
@@ -465,15 +468,17 @@ class InvoiceService extends BaseService
             ->where('title', $templateTitle)
             ->first();
 
+        $formatter = DocumentFormatter::forCompany($invoice->company_id, $invoice->customer?->language);
+
         $placeholders = [
             'invoice.number'             => $invoice->invoice_number,
-            'invoice.total_formatted'    => number_format((float) $invoice->invoice_total, 2),
-            'invoice.due_date_formatted' => DateHelpers::formatDate($invoice->invoice_due_at),
+            'invoice.total_formatted'    => $formatter->amount((float) $invoice->invoice_total),
+            'invoice.due_date_formatted' => $formatter->date($invoice->invoice_due_at),
             'customer.name'              => $invoice->customer?->company_name,
             'company.name'               => $invoice->company_name ?? $invoice->company?->name,
         ];
 
-        $defaultSubject = trans($defaultSubjectTransKey, ['number' => $invoice->invoice_number]);
+        $defaultSubject = trans($defaultSubjectTransKey, ['number' => $invoice->invoice_number], $formatter->locale);
 
         return [
             'template'  => $template,

@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Modules\Core\Support\DocumentFormatter;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Services\QuoteService;
@@ -22,7 +23,9 @@ class QuoteMailable extends Mailable implements ShouldQueue
         public Quote $quote,
         public string $emailSubject,
         public string $bodyText,
-    ) {}
+    ) {
+        $this->locale(DocumentFormatter::resolveLocale($quote->prospect?->language));
+    }
 
     public function envelope(): Envelope
     {

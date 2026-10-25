@@ -33,7 +33,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             @if ($signature)
                 <p class="text-sm text-gray-700">
-                    {{ trans('ip.quote_signed_confirmation', ['name' => $signature->signer_name, 'date' => $signature->signed_at?->format('Y-m-d H:i')]) }}
+                    {{ trans('ip.quote_signed_confirmation', ['name' => $signature->signer_name, 'date' => $formatter->date($signature->signed_at) . ' ' . $signature->signed_at?->format('H:i')]) }}
                 </p>
             @else
                 <h2 class="text-base font-semibold mb-4">{{ trans('ip.view_and_sign_quote') }}</h2>

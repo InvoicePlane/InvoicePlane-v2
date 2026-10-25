@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Modules\Core\Support\DocumentFormatter;
 use Modules\Invoices\Models\Invoice;
 
 class InvoiceMailable extends Mailable implements ShouldQueue
@@ -19,7 +20,9 @@ class InvoiceMailable extends Mailable implements ShouldQueue
         public Invoice $invoice,
         public string $emailSubject,
         public string $bodyText,
-    ) {}
+    ) {
+        $this->locale(DocumentFormatter::resolveLocale($invoice->customer?->language));
+    }
 
     public function envelope(): Envelope
     {

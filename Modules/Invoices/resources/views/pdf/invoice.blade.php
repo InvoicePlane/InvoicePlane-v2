@@ -38,8 +38,8 @@
                 @endif
             </td>
             <td style="vertical-align: top; text-align: right;">
-                <div>{{ trans('ip.invoice_date') }}: {{ $invoice->invoiced_at?->format('Y-m-d') }}</div>
-                <div>{{ trans('ip.invoice_due_at') }}: {{ $invoice->invoice_due_at?->format('Y-m-d') }}</div>
+                <div>{{ trans('ip.invoice_date') }}: {{ $formatter->date($invoice->invoiced_at) }}</div>
+                <div>{{ trans('ip.invoice_due_at') }}: {{ $formatter->date($invoice->invoice_due_at) }}</div>
             </td>
         </tr>
     </table>
@@ -63,10 +63,10 @@
                             <div style="color: {{ $accentColor }};">{{ $item->description }}</div>
                         @endif
                     </td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $item->quantity + 0 }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->price, 2) }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->discount, 2) }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->subtotal, 2) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->quantity((float) $item->quantity) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->price) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->discount) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->subtotal) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -75,21 +75,21 @@
     <table style="width: 40%; margin-left: 60%; border-collapse: collapse; margin-bottom: 24px;">
         <tr>
             <td style="padding: 4px;">{{ trans('ip.subtotal') }}</td>
-            <td style="text-align: right; padding: 4px;">{{ number_format((float) $invoice->invoice_item_subtotal, 2) }}</td>
+            <td style="text-align: right; padding: 4px;">{{ $formatter->amount((float) $invoice->invoice_item_subtotal) }}</td>
         </tr>
         <tr>
             <td style="padding: 4px;">{{ trans('ip.tax') }}</td>
-            <td style="text-align: right; padding: 4px;">{{ number_format((float) $invoice->invoice_tax_total + (float) $invoice->item_tax_total, 2) }}</td>
+            <td style="text-align: right; padding: 4px;">{{ $formatter->amount((float) $invoice->invoice_tax_total + (float) $invoice->item_tax_total) }}</td>
         </tr>
         @if ((float) $invoice->invoice_discount_amount > 0)
             <tr>
                 <td style="padding: 4px;">{{ trans('ip.discount') }}</td>
-                <td style="text-align: right; padding: 4px;">-{{ number_format((float) $invoice->invoice_discount_amount, 2) }}</td>
+                <td style="text-align: right; padding: 4px;">-{{ $formatter->amount((float) $invoice->invoice_discount_amount) }}</td>
             </tr>
         @endif
         <tr>
             <td style="padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ trans('ip.total') }}</td>
-            <td style="text-align: right; padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ number_format((float) $invoice->invoice_total, 2) }}</td>
+            <td style="text-align: right; padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ $formatter->amount((float) $invoice->invoice_total) }}</td>
         </tr>
     </table>
 

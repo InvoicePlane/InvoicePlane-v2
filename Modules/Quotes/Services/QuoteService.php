@@ -14,7 +14,7 @@ use Modules\Core\Enums\MailType;
 use Modules\Core\Models\EmailTemplate;
 use Modules\Core\Models\Setting;
 use Modules\Core\Services\BaseService;
-use Modules\Core\Support\DateHelpers;
+use Modules\Core\Support\DocumentFormatter;
 use Modules\Core\Support\EmailTemplatePreview;
 use Modules\Core\Support\PDF\PDFFactory;
 use Modules\Invoices\Enums\InvoiceStatus;
@@ -380,11 +380,14 @@ class QuoteService extends BaseService
     {
         $quote->loadMissing(['company', 'prospect', 'quoteItems', 'signatures']);
 
-        return view('quotes::pdf.quote', [
+        $formatter = DocumentFormatter::forCompany($quote->company_id, $quote->prospect?->language);
+
+        return $formatter->withLocale($formatter->locale, fn () => view('quotes::pdf.quote', [
+            'formatter'  => $formatter,
             'quote'      => $quote,
             'branding'   => $this->resolveBranding($quote, $forBrowser),
             'signatures' => $this->resolveSignatureImages($quote, $forBrowser),
-        ])->render();
+        ])->render());
     }
 
     /**
@@ -524,15 +527,17 @@ class QuoteService extends BaseService
             ->where('title', self::QUOTE_EMAIL_TEMPLATE_TITLE)
             ->first();
 
+        $formatter = DocumentFormatter::forCompany($quote->company_id, $quote->prospect?->language);
+
         $placeholders = [
             'quote.number'               => $quote->quote_number,
-            'quote.total_formatted'      => number_format((float) $quote->quote_total, 2),
-            'quote.expires_at_formatted' => DateHelpers::formatDate($quote->quote_expires_at),
+            'quote.total_formatted'      => $formatter->amount((float) $quote->quote_total),
+            'quote.expires_at_formatted' => $formatter->date($quote->quote_expires_at),
             'customer.name'              => $quote->prospect?->company_name,
             'company.name'               => $quote->company?->name,
         ];
 
-        $defaultSubject = trans('ip.email_quote_default_subject', ['number' => $quote->quote_number]);
+        $defaultSubject = trans('ip.email_quote_default_subject', ['number' => $quote->quote_number], $formatter->locale);
 
         return [
             'template'  => $template,

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\View as ViewContract;
 use InvalidArgumentException;
+use Modules\Core\Support\DocumentFormatter;
 use Modules\Quotes\Models\Quote;
 use Modules\Quotes\Models\QuoteSignature;
 use Modules\Quotes\Services\QuoteService;
@@ -29,12 +30,13 @@ class GuestQuoteController extends Controller
             'quote'     => $quote,
             'html'      => app(QuoteService::class)->renderHtml($quote, forBrowser: true),
             'signature' => $quote->signatures()->latest('signed_at')->first(),
+            'formatter' => DocumentFormatter::forCompany($quote->company_id, $quote->prospect?->language),
         ]);
     }
 
     public function verifyPassword(Request $request, Quote $quote): RedirectResponse
     {
-        $data = $request->validate(['password' => ['required', 'string']]);
+        $data = $request->validate(['password' => ['required', 'string']], [], ['password' => trans('ip.password')]);
 
         if ( ! hash_equals((string) $quote->quote_password, $data['password'])) {
             return Redirect::route('quotes.guest.show', $quote)
@@ -53,6 +55,9 @@ class GuestQuoteController extends Controller
         $data = $request->validate([
             'signer_name'    => ['required', 'string', 'max:255'],
             'signature_data' => ['required', 'string'],
+        ], [], [
+            'signer_name'    => trans('ip.signer_name'),
+            'signature_data' => trans('ip.signature'),
         ]);
 
         /*

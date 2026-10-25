@@ -38,8 +38,8 @@
                 @endif
             </td>
             <td style="vertical-align: top; text-align: right;">
-                <div>{{ trans('ip.quote_date') }}: {{ $quote->quoted_at?->format('Y-m-d') }}</div>
-                <div>{{ trans('ip.expires_at') }}: {{ $quote->quote_expires_at?->format('Y-m-d') }}</div>
+                <div>{{ trans('ip.quote_date') }}: {{ $formatter->date($quote->quoted_at) }}</div>
+                <div>{{ trans('ip.expires_at') }}: {{ $formatter->date($quote->quote_expires_at) }}</div>
             </td>
         </tr>
     </table>
@@ -63,10 +63,10 @@
                             <div style="color: {{ $accentColor }};">{{ $item->description }}</div>
                         @endif
                     </td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $item->quantity + 0 }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->price, 2) }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->discount, 2) }}</td>
-                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ number_format((float) $item->subtotal, 2) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->quantity((float) $item->quantity) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->price) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->discount) }}</td>
+                    <td style="text-align: right; border-bottom: 1px solid #e5e7eb; padding: 6px 4px;">{{ $formatter->amount((float) $item->subtotal) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -75,21 +75,21 @@
     <table style="width: 40%; margin-left: 60%; border-collapse: collapse; margin-bottom: 24px;">
         <tr>
             <td style="padding: 4px;">{{ trans('ip.subtotal') }}</td>
-            <td style="text-align: right; padding: 4px;">{{ number_format((float) $quote->quote_item_subtotal, 2) }}</td>
+            <td style="text-align: right; padding: 4px;">{{ $formatter->amount((float) $quote->quote_item_subtotal) }}</td>
         </tr>
         <tr>
             <td style="padding: 4px;">{{ trans('ip.tax') }}</td>
-            <td style="text-align: right; padding: 4px;">{{ number_format((float) $quote->quote_tax_total + (float) $quote->item_tax_total, 2) }}</td>
+            <td style="text-align: right; padding: 4px;">{{ $formatter->amount((float) $quote->quote_tax_total + (float) $quote->item_tax_total) }}</td>
         </tr>
         @if ((float) $quote->quote_discount_amount > 0)
             <tr>
                 <td style="padding: 4px;">{{ trans('ip.discount') }}</td>
-                <td style="text-align: right; padding: 4px;">-{{ number_format((float) $quote->quote_discount_amount, 2) }}</td>
+                <td style="text-align: right; padding: 4px;">-{{ $formatter->amount((float) $quote->quote_discount_amount) }}</td>
             </tr>
         @endif
         <tr>
             <td style="padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ trans('ip.total') }}</td>
-            <td style="text-align: right; padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ number_format((float) $quote->quote_total, 2) }}</td>
+            <td style="text-align: right; padding: 4px; border-top: 2px solid {{ $primaryColor }}; font-weight: bold;">{{ $formatter->amount((float) $quote->quote_total) }}</td>
         </tr>
     </table>
 
@@ -120,7 +120,7 @@
                         <td style="vertical-align: bottom; padding: 0 12px 0 0; width: {{ (int) (100 / count($signatures)) }}%;">
                             <img src="{{ $signature['path'] }}" alt="{{ $signature['signer_name'] }}" style="max-height: 80px; max-width: 100%; border-bottom: 1px solid {{ $primaryColor }};">
                             <div style="margin-top: 4px;">
-                                {{ trans('ip.quote_signed_confirmation', ['name' => $signature['signer_name'], 'date' => $signature['signed_at']?->format('Y-m-d')]) }}
+                                {{ trans('ip.quote_signed_confirmation', ['name' => $signature['signer_name'], 'date' => $formatter->date($signature['signed_at'])]) }}
                             </div>
                         </td>
                     @endforeach
