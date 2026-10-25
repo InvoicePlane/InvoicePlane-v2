@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'customers'                  => 'Kunden',
+    'resources'                  => 'Stammdaten',
+    'amounts'                    => 'Beträge',
+    'available_tags'             => 'Verfügbare Platzhalter: ...',
+    'legacy_release_notice'      => 'Veröffentlichungshinweis – v1.6.3',
+    'legacy_release_description' => 'InvoicePlane v1.6.3 wurde veröffentlicht. Aktualisieren Sie Ihre Installation, um Sicherheitskorrekturen, neue Funktionen und Fehlerbehebungen zu erhalten. Download: https://invoiceplane.com',
+    'legacy_beta_notice'         => 'InvoicePlane v1.6.2-beta-1 steht zum Testen bereit',
+    'legacy_beta_description'    => 'Die nächste Version von InvoicePlane (v1.6.2) befindet sich in der Testphase. Diese Version bringt PayPal als standardmäßigen Zahlungsanbieter sowie weitere Korrekturen und Funktionen zurück. Laden Sie sie herunter und testen Sie sie lokal, um vor der Veröffentlichung Fehler zu finden. Download: https://invoiceplane.com/downloads',
+    'insert_note_template'       => 'Textvorlage einfügen',
+    'insert'                     => 'Einfügen',
+    'recent_expenses'            => 'Neueste Ausgaben',
+    'recent_projects'            => 'Neueste Projekte',
+    'recent_tasks'               => 'Neueste Aufgaben',
+    'user_not_in_any_company'    => 'Sie haben keinen Zugriff auf ein Unternehmen.',
+    'company_settings'           => 'Unternehmenseinstellungen',
+    'todo_approve_expense'       => 'Noch offen: Ausgabe genehmigen',
+    'todo_reject_expense'        => 'Noch offen: Ausgabe ablehnen',
+    'todo_duplicate_expense'     => 'Noch offen: Ausgabe duplizieren',
+    'action_not_implemented'     => 'Diese Aktion ist noch nicht implementiert.',
+    'ok'                         => 'OK',
+    'default'                    => 'Standard',
+    'stable'                     => 'Stabil',
+];
