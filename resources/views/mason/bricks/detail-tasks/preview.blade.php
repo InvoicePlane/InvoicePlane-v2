@@ -29,10 +29,10 @@
                     <td class="py-2 px-1">TASK-001</td>
                 @endif
                 @if($config['show_task_name'] ?? true)
-                    <td class="py-2 px-1">Sample Task</td>
+                    <td class="py-2 px-1">{{ trans('designer.sample_task') }}</td>
                 @endif
                 @if($config['show_description'] ?? true)
-                    <td class="py-2 px-1">Task description</td>
+                    <td class="py-2 px-1">{{ trans('ip.task_description') }}</td>
                 @endif
                 @if($config['show_due_at'] ?? false)
                     <td class="py-2 px-1">{{ now()->addDays(7)->format('Y-m-d') }}</td>

@@ -5,7 +5,7 @@
             <div><strong>{{ trans('ip.project_number') }}:</strong> PROJECT-001</div>
         @endif
         @if($config['show_project_name'] ?? true)
-            <div><strong>{{ trans('ip.project_name') }}:</strong> Sample Project</div>
+            <div><strong>{{ trans('ip.project_name') }}:</strong> {{ trans('designer.sample_project') }}</div>
         @endif
         @if($config['show_start_date'] ?? true)
             <div><strong>{{ trans('ip.start_date') }}:</strong> {{ now()->format('Y-m-d') }}</div>

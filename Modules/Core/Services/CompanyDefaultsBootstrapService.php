@@ -52,8 +52,8 @@ class CompanyDefaultsBootstrapService
                 'title'      => 'invoice_sent',
             ],
             [
-                'subject'    => 'Invoice #{{ invoice.number }}',
-                'body'       => 'Please find your invoice #{{ invoice.number }} attached.',
+                'subject'    => trans('mail_defaults.invoice_sent_subject'),
+                'body'       => trans('mail_defaults.invoice_sent_body'),
                 'from_name'  => $company->name,
                 'from_email' => $fromEmail,
                 'cc'         => null,
@@ -68,8 +68,8 @@ class CompanyDefaultsBootstrapService
                 'title'      => 'invoice_reminder',
             ],
             [
-                'subject'    => 'Payment reminder — Invoice #{{ invoice.number }}',
-                'body'       => "Dear {{ customer.name }},\n\nThis is a friendly reminder that invoice #{{ invoice.number }} for {{ invoice.total_formatted }} was due on {{ invoice.due_date_formatted }} and remains unpaid.\n\nPlease arrange payment at your earliest convenience. The invoice is attached for your reference.\n\nThank you,\n{{ company.name }}",
+                'subject'    => trans('mail_defaults.invoice_reminder_subject'),
+                'body'       => trans('mail_defaults.invoice_reminder_body'),
                 'from_name'  => $company->name,
                 'from_email' => $fromEmail,
                 'cc'         => null,

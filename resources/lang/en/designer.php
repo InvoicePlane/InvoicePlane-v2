@@ -13,4 +13,6 @@ return [
     'drop_blocks'       => 'Drop blocks here',
     'configure_fields'  => 'Configure Fields',
     'remove_block'      => 'Remove Block',
+    'sample_project'    => 'Sample Project',
+    'sample_task'       => 'Sample Task',
 ];
