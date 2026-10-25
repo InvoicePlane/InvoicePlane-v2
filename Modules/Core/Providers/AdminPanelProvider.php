@@ -31,6 +31,7 @@ use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Filament\Admin\Resources\Users\UserResource;
 use Modules\Core\Filament\Pages\Auth\EditProfile;
 use Modules\Core\Filament\Pages\Auth\Login;
+use Modules\Core\Http\Middleware\SetUserLocale;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -191,6 +192,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->middleware([SetUserLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ]);
