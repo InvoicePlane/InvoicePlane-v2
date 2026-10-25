@@ -70,4 +70,15 @@ class UserLocaleTest extends AbstractTestCase
         }
         $this->assertContains(SetUserLocale::class, app(\Livewire\Mechanisms\PersistentMiddleware\PersistentMiddleware::class)->getPersistentMiddleware());
     }
+
+    #[Test]
+    public function it_exposes_the_profile_language_to_account_notifications(): void
+    {
+        app()->setLocale('en');
+        $user = new User(['language' => 'de']);
+        $this->assertInstanceOf(\Illuminate\Contracts\Translation\HasLocalePreference::class, $user);
+        $this->assertSame('de', $user->preferredLocale());
+        $user->language = 'invalid';
+        $this->assertSame('en', $user->preferredLocale());
+    }
 }
