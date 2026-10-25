@@ -22,6 +22,21 @@ class InvoiceItemResource extends BaseResource
 
     protected static ?string $parentResource = InvoiceResource::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.invoice_item');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.invoice_items');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.invoice_items');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return InvoiceItemForm::configure($schema);

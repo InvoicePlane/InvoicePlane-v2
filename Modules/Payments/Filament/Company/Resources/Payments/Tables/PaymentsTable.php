@@ -26,6 +26,7 @@ class PaymentsTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('paid_at')
+                    ->label(fn (): string => trans('ip.paid_at'))
                     ->date('d-m-Y')
                     ->since()
                     ->color(
@@ -47,6 +48,7 @@ class PaymentsTable
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('payment_status')
+                    ->label(fn (): string => trans('ip.payment_status'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
@@ -62,6 +64,7 @@ class PaymentsTable
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('payment_amount')
+                    ->label(fn (): string => trans('ip.payment_amount'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),

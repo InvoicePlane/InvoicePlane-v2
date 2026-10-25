@@ -21,6 +21,7 @@ class NumberingsTable
         return $table
             ->columns([
                 TextColumn::make('type')
+                    ->label(fn (): string => trans('ip.type'))
                     ->limit(10)
                     ->formatStateUsing(function ($state) {
                         if ($state instanceof NumberingType) {
@@ -45,15 +46,20 @@ class NumberingsTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('name')
+                    ->label(fn (): string => trans('ip.name'))
                     ->limit(10)->searchable()->sortable()->toggleable(),
                 TextColumn::make('prefix')
+                    ->label(fn (): string => trans('ip.prefix'))
                     ->searchable()->sortable()->toggleable(),
                 TextColumn::make('left_pad')
+                    ->label(fn (): string => trans('ip.left_pad'))
                     ->numeric()
                     ->searchable()->sortable()->toggleable(),
                 TextColumn::make('format')
+                    ->label(fn (): string => trans('ip.format'))
                     ->limit(10)->searchable()->sortable()->toggleable(),
                 TextColumn::make('next_id')
+                    ->label(fn (): string => trans('ip.next_id'))
                     ->numeric()
                     ->searchable()->sortable()->toggleable(),
             ])

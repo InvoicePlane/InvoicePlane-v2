@@ -22,6 +22,21 @@ class QuoteItemResource extends Resource
 
     protected static ?string $parentResource = QuoteResource::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.quote_item');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.quote_items');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.quote_items');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return QuoteItemForm::configure($schema);

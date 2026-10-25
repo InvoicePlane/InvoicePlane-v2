@@ -15,17 +15,23 @@ class RecurringInvoiceForm
         return $schema
             ->components([
                 TextInput::make('invoice_id')
+                    ->label(fn (): string => trans('fields.invoice_id'))
                     ->required()
                     ->numeric(),
                 TextInput::make('numbering_id')
+                    ->label(fn (): string => trans('ip.numbering'))
                     ->numeric()
                     ->default(null),
                 Select::make('frequency')
-                    ->options(RecurringFrequency::class)
+                    ->label(fn (): string => trans('fields.frequency'))
+                    ->options(fn (): array => collect(RecurringFrequency::cases())
+                        ->mapWithKeys(fn (RecurringFrequency $type): array => [$type->value => $type->label()])
+                        ->all())
                     ->required(),
                 DatePicker::make('start_at')
+                    ->label(fn (): string => trans('ip.start_at'))
                     ->required(),
-                DatePicker::make('end_at'),
+                DatePicker::make('end_at')->label(fn (): string => trans('ip.end_at')),
             ]);
     }
 }

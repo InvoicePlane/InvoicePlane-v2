@@ -20,9 +20,20 @@ class TaxRateResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedReceiptPercent;
 
-    protected static ?string $navigationLabel = 'Tax Rates';
+    public static function getModelLabel(): string
+    {
+        return trans('ip.tax_rate');
+    }
 
-    protected static ?string $modelLabel = 'Tax Rate';
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.tax_rates');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.tax_rates');
+    }
 
     public static function form(Schema $schema): Schema
     {

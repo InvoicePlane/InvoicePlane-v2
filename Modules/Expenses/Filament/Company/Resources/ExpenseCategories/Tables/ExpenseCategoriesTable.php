@@ -19,7 +19,7 @@ class ExpenseCategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('category_name')->searchable()->sortable()->toggleable(),
+                TextColumn::make('category_name')->label(fn (): string => trans('ip.expense_category'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])

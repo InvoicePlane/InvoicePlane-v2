@@ -27,6 +27,11 @@ class RolePermissionsPage extends Page
 
     protected string $view = 'core::filament.admin.pages.role-permissions-page';
 
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.role_permissions');
+    }
+
     public static function canAccess(): bool
     {
         $user = auth()->user();
@@ -71,6 +76,11 @@ class RolePermissionsPage extends Page
         }
 
         return array_filter($grouped);
+    }
+
+    public function getTitle(): string
+    {
+        return trans('fields.role_permissions');
     }
 
     public function mount(): void

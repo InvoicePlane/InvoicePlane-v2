@@ -52,6 +52,7 @@ class Login extends BaseLogin
     protected function getEmailFormComponent(): Component
     {
         return TextInput::make('email')
+            ->label(fn (): string => trans('ip.email'))
             ->email()
             ->required()
             ->autocomplete()
@@ -62,6 +63,7 @@ class Login extends BaseLogin
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
+            ->label(fn (): string => trans('ip.password'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->autocomplete('current-password')

@@ -9,9 +9,19 @@ use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class Dashboard extends Page
 {
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.dashboard');
+    }
+
     public static function getSlug(?Panel $panel = null): string
     {
         return 'dashboard';
+    }
+
+    public function getTitle(): string
+    {
+        return trans('ip.dashboard');
     }
 
     public function getHeaderWidgets(): array

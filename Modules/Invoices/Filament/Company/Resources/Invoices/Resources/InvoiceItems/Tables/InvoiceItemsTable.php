@@ -17,57 +17,76 @@ class InvoiceItemsTable
         return $table
             ->columns([
                 TextColumn::make('company_id')
+                    ->label(fn (): string => trans('fields.company_id'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('product.id')
+                    ->label(fn (): string => trans('fields.product_id'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('task.id')
+                    ->label(fn (): string => trans('fields.task_id'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('productUnit.id')
+                    ->label(fn (): string => trans('fields.product_unit_id'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('added_at')
+                    ->label(fn (): string => trans('fields.added_at'))
                     ->date()
                     ->sortable(),
                 TextColumn::make('item_name')
+                    ->label(fn (): string => trans('fields.item_label'))
                     ->searchable(),
                 TextColumn::make('product_unit')
+                    ->label(fn (): string => trans('ip.product_unit'))
                     ->searchable(),
                 IconColumn::make('is_recurring')
+                    ->label(fn (): string => trans('ip.recurring'))
                     ->boolean(),
                 TextColumn::make('quantity')
+                    ->label(fn (): string => trans('ip.quantity'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('price')
+                    ->label(fn (): string => trans('ip.price'))
                     ->money()
                     ->sortable(),
                 TextColumn::make('discount')
+                    ->label(fn (): string => trans('ip.discount'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('subtotal')
+                    ->label(fn (): string => trans('ip.subtotal'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('tax_1')
+                    ->label(fn (): string => trans('fields.tax_1'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('tax_2')
+                    ->label(fn (): string => trans('fields.tax_2'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('tax_total')
+                    ->label(fn (): string => trans('ip.tax_total'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('total')
+                    ->label(fn (): string => trans('ip.total'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('taxRate.name')
+                    ->label(fn (): string => trans('ip.tax_rate'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('taxRate2.name')
+                    ->label(fn (): string => trans('fields.tax_rate_2'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('display_order')
+                    ->label(fn (): string => trans('fields.display_order'))
                     ->numeric()
                     ->sortable(),
             ])

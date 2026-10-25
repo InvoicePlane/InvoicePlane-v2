@@ -18,6 +18,21 @@ class MailQueueResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaperAirplane;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.queued_email');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.queued_emails');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.mail_queue');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return MailQueueForm::configure($schema);

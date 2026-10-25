@@ -24,6 +24,7 @@ class ExpensesTable
         return $table
             ->columns([
                 TextColumn::make('expense_status')
+                    ->label(fn (): string => trans('ip.expense_status'))
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseStatus::class, $state);
 
@@ -39,6 +40,7 @@ class ExpensesTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('expenseCategory.category_name')
+                    ->label(fn (): string => trans('ip.expense_category'))
                     ->limit(10)
                     ->placeholder('-')
                     ->searchable()
@@ -46,6 +48,7 @@ class ExpensesTable
                     ->toggleable()
                     ->hiddenFrom('sm'),
                 TextColumn::make('expense_type')
+                    ->label(fn (): string => trans('fields.expense_type'))
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(ExpenseType::class, $state);
 
@@ -56,20 +59,23 @@ class ExpensesTable
                     ->toggleable()
                     ->hiddenFrom('sm'),
                 TextColumn::make('expense_number')
+                    ->label(fn (): string => trans('ip.expense_number'))
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('sm'),
-                TextColumn::make('vendor.company_name')->limit(10)
+                TextColumn::make('vendor.company_name')->label(fn (): string => trans('ip.vendor'))->limit(10)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('expensed_at')
+                    ->label(fn (): string => trans('ip.expensed_at'))
                     ->date()
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('expense_amount')
+                    ->label(fn (): string => trans('ip.amount'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

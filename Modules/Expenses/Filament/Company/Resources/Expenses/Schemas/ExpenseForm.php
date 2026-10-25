@@ -74,6 +74,7 @@ class ExpenseForm
                         Section::make(trans('ip.details'))
                             ->schema([
                                 TextInput::make('expense_number')
+                                    ->label(fn (): string => trans('ip.expense_number'))
                                     ->required()
                                     ->default(function (Get $get, string $operation) {
                                         if ($operation !== 'create') {
@@ -118,6 +119,7 @@ class ExpenseForm
                                     ->dehydrated()
                                     ->required(),
                                 Select::make('expense_status')
+                                    ->label(fn (): string => trans('ip.expense_status'))
                                     ->options(ExpenseStatus::options())
                                     ->searchable()
                                     ->preload()
@@ -129,14 +131,17 @@ class ExpenseForm
                                     ->searchable()
                                     ->preload(),
                                 Select::make('expense_type')
+                                    ->label(fn (): string => trans('fields.expense_type'))
                                     ->options(ExpenseType::options())
                                     ->searchable()
                                     ->preload()
                                     ->required(),
                                 TextInput::make('expense_amount')
+                                    ->label(fn (): string => trans('ip.amount'))
                                     ->numeric()
                                     ->required(),
                                 DatePicker::make('expensed_at')
+                                    ->label(fn (): string => trans('ip.expensed_at'))
                                     ->required(),
                             ])
                             ->columnSpan(1),
@@ -158,10 +163,10 @@ class ExpenseForm
                                     ->searchable()
                                     ->preload()
                                     ->required(),
-                                TextInput::make('quantity')->numeric()->required(),
-                                TextInput::make('price')->numeric()->required(),
-                                TextInput::make('discount')->numeric()->default(0),
-                                TextInput::make('subtotal')->numeric()->default(0)->disabled(),
+                                TextInput::make('quantity')->label(fn (): string => trans('ip.quantity'))->numeric()->required(),
+                                TextInput::make('price')->label(fn (): string => trans('ip.price'))->numeric()->required(),
+                                TextInput::make('discount')->label(fn (): string => trans('ip.discount'))->numeric()->default(0),
+                                TextInput::make('subtotal')->label(fn (): string => trans('ip.subtotal'))->numeric()->default(0)->disabled(),
                             ])
                             ->collapsed(false)
                             ->afterStateUpdated(fn ($set, $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
@@ -213,6 +218,7 @@ class ExpenseForm
                 Section::make(trans('ip.expense_notes'))
                     ->schema([
                         MarkdownEditor::make('description')
+                            ->label(fn (): string => trans('ip.expense_description'))
                             ->toolbarButtons(['bold', 'italic']),
                     ])
                     ->columnSpanFull(),

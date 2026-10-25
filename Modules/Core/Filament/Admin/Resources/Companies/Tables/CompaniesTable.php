@@ -23,12 +23,12 @@ class CompaniesTable
     {
         return $table
             ->columns([
-                TextColumn::make('search_code')->searchable()->sortable()->toggleable(),
-                TextColumn::make('slug')->searchable()->sortable()->toggleable(),
-                TextColumn::make('name')->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('vat_number')->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('id_number')->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('coc_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('search_code')->label(fn (): string => trans('ip.search_code'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('slug')->label(fn (): string => trans('ip.slug'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('name')->label(fn (): string => trans('ip.name'))->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('vat_number')->label(fn (): string => trans('ip.vat_id'))->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('id_number')->label(fn (): string => trans('ip.id_number'))->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('coc_number')->label(fn (): string => trans('ip.coc_number'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([
             ])

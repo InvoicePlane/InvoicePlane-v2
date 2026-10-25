@@ -19,8 +19,9 @@ class RecurringInvoicesTable
     {
         return $table
             ->columns([
-                TextColumn::make('invoice.invoice_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('invoice.invoice_number')->label(fn (): string => trans('ip.invoice_number'))->searchable()->sortable()->toggleable(),
                 TextColumn::make('frequency')
+                    ->label(fn (): string => trans('fields.frequency'))
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(RecurringFrequency::class, $state);
 
@@ -29,14 +30,16 @@ class RecurringInvoicesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('customer.company_name')->limit(10)
+                TextColumn::make('customer.company_name')->label(fn (): string => trans('ip.customer'))->limit(10)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('start_at')
+                    ->label(fn (): string => trans('ip.start_at'))
                     ->date()
                     ->since()->searchable()->sortable()->toggleable(),
                 TextColumn::make('end_at')
+                    ->label(fn (): string => trans('ip.end_at'))
                     ->date()
                     ->since()->searchable()->sortable()->toggleable(),
             ])

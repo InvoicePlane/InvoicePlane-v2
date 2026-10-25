@@ -9,8 +9,6 @@ class EditNumbering extends EditRecord
 {
     protected static string $resource = NumberingResource::class;
 
-    protected static ?string $title = 'Edit Numbering Scheme';
-
     /**
      * Prevent changing company_id via form manipulation.
      */

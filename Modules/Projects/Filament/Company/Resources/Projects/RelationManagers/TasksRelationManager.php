@@ -13,6 +13,11 @@ class TasksRelationManager extends RelationManager
 
     protected static ?string $relatedResource = TaskResource::class;
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('ip.tasks');
+    }
+
     public function table(Table $table): Table
     {
         return $table

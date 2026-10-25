@@ -20,6 +20,21 @@ class ContactResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.contact');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.contacts');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.contacts');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ContactForm::configure($schema);

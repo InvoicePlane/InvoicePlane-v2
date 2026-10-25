@@ -52,8 +52,8 @@ class ProjectsTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('start_at')->hiddenFrom('sm')->date()->since()->searchable()->sortable()->toggleable(),
-                TextColumn::make('end_at')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('start_at')->label(fn (): string => trans('ip.start_at'))->hiddenFrom('sm')->date()->since()->searchable()->sortable()->toggleable(),
+                TextColumn::make('end_at')->label(fn (): string => trans('ip.end_at'))->date()->since()->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
             ->recordActions([

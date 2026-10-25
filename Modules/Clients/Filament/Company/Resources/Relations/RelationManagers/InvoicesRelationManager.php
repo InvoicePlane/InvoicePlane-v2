@@ -13,19 +13,25 @@ class InvoicesRelationManager extends RelationManager
 {
     protected static string $relationship = 'invoices';
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('ip.invoices');
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('invoice_number')->sortable()->searchable(),
+                TextColumn::make('invoice_number')->label(fn (): string => trans('ip.invoice_number'))->sortable()->searchable(),
                 TextColumn::make('invoice_status')
+                    ->label(fn (): string => trans('ip.invoice_status'))
                     ->badge()
                     ->formatStateUsing(fn ($state) => ($state instanceof InvoiceStatus ? $state : InvoiceStatus::tryFrom($state))?->label())
                     ->color(fn ($state) => ($state instanceof InvoiceStatus ? $state : InvoiceStatus::tryFrom($state))?->color() ?? 'secondary')
                     ->sortable(),
-                TextColumn::make('invoiced_at')->date()->sortable(),
-                TextColumn::make('invoice_due_at')->date()->sortable(),
-                TextColumn::make('invoice_total')->money()->sortable(),
+                TextColumn::make('invoiced_at')->label(fn (): string => trans('ip.invoice_date'))->date()->sortable(),
+                TextColumn::make('invoice_due_at')->label(fn (): string => trans('ip.invoice_due_at'))->date()->sortable(),
+                TextColumn::make('invoice_total')->label(fn (): string => trans('ip.invoice_total'))->money()->sortable(),
             ])
             ->headerActions([
                 Action::make('create_invoice')

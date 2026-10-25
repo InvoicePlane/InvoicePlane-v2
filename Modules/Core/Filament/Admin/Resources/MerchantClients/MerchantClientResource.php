@@ -18,6 +18,21 @@ class MerchantClientResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaperAirplane;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.merchant_client');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.merchant_clients');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.merchant_clients');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return MerchantClientForm::configure($schema);

@@ -22,6 +22,21 @@ class ExpenseItemResource extends BaseResource
 
     protected static ?string $parentResource = ExpenseResource::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.expense_item');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.expense_items');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.expense_items');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ExpenseItemForm::configure($schema);

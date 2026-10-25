@@ -20,9 +20,20 @@ class NoteTemplateResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentText;
 
-    protected static ?string $navigationLabel = 'Note Templates';
+    public static function getModelLabel(): string
+    {
+        return trans('fields.note_template');
+    }
 
-    protected static ?string $modelLabel = 'Note Template';
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.note_templates');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.note_templates');
+    }
 
     public static function form(Schema $schema): Schema
     {

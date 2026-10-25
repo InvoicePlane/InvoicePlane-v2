@@ -31,9 +31,20 @@ class NumberingResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::NumberedList;
 
-    protected static ?string $navigationLabel = 'Numbering Schemes';
+    public static function getModelLabel(): string
+    {
+        return trans('ip.numbering');
+    }
 
-    protected static ?string $modelLabel = 'Numbering Scheme';
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.numberings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.numberings');
+    }
 
     public static function form(Schema $schema): Schema
     {

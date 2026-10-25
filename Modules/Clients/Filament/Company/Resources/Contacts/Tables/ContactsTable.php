@@ -24,6 +24,7 @@ class ContactsTable
             ->columns([
                 TextColumn::make('relation.company_name')->limit(10)->label(trans('ip.company_name'))->searchable()->sortable()->toggleable(),
                 TextColumn::make('relation.relation_type')
+                    ->label(fn (): string => trans('ip.type'))
                     ->limit(10)
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(RelationType::class, $state);

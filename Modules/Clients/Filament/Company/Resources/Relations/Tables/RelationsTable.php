@@ -34,6 +34,7 @@ class RelationsTable
         return $table
             ->columns([
                 TextColumn::make('primaryContact.fullName')
+                    ->label(fn (): string => trans('ip.primary_contact'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('relation_type')
@@ -91,6 +92,7 @@ class RelationsTable
                     ->toggleable()
                     ->hiddenFrom('sm'),
                 TextColumn::make('language')
+                    ->label(fn (): string => trans('ip.language'))
                     ->searchable()
                     ->sortable()
                     ->toggleable()

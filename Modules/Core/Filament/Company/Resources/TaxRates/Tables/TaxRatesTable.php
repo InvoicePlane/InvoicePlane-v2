@@ -22,6 +22,7 @@ class TaxRatesTable
         return $table
             ->columns([
                 TextColumn::make('tax_rate_type')
+                    ->label(fn (): string => trans('ip.tax_rate_type'))
                     ->formatStateUsing(function ($state) {
                         $status = EnumHelper::safeEnum(TaxRateType::class, $state);
 
@@ -31,6 +32,7 @@ class TaxRatesTable
                     ->sortable()
                     ->toggleable(),
                 IconColumn::make('is_active')
+                    ->label(fn (): string => trans('ip.is_active'))
                     ->boolean()
                     ->searchable()
                     ->sortable()

@@ -200,25 +200,30 @@ class InvoiceForm
                                             ->dehydrated(),
 
                                         TextEntry::make('product_name')
+                                            ->label(fn (): string => trans('ip.product_name'))
                                             ->state(fn ($get) => Product::query()->find($get('product_id'))?->product_name)
                                             ->disabled(),
 
                                         TextInput::make('quantity')
+                                            ->label(fn (): string => trans('ip.quantity'))
                                             ->numeric()
                                             ->required()
                                             ->dehydrated(),
 
                                         TextInput::make('price')
+                                            ->label(fn (): string => trans('ip.price'))
                                             ->numeric()
                                             ->required()
                                             ->dehydrated(),
 
                                         TextInput::make('discount')
+                                            ->label(fn (): string => trans('ip.discount'))
                                             ->numeric()
                                             ->default(0)
                                             ->dehydrated(),
 
                                         TextInput::make('subtotal')
+                                            ->label(fn (): string => trans('ip.subtotal'))
                                             ->numeric()
                                             ->default(0)
                                             ->dehydrated()

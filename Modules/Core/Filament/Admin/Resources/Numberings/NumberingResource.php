@@ -20,6 +20,21 @@ class NumberingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::NumberedList;
 
+    public static function getModelLabel(): string
+    {
+        return trans('ip.numbering');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.numberings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.numberings');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return NumberingForm::configure($schema);

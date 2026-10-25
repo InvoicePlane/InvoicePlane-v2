@@ -15,10 +15,16 @@ class NotesRelationManager extends RelationManager
 {
     protected static string $relationship = 'notes';
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('ip.notes');
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             Textarea::make('content')
+                ->label(fn (): string => trans('fields.content'))
                 ->required()
                 ->columnSpanFull(),
         ]);
@@ -28,8 +34,8 @@ class NotesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('content')->wrap(),
-                TextColumn::make('noted_at')->dateTime(),
+                TextColumn::make('content')->label(fn (): string => trans('fields.content'))->wrap(),
+                TextColumn::make('noted_at')->label(fn (): string => trans('fields.noted_at'))->dateTime(),
             ])
             ->recordActions([
                 EditAction::make()->authorize(fn (): bool => $this->canManageNotes()),

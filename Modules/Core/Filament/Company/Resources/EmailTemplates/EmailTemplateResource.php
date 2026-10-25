@@ -22,6 +22,21 @@ class EmailTemplateResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::EnvelopeOpen;
 
+    public static function getModelLabel(): string
+    {
+        return trans('ip.email_template');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.email_templates');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.email_templates');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return EmailTemplateForm::configure($schema);

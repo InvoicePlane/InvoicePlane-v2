@@ -13,6 +13,11 @@ class ContactsRelationManager extends RelationManager
 
     protected static ?string $relatedResource = ContactResource::class;
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('fields.contacts');
+    }
+
     public function table(Table $table): Table
     {
         return $table

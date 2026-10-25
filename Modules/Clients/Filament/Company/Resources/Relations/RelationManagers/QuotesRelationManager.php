@@ -13,19 +13,25 @@ class QuotesRelationManager extends RelationManager
 {
     protected static string $relationship = 'quotes';
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('ip.quotes');
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('quote_number')->sortable()->searchable(),
+                TextColumn::make('quote_number')->label(fn (): string => trans('ip.quote_number'))->sortable()->searchable(),
                 TextColumn::make('quote_status')
+                    ->label(fn (): string => trans('ip.quote_status'))
                     ->badge()
                     ->formatStateUsing(fn ($state) => ($state instanceof QuoteStatus ? $state : QuoteStatus::tryFrom($state))?->label())
                     ->color(fn ($state) => ($state instanceof QuoteStatus ? $state : QuoteStatus::tryFrom($state))?->color() ?? 'secondary')
                     ->sortable(),
-                TextColumn::make('quoted_at')->date()->sortable(),
-                TextColumn::make('quote_expires_at')->date()->sortable(),
-                TextColumn::make('quote_total')->money()->sortable(),
+                TextColumn::make('quoted_at')->label(fn (): string => trans('ip.quoted_at'))->date()->sortable(),
+                TextColumn::make('quote_expires_at')->label(fn (): string => trans('ip.quote_expires_at'))->date()->sortable(),
+                TextColumn::make('quote_total')->label(fn (): string => trans('fields.quote_total'))->money()->sortable(),
             ])
             ->headerActions([
                 Action::make('create_quote')

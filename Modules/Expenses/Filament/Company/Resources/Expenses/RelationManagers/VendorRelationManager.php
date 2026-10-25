@@ -13,6 +13,11 @@ class VendorRelationManager extends RelationManager
 
     protected static ?string $relatedResource = RelationResource::class;
 
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return trans('ip.vendor');
+    }
+
     public function table(Table $table): Table
     {
         return $table

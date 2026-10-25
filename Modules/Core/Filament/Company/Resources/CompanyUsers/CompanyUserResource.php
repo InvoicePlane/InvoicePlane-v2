@@ -30,26 +30,24 @@ class CompanyUserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
-    protected static ?string $navigationLabel = 'team_members';
-
     // Users relate to companies via a many-to-many pivot (User::companies()),
     // not a direct ownership relation Filament can auto-scope by. The table
     // query below scopes manually to the current tenant.
     protected static bool $isScopedToTenant = false;
 
-    /** The company this list and its actions are scoped to; null → fail closed. */
-    private static function currentCompany(): ?Company
+    public static function getModelLabel(): string
     {
-        return Filament::getTenant();
+        return trans('fields.team_member');
     }
 
-    /** Single source of truth for who may see and manage the team roster. */
-    private static function userMayManageTeam(): bool
+    public static function getPluralModelLabel(): string
     {
-        return auth()->user()?->hasRole([
-            ...UserRole::elevated(),
-            UserRole::CUSTOMER_ADMIN->value,
-        ]) ?? false;
+        return trans('fields.team_members');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.team_members');
     }
 
     public static function form(Schema $schema): Schema
@@ -149,5 +147,20 @@ class CompanyUserResource extends Resource
         $roles = array_merge(UserRole::elevated(), [UserRole::CUSTOMER_ADMIN->value]);
 
         return auth()->user()?->hasRole($roles) ?? false;
+    }
+
+    /** The company this list and its actions are scoped to; null → fail closed. */
+    private static function currentCompany(): ?Company
+    {
+        return Filament::getTenant();
+    }
+
+    /** Single source of truth for who may see and manage the team roster. */
+    private static function userMayManageTeam(): bool
+    {
+        return auth()->user()?->hasRole([
+            ...UserRole::elevated(),
+            UserRole::CUSTOMER_ADMIN->value,
+        ]) ?? false;
     }
 }

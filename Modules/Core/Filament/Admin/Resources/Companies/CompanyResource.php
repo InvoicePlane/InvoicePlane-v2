@@ -22,6 +22,21 @@ class CompanyResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
+    public static function getModelLabel(): string
+    {
+        return trans('ip.company');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('ip.companies');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.companies');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CompanyForm::configure($schema);

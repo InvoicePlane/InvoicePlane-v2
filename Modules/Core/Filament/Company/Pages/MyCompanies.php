@@ -23,6 +23,16 @@ class MyCompanies extends Page implements HasTable
 
     protected string $view = 'core::filament.company.pages.my-companies';
 
+    public static function getNavigationLabel(): string
+    {
+        return trans('ip.my_companies');
+    }
+
+    public function getTitle(): string
+    {
+        return trans('ip.my_companies');
+    }
+
     public function table(Table $table): Table
     {
         /** @var User $user */

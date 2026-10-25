@@ -13,6 +13,7 @@ class EditProfile extends BaseEditProfile
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label(fn (): string => trans('ip.name'))
                     ->required()
                     ->maxLength(255),
                 $this->getNameFormComponent(),

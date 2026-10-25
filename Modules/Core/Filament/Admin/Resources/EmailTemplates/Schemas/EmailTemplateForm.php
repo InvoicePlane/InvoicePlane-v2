@@ -45,7 +45,9 @@ class EmailTemplateForm
                                 Select::make('type')
                                     ->label(trans('ip.type'))
                                     ->required()
-                                    ->options(EmailTemplateType::class)
+                                    ->options(fn (): array => collect(EmailTemplateType::cases())
+                                        ->mapWithKeys(fn (EmailTemplateType $type): array => [$type->value => $type->label()])
+                                        ->all())
                                     ->default(null),
                                 TextInput::make('subject')
                                     ->label(trans('ip.subject')),

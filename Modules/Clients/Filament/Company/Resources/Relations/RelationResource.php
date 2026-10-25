@@ -33,6 +33,21 @@ class RelationResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.relation');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.relations');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.relations');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return RelationForm::configure($schema);

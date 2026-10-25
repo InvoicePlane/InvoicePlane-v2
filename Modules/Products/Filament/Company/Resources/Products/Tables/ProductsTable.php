@@ -24,38 +24,44 @@ class ProductsTable
     {
         return $table
             ->columns([
-                TextColumn::make('productCategory.category_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('productCategory.category_name')->label(fn (): string => trans('ip.category'))->limit(10)->searchable()->sortable()->toggleable(),
                 TextColumn::make('code')
+                    ->label(fn (): string => trans('ip.code'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('product_name')
+                    ->label(fn (): string => trans('ip.product_name'))
                     ->limit(10)
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('type')
+                    ->label(fn (): string => trans('ip.type'))
                     ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('md'),
-                TextColumn::make('price')->money()->searchable()->sortable()->toggleable(),
+                TextColumn::make('price')->label(fn (): string => trans('ip.price'))->money()->searchable()->sortable()->toggleable(),
                 TextColumn::make('productUnit.unit_name')
+                    ->label(fn (): string => trans('ip.product_unit'))
                     ->limit(5)
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('md'),
                 TextColumn::make('cost_price')
+                    ->label(fn (): string => trans('ip.purchase_price'))
                     ->numeric()
                     ->sortable()
                     ->hiddenFrom('md'),
-                TextColumn::make('taxRate.name')->limit(5)
+                TextColumn::make('taxRate.name')->label(fn (): string => trans('ip.tax_rate'))->limit(5)
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->hiddenFrom('lg'),
                 TextColumn::make('taxRate2.name')
+                    ->label(fn (): string => trans('fields.tax_rate_2'))
                     ->limit(5)
                     ->searchable()
                     ->sortable()

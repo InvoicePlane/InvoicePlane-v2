@@ -67,6 +67,7 @@ class TaskForm
                                                     ->required()
                                                     ->createOptionForm([
                                                         TextInput::make('company_name')
+                                                            ->label(fn (): string => trans('ip.customer_name'))
                                                             ->required()
                                                             ->maxLength(255),
                                                     ]),
@@ -96,6 +97,7 @@ class TaskForm
                                     ->columns(2)
                                     ->schema([
                                         Select::make('task_status')
+                                            ->label(fn (): string => trans('ip.task_status'))
                                             ->options(TaskStatus::options())
                                             ->getOptionLabelUsing(fn ($value) => TaskStatus::tryFrom($value)?->label())
                                             ->searchable()
@@ -125,6 +127,7 @@ class TaskForm
                         Section::make(trans('ip.description'))
                             ->schema([
                                 MarkdownEditor::make('description')
+                                    ->label(fn (): string => trans('ip.task_description'))
                                     ->toolbarButtons(['bold', 'italic']),
                             ])
                             ->collapsed(true)

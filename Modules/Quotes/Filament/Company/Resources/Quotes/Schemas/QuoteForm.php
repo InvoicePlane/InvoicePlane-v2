@@ -180,6 +180,7 @@ class QuoteForm
                                             }),
 
                                         TextEntry::make('product_name')
+                                            ->label(fn (): string => trans('ip.product_name'))
                                             ->disabled(),
 
                                         TextInput::make('quantity')

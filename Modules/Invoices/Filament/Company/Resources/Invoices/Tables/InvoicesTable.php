@@ -37,6 +37,7 @@ class InvoicesTable
         return $table
             ->columns([
                 TextColumn::make('invoice_status')
+                    ->label(fn (): string => trans('ip.invoice_status'))
                     ->badge()
                     ->formatStateUsing(function ($state) {
                         $status = $state instanceof InvoiceStatus ? $state : InvoiceStatus::tryFrom($state);
@@ -52,14 +53,16 @@ class InvoicesTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('invoice_number')
+                    ->label(fn (): string => trans('ip.invoice_number'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('customer.company_name')->limit(10)
+                TextColumn::make('customer.company_name')->label(fn (): string => trans('ip.customer'))->limit(10)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('invoiced_at')
+                    ->label(fn (): string => trans('ip.invoice_date'))
                     ->date()
                     ->since()
                     ->searchable()
@@ -83,6 +86,7 @@ class InvoicesTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('invoice_total')
+                    ->label(fn (): string => trans('ip.invoice_total'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

@@ -22,6 +22,21 @@ class RecurringInvoiceItemResource extends Resource
 
     protected static ?string $parentResource = RecurringInvoiceResource::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans('fields.recurring_invoice_item');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans('fields.recurring_invoice_items');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('fields.recurring_invoice_items');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return RecurringInvoiceItemForm::configure($schema);

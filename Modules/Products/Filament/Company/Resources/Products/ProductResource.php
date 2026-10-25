@@ -13,7 +13,6 @@ use Modules\Products\Filament\Company\Resources\Products\Pages\ListProducts;
 use Modules\Products\Filament\Company\Resources\Products\Schemas\ProductForm;
 use Modules\Products\Filament\Company\Resources\Products\Tables\ProductsTable;
 use Modules\Products\Models\Product;
-use UnitEnum;
 
 class ProductResource extends BaseResource
 {
@@ -21,9 +20,12 @@ class ProductResource extends BaseResource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Resources';
-
     protected static ?int $navigationSort = 30;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return trans('fields.resources');
+    }
 
     public static function getModelLabel(): string
     {
