@@ -20,6 +20,8 @@ class RecentPaymentsWidget extends TableWidget
         // via a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => PaymentResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => PaymentResource::getPluralModelLabel())
             ->recordUrl(fn (Payment $record): string => PaymentResource::getUrl('index'));
     }
 

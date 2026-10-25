@@ -16,11 +16,6 @@ class RecentInvoicesWidget extends TableWidget
 {
     protected static ?int $sort = 1;
 
-    public static function getHeading(): ?string
-    {
-        return trans('ip.recent_invoices');
-    }
-
     public function getTableHeaderActions(): array
     {
         return [
@@ -38,7 +33,14 @@ class RecentInvoicesWidget extends TableWidget
         // via a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => InvoiceResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => InvoiceResource::getPluralModelLabel())
             ->recordUrl(fn (Invoice $record): string => InvoiceResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ip.recent_invoices');
     }
 
     protected function getTableQuery(): Builder|Relation|null

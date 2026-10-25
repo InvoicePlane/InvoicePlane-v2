@@ -22,6 +22,8 @@ class RecentTasksWidget extends TableWidget
         // a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => TaskResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => TaskResource::getPluralModelLabel())
             ->recordUrl(fn (Task $record): string => TaskResource::getUrl('index'));
     }
 

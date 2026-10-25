@@ -22,6 +22,8 @@ class RecentExpensesWidget extends TableWidget
         // via a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => ExpenseResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => ExpenseResource::getPluralModelLabel())
             ->recordUrl(fn (Expense $record): string => ExpenseResource::getUrl('index'));
     }
 

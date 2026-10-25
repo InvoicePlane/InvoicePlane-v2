@@ -16,11 +16,6 @@ class RecentQuotesWidget extends TableWidget
 {
     protected static ?int $sort = 1;
 
-    public static function getHeading(): ?string
-    {
-        return trans('ip.recent_quotes');
-    }
-
     public function getTableHeaderActions(): array
     {
         return [
@@ -38,7 +33,14 @@ class RecentQuotesWidget extends TableWidget
         // a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => QuoteResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => QuoteResource::getPluralModelLabel())
             ->recordUrl(fn (Quote $record): string => QuoteResource::getUrl('index'));
+    }
+
+    protected function getTableHeading(): ?string
+    {
+        return trans('ip.recent_quotes');
     }
 
     protected function getTableQuery(): Builder|Relation|null

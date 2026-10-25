@@ -30,7 +30,7 @@ class InvoiceResource extends BaseResource
 
     public static function getModelLabel(): string
     {
-        return trans('ip.invoices');
+        return trans('ip.invoice');
     }
 
     public static function getPluralModelLabel(): string

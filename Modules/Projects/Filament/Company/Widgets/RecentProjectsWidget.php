@@ -22,6 +22,8 @@ class RecentProjectsWidget extends TableWidget
         // via a modal action on that page's table, not a dedicated edit/view
         // page — so this is the most specific URL a row can link to.
         return parent::table($table)
+            ->modelLabel(fn (): string => ProjectResource::getModelLabel())
+            ->pluralModelLabel(fn (): string => ProjectResource::getPluralModelLabel())
             ->recordUrl(fn (Project $record): string => ProjectResource::getUrl('index'));
     }
 
