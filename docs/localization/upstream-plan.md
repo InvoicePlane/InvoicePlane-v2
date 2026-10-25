@@ -4,8 +4,8 @@ The upstream translation guide requires Crowdin. German catalogues and Docker op
 
 | Order | Package | Review state | Dependencies |
 | --- | --- | --- | --- |
-| 1 | Profile locale across panels, persistent Livewire middleware, account notifications and lazy user menus | Submit first, ready for review | None; translation tests inject sentinel strings |
-| 2 | Translatable enum, role and permission labels with stable backing values | Submit as independent draft | None; English source catalogues only |
+| 1 | Profile locale across panels, persistent Livewire middleware, account notifications and lazy user menus | [PR #802](https://github.com/InvoicePlane/InvoicePlane-v2/pull/802), ready for review | None; translation tests inject sentinel strings |
+| 2 | Translatable enum, role and permission labels with stable backing values | [PR #803](https://github.com/InvoicePlane/InvoicePlane-v2/pull/803), independent draft | None; English source catalogues only |
 | 3 | Navigation/settings, language/country choices, widget headings and inferred form/resource labels | Keep in fork until first feedback; split navigation from mechanical labels | Locale package for live profile behavior |
 | 4 | Import wizard and report-designer strings | Keep in fork; designer is existing incomplete upstream functionality | English source catalogue additions only |
 | 5 | Date/number/currency display, request-scoped settings cache | Keep in fork for focused performance/tenant review | UI component label changes can be separated mechanically |
