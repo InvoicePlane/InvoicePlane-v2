@@ -2,6 +2,7 @@
 
 return [
     'date_formats' => [
+        'd.m.Y' => date('d.m.Y') . ' (d.m.Y)',
         'd/m/Y' => date('d/m/Y') . ' (d/m/Y)',
         'd-m-Y' => date('d-m-Y') . ' (d-m-Y)',
         'd.M.Y' => date('d.M.Y') . ' (d.M.Y)',

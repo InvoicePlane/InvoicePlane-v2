@@ -74,7 +74,7 @@ class ExpensesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('expense_amount')
+                TextColumn::make('expense_amount')->numeric(decimalPlaces: 2)
                     ->label(fn (): string => trans('ip.amount'))
                     ->searchable()
                     ->sortable()
@@ -96,29 +96,32 @@ class ExpensesTable
                         }),
 
                     Action::make('approve')
+                        ->label(fn (): string => trans('ip.approve'))
                         ->visible(fn () => auth()->user()?->can(Permission::APPROVE_EXPENSES->value))
                         ->color('success')
                         ->requiresConfirmation()
-                        ->modalHeading('TODO: Approve Expense')
-                        ->modalDescription('This action is not yet implemented.')
-                        ->modalSubmitActionLabel('OK')
+                        ->modalHeading(fn (): string => trans('ui.todo_approve_expense'))
+                        ->modalDescription(fn (): string => trans('ui.action_not_implemented'))
+                        ->modalSubmitActionLabel(fn (): string => trans('ui.ok'))
                         ->action(fn () => null),
 
                     Action::make('reject')
+                        ->label(fn (): string => trans('ip.reject'))
                         ->visible(fn () => auth()->user()?->can(Permission::REJECT_EXPENSES->value))
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->modalHeading('TODO: Reject Expense')
-                        ->modalDescription('This action is not yet implemented.')
-                        ->modalSubmitActionLabel('OK')
+                        ->modalHeading(fn (): string => trans('ui.todo_reject_expense'))
+                        ->modalDescription(fn (): string => trans('ui.action_not_implemented'))
+                        ->modalSubmitActionLabel(fn (): string => trans('ui.ok'))
                         ->action(fn () => null),
 
                     Action::make('duplicate')
+                        ->label(fn (): string => trans('ip.duplicate'))
                         ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_EXPENSES->value))
                         ->requiresConfirmation()
-                        ->modalHeading('TODO: Duplicate Expense')
-                        ->modalDescription('This action is not yet implemented.')
-                        ->modalSubmitActionLabel('OK')
+                        ->modalHeading(fn (): string => trans('ui.todo_duplicate_expense'))
+                        ->modalDescription(fn (): string => trans('ui.action_not_implemented'))
+                        ->modalSubmitActionLabel(fn (): string => trans('ui.ok'))
                         ->action(fn () => null),
                 ]),
             ])

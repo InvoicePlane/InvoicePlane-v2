@@ -61,7 +61,7 @@ class QuotesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('quote_total')->label(fn (): string => trans('fields.quote_total'))->searchable()->sortable()->toggleable(),
+                TextColumn::make('quote_total')->numeric(decimalPlaces: 2)->label(fn (): string => trans('fields.quote_total'))->searchable()->sortable()->toggleable(),
             ])
             ->filters([])
             ->recordActions([

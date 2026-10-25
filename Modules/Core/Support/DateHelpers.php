@@ -2,6 +2,8 @@
 
 namespace Modules\Core\Support;
 
+use Carbon\CarbonInterface;
+use Filament\Facades\Filament;
 use Illuminate\Support\Carbon;
 use Modules\Core\Models\Setting;
 
@@ -12,7 +14,7 @@ class DateHelpers
     /**
      * Format a date as a localized string, honouring the admin-configured
      * `settings.date_format` (see `config('ip.date_formats')` for the
-     * available options), falling back to Y-m-d when unset.
+     * available options), falling back to the current locale’s date format when unset.
      */
     public static function formatDate($date): string
     {
@@ -20,7 +22,9 @@ class DateHelpers
             return '-';
         }
 
-        return ($date instanceof Carbon ? $date : Carbon::parse($date))->format(static::resolveDateFormat());
+        return ($date instanceof CarbonInterface ? $date->copy() : Carbon::parse($date))
+            ->locale(app()->getLocale())
+            ->translatedFormat(static::resolveDateFormat());
     }
 
     /**
@@ -32,8 +36,9 @@ class DateHelpers
         if ( ! $date) {
             return '-';
         }
-        $carbon = $date instanceof Carbon ? $date : Carbon::parse($date);
-        $diff   = now()->diffInDays($carbon, false);
+        $carbon = ($date instanceof CarbonInterface ? $date->copy() : Carbon::parse($date))
+            ->locale(app()->getLocale());
+        $diff = now()->diffInDays($carbon, false);
 
         if (abs($diff) > $maxPeriod) {
             return self::formatDate($carbon);
@@ -42,17 +47,18 @@ class DateHelpers
         return $carbon->diffForHumans(now(), [
             'parts'  => 1,
             'short'  => true,
-            'syntax' => $diff < 0 ? Carbon::DIFF_RELATIVE_TO_NOW : Carbon::DIFF_RELATIVE_TO_NOW,
+            'syntax' => Carbon::DIFF_RELATIVE_TO_NOW,
         ]);
     }
 
     /**
-     * Resolve the configured date format from the `settings` table
-     * (see `Modules\Core\Filament\Admin\Pages\Settings`), falling back
-     * to Y-m-d when the setting has never been saved.
+     * Resolve the active company’s date format, then the global setting.
+     * The fallback is German day-month-year or the existing ISO format.
      */
-    protected static function resolveDateFormat(): string
+    public static function resolveDateFormat(): string
     {
-        return Setting::getByKey('date_format') ?: self::DEFAULT_DATE_FORMAT;
+        $format = app(DisplaySettings::class)->get(Filament::getTenant()?->getKey(), Setting::KEY_DATE_FORMAT);
+
+        return $format ?: (str_starts_with(app()->getLocale(), 'de') ? 'd.m.Y' : self::DEFAULT_DATE_FORMAT);
     }
 }

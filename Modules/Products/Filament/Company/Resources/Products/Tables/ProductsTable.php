@@ -52,7 +52,7 @@ class ProductsTable
                     ->hiddenFrom('md'),
                 TextColumn::make('cost_price')
                     ->label(fn (): string => trans('ip.purchase_price'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable()
                     ->hiddenFrom('md'),
                 TextColumn::make('taxRate.name')->label(fn (): string => trans('ip.tax_rate'))->limit(5)

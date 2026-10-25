@@ -11,6 +11,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Payments\Enums\PaymentStatus;
 use Modules\Payments\Models\Payment;
 use Modules\Payments\Services\PaymentService;
 
@@ -27,7 +29,7 @@ class PaymentsTable
                     ->toggleable(),
                 TextColumn::make('paid_at')
                     ->label(fn (): string => trans('ip.paid_at'))
-                    ->date('d-m-Y')
+                    ->date()
                     ->since()
                     ->color(
                         fn (Payment $record) => optional($record->invoice)->invoice_due_at && $record->paid_at > $record->invoice->invoice_due_at
@@ -47,7 +49,7 @@ class PaymentsTable
                     ->state(fn (Payment $record) => $record->invoice?->invoice_number)
                     ->searchable()
                     ->toggleable(),
-                TextColumn::make('payment_status')
+                TextColumn::make('payment_status')->formatStateUsing(fn ($state): string => EnumHelper::safeEnum(PaymentStatus::class, $state)?->label() ?? '-')
                     ->label(fn (): string => trans('ip.payment_status'))
                     ->sortable()
                     ->searchable()
@@ -63,7 +65,7 @@ class PaymentsTable
                     ->label(trans('ip.client'))
                     ->searchable()
                     ->toggleable(),
-                TextColumn::make('payment_amount')
+                TextColumn::make('payment_amount')->numeric(decimalPlaces: 2)
                     ->label(fn (): string => trans('ip.payment_amount'))
                     ->sortable()
                     ->searchable()

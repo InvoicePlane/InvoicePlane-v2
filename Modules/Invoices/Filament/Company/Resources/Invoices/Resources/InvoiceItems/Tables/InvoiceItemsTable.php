@@ -47,7 +47,7 @@ class InvoiceItemsTable
                     ->boolean(),
                 TextColumn::make('quantity')
                     ->label(fn (): string => trans('ip.quantity'))
-                    ->numeric()
+                    ->numeric(maxDecimalPlaces: 8)
                     ->sortable(),
                 TextColumn::make('price')
                     ->label(fn (): string => trans('ip.price'))
@@ -55,27 +55,27 @@ class InvoiceItemsTable
                     ->sortable(),
                 TextColumn::make('discount')
                     ->label(fn (): string => trans('ip.discount'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('subtotal')
                     ->label(fn (): string => trans('ip.subtotal'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('tax_1')
                     ->label(fn (): string => trans('fields.tax_1'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('tax_2')
                     ->label(fn (): string => trans('fields.tax_2'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('tax_total')
                     ->label(fn (): string => trans('ip.tax_total'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('total')
                     ->label(fn (): string => trans('ip.total'))
-                    ->numeric()
+                    ->numeric(decimalPlaces: 2)
                     ->sortable(),
                 TextColumn::make('taxRate.name')
                     ->label(fn (): string => trans('ip.tax_rate'))

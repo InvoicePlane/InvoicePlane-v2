@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
+use Modules\Core\Support\DisplaySettings;
 use Modules\Core\Traits\BelongsToCompany;
 
 /**
@@ -160,6 +161,9 @@ class Setting extends Model
             $setting->setting_value = $value;
             $setting->save();
         });
+
+        // saveByKey bypasses model events, including display-cache invalidation.
+        app(DisplaySettings::class)->clear();
 
         config(['ip.' . $key => $value]);
     }

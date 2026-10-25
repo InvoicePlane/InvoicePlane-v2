@@ -85,7 +85,7 @@ class InvoicesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('invoice_total')
+                TextColumn::make('invoice_total')->numeric(decimalPlaces: 2)
                     ->label(fn (): string => trans('ip.invoice_total'))
                     ->searchable()
                     ->sortable()

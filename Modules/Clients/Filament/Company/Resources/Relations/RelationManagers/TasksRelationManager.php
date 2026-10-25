@@ -5,6 +5,8 @@ namespace Modules\Clients\Filament\Company\Resources\Relations\RelationManagers;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Core\Helpers\EnumHelper;
+use Modules\Projects\Enums\TaskStatus;
 
 class TasksRelationManager extends RelationManager
 {
@@ -21,7 +23,7 @@ class TasksRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('task_number')->label(fn (): string => trans('ip.task_number'))->sortable()->searchable(),
                 TextColumn::make('task_name')->label(fn (): string => trans('ip.task_name'))->limit(40)->sortable()->searchable(),
-                TextColumn::make('task_status')->label(fn (): string => trans('ip.task_status'))->sortable()->badge(),
+                TextColumn::make('task_status')->formatStateUsing(fn ($state): string => EnumHelper::safeEnum(TaskStatus::class, $state)?->label() ?? '-')->label(fn (): string => trans('ip.task_status'))->sortable()->badge(),
                 TextColumn::make('due_at')->label(fn (): string => trans('ip.due_at'))->date()->sortable(),
                 TextColumn::make('task_price')->label(fn (): string => trans('ip.task_price'))->money()->sortable(),
             ]);

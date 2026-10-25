@@ -49,7 +49,7 @@ class TasksTable
                 TextColumn::make('due_at')
                     ->label(trans('ip.task_finish_date'))
                     ->since()
-                    ->tooltip(fn (Task $record) => $record->due_at?->format('Y-m-d H:i:s'))
+                    ->dateTimeTooltip()
                     ->searchable()
                     ->sortable()
                     ->badge()
@@ -65,7 +65,7 @@ class TasksTable
 
                 TextColumn::make('task_price')
                     ->label(trans('ip.task_price'))
-                    ->money('EUR')
+                    ->money()
                     ->sortable(),
 
                 TextColumn::make('project.project_name')
