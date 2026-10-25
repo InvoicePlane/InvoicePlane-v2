@@ -11,7 +11,8 @@ WORKDIR /var/www/html
 FROM php-base AS dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY . ./
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
 FROM node:22-bookworm-slim AS frontend
 WORKDIR /build
