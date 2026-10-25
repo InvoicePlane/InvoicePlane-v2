@@ -36,6 +36,7 @@ use Modules\Core\Filament\Pages\Auth\Login;
 use Modules\Core\Http\Middleware\ConfigureTenant;
 use Modules\Core\Http\Middleware\EnsureUserCanAccessCompany;
 use Modules\Core\Http\Middleware\SetTenantFromQueryString;
+use Modules\Core\Http\Middleware\SetUserLocale;
 use Modules\Core\Models\Company;
 use Modules\Expenses\Filament\Company\Resources\ExpenseCategories\ExpenseCategoryResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
@@ -103,6 +104,7 @@ class CompanyPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->middleware([SetUserLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ])
