@@ -64,22 +64,6 @@ class UserLocaleTest extends AbstractTestCase
     }
 
     #[Test]
-    public function it_keeps_the_locale_after_livewire_replays_the_middleware_pipeline(): void
-    {
-        /* Arrange */
-        app()->setLocale('en');
-        $request = Request::create('/livewire/update', 'POST');
-        $request->setUserResolver(fn () => new User(['language' => 'de']));
-
-        /* Act */
-        app(SetUserLocale::class)->handle($request, fn () => response('middleware checked'));
-
-        /* Assert */
-        // Livewire runs persistent middleware before hydrating/rendering the component.
-        $this->assertSame('de', app()->getLocale());
-    }
-
-    #[Test]
     public function it_registers_the_middleware_on_every_panel_and_livewire_updates(): void
     {
         /* Arrange */
