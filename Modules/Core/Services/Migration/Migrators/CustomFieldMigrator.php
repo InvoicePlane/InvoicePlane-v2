@@ -20,7 +20,7 @@ class CustomFieldMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Custom Fields & Values';
+        return trans('import.entities.custom_fields');
     }
 
     public function inspect(MigrationContext $context): array

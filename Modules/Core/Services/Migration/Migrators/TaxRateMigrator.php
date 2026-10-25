@@ -17,7 +17,7 @@ class TaxRateMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Tax Rates';
+        return trans('ip.tax_rates');
     }
 
     public function inspect(MigrationContext $context): array

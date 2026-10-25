@@ -18,7 +18,7 @@ class InvoiceMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Invoices & Items';
+        return trans('import.entities.invoices');
     }
 
     public function inspect(MigrationContext $context): array

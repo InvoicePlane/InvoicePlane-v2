@@ -18,7 +18,7 @@ class QuoteMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Quotes & Items';
+        return trans('import.entities.quotes');
     }
 
     public function inspect(MigrationContext $context): array

@@ -23,7 +23,7 @@ class ClientMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Clients';
+        return trans('ip.clients');
     }
 
     public function inspect(MigrationContext $context): array

@@ -8,11 +8,11 @@
 
     // Build bands array with hardcoded colors as requested/working previously
     $bandsConfig = [
-        ['name' => 'Header Band', 'key' => 'header', 'color' => '#e5e9f0', 'darkColor' => '#2e3440', 'border' => '#81a1c1'],
-        ['name' => 'Detail Group Header Band', 'key' => 'group_header', 'color' => '#eceff4', 'darkColor' => '#3b4252', 'border' => '#8fbcbb'],
-        ['name' => 'Details Band', 'key' => 'details', 'color' => '#d8dee9', 'darkColor' => '#434c5e', 'border' => '#5e81ac'],
-        ['name' => 'Detail Group Footer Band', 'key' => 'group_footer', 'color' => '#e5e9f0', 'darkColor' => '#2e3440', 'border' => '#81a1c1'],
-        ['name' => 'Footer Band', 'key' => 'footer', 'color' => '#eceff4', 'darkColor' => '#3b4252', 'border' => '#8fbcbb'],
+        ['name' => trans('designer.band_header'), 'key' => 'header', 'color' => '#e5e9f0', 'darkColor' => '#2e3440', 'border' => '#81a1c1'],
+        ['name' => trans('designer.band_group_header'), 'key' => 'group_header', 'color' => '#eceff4', 'darkColor' => '#3b4252', 'border' => '#8fbcbb'],
+        ['name' => trans('designer.band_details'), 'key' => 'details', 'color' => '#d8dee9', 'darkColor' => '#434c5e', 'border' => '#5e81ac'],
+        ['name' => trans('designer.band_group_footer'), 'key' => 'group_footer', 'color' => '#e5e9f0', 'darkColor' => '#2e3440', 'border' => '#81a1c1'],
+        ['name' => trans('designer.band_footer'), 'key' => 'footer', 'color' => '#eceff4', 'darkColor' => '#3b4252', 'border' => '#8fbcbb'],
     ];
 @endphp
 <x-filament-panels::page>
@@ -135,9 +135,8 @@
                 class="flex items-center justify-between w-full mb-6 pb-4 border-b border-gray-200 dark:border-white/10 fi-header"
                 style="padding: 12px; background: #527397 !important; border-radius: 12px; margin-bottom: 2rem;">
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-white">Report Designer</h2>
-                    <p class="text-sm text-gray-200">Design your report layout by dragging and dropping
-                        blocks into bands.</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-white">{{ trans('designer.title') }}</h2>
+                    <p class="text-sm text-gray-200">{{ trans('designer.intro') }}</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <x-filament::button
@@ -146,7 +145,7 @@
                         :href="$this->getResource()::getUrl('index')"
                         icon="heroicon-m-x-mark"
                     >
-                        Close
+                        {{ trans('ip.close') }}
                     </x-filament::button>
                     <x-filament::button
                         x-on:click.prevent="save()"
@@ -154,7 +153,7 @@
                         icon="heroicon-m-check"
                         style="background-color: #ebcb8b !important; color: #2e3440 !important;"
                     >
-                        Save Changes
+                        {{ trans('ip.save_changes') }}
                     </x-filament::button>
                 </div>
             </div>
@@ -164,10 +163,8 @@
                 <div class="flex items-center gap-4">
                     <x-filament::icon name="heroicon-m-light-bulb" class="w-8 h-8 text-[#bf616a]"/>
                     <div>
-                        <p class="text-xs font-black text-[#2e3440] uppercase tracking-widest">Pro Tip</p>
-                        <p class="text-sm text-[#4c566a] font-medium leading-relaxed">Drag blocks into any band to build
-                            your layout. Use the <strong>Edit</strong> button on any block to configure its fields and
-                            appearance globally!</p>
+                        <p class="text-xs font-black text-[#2e3440] uppercase tracking-widest">{{ trans('designer.tip_heading') }}</p>
+                        <p class="text-sm text-[#4c566a] font-medium leading-relaxed">{!! trans('designer.tip') !!}</p>
                     </div>
                 </div>
             </div>
@@ -223,7 +220,7 @@
                                         style="grid-column: span 2 !important;">
                                         <x-filament::icon name="heroicon-m-arrow-down-tray"
                                                           class="w-8 h-8 mb-2"/>
-                                        <span class="text-sm font-bold">Drop blocks here</span>
+                                        <span class="text-sm font-bold">{{ trans('designer.drop_blocks') }}</span>
                                     </div>
                                 </template>
 
@@ -242,18 +239,18 @@
                                                     type="button"
                                                     @click.stop="console.log('Clicked block for config:', block.id, 'Full Block Object:', JSON.stringify(block, null, 2)); $wire.setCurrentBlockId(block.id); $wire.mountAction('configureBlock', { blockSlug: block.id })"
                                                     class="bg-white/20 hover:bg-white/40 rounded-lg text-white transition-colors shadow-inner p-1 flex items-center gap-1 px-2 relative z-20"
-                                                    title="Configure Fields"
+                                                    title="{{ trans('designer.configure_fields') }}"
                                                 >
                                                     <x-filament::icon name="heroicon-m-cog-6-tooth" class="w-4 h-4"/>
                                                     <span
-                                                        class="text-[10px] font-bold uppercase tracking-tighter">Edit</span>
+                                                        class="text-[10px] font-bold uppercase tracking-tighter">{{ trans('ip.edit') }}</span>
                                                 </button>
                                             </div>
                                             <button
                                                 type="button"
                                                 x-on:click.stop="addBlockToAvailable(block.id, idx)"
                                                 class="bg-black/20 hover:bg-black/40 rounded-lg text-white transition-colors shadow-inner p-1"
-                                                title="Remove Block"
+                                                title="{{ trans('designer.remove_block') }}"
                                             >
                                                 <x-filament::icon name="heroicon-m-x-mark" class="w-5 h-5"/>
                                             </button>

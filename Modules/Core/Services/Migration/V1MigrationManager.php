@@ -144,13 +144,13 @@ class V1MigrationManager extends BaseService
 
             return [
                 'success'      => true,
-                'message'      => "Connected successfully. Found {$tablesFound} matching tables with prefix '{$prefix}'.",
+                'message'      => trans('import.connection_success_message', ['count' => $tablesFound, 'prefix' => $prefix]),
                 'tables_found' => $tablesFound,
             ];
         } catch (Throwable $e) {
             return [
                 'success'      => false,
-                'message'      => 'Connection failed: ' . $e->getMessage(),
+                'message'      => trans('import.connection_error_message', ['error' => $e->getMessage()]),
                 'tables_found' => 0,
             ];
         }

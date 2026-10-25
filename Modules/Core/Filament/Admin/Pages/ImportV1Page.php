@@ -58,17 +58,23 @@ class ImportV1Page extends Page
 
     protected string $view = 'core::filament.admin.pages.import-v1';
 
-    protected static ?string $navigationLabel = 'Import from v1';
-
-    protected static ?string $title = 'Guided InvoicePlane v1 Migration';
-
     protected static ?int $navigationSort = 50;
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('import.navigation');
+    }
 
     public static function canAccess(): bool
     {
         $user = auth()->user();
 
         return $user && ($user->isSuperAdmin() || $user->hasRole(UserRole::ADMIN->value));
+    }
+
+    public function getTitle(): string
+    {
+        return trans('import.title');
     }
 
     public function mount(): void
@@ -98,16 +104,16 @@ class ImportV1Page extends Page
         $this->connectionTestResult = $res;
 
         if ($res['success']) {
-            Notification::make()->title('Connection Successful')->body($res['message'])->success()->send();
+            Notification::make()->title(trans('import.connection_successful'))->body($res['message'])->success()->send();
         } else {
-            Notification::make()->title('Connection Failed')->body($res['message'])->danger()->send();
+            Notification::make()->title(trans('import.connection_failed'))->body($res['message'])->danger()->send();
         }
     }
 
     public function proceedToInspection(): void
     {
         if ( ! $this->selectedCompanyId) {
-            Notification::make()->title('Please select a target company')->warning()->send();
+            Notification::make()->title(trans('import.select_target'))->warning()->send();
 
             return;
         }
@@ -120,9 +126,9 @@ class ImportV1Page extends Page
             $this->inspectionResult = $manager->inspect($context);
             $this->currentStep      = 2;
 
-            Notification::make()->title('Source data analyzed successfully')->success()->send();
+            Notification::make()->title(trans('import.source_analyzed'))->success()->send();
         } catch (Throwable $e) {
-            Notification::make()->title('Inspection Error')->body($e->getMessage())->danger()->send();
+            Notification::make()->title(trans('import.inspection_error'))->body($e->getMessage())->danger()->send();
         }
     }
 
@@ -147,12 +153,12 @@ class ImportV1Page extends Page
             $this->currentStep     = 3;
 
             if ($result['success']) {
-                Notification::make()->title('Migration completed successfully')->success()->send();
+                Notification::make()->title(trans('import.migration_completed'))->success()->send();
             } else {
-                Notification::make()->title('Migration completed with errors')->warning()->send();
+                Notification::make()->title(trans('import.migration_errors'))->warning()->send();
             }
         } catch (Throwable $e) {
-            Notification::make()->title('Migration Failed')->body($e->getMessage())->danger()->send();
+            Notification::make()->title(trans('import.migration_failed'))->body($e->getMessage())->danger()->send();
         } finally {
             $this->isExecuting = false;
         }
@@ -171,9 +177,9 @@ class ImportV1Page extends Page
             $context              = new MigrationContext($company, auth()->user(), false, $this->migrationResult['batch_id']);
             $res                  = $manager->rollback($context);
             $this->rollbackResult = $res;
-            Notification::make()->title('Batch rollback completed')->info()->send();
+            Notification::make()->title(trans('import.rollback_completed'))->info()->send();
         } catch (Throwable $e) {
-            Notification::make()->title('Rollback Failed')->body($e->getMessage())->danger()->send();
+            Notification::make()->title(trans('import.rollback_failed'))->body($e->getMessage())->danger()->send();
         }
     }
 
@@ -194,7 +200,7 @@ class ImportV1Page extends Page
 
         if ($this->sourceType === 'sql_file') {
             if ( ! $this->sqlFile) {
-                throw new InvalidArgumentException('Please upload a valid SQL dump file.');
+                throw new InvalidArgumentException(trans('import.upload_valid_sql'));
             }
 
             $filePath = $this->sqlFile->getRealPath();

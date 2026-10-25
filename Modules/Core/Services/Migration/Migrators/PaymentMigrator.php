@@ -19,7 +19,7 @@ class PaymentMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Payments';
+        return trans('ip.payments');
     }
 
     public function inspect(MigrationContext $context): array

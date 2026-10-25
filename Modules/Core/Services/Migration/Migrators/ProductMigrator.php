@@ -19,7 +19,7 @@ class ProductMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Products & Categories';
+        return trans('import.entities.products');
     }
 
     public function inspect(MigrationContext $context): array

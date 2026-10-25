@@ -19,7 +19,7 @@ class ProjectMigrator implements EntityMigratorInterface
 
     public function label(): string
     {
-        return 'Projects & Tasks';
+        return trans('import.entities.projects');
     }
 
     public function inspect(MigrationContext $context): array
