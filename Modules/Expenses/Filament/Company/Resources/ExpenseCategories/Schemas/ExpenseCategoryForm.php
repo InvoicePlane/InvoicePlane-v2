@@ -21,7 +21,11 @@ class ExpenseCategoryForm
                                     ->label(trans('ip.expense_category'))
                                     ->inlineLabel()
                                     ->autofocus()
-                                    ->required(),
+                                    ->required()
+                                    // expense_categories.category_name is
+                                    // varchar(50) — without this, a longer
+                                    // value blows up as an unhandled SQL 500.
+                                    ->maxLength(50),
                             ]),
                     ]),
             ]);

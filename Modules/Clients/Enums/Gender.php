@@ -19,10 +19,10 @@ enum Gender: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::MALE    => 'Male',
-            self::FEMALE  => 'Female',
-            self::OTHER   => 'Other',
-            self::UNKNOWN => 'Unknown',
+            self::MALE    => trans('ip.gender_male'),
+            self::FEMALE  => trans('ip.gender_female'),
+            self::OTHER   => trans('ip.gender_other'),
+            self::UNKNOWN => trans('ip.gender_other'),
         };
     }
 

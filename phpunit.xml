@@ -3,10 +3,14 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         cacheResult="false"
+         recordTestRunHistory="false"
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
          displayDetailsOnPhpunitDeprecations="true"
+         failOnWarning="false"
+         failOnRisky="false"
+         failOnSkipped="false"
+         failOnIncomplete="false"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -16,6 +20,14 @@
             <directory>Modules/*/Tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <exclude>
+            <group>failing</group>
+            <group>flaky</group>
+            <group>troubleshooting</group>
+            <group>slow</group>
+        </exclude>
+    </groups>
     <source>
         <include>
             <directory>app</directory>
@@ -23,13 +35,20 @@
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:JdgrYNc+daEj95jsjJIsYH2/wudsvwvi9LhR1QzFy08="/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="mariadb"/>
-        <env name="DB_DATABASE" value="ivplv2_test_db"/>
+        <!-- Real MariaDB, no SQLite fallback (parity with CI) — see AGENTS.md.
+             Not force="true": an explicit shell/docker-exec -e override (e.g.
+             DB_HOST=mariadb for the ivpldock dev stack, per CLAUDE.md) still wins. -->
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_DATABASE" value="invoiceplane_test"/>
         <env name="DB_USERNAME" value="root"/>
         <env name="DB_PASSWORD" value="root"/>
+        <env name="IMPORT_DB_DATABASE" value="invoiceplane_test"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

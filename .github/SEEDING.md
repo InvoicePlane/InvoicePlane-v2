@@ -29,7 +29,6 @@ To re-seed the database:
 
 Note: Never use test seeders in production unless you customize them for live use.
 
-
 ---
 
 Want to add new seed data for a module?

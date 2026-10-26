@@ -4,13 +4,10 @@ namespace Modules\Projects\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Models\Schedule;
 use Modules\Projects\Models\Project;
 use Modules\Projects\Models\Task;
 use Modules\Projects\Observers\ProjectObserver;
 use Modules\Projects\Observers\TaskObserver;
-use Modules\Quotes\Providers\EventServiceProvider;
-use Modules\Quotes\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

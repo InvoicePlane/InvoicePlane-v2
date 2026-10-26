@@ -5,6 +5,7 @@ namespace Modules\Projects\Filament\Company\Resources\Projects\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Projects\Filament\Company\Resources\Projects\ProjectResource;
+use Modules\Projects\Services\ProjectService;
 
 class ListProjects extends ListRecords
 {
@@ -13,7 +14,14 @@ class ListProjects extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(ProjectService::class)->createProject($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

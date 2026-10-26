@@ -5,6 +5,7 @@ namespace Modules\Expenses\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Services\BaseService;
+use Modules\Expenses\Enums\ExpenseType;
 use Modules\Expenses\Models\Expense;
 use Throwable;
 
@@ -21,13 +22,15 @@ class ExpenseService extends BaseService
 
         try {
             $expense = Expense::query()->create([
-                'expense_number' => $data['expense_number'],
-                'expense_amount' => $data['expense_amount'],
-                'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
-                'category_id'    => $data['category_id'],
                 'customer_id'    => $data['customer_id'],
-                'expense_type'   => $data['expense_type'],
-                'expense_status' => $data['expense_status'],
+                'vendor_id'      => $data['vendor_id'] ?? null,
+                'category_id'    => $data['category_id'],
+                'expense_number' => $data['expense_number'] ?? null,
+                'expense_status' => $data['expense_status'] ?? null,
+                'expense_type'   => $data['expense_type'] ?? ExpenseType::ONE_TIME->value,
+                'expensed_at'    => isset($data['expensed_at']) ? Carbon::parse($data['expensed_at']) : now(),
+                'expense_amount' => $data['expense_amount'] ?? null,
+                'description'    => $data['description'] ?? null,
             ]);
 
             foreach ($data['expenseItems'] ?? [] as $item) {
@@ -57,15 +60,24 @@ class ExpenseService extends BaseService
         DB::beginTransaction();
 
         try {
-            $expense->update([
-                'expense_number' => $data['expense_number'],
-                'expense_amount' => $data['expense_amount'],
-                'expensed_at'    => Carbon::parse($data['expensed_at']),
-                'category_id'    => $data['category_id'],
+            $updateData = [
                 'customer_id'    => $data['customer_id'],
-                'expense_type'   => $data['expense_type'],
+                'vendor_id'      => $data['vendor_id'],
+                'category_id'    => $data['category_id'],
+                'expense_number' => $data['expense_number'],
                 'expense_status' => $data['expense_status'],
-            ]);
+                'expense_type'   => $data['expense_type'],
+                'expensed_at'    => Carbon::parse($data['expensed_at']),
+                'expense_amount' => $data['expense_amount'],
+                'description'    => $data['description'],
+            ];
+
+            // Filter out any null values to prevent overwriting with null
+            $updateData = array_filter($updateData, static function ($value) {
+                return $value !== null;
+            });
+
+            $expense->update($updateData);
 
             $existingItems = $expense->expenseItems()->get()->keyBy('id');
             $incomingItems = collect($data['expenseItems'] ?? []);
@@ -111,5 +123,20 @@ class ExpenseService extends BaseService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function deleteExpense(Expense $expense): Expense
+    {
+        DB::beginTransaction();
+        try {
+            $expense->expenseItems()->delete();
+            $expense->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $expense;
     }
 }

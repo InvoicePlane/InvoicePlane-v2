@@ -3,7 +3,9 @@
 namespace Modules\Core\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Models\TaxRate;
+use Throwable;
 
 class TaxRateService extends BaseService
 {
@@ -12,28 +14,45 @@ class TaxRateService extends BaseService
         return TaxRate::class;
     }
 
-    public function create(array $validatedInput): TaxRate
+    public function createTaxRate(array $data): Model
     {
-        $taxRate = new TaxRate(
-            $validatedInput
-        );
-
-        $taxRate->save();
+        $taxRate = $this->create([
+            'company_id'    => $this->getCompanyId(),
+            'tax_rate_type' => $data['tax_rate_type'] ?? null,
+            'is_active'     => $data['is_active'] ?? false,
+            'code'          => $data['code'] ?? null,
+            'name'          => $data['name'],
+            'rate'          => $data['rate'] ?? null,
+        ]);
 
         return $taxRate;
     }
 
-    public function update(array $validatedInput, $taxRateToUpdate): Model
+    public function updateTaxRate($taxRate, array $data): Model
     {
-        $taxRateToUpdate->fill($validatedInput);
+        $taxRate->update([
+            'company_id'    => $this->getCompanyId(),
+            'tax_rate_type' => $data['tax_rate_type'] ?? null,
+            'is_active'     => $data['is_active'] ?? false,
+            'code'          => $data['code'] ?? null,
+            'name'          => $data['name'],
+            'rate'          => $data['rate'] ?? null,
+        ]);
 
-        $taxRateToUpdate->save();
-
-        return $taxRateToUpdate;
+        return $taxRate;
     }
 
-    public function destroy(TaxRate $taxRate): ?bool
+    public function deleteTaxRate(TaxRate $taxRate): TaxRate
     {
-        return $taxRate->delete();
+        DB::beginTransaction();
+        try {
+            $taxRate->delete();
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return $taxRate;
     }
 }

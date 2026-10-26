@@ -2,13 +2,21 @@
 
 namespace Modules\Products\Filament\Company\Resources\Products\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Modules\Core\Enums\Permission;
 use Modules\Products\Enums\ProductType;
+use Modules\Products\Models\Product;
+use Modules\Products\Models\ProductCategory;
+use Modules\Products\Models\ProductUnit;
+use Modules\Products\Services\ProductService;
 
 class ProductsTable
 {
@@ -17,8 +25,14 @@ class ProductsTable
         return $table
             ->columns([
                 TextColumn::make('productCategory.category_name')->limit(10)->searchable()->sortable()->toggleable(),
-                TextColumn::make('code')->searchable()->sortable()->toggleable(),
-                TextColumn::make('product_name')->limit(10)->searchable()->sortable()->toggleable(),
+                TextColumn::make('code')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('product_name')
+                    ->limit(10)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('type')
                     ->formatStateUsing(fn ($state) => ($state instanceof ProductType ? $state : ProductType::tryFrom($state))?->label())
                     ->searchable()
@@ -36,24 +50,57 @@ class ProductsTable
                     ->numeric()
                     ->sortable()
                     ->hiddenFrom('md'),
-                TextColumn::make('taxRate.name')->limit(5)->searchable()->sortable()->toggleable(),
+                TextColumn::make('taxRate.name')->limit(5)
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->hiddenFrom('lg'),
                 TextColumn::make('taxRate2.name')
                     ->limit(5)
                     ->searchable()
                     ->sortable()
                     ->toggleable()
-                    ->hiddenFrom('lg'),
+                    ->hiddenFrom('md'),
             ])
             ->filters([
+                SelectFilter::make('category_id')
+                    ->label(trans('ip.category'))
+                    ->options(fn (): array => ProductCategory::query()
+                        ->orderBy('category_name')
+                        ->pluck('category_name', 'id')
+                        ->toArray()),
+                SelectFilter::make('unit_id')
+                    ->label(trans('ip.unit'))
+                    ->options(fn (): array => ProductUnit::query()
+                        ->orderBy('unit_name')
+                        ->pluck('unit_name', 'id')
+                        ->toArray()),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make('edit')
+                        ->visible(fn () => auth()->user()?->can(Permission::EDIT_PRODUCTS->value))
+                        ->action(function (Product $record, array $data) {
+                            app(ProductService::class)->updateProduct($record, $data);
+                        })
+                        ->modalWidth('full'),
+                    DeleteAction::make('delete')
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value))
+
+                        ->action(function (Product $record, array $data) {
+                            app(ProductService::class)->deleteProduct($record, $data);
+                        }),
+                    Action::make('duplicate')
+                        ->label(trans('ip.duplicate'))
+                        ->icon('heroicon-o-document-duplicate')
+                        ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_PRODUCTS->value))
+                        ->action(function (Product $record): void {}),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->can(Permission::DELETE_PRODUCTS->value)),
                 ]),
             ]);
     }

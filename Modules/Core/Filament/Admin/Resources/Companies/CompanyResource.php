@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
 use Modules\Core\Filament\Admin\Resources\Companies\Schemas\CompanyForm;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\CompaniesTable;
@@ -41,5 +43,30 @@ class CompanyResource extends Resource
         return [
             'index' => ListCompanies::route('/'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_COMPANIES->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can(Permission::CREATE_COMPANIES->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::VIEW_COMPANIES->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::EDIT_COMPANIES->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can(Permission::DELETE_COMPANIES->value) ?? false;
     }
 }

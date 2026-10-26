@@ -2,34 +2,29 @@
 
 namespace Modules\Core\Observers;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Company;
+use Modules\Core\Services\CompanyDefaultsBootstrapService;
 
 class CompanyObserver
 {
-    /**
-     * Handle the Company "created" event.
-     */
-    public function created(Company $companyobserver): void {}
+    public function created(Company $company): void
+    {
+        (new CompanyDefaultsBootstrapService())->bootstrap($company->id);
 
-    /**
-     * Handle the Company "updated" event.
-     */
-    public function updated(Company $companyobserver): void {}
+        Log::info('Bootstrapped default data for company', [
+            'company_id'   => $company->id,
+            'company_name' => $company->name,
+        ]);
+    }
 
-    /**
-     * Handle the Company "deleted" event.
-     */
-    public function deleted(Company $companyobserver): void {}
+    public function updated(Company $company): void {}
 
-    /**
-     * Handle the Company "restored" event.
-     */
-    public function restored(Company $companyobserver): void {}
+    public function deleted(Company $company): void {}
 
-    /**
-     * Handle the Company "force deleted" event.
-     */
-    public function forceDeleted(Company $companyobserver): void {}
+    public function restored(Company $company): void {}
+
+    public function forceDeleted(Company $company): void {}
 
     /*    public static function boot(): void
         {
@@ -43,8 +38,8 @@ class CompanyObserver
                 //event(new CompanyProfileCreating($companyProfile));
             });
 
-            static::created(function ($companyProfile): void {
-                //event(new CompanyProfileCreated($companyProfile));
+            static::created(function ($company): void {
+                // This is now handled by the observer's created() method
             });
 
             static::deleted(function ($companyProfile): void {

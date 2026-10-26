@@ -2,18 +2,31 @@
 
 namespace Modules\Payments\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
+use Modules\Core\Enums\NumberingType;
 use Modules\Payments\Models\Payment;
 
-class PaymentsSeeder extends Seeder
+class PaymentsSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Payments';
+
+    protected int $defaultCount = 8;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            Payment::factory()->count(random_int(5, 15))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        $invoice = $this->findOrCreateInvoice($this->companyId);
+
+        // Payment has no numbering_id FK (it stores its generated number directly
+        // in payment_number), but a Payment-type Numbering scheme should still
+        // exist for the company so PaymentNumberGenerator has something to use.
+        $this->findOrCreateNumbering($this->companyId, NumberingType::PAYMENT);
+
+        Payment::factory()
+            ->state([
+                'company_id'  => $this->companyId,
+                'customer_id' => $invoice->customer->id,
+                'invoice_id'  => $invoice->id,
+            ])
+            ->create();
     }
 }

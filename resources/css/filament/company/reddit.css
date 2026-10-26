@@ -1,0 +1,212 @@
+@import 'tailwindcss';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/Tenant/**/*';
+@source '../../../../resources/views/filament/tenant/**/*';
+@source '../../../../Modules/**/resources/views/**/*';
+@source '../../../../Modules/**/*.php';
+
+.fi-bg-color-600 {
+    @apply bg-[#FF4500];
+    @apply hover:bg-[#ff5722];
+}
+
+.fi-topbar {
+    /* Background color - Reddit orange */
+    @apply bg-[#FF4500];
+
+    /* Collapse icon */
+
+    .fi-topbar-close-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-[#ff5722];
+    }
+
+    .fi-topbar-open-collapse-sidebar-btn {
+        @apply text-white;
+        @apply hover:text-[#ff5722];
+    }
+
+    .fi-logo {
+        @apply text-white;
+    }
+}
+
+.fi-sidebar {
+    /* Background color - Reddit orange */
+    @apply bg-[#FF4500];
+    /* Text color */
+    @apply text-white;
+
+    .fi-icon {
+        @apply text-white;
+    }
+
+    .fi-icon-btn {
+        @apply text-white;
+    }
+
+    /* Sidebar items */
+
+    .fi-sidebar-group-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item-label {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item.fi-active {
+        @apply text-white;
+        @apply !bg-[#d93900];
+        @apply rounded-lg;
+    }
+
+    .fi-sidebar-header {
+        @apply bg-[#FF4500];
+    }
+}
+
+/*
+ * Checkbox
+ */
+.fi-checkbox-input {
+    @apply ring-[#d93900];
+    @apply focus:ring-[#FF4500];
+    @apply hover:ring-[#FF4500]
+}
+
+.fi-header-heading {
+    @apply text-[#d93900];
+}
+
+.fi-checkbox-input:checked {
+    @apply bg-[#d93900];
+    @apply hover:bg-[#FF4500];
+}
+
+/*
+ * Open/collapse
+ */
+.fi-section-collapse-btn {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+/*
+ * Modals
+ */
+.fi-modal-heading {
+    @apply text-[#d93900];
+}
+
+.fi-section-header-heading {
+    @apply text-[#d93900];
+}
+
+.fi-modal-close-btn {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+.fi-fo-field-label-content {
+    @apply text-[#d93900];
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply text-[#d93900];
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply border border-[#d93900] rounded-lg;
+}
+
+.fi-modal-content .fi-in-entry-label {
+    @apply text-[#d93900];
+}
+
+/*
+ * Pagination
+ */
+.fi-pagination-records-per-page-select-ctn {
+    @apply border border-[#d93900] rounded-lg;
+}
+
+.fi-pagination-previous-btn {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+.fi-pagination-next-btn {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+/*
+ * Input
+ */
+.fi-input-wrp-label {
+    @apply text-[#d93900];
+}
+
+/*
+ * Breadcrums
+ */
+.fi-breadcrumbs {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+
+}
+
+.fi-breadcrumbs-item-label {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+.fi-breadcrumbs-item-separator {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+/*
+ * Tables
+ */
+.fi-ta-header-cell-sort-btn {
+    @apply text-[#d93900];
+}
+
+.fi-ta-header-cell-sort-btn .fi-icon {
+    @apply text-[#d93900];
+}
+
+.fi-ta-row {
+    @apply border-b border-[#d93900] rounded-lg;
+}
+
+.fi-dropdown-trigger {
+    @apply text-[#d93900];
+}
+
+.fi-ta-header-toolbar .fi-icon {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+/*
+ * Buttons
+ */
+.fi-ac-icon-btn-action {
+    @apply text-[#d93900];
+    @apply hover:text-[#FF4500];
+}
+
+.fi-ta-search-field .fi-icon {
+    @apply text-[#d93900];
+}
+
+/*
+ * User menu
+ */
+.fi-user-menu .fi-icon {
+    @apply text-[#d93900];
+}

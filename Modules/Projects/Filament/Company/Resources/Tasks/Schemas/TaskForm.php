@@ -32,6 +32,10 @@ class TaskForm
                             ->schema([
                                 Section::make(trans('ip.task'))
                                     ->schema([
+                                        TextInput::make('task_number')
+                                            ->label(trans('ip.task_number'))
+                                            ->maxLength(255),
+
                                         TextInput::make('task_name')
                                             ->label(trans('ip.task_name'))
                                             ->required()
@@ -43,20 +47,17 @@ class TaskForm
                                             ->searchable()
                                             ->preload()
                                             ->required()
+                                            ->getOptionLabelUsing(fn ($value) => Project::find($value)?->project_name)
                                             ->getSearchResultsUsing(function (string $search): array {
                                                 return Project::query()
+                                                    ->where('project_name', 'like', "%{$search}%")
                                                     ->with('customer')
-                                                    ->where('name', 'like', "%{$search}%")
-                                                    ->orWhereHas('customer', fn ($q) => $q->where('company_name', 'like', "%{$search}%"))
                                                     ->limit(50)
                                                     ->get()
                                                     ->mapWithKeys(fn (Project $p) => [
-                                                        $p->id => "{$p->name} – {$p->customer?->company_name}",
+                                                        $p->id => $p->project_name,
                                                     ])->toArray();
                                             })
-                                            ->getOptionLabelUsing(fn (int $value): string => (
-                                                $p = Project::with('customer')->find($value)
-                                            ) ? "{$p->name} – {$p->customer?->company_name}" : '')
                                             ->createOptionForm([
                                                 Select::make('customer_id')
                                                     ->label(trans('ip.client'))
@@ -66,7 +67,6 @@ class TaskForm
                                                     ->required()
                                                     ->createOptionForm([
                                                         TextInput::make('company_name')
-                                                            ->label(trans('ip.client_name'))
                                                             ->required()
                                                             ->maxLength(255),
                                                     ]),
@@ -96,19 +96,16 @@ class TaskForm
                                     ->columns(2)
                                     ->schema([
                                         Select::make('task_status')
-                                            ->label(trans('ip.task_status'))
-                                            ->options(
-                                                collect(TaskStatus::cases())
-                                                    ->mapWithKeys(fn (TaskStatus $s) => [$s->value => trans($s->label())])
-                                                    ->toArray()
-                                            )
-                                            ->getOptionLabelUsing(fn (string $value) => TaskStatus::tryFrom($value)?->label())
+                                            ->options(TaskStatus::options())
+                                            ->getOptionLabelUsing(fn ($value) => TaskStatus::tryFrom($value)?->label())
                                             ->searchable()
                                             ->preload()
                                             ->native(false)
                                             ->required(),
 
                                         DatePicker::make('due_at')
+                                            ->date()
+                                            ->native(false)
                                             ->label(trans('ip.task_finish_date'))
                                             ->required(),
 
@@ -125,10 +122,9 @@ class TaskForm
                                     ]),
                             ]),
 
-                        Section::make(trans('ip.task_notes'))
+                        Section::make(trans('ip.description'))
                             ->schema([
                                 MarkdownEditor::make('description')
-                                    ->label(trans('ip.notes'))
                                     ->toolbarButtons(['bold', 'italic']),
                             ])
                             ->collapsed(true)

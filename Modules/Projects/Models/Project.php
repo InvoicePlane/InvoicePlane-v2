@@ -19,8 +19,10 @@ use Modules\Projects\Enums\ProjectStatus;
  * @property int               $id
  * @property int               $company_id
  * @property int               $customer_id
- * @property string            $project_status
+ * @property int|null          $numbering_id
+ * @property ProjectStatus     $project_status
  * @property string|null       $project_name
+ * @property string|null       $project_number
  * @property Carbon|null       $start_at
  * @property Carbon|null       $end_at
  * @property string|null       $description
@@ -33,6 +35,8 @@ class Project extends Model
     use BelongsToCompany;
     use HasFactory;
 
+    public const NUMBERING_ID = 'numbering_id';
+
     public $timestamps = false;
 
     protected $casts = [
@@ -43,9 +47,11 @@ class Project extends Model
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
     public function customer(): BelongsTo
     {
         return $this
@@ -57,10 +63,27 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    //
-    // Factory
-    //
+    public function relation(): BelongsTo
+    {
+        return $this->customer();
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeOverdue($query)
+    {
+        return $query->where('end_at', '<', now())
+            ->where('project_status', '!=', ProjectStatus::COMPLETED);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProjectFactory::new();

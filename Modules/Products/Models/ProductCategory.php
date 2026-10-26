@@ -30,18 +30,22 @@ class ProductCategory extends Model
 
     protected $guarded = [];
 
-    //
-    // Relationships (alphabetical)
-    //
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id');
     }
 
-    //
-    // Factory
-    //
-
+    /*
+    |--------------------------------------------------------------------------
+    | Factory
+    |--------------------------------------------------------------------------
+    */
     protected static function newFactory(): Factory
     {
         return ProductCategoryFactory::new();

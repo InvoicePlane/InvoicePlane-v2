@@ -2,19 +2,20 @@
 
 namespace Modules\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Core\Models\AuditLog;
+use Modules\Core\Models\User;
 
-/**
- * @extends Factory<AuditLog>
- */
-class AuditLogFactory extends Factory
+class AuditLogFactory extends AbstractFactory
 {
     protected $model = AuditLog::class;
 
     public function definition(): array
     {
         return [
+            'audit_id'   => User::query()->inRandomOrder()->first()->id,
+            'audit_type' => User::class,
+            'activity'   => fake()->word,
+            'info'       => fake()->sentence(),
         ];
     }
 }

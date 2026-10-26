@@ -1,0 +1,394 @@
+@import 'tailwindcss';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../Modules/**/resources/views/**/*';
+@source '../../../../Modules/**/*.php';
+@source '../../../../resources/views/filament/tenant/**/*';
+
+@theme {
+    --color-primary-50: #F2F7FD;
+    --color-primary-100: #E3EFFB;
+    --color-primary-200: #C1DFF6;
+    --color-primary-300: #8FC0EE;
+    --color-primary-400: #429AE1;
+    --color-primary-500: #2684D1;
+    --color-primary-600: #1868B1;
+    --color-primary-700: #145390;
+    --color-primary-800: #154777;
+    --color-primary-900: #173C63;
+    --color-primary-950: #0F2742;
+    --color-secondary-50: #E3E9F0;
+    --color-secondary-100: #D1D7E0;
+    --color-secondary-200: #A7B1C5;
+    --color-secondary-300: #8C9AB3;
+    --color-secondary-400: #71829B;
+    --color-secondary-500: #5E81AC;
+    --color-secondary-600: #527397;
+    --color-secondary-700: #466582;
+    --color-secondary-800: #3A576D;
+    --color-secondary-900: #2E4958;
+    --color-secondary-950: #223B43;
+
+    /* Polar Night: Used for dark backgrounds and text */
+    --color-polarnight-50: #e5e9f0;
+    --color-polarnight-100: #d1d7e0;
+    --color-polarnight-200: #a7b1c5;
+    --color-polarnight-300: #8c9ab3;
+    --color-polarnight-400: #71829b;
+    --color-polarnight-500: #4c566a;
+    --color-polarnight-600: #434c5e;
+    --color-polarnight-700: #3b4252;
+    --color-polarnight-800: #2e3440;
+    --color-polarnight-900: #232831;
+    --color-polarnight-950: #1b2027;
+
+    /* Snow Storm: Used for light backgrounds and text */
+    --color-snowstorm-400: #d8dee9;
+    --color-snowstorm-500: #e5e9f0;
+    --color-snowstorm-600: #eceff4;
+
+    /* Frost: Used for primary and secondary accents */
+    --color-frost-400: #8fbcbb;
+    --color-frost-500: #88c0d0;
+    --color-frost-600: #81a1c1;
+    --color-frost-700: #5e81ac;
+
+    /* Aurora: Used for success, warning, etc. */
+    --color-aurora-danger: #bf616a;
+    --color-aurora-warning: #ebcb8b;
+    --color-aurora-success: #a3be8c;
+    --color-aurora-info: #81a1c1;
+    --color-aurora-purple: #b48ead;
+    --color-aurora-orange: #d08770;
+
+    /* Semantic color mapping to Nord palette */
+    --color-danger-50: #fef2f2;
+    --color-danger-100: #fee2e2;
+    --color-danger-200: #fecaca;
+    --color-danger-300: #fca5a5;
+    --color-danger-400: #f87171;
+    --color-danger-500: #bf616a;
+    --color-danger-600: #b85860;
+    --color-danger-700: #a84f56;
+    --color-danger-800: #98464c;
+    --color-danger-900: #883d42;
+    --color-danger-950: #782f34;
+
+    --color-warning-50: #fefce8;
+    --color-warning-100: #fef9c3;
+    --color-warning-200: #fef08a;
+    --color-warning-300: #fde047;
+    --color-warning-400: #facc15;
+    --color-warning-500: #ebcb8b;
+    --color-warning-600: #d4b87a;
+    --color-warning-700: #bda569;
+    --color-warning-800: #a69258;
+    --color-warning-900: #8f7f47;
+    --color-warning-950: #786c36;
+
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-200: #bbf7d0;
+    --color-success-300: #86efac;
+    --color-success-400: #4ade80;
+    --color-success-500: #a3be8c;
+    --color-success-600: #93ae7d;
+    --color-success-700: #839e6e;
+    --color-success-800: #738e5f;
+    --color-success-900: #637e50;
+    --color-success-950: #536e41;
+
+    --color-info-50: #eff6ff;
+    --color-info-100: #dbeafe;
+    --color-info-200: #bfdbfe;
+    --color-info-300: #93c5fd;
+    --color-info-400: #60a5fa;
+    --color-info-500: #81a1c1;
+    --color-info-600: #7491ae;
+    --color-info-700: #67819b;
+    --color-info-800: #5a7188;
+    --color-info-900: #4d6175;
+    --color-info-950: #405162;
+}
+
+.fi-bg-color-600 {
+    @apply bg-[var(--color-frost-700)];
+    @apply hover:bg-[var(--color-frost-500)];
+}
+
+.fi-topbar {
+    /* Background color using Polar Night */
+    @apply bg-[var(--color-polarnight-700)];
+
+    /* Collapse icon */
+
+    .fi-topbar-close-collapse-sidebar-btn {
+        @apply text-[var(--color-snowstorm-600)];
+        @apply hover:text-[var(--color-frost-500)];
+    }
+
+    .fi-topbar-open-collapse-sidebar-btn {
+        @apply text-[var(--color-snowstorm-600)];
+        @apply hover:text-[var(--color-frost-500)];
+    }
+
+    .fi-logo {
+        @apply text-[var(--color-snowstorm-600)];
+    }
+}
+
+.fi-sidebar {
+    /* Background color using Polar Night */
+    @apply bg-[var(--color-polarnight-700)];
+    /* Text color using Snow Storm */
+    @apply text-[var(--color-snowstorm-600)];
+
+    .fi-icon {
+        @apply text-[var(--color-snowstorm-600)];
+    }
+
+    .fi-icon-btn {
+        @apply text-[var(--color-snowstorm-600)];
+    }
+
+    /* Sidebar items */
+
+    .fi-sidebar-group-label {
+        @apply text-[var(--color-snowstorm-600)];
+    }
+
+    .fi-sidebar-item-label {
+        @apply text-[var(--color-snowstorm-600)];
+    }
+
+    .fi-sidebar-item.fi-active {
+        @apply text-[var(--color-snowstorm-600)];
+        @apply !bg-[var(--color-polarnight-800)];
+        @apply rounded-lg;
+    }
+
+    /*
+     * Filament's own gray-100 background on the active item's inner button
+     * sits on top of the dark background above (unreadable light pill on a
+     * dark sidebar) unless the child button itself is also overridden.
+     * Same fix applies to hover/focus-visible on any sidebar item button.
+     */
+    .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
+    .fi-sidebar-item-btn:hover,
+    .fi-sidebar-item-btn:focus-visible {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
+    .fi-sidebar-group-dropdown-trigger-btn:hover,
+    .fi-sidebar-database-notifications-btn:hover {
+        @apply !bg-[var(--color-polarnight-800)];
+    }
+
+    .fi-sidebar-header {
+        @apply bg-[var(--color-polarnight-700)];
+    }
+}
+
+/*
+ * Checkbox
+ */
+.fi-checkbox-input {
+    @apply ring-[var(--color-frost-700)];
+    @apply focus:ring-[var(--color-frost-500)];
+    @apply hover:ring-[var(--color-frost-500)]
+}
+
+.fi-header-heading {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-checkbox-input:checked {
+    @apply bg-[var(--color-frost-700)];
+    @apply hover:bg-[var(--color-frost-500)];
+}
+
+/*
+ * Open/collapse
+ */
+.fi-section-collapse-btn {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+/*
+ * Modals
+ */
+.fi-modal-heading {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-section-header-heading {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-modal-close-btn {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+.fi-fo-field-label-content {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-modal-content .fi-input-wrp-content-ctn {
+    @apply border border-[var(--color-frost-700)] rounded-lg;
+}
+
+.fi-modal-content .fi-in-entry-label {
+    @apply text-[var(--color-frost-700)];
+}
+
+/*
+ * Pagination
+ */
+.fi-pagination-records-per-page-select-ctn {
+    @apply border border-[var(--color-frost-700)] rounded-lg;
+}
+
+.fi-pagination-previous-btn {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+.fi-pagination-next-btn {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+/*
+ * Input
+ */
+.fi-input-wrp-label {
+    @apply text-[var(--color-frost-700)];
+}
+
+/*
+ * Breadcrums
+ */
+.fi-breadcrumbs {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+
+}
+
+.fi-breadcrumbs-item-label {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+.fi-breadcrumbs-item-separator {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+/*
+ * Tables
+ */
+.fi-ta-header-cell-sort-btn {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-ta-header-cell-sort-btn .fi-icon {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-ta-row {
+    @apply border-b border-[var(--color-frost-700)] rounded-lg;
+}
+
+.fi-dropdown-trigger {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-ta-header-toolbar .fi-icon {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+/*
+ * Buttons
+ */
+.fi-ac-icon-btn-action {
+    @apply text-[var(--color-frost-700)];
+    @apply hover:text-[var(--color-frost-500)];
+}
+
+.fi-ta-search-field .fi-icon {
+    @apply text-[var(--color-frost-700)];
+}
+
+/*
+ * User menu
+ */
+.fi-user-menu .fi-icon {
+    @apply text-[var(--color-frost-700)];
+}
+
+.fi-main {
+    @apply bg-[#ECEFF4] dark:bg-[#2E3440];
+}
+
+/*
+ * Base page background -- Filament's own light-gray fallback (.fi-body)
+ * otherwise shows through around/behind panel content.
+ */
+.fi-body {
+    @apply dark:bg-[var(--color-polarnight-900)];
+}
+
+/*
+ * Topbar items (e.g. tenant switcher trigger, user menu trigger) --
+ * same light-gray-on-dark hover/active pattern as the sidebar.
+ */
+.fi-topbar-item-btn:hover,
+.fi-topbar-item.fi-active .fi-topbar-item-btn,
+.fi-tenant-menu-trigger:hover,
+.fi-theme-switcher-btn:hover {
+    @apply !bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Dropdown menus (e.g. the user menu) -- item hover.
+ */
+.fi-dropdown-list-item:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Tabs -- hover state on an inactive tab.
+ */
+.fi-tabs-item:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Tables -- header row and clickable-row hover both default to a light
+ * gray fill that reads poorly against the dark Nord table background.
+ */
+.fi-ta-table > thead > tr {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+.fi-ta-row.fi-clickable:hover {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+
+/*
+ * Pagination -- active page number.
+ */
+.fi-pagination-item.fi-active .fi-pagination-item-btn {
+    @apply dark:!bg-[var(--color-polarnight-800)];
+}
+

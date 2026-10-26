@@ -2,6 +2,7 @@
 
 namespace Modules\Invoices\Filament\Company\Resources\Invoices\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
@@ -17,16 +18,16 @@ class ListInvoices extends ListRecords
             CreateAction::make()
                 ->modalWidth('full')
                 ->mutateDataUsing(function (array $data) {
-                    // Optionally set default values, e.g., invoice date
-                    $data['invoiced_at']  = now();
-                    $data['invoiceItems'] = [
-                        ['product_id' => null, 'quantity' => 1, 'price' => 0, 'discount' => 0, 'subtotal' => 0],
-                    ];
-
                     return $data;
                 })
-                ->action(function (array $data) {
-                    app(InvoiceService::class)->createInvoice($data);
+                ->action(function (array $data, Action $action) {
+                    $invoice = app(InvoiceService::class)->createInvoice($data);
+
+                    if (filled($invoice->invoice_number)) {
+                        $action->successNotificationTitle(
+                            trans('ip.invoice_created_with_number', ['number' => $invoice->invoice_number])
+                        );
+                    }
                 }),
         ];
     }

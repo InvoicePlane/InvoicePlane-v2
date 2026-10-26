@@ -2,46 +2,135 @@
 
 namespace Modules\Products\Tests\Feature;
 
+use Filament\Actions\Testing\TestAction;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Products\Filament\Company\Resources\ProductCategories\Pages\CreateProductCategory;
 use Modules\Products\Filament\Company\Resources\ProductCategories\Pages\EditProductCategory;
 use Modules\Products\Filament\Company\Resources\ProductCategories\Pages\ListProductCategories;
-use Modules\Products\Filament\Company\Resources\ProductCategories\ProductCategoryResource;
 use Modules\Products\Models\ProductCategory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ProductCategoryResource::class)]
+#[CoversClass(ListProductCategories::class)]
 class ProductCategoriesTest extends AbstractCompanyPanelTestCase
 {
+    # region smoke
     #[Test]
     #[Group('smoke')]
     /**
      * @payload ['category_name' => 'Hardware']
      */
-    #[Group('crud')]
     public function it_lists_product_categories(): void
     {
-        $this->markTestIncomplete();
-
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Hardware',
         ];
 
-        $record = ProductCategory::factory()->for($this->user->companies()->first())->create($payload);
+        $record = ProductCategory::factory()
+            ->for($this->company)
+            ->create($payload);
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListProductCategories::class);
+            ->test(ListProductCategories::class, ['tenant' => Str::lower($this->company->search_code)]);
 
-        /* assert */
-        $component->assertSuccessful();
+        /* Assert */
+        $component->assertSuccessful()
+            ->assertCanSeeTableRecords(collect([$record]));
+
         $this->assertDatabaseHas('product_categories', $payload);
     }
+    # endregion
 
+    # region modals
+    #[Test]
+    #[Group('crud')]
+    public function it_creates_a_product_category_through_a_modal(): void
+    {
+        /* Arrange */
+        $payload = [
+            'category_name' => 'Office Supplies',
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProductCategories::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseHas('product_categories', array_merge(
+            ['company_id' => $this->company->id],
+            $payload
+        ));
+    }
+
+    #[Test]
+    #[Group('crud')]
+    /**
+     * @payload missing: category_name
+     * {
+     *   "category_description": "Missing required name"
+     * }
+     */
+    public function it_fails_to_create_product_category_through_a_modal_without_required_name(): void
+    {
+        /* Arrange */
+        $payload = [
+            'category_name' => null,
+        ];
+
+        /* act & assert */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProductCategories::class)
+            ->mountAction('create')
+            ->fillForm($payload)
+            ->callMountedAction();
+
+        $component
+            ->assertHasFormErrors(['category_name']);
+
+        $this->assertDatabaseMissing('product_categories', $payload);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_updates_a_product_category_through_a_modal(): void
+    {
+        /* Arrange */
+        $productCategory = ProductCategory::factory()
+            ->for($this->company)
+            ->create(['category_name' => 'Old Cat']);
+
+        $payload = ['category_name' => 'Updated Category'];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProductCategories::class)
+            ->mountAction(TestAction::make('edit')->table($productCategory), $payload)
+            ->fillForm($payload)
+            ->callMountedAction()
+            ->assertHasNoFormErrors();
+
+        /* Assert */
+        $component
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('product_categories', array_merge(
+            ['id' => $productCategory->id],
+            $payload
+        ));
+    }
+    # endregion
+
+    # region crud
     #[Test]
     #[Group('crud')]
     /**
@@ -53,25 +142,23 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      */
     public function it_creates_a_product_category(): void
     {
-        $this->markTestIncomplete();
-
-        /* arrange */
+        /* Arrange */
         $payload = [
             'category_name' => 'Office Supplies',
         ];
 
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_categories', $payload);
     }
 
@@ -83,100 +170,89 @@ class ProductCategoriesTest extends AbstractCompanyPanelTestCase
      *   "category_description": "Missing required name"
      * }
      */
-    public function it_fails_to_create_product_category_without_name(): void
+    public function it_fails_to_create_product_category_without_required_category_name(): void
     {
-        $this->markTestIncomplete();
+        /* Arrange */
+        $payload = [
+            'category_name' => null,
+        ];
 
-        /* arrange */
-        $payload = [];
-
-        /* act */
+        /* Act */
         $component = Livewire::actingAs($this->user)
             ->test(CreateProductCategory::class)
             ->fillForm($payload)
             ->call('create');
 
-        /* assert */
+        /* Assert */
         $component->assertHasFormErrors(['category_name']);
+
+        $this->assertDatabaseMissing('product_categories', $payload);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_updates_a_product_category(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Old Cat']);
+        /* Arrange */
+        $record  = ProductCategory::factory()->for($this->company)->create(['category_name' => 'Old Cat']);
         $payload = ['category_name' => 'Updated Category'];
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditProductCategory::class, ['record' => $record->id])
+            ->fillForm($payload)
+            ->call('save');
 
-        /* assert */
+        /* Assert */
         $component
             ->assertSuccessful()
             ->assertHasNoErrors();
 
-        /* assert */
+        /* Assert */
         $this->assertDatabaseHas('product_categories', $payload);
-    }
-
-    #[Test]
-    #[Group('crud')]
-    /**
-     * @payload missing: name
-     * {
-     *   "name": ""
-     * }
-     */
-    public function it_fails_to_update_category_with_missing_name(): void
-    {
-        $this->markTestIncomplete();
-        /* arrange */
-
-        $record  = ProductCategory::factory()->for($this->user->companies()->first())->create(['category_name' => 'Valid']);
-        $payload = ['category_name' => null];
-
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(EditProductCategory::class, ['record' => $record->id])->fillForm($payload)->call('save');
-
-        /* assert */
-        $component->assertHasFormErrors(['category_name']);
     }
 
     #[Test]
     #[Group('crud')]
     public function it_deletes_a_product_category(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
+        $productCategory = ProductCategory::factory()
+            ->for($this->company)
+            ->create(['category_name' => 'Category to Delete']);
 
-        $record = ProductCategory::factory()->for($this->user->companies()->first())->create();
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(ListProductCategories::class)
+            ->mountAction(TestAction::make('delete')->table($productCategory))
+            ->callMountedAction();
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
-
-        /* assert */
-        $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
+        /* Assert */
+        $component->assertSuccessful();
+        $this->assertDatabaseMissing('product_categories', ['id' => $productCategory->id]);
     }
 
     #[Test]
     #[Group('crud')]
-    public function it_fails_to_delete_already_deleted_category(): void
+    #[Group('slow')]
+    public function it_confirms_deleted_category_is_no_longer_findable(): void
     {
-        $this->markTestIncomplete();
-        /* arrange */
+        /* Arrange */
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $id              = $productCategory->id;
 
-        $record = ProductCategory::factory()->for($this->user->companies()->first())->create();
-        $record->delete();
+        /* Act */
+        $productCategory->delete();
 
-        /* act */
-        $component = Livewire::actingAs($this->user)->test(ListProductCategories::class)->callTableAction('delete', $record);
-
-        /* assert */
-        $component->assertHasErrors();
-
-        $this->assertDatabaseMissing('product_categories', ['id' => $record->id]);
+        /* Assert — hard delete: record is gone from DB and cannot be retrieved */
+        $this->assertDatabaseMissing('product_categories', ['id' => $id]);
+        $this->assertNull(ProductCategory::find($id));
     }
+    # endregion
+
+    # region multi-tenancy
+    # endregion
+
+    #region spicy
+    # endregion
 }

@@ -23,31 +23,4 @@ class MerchantClient extends Model
     ];
 
     protected $guarded = [];
-
-    public static function getByKey($driver, $clientId, $key): static | string
-    {
-        $setting = self::query()->where('driver', $driver)
-            ->where('customer_id', $clientId)
-            ->where('merchant_key', $key)
-            ->first();
-
-        if ($setting) {
-            return $setting->merchant_value;
-        }
-
-        return '';
-    }
-
-    public static function saveByKey($driver, $clientId, $key, $value): void
-    {
-        $setting = self::query()->firstOrNew([
-            'driver'       => $driver,
-            'customer_id'  => $clientId,
-            'merchant_key' => $key,
-        ]);
-
-        $setting->merchant_value = $value;
-
-        $setting->save();
-    }
 }

@@ -24,11 +24,11 @@ enum PaymentStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::COMPLETED          => 'Completed',
-            self::FAILED             => 'ip.failed',
-            self::PENDING            => 'Pending',
-            self::REFUNDED           => 'Refunded',
-            self::REFUNDED_PARTIALLY => 'ip.partially_refunded',
+            self::COMPLETED          => trans('enums.payment_status.completed'),
+            self::FAILED             => trans('enums.payment_status.failed'),
+            self::PENDING            => trans('enums.payment_status.pending'),
+            self::REFUNDED           => trans('enums.payment_status.refunded'),
+            self::REFUNDED_PARTIALLY => trans('enums.payment_status.refunded_partially'),
         };
     }
 

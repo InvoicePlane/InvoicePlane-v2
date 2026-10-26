@@ -4,14 +4,14 @@ InvoicePlane is a multilingual application, and we rely on community contributio
 
 ---
 
-## 🌍 Where Are Translations Managed?
+## Where Are Translations Managed?
 
-All translations are hosted on **[Crowdin](https://crowdin.com/)** under the project name:  
+All translations are hosted on **[Crowdin](https://crowdin.com/)** under the project name:
 **[InvoicePlane on Crowdin](https://translations.invoiceplane.com)**
 
 ---
 
-## 🔹 How to Contribute
+## How to Contribute
 
 1. Create an account at [crowdin.com](https://crowdin.com/).
 2. Join the **InvoicePlane** project via [translations.invoiceplane.com](https://translations.invoiceplane.com).
@@ -21,7 +21,7 @@ All translations are hosted on **[Crowdin](https://crowdin.com/)** under the pro
 
 ---
 
-## 📜 Translation Guidelines
+## Translation Guidelines
 
 - Use consistent terminology (reference existing translations).
 - **Do not translate** variables like `{invoice_number}` or `{client_name}`.
@@ -30,7 +30,7 @@ All translations are hosted on **[Crowdin](https://crowdin.com/)** under the pro
 
 ---
 
-## 🛠️ Technical Details (for Developers)
+## Technical Details (for Developers)
 
 - Translations are stored in `lang/{locale}/` using Laravel conventions.
 - File format is PHP: `lang/en/invoices.php`, `lang/fr/clients.php`, etc.
@@ -39,7 +39,7 @@ All translations are hosted on **[Crowdin](https://crowdin.com/)** under the pro
 
 ---
 
-## 💬 Need Help?
+## Need Help?
 
 - Ask questions in our [Community Forums](https://community.invoiceplane.com).
 - Reach out via [Discord](https://discord.gg/PPzD2hTrXt).

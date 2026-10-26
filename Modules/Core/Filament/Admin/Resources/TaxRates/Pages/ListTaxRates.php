@@ -13,7 +13,14 @@ class ListTaxRates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(\Modules\Core\Services\TaxRateService::class)->createTaxRate($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

@@ -2,18 +2,26 @@
 
 namespace Modules\Projects\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Seeders\AbstractSeeder;
+use Modules\Projects\Enums\ProjectStatus;
 use Modules\Projects\Models\Project;
 
-class ProjectsSeeder extends Seeder
+class ProjectsSeeder extends AbstractSeeder
 {
-    public function run(): void
+    protected string $label = 'Projects';
+
+    protected int $defaultCount = 25;
+
+    protected function buildOne(): void
     {
-        Company::all()->each(function (Company $company): void {
-            Project::factory()->count(random_int(15, 25))->create([
-                'company_id' => $company->id,
-            ]);
-        });
+        $customer = $this->findOrCreateCustomer($this->companyId);
+
+        Project::factory()
+            ->state([
+                'company_id'     => $this->companyId,
+                'customer_id'    => $customer->id,
+                'project_status' => fake()->randomElement(ProjectStatus::cases())->value,
+            ])
+            ->create();
     }
 }

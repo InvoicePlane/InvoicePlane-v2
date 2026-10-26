@@ -17,14 +17,31 @@ enum UserRole: string implements LabeledEnum
         return array_column(self::cases(), 'value');
     }
 
+    public static function elevated(): array
+    {
+        return [
+            self::SUPER_ADMIN->value,
+            self::ADMIN->value,
+            self::ASSIST->value,
+        ];
+    }
+
+    public static function nonAdmin(): array
+    {
+        return [
+            self::CUSTOMER_ADMIN->value,
+            self::CUSTOMER->value,
+        ];
+    }
+
     public function label(): string
     {
         return match ($this) {
-            self::SUPER_ADMIN    => 'Super Admin',
-            self::ADMIN          => 'admin',
-            self::ASSIST         => 'assist',
-            self::CUSTOMER_ADMIN => 'Client Admin',
-            self::CUSTOMER       => 'client',
+            self::SUPER_ADMIN    => trans('enums.user_role.super_admin'),
+            self::ADMIN          => trans('enums.user_role.admin'),
+            self::ASSIST         => trans('enums.user_role.assist'),
+            self::CUSTOMER_ADMIN => trans('enums.user_role.customer_admin'),
+            self::CUSTOMER       => trans('enums.user_role.customer'),
         };
     }
 

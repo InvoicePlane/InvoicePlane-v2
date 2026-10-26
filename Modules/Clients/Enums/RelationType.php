@@ -20,11 +20,11 @@ enum RelationType: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::CUSTOMER => 'Customer',
-            self::VENDOR   => 'Vendor',
-            self::PROSPECT => 'Prospect',
-            self::PARTNER  => 'Partner',
-            self::LEAD     => 'Lead',
+            self::CUSTOMER => trans('ip.customer'),
+            self::VENDOR   => trans('ip.vendor'),
+            self::PROSPECT => trans('ip.prospect'),
+            self::PARTNER  => trans('enums.relation_type.partner'),
+            self::LEAD     => trans('enums.relation_type.lead'),
         };
     }
 
@@ -36,6 +36,17 @@ enum RelationType: string implements LabeledEnum
             self::PROSPECT => 'warning',
             self::PARTNER  => 'success',
             self::LEAD     => 'green',
+        };
+    }
+
+    public function prefix(): string
+    {
+        return match ($this) {
+            self::CUSTOMER => 'CST',
+            self::VENDOR   => 'VDR',
+            self::PROSPECT => 'PSP',
+            self::PARTNER  => 'PRT',
+            self::LEAD     => 'LED',
         };
     }
 }

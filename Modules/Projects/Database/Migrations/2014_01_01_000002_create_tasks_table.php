@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedBigInteger('tax_rate_id')->nullable();
             $table->unsignedBigInteger('assigned_to')->nullable();
+            $table->string('task_number')->nullable();
             $table->string('task_status');
             $table->string('task_name')->nullable();
             $table->decimal('task_price', 20, 4)->nullable();

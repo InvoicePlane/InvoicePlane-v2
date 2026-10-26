@@ -5,6 +5,7 @@ namespace Modules\Payments\Filament\Company\Resources\Payments\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Payments\Filament\Company\Resources\Payments\PaymentResource;
+use Modules\Payments\Services\PaymentService;
 
 class ListPayments extends ListRecords
 {
@@ -13,7 +14,14 @@ class ListPayments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->modalWidth('full'),
+            CreateAction::make()
+                ->mutateDataUsing(function (array $data) {
+                    return $data;
+                })
+                ->action(function (array $data) {
+                    app(PaymentService::class)->createPayment($data);
+                })
+                ->modalWidth('full'),
         ];
     }
 }

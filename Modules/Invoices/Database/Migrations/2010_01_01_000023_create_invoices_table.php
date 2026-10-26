@@ -11,11 +11,12 @@ return new class () extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id')->index('invoices_relation_id_foreign');
-            $table->unsignedBigInteger('document_group_id')->nullable()->index('invoices_document_group_id_foreign');
+            $table->unsignedBigInteger('numbering_id')->nullable();
             $table->unsignedBigInteger('creditinvoice_parent_id')->nullable()->index('invoices_creditinvoice_parent_id_foreign');
             $table->unsignedBigInteger('user_id')->index('invoices_user_id_foreign');
 
-            $table->string('invoice_number');
+            $table->string('invoice_number')->nullable();
+            $table->softDeletes();
             $table->string('invoice_status');
             $table->enum('invoice_sign', ['1', '-1'])->default('1');
             $table->date('invoiced_at')->nullable();
@@ -42,9 +43,9 @@ return new class () extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 
-            $table->foreign('document_group_id', 'invoices_document_group_id_foreign')
+            $table->foreign('numbering_id', 'invoices_numbering_id_foreign')
                 ->references('id')
-                ->on('document_groups')
+                ->on('numbering')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 

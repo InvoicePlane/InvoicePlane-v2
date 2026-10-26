@@ -73,12 +73,27 @@ class InvoiceItemsTable
             ])
             ->filters([
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->modalWidth('full'),
+                    EditAction::make()
+                        ->mutateDataUsing(
+                            fn (array $data, \Modules\Invoices\Models\InvoiceItem $record) => array_merge($data, [
+                                'product_name' => $record->product?->product_name ?? '',
+                            ])
+                        )
+                        ->action(function (\Modules\Invoices\Models\InvoiceItem $record, array $data) {
+                            $record->update($data);
+
+                            if ($invoice = $record->invoice) {
+                                $invoice->update([
+                                    'invoice_total' => $invoice->invoiceItems()->sum('subtotal'),
+                                ]);
+                            }
+                        })
+                        ->modalWidth('full'),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

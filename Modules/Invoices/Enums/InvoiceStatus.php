@@ -6,11 +6,12 @@ use Modules\Core\Contracts\LabeledEnum;
 
 enum InvoiceStatus: string implements LabeledEnum
 {
-    case DRAFT   = 'draft';
-    case SENT    = 'sent';
-    case VIEWED  = 'viewed';
-    case PAID    = 'paid';
-    case OVERDUE = 'overdue';
+    case DRAFT          = 'draft';
+    case SENT           = 'sent';
+    case VIEWED         = 'viewed';
+    case PARTIALLY_PAID = 'partially_paid';
+    case PAID           = 'paid';
+    case OVERDUE        = 'overdue';
 
     public static function values(): array
     {
@@ -20,22 +21,24 @@ enum InvoiceStatus: string implements LabeledEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT   => 'Draft',
-            self::SENT    => 'Sent',
-            self::VIEWED  => 'Viewed',
-            self::PAID    => 'Paid',
-            self::OVERDUE => 'Overdue',
+            self::DRAFT          => trans('ip.invoice_status_draft'),
+            self::SENT           => trans('ip.invoice_status_sent'),
+            self::VIEWED         => trans('ip.invoice_status_viewed'),
+            self::PARTIALLY_PAID => trans('ip.invoice_status_partially_paid'),
+            self::PAID           => trans('ip.invoice_status_paid'),
+            self::OVERDUE        => trans('ip.invoice_status_overdue'),
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::DRAFT   => 'gray',
-            self::SENT    => 'emerald',
-            self::VIEWED  => 'info',
-            self::PAID    => 'green',
-            self::OVERDUE => 'maroon',
+            self::DRAFT          => 'gray',
+            self::SENT           => 'emerald',
+            self::VIEWED         => 'info',
+            self::PARTIALLY_PAID => 'warning',
+            self::PAID           => 'green',
+            self::OVERDUE        => 'maroon',
         };
     }
 }

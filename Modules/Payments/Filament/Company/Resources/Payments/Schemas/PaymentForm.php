@@ -35,6 +35,10 @@ class PaymentForm
                                         Grid::make()
                                             ->columns(1)
                                             ->schema([
+                                                TextInput::make('payment_number')
+                                                    ->label(trans('ip.payment_number'))
+                                                    ->maxLength(255),
+
                                                 Select::make('invoice_id')
                                                     ->label(trans('ip.invoice'))
                                                     ->getSearchResultsUsing(function (string $search): array {
@@ -63,7 +67,7 @@ class PaymentForm
                                                     ->default(fn (?Payment $record) => $record?->invoice_id),
 
                                                 Placeholder::make('customer')
-                                                    ->label(trans('ip.customer'))
+                                                    ->label(trans('ip.client'))
                                                     ->content(fn (?Payment $record) => $record?->customer?->company_name ?? '-'),
                                             ]),
                                     ]),
@@ -80,14 +84,15 @@ class PaymentForm
                                             ->schema([
                                                 DatePicker::make('paid_at')
                                                     ->label(trans('ip.paid_at'))
+                                                    ->default(now())
                                                     ->required(),
 
                                                 Select::make('payment_method')
                                                     ->label(trans('ip.payment_method'))
                                                     ->options(
                                                         collect(PaymentMethod::cases())
-                                                            ->mapWithKeys(fn (PaymentMethod $m) => [
-                                                                $m->value => trans('ip.' . $m->value),
+                                                            ->mapWithKeys(fn (PaymentMethod $method) => [
+                                                                $method->value => $method->label(),
                                                             ])
                                                             ->toArray()
                                                     )

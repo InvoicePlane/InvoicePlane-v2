@@ -4,8 +4,8 @@ namespace Modules\Core\Filament\Company\Pages;
 
 use Filament\Pages\Page;
 use Filament\Panel;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
+use Modules\Invoices\Filament\Company\Widgets\RecentInvoicesWidget;
+use Modules\Quotes\Filament\Company\Widgets\RecentQuotesWidget;
 
 class Dashboard extends Page
 {
@@ -17,8 +17,12 @@ class Dashboard extends Page
     public function getHeaderWidgets(): array
     {
         return [
-            AccountWidget::class,
-            FilamentInfoWidget::class,
+            RecentQuotesWidget::class,
+            RecentInvoicesWidget::class,
+            //RecentProjectsWidget::class,
+            //RecentTasksWidget::class,
+            //RecentExpensesWidget::class,
+            //RecentPaymentsWidget::class,
         ];
     }
 }

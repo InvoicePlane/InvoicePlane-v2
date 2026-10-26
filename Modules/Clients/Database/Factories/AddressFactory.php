@@ -2,28 +2,42 @@
 
 namespace Modules\Clients\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Provider\en_US\Company;
+use Faker\Provider\en_US\Person;
+use Faker\Provider\en_US\PhoneNumber;
+use Faker\Provider\Internet;
+use Faker\Provider\Lorem;
 use Modules\Clients\Models\Address;
-use Modules\Core\Models\Company;
+use Modules\Core\Database\Factories\AbstractFactory;
+use Modules\Core\Enums\AddressType;
 
-class AddressFactory extends Factory
+class AddressFactory extends AbstractFactory
 {
     protected $model = Address::class;
 
     public function definition(): array
     {
-        $company = Company::query()->inRandomOrder()->first() ?? Company::factory()->create();
+        $this->faker->addProvider(new Person($this->faker));
+        $this->faker->addProvider(new \Faker\Provider\en_US\Address($this->faker));
+        $this->faker->addProvider(new PhoneNumber($this->faker));
+        $this->faker->addProvider(new Company($this->faker));
+        $this->faker->addProvider(new Lorem($this->faker));
+        $this->faker->addProvider(new Internet($this->faker));
 
         return [
-            'company_id'        => $company->id,
-            'type'              => fake()->word,
-            'address_1'         => fake()->optional()->word,
-            'address_2'         => fake()->optional()->word,
-            'number'            => fake()->optional()->word,
-            'postal_code'       => fake()->postcode,
-            'city'              => fake()->city,
-            'state_or_province' => fake()->optional()->word,
-            'country'           => fake()->country,
+            'address_type'      => $this->faker->randomElement(AddressType::cases())->value,
+            'address_1'         => $this->faker->streetAddress,
+            'address_2'         => $this->faker->optional(0.7)->streetAddress,
+            'number'            => $this->faker->buildingNumber,
+            'postal_code'       => $this->faker->postcode,
+            'city'              => $this->faker->city,
+            'state_or_province' => $this->faker->optional()->stateAbbr,
+            'country'           => $this->faker->countryCode,
         ];
+    }
+
+    public function ofType(AddressType $type): self
+    {
+        return $this->state(['address_type' => $type->value]);
     }
 }

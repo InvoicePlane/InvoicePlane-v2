@@ -3,10 +3,10 @@
 namespace Modules\Expenses\Filament\Company\Resources\Expenses\Resources\ExpenseItems;
 
 use BackedEnum;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Core\Filament\Company\Resources\BaseResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\ExpenseResource;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Resources\ExpenseItems\Pages\CreateExpenseItem;
 use Modules\Expenses\Filament\Company\Resources\Expenses\Resources\ExpenseItems\Pages\EditExpenseItem;
@@ -14,7 +14,7 @@ use Modules\Expenses\Filament\Company\Resources\Expenses\Resources\ExpenseItems\
 use Modules\Expenses\Filament\Company\Resources\Expenses\Resources\ExpenseItems\Tables\ExpenseItemsTable;
 use Modules\Expenses\Models\ExpenseItem;
 
-class ExpenseItemResource extends Resource
+class ExpenseItemResource extends BaseResource
 {
     protected static ?string $model = ExpenseItem::class;
 
@@ -34,8 +34,7 @@ class ExpenseItemResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getPages(): array

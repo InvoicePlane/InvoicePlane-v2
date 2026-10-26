@@ -4,20 +4,24 @@ namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
+use Modules\Core\Enums\MailType;
 
 /**
- * @property int         $id
- * @property int         $mailable_id
- * @property string      $mailable_type
- * @property string      $from
- * @property string      $to
- * @property string      $cc
- * @property string      $bcc
- * @property string      $subject
- * @property string      $body
- * @property bool        $attach_pdf
- * @property bool        $is_sent
- * @property string|null $error
+ * @property int           $id
+ * @property int           $mailable_id
+ * @property string        $mailable_type
+ * @property MailType|null $type
+ * @property string        $from
+ * @property string        $to
+ * @property string        $cc
+ * @property string        $bcc
+ * @property string        $subject
+ * @property string        $body
+ * @property bool          $attach_pdf
+ * @property bool          $is_sent
+ * @property string|null   $error
+ * @property Carbon|null   $sent_at
  */
 class MailQueue extends Model
 {
@@ -28,6 +32,8 @@ class MailQueue extends Model
     protected $casts = [
         'attach_pdf' => 'bool',
         'is_sent'    => 'bool',
+        'sent_at'    => 'datetime',
+        'type'       => MailType::class,
     ];
 
     protected $guarded = [];
