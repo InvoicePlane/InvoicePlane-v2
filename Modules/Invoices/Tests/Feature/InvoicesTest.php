@@ -754,6 +754,67 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_hydrates_the_notes_and_invoice_terms_fields_when_opening_the_edit_form(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'summary'      => 'Existing note from before this session.',
+            'terms'        => 'Existing terms from before this session.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id]);
+
+        /* Assert */
+        $component->assertFormSet([
+            'notes'         => 'Existing note from before this session.',
+            'invoice_terms' => 'Existing terms from before this session.',
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_preserves_existing_notes_and_terms_when_saving_an_unrelated_field_change(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $customer->id,
+            'numbering_id'   => $documentGroup->id,
+            'user_id'        => $this->user->id,
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'summary'        => 'Do not lose this note.',
+            'terms'          => 'Do not lose these terms.',
+        ]);
+
+        /* Act — a user opens the form and changes an unrelated field only,
+         * never touching Notes or Invoice Terms. */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['invoice_status' => InvoiceStatus::SENT])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', [
+            'id'      => $invoice->id,
+            'summary' => 'Do not lose this note.',
+            'terms'   => 'Do not lose these terms.',
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     #[Group('slow')]
     public function it_inserts_a_note_template_into_the_notes_field(): void
     {

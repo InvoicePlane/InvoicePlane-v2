@@ -458,6 +458,75 @@ class QuotesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_hydrates_the_notes_field_from_the_summary_column_when_opening_the_edit_form(): void
+    {
+        /* Arrange */
+        (new \Modules\Core\Database\Seeders\PermissionsSeeder())->run();
+        (new \Modules\Core\Database\Seeders\RolesSeeder())->run();
+        $this->user->assignRole(\Modules\Core\Enums\UserRole::CUSTOMER_ADMIN->value);
+
+        $prospect  = Relation::factory()->for($this->company)->prospect()->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $quote = Quote::factory()->for($this->company)->create([
+            'quote_number'     => 'Q-987654',
+            'prospect_id'      => $prospect->id,
+            'numbering_id'     => $numbering->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::DRAFT->value,
+            'quoted_at'        => '2025-05-10',
+            'quote_expires_at' => '2025-06-09',
+            'summary'          => 'Existing note from before this session.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id]);
+
+        /* Assert */
+        $component->assertFormSet(['notes' => 'Existing note from before this session.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_preserves_an_existing_note_when_saving_an_unrelated_field_change(): void
+    {
+        /* Arrange */
+        (new \Modules\Core\Database\Seeders\PermissionsSeeder())->run();
+        (new \Modules\Core\Database\Seeders\RolesSeeder())->run();
+        $this->user->assignRole(\Modules\Core\Enums\UserRole::CUSTOMER_ADMIN->value);
+
+        $prospect  = Relation::factory()->for($this->company)->prospect()->create();
+        $numbering = Numbering::factory()->for($this->company)->state(['type' => NumberingType::QUOTE->value])->create();
+
+        $quote = Quote::factory()->for($this->company)->create([
+            'quote_number'     => 'Q-987654',
+            'prospect_id'      => $prospect->id,
+            'numbering_id'     => $numbering->id,
+            'user_id'          => $this->user->id,
+            'quote_status'     => QuoteStatus::DRAFT->value,
+            'quoted_at'        => '2025-05-10',
+            'quote_expires_at' => '2025-06-09',
+            'summary'          => 'Do not lose this note.',
+        ]);
+
+        /* Act — a user opens the form and changes an unrelated field only,
+         * never touching Notes. */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditQuote::class, ['record' => $quote->id])
+            ->fillForm(['quote_status' => QuoteStatus::SENT->value])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('quotes', ['id' => $quote->id, 'summary' => 'Do not lose this note.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     #[Group('slow')]
     public function it_inserts_a_note_template_into_the_quote_notes_field(): void
     {

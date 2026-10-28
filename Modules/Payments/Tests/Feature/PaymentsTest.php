@@ -841,6 +841,75 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_hydrates_the_note_field_from_the_notes_column_when_opening_the_edit_form(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'notes'          => 'Existing note from before this session.',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id]);
+
+        /* Assert */
+        $component->assertFormSet(['note' => 'Existing note from before this session.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_preserves_an_existing_note_when_saving_an_unrelated_field_change(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'notes'          => 'Do not lose this note.',
+            ]);
+
+        /* Act — a user opens the form and changes an unrelated field only,
+         * never touching the note. */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_amount' => 888.00])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'notes' => 'Do not lose this note.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
         /* Arrange */

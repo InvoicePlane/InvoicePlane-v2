@@ -45,6 +45,18 @@ class EditInvoice extends EditRecord
         }
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // 'notes' and 'invoice_terms' write to the real 'summary'/'terms'
+        // columns (see InvoiceService); without this, both fields always
+        // load blank on edit, and saving without retyping them silently
+        // nulls the columns.
+        $data['notes']         = $data['summary'] ?? null;
+        $data['invoice_terms'] = $data['terms'] ?? null;
+
+        return $data;
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         return app(InvoiceService::class)->updateInvoice($record, $data);
