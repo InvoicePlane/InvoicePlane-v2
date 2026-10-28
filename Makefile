@@ -130,19 +130,40 @@ ci-local:
 	$(_ciexec) php artisan test --exclude-group failing,flaky,troubleshooting'
 
 ## ─── Full suite ───────────────────────────────────────────────────────────────
+# Ensure the testing disk directories are writable by the PHP process.
+# Some subdirectories (e.g. quote-signatures) are owned by root with 700
+# permissions, causing "Permission denied" errors for feature tests that
+# use the testing disk driver. This target fixes permissions before running
+# phpunit; it does NOT require root because it only uses chmod which
+# respects the existing ownership when run as a non-root user with write
+# access to the parent directory.
+fix-test-disks:
+	@chmod -R 777 storage/framework/testing/disks/ 2>/dev/null || true
+
+# Run tests inside the ivpldock workspace container so that the
+# `ivpldock` user owns the `storage/framework/testing/disks/` directories,
+# avoiding "Permission denied" errors that appear when running phpunit on
+# the host as `wysiwyg`. Uses `php artisan test` which correctly resolves
+# the DB_HOST=mariadb inside the container network.
+_docker-artisan-test = docker exec -e XDEBUG_MODE=off -e APP_ENV=testing \
+                       -e DB_CONNECTION=mariadb -e DB_HOST=mariadb \
+                       -e DB_DATABASE=invoiceplane-test \
+                       ivpldock-workspace-1 bash -c 'cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test'
+
 test:
-	$(_phpunit)
+	$(_docker-artisan-test)
 
 ## Fast test run: excludes slow tests (~5-10 min)
 test-fast:
-	$(_phpunit) --exclude-group slow
+	$(_docker-artisan-test) --exclude-group slow
 
 ## Run only the Unit test suite (Modules/*/Tests/Unit)
 unit:
-	$(_phpunit) --testsuite Unit
+	$(_docker-artisan-test) --testsuite Unit
 
 ## Run only the Feature test suite (Modules/*/Tests/Feature)
 feature:
+	$(_docker-artisan-test) --testsuite Feature
 	$(_phpunit) --testsuite Feature
 
 ## Run only @group smoke tests (fast sanity check, uses phpunit.smoke.xml)
