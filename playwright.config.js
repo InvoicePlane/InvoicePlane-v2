@@ -32,8 +32,29 @@ export default defineConfig({
 
   projects: [
     {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    // Admin projects - each gets its own server-side session so parallel tests
+    // don't clobber each other's connector credentials/tokens
+    {
+      name: 'admin-connect',
+      testMatch: '*/tests/E2E/admin-connect.spec.js',
+      dependencies: ['desktop'],
+      fullyParallel: false,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+    },
+    {
+      name: 'admin-integrations',
+      testMatch: '*/tests/E2E/admin-integrations.spec.js',
+      dependencies: ['admin-connect'],
+      fullyParallel: false,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
   ],
 

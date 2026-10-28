@@ -59,7 +59,7 @@ test.describe('Authentication', () => {
     const email = `nobody-${Date.now()}@invoiceplane.test`;
     // Filament v5 form inputs bind via wire:model, not a native `name`
     // attribute — `[name="email"]` never matches anything real.
-    await page.fill('input[type="email"]', email);
+    await page.getByPlaceholder('Email').fill(email);
     await page.fill('input[type="password"]', 'wrong-password');
     await page.click('[type="submit"]');
 

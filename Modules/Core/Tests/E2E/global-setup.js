@@ -17,7 +17,7 @@ export default async function globalSetup() {
     // Filament v5 form inputs bind via wire:model, not a native `name`
     // attribute — `[name="email"]` never matches anything real, and this
     // step silently timed out on every run.
-    await page.fill('input[type="email"]', E2E_EMAIL);
+    await page.getByPlaceholder('Email').fill(E2E_EMAIL);
     await page.fill('input[type="password"]', E2E_PASSWORD);
     await page.click('[type="submit"]');
 

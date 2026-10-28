@@ -14,7 +14,7 @@ export async function login(page, email = E2E_EMAIL, password = E2E_PASSWORD) {
   await page.goto('/login');
   // Filament v5 form inputs bind via wire:model, not a native `name`
   // attribute — `[name="email"]` never matches anything real.
-  await page.fill('input[type="email"]', email);
+  await page.getByPlaceholder('Email').fill(email);
   await page.fill('input[type="password"]', password);
   await page.click('[type="submit"]');
   await page.waitForURL(new RegExp(tenantPath('/dashboard')));
