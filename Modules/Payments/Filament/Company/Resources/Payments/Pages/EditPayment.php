@@ -36,6 +36,17 @@ class EditPayment extends EditRecord
         }
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // 'note' (singular) is the form field, writing to the real 'notes'
+        // (plural) column (see PaymentService); without this, the field
+        // always loads blank on edit, and saving without retyping it
+        // silently nulls the column.
+        $data['note'] = $data['notes'] ?? null;
+
+        return $data;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

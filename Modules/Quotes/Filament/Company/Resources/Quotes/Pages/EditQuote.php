@@ -42,6 +42,16 @@ class EditQuote extends EditRecord
         }
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // The 'notes' form field writes to the real 'summary' column (see
+        // QuoteService); without this, the field always loads blank on
+        // edit, and saving without retyping it silently nulls the column.
+        $data['notes'] = $data['summary'] ?? null;
+
+        return $data;
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         return app(QuoteService::class)->updateQuote($record, $data);

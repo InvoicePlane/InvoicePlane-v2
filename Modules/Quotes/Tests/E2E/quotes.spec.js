@@ -3,6 +3,7 @@ import { tenantPath } from '../../../Core/Tests/E2E/tenant-path.js';
 import { assertRealListContent } from '../../../Core/Tests/E2E/list-assertions.js';
 import { assertAddRowIncrementsRepeater } from '../../../Core/Tests/E2E/error-capture.js';
 import { registerRequiredFieldOmissionTests } from '../../../Core/Tests/E2E/required-field-helpers.js';
+import { openMarkdownEditorField, fillMarkdownEditor, readMarkdownEditorText } from '../../../Core/Tests/E2E/markdown-editor-helpers.js';
 
 /**
  * Per the e2e-behavioral-testing skill: these tests prove the feature works,
@@ -83,6 +84,45 @@ test.describe('Quotes', () => {
       sectionHeading: 'Quote items',
       itemLabel: 'quote item',
     });
+  });
+
+  test('the notes field survives a real create, save, and fresh page reload', async ({ page }) => {
+    /* Arrange
+     * PHPUnit already proves QuoteService writes the 'notes' form field to
+     * the real 'summary' column (and hydrates it back on edit) — this is
+     * the real-browser counterpart mind-the-gap-again's third-gap-class
+     * extension calls for: nothing before this proved a real browser, not
+     * just Livewire's server-side test harness, carries the value across
+     * an actual page load. */
+    await page.goto(tenantPath('/quotes/create'));
+    await expect(page.locator('form.fi-sc-form')).toBeVisible();
+
+    await page.getByRole('combobox', { name: /^customer name/i }).click();
+    await page.getByRole('option').first().click();
+    await page.getByRole('combobox', { name: /^status/i }).click();
+    await page.getByRole('option', { name: 'Draft', exact: true }).click();
+    await page.getByRole('combobox', { name: /^numbering/i }).click();
+    await page.getByRole('option', { name: 'Quote', exact: true }).click();
+
+    const marker = `E2E notes round-trip ${Date.now()}`;
+    const notesField = await openMarkdownEditorField(page, 'Quote notes', 'notes');
+    await fillMarkdownEditor(page, notesField, marker);
+
+    /* Act */
+    await page.locator('button[type="submit"]', { hasText: 'Create' }).click();
+    await expect(page).toHaveURL(/\/quotes\/\d+\/edit$/, { timeout: 10000 });
+    const editUrl = page.url();
+
+    // A real, fresh navigation — not just re-reading in-memory Livewire
+    // state on the same page — is what actually proves the round trip
+    // through the database, not just through the current session.
+    await page.goto(editUrl);
+    await expect(page.locator('form.fi-sc-form')).toBeVisible();
+
+    /* Assert */
+    const notesFieldAfterReload = await openMarkdownEditorField(page, 'Quote notes', 'notes');
+    const textAfterReload = await readMarkdownEditorText(page, notesFieldAfterReload);
+    expect(textAfterReload).toBe(marker);
   });
 });
 

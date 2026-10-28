@@ -394,6 +394,58 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_persists_the_notes_and_invoice_terms_fields_on_create(): void
+    {
+        /* Arrange */
+        $customer        = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup   = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $taxRate         = TaxRate::factory()->for($this->company)->create();
+        $productCategory = ProductCategory::factory()->for($this->company)->create();
+        $productUnit     = ProductUnit::factory()->for($this->company)->create();
+        $product         = Product::factory()->for($this->company)->create([
+            'category_id'   => $productCategory->id,
+            'unit_id'       => $productUnit->id,
+            'tax_rate_id'   => $taxRate->id,
+            'tax_rate_2_id' => null,
+        ]);
+
+        $payload = [
+            'invoice_number' => 'INV-000042',
+            'customer_id'    => $customer->getKey(),
+            'numbering_id'   => $documentGroup->getKey(),
+            'invoice_status' => 'draft',
+            'invoiced_at'    => '2025-05-10',
+            'invoice_due_at' => '2025-06-09',
+            'notes'          => 'Created via test',
+            'invoice_terms'  => 'Net 30, late fees apply.',
+            'invoiceItems'   => [
+                [
+                    'product_id' => $product->getKey(),
+                    'quantity'   => 1,
+                    'price'      => 100,
+                    'discount'   => 0,
+                ],
+            ],
+        ];
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(CreateInvoice::class)
+            ->fillForm($payload)
+            ->call('create');
+
+        /* Assert */
+        $component->assertSuccessful()->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('invoices', [
+            'invoice_number' => 'INV-000042',
+            'summary'        => 'Created via test',
+            'terms'          => 'Net 30, late fees apply.',
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_fails_to_create_invoice_without_required_invoice_number(): void
     {
         /* Arrange */
@@ -612,6 +664,152 @@ class InvoicesTest extends AbstractCompanyPanelTestCase
             'id'                    => $invoice->id,
             'invoice_item_subtotal' => 100,
             'invoice_total'         => 120,
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_the_notes_field_on_update(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'summary'      => null,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['notes' => 'Payment due Net 30.'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'summary' => 'Payment due Net 30.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_the_invoice_terms_field_on_update(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'terms'        => null,
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['invoice_terms' => 'Net 30, late fees apply.'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'terms' => 'Net 30, late fees apply.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_allows_clearing_the_notes_and_invoice_terms_fields_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'summary'      => 'Old note.',
+            'terms'        => 'Old terms.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['notes' => null, 'invoice_terms' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id, 'summary' => null, 'terms' => null]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_hydrates_the_notes_and_invoice_terms_fields_when_opening_the_edit_form(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'  => $customer->id,
+            'numbering_id' => $documentGroup->id,
+            'user_id'      => $this->user->id,
+            'summary'      => 'Existing note from before this session.',
+            'terms'        => 'Existing terms from before this session.',
+        ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id]);
+
+        /* Assert */
+        $component->assertFormSet([
+            'notes'         => 'Existing note from before this session.',
+            'invoice_terms' => 'Existing terms from before this session.',
+        ]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_preserves_existing_notes_and_terms_when_saving_an_unrelated_field_change(): void
+    {
+        /* Arrange */
+        $customer      = Relation::factory()->for($this->company)->customer()->create();
+        $documentGroup = Numbering::factory()->for($this->company)->state(['type' => NumberingType::INVOICE->value])->create();
+        $invoice       = Invoice::factory()->for($this->company)->create([
+            'customer_id'    => $customer->id,
+            'numbering_id'   => $documentGroup->id,
+            'user_id'        => $this->user->id,
+            'invoice_status' => InvoiceStatus::DRAFT->value,
+            'summary'        => 'Do not lose this note.',
+            'terms'          => 'Do not lose these terms.',
+        ]);
+
+        /* Act — a user opens the form and changes an unrelated field only,
+         * never touching Notes or Invoice Terms. */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditInvoice::class, ['record' => $invoice->id])
+            ->fillForm(['invoice_status' => InvoiceStatus::SENT])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('invoices', [
+            'id'      => $invoice->id,
+            'summary' => 'Do not lose this note.',
+            'terms'   => 'Do not lose these terms.',
         ]);
     }
 

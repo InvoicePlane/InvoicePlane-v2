@@ -694,6 +694,222 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    public function it_persists_the_note_field_on_update(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'notes'          => null,
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['note' => 'Paid by wire transfer.'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'notes' => 'Paid by wire transfer.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_persists_the_payment_number_on_update(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'payment_number' => 'PAY-OLD',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_number' => 'PAY-NEW'])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_number' => 'PAY-NEW']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_fails_to_update_payment_with_an_overlong_payment_number(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'payment_number' => 'PAY-OLD',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_number' => str_repeat('A', 256)])
+            ->call('save');
+
+        /* Assert */
+        $component->assertHasFormErrors(['payment_number' => 'max']);
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'payment_number' => 'PAY-OLD']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_allows_clearing_the_note_and_payment_number_fields_back_to_null_on_update(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'payment_number' => 'PAY-OLD',
+                'notes'          => 'Old note.',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['note' => null, 'payment_number' => null])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'notes' => null, 'payment_number' => null]);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_hydrates_the_note_field_from_the_notes_column_when_opening_the_edit_form(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'notes'          => 'Existing note from before this session.',
+            ]);
+
+        /* Act */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id]);
+
+        /* Assert */
+        $component->assertFormSet(['note' => 'Existing note from before this session.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
+    public function it_preserves_an_existing_note_when_saving_an_unrelated_field_change(): void
+    {
+        /* Arrange */
+        $customer = Relation::factory()->customer()->for($this->company)->create();
+        $invoice  = Invoice::factory()->for($this->company)->create([
+            'customer_id' => $customer->id,
+            'user_id'     => $this->user->id,
+        ]);
+
+        $payment = Payment::factory()
+            ->for($this->company)
+            ->create([
+                'invoice_id'     => $invoice->id,
+                'customer_id'    => $customer->id,
+                'payment_method' => PaymentMethod::BANK_TRANSFER->value,
+                'payment_status' => PaymentStatus::PENDING->value,
+                'payment_amount' => 123.00,
+                'paid_at'        => '2024-11-01',
+                'notes'          => 'Do not lose this note.',
+            ]);
+
+        /* Act — a user opens the form and changes an unrelated field only,
+         * never touching the note. */
+        $component = Livewire::actingAs($this->user)
+            ->test(EditPayment::class, ['record' => $payment->id])
+            ->fillForm(['payment_amount' => 888.00])
+            ->call('save');
+
+        /* Assert */
+        $component
+            ->assertSuccessful()
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('payments', ['id' => $payment->id, 'notes' => 'Do not lose this note.']);
+    }
+
+    #[Test]
+    #[Group('crud')]
     public function it_deletes_a_payment(): void
     {
         /* Arrange */
