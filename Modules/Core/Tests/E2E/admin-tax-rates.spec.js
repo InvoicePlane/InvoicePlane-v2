@@ -1,4 +1,5 @@
 import { test, expect } from './test.js';
+import { loginAdmin } from './admin.js';
 import { assertRealListContent } from './list-assertions.js';
 
 test.describe('Admin: Tax Rates', () => {

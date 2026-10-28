@@ -11,7 +11,7 @@ import { E2E_BASE_URL } from './config.js';
  */
 export function adminSession() {
     return php(`
-        $user = \\App\\Models\\User::where('email', '${ADMIN_EMAIL}')->firstOrFail();
+        $user = \\Modules\\Core\\Models\\User::where('email', '${ADMIN_EMAIL}')->firstOrFail();
         $guard = \\Illuminate\\Support\\Facades\\Auth::guard('web');
         $store = app('session')->driver('file');
         $store->setId(\\Illuminate\\Support\\Str::random(40));

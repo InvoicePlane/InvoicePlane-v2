@@ -1,4 +1,5 @@
 import { test, expect } from './test.js';
+import { loginAdmin } from './admin.js';
 
 /**
  * Boot-error smoke test for the ADMIN panel — the sibling of

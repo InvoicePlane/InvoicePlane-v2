@@ -44,17 +44,19 @@ export default defineConfig({
     // don't clobber each other's connector credentials/tokens
     {
       name: 'admin-connect',
-      testMatch: '*/tests/E2E/admin-connect.spec.js',
+      testMatch: '*/Modules/Core/Tests/E2E/admin-connect.spec.js',
       dependencies: ['desktop'],
       fullyParallel: false,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+      globalSetup: '',  // Skip shared global setup - admin tests use loginAdmin()
     },
     {
       name: 'admin-integrations',
-      testMatch: '*/tests/E2E/admin-integrations.spec.js',
+      testMatch: '*/Modules/Core/Tests/E2E/admin-integrations.spec.js',
       dependencies: ['admin-connect'],
       fullyParallel: false,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
+      globalSetup: '',  // Skip shared global setup - admin tests use loginAdmin()
     },
   ],
 
