@@ -47,6 +47,7 @@ class QuoteDownloadPdfActionTest extends AbstractCompanyPanelTestCase
         $this->numbering = $numbering;
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_downloads_quote_pdf_for_permitted_user(): void
     {
@@ -71,6 +72,7 @@ class QuoteDownloadPdfActionTest extends AbstractCompanyPanelTestCase
             ->assertActionVisible(TestAction::make('download pdf')->table($quote));
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_sanitizes_slashes_in_quote_number_for_download_filename(): void
     {
@@ -88,6 +90,7 @@ class QuoteDownloadPdfActionTest extends AbstractCompanyPanelTestCase
         $this->assertSame('attachment; filename="quote-Q-2026-001.pdf"', $disposition);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_hides_download_action_for_user_without_permission(): void
     {
@@ -104,6 +107,7 @@ class QuoteDownloadPdfActionTest extends AbstractCompanyPanelTestCase
             ->assertActionHidden(TestAction::make('download pdf')->table($quote));
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_propagates_render_failure_when_template_resolution_fails(): void
     {

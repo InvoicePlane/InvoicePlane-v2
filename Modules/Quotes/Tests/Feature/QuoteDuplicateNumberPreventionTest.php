@@ -14,6 +14,7 @@ use RuntimeException;
 #[CoversClass(QuoteNumberGenerator::class)]
 class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
 {
+    #[Group('slow')]
     #[Test]
     public function it_prevents_duplicate_quote_numbers_within_same_company(): void
     {
@@ -38,6 +39,7 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
         /* Assert */
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_allows_same_quote_number_in_different_companies(): void
     {
@@ -64,6 +66,7 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
         $this->assertEquals($company2->id, $quote2->company_id);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_allows_multiple_null_quote_numbers_for_drafts(): void
     {
@@ -99,6 +102,7 @@ class QuoteDuplicateNumberPreventionTest extends AbstractAdminPanelTestCase
         $this->assertEquals(3, $drafts);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_allows_updating_quote_without_changing_number(): void
     {

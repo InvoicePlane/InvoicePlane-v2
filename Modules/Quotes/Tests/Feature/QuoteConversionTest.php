@@ -35,6 +35,7 @@ class QuoteConversionTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_converts_a_quote_to_a_draft_invoice(): void
     {
         /* Arrange */
@@ -65,6 +66,7 @@ class QuoteConversionTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_refuses_to_convert_a_quote_twice(): void
     {
         /* Arrange */
