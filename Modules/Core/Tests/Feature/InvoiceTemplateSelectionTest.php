@@ -65,6 +65,7 @@ class InvoiceTemplateSelectionTest extends AbstractCompanyPanelTestCase
         $this->assertSame('Our House Default', $options['default']);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_persists_the_selected_template_slug_on_the_invoice(): void
     {

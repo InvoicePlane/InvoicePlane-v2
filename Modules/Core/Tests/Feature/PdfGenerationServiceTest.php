@@ -88,6 +88,7 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
         $this->assertSame('default', $template['manifest']['slug']);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_renders_invoice_and_quote_pdf_falling_back_to_resources_when_disk_is_empty(): void
     {
@@ -167,6 +168,7 @@ class PdfGenerationServiceTest extends AbstractCompanyPanelTestCase
      * RB-11 / S3-8 (#764) — the same slug/type resolves once per request, not
      * once per rendered document.
      */
+    #[Group('slow')]
     #[Test]
     public function it_reads_a_template_from_storage_only_once_across_renders(): void
     {

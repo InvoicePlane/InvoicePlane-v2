@@ -42,6 +42,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_creates_an_email_template_through_a_modal(): void
     {
         /* Arrange */
@@ -137,6 +138,7 @@ class EmailTemplatesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_updates_an_email_template_through_a_modal(): void
     {
         /* Arrange */

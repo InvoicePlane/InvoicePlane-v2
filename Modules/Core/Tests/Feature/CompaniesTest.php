@@ -42,6 +42,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
     # region modals
     #[Test]
     #[Group('modals')]
+    #[Group('slow')]
     public function it_creates_a_company_through_a_modal(): void
     {
         /* Arrange */
@@ -195,6 +196,7 @@ class CompaniesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     /**
      * @payload {
      *   "name": "Updated Corp"

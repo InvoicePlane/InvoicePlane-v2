@@ -78,6 +78,7 @@ class CompanyReportBuilderTest extends AbstractCompanyPanelTestCase
         $component->call('save');
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_clones_a_system_template_and_saves_the_editable_company_copy(): void
     {

@@ -49,6 +49,7 @@ class FormDbConstraintAuditTest extends AbstractAdminPanelTestCase
         $this->companyUser->assignRole(UserRole::CUSTOMER_ADMIN->value);
     }
 
+    #[Group('slow')]
     #[Test]
     public function every_form_field_matches_its_db_column_constraints(): void
     {

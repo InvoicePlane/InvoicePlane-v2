@@ -69,6 +69,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     /**
      * @payload
      * {
@@ -314,6 +315,7 @@ class ProductsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_updates_a_product_through_a_modal(): void
     {
         /* Arrange */

@@ -52,6 +52,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         ];
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_lists_system_templates_on_the_admin_list_page(): void
     {
@@ -114,6 +115,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
             ->test(ReportBuilder::class, ['scope' => 'system', 'type' => 'invoice', 'slug' => 'nope']);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_saves_the_edited_bands_back_to_disk(): void
     {
@@ -137,6 +139,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->assertSame(['height' => 33], $lastHeader['config']);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_lifts_the_block_width_out_of_the_config_when_saving(): void
     {
@@ -204,6 +207,7 @@ class AdminReportBuilderTest extends AbstractAdminPanelTestCase
         $this->assertSame('half', $bands['header'][0]['attrs']['config']['_width']);
     }
 
+    #[Group('slow')]
     #[Test]
     public function it_previews_an_inserted_brick_with_the_builder_rendering(): void
     {

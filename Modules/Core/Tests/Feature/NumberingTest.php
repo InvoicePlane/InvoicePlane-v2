@@ -79,6 +79,7 @@ class NumberingTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     public function it_creates_a_numbering_scheme(): void
     {
         /* Arrange */

@@ -162,6 +162,7 @@ class TaxRatesTest extends AbstractAdminPanelTestCase
 
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     /**
      * @payload
      * {

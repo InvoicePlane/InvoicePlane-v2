@@ -342,6 +342,7 @@ class PaymentsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('modals')]
+    #[Group('slow')]
     public function it_updates_a_payment_through_a_modal(): void
     {
         /* Arrange */

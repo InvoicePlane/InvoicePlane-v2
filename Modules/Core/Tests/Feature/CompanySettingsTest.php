@@ -17,6 +17,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
     # region page renders
     #[Test]
     #[Group('smoke')]
+    #[Group('slow')]
     public function it_renders_the_settings_page(): void
     {
         /* Act */
@@ -31,6 +32,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
     # region per-company save/load
     #[Test]
     #[Group('per-company')]
+    #[Group('slow')]
     public function it_persists_a_saved_setting_for_the_current_company_only(): void
     {
         /* Arrange */
@@ -50,6 +52,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('per-company')]
+    #[Group('slow')]
     public function it_persists_boolean_toggles_as_one_or_zero(): void
     {
         /* Act */
@@ -68,6 +71,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('per-company')]
+    #[Group('slow')]
     public function it_persists_a_long_text_setting(): void
     {
         /* Arrange */
@@ -86,6 +90,7 @@ class CompanySettingsTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('per-company')]
+    #[Group('slow')]
     public function it_persists_company_branding_settings(): void
     {
         /* Act */

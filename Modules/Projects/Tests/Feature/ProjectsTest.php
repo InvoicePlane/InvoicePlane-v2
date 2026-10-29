@@ -60,6 +60,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
     # region modals
     #[Test]
     #[Group('crud')]
+    #[Group('slow')]
     /**
      * @payload
      * {
@@ -231,6 +232,7 @@ class ProjectsTest extends AbstractCompanyPanelTestCase
      *    "project_name": "Updated Project Name"
      * }
      */
+    #[Group('slow')]
     public function it_updates_a_project_through_a_modal(): void
     {
         /* Arrange */
