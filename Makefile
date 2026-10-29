@@ -101,10 +101,10 @@ help:
 # ── Full suite ────────────────────────────────────────────────────────────────
 
 docker-test:
-	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && DB_HOST=mariadb php artisan test --exclude-group=failing,flaky,troubleshooting"
+	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/invoiceplane-2/ivplv2 && DB_HOST=mariadb DB_DATABASE=invoiceplane_test php artisan test --exclude-group=failing,flaky,troubleshooting"
 
 docker-test-fast:
-	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && $(PHPUNIT) --configuration $(CONFIG) --exclude-group failing,flaky,troubleshooting,slow"
+	docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/invoiceplane-2/ivplv2 && $(PHPUNIT) --configuration $(CONFIG) --exclude-group failing,flaky,troubleshooting,slow"
 
 # ── CI parity ────────────────────────────────────────────────────────────────
 # Reproduce, locally, everything a .github/workflows job does BEFORE it runs a
@@ -147,7 +147,7 @@ fix-test-disks:
 # the DB_HOST=mariadb inside the container network.
 _docker-artisan-test = docker exec -e XDEBUG_MODE=off -e APP_ENV=testing \
                        -e DB_CONNECTION=mariadb -e DB_HOST=mariadb \
-                       -e DB_DATABASE=invoiceplane-test \
+                       -e DB_DATABASE=invoiceplane_test \
                        ivpldock-workspace-1 bash -c 'cd /var/www/projects/invoiceplane-2/ivplv2 && php artisan test'
 
 test:

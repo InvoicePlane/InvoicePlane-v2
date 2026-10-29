@@ -228,6 +228,18 @@ classes — the mounted action's injected `$record` doesn't match the actual tar
 production bug (a live request never shares process state with 20+ unrelated prior tests). See
 `.github/DOCKER.md`.
 
+### Testing Environment (Shared Standard)
+
+- PHPUnit **must** run inside Docker. The canonical command is `make test`, which runs `php artisan test` inside the `ivpldock-workspace-1` container (same `docker exec` command documented under "DB for tests" above).
+- The shared testing standard (`/data/Projects/shared-testing-standard-2026-10-29.md`) defines the mandatory Docker execution policy and verification procedures.
+- Before running PHPUnit, verify the Docker stack is up: `docker ps` should show `ivpldock-workspace-1` and `ivpldock-mariadb-1` `Up`/healthy.
+- `vendor/bin/phpunit` must NOT be used directly on the host — it has been observed to silently drop submitted field values in Livewire form tests, unlike `php artisan test` which matches CI.
+- Makefile targets such as `make artisan-test`, `make filter`, `make group`, `make coverage` and `make ci` run **on the host** (not Docker); prefer `make test` for the Docker path.
+- `docker compose run --rm cli` is **broken** in this repository (build contexts `./docker-resources/php-cli`, `./docker-resources/php-fpm`, `./docker-resources/apache` are missing) and must not be used.
+- If a test must run on the host, it must be explicitly documented as an exception with justification.
+- `XDEBUG_MODE=off` is recommended for normal runs (the container's php.ini defaults to `xdebug.mode=debug`); switch to `-e XDEBUG_MODE=coverage` only when running with `--coverage`.
+
+
 ### AAA phase comment style
 
 Phase labels (`Arrange`, `Act`, `Assert`) inside test methods **must** use block comments. Line comments (`//`) are **prohibited** for phase labels.
