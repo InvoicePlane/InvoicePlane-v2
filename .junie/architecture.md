@@ -1,5 +1,9 @@
 # Architecture — InvoicePlane v2
 
+## Verified framework versions (from `composer.lock`)
+Laravel 13.15.0, Filament 5.6.7, Livewire 4.3.1, nwidart/laravel-modules 13.0.0, PHP 8.4 (dev box 8.4.23).
+(Older docs that say "Laravel 11 / Filament 4 / Livewire 3" are stale.)
+
 ## Auth & login flow
 
 ```

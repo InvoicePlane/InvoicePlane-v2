@@ -8,11 +8,11 @@ These guidelines contain verified facts about the InvoicePlane v2 codebase. **Tr
 
 ## Verified Tech Stack
 
-- **Framework:** Laravel **11** (PHP **8.1**+)
-- **UI:** Filament **4.0** + Livewire **3**
-- **Modules:** `nwidart/laravel-modules`
-- **Permissions:** `spatie/laravel-permission`
-- **Multi-tenancy:** Filament Companies with `BelongsToCompany` trait
+- **Framework:** Laravel **13** (PHP 8.3+, dev box 8.4.23) — verified against `composer.lock` (`laravel/framework` 13.15.0)
+- **UI:** Filament **5.6** + Livewire **4.3** (verified: `filament/filament` 5.6.7, `livewire/livewire` 4.3.1)
+- **Modules:** `nwidart/laravel-modules` 13.0.0
+- **Permissions:** `spatie/laravel-permission` 8.0.0
+- **Multi-tenancy:** Filament built-in tenant system scoped to `Company` + `BelongsToCompany` trait
 - **DB (prod):** MariaDB 11 | **DB (tests):** MariaDB 11 — no SQLite fallback (parity with CI)
 - **Code quality:** Laravel Pint (PSR-12), PHPStan, Rector
 

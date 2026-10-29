@@ -17,8 +17,8 @@ export default async function globalSetup() {
 
     await page.goto('/login');
 
-    await page.getByRole('textbox').fill(E2E_EMAIL);
-    await page.fill('input[type="password"]', E2E_PASSWORD);
+    await page.getByRole('textbox', { name: 'Email*', exact: true }).fill(E2E_EMAIL);
+    await page.getByRole('textbox', { name: 'Password*', exact: true }).fill(E2E_PASSWORD);
     await page.click('[type="submit"]');
 
     await page.waitForURL(new RegExp(tenantPath('/dashboard')), { timeout: 60000 });

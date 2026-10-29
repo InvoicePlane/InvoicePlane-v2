@@ -2,7 +2,7 @@
 
 ## What this is
 
-Laravel 11 + Filament v4 + Livewire v3 invoicing app. Modular architecture via `nwidart/laravel-modules`. PHP 8.1+ enums, Spatie roles/permissions, multi-tenancy scoped to `Company`.
+Laravel 13 + Filament v5 + Livewire v4 invoicing app (verified against `composer.lock`: `laravel/framework` 13.15.0, `filament/filament` 5.6.7, `livewire/livewire` 4.3.1, `nwidart/laravel-modules` 13.0.0). PHP 8.4 (dev box 8.4.23), Spatie roles/permissions, multi-tenancy scoped to `Company`.
 
 ## Setup
 
@@ -151,6 +151,20 @@ $this->getCompanyId(): ?int   // resolves from Filament/session/user
 ```
 
 No DTO layer — services accept plain arrays.
+
+---
+
+## Report Builder
+
+Band-based report builder (Delphi ReportBuilder-style). Five bands: Header, Group Header, Details, Group Footer, Footer (`Modules/Core/Enums/ReportBand.php`). Pure-file storage: `manifest.json` + `bands.json` under `storage/app/report_templates/{scope}/{slug}/`, scoped by system (`system/invoice|quote/<slug>`) or company (`{company_id}/<slug>`) via `ReportTemplateStorage`.
+
+- `ReportRenderer::render($template, $data)` — print/export output (entity data). `renderPreview($bands)` — builder preview (shares `renderRow()`/`chunkIntoRows()` grid logic; no document wrapper; uses `toPreviewHtml()` not `toHtml()`).
+- `ReportDataMapper::forInvoice($invoice)` / `forQuote($quote)` — maps entity data; lazy-loads project/task/expense/aging relations only when a matching brick is in the template (query-count caps).
+- `ReportTemplateType`: `invoice`, `quote` only (Phase 2 scope lists Clients/Expenses/Projects/Payments/Tasks as future — not yet implemented; do not claim).
+- Admin panel (`ReportTemplates`/`ReportBuilder`): `super_admin` + `admin` manage system scope; `assist` excluded. Company panel: elevated + `client_admin` manage company scope.
+- `BaseReportBuilderPage`: one Mason canvas per band (`Modules/Core/Filament/Pages/Reports/`); `moveBrick()` cross-band action; preview via `previewAction()` modal.
+
+Symlinked test conventions: PHPUnit tests at `Modules/Core/Tests/{Unit,Feature}` (extends `AbstractAdminPanelTestCase` / `AbstractCompanyPanelTestCase` / `AbstractTestCase`). Playwright E2E at `Modules/Core/Tests/E2E/` (helpers: `test.js`, `tenant-path.js`, `lang-helper.js`, `report-builder-fixture.js`, `global-setup.js`).
 
 ---
 

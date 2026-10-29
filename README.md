@@ -19,6 +19,7 @@
 - [Development](#-development)
 - [Module Structure](#-module-structure)
 - [Testing](#-testing)
+- [Report Builder](#-report-builder)
 - [Peppol E-Invoicing](#-peppol-e-invoicing)
 - [Deployment](#-deployment)
 - [Documentation](#-documentation)
@@ -33,11 +34,12 @@
 - **Invoice & Quote Management** - Create, send, and track invoices and quotes
 - **Customer & Contact Handling** - Manage customers and relationships
 - **Payment Tracking & Reminders** - Track payments and send automated reminders
+- **Report Builder** - Band-based (Header / Group Header / Details / Group Footer / Footer) report designer with Mason canvas, live preview, and PDF export for invoices and quotes (see [Report Builder](#-report-builder))
 - **Modular Architecture** - Laravel + Filament with clean module separation
 - **Multi-Tenant Support** - Via Filament Companies with company isolation
 - **Realtime UI** - Built with Livewire for reactive interfaces
 - **Asynchronous Export System** - Requires queue workers for background processing
-- **Comprehensive Testing** - PHPUnit tests with high coverage
+- **Comprehensive Testing** - PHPUnit regression tests plus Playwright end-to-end tests (see [Testing](#-testing))
 - **Internationalization** - Full translation support via Crowdin
 
 ---
@@ -224,37 +226,47 @@ Peppol e-invoicing is **not yet implemented** on `develop` — see the [Peppol E
 
 ### Running Tests
 
-Tests run inside the Docker workspace container — the database is only reachable there:
+Tests require a real MariaDB (no SQLite fallback — SQLite's lenient identifier quoting has
+masked bugs that only surfaced on MariaDB in CI). Tests run against `invoiceplane_test`.
 
 ```bash
-# Run all tests
-docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test"
+# Run all PHPUnit tests
+php artisan test
 
-# Run specific test file
-docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && php artisan test Modules/Invoices/Tests/Feature/InvoicesTest.php"
+# Run Report Builder tests specifically
+php artisan test --filter='Report'
 
-# Fall back to phpunit for full exception traces on failure
-docker exec ivpldock-workspace-1 bash -c "cd /var/www/projects/ip2 && vendor/bin/phpunit Modules/Invoices/Tests/Feature/InvoicesTest.php"
+# Run a single test file
+php artisan test Modules/Core/Tests/Feature/AdminReportBuilderTest.php
 ```
 
-Or use the Makefile shorthand (see `Makefile` for available targets).
+Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to behave
+differently for this app's Livewire form tests; `artisan test` is reliable and matches CI.
 
-**Preferred: Docker Compose.** The `cli` service runs the suite against a real MariaDB `db`
-service — the same engine CI uses — with no setup beyond `docker compose run`:
+**Docker Compose (preferred).** The `cli` service runs the suite against the real MariaDB `db`
+service — the same engine CI uses:
 
 ```bash
 docker compose run --rm cli php artisan test --exclude-group failing,troubleshooting
 ```
 
-Use `php artisan test`, not `vendor/bin/phpunit` directly — the two have been observed to behave
-differently for this app's Livewire form tests (`vendor/bin/phpunit` silently drops submitted
-field values in some environments); `artisan test` is the reliable one and matches CI. A
-freshly-rebuilt `cli` image has, at least once, reproduced this same problem even under
-`artisan test` for reasons not yet isolated — see
-[#689](https://github.com/InvoicePlane/InvoicePlane-v2/issues/689) before trusting a full run.
+### End-to-End (Playwright)
 
-SQLite is intentionally not used for this project's tests: its lenient identifier quoting has
-masked real bugs that only surfaced on MariaDB in CI. See `.github/DOCKER.md`.
+Playwright E2E tests cover the Report Builder Mason canvas, per-band iframes, brick drag/drop,
+move-to-band, and preview slide-over. They run against a locally served app (`php artisan serve`)
+on `http://localhost:8000` against a seeded database.
+
+```bash
+# Start the app (seeded database required first)
+php artisan migrate --seed
+php artisan serve --port=8000
+
+# Run Report Builder E2E tests
+npx playwright test --config=playwright.config.js report-builder
+```
+
+E2E tests live in `Modules/Core/Tests/E2E/` and use shared helpers (`test.js`, `tenant-path.js`,
+`lang-helper.js`, `report-builder-fixture.js`, `global-setup.js`).
 
 ### Code Quality
 
@@ -389,6 +401,57 @@ public function it_creates_invoice(): void
 If you're looking to contribute Peppol support, start with that issue and branch rather than the config file alone — the config schema exists, but the format handlers, access-point client, and UI wiring described in earlier drafts of this README were aspirational and have been removed here until they actually ship.
 
 ---
+## 📊 Report Builder
+
+InvoicePlane v2 includes a Delphi ReportBuilder-style banded report designer. A report template is defined by five bands rendered in document order:
+
+| Band | Purpose |
+|------|---------|
+| **Header** | Document-level header (company, client, meta) — rendered once |
+| **Group Header** | Group label when `group_by` is configured on Details |
+| **Details** | Line items (products, tasks, expenses, aging) |
+| **Group Footer** | Group subtotals |
+| **Footer** | Document-level totals, notes, terms |
+
+### Supported document types
+
+`invoice` and `quote` are supported. Bricks are type-aware (e.g. invoice-specific meta bricks are pruned from quote templates and vice versa).
+
+### Template storage
+
+Templates are pure-file storage — no database tables. Each template is a folder holding `manifest.json` (metadata) and `bands.json` (layout):
+
+- **System scope:** `storage/app/report_templates/system/{invoice|quote}/{slug}/` — admin-managed, read-only from the company panel
+- **Company scope:** `storage/app/report_templates/{company_id}/{slug}/` — company-owned, editable by company admins
+
+Company paths are always derived from the authenticated tenant context, never caller-supplied, so one company can never address another company's templates.
+
+### Preview vs print
+
+Preview (`ReportRenderer::renderPreview()`) and print/export output (`ReportRenderer::render()`) share the same row-packing grid (`chunkIntoRows()` / `renderRow()`), so preview and exported output always represent the same report definition. Preview uses each brick's `toPreviewHtml()` (no entity data, no document wrapper); print uses `toHtml()` with full entity data.
+
+### Bricks
+
+20 bricks are registered across header, detail, footer, and utility categories, scoped to the bands they may appear in. Unknown bricks and bricks placed in a disallowed band are stripped on load/save. Brick configs are filtered against each brick's schema, and presentational values (font size, text align) are coercively sanitized server-side.
+
+### Access control
+
+- **Admin panel:** `super_admin` and `admin` manage system-scoped templates; `assist` is excluded.
+- **Company panel:** elevated roles and `client_admin` manage company-scoped templates; system templates are read-only.
+- System default templates (`default`) cannot be renamed or deleted from any panel.
+
+### Testing
+
+PHPUnit regression tests cover brick rendering, band packing, grouping, data mapping (invoice/quote/project/tasks/expenses/aging), template storage sanitization, authorization, and preview/print consistency. Playwright E2E tests cover the Mason canvas, per-band iframes, brick drag/drop, move-to-band, and preview slide-over.
+
+```
+php artisan test --filter='Report'                  # Report Builder PHPUnit
+npx playwright test report-builder                  # Report Builder Playwright E2E
+```
+
+See `CLAUDE.md` → "Report Builder Guardrails" for the mandatory regression-test command and conventions.
+
+---
 
 ## 🚀 Deployment
 
@@ -517,8 +580,8 @@ We welcome contributions from the community!
 - Review the [Module Checklist](.github/CHECKLIST.md) before creating modules
 - Follow PSR-12 coding standards
 - Write meaningful commit messages (see [git-commit-instructions.md](.github/git-commit-instructions.md))
-- All tests must pass
-- Maintain test coverage above 80%
+- All tests must pass (`php artisan test` green)
+- Add tests for new behavior; do not weaken or delete existing tests
 - Update documentation for new features
 
 ### Code of Conduct
