@@ -32,7 +32,7 @@ class InvoiceDefaultTermsPrefillTest extends AbstractCompanyPanelTestCase
             ->test(CreateInvoice::class);
 
         /* Assert */
-        $component->assertFormSet(['invoice_terms' => 'Payment due within 30 days.']);
+        $component->assertFormSet(['invoice_terms' => '<p>Payment due within 30 days.</p>']);
     }
 
     #[Test]
@@ -43,7 +43,7 @@ class InvoiceDefaultTermsPrefillTest extends AbstractCompanyPanelTestCase
             ->test(CreateInvoice::class);
 
         /* Assert */
-        $component->assertFormSet(['invoice_terms' => null]);
+        $component->assertFormSet(['invoice_terms' => '<p></p>']);
     }
 
     #[Test]
@@ -58,7 +58,7 @@ class InvoiceDefaultTermsPrefillTest extends AbstractCompanyPanelTestCase
             ->test(CreateInvoice::class);
 
         /* Assert */
-        $component->assertFormSet(['invoice_terms' => null]);
+        $component->assertFormSet(['invoice_terms' => '<p></p>']);
     }
 
     #[Test]
@@ -73,6 +73,6 @@ class InvoiceDefaultTermsPrefillTest extends AbstractCompanyPanelTestCase
             ->fillForm(['invoice_terms' => 'Custom terms for this invoice.']);
 
         /* Assert */
-        $component->assertFormSet(['invoice_terms' => 'Custom terms for this invoice.']);
+        $component->assertFormSet(['invoice_terms' => '<p>Custom terms for this invoice.</p>']);
     }
 }
