@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\NumberingType;
+use Modules\Core\Filament\Admin\Resources\Numberings\NumberingResource;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Models\Numbering;
 use Modules\Core\Services\NumberingService;
@@ -60,7 +61,10 @@ class NumberingsTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make(),
+                    EditAction::make()
+                        ->url(fn (Numbering $record): string => NumberingResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->action(function (Numbering $record) {
                             app(NumberingService::class)->deleteNumbering($record);

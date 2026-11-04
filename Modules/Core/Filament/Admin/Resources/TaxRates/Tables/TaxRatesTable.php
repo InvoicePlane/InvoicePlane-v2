@@ -11,6 +11,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Core\Enums\TaxRateType;
+use Modules\Core\Filament\Admin\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Helpers\EnumHelper;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Services\TaxRateService;
@@ -56,9 +57,10 @@ class TaxRatesTable
             ->filters([])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make()->action(function (TaxRate $record, array $data) {
-                        app(TaxRateService::class)->updateTaxRate($record, $data);
-                    })->modalWidth('full'),
+                    EditAction::make()
+                        ->url(fn (TaxRate $record): string => TaxRateResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->action(function (TaxRate $record, array $data) {
                             app(TaxRateService::class)->deleteTaxRate($record);

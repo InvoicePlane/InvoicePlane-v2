@@ -1,0 +1,72 @@
+@import '../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../vendor/filament/**/*.blade.php';
+@source '../../../resources/**/*.blade.php';
+@source '../../../Modules/**/*.blade.php';
+@source '../../../Modules/**/*.php';
+@source '../../../storage/framework/views/*.php';
+
+/* Report Builder grid + band classes are built up dynamically in PHP, so Tailwind
+   can't see them via static source scanning — force-include them explicitly
+   (mirrors the old tailwind.config.js `safelist`). */
+@source inline("grid grid-cols-12 col-span-1 col-span-2 col-span-3 col-span-4 col-span-6 col-span-8 col-span-9 col-span-12 gap-4 gap-6");
+@source inline("bg-warning-500 bg-warning-600 bg-danger-500 bg-danger-600 bg-primary-500 bg-primary-600 bg-success-500 bg-success-600 bg-info-500 bg-info-600");
+@source inline("border-warning-700 border-warning-800 border-danger-700 border-danger-800 border-primary-700 border-primary-800 border-success-700 border-success-800 border-info-700 border-info-800");
+@source inline("rounded-xl rounded-2xl shadow-lg shadow-xl p-3 p-4 p-10 sticky top-4");
+
+@theme {
+    /* Fluent-tightened radius scale (Filament defaults: sm .25rem, md .375rem, lg .5rem, xl .75rem) */
+    --radius-sm: 0.125rem;
+    --radius-md: 0.1875rem;
+    --radius-lg: 0.25rem;
+    --radius-xl: 0.375rem;
+
+    /* Fluent "depth" shadow scale — tight two-layer ambient+direct shadows instead of
+       Tailwind's default wide, loose blur/spread (used on cards, dropdowns, modals). */
+    --shadow-2xs: 0 1px 2px #0000000f;
+    --shadow-xs: 0 1px 2px #00000014;
+    --shadow-sm: 0 1px 2px #00000024, 0 0 2px #0000001f;
+    --shadow-md: 0 2px 4px #00000024, 0 0 2px #0000001f;
+    --shadow-lg: 0 4px 8px #00000024, 0 0 2px #0000001f;
+    --shadow-xl: 0 8px 16px #00000024, 0 0 2px #0000001f;
+    --shadow-2xl: 0 16px 32px #00000024, 0 0 2px #0000001f;
+}
+
+/* Starter-kit-style shell: the sidebar blends into the page background (Filament
+   already does this via `lg:bg-transparent`) and is pinned to the full viewport
+   height (its own nav scrolls internally, via vendor `.fi-sidebar-nav`). The main
+   content region mirrors that: it's a fixed-height inset card that never grows
+   with its content — only the content inside it scrolls, the card itself doesn't. */
+.fi-main-ctn {
+    @apply my-2 me-2 flex flex-col overflow-y-auto rounded-xl bg-white ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+
+    /* Fixed `height` (not `min-height`) so the card's own box stays pinned to the
+       viewport instead of growing with page content — that's what makes only the
+       content *inside* scroll. `100dvh - 1rem` accounts for the `my-2` margin (no
+       topbar to subtract now that `->topbar(false)` is set on every panel).
+       Vendor CSS also sets `min-height: 100dvh` once the topbar is disabled
+       (`.fi-body:not(.fi-body-has-topbar) .fi-main-ctn`), which — being a floor —
+       would otherwise win over our smaller `height` and stretch the card past the
+       viewport again, so it has to be overridden to the same value too. */
+    height: calc(100dvh - 1rem);
+    min-height: calc(100dvh - 1rem);
+}
+
+/* The sidebar footer (user menu / notifications) sits right after the scrollable nav
+   list with no visual break, so with a long nav it's unclear where items end and the
+   footer begins. Give it a top border spanning the full sidebar width (padding instead
+   of the vendor's inset margin) plus a faint bg tint so it reads as its own pinned
+   section, distinct from the scrolling nav above it. */
+.fi-sidebar-footer {
+    @apply mx-0 my-0 border-t border-gray-950/5 bg-gray-50/60 px-4 py-3 dark:border-white/10 dark:bg-white/2;
+}
+
+/* Sections and table containers are `bg-white shadow-sm ring-1 ring-gray-950/5` in
+   vendor CSS — that worked when they sat on the gray page background, but now that
+   `.fi-main-ctn` is itself a white card, they're white-on-white and needed a touch
+   more definition. Landed back on vendor's own default `shadow-sm` (our `shadow-xs`
+   was a bit too faint) — just with the ring deepened slightly. */
+.fi-section,
+.fi-ta-ctn {
+    @apply shadow-sm ring-gray-950/8 dark:ring-white/12;
+}

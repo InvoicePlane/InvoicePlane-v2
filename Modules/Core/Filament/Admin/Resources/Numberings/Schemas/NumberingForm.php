@@ -3,13 +3,12 @@
 namespace Modules\Core\Filament\Admin\Resources\Numberings\Schemas;
 
 use Filament\Actions\Action;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Modules\Core\Enums\NumberingType;
 use Modules\Core\Models\Company;
@@ -23,31 +22,28 @@ class NumberingForm
     {
         return $schema
             ->components([
-                // Company selection (Admin can assign to any company)
-                Section::make(trans('ip.numbering_company_assignment'))
+                Grid::make(3)
+                    ->columnSpanFull()
                     ->schema([
-                        Select::make('company_id')
-                            ->label(trans('ip.numbering_company'))
-                            ->options(Company::all()->pluck('name', 'id'))
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->helperText(trans('ip.numbering_select_company_help')),
-                    ])
-                    ->columnSpanFull(),
-
-                //
-                // Top: Type and Name
-                //
-                Section::make()
-                    ->schema([
-                        Grid::make(2)
+                        Section::make(trans('ip.basic_information'))
+                            ->icon(Heroicon::OutlinedIdentification)
+                            ->columnSpan(2)
                             ->schema([
-                                // ── LEFT: Type and Name
-                                Schemas\Components\Group::make()
+                                Grid::make(4)
                                     ->schema([
+                                        Select::make('company_id')
+                                            ->label(trans('ip.numbering_company'))
+                                            ->prefixIcon(Heroicon::OutlinedBuildingOffice2)
+                                            ->options(Company::all()->pluck('name', 'id'))
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->helperText(trans('ip.numbering_select_company_help'))
+                                            ->columnSpan(4),
+
                                         Select::make('type')
                                             ->label(trans('ip.numbering_type'))
+                                            ->prefixIcon(Heroicon::OutlinedRectangleStack)
                                             ->options(array_combine(
                                                 array_map(fn (NumberingType $case): string => $case->value, NumberingType::cases()),
                                                 array_map(fn (NumberingType $case): string => $case->label(), NumberingType::cases())
@@ -61,67 +57,59 @@ class NumberingForm
                                                         $set('prefix', $type->prefix());
                                                     }
                                                 }
-                                            }),
+                                            })
+                                            ->columnSpan(2),
+
                                         TextInput::make('name')
                                             ->label(trans('ip.numbering_name'))
-                                            ->required(),
-                                    ])
-                                    ->columnSpan(1),
+                                            ->prefixIcon(Heroicon::OutlinedTag)
+                                            ->required()
+                                            ->columnSpan(2),
 
-                                // ── RIGHT: Next ID / Left Pad
-                                Grid::make()
-                                    ->schema([
                                         TextInput::make('next_id')
                                             ->label(trans('ip.numbering_next_id'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
                                             ->numeric()
                                             ->required()
-                                            ->default(1),
+                                            ->default(1)
+                                            ->columnSpan(2),
 
                                         TextInput::make('left_pad')
                                             ->label(trans('ip.numbering_left_pad'))
                                             ->numeric()
-                                            ->default(4),
-                                    ])
-                                    ->columnSpan(1),
+                                            ->default(4)
+                                            ->columnSpan(2),
+                                    ]),
                             ]),
-                    ])
-                    ->columnSpanFull(),
 
-                //
-                // Below: Prefix and Format
-                //
-                Section::make()
-                    ->schema([
-                        Grid::make(2)
-                            ->columns(2)
+                        Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedCalculator)
+                            ->columnSpan(2)
                             ->schema([
-                                Schemas\Components\Group::make()->schema([
-                                    Select::make('prefix')
-                                        ->label(trans('ip.numbering_prefix'))
-                                        ->placeholder('INV')
-                                        ->options(fn (?string $state): array => self::prefixOptions($state))
-                                        ->searchable()
-                                        ->native(false),
-                                    TextInput::make('format')
-                                        ->label(trans('ip.numbering_format'))
-                                        ->placeholder(trans('ip.numbering_format_placeholder'))
-                                        ->helperText(trans('ip.numbering_format_help'))
-                                        ->suffixActions(self::tokenInsertActions('format')),
-                                    TextInput::make('group_identifier_format')
-                                        ->label(trans('ip.numbering_group_identifier_format'))
-                                        ->placeholder(trans('ip.numbering_group_identifier_format_placeholder'))
-                                        ->helperText(trans('ip.numbering_group_identifier_format_help'))
-                                        ->suffixActions(self::tokenInsertActions('group_identifier_format')),
-                                ]),
-                                Schemas\Components\Group::make()->schema([
-                                    Placeholder::make('format_helper')
-                                        ->label('')
-                                        ->content(trans('ip.numbering_format_helper'))
-                                        ->columnSpanFull(),
-                                ]),
+                                Select::make('prefix')
+                                    ->label(trans('ip.numbering_prefix'))
+                                    ->prefixIcon(Heroicon::OutlinedListBullet)
+                                    ->placeholder('INV')
+                                    ->options(fn (?string $state): array => self::prefixOptions($state))
+                                    ->searchable()
+                                    ->native(false)
+                                    ->columnSpanFull(),
+
+                                TextInput::make('format')
+                                    ->label(trans('ip.numbering_format'))
+                                    ->placeholder(trans('ip.numbering_format_placeholder'))
+                                    ->helperText(trans('ip.numbering_format_help'))
+                                    ->suffixActions(self::tokenInsertActions('format'))
+                                    ->columnSpanFull(),
+
+                                TextInput::make('group_identifier_format')
+                                    ->label(trans('ip.numbering_group_identifier_format'))
+                                    ->placeholder(trans('ip.numbering_group_identifier_format_placeholder'))
+                                    ->helperText(trans('ip.numbering_group_identifier_format_help'))
+                                    ->suffixActions(self::tokenInsertActions('group_identifier_format'))
+                                    ->columnSpanFull(),
                             ]),
-                    ])
-                    ->columnSpanFull(),
+                    ]),
             ]);
     }
 

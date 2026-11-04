@@ -5,6 +5,8 @@ namespace Modules\Core\Tests\Feature;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\CreateNoteTemplate;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\EditNoteTemplate;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\ListNoteTemplates;
 use Modules\Core\Models\Company;
 use Modules\Core\Models\NoteTemplate;
@@ -63,7 +65,7 @@ class NoteTemplatesTest extends AbstractCompanyPanelTestCase
     # region crud
     #[Test]
     #[Group('crud')]
-    public function it_creates_a_note_template_through_a_modal(): void
+    public function it_creates_a_note_template(): void
     {
         /* Arrange */
         $payload = [
@@ -73,10 +75,9 @@ class NoteTemplatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListNoteTemplates::class)
-            ->mountAction('create')
+            ->test(CreateNoteTemplate::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -97,10 +98,9 @@ class NoteTemplatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListNoteTemplates::class)
-            ->mountAction('create')
+            ->test(CreateNoteTemplate::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasFormErrors(['template_title']);
@@ -110,7 +110,7 @@ class NoteTemplatesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_updates_a_note_template_through_a_modal(): void
+    public function it_updates_a_note_template(): void
     {
         /* Arrange */
         $template = NoteTemplate::factory()->for($this->company)->create([
@@ -122,10 +122,9 @@ class NoteTemplatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListNoteTemplates::class)
-            ->mountAction(TestAction::make('edit')->table($template), $payload)
+            ->test(EditNoteTemplate::class, ['record' => $template->id])
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('save');
 
         /* Assert */
         $component->assertHasNoFormErrors();

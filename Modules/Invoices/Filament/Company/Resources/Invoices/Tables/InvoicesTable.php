@@ -24,6 +24,7 @@ use Modules\Core\Support\DateHelpers;
 use Modules\Invoices\Enums\InvoiceStatus;
 use Modules\Invoices\Filament\Company\Actions\EmailInvoiceAction;
 use Modules\Invoices\Filament\Company\Actions\SendReminderAction;
+use Modules\Invoices\Filament\Company\Resources\Invoices\InvoiceResource;
 use Modules\Invoices\Models\Invoice;
 use Modules\Invoices\Services\InvoiceCopyService;
 use Modules\Invoices\Services\InvoiceService;
@@ -100,33 +101,9 @@ class InvoicesTable
                 ActionGroup::make([
                     EditAction::make()
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_INVOICES->value))
-                        ->mutateDataUsing(function (array $data, Invoice $record) {
-                            $data['invoiceItems'] = $record->invoiceItems()->get()->map(function ($item) {
-                                $product = $item->product;
-
-                                return [
-                                    'id'            => $item->id,
-                                    'product_id'    => $item->product_id,
-                                    'product_name'  => $product?->product_name ?? '',
-                                    'item_name'     => $item->item_name,
-                                    'quantity'      => $item->quantity,
-                                    'price'         => $item->price,
-                                    'discount'      => $item->discount,
-                                    'subtotal'      => $item->subtotal,
-                                    'tax_1'         => $item->tax_1,
-                                    'tax_2'         => $item->tax_2,
-                                    'tax_rate_id'   => $item->tax_rate_id,
-                                    'tax_rate_2_id' => $item->tax_rate_2_id,
-                                    'description'   => $item->description,
-                                ];
-                            })->toArray();
-
-                            return $data;
-                        })
-                        ->action(function (Invoice $record, array $data) {
-                            app(\Modules\Invoices\Services\InvoiceService::class)->updateInvoice($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Invoice $record): string => InvoiceResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     Action::make('copy')
                         ->visible(fn () => auth()->user()?->can(Permission::DUPLICATE_INVOICES->value))
                         ->label(trans('ip.copy_invoice'))

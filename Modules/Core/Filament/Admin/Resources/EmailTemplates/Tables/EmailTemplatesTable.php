@@ -54,8 +54,9 @@ class EmailTemplatesTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->action(fn (EmailTemplate $record, array $data) => app(EmailTemplateService::class)->updateEmailTemplate($record, $data))
-                        ->modalWidth('full'),
+                        ->url(fn (EmailTemplate $record, $livewire): string => $livewire::getResource()::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->action(function (EmailTemplate $record, array $data) {
                             app(EmailTemplateService::class)->deleteEmailTemplate($record);

@@ -9,6 +9,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\CreateNoteTemplate;
+use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\EditNoteTemplate;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\Pages\ListNoteTemplates;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\Schemas\NoteTemplateForm;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\Tables\NoteTemplatesTable;
@@ -42,7 +44,9 @@ class NoteTemplateResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListNoteTemplates::route('/'),
+            'index'  => ListNoteTemplates::route('/'),
+            'create' => CreateNoteTemplate::route('/create'),
+            'edit'   => EditNoteTemplate::route('/{record}/edit'),
         ];
     }
 

@@ -2,7 +2,6 @@
 
 namespace Modules\Quotes\Tests\Feature;
 
-use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Clients\Models\Relation;
 use Modules\Core\Enums\NumberingType;
@@ -10,12 +9,12 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Models\Setting;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
 use Modules\Quotes\Enums\QuoteStatus;
-use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\ListQuotes;
+use Modules\Quotes\Filament\Company\Resources\Quotes\Pages\CreateQuote;
 use Modules\Quotes\Models\Quote;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(ListQuotes::class)]
+#[CoversClass(CreateQuote::class)]
 class QuoteNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 {
     #[Test]
@@ -35,10 +34,9 @@ class QuoteNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
+            ->test(CreateQuote::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -73,10 +71,9 @@ class QuoteNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
+            ->test(CreateQuote::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasFormErrors(['quote_number' => 'required']);
@@ -101,17 +98,16 @@ class QuoteNumberGenerationOnCreateTest extends AbstractCompanyPanelTestCase
         // quote_status is set via a real Livewire property update (not fillForm,
         // which bypasses afterStateUpdated hooks) so the form's reactive
         // regeneration of quote_number on status change actually fires --
-        // mirroring a user picking "Approved" interactively in the modal.
+        // mirroring a user picking "Approved" interactively on the create page.
         $payload = $this->basePayload($prospect->id, $numbering->id, QuoteStatus::APPROVED->value);
         unset($payload['quote_status']);
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListQuotes::class, ['tenant' => Str::lower($this->company->search_code)])
-            ->mountAction('create')
-            ->set('mountedActions.0.data.quote_status', QuoteStatus::APPROVED->value)
+            ->test(CreateQuote::class)
+            ->set('data.quote_status', QuoteStatus::APPROVED->value)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();

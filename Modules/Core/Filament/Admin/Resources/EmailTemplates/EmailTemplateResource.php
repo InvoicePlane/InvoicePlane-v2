@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\CreateEmailTemplate;
+use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\EditEmailTemplate;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Pages\ListEmailTemplates;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Schemas\EmailTemplateForm;
 use Modules\Core\Filament\Admin\Resources\EmailTemplates\Tables\EmailTemplatesTable;
@@ -39,7 +41,9 @@ class EmailTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListEmailTemplates::route('/'),
+            'index'  => ListEmailTemplates::route('/'),
+            'create' => CreateEmailTemplate::route('/create'),
+            'edit'   => EditEmailTemplate::route('/{record}/edit'),
         ];
     }
 

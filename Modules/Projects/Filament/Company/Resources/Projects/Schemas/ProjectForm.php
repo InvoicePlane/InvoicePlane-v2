@@ -3,14 +3,12 @@
 namespace Modules\Projects\Filament\Company\Resources\Projects\Schemas;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Validation\Rules\Enum;
 use Modules\Projects\Enums\ProjectStatus;
 
@@ -20,77 +18,73 @@ class ProjectForm
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Grid::make(3)
                     ->columnSpanFull()
                     ->schema([
-                        //
-                        // LEFT COLUMN: Client selector + info
-                        //
-                        Schemas\Components\Group::make()
-                            ->columnSpan(1)
+                        Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedClipboardDocumentCheck)
+                            ->columnSpan(2)
                             ->schema([
-                                Section::make(trans('ip.client'))
-                                    ->schema([
-                                        Select::make('customer_id')
-                                            ->label(trans('ip.client'))
-                                            ->relationship('customer', 'company_name')
-                                            ->searchable()
-                                            ->preload()
-                                            ->required()
-                                            ->createOptionForm([
-                                                TextInput::make('company_name')
-                                                    ->label(trans('ip.customer_name'))
-                                                    ->required(),
-                                            ])
-                                            ->reactive(),
-
-                                        Placeholder::make('customer_info')
-                                            ->label(trans('ip.client_information'))
-                                            ->content(fn (Get $get) => optional($get('customer'))->company_name ?? '-'),
-                                    ]),
-                            ]),
-
-                        //
-                        // RIGHT COLUMN: Project details
-                        //
-                        Schemas\Components\Group::make()
-                            ->columnSpan(1)
-                            ->schema([
-                                Section::make(trans('ip.details'))
-                                    ->columns(2)
+                                Grid::make(4)
                                     ->schema([
                                         TextInput::make('project_number')
                                             ->label(trans('ip.project_number'))
-                                            ->maxLength(255),
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
+                                            ->maxLength(255)
+                                            ->columnSpan(2),
 
                                         TextInput::make('project_name')
                                             ->label(trans('ip.project_name'))
+                                            ->prefixIcon(Heroicon::OutlinedTag)
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->columnSpan(2),
 
                                         Select::make('project_status')
                                             ->label(trans('ip.project_status'))
+                                            ->prefixIcon(Heroicon::OutlinedCheckBadge)
                                             ->options(ProjectStatus::options())
                                             ->required()
                                             ->native(false)
-                                            ->rule(new Enum(ProjectStatus::class)),
+                                            ->rule(new Enum(ProjectStatus::class))
+                                            ->columnSpan(2),
 
                                         DatePicker::make('start_at')
                                             ->label(trans('ip.start_at'))
+                                            ->prefixIcon(Heroicon::OutlinedCalendar)
                                             ->required()
-                                            ->native(false),
+                                            ->native(false)
+                                            ->columnSpan(1),
 
                                         DatePicker::make('end_at')
                                             ->label(trans('ip.end_at'))
-                                            ->native(false),
+                                            ->prefixIcon(Heroicon::OutlinedCalendarDays)
+                                            ->native(false)
+                                            ->columnSpan(1),
+                                    ]),
+                            ]),
+
+                        Section::make(trans('ip.client'))
+                            ->icon(Heroicon::OutlinedUserGroup)
+                            ->columnSpan(1)
+                            ->schema([
+                                Select::make('customer_id')
+                                    ->label(trans('ip.client'))
+                                    ->prefixIcon(Heroicon::OutlinedUserGroup)
+                                    ->relationship('customer', 'company_name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->createOptionForm([
+                                        TextInput::make('company_name')
+                                            ->label(trans('ip.customer_name'))
+                                            ->required(),
                                     ]),
                             ]),
                     ]),
 
-                //
-                // DESCRIPTION (collapsed)
-                //
                 Section::make(trans('ip.description'))
+                    ->icon(Heroicon::OutlinedPencilSquare)
                     ->collapsed()
                     ->schema([
                         TextInput::make('description')

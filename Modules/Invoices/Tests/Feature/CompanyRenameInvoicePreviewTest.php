@@ -12,8 +12,8 @@ use Modules\Core\Models\Numbering;
 use Modules\Core\Models\TaxRate;
 use Modules\Core\Models\User;
 use Modules\Core\Tests\AbstractCompanyPanelTestCase;
+use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\CreateInvoice;
 use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\EditInvoice;
-use Modules\Invoices\Filament\Company\Resources\Invoices\Pages\ListInvoices;
 use Modules\Invoices\Models\Invoice;
 use Modules\Products\Models\Product;
 use Modules\Products\Models\ProductCategory;
@@ -65,12 +65,10 @@ class CompanyRenameInvoicePreviewTest extends AbstractCompanyPanelTestCase
             ],
         ];
 
-        /* Act — create the invoice through the real Filament "create" modal */
-        Livewire::actingAs($this->user)->test(ListInvoices::class)
-            ->mountAction('create')
+        /* Act — create the invoice through the real Filament "create" page */
+        Livewire::actingAs($this->user)->test(CreateInvoice::class)
             ->fillForm($payload)
-            ->assertHasNoFormErrors()
-            ->callMountedAction()
+            ->call('create')
             ->assertHasNoFormErrors();
 
         $invoice = Invoice::query()->where('invoice_number', 'INV-CRP-001')->firstOrFail();

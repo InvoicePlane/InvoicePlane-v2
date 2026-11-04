@@ -13,14 +13,11 @@ use PHPUnit\Framework\Attributes\Test;
 /**
  * Per #503: authorization tests for the Relations (Clients) resource.
  *
- * Note: RelationResource::getPages() only registers 'index' -- there is no
- * routed Create/Edit/View page (CRUD happens via modal actions on the list,
- * see #402's investigation), so these tests exercise the actual
- * authorization gates (RelationResource::can*()) directly rather than the
- * issue's suggested Livewire::test(CreateInvoice::class) pattern, which
- * would target unreachable pages in this codebase. Import/export/duplicate
- * actions from the issue's checklist are not implemented in RelationsTable
- * yet, so there is nothing to test authorization for there.
+ * These tests exercise the authorization gates (RelationResource::can*())
+ * directly rather than the issue's suggested Livewire::test(CreateInvoice::class)
+ * pattern. Import/export/duplicate actions from the issue's checklist are
+ * not implemented in RelationsTable yet, so there is nothing to test
+ * authorization for there.
  */
 #[CoversClass(RelationResource::class)]
 class RelationResourceAuthorizationTest extends AbstractCompanyPanelTestCase

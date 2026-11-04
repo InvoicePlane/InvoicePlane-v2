@@ -13,7 +13,8 @@ class ListEmailTemplates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->url(fn (): string => EmailTemplateResource::getUrl('create')),
         ];
     }
 }

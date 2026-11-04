@@ -4,6 +4,8 @@ namespace Modules\Core\Tests\Feature\Company;
 
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
+use Modules\Core\Filament\Company\Resources\TaxRates\Pages\CreateTaxRate;
+use Modules\Core\Filament\Company\Resources\TaxRates\Pages\EditTaxRate;
 use Modules\Core\Filament\Company\Resources\TaxRates\Pages\ListTaxRates;
 use Modules\Core\Filament\Company\Resources\TaxRates\TaxRateResource;
 use Modules\Core\Models\Company;
@@ -75,10 +77,9 @@ class TaxRatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTaxRates::class)
-            ->mountAction('create')
+            ->test(CreateTaxRate::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasNoFormErrors();
@@ -105,10 +106,9 @@ class TaxRatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTaxRates::class)
-            ->mountAction('create')
+            ->test(CreateTaxRate::class)
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('create');
 
         /* Assert */
         $component->assertHasFormErrors(['code']);
@@ -118,7 +118,7 @@ class TaxRatesTest extends AbstractCompanyPanelTestCase
 
     #[Test]
     #[Group('crud')]
-    public function it_updates_a_tax_rate_through_a_modal(): void
+    public function it_updates_a_tax_rate(): void
     {
         /* Arrange */
         $taxRate = TaxRate::factory()->for($this->company)->create([
@@ -130,10 +130,9 @@ class TaxRatesTest extends AbstractCompanyPanelTestCase
 
         /* Act */
         $component = Livewire::actingAs($this->user)
-            ->test(ListTaxRates::class)
-            ->mountAction(TestAction::make('edit')->table($taxRate), $payload)
+            ->test(EditTaxRate::class, ['record' => $taxRate->id])
             ->fillForm($payload)
-            ->callMountedAction();
+            ->call('save');
 
         /* Assert */
         $component->assertHasNoFormErrors();

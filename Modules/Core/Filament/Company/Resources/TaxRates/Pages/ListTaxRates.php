@@ -5,7 +5,6 @@ namespace Modules\Core\Filament\Company\Resources\TaxRates\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Company\Resources\TaxRates\TaxRateResource;
-use Modules\Core\Services\TaxRateService;
 
 class ListTaxRates extends ListRecords
 {
@@ -15,10 +14,7 @@ class ListTaxRates extends ListRecords
     {
         return [
             CreateAction::make()
-                ->action(function (array $data) {
-                    app(TaxRateService::class)->createTaxRate($data);
-                })
-                ->modalWidth('full'),
+                ->url(fn (): string => TaxRateResource::getUrl('create')),
         ];
     }
 }

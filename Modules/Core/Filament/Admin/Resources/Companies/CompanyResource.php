@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\CreateCompany;
+use Modules\Core\Filament\Admin\Resources\Companies\Pages\EditCompany;
 use Modules\Core\Filament\Admin\Resources\Companies\Pages\ListCompanies;
 use Modules\Core\Filament\Admin\Resources\Companies\Schemas\CompanyForm;
 use Modules\Core\Filament\Admin\Resources\Companies\Tables\CompaniesTable;
@@ -41,7 +43,9 @@ class CompanyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListCompanies::route('/'),
+            'index'  => ListCompanies::route('/'),
+            'create' => CreateCompany::route('/create'),
+            'edit'   => EditCompany::route('/{record}/edit'),
         ];
     }
 

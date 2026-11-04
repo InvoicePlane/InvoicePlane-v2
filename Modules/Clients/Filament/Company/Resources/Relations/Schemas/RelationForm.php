@@ -3,19 +3,17 @@
 namespace Modules\Clients\Filament\Company\Resources\Relations\Schemas;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Schemas;
-use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Models\Contact;
@@ -28,31 +26,20 @@ class RelationForm
     {
         return $schema
             ->components([
-                Grid::make(2)
+                Grid::make(3)
                     ->columnSpanFull()
                     ->schema([
-                        //
-                        // LEFT COLUMN: just a placeholder summary of “Client (Type)”
-                        //
+                        // LEFT: company identity + registration/tax details.
                         Group::make()
                             ->schema([
-                                Section::make()
+                                Section::make(trans('ip.client_information'))
+                                    ->icon(Heroicon::OutlinedBuildingOffice2)
                                     ->schema([
-                                        Grid::make(2)
-                                            ->columns(2)
+                                        Grid::make(3)
                                             ->schema([
-                                                Select::make('relation_status')
-                                                    ->label(trans('ip.status'))
-                                                    ->options(
-                                                        collect(RelationStatus::cases())
-                                                            ->mapWithKeys(fn ($s) => [$s->value => $s->label()])
-                                                            ->toArray()
-                                                    )
-                                                    ->searchable()
-                                                    ->required(),
-
                                                 Select::make('relation_type')
                                                     ->label(trans('ip.type'))
+                                                    ->prefixIcon(Heroicon::OutlinedTag)
                                                     ->options(
                                                         collect(RelationType::cases())
                                                             ->mapWithKeys(fn ($r) => [$r->value => $r->label()])
@@ -61,12 +48,29 @@ class RelationForm
                                                     ->searchable()
                                                     ->required(),
 
+                                                Select::make('relation_status')
+                                                    ->label(trans('ip.status'))
+                                                    ->prefixIcon(Heroicon::OutlinedCheckBadge)
+                                                    ->options(
+                                                        collect(RelationStatus::cases())
+                                                            ->mapWithKeys(fn ($s) => [$s->value => $s->label()])
+                                                            ->toArray()
+                                                    )
+                                                    ->searchable()
+                                                    ->required(),
+
+                                                TextInput::make('relation_number')
+                                                    ->label(trans('ip.relation_number'))
+                                                    ->prefixIcon(Heroicon::OutlinedHashtag)
+                                                    ->required()
+                                                    ->maxLength(30),
+
                                                 TextInput::make('company_name')
                                                     ->label(trans('ip.company_name'))
+                                                    ->prefixIcon(Heroicon::OutlinedBuildingOffice)
                                                     ->required()
-                                                    // relations.company_name
-                                                    // is varchar(150).
                                                     ->maxLength(150)
+                                                    ->columnSpan(2)
                                                     ->live(debounce: 500)
                                                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                                                         if ( ! $get('trading_name')) {
@@ -74,14 +78,9 @@ class RelationForm
                                                         }
                                                     }),
 
-                                                TextInput::make('email')
-                                                    ->label(trans('ip.email'))
-                                                    ->email(),
-
                                                 TextInput::make('trading_name')
                                                     ->label(trans('ip.trading_name'))
-                                                    // relations.trading_name
-                                                    // is varchar(70).
+                                                    ->prefixIcon(Heroicon::OutlinedBuildingStorefront)
                                                     ->maxLength(70)
                                                     ->live(debounce: 500)
                                                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
@@ -90,10 +89,12 @@ class RelationForm
 
                                                 TextInput::make('unique_name')
                                                     ->label(trans('ip.unique_name'))
-                                                    ->unique(\Modules\Clients\Models\Relation::class, 'unique_name', ignoreRecord: true)
+                                                    ->prefixIcon(Heroicon::OutlinedLink)
+                                                    ->unique(Relation::class, 'unique_name', ignoreRecord: true)
                                                     ->required()
                                                     ->readOnly()
                                                     ->dehydrated()
+                                                    ->columnSpanFull()
                                                     ->helperText(trans('ip.unique_name_helper'))
                                                     ->afterStateHydrated(function (Get $get, Set $set, ?string $state) {
                                                         if (empty($state)) {
@@ -103,102 +104,52 @@ class RelationForm
                                                             }
                                                         }
                                                     }),
-
-                                                TextInput::make('relation_number')
-                                                    ->label(trans('ip.relation_number'))
-                                                    ->required()
-                                                    // relations.relation_number
-                                                    // is varchar(30).
-                                                    ->maxLength(30),
                                             ]),
                                     ]),
-                            ])
 
-                            ->columnSpan(1),
-
-                        //
-                        // RIGHT COLUMN: all the real inputs, in a 2-column grid
-                        //
-                        Schemas\Components\Group::make()
-                            ->schema([
-                                Section::make()
+                                Section::make(trans('ip.registration_tax_details'))
+                                    ->icon(Heroicon::OutlinedDocumentText)
                                     ->schema([
                                         Grid::make(2)
-                                            ->columns(2)
                                             ->schema([
                                                 TextInput::make('id_number')
                                                     ->label(trans('ip.id_number'))
-                                                    // relations.id_number is varchar(70).
+                                                    ->prefixIcon(Heroicon::OutlinedIdentification)
                                                     ->maxLength(70),
 
                                                 TextInput::make('coc_number')
                                                     ->label(trans('ip.coc_number'))
-                                                    // relations.coc_number is varchar(70).
+                                                    ->prefixIcon(Heroicon::OutlinedDocumentText)
                                                     ->maxLength(70),
 
                                                 TextInput::make('vat_number')
                                                     ->label(trans('ip.vat_id'))
-                                                    // relations.vat_number is varchar(70).
+                                                    ->prefixIcon(Heroicon::OutlinedReceiptPercent)
                                                     ->maxLength(70),
 
                                                 DatePicker::make('registered_at')
                                                     ->label(trans('ip.registered_at'))
+                                                    ->prefixIcon(Heroicon::OutlinedCalendarDays)
                                                     ->required(),
                                             ]),
                                     ]),
                             ])
-                            ->columnSpan(1),
-                    ]),
-                Grid::make(2)
-                    ->columnSpanFull()
-                    ->schema([
-                        //
-                        // LEFT COLUMN: just a placeholder summary of “Client (Type)”
-                        //
+                            ->columnSpan(2),
+
+                        // RIGHT: contact details sidebar.
                         Group::make()
                             ->schema([
-                                Fieldset::make(trans('ip.client_information'))
-                                    ->extraAttributes([
-                                        'class' => '!border-curious-200 dark:!border-curious-600 rounded-2xl !p-4',
-                                    ])
+                                Section::make(trans('ip.contact_details'))
+                                    ->icon(Heroicon::OutlinedUserCircle)
                                     ->schema([
-                                        Placeholder::make('company_name_display')
-                                            ->label(trans('ip.company_name'))
-                                            ->content(fn (Get $get) => $get('company_name') ?: '-'),
+                                        TextInput::make('email')
+                                            ->label(trans('ip.email'))
+                                            ->prefixIcon(Heroicon::OutlinedEnvelope)
+                                            ->email(),
 
-                                        Placeholder::make('trading_name_display')
-                                            ->label(trans('ip.trading_name'))
-                                            ->content(fn (Get $get) => $get('trading_name') ?: '-'),
-
-                                        Placeholder::make('relation_type_display')
-                                            ->label(trans('ip.type'))
-                                            ->content(function (Get $get) {
-                                                $type = $get('relation_type');
-                                                if ( ! $type) {
-                                                    return '-';
-                                                }
-
-                                                if ($type instanceof RelationType) {
-                                                    return $type->label();
-                                                }
-
-                                                $typeEnum = RelationType::tryFrom($type);
-
-                                                return $typeEnum ? $typeEnum->label() : '-';
-                                            }),
-                                    ])->columnSpan(2),
-                            ])
-                            ->columnSpan(1),
-
-                        //
-                        // RIGHT COLUMN: all the real inputs, in a 2-column grid
-                        //
-                        Schemas\Components\Group::make()
-                            ->schema([
-                                Fieldset::make(trans('ip.contact_details'))
-                                    ->schema([
                                         Select::make('primary_contact_id')
                                             ->label(trans('ip.primary_contact'))
+                                            ->prefixIcon(Heroicon::OutlinedUser)
                                             ->options(
                                                 fn (): array => Contact::query()
                                                     ->orderBy('first_name')

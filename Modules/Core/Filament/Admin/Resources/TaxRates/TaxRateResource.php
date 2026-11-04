@@ -9,6 +9,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
+use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\CreateTaxRate;
+use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\EditTaxRate;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Pages\ListTaxRates;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Schemas\TaxRateForm;
 use Modules\Core\Filament\Admin\Resources\TaxRates\Tables\TaxRatesTable;
@@ -39,7 +41,9 @@ class TaxRateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListTaxRates::route('/'),
+            'index'  => ListTaxRates::route('/'),
+            'create' => CreateTaxRate::route('/create'),
+            'edit'   => EditTaxRate::route('/{record}/edit'),
         ];
     }
 

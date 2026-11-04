@@ -34,7 +34,10 @@ class ViewRelation extends ViewRecord
                     'customer_id' => $this->getRecord()->id,
                 ])),
 
-            EditAction::make(),
+            EditAction::make()
+                ->url(fn (): string => RelationResource::getUrl('edit', [
+                    'record' => $this->getRecord(),
+                ])),
 
             DeleteAction::make()
                 ->hidden(fn () => $this->getRecord()->hasLinkedRecords())

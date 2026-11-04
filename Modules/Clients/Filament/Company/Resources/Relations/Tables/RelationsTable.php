@@ -19,6 +19,7 @@ use InvalidArgumentException;
 use Modules\Clients\Enums\RelationStatus;
 use Modules\Clients\Enums\RelationType;
 use Modules\Clients\Exceptions\RelationHasLinkedRecordsException;
+use Modules\Clients\Filament\Company\Resources\Relations\RelationResource;
 use Modules\Clients\Models\Relation;
 use Modules\Clients\Services\RelationMergeService;
 use Modules\Clients\Services\RelationService;
@@ -117,10 +118,9 @@ class RelationsTable
                         ])),
                     EditAction::make('edit')
                         ->visible(fn () => auth()->user()?->can(Permission::EDIT_RELATIONS->value))
-                        ->action(function (Relation $record, array $data) {
-                            app(RelationService::class)->updateRelation($record, $data);
-                        })
-                        ->modalWidth('full'),
+                        ->url(fn (Relation $record): string => RelationResource::getUrl('edit', [
+                            'record' => $record,
+                        ])),
                     DeleteAction::make('delete')
                         ->visible(fn (Relation $record) => ! $record->hasLinkedRecords()
                             && auth()->user()?->can(Permission::DELETE_RELATIONS->value))

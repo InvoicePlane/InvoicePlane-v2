@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Enums\Permission;
 use Modules\Core\Enums\UserRole;
 use Modules\Core\Filament\Company\Resources\BaseResource;
+use Modules\Payments\Filament\Company\Resources\Payments\Pages\CreatePayment;
+use Modules\Payments\Filament\Company\Resources\Payments\Pages\EditPayment;
 use Modules\Payments\Filament\Company\Resources\Payments\Pages\ListPayments;
 use Modules\Payments\Filament\Company\Resources\Payments\Schemas\PaymentForm;
 use Modules\Payments\Filament\Company\Resources\Payments\Tables\PaymentsTable;
@@ -66,7 +68,9 @@ class PaymentResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => ListPayments::route('/'),
+            'index'  => ListPayments::route('/'),
+            'create' => CreatePayment::route('/create'),
+            'edit'   => EditPayment::route('/{record}/edit'),
         ];
     }
 

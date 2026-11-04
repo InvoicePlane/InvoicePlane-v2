@@ -5,7 +5,7 @@ namespace Modules\Core\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Enums\NumberingType;
-use Modules\Core\Filament\Admin\Resources\Numberings\Pages\ListNumberings;
+use Modules\Core\Filament\Admin\Resources\Numberings\Pages\CreateNumbering;
 use Modules\Core\Filament\Admin\Resources\Numberings\Schemas\NumberingForm;
 use Modules\Core\Tests\AbstractAdminPanelTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -21,12 +21,11 @@ class NumberingPrefixAutofillTest extends AbstractAdminPanelTestCase
     {
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->mountAction('create')
-            ->set('mountedActions.0.data.type', NumberingType::QUOTE->value);
+            ->test(CreateNumbering::class)
+            ->set('data.type', NumberingType::QUOTE->value);
 
         /* Assert */
-        $component->assertSet('mountedActions.0.data.prefix', NumberingType::QUOTE->prefix());
+        $component->assertSet('data.prefix', NumberingType::QUOTE->prefix());
     }
 
     #[Test]
@@ -34,13 +33,12 @@ class NumberingPrefixAutofillTest extends AbstractAdminPanelTestCase
     {
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->mountAction('create')
-            ->set('mountedActions.0.data.prefix', 'CUSTOM')
-            ->set('mountedActions.0.data.type', NumberingType::QUOTE->value);
+            ->test(CreateNumbering::class)
+            ->set('data.prefix', 'CUSTOM')
+            ->set('data.type', NumberingType::QUOTE->value);
 
         /* Assert */
-        $component->assertSet('mountedActions.0.data.prefix', 'CUSTOM');
+        $component->assertSet('data.prefix', 'CUSTOM');
     }
 
     #[Test]
@@ -48,12 +46,11 @@ class NumberingPrefixAutofillTest extends AbstractAdminPanelTestCase
     {
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->mountAction('create')
-            ->set('mountedActions.0.data.type', NumberingType::EXPENSE->value);
+            ->test(CreateNumbering::class)
+            ->set('data.type', NumberingType::EXPENSE->value);
 
         /* Assert */
-        $component->assertSet('mountedActions.0.data.prefix', NumberingType::EXPENSE->prefix());
+        $component->assertSet('data.prefix', NumberingType::EXPENSE->prefix());
     }
 
     #[Test]
@@ -61,8 +58,7 @@ class NumberingPrefixAutofillTest extends AbstractAdminPanelTestCase
     {
         /* Act */
         $component = Livewire::actingAs($this->superAdmin())
-            ->test(ListNumberings::class)
-            ->mountAction('create');
+            ->test(CreateNumbering::class);
 
         /* Assert */
         $component->assertDontSee('JOB');

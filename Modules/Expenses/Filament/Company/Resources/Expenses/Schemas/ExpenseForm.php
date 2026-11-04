@@ -4,15 +4,14 @@ namespace Modules\Expenses\Filament\Company\Resources\Expenses\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Log;
 use Modules\Clients\Enums\RelationType;
 use Modules\Expenses\Enums\ExpenseStatus;
@@ -26,123 +25,123 @@ class ExpenseForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->columns(1)
-            ->schema([
+            ->components([
                 Grid::make(3)
+                    ->columnSpanFull()
                     ->schema([
-                        Section::make()
+                        Section::make(trans('ip.details'))
+                            ->icon(Heroicon::OutlinedDocumentText)
+                            ->columnSpan(2)
+                            ->schema([
+                                Grid::make(4)
+                                    ->schema([
+                                        TextInput::make('expense_number')
+                                            ->label(trans('ip.expense_number'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
+                                            ->required()
+                                            ->columnSpan(2)
+                                            ->default(function (Get $get, string $operation) {
+                                                if ($operation !== 'create') {
+                                                    return;
+                                                }
+
+                                                $user      = auth()->user();
+                                                $companyId = $user?->getCurrentCompanyId();
+
+                                                if (config('app.extreme_logging')) {
+                                                    Log::debug('ExpenseForm: Initializing ExpenseNumberGenerator', [
+                                                        'company_id'         => $companyId,
+                                                        'expense_status'     => $get('expense_status'),
+                                                        'user_id'            => $user?->id,
+                                                        'session_company_id' => session('current_company_id'),
+                                                        'trace'              => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
+                                                    ]);
+                                                }
+
+                                                $generator = new ExpenseNumberGenerator($companyId);
+
+                                                return $generator->generate();
+                                            })
+                                            ->dehydrated(),
+
+                                        Select::make('expense_status')
+                                            ->label(trans('ip.expense_status'))
+                                            ->prefixIcon(Heroicon::OutlinedCheckBadge)
+                                            ->options(ExpenseStatus::options())
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false)
+                                            ->required()
+                                            ->columnSpan(2),
+
+                                        Select::make('category_id')
+                                            ->label(trans('ip.category'))
+                                            ->prefixIcon(Heroicon::OutlinedTag)
+                                            ->relationship('expenseCategory', 'category_name')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->columnSpan(2),
+
+                                        Select::make('expense_type')
+                                            ->label(trans('ip.expense_type'))
+                                            ->prefixIcon(Heroicon::OutlinedBriefcase)
+                                            ->options(ExpenseType::options())
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false)
+                                            ->required()
+                                            ->columnSpan(2),
+
+                                        TextInput::make('expense_amount')
+                                            ->label(trans('ip.expense_amount'))
+                                            ->prefixIcon(Heroicon::OutlinedCurrencyDollar)
+                                            ->numeric()
+                                            ->required()
+                                            ->columnSpan(2),
+
+                                        DatePicker::make('expensed_at')
+                                            ->label(trans('ip.expensed_at'))
+                                            ->prefixIcon(Heroicon::OutlinedCalendar)
+                                            ->required()
+                                            ->columnSpan(2),
+                                    ]),
+                            ]),
+
+                        Section::make(trans('ip.contact'))
+                            ->icon(Heroicon::OutlinedUserGroup)
+                            ->columnSpan(1)
                             ->schema([
                                 Select::make('customer_id')
+                                    ->label(trans('ip.client'))
+                                    ->prefixIcon(Heroicon::OutlinedUserGroup)
                                     ->relationship(
                                         name: 'customer',
                                         titleAttribute: 'company_name',
                                         modifyQueryUsing: fn ($query) => $query->where('relation_type', RelationType::CUSTOMER->value)
                                     )
-                                    ->label(trans('ip.client'))
                                     ->required()
                                     ->searchable()
                                     ->preload()
                                     ->native(false),
 
-                                Placeholder::make('customer_info')
-                                    ->label(trans('ip.client'))
-                                    ->content(fn (Get $get) => optional($get('customer'))->company_name ?? '-')
-                                    ->visible(fn (Get $get) => filled($get('customer_id'))),
-                            ])
-                            ->columnSpan(1),
-
-                        Section::make()
-                            ->schema([
                                 Select::make('vendor_id')
+                                    ->label(trans('ip.vendor'))
+                                    ->prefixIcon(Heroicon::OutlinedBuildingOffice2)
                                     ->relationship(
                                         name: 'vendor',
                                         titleAttribute: 'company_name',
                                         modifyQueryUsing: fn ($query) => $query->where('relation_type', RelationType::VENDOR->value)
                                     )
-                                    ->label(trans('ip.vendor'))
                                     ->searchable()
                                     ->preload()
                                     ->native(false),
-
-                                Placeholder::make('vendor_info')
-                                    ->label(trans('ip.vendor'))
-                                    ->content(fn (Get $get) => optional($get('vendor'))->company_name ?? '-')
-                                    ->visible(fn (Get $get) => filled($get('vendor_id'))),
-                            ])
-                            ->columnSpan(1),
-
-                        Section::make(trans('ip.details'))
-                            ->schema([
-                                TextInput::make('expense_number')
-                                    ->required()
-                                    ->default(function (Get $get, string $operation) {
-                                        if ($operation !== 'create') {
-                                            return; // Don't generate number for edit operations
-                                        }
-
-                                        $user      = auth()->user();
-                                        $companyId = $user?->getCurrentCompanyId();
-
-                                        if (config('app.extreme_logging')) {
-                                            Log::debug('ExpenseForm: Initializing ExpenseNumberGenerator', [
-                                                'company_id'         => $companyId,
-                                                'expense_status'     => $get('expense_status'),
-                                                'user_id'            => $user?->id,
-                                                'session_company_id' => session('current_company_id'),
-                                                'trace'              => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
-                                            ]);
-                                        }
-
-                                        $generator = new ExpenseNumberGenerator($companyId);
-
-                                        if (config('app.extreme_logging')) {
-                                            Log::debug('ExpenseForm: Generating number', [
-                                                'status'     => $get('expense_status'),
-                                                'is_draft'   => ($get('expense_status') ?? '') !== ExpenseStatus::DRAFT->value,
-                                                'company_id' => auth()->user()?->company_id,
-                                                'trace'      => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5),
-                                            ]);
-                                        }
-
-                                        $number = $generator->generate();
-
-                                        if (config('app.extreme_logging')) {
-                                            Log::debug('ExpenseForm: Generated number', [
-                                                'number'     => $number,
-                                                'company_id' => auth()->user()?->company_id,
-                                            ]);
-                                        }
-
-                                        return $number;
-                                    })
-                                    ->dehydrated()
-                                    ->required(),
-                                Select::make('expense_status')
-                                    ->options(ExpenseStatus::options())
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                Select::make('category_id')
-                                    ->relationship('expenseCategory', 'category_name')
-                                    ->label(trans('ip.category'))
-                                    ->required()
-                                    ->searchable()
-                                    ->preload(),
-                                Select::make('expense_type')
-                                    ->options(ExpenseType::options())
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                TextInput::make('expense_amount')
-                                    ->numeric()
-                                    ->required(),
-                                DatePicker::make('expensed_at')
-                                    ->required(),
-                            ])
-                            ->columnSpan(1),
+                            ]),
                     ]),
 
                 Section::make(trans('ip.expense_items'))
+                    ->icon(Heroicon::OutlinedListBullet)
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('expenseItems')
                             ->defaultItems(0)
@@ -150,71 +149,66 @@ class ExpenseForm
                             ->label(trans('ip.expense_items'))
                             ->reorderable()
                             ->addActionLabel(trans('ip.add_new_row'))
-                            ->columns(6) // Adjust columns to control field widths
                             ->schema([
-                                Select::make('item_id')
-                                    ->label(trans('ip.item'))
-                                    ->options(Product::pluck('product_name', 'id')->toArray())
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                TextInput::make('quantity')->numeric()->required(),
-                                TextInput::make('price')->numeric()->required(),
-                                TextInput::make('discount')->numeric()->default(0),
-                                TextInput::make('subtotal')->numeric()->default(0)->disabled(),
-                            ])
-                            ->collapsed(false)
-                            ->afterStateUpdated(fn ($set, $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
-                    ])
-                    ->columnSpanFull(),
-
-                Section::make(trans('ip.expense_totals'))
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Group::make()
-                                    ->schema([]), // Left side: Empty (future use)
-
-                                Group::make()
+                                Grid::make(12)
                                     ->schema([
-                                        TextInput::make('expense_item_subtotal')
-                                            ->label(trans('ip.subtotal'))
-                                            ->disabled()
+                                        Select::make('item_id')
+                                            ->label(trans('ip.item'))
+                                            ->prefixIcon(Heroicon::OutlinedCube)
+                                            ->options(Product::query()->pluck('product_name', 'id')->toArray())
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
                                             ->dehydrated()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($set, $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal'))
-                                            ->extraAttributes(['class' => 'text-right']),
+                                            ->columnSpan(4),
 
-                                        TextInput::make('expense_discount_amount')
-                                            ->label(trans('ip.discount_amount'))
-                                            ->nullable()
-                                            ->extraAttributes(['class' => 'text-right']),
+                                        TextInput::make('quantity')
+                                            ->label(trans('ip.quantity'))
+                                            ->prefixIcon(Heroicon::OutlinedHashtag)
+                                            ->numeric()
+                                            ->required()
+                                            ->dehydrated()
+                                            ->columnSpan(2),
 
-                                        TextInput::make('expense_discount_percent')
-                                            ->label(trans('ip.discount_percent'))
-                                            ->nullable()
-                                            ->extraAttributes(['class' => 'text-right']),
+                                        TextInput::make('price')
+                                            ->label(trans('ip.price'))
+                                            ->prefixIcon(Heroicon::OutlinedCurrencyDollar)
+                                            ->numeric()
+                                            ->required()
+                                            ->dehydrated()
+                                            ->columnSpan(2),
 
-                                        TextInput::make('expense_tax_total')
-                                            ->label(trans('ip.tax_total'))
+                                        TextInput::make('discount')
+                                            ->label(trans('ip.discount'))
+                                            ->prefixIcon(Heroicon::OutlinedMinusCircle)
+                                            ->numeric()
+                                            ->default(0)
+                                            ->dehydrated()
+                                            ->columnSpan(2),
+
+                                        TextInput::make('subtotal')
+                                            ->label(trans('ip.subtotal'))
+                                            ->prefixIcon(Heroicon::OutlinedBanknotes)
+                                            ->numeric()
+                                            ->default(0)
+                                            ->dehydrated()
                                             ->disabled()
-                                            ->extraAttributes(['class' => 'text-right']),
-
-                                        TextInput::make('expense_total')
-                                            ->label(trans('ip.total'))
-                                            ->disabled()
-                                            ->extraAttributes(['class' => 'text-right']),
+                                            ->columnSpan(2),
                                     ]),
-                            ]),
-                    ])
-                    ->collapsed(true)
-                    ->columnSpanFull(),
+                            ])
+                            ->columns(1)
+                            ->reactive()
+                            ->afterStateUpdated(fn (callable $set, callable $get) => (new ExpenseCalculator())->updateGrandTotal($set, $get, 'expenseItems', 'subtotal', 'expense_item_subtotal')),
+                    ]),
 
                 Section::make(trans('ip.expense_notes'))
+                    ->icon(Heroicon::OutlinedPencilSquare)
                     ->schema([
                         MarkdownEditor::make('description')
+                            ->label(trans('ip.expense_notes'))
                             ->toolbarButtons(['bold', 'italic']),
                     ])
+                    ->collapsed()
                     ->columnSpanFull(),
             ]);
     }

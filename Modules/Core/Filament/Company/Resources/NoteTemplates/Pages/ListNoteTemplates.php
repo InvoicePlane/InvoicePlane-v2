@@ -5,7 +5,6 @@ namespace Modules\Core\Filament\Company\Resources\NoteTemplates\Pages;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Modules\Core\Filament\Company\Resources\NoteTemplates\NoteTemplateResource;
-use Modules\Core\Services\NoteTemplateService;
 
 class ListNoteTemplates extends ListRecords
 {
@@ -15,10 +14,7 @@ class ListNoteTemplates extends ListRecords
     {
         return [
             CreateAction::make()
-                ->action(function (array $data) {
-                    app(NoteTemplateService::class)->createNoteTemplate($data);
-                })
-                ->modalWidth('full'),
+                ->url(fn (): string => NoteTemplateResource::getUrl('create')),
         ];
     }
 }
