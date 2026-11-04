@@ -175,7 +175,7 @@ class Numbering extends Model
             '{{number}}' => $idPadded,
         ];
 
-        return str_replace(array_keys($replacements), array_values($replacements), $format);
+        return strtr($format, $replacements);
     }
 
     /*

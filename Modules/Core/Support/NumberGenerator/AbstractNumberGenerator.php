@@ -211,7 +211,7 @@ abstract class AbstractNumberGenerator
             '{{day}}'   => $now->format('d'),
         ];
 
-        return str_replace(array_keys($replacements), array_values($replacements), $formatted);
+        return strtr($formatted, $replacements);
     }
 
     protected function incrementCounter(Numbering $numbering): void
