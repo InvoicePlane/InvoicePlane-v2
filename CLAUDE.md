@@ -1,5 +1,9 @@
 # InvoicePlane v2 — Claude Context
 
+> **DATABASE RULE: MariaDB only. NEVER SQLite. NEVER PostgreSQL.** This is the owner's standing instruction until the owner says otherwise. It applies to tests, CI, local runs,
+> example configuration, config defaults and fallbacks, docs and snippets, and "just a quick check". If a skeleton, a tool, a skill or a
+> default suggests SQLite or PostgreSQL, change it to MariaDB; do not adapt the project to it.
+
 ## What this is
 
 Laravel 13 + Filament v5 + Livewire v4 invoicing app. Modular architecture via `nwidart/laravel-modules` v13. PHP 8.3+ (dev box: 8.4.23), Spatie roles/permissions, multi-tenancy via Filament's built-in tenant system scoped to `Company`.

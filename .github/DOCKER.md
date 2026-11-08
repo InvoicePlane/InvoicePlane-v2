@@ -52,7 +52,7 @@ docker exec ivpldock-workspace-1 sh -c "cd /var/www/projects/invoiceplane-2/ivpl
 
 ## Running the test suite
 
-Tests need real MariaDB, not the SQLite default in `.env.testing` — SQLite's lenient identifier
+Tests need real MariaDB, never SQLite or PostgreSQL — SQLite's lenient identifier
 quoting has masked real bugs before that only surfaced against MariaDB in CI. Override the DB
 connection with `-e` flags on `docker exec` (env vars passed this way take precedence over
 `.env.testing`, so nothing else needs to change).

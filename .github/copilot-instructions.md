@@ -1,5 +1,9 @@
 # GitHub Copilot Instructions — InvoicePlane v2
 
+> **DATABASE RULE: MariaDB only. NEVER SQLite. NEVER PostgreSQL.** This is the owner's standing instruction until the owner says otherwise. It applies to tests, CI, local runs,
+> example configuration, config defaults and fallbacks, docs and snippets, and "just a quick check". If a skeleton, a tool, a skill or a
+> default suggests SQLite or PostgreSQL, change it to MariaDB; do not adapt the project to it.
+
 ## How to Use These Instructions
 
 These instructions contain verified facts about the InvoicePlane v2 codebase. **Trust them** — only search the repo when something is not covered here or contradicts what you find.

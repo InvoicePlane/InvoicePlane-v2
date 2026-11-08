@@ -1,5 +1,9 @@
 # InvoicePlane v2
 
+> **DATABASE RULE: MariaDB only. NEVER SQLite. NEVER PostgreSQL.** This is the owner's standing instruction until the owner says otherwise. It applies to tests, CI, local runs,
+> example configuration, config defaults and fallbacks, docs and snippets, and "just a quick check". If a skeleton, a tool, a skill or a
+> default suggests SQLite or PostgreSQL, change it to MariaDB; do not adapt the project to it.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-blue.svg)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-13%2B-red.svg)](https://laravel.com)
@@ -47,7 +51,7 @@
 - **PHP** 8.4 or higher
 - **Composer** 2.x
 - **Node.js** 20+ and Yarn
-- **Database** MariaDB 10.11+ (recommended), MySQL 8.0+, or SQLite (dev only)
+- **Database** MariaDB 10.11+ (MariaDB only: never SQLite, never PostgreSQL)
 - **Redis** (recommended for queue/cache in production)
 - **Queue Worker** (required for export functionality)
 
@@ -398,7 +402,7 @@ If you're looking to contribute Peppol support, start with that issue and branch
 - [ ] Set `APP_DEBUG=false`
 - [ ] Configure proper `APP_URL`
 - [ ] Use strong `APP_KEY` (never share)
-- [ ] Configure production database (MySQL/PostgreSQL)
+- [ ] Configure production database (MariaDB)
 - [ ] Set up Redis for cache and queue
 - [ ] Configure queue workers with Supervisor
 - [ ] Set up proper mail configuration
